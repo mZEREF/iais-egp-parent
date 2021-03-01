@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -90,10 +91,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -192,7 +190,8 @@ public class NewApplicationDelegator {
     private AppSubmissionService appSubmissionService;
     @Autowired
     private RequestForChangeService requestForChangeService;
-
+@Autowired
+private CessationFeService cessationFeService;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -495,7 +494,7 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        List<SelectOption> weeklyOpList = NewApplicationHelper.genWorkingDaySp();
+        List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);
@@ -1481,6 +1480,11 @@ public class NewApplicationDelegator {
                         if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatHciName(patTransTo);
                             appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
+                            String hciAddressPat = premisesDto.getHciAddress();
+                            String hciNamePat = premisesDto.getHciName();
+                            appCessHciDto.setHciNamePat(hciNamePat);
+                            appCessHciDto.setHciAddressPat(hciAddressPat);
                         } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatRegNo(patTransTo);
                             appCessHciDto.setPatNeedTrans(Boolean.TRUE);
@@ -4792,22 +4796,19 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-            Object attribute = bpc.request.getSession().getAttribute(NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null) {
                 //set oldAppSubmission when rfi,rfc,rene
                 if(rfi!=null){
                     groupLicencePremiseRelationDis(appSubmissionDto);
                 }
-                if(attribute==null){
-                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
-                }
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
 
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                if(attribute==null){
-                    AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
-                }
+
+                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             }
         }
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
@@ -5001,7 +5002,7 @@ public class NewApplicationDelegator {
                 }
             }
             if(!canFound){
-                //last doc is null
+                //last doc is null new rfi not use app no
                 version = getVersion(appGrpId,configDocId,appNo,appType);
             }
         }
@@ -5010,6 +5011,9 @@ public class NewApplicationDelegator {
 
     private Integer getVersion(String appGrpId,String configDocId,String appNo,String appType){
         Integer version = 1;
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            appNo=null;
+        }
         if(StringUtil.isEmpty(appNo)){
             //comm
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){

@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.security.AuthenticationConfig;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.ecquaria.cloud.usersession.client.UserSessionService;
@@ -45,7 +45,6 @@ public class PaymentRedisHelper {
                 String key = (String) ent.getKey();
                 if (key.startsWith("sessionAttr:")) {
                     String sessionKey = key.replaceFirst("sessionAttr:", "");
-                    log.debug(StringUtil.changeForLog("Session Key => " + sessionKey));
                     ObjectMapper mapper = new ObjectMapper();
                     String jsonString = null;
                     try {
@@ -53,20 +52,22 @@ public class PaymentRedisHelper {
                     } catch (JsonProcessingException e) {
                         log.debug(e.getMessage(),e);
                     }
-                    log.debug(StringUtil.changeForLog(sessionKey+" => " + jsonString));
                     session.setAttribute(sessionKey, ent.getValue());//NOSONAR
                 }
             }
-            log.debug("Old session Id ==> " + oldSessionId);
-            log.debug("New session id ==> " + session.getId());
-            User user = SessionManager.getInstance(request).getCurrentUser();
-            List<UserSession> usesses = UserSessionService.getInstance()
-                    .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
-            if (usesses != null && usesses.size() > 0) {
-                for (UserSession us : usesses) {
-                    UserSessionUtil.killUserSession(us.getSessionId());
+            session.setAttribute("sop6.session.id", session.getId());
+            String conInfo = AuthenticationConfig.getConcurrentUserSession();
+            if (AuthenticationConfig.VALUE_CONCURRENT_USER_SESSION_CLOSE_OLD.equals(conInfo)) {
+                User user = SessionManager.getInstance(request).getCurrentUser();
+                List<UserSession> usesses = UserSessionService.getInstance()
+                        .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
+                if (usesses != null && usesses.size() > 0) {
+                    for (UserSession us : usesses) {
+                        UserSessionUtil.killUserSession(us.getSessionId());
+                    }
                 }
             }
+
             UserSessionService.getInstance().registerSession(request, session);
         }
     }

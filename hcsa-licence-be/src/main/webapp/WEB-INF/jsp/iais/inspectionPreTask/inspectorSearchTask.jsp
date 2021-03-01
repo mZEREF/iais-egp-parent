@@ -93,7 +93,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="${groupRoleFieldDto.groupMemBerName} Name"/>
+                        <iais:field value="Name"/>
                         <iais:value width="18">
                           <iais:select name="memberName" options="memberOption" firstOption="Please Select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
                         </iais:value>

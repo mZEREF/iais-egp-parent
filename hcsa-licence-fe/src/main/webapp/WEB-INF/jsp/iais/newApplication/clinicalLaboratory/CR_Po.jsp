@@ -354,9 +354,9 @@
                             </div>
                           </div>
                           <div class="col-sm-5 col-md-4 text-right" >
-                            <c:if test="${status.index - dpoMandatoryCount >=0}">
+
                               <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeDpoBtn cursorPointer"></em></h4>
-                            </c:if>
+
                           </div>
                           <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
                             <div class="col-sm-10">
@@ -1175,10 +1175,19 @@
             if(psnLength <= 1){
                 $('.dpo-content:eq(1) .assign-psn-item').html('');
             }
+            DPO_number();
         });
 
     }
-
+    var DPO_number =function (){
+        var closest = $('.removeDpoBtn').closest("div.panel-main-content");
+        var children = closest.children("div.dpo-content");
+        if(children.length <= 0){
+            $("select[name='deputyPrincipalOfficer']").next().find('.current').html('No');
+            $("select[name='deputyPrincipalOfficer']").val('No')
+            $("select[name='deputyPrincipalOfficer']").trigger("change");
+        }
+    }
     var setPoPsnDisabled = function ($cgoPsnEle,psnEditDto) {
         console.log("setPsnDisabled start...");
         console.log("psnEditDto:"+psnEditDto);

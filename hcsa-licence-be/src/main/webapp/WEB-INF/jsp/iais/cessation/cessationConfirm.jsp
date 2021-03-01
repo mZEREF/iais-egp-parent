@@ -150,6 +150,15 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
+                                                <div id="${num.count}hciName${uid.count}" hidden>
+                                                    <iais:row>
+                                                        <iais:field value=""/>
+                                                        <iais:value width="7">
+                                                            <div><c:out value="${appCessHci.hciNamePat}"></c:out></div>
+                                                            <div><c:out value="${appCessHci.hciAddressPat}"></c:out></div>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field value="Professional Regn. No." mandatory="true"/>
@@ -399,9 +408,11 @@
                     $("#" + i + "patOthersMobileNo" + j).show();
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
                     $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "hciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -409,6 +420,7 @@
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -429,6 +441,7 @@
                     $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
@@ -451,6 +464,7 @@
                 if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
@@ -467,6 +481,7 @@
                 if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();

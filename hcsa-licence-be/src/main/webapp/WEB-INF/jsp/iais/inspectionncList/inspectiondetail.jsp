@@ -29,7 +29,12 @@
             </c:when>
                 <c:otherwise>
                <div class="col-xs-8 col-sm-6 col-md-5">
-                    <p> <span> ${serListDto.startHour} : ${serListDto.startMin}</span></p>
+                    <p> <span>
+                        <c:if test="${(empty serListDto.startHour) && (empty serListDto.startMin)}">
+                        </c:if>
+                  <c:if test="${(not empty serListDto.startHour) && (not empty serListDto.startMin)}">
+                      ${serListDto.startHour} : ${serListDto.startMin}
+                  </c:if>
                 </div>
                 </c:otherwise>
             </c:choose>

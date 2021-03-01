@@ -168,6 +168,13 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="clearCheckBox" x="860" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="clearCheckBox_OnStepProcess_0" name="clearCheckBox_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ItemSearch" stageIndicator="" x="430" y="40">
@@ -260,6 +267,7 @@
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step2" value="&quot;cancelConfig&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/changePage" value="&quot;doPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/exportItemToConfigTemplate" value="&quot;exportItemToConfigTemplate&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/clearCheckBox" value="&quot;clearCheckBox&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1240" y="510">
    <Description/>
@@ -502,6 +510,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/viewClonePage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond6" style="rectanular">
    <position>{(1080,200)(1240,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/clearCheckBox" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1230,60)(880,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/clearCheckBox" style="oblique">
+   <position>{(880,140)(730,970)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>

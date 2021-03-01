@@ -161,7 +161,8 @@
                     return;
                 }
                 var jsonData = {
-                    'premIndexNo':premSelectVal
+                    'premIndexNo':premSelectVal,
+                    'premisesType':premisesType
                 };
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/lic-premises',
@@ -176,9 +177,9 @@
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
                             //copy ph form
-                            copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
+                            //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
-                            fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
+                            //fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set opertaion -->
                             var $currForm;
                             if(premisesType == 'onSite') {
@@ -196,6 +197,122 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
+
+                            //weekly
+                            //remove weekly div
+                            var $weeklyCountent = $currForm.find('div.weeklyContent');
+                            if(data.weeklyDtoList != null && data.weeklyDtoList != '' && data.weeklyDtoList != undefined){
+                                $weeklyCountent.find('div.weeklyDiv').remove();
+                                //add html
+                                $weeklyCountent.find('div.addWeeklyDiv').before(data.weeklyHtml);
+                                //remove first field
+                                $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
+                                //remove first del btn
+                                $weeklyCountent.find('div.weeklyDiv:eq(0) div.weeklyDel:eq(0)').remove();
+                                //fill data
+                                $weeklyCountent.find('div.weeklyDiv').each(function (k,v) {
+                                    var $thisDiv = $(this);
+                                    var weeklyData = data.weeklyDtoList[k];
+                                    if(weeklyData == null || weeklyData =='' || weeklyData == undefined){
+                                        return;
+                                    }
+                                    $.each(weeklyData.selectValList,function (k,v) {
+                                        $thisDiv.find('input[value="'+v+'"]').prop('checked',true);
+                                    });
+                                    //$(this).find('input[value="DN2"]').prop('checked',true);
+                                    //
+                                    var startHHVal = weeklyData.startFromHH;
+                                    if(typeof(startHHVal) === 'undefined'){
+                                        startHHVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyStartHH"]').val(startHHVal);
+                                    var startHH =$thisDiv.find('.'+premisesType+'WeeklyStartHH option[value="' + startHHVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyStartHH"]').next().find('.current').html(startHH);
+                                    //
+                                    var startMMVal = weeklyData.startFromMM;
+                                    if(typeof(startMMVal) === 'undefined'){
+                                        startMMVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyStartMM"]').val(startMMVal);
+                                    var startMM =$thisDiv.find('.'+premisesType+'WeeklyStartMM option[value="' + startMMVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyStartMM"]').next().find('.current').html(startMM);
+                                    //
+                                    var endHHVal = weeklyData.endToHH;
+                                    if(typeof(endHHVal) === 'undefined'){
+                                        endHHVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyEndHH"]').val(endHHVal);
+                                    var endHH =$thisDiv.find('.'+premisesType+'WeeklyEndHH option[value="' + endHHVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyEndHH"]').next().find('.current').html(endHH);
+                                    //
+                                    var endMMVal = weeklyData.endToMM;
+                                    if(typeof(endMMVal) === 'undefined'){
+                                        endMMVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyEndMM"]').val(endMMVal);
+                                    var endMM =$thisDiv.find('.'+premisesType+'WeeklyEndMM option[value="' + endMMVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'WeeklyEndMM"]').next().find('.current').html(endMM);
+                                });
+                            }
+
+
+                            //ph
+                            var $phCountent = $currForm.find('div.pubHolDayContent');
+                            if(data.phDtoList != null && data.phDtoList != '' && data.phDtoList != undefined){
+                                //remove ph div
+                                $phCountent.find('div.pubHolidayDiv').remove();
+                                //add html
+                                $phCountent.find('div.addPhDiv').before(data.phHtml);
+                                //remove first field
+                                $phCountent.find('div.form-group:eq(0)').remove();
+                                //remove first del btn
+                                $phCountent.find('div.addPhDiv:eq(0) div.pubHolidayDel:eq(0)').remove();
+                                //fill data
+                                $phCountent.find('div.pubHolidayDiv').each(function (k,v) {
+                                    var $thisDiv = $(this);
+                                    var phData = data.phDtoList[k];
+                                    if(phData == null || phData =='' || phData == undefined){
+                                        return;
+                                    }
+                                    $.each(phData.selectValList,function (k,v) {
+                                        $thisDiv.find('input[value="'+v+'"]').prop('checked',true);
+                                    });
+                                    //$(this).find('input[value="DN2"]').prop('checked',true);
+                                    //
+                                    var startHHVal = phData.startFromHH;
+                                    if(typeof(startHHVal) === 'undefined'){
+                                        startHHVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'PhStartHH"]').val(startHHVal);
+                                    var startHH =$thisDiv.find('.'+premisesType+'PhStartHH option[value="' + startHHVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'PhStartHH"]').next().find('.current').html(startHH);
+                                    //
+                                    var startMMVal = phData.startFromMM;
+                                    if(typeof(startMMVal) === 'undefined'){
+                                        startMMVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'PhStartMM"]').val(startMMVal);
+                                    var startMM =$thisDiv.find('.'+premisesType+'PhStartMM option[value="' + startMMVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'PhStartMM"]').next().find('.current').html(startMM);
+                                    //
+                                    var endHHVal = phData.endToHH;
+                                    if(typeof(endHHVal) === 'undefined'){
+                                        endHHVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'PhEndHH"]').val(endHHVal);
+                                    var endHH =$thisDiv.find('.'+premisesType+'PhEndHH option[value="' + endHHVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'PhEndHH"]').next().find('.current').html(endHH);
+                                    //
+                                    var endMMVal = phData.endToMM;
+                                    if(typeof(endMMVal) === 'undefined'){
+                                        endMMVal = '';
+                                    }
+                                    $thisDiv.find('select[name="'+premisesType+'PhEndMM"]').val(endMMVal);
+                                    var endMM =$thisDiv.find('.'+premisesType+'PhEndMM option[value="' + endMMVal + '"]').html();
+                                    $thisDiv.find('select[name="'+premisesType+'PhEndMM"]').next().find('.current').html(endMM);
+                                });
+                            }
+
 
                             <!--disable this form -->
                             var $premFormOnsite = $premContent.find('div.new-premise-form-on-site');

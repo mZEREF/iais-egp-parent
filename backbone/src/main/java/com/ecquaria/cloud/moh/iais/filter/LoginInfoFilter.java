@@ -5,8 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.usersession.UserSession;
-import com.ecquaria.cloud.usersession.client.UserSessionService;
-import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * LoginInfoFilter
@@ -41,16 +41,8 @@ public class LoginInfoFilter implements Filter {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String uri = request.getRequestURI();
-            UserSessionService userSessionService = UserSessionService.getInstance();
-            UserSession userSession = null;
-            try {
-                userSession = userSessionService.retrieveOne(request.getSession().getId());
-                if (userSession != null) {
-                    log.debug("UserSession Id ==>" + userSession.getSessionId() + " Status =>" + userSession.getStatus());
-                }
-            } catch (FeignException e) {
-                log.error(e.getMessage(), e);
-            }
+            String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+            UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (userSession == null || !"Active".equals(userSession.getStatus())) {
                 log.info(StringUtil.changeForLog("<== User session invalid ==>"));

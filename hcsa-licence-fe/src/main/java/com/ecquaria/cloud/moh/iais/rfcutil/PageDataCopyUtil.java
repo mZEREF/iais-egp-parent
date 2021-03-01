@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,4 +203,14 @@ public class PageDataCopyUtil {
         }
         return list;
     }
+    public static List<AppSvcDisciplineAllocationDto>  copyAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList){
+        if(appSvcDisciplineAllocationDtoList==null){
+            return new ArrayList<>();
+        }
+        List<AppSvcDisciplineAllocationDto> list=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
+        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+
+        }
+        return list;
+    };
 }

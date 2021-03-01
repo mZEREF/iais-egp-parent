@@ -155,7 +155,7 @@
                                 </div>
                               </div>
 
-                              <button type="button"  id="deleteBtnId" name="blackDateId" class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
+                              <button type="button"  id="deleteBtnId" name="blackDateId" class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal${status.index}" >Delete</button>
                               <button type="button" id="updateBtnId" name="blackDateId"  onclick="doUpdate('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>

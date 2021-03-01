@@ -594,9 +594,11 @@
                                             </p>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="form-check <c:if test="${weeklyDto.selectAllDay}">active</c:if>">
-                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                                            </div>
+                                            <c:if test="${weeklyDto.selectAllDay}">
+                                                <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
@@ -688,9 +690,11 @@
                                             </p>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="form-check <c:if test="${phDto.selectAllDay}">active</c:if>">
-                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                                            </div>
+                                            <c:if test="${phDto.selectAllDay}">
+                                                <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>

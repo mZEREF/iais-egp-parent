@@ -140,7 +140,7 @@
                         <c:forEach var="item" items="${checklistItemResult.rows}" varStatus="status">
                           <tr>
                             <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
-                            <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}" forName="itemCheckboxReDisplay"></iais:checkbox></td>
+                            <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}" forName="checklist_item_CheckboxReDisplay"></iais:checkbox></td>
                             <%--<td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value=""/>--%>
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
@@ -206,6 +206,8 @@
                                    onclick="javascript: configToChecklist();">Add to Config</a>
                               </c:when>
                               <c:otherwise>
+                                <%--<a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: clearCheckBox();">Clear CheckBox</a>--%>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: prepareAddItem();">Add Checklist Item</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
@@ -252,6 +254,10 @@
 
   function doUploadFile(value) {
       SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
+  }
+
+  function clearCheckBox(){
+    SOP.Crud.cfxSubmit("mainForm", "clearCheckBox");
   }
 
   function disable(itemId) {

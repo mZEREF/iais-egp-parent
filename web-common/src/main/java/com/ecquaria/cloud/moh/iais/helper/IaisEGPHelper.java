@@ -496,11 +496,14 @@ public final class IaisEGPHelper extends EGPHelper {
      * @author: yichen
      */
     public static Date parseToDate(String val, String pattern) {
-        if(StringUtils.isEmpty(val) || StringUtils.isEmpty(pattern)){
+        if(val == null || StringUtils.isEmpty(pattern)){
             throw new IaisRuntimeException("No has input for String to Date!");
         }
 
         try {
+            if (StringUtil.isEmpty(val)){
+                return null;
+            }
             return FastDateFormat.getInstance(pattern).parse(val);
         } catch (ParseException e) {
             throw new IaisRuntimeException(e.getMessage(), e);
@@ -802,14 +805,17 @@ public final class IaisEGPHelper extends EGPHelper {
 
     public static void setCheckboxStatus(HttpServletRequest request, String checkboxName, String redisplayName){
         String[] checked = ParamUtil.getStrings(request, checkboxName);
+        if (checked == null){
+            return;
+        }
+
         HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, redisplayName);
-        if (checked != null){
-            if (checkedMap == null){
-                checkedMap = IaisCommonUtils.genNewHashMap();
-            }
-            for (String s : checked){
-                checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
-            }
+        if (checkedMap == null){
+            checkedMap = IaisCommonUtils.genNewHashMap();
+        }
+
+        for (String s : checked){
+            checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
         }
         ParamUtil.setSessionAttr(request, redisplayName, checkedMap);
     }

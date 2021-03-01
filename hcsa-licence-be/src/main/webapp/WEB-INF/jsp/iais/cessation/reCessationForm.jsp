@@ -153,9 +153,22 @@
                                                 <iais:row>
                                                     <iais:field value="HCI Name" mandatory="true"/>
                                                     <iais:value width="7">
-                                                        <iais:input type="text" value="${appCessHci.patHciName}"
-                                                                    maxLength="100"
-                                                                    name="patHciName"></iais:input>
+                                                        <input type="text" maxLength="100"
+                                                               name="patHciName"
+                                                               onblur="javascript:getHci(this);"
+                                                               id="hciName"
+                                                               value="${appCessHci.patHciName}">
+                                                        <span id="error_patHciName"
+                                                              name="iaisErrorMsg" class="error-msg"></span>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciName" hidden>
+                                                <iais:row>
+                                                    <iais:field value=""/>
+                                                    <iais:value width="7">
+                                                        <div class="nameLoad"></div>
+                                                        <div class="addressLoad"></div>
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
@@ -374,11 +387,13 @@
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
         } else if ($("#patientSelectId").val() == "CES005") {
             $("#patHciName").show();
+            $("#hciName").show();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
@@ -386,10 +401,46 @@
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
         }
+    }
+
+    function getHci(obj) {
+        var value = $(obj).val();
+        loadHci(value, obj);
+    }
+
+    const loadHci = function (hciNameCode, obj) {
+        const jsonData = {
+            'hciNameCode': hciNameCode,
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/hci-info?stamp='+new Date().getTime(),
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                loadJsp(data,obj);
+            },
+            'error': function (data) {
+                deleteJsp(data,obj);
+            }
+        });
+    };
+
+    const loadJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').parent().next();
+        hciNme.show();
+        hciNme.find('.nameLoad').html(data.hciName);
+        hciNme.find('.addressLoad').html(data.hciAddress);
+    }
+
+    const deleteJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').next('.form-group');
+        hciNme.hide();
     }
 
     function changePatSelect() {
@@ -401,6 +452,7 @@
             $("#patNo").show();
             $("#patYes").hide();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
@@ -413,12 +465,14 @@
         changePatient();
         changeReason();
         changePatSelect();
+        $("#hciName").trigger('blur')
     });
 
     $(document).ready(function () {
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#div").hide();

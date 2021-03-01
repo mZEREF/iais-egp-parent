@@ -420,7 +420,7 @@ public class WithdrawalDelegator {
     private void fileValidation(String originalFilename,ValidationResult validationResult,Map<String, String> errorMap){
 //        String[] split = originalFilename.split("\\.");
         if (!StringUtil.isEmpty(originalFilename)) {
-            if (originalFilename.length() >= 100) {
+            if (originalFilename.length() > 100) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
                 errorMap.put("withdrawalFile", errMsg);

@@ -50,14 +50,11 @@
                                     </td>
                                     <td>
                                         <c:forEach var="msg" items="${result.errorMsgList}">
-
                                                 <span style="
                                             <c:if test="${msg ne 'Success'}">color: #ff0000;</c:if>
-                                                        ">${msg}</span>
-
+                                                        ">${msg}<br></span>
 
                                         </c:forEach>
-
                                     </td>
                                 </tr>
                             </c:forEach>

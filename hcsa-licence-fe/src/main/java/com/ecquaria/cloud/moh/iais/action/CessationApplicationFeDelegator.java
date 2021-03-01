@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -28,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -307,6 +310,13 @@ public class CessationApplicationFeDelegator {
                 String hciAddress = appCessHciDto.getHciAddress();
 
                 appCessHciDto.setHciAddress(hciAddress);
+                if(!StringUtil.isEmpty(patHciName)){
+                    PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patHciName);
+                    String hciAddressPat = premisesDto.getHciAddress();
+                    String hciNamePat = premisesDto.getHciName();
+                    appCessHciDto.setHciNamePat(hciNamePat);
+                    appCessHciDto.setHciAddressPat(hciAddressPat);
+                }
                 appCessHciDto.setHciName(hciName);
                 appCessHciDto.setEffectiveDate(effectiveDate);
                 appCessHciDto.setReason(reason);
@@ -514,6 +524,18 @@ public class CessationApplicationFeDelegator {
             }
         }
         return errorMap;
+    }
+
+    @GetMapping(value = "/hci-info")
+    public @ResponseBody
+    PremisesDto getPsnSelectInfo(HttpServletRequest request) {
+        PremisesDto premisesDto;
+        String hciNameCode = ParamUtil.getDate(request, "hciNameCode");
+        premisesDto = cessationFeService.getPremiseByHciCodeName(hciNameCode);
+        if(premisesDto==null){
+            return null;
+        }
+        return premisesDto;
     }
 
     private List<SelectOption> getReasonOption() {

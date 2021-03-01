@@ -394,7 +394,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises Amendment");
         ParamUtil.setRequestAttr(bpc.request, "premisesList", AppConsts.YES);
-        List<SelectOption> weeklyOpList = NewApplicationHelper.genWorkingDaySp();
+        List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);

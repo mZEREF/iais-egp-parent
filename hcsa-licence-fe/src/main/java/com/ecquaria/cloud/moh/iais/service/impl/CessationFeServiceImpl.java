@@ -612,6 +612,26 @@ public class CessationFeServiceImpl implements CessationFeService {
         return appCessDtosByLicIds;
     }
 
+    @Override
+    public PremisesDto getPremiseByHciCodeName(String hciNameCode) {
+        PremisesDto premisesDto = licenceClient.getPremiseDtoByHciCodeOrName(hciNameCode).getEntity();
+        if(premisesDto!=null){
+            String blkNo = premisesDto.getBlkNo();
+            String streetName = premisesDto.getStreetName();
+            String buildingName = premisesDto.getBuildingName();
+            String floorNo = premisesDto.getFloorNo();
+            String unitNo = premisesDto.getUnitNo();
+            String postalCode = premisesDto.getPostalCode();
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            String hciCode = premisesDto.getHciCode();
+            String hciName = premisesDto.getHciName();
+            hciName = hciName+" - "+hciCode;
+            premisesDto.setHciName(hciName);
+            premisesDto.setHciAddress(hciAddress);
+        }
+        return premisesDto;
+    }
+
 
     /*
     utils

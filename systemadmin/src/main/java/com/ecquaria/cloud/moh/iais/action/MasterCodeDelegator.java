@@ -214,9 +214,6 @@ public class MasterCodeDelegator {
                     validationResult.setHasErrors(true);
                 }
             }
-            if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                    validationResult.setHasErrors(true);
-            }
         }
         if (masterCodeDto.getSequence() != null) {
             if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
