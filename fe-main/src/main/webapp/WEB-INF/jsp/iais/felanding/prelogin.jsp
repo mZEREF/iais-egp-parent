@@ -134,10 +134,11 @@
                 <h3>Healthcare Services Act (HCSA)</h3>
                 <ul>
                   <li>
-                    <p><a href="https://www.moh.gov.sg/hcsa/about-hcsa">About HCSA</a></p>
+
+                    <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
                   </li>
                   <li>
-                    <p><a href="#">Services under HALP today</a></p>
+                    <p><a href="<iais:code code="RELURL002"></iais:code>">Services under HALP today</a></p>
                   </li>
                 </ul>
               </div>
