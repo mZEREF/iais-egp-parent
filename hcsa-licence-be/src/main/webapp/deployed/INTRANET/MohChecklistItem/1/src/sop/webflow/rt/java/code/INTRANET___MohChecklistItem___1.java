@@ -98,6 +98,10 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 	public void exportItemToConfigTemplate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "exportItemToConfigTemplate", this);
 	}
+
+	public void clearCheckBox_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "clearCheckBox", this);
+	}
 	
 	
 }

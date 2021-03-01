@@ -103,7 +103,7 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
-        ParamUtil.setSessionAttr(request, "itemCheckboxReDisplay", null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, null);
@@ -310,10 +310,10 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
-        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, "itemCheckboxReDisplay");
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         if(checkedMap == null || checkedMap.size() <= 0){
-            ParamUtil.setRequestAttr(request, "itemCheckboxReDisplay", null);
+            ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR045"));
             return;
@@ -321,7 +321,7 @@ public class HcsaChklItemDelegator {
 
         int maxNum = paramConfig.getCloneChecklistMaxNum();
         if(checkedMap.size() > maxNum){
-            ParamUtil.setSessionAttr(request, "itemCheckboxReDisplay", null);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
                     MessageUtil.replaceMessage("CHKL_ERR026", String.valueOf(maxNum), "number")));
@@ -507,7 +507,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam, request);
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
 
@@ -522,7 +522,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,bpc.request);
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
 
@@ -623,7 +623,7 @@ public class HcsaChklItemDelegator {
         checklistItem.setRiskLevel(riskLevel);
         checklistItem.setAnswerType(answerType);
 
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, "itemCheckboxReDisplay");
+        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, cklItemStr);
@@ -693,9 +693,9 @@ public class HcsaChklItemDelegator {
     @GetMapping(value = "checklist-item-clause")
     public @ResponseBody String getRegulationClauseById(HttpServletRequest request, HttpServletResponse response){
         String reglId = request.getParameter("regulationId");
-        List<HcsaChklSvcRegulationDto> reglList = (List<HcsaChklSvcRegulationDto>) ParamUtil.getSessionAttr(request, "regulationSelectDetail");
-        if (!StringUtil.isEmpty(reglId) && !IaisCommonUtils.isEmpty(reglList)){
-            for (HcsaChklSvcRegulationDto i : reglList){
+        List<HcsaChklSvcRegulationDto> regulationList = (List<HcsaChklSvcRegulationDto>) ParamUtil.getSessionAttr(request, "regulationSelectDetail");
+        if (!StringUtil.isEmpty(reglId) && !IaisCommonUtils.isEmpty(regulationList)){
+            for (HcsaChklSvcRegulationDto i : regulationList){
                 if (reglId.equals(i.getId())){
                     return i.getClause();
                 }
@@ -753,8 +753,8 @@ public class HcsaChklItemDelegator {
 
     @RequestMapping(value = "/checklist-item/setup-checkbox", method = RequestMethod.POST)
     public @ResponseBody void setUpCheckBox(HttpServletRequest request) {
-        String[] sCkBox =  request.getParameterValues("selectedCheckBoxItem");
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, sCkBox);
+        String[] checked =  request.getParameterValues("selectedCheckBoxItem");
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, checked);
     }
 
     /**
@@ -763,7 +763,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      */
     public void clearCheckBox(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
     }
 
     /**
