@@ -146,6 +146,13 @@
                                                                     name="${num.count}patHciName${uid.count}"/>
                                                     </div>
                                                 </div>
+                                                <div class="form-group" id="${num.count}hciName${uid.count}">
+                                                    <label class="col-xs-12 col-md-6 control-label">asda</label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
+                                                        <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group"
                                                      id="${num.count}patOthersMobileNo${uid.count}" hidden>
                                                     <label class="col-xs-12 col-md-6 control-label">patOthers'mobile
@@ -340,11 +347,13 @@
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
                     $("#" + i + "patOthers" + j).show();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).show();
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
                     $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "hciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -352,6 +361,7 @@
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -371,6 +381,7 @@
                     $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 }
@@ -390,6 +401,7 @@
                 if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
@@ -406,6 +418,7 @@
                 if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
