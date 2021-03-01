@@ -981,19 +981,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
-        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
-        String workGrpId = "";
-        if( taskDtos  != null && taskDtos.size() >0)
-         workGrpId = taskDtos.get(0).getWkGrpId();
-        String leaderStr = null;
-        List<String> leaders =  organizationClient.getInspectionLead(workGrpId).getEntity();
-        if(!IaisCommonUtils.isEmpty(leaders)){
-            for(String temp:leaders){
-                OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
-                leaderStr = userDto.getDisplayName()+" ";
-            }
-        }
-        return leaderStr;
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType( taskDto.getRefNo(),InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        return appPremisesRecommendationDto == null ? "" : appPremisesRecommendationDto.getRecomDecision() ;
     }
 
     @Override
