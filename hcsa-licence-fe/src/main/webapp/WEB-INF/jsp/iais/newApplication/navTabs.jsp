@@ -254,6 +254,8 @@
         $Ele.find('div.nice-select').removeClass('disabled');
         $Ele.find('input[type="text"]').css('border-color','');
         $Ele.find('input[type="text"]').css('color','');
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
     function readonlyPartPage($Ele) {
@@ -266,6 +268,8 @@
         $Ele.find('input[type="text"]').css('border-color','#ededed');
         $Ele.find('input[type="text"]').css('color','#999');
         $Ele.find('.date_picker').unbind();
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',true);
     }
 
     function unreadonlyPartPage($Ele) {
@@ -281,6 +285,8 @@
             format:"dd/mm/yyyy",
             autoclose:true
         });
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
     var unbindAllTabs = function () {

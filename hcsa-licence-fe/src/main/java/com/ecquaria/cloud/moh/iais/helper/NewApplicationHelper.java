@@ -2483,7 +2483,7 @@ public class NewApplicationHelper {
             if(StringUtil.isEmpty(id)){
                 id = "";
             }
-            result.append("<div class=\"row\"><div class=\"col-md-12\">")
+            result.append("<div class=\"row\"><div class=\"col-md-12 multi-select\">")
                     .append("<div style=\"height: 200px; border: 1px solid darkgrey;overflow: scroll\" id=\"")
                     .append(id)
                     .append("Clear\">");
