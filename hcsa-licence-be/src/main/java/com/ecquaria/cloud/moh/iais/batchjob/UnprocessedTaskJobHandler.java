@@ -160,7 +160,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
-                                sendSms(item,email,mesContext);
+                                sendSms(item,sms,mesContext);
                         }else if(days == (kpi + 1) && kpi > 0){
                             List<OrgUserDto> leaders = taskService.getEmailNotifyLeader(item.getId());
                             log.info(StringUtil.changeForLog("send email to leader:"));
@@ -179,7 +179,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
-                                sendSms(item,email,mesContext);
+                                sendSms(item,sms,mesContext);
                             }
                         }else if(days == sysday){
                             log.info(StringUtil.changeForLog("send email to admin:"));
