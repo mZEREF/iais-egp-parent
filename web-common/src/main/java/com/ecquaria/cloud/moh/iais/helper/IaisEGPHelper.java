@@ -496,11 +496,14 @@ public final class IaisEGPHelper extends EGPHelper {
      * @author: yichen
      */
     public static Date parseToDate(String val, String pattern) {
-        if(StringUtils.isEmpty(val) || StringUtils.isEmpty(pattern)){
+        if(val == null || StringUtils.isEmpty(pattern)){
             throw new IaisRuntimeException("No has input for String to Date!");
         }
 
         try {
+            if (StringUtil.isEmpty(val)){
+                return null;
+            }
             return FastDateFormat.getInstance(pattern).parse(val);
         } catch (ParseException e) {
             throw new IaisRuntimeException(e.getMessage(), e);
