@@ -4796,22 +4796,19 @@ private CessationFeService cessationFeService;
                     }
                 }
             }
-            Object attribute = bpc.request.getSession().getAttribute(NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null) {
                 //set oldAppSubmission when rfi,rfc,rene
                 if(rfi!=null){
                     groupLicencePremiseRelationDis(appSubmissionDto);
                 }
-                if(attribute==null){
-                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
-                }
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
 
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                if(attribute==null){
-                    AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
-                }
+
+                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             }
         }
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
@@ -5005,7 +5002,7 @@ private CessationFeService cessationFeService;
                 }
             }
             if(!canFound){
-                //last doc is null
+                //last doc is null new rfi not use app no
                 version = getVersion(appGrpId,configDocId,appNo,appType);
             }
         }
@@ -5014,6 +5011,9 @@ private CessationFeService cessationFeService;
 
     private Integer getVersion(String appGrpId,String configDocId,String appNo,String appType){
         Integer version = 1;
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            appNo=null;
+        }
         if(StringUtil.isEmpty(appNo)){
             //comm
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
