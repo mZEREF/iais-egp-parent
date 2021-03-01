@@ -181,8 +181,9 @@ public class BackendInboxDelegator {
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
         String appStatusDefault = (String) ParamUtil.getSessionAttr(bpc.request, "application_status");
 
-        if(StringUtil.isEmpty(appStatusDefault) && appStatusOption.size() == 1 && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatusOption.get(0).getValue())){
-            appStatusDefault = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        String application_status_firstAo3 = (String) ParamUtil.getSessionAttr(bpc.request, "application_status_firstAo3");
+        if(!"firstAo3".equals(application_status_firstAo3) && StringUtil.isEmpty(appStatusDefault) && appStatusOption.size() == 1 && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatusOption.get(0).getValue())){
+            application_status_firstAo3 = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
         }
 
         appStatusOption.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
@@ -210,7 +211,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
-        ParamUtil.setSessionAttr(bpc.request, "application_status",appStatusDefault);
+        ParamUtil.setSessionAttr(bpc.request, "application_status_firstAo3",application_status_firstAo3);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
@@ -1503,6 +1504,7 @@ public class BackendInboxDelegator {
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String application_status = ParamUtil.getString(bpc.request, "application_status");
+        String application_status_firstAo3 = (String) ParamUtil.getSessionAttr(bpc.request, "application_status_firstAo3");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
@@ -1557,6 +1559,10 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("hci_code");
             }
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
+            if(!"firstAo3".equals(application_status_firstAo3)){
+                application_status = application_status_firstAo3;
+                ParamUtil.setSessionAttr(bpc.request,"application_status_firstAo3","firstAo3");
+            }
             if(!StringUtil.isEmpty(application_status)){
                 List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(APPSTATUSCATEID);
                 String codeValue = MasterCodeUtil.getCodeDesc(application_status);
