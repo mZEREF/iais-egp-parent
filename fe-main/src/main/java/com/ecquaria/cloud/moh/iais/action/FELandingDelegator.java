@@ -51,7 +51,8 @@ public class FELandingDelegator {
 		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 		String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
 		UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-		if (us !=null && lc != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
+		if (us != null && "Active".equals(us.getStatus()) && lc != null
+				&& AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");

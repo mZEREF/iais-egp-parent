@@ -25,19 +25,19 @@ import ecq.commons.exception.BaseException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.webflow.process5.ProcessCacheHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * BackendLoginDelegator
@@ -59,8 +59,9 @@ public class BackendLoginDelegator {
 
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
-        if(loginContext!=null){
+        String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+        UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if(loginContext!=null && us != null && "Active".equals(us.getStatus())){
             if(loginContext.getUserDomain().equals(IntranetUserConstant.DOMAIN_INTRANET)){
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
             }else {

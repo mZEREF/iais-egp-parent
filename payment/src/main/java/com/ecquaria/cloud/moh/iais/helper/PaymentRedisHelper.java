@@ -57,8 +57,7 @@ public class PaymentRedisHelper {
                     session.setAttribute(sessionKey, ent.getValue());//NOSONAR
                 }
             }
-            log.debug("Old session Id ==> " + oldSessionId);
-            log.debug("New session id ==> " + session.getId());
+            session.setAttribute("sop6.session.id", session.getId());
             User user = SessionManager.getInstance(request).getCurrentUser();
             List<UserSession> usesses = UserSessionService.getInstance()
                     .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
