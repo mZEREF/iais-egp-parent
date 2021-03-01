@@ -19,9 +19,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -178,7 +178,7 @@ public class HcsaChklItemDelegator {
 
         File toFile = FileUtils.multipartFileToFile(file);
         try {
-            List<ItemTemplate> itemTemplateList = FileUtils.transformToJavaBean(toFile, ItemTemplate.class);
+            List<ChecklistItemExcel> itemTemplateList = FileUtils.transformToJavaBean(toFile, ChecklistItemExcel.class);
 
             String uploadMode = (String) ParamUtil.getSessionAttr(request, ChecklistConstant.ITEM_UPLOAD_MODE);
             List<ErrorMsgContent> errorMsgContentList;
@@ -791,10 +791,10 @@ public class HcsaChklItemDelegator {
 
             if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(ids);
-                List<ConfigExcelItemDto> uploadTemplate = IaisCommonUtils.genNewArrayList();
+                List<ChecklistConfigExcel> uploadTemplate = IaisCommonUtils.genNewArrayList();
 
                 for (ChecklistItemDto i : item) {
-                    ConfigExcelItemDto template = new ConfigExcelItemDto();
+                    ChecklistConfigExcel template = new ChecklistConfigExcel();
                     template.setItemId(i.getItemId());
                     template.setChecklistItem(i.getChecklistItem());
                     uploadTemplate.add(template);
@@ -802,7 +802,7 @@ public class HcsaChklItemDelegator {
 
                 Map<Integer, List<Integer>> unlockMap = IaisEGPHelper.generateUnlockMap(8, 8);
 
-                File outputFile = ExcelWriter.writerToExcel(uploadTemplate, ConfigExcelItemDto.class, inputFile, "Checklist_Config_Upload_Template", true, false, unlockMap);
+                File outputFile = ExcelWriter.writerToExcel(uploadTemplate, ChecklistConfigExcel.class, inputFile, "Checklist_Config_Upload_Template", true, false, unlockMap);
 
                 FileUtils.writeFileResponseProcessContent(request, outputFile);
 

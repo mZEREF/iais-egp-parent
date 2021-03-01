@@ -805,14 +805,17 @@ public final class IaisEGPHelper extends EGPHelper {
 
     public static void setCheckboxStatus(HttpServletRequest request, String checkboxName, String redisplayName){
         String[] checked = ParamUtil.getStrings(request, checkboxName);
+        if (checked == null){
+            return;
+        }
+
         HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, redisplayName);
-        if (checked != null){
-            if (checkedMap == null){
-                checkedMap = IaisCommonUtils.genNewHashMap();
-            }
-            for (String s : checked){
-                checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
-            }
+        if (checkedMap == null){
+            checkedMap = IaisCommonUtils.genNewHashMap();
+        }
+
+        for (String s : checked){
+            checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
         }
         ParamUtil.setSessionAttr(request, redisplayName, checkedMap);
     }

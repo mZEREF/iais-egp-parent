@@ -14,10 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -858,7 +858,7 @@ public class HcsaChklConfigDelegator {
                 return;
             }
 
-            List<ConfigExcelItemDto> item = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<ChecklistConfigExcel> item = FileUtils.transformToJavaBean(toFile, ChecklistConfigExcel.class);
             List<String> confInfoList = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
             log.info(StringUtil.changeForLog("update config template ids" + ids));
             ChecklistConfigDto excelTemplate = convertToConfigByTemplate(confInfoList);
@@ -904,7 +904,7 @@ public class HcsaChklConfigDelegator {
             try {
                 String[] val = {config.isCommon() ? "Yes" : "No", config.getModule(), config.getType(), config.getSvcName(), config.getSvcSubType(), config.getHciCode(), config.getEftStartDate(), config.getEftEndDate()};
 
-                List<ConfigExcelItemDto> updateItem = hcsaChklService.convertToUploadTemplateByConfig(config);
+                List<ChecklistConfigExcel> updateItem = hcsaChklService.convertToUploadTemplateByConfig(config);
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
 
@@ -923,7 +923,7 @@ public class HcsaChklConfigDelegator {
 
                 log.info(StringUtil.changeForLog("after export config template" + versionFile.getPath()));
 
-                File latest = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, versionFile,  "Checklist_Config_Update_Template", true, false);
+                File latest = ExcelWriter.writerToExcel(updateItem, ChecklistConfigExcel.class, versionFile,  "Checklist_Config_Update_Template", true, false);
                 FileUtils.writeFileResponseProcessContent(request, latest);
 
                 FileUtils.deleteTempFile(configInfoTemplate);
@@ -980,7 +980,7 @@ public class HcsaChklConfigDelegator {
 
         try {
             File toFile = FileUtils.multipartFileToFile(file);
-            List<ConfigExcelItemDto> confItemExcelTpl = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<ChecklistConfigExcel> confItemExcelTpl = FileUtils.transformToJavaBean(toFile, ChecklistConfigExcel.class);
             List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
             FileUtils.deleteTempFile(toFile);
 
