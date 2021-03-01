@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -786,9 +787,7 @@ public class HcsaChklItemDelegator {
             }
 
             List<String> ids = IaisCommonUtils.genNewArrayList();
-            for (String i : checked){
-                ids.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
-            }
+            Stream.of(checked).forEach(i -> ids.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i)));
 
             if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(ids);
