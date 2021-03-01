@@ -194,6 +194,7 @@ public class AppealServiceImpl implements AppealService {
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
                     appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                     req.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
+                    req.getSession().setAttribute("fileReportIdForAppeal",fileToRepo);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -316,6 +317,7 @@ public class AppealServiceImpl implements AppealService {
                 if (appPremisesSpecialDocDto != null) {
                     String fileName = appPremisesSpecialDocDto.getDocName();
                     request.getSession().setAttribute("filename", fileName);
+                    request.getSession().setAttribute("fileReportIdForAppeal", appPremisesSpecialDocDto.getFileRepoId());
                     request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
                 }
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
