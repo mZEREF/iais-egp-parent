@@ -494,7 +494,7 @@ private CessationFeService cessationFeService;
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        List<SelectOption> weeklyOpList = NewApplicationHelper.genWorkingDaySp();
+        List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);
