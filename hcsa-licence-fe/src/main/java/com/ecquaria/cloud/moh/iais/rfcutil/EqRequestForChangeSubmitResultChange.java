@@ -94,8 +94,24 @@ public class EqRequestForChangeSubmitResultChange {
             }
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : oldAppSvcLaboratoryDisciplinesDtoList){
                 List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-
                 list1.addAll(PageDataCopyUtil.copyAppSvcChckListDto(appSvcChckListDtoList));
+            }
+            for(AppSvcChckListDto appSvcChckListDto: list){
+                String chkLstConfId = appSvcChckListDto.getChkLstConfId();
+                String chkName = appSvcChckListDto.getChkName();
+                for(AppSvcChckListDto appSvcChckListDto1 : list1){
+                    String chkLstConfId1 = appSvcChckListDto1.getChkLstConfId();
+                    if(chkLstConfId==null&&chkLstConfId1==null){
+                        appSvcChckListDto.setChkName(null);
+                        appSvcChckListDto1.setChkName(null);
+                    }
+                    if(chkLstConfId!=null&&chkLstConfId.equals(chkLstConfId1)){
+                        appSvcChckListDto1.setChkName(chkName);
+                    }
+                    if(chkLstConfId1!=null&&chkLstConfId1.equals(chkLstConfId)){
+                        appSvcChckListDto1.setChkName(chkName);
+                    }
+                }
             }
             flag1=list.equals(list1);
         }else {
