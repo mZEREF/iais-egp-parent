@@ -1393,9 +1393,9 @@ public class MohIntranetUserDelegator {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("CMSTAT001", "Active");
         SelectOption so2 = new SelectOption("OUSTAT005", "Deactivated");
-        SelectOption so3 = new SelectOption("OUSTAT004", "Terminated");
-        SelectOption so4 = new SelectOption("OUSTAT001", "Expired");
-        SelectOption so5 = new SelectOption("OUSTAT002", "Locked");
+        SelectOption so3 = new SelectOption("OUSTAT001", "Expired");
+        SelectOption so4 = new SelectOption("OUSTAT002", "Locked");
+        SelectOption so5 = new SelectOption("OUSTAT004", "Terminated");
         result.add(so1);
         result.add(so2);
         result.add(so3);
