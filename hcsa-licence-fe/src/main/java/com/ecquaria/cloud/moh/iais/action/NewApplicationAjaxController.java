@@ -1216,7 +1216,7 @@ public class NewApplicationAjaxController {
         weeklyAttr.put("style", "display: none;");
         List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         String weeklyDropHtml = NewApplicationHelper.generateMultipleDropDown(weeklyAttr,weeklyOpList,null,null);
-        weeklyHtml.replace("${multipleDropDown}",weeklyDropHtml);
+        weeklyHtml = weeklyHtml.replace("${multipleDropDown}",weeklyDropHtml);
         ajaxResDto.setResultJson(weeklyHtml);
         return ajaxResDto;
     }
