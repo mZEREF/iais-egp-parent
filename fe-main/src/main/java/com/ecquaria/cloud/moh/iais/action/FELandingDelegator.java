@@ -9,11 +9,12 @@ import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
-import lombok.extern.slf4j.Slf4j;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author: yichen
@@ -47,7 +48,8 @@ public class FELandingDelegator {
 	public void preload(BaseProcessClass bpc){
 		ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, null);
 		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-		if (lc != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
+		User sopUser = SessionManager.getInstance(bpc.request).getCurrentUser();
+		if (sopUser !=null && lc != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");
