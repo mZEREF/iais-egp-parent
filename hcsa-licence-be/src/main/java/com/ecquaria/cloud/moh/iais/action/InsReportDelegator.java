@@ -339,6 +339,7 @@ public class InsReportDelegator {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            log.info("================recomDecision================="+recomDecision);
             String period = recomInNumber + " " + chronoUnit;
             List<String> periods = insRepService.getPeriods(applicationViewDto);
             if (periods != null && !periods.isEmpty() && !InspectionReportConstants.REJECTED.equals(recomDecision)) {
@@ -349,7 +350,9 @@ public class InsReportDelegator {
                     initRecommendationDto.setRecomInNumber(recomInNumber);
                     initRecommendationDto.setChronoUnit(chronoUnit);
                 }
-            } else if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
+            }
+            if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                log.info("================reject================="+recomDecision);
                 initRecommendationDto.setPeriod(null);
             }
             initRecommendationDto.setRecommendation(recomDecision);
