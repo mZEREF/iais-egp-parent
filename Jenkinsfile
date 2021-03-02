@@ -1028,7 +1028,10 @@ def runAutomatedTests(){
                     "--entrypoint=''",
                     "-e KATALON_USER_ID=1000",
                     "-e TZ=Asia/Singapore",
-                    "-u root"
+                    "-u root",
+                    "--add-host=egp.sit.inter.iais.com:192.168.1.229",
+                    "--add-host=nas.sit.inter.iais.com:192.168.1.229",
+                    "--add-host=egp.sit.intra.iais.com:192.168.0.222"
                 ]
 
                 docker
