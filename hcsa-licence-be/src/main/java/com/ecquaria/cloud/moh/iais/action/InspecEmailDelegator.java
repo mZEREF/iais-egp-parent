@@ -196,6 +196,7 @@ public class InspecEmailDelegator {
             }
             mapTemplate.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
             mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"dd/MM/yyyy HH:mm:ss"),"dd/MM/yyyy"));
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
             mapTemplate.put("systemLink", loginUrl);
             mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
