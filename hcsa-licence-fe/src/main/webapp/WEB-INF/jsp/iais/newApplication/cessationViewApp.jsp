@@ -390,6 +390,8 @@
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patNoConfirmID").show();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
         }
     }
 
@@ -400,7 +402,6 @@
     });
 
     $(document).ready(function () {
-
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
