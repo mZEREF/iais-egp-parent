@@ -982,7 +982,29 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType( taskDto.getRefNo(),InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
-        return appPremisesRecommendationDto == null ? "" : appPremisesRecommendationDto.getRecomDecision() ;
+        if(appPremisesRecommendationDto != null){
+            return appPremisesRecommendationDto.getRecomDecision() ;
+        }
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        if( taskDtos  != null && taskDtos.size() >0){
+             StringBuilder stringBuilder = new StringBuilder();
+             List<String> userNames = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto1 : taskDtos){
+                List<String> leaders =  organizationClient.getInspectionLead( taskDto1.getWkGrpId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(leaders)){
+                    for(String temp:leaders){
+                        OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
+                        if(userDto.getAvailable() != null && userDto.getAvailable() && ! userNames.contains(userDto.getDisplayName())){
+                            userNames.add(userDto.getDisplayName());
+                            stringBuilder.append(userDto.getDisplayName()).append(',');
+                        }
+                    }
+                }
+            }
+            String leaderStr = stringBuilder.toString();
+            return StringUtil.isEmpty(leaderStr) ? "" : leaderStr.substring(0,leaderStr.length()-1);
+        }
+         return  "";
     }
 
     @Override

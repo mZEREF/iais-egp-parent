@@ -152,4 +152,24 @@
         }
     }
 
+    function ajaxCallSelectCheckbox(){
+        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+        if (this.checked) {
+            destUrl += '?action=checked'
+          }else{
+            destUrl += '?action=unchecked'
+          }
+        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+        $.ajax({
+                'url': destUrl,
+                'type': 'GET',
+                'traditional':true,
+                'async': true,
+                'success': function (data) {
+                },
+                'error': function () {
+                }
+        });
+    }
+
 </script>

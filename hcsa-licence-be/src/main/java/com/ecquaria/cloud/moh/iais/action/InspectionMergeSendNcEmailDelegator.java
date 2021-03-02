@@ -172,7 +172,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
         for (AppPremisesCorrelationDto appPremisesCorrDto:appPremisesCorrelationDtos1
-             ) {
+        ) {
             ApplicationDto appDto = applicationService.getApplicationBytaskId(appPremisesCorrDto.getId());
             if(appDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING)){
                 appPremisesCorrelationDtos.add(appPremisesCorrDto);
@@ -633,7 +633,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 List<String> svcCode=IaisCommonUtils.genNewArrayList();
                 List<String> svcNames= (List<String>) ParamUtil.getSessionAttr(request,"svcNames");
                 for (String svcName:svcNames
-                     ) {
+                ) {
                     HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
                     svcCode.add(svcDto.getSvcCode());
                 }
@@ -718,7 +718,7 @@ public class InspectionMergeSendNcEmailDelegator {
     }
     private void completedTask(List<String> appPremCorrIds) {
         for (String refNo:appPremCorrIds
-             ) {
+        ) {
             List<TaskDto> taskDtos=taskService.getTaskByUrlAndRefNo(refNo,TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
             for (TaskDto dto:taskDtos
             ) {

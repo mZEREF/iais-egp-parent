@@ -270,11 +270,23 @@ public class PublicHolidayDelegate {
                     }
                     count ++;
                 }
+                //set Duplicate date
+                List<PublicHolidayDto> duplicateDate = IaisCommonUtils.genNewArrayList();
                 //filter holidays(To prevent the repeat)
                 List<PublicHolidayDto> allActivePubHolDays = publicHolidayService.getAllActivePubHoliDay();
-                publicHolidayDtos = publicHolidayService.filterPreventDays(publicHolidayDtos, allActivePubHolDays);
+                publicHolidayDtos = publicHolidayService.filterPreventDays(publicHolidayDtos, allActivePubHolDays, duplicateDate);
                 if(!IaisCommonUtils.isEmpty(publicHolidayDtos)) {
                     publicHolidayService.createHolidays(publicHolidayDtos);
+                }
+                //set Duplicate date message
+                if(!IaisCommonUtils.isEmpty(duplicateDate)) {
+                    List<String> duplicateDateStrList = publicHolidayService.getDuplicateDateStr(duplicateDate);
+                    if(!IaisCommonUtils.isEmpty(duplicateDateStrList)){
+                        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+                        errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR012"));
+                        ParamUtil.setRequestAttr(bpc.request,"duplicateDateStrList", duplicateDateStrList);
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+                    }
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

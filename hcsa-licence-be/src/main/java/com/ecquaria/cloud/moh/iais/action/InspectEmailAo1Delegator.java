@@ -867,7 +867,7 @@ public class InspectEmailAo1Delegator {
                 licPremisesAuditDto.setIncludeRiskType(null);
                 licPremisesAuditDto.setLgrRemarks(null);
             }
-           ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+            ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         }
     }
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{

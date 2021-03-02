@@ -1472,44 +1472,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
     padding-left: 7px;
   }
 }
-@media only screen and (min-width : 768px) and (max-width : 992px) {
-  footer.footerlogin {
-    position: absolute;
-    top: auto;
-    bottom: 0;
-  }
-  footer.footerlogin .footer-link {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    margin-bottom: 7px;
-  }
-  footer.footerlogin .footer-link ul li {
-    padding-left: 7px;
-    padding-right: 7px;
-  }
-  footer.footerlogin .footer-link ul li a {
-    font-size: 12px;
-    position: relative;
-  }
-  footer.footerlogin .footer-link ul li a:before {
-    content: none;
-  }
-  footer.footerlogin .footer-link ul li:not(:first-child) a:before {
-    content: "";
-    width: 1px;
-    height: 9px;
-    background-color: #DFDFDF;
-    position: absolute;
-    top: 50%;
-    left: -8px;
-    margin-top: -4.5px;
-  }
-  footer.footerlogin .copyright p {
-    text-align: center !important;
-  }
-}
+
 
 @media only screen and (min-width: 768px) and (max-width: 1200px) {
   .navigation-open .footerlogin {
@@ -5645,7 +5608,7 @@ section.logo img {
 
 /************** DSS mobile fix**********/
 
-@media only screen and (min-width: 320px) and (max-width: 767px) {
+@media only screen and (min-width: 320px) and (max-width: 479px) {
 
   .profile-dropdown-mobile {
     width: auto;
@@ -5656,3 +5619,60 @@ section.logo img {
   }
 
 }
+@media only screen and (min-width : 768px) and (max-width : 992px) {
+  footer.footerlogin {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    padding: 5px 0 5px;
+    text-align: center;
+  }
+  footer.footerlogin .footer-link {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 7px;
+  }
+  footer.footerlogin .footer-link ul li {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  footer.footerlogin .footer-link ul li a {
+    font-size: 12px;
+    position: relative;
+  }
+  footer.footerlogin .footer-link ul li a:before {
+    content: none;
+  }
+  footer.footerlogin .footer-link ul li:not(:first-child) a:before {
+    content: "";
+    width: 1px;
+    height: 9px;
+    background-color: #DFDFDF;
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    margin-top: -4.5px;
+  }
+  footer.footerlogin .copyright p {
+    text-align: center !important;
+  }
+}
+/*@media only screen and (min-device-width: 480px)
+                   and (max-device-width: 640px)
+                   and (orientation: landscape) {
+
+ footer.footerlogin {
+    background: #333333;
+    font-size: 1.2rem;
+    border-top: 0;
+    position: relative;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 1px 0 5px;
+  }
+}*/
+
+
+

@@ -8,7 +8,7 @@
             <form id="mainForm" class="form-horizontal"
                   enctype="multipart/form-data"
                   action=<%=process.runtime.continueURL()%>>
-              <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
+              <c:forEach items="${confirmDtos}" var="appCess">
               <div class="col-lg-12 col-xs-12 cesform-box">
                 <div class="row">
                   <div class="license-info-box">
@@ -25,7 +25,7 @@
                       </div>
                     </div>
                   </div>
-                  <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
+                  <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci">
                     <div class="col-lg-12 col-xs-12">
                       <div class="table-gp tablebox">
                         <div class="topheader">
@@ -153,27 +153,6 @@
                             <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                           </div>
                         </div>
-                        <div class="form-group"
-                             id="patOthersMobileNo" hidden>
-                          <label class="col-xs-12 col-md-6 control-label">patOthers'mobile
-                            No. <span style="color: red">*</span></label>
-                          <div class="col-xs-6 col-sm-4 col-md-3">
-                            <iais:input type="text" needDisabled="true"
-                                        value="${appCessHci.mobileNo}"
-                                        maxLength="8"
-                                        name="patOthersMobileNo"/>
-                          </div>
-                        </div>
-                        <div class="form-group"
-                             id="patOthersEmailAddress" hidden>
-                          <label class="col-xs-12 col-md-6 control-label">patOthers'email
-                            Address <span style="color: red">*</span></label>
-                          <div class="col-xs-6 col-sm-4 col-md-3">
-                            <iais:input type="text" value="${appCessHci.emailAddress}"
-                                        maxLength="66" needDisabled="true"
-                                        name="patOthersEmailAddress"/>
-                          </div>
-                        </div>
                         <div class="form-group" id="patRegNo"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Professional
@@ -193,6 +172,26 @@
                             <iais:input needDisabled="true" type="text"
                                         name="patOthers"
                                         value="${appCessHci.patOthers}"/>
+                          </div>
+                        </div>
+                        <div class="form-group"
+                             id="patOthersMobileNo" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">Mobile
+                            No. <span style="color: red">*</span></label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <iais:input type="text" needDisabled="true"
+                                        value="${appCessHci.mobileNo}"
+                                        maxLength="8"
+                                        name="patOthersMobileNo"/>
+                          </div>
+                        </div>
+                        <div class="form-group"
+                             id="patOthersEmailAddress" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">Email Address <span style="color: red">*</span></label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <iais:input type="text" value="${appCessHci.emailAddress}"
+                                        maxLength="66" needDisabled="true"
+                                        name="patOthersEmailAddress"/>
                           </div>
                         </div>
                         <div class="form-group" id="patNo" hidden>
@@ -391,6 +390,8 @@
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#patNoConfirmID").show();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
         }
     }
 
@@ -401,7 +402,6 @@
     });
 
     $(document).ready(function () {
-
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();

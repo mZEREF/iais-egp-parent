@@ -531,8 +531,8 @@
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
                                             <span>
-                                                <c:forEach var="weeklyName" items="${weeklyDto.transferNameForWeekly()}" varStatus="weeklyStat">
-                                                    <c:out value="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                                                <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
+                                                    <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
                                                 </c:forEach>
                                             </span>
                                     </p>

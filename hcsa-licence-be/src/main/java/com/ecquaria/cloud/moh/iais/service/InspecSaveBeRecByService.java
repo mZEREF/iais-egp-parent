@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -46,4 +47,13 @@ public interface InspecSaveBeRecByService {
       * @Descripation: save Data
       */
     void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/2
+      * @Param: processFileTrackDtos
+      * @return: Map<String, List<ProcessFileTrackDto>>
+      * @Descripation: key appId, value processFileTrackDtos
+      */
+    Map<String, List<ProcessFileTrackDto>> getProcessFileTrackDtosWithAppId(List<ProcessFileTrackDto> processFileTrackDtos);
 }

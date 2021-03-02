@@ -4,7 +4,6 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -41,9 +41,25 @@ public class InspecSaveBeRecByFeJobHandler extends IJobHandler {
             AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
             inspecSaveBeRecByService.deleteUnZipFile();
             if(!(IaisCommonUtils.isEmpty(processFileTrackDtos))) {
-                List<String> reportIds = inspecSaveBeRecByService.compressFile(processFileTrackDtos);
-                if(!IaisCommonUtils.isEmpty(reportIds)) {
-                    inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos, reportIds);
+                Map<String, List<ProcessFileTrackDto>> appIdProFileMap = inspecSaveBeRecByService.getProcessFileTrackDtosWithAppId(processFileTrackDtos);
+                if(appIdProFileMap != null && appIdProFileMap.size() > 0) {
+                    for(Map.Entry<String, List<ProcessFileTrackDto>> map : appIdProFileMap.entrySet()) {
+                        try {
+                            log.info(StringUtil.changeForLog("Rectification AppId" + map.getKey()));
+                            JobLogger.log(StringUtil.changeForLog("Rectification AppId" + map.getKey()));
+                            List<ProcessFileTrackDto> processFileTrackDtoList = map.getValue();
+                            if(!IaisCommonUtils.isEmpty(processFileTrackDtoList)) {//NOSONAR
+                                List<String> reportIds = inspecSaveBeRecByService.compressFile(processFileTrackDtoList);
+                                if (!IaisCommonUtils.isEmpty(reportIds)) {
+                                    inspecSaveBeRecByService.saveData(intranet, processFileTrackDtoList, reportIds);
+                                }
+                            }
+                        } catch (Throwable e) {
+                            log.error(e.getMessage(), e);
+                            JobLogger.log(e);
+                            continue;
+                        }
+                    }
                 }
             }
             return ReturnT.SUCCESS;

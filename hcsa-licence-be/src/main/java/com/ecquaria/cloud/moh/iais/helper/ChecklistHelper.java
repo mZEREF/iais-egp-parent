@@ -59,16 +59,16 @@ public final class ChecklistHelper {
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
-
+        if (file != null){
+            String originalFileName = file.getOriginalFilename();
+            if (!FileUtils.isExcel(originalFileName)){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
+                return true;
+            }
+        }
 
         if (file == null || file.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0020"));
-            return true;
-        }
-
-        String originalFileName = file.getOriginalFilename();
-        if (!FileUtils.isExcel(originalFileName)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
             return true;
         }
 

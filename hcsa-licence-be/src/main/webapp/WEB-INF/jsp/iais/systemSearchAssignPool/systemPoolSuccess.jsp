@@ -16,7 +16,7 @@
             <h2><iais:message key="LOLEV_ACK030" escape="true"></iais:message></h2>
           </div>
         </div>
-        <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
+        <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/MohSystemPoolAssign"><em class="fa fa-angle-left"></em> Back</a></span></div>
       </div>
     </div>
   </div>

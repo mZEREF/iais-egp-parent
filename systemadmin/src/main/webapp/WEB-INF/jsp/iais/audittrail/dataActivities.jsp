@@ -86,29 +86,25 @@
         let hafterValue = $("#hafterValue").val()
         let hsearchParam = $("#hsearchParam").val()
         let hvalidationFail = $("#hvalidationFail").val()
-        if(hvalidationFail.length > 0){
+        let detailJson = '';
+        if(hvalidationFail != null && hvalidationFail != "[]" && hvalidationFail != ''){
             let failDetail = JSON.parse(hvalidationFail)
             let failDetailLen = failDetail.length;
-
-            if(failDetailLen > 0){
-                let detailJson = "{"
-                failDetail.forEach((item,index,array)=>{
-                    for(var key in item){
-                    if(item.hasOwnProperty(key)){
-                           //"key": "value"
-                           detailJson += "\"" + key + "\"" + " : " + "\"" + item[key] + "\""
-                           if(failDetailLen != index + 1){
-                                detailJson += ","
-                           }
-                        }
+            detailJson = "{"
+            failDetail.forEach((item,index,array)=>{
+                for(var key in item){
+                if(item.hasOwnProperty(key)){
+                       //"key": "value"
+                       detailJson += "\"" + key + "\"" + " : " + "\"" + item[key] + "\""
+                       if(failDetailLen != index + 1){
+                            detailJson += ","
+                       }
                     }
-                })
-                detailJson += "}"
-                jsonToHtmlTable(detailJson, 'validationFail')
-            }
+                }
+            })
+            detailJson += "}"
         }
-
-
+        jsonToHtmlTable(detailJson, 'validationFail')
         jsonToHtmlTable(hbeforeValue, 'beforeValue')
         jsonToHtmlTable(hafterValue, 'afterValue')
         jsonToHtmlTable(hsearchParam, 'searchParam')

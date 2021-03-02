@@ -94,25 +94,43 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     }
 
     @Override
-    public List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays) {
+    public List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays, List<PublicHolidayDto> duplicateDate) {
         if(IaisCommonUtils.isEmpty(allActivePubHolDays)){
             return publicHolidayDtos;
         } else {
             List<PublicHolidayDto> newPubHolidays = IaisCommonUtils.genNewArrayList();
             for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
-                publicHolidayDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);//NOSONAR
-                if(publicHolidayDto != null){
-                    newPubHolidays.add(publicHolidayDto);
+                PublicHolidayDto phDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);//NOSONAR
+                if(phDto != null){
+                    newPubHolidays.add(phDto);
+                } else if (phDto == null && publicHolidayDto != null) {
+                    duplicateDate.add(publicHolidayDto);
                 }
             }
             return newPubHolidays;
         }
     }
 
+    @Override
+    public List<String> getDuplicateDateStr(List<PublicHolidayDto> duplicateDates) {
+        List<String> duplicateDateStrList = IaisCommonUtils.genNewArrayList();
+        for(int i = duplicateDates.size() - 1; i >= 0; i--){//NOSONAR
+            PublicHolidayDto publicHolidayDto = duplicateDates.get(i);
+            if(publicHolidayDto != null){
+                Date date = publicHolidayDto.getFromDate();
+                if(date != null){
+                    String duplicateDateStr = Formatter.formatDateTime(date, "dd MMM yyyy");
+                    duplicateDateStrList.add(duplicateDateStr);
+                }
+            }
+        }
+        return duplicateDateStrList;
+    }
+
     private PublicHolidayDto repeatPubHoliday(List<PublicHolidayDto> allActivePubHolDays, PublicHolidayDto publicHolidayDto) {
         if(publicHolidayDto != null){
             Date startDate = publicHolidayDto.getFromDate();
-            String startDateStr = "";
+            String startDateStr;
             if(startDate != null){
                 startDateStr = Formatter.formatDateTime(startDate, Formatter.DETAIL_DATE_FILE);
             } else {
