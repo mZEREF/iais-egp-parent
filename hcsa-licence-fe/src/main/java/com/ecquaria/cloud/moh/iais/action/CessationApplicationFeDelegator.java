@@ -310,12 +310,14 @@ public class CessationApplicationFeDelegator {
                 String hciAddress = appCessHciDto.getHciAddress();
 
                 appCessHciDto.setHciAddress(hciAddress);
-                if(!StringUtil.isEmpty(patHciName)){
+                if (!StringUtil.isEmpty(patHciName)) {
                     PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patHciName);
-                    String hciAddressPat = premisesDto.getHciAddress();
-                    String hciNamePat = premisesDto.getHciName();
-                    appCessHciDto.setHciNamePat(hciNamePat);
-                    appCessHciDto.setHciAddressPat(hciAddressPat);
+                    if (premisesDto != null) {
+                        String hciAddressPat = premisesDto.getHciAddress();
+                        String hciNamePat = premisesDto.getHciName();
+                        appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciAddressPat(hciAddressPat);
+                    }
                 }
                 appCessHciDto.setHciName(hciName);
                 appCessHciDto.setEffectiveDate(effectiveDate);
@@ -501,16 +503,16 @@ public class CessationApplicationFeDelegator {
                 }
                 if (StringUtil.isEmpty(patMobile)) {
                     errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, "field"));
-                }else {
+                } else {
                     if (!patMobile.matches("^[8|9][0-9]{7}$")) {
                         errorMap.put(i + PATOTHERSMOBILENO + j, "GENERAL_ERR0007");
                     }
                 }
                 if (StringUtil.isEmpty(patEmailAddress)) {
                     errorMap.put(i + PATOTHERSEMAILADDRESS + j, MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, "field"));
-                }else {
-                    if(!ValidationUtils.isEmail(patEmailAddress)){
-                        errorMap.put(i + PATOTHERSEMAILADDRESS + j,"GENERAL_ERR0014");
+                } else {
+                    if (!ValidationUtils.isEmail(patEmailAddress)) {
+                        errorMap.put(i + PATOTHERSEMAILADDRESS + j, "GENERAL_ERR0014");
                     }
                 }
             }
@@ -519,7 +521,7 @@ public class CessationApplicationFeDelegator {
             if (StringUtil.isEmpty(patNoRemarks)) {
                 errorMap.put(i + PATNOREMARKS + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
             }
-            if(StringUtil.isEmpty(patNoConfirm)){
+            if (StringUtil.isEmpty(patNoConfirm)) {
                 errorMap.put(i + "patNoConfirm" + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
             }
         }
@@ -532,7 +534,7 @@ public class CessationApplicationFeDelegator {
         PremisesDto premisesDto;
         String hciNameCode = ParamUtil.getDate(request, "hciNameCode");
         premisesDto = cessationFeService.getPremiseByHciCodeName(hciNameCode);
-        if(premisesDto==null){
+        if (premisesDto == null) {
             return null;
         }
         return premisesDto;
