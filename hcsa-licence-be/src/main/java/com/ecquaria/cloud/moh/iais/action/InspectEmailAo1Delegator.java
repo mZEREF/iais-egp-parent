@@ -489,8 +489,14 @@ public class InspectEmailAo1Delegator {
                     }
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
                         int sn=1;
-                        String[] observations=appPreRecommentdationDto.getRemarks().split("\n");
-                        String[] recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                        String[] observations=new String[]{};
+                        if(appPreRecommentdationDto.getRemarks()!=null){
+                            observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        }
+                        String[] recommendations=new String[]{};
+                        if(appPreRecommentdationDto.getBestPractice()!=null){
+                            recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                        }
                         StringBuilder stringBuilder=new StringBuilder();
                         if(recommendations.length>=observations.length){
                             for (int i=0;i<recommendations.length;i++){
