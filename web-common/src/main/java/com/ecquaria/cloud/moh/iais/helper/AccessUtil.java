@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -102,7 +103,11 @@ public class AccessUtil {
 
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
-                loginContext.setCurRoleId(userRoles.get(0));
+                if(RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0)) && userRoles.size() > 1){
+                    loginContext.setCurRoleId(userRoles.get(1));
+                }else{
+                    loginContext.setCurRoleId(userRoles.get(0));
+                }
             }
 
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
