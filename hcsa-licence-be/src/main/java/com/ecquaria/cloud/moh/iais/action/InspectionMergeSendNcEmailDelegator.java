@@ -282,8 +282,14 @@ public class InspectionMergeSendNcEmailDelegator {
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
-                        String[] observations=appPreRecommentdationDto.getRemarks().split("\n");
-                        String[] recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                        String[] observations=new String[]{};
+                        if(appPreRecommentdationDto.getRemarks()!=null){
+                            observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        }
+                        String[] recommendations=new String[]{};
+                        if(appPreRecommentdationDto.getBestPractice()!=null){
+                            recommendations=appPreRecommentdationDto.getBestPractice().split("\n");
+                        }
                         if(recommendations.length>=observations.length){
                             for (int i=0;i<recommendations.length;i++){
                                 if(i<observations.length){
