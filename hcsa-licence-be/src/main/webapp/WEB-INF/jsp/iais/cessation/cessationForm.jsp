@@ -229,16 +229,6 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <div id="${num.count}patNo${uid.count}" hidden>
-                                                    <iais:row>
-                                                        <iais:field value="Reason for no patients' records transfer" mandatory="true"/>
-                                                        <iais:value width="7">
-                                                            <iais:input type="text" value="${appCessHci.patNoRemarks}"
-                                                                        maxLength="200"
-                                                                        name="${num.count}patNoRemarks${uid.count}"></iais:input>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                </div>
 
                                                 <div class="form-group" id="${num.count}patNoConfirmID${uid.count}"
                                                      hidden>
