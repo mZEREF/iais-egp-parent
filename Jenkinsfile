@@ -58,7 +58,7 @@ NEXUS_CREDENTIALS = [usernamePassword(
 // Specify the project ID for the project (this value is retrieved from Dependency Track).
 DEPENDENCY_TRACK_PROJECT = '47741070-b027-4430-acc7-1e04adba7780'
 
-AD_TOOLS_VERSION = "ec44786"
+AD_TOOLS_VERSION = "7361af0"
 
 // Working directory for when we're handling the cicd folder.
 AUTO_DEPLOYMENT_DIRECTORY="auto-deployment"
@@ -136,13 +136,9 @@ KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
 // Destination directory when we do `git clone`.
 CHECKOUT_DIRECTORY_AUTOMATED_TESTING="checkouts-at"
 
-// Specify the Gitlab URL used by the project -- note the use of single quote.
-// PROJECT_GITLAB_URL_AUTOMATED_TESTING =
-//     'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais/iais-qa.git'
-
-// use this first -- till iais-qa is ready...
+//Specify the Gitlab URL used by the project -- note the use of single quote.
 PROJECT_GITLAB_URL_AUTOMATED_TESTING =
-    'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/zam-public/my-first-web-ui-project.git'
+    'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais/iais-qa.git'
 
 configurePipeline()
 
@@ -1048,10 +1044,10 @@ def runAutomatedTests(){
                             katalonc \
                                 -noSplash \
                                 -runMode=console \
-                                -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/My First Web UI Project.prj" \
+                                -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/moh_iais.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/my_first_test_suite" \
-                                -executionProfile="default" \
+                                -testSuitePath="Test Suites/Automation Test Suite - CICD" \
+                                -executionProfile="SG_SIT" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
                                 -remoteWebDriverType="Selenium"
