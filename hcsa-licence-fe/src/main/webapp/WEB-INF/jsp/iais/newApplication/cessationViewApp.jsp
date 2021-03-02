@@ -153,27 +153,6 @@
                             <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                           </div>
                         </div>
-                        <div class="form-group"
-                             id="patOthersMobileNo" hidden>
-                          <label class="col-xs-12 col-md-6 control-label">patOthers'mobile
-                            No. <span style="color: red">*</span></label>
-                          <div class="col-xs-6 col-sm-4 col-md-3">
-                            <iais:input type="text" needDisabled="true"
-                                        value="${appCessHci.mobileNo}"
-                                        maxLength="8"
-                                        name="patOthersMobileNo"/>
-                          </div>
-                        </div>
-                        <div class="form-group"
-                             id="patOthersEmailAddress" hidden>
-                          <label class="col-xs-12 col-md-6 control-label">patOthers'email
-                            Address <span style="color: red">*</span></label>
-                          <div class="col-xs-6 col-sm-4 col-md-3">
-                            <iais:input type="text" value="${appCessHci.emailAddress}"
-                                        maxLength="66" needDisabled="true"
-                                        name="patOthersEmailAddress"/>
-                          </div>
-                        </div>
                         <div class="form-group" id="patRegNo"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Professional
@@ -193,6 +172,26 @@
                             <iais:input needDisabled="true" type="text"
                                         name="patOthers"
                                         value="${appCessHci.patOthers}"/>
+                          </div>
+                        </div>
+                        <div class="form-group"
+                             id="patOthersMobileNo" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">Mobile
+                            No. <span style="color: red">*</span></label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <iais:input type="text" needDisabled="true"
+                                        value="${appCessHci.mobileNo}"
+                                        maxLength="8"
+                                        name="patOthersMobileNo"/>
+                          </div>
+                        </div>
+                        <div class="form-group"
+                             id="patOthersEmailAddress" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">Email Address <span style="color: red">*</span></label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <iais:input type="text" value="${appCessHci.emailAddress}"
+                                        maxLength="66" needDisabled="true"
+                                        name="patOthersEmailAddress"/>
                           </div>
                         </div>
                         <div class="form-group" id="patNo" hidden>

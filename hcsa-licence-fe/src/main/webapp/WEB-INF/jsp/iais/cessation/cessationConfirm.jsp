@@ -185,7 +185,7 @@
                                                     </div>
                                                     <div class="form-group"
                                                          id="${num.count}patOthersMobileNo${uid.count}" hidden>
-                                                        <label class="col-xs-12 col-md-6 control-label">patOthers'mobile
+                                                        <label class="col-xs-12 col-md-6 control-label">Mobile
                                                             No. <span style="color: red">*</span></label>
                                                         <div class="col-xs-6 col-sm-4 col-md-3">
                                                             <iais:input type="text" needDisabled="true"
@@ -196,8 +196,7 @@
                                                     </div>
                                                     <div class="form-group"
                                                          id="${num.count}patOthersEmailAddress${uid.count}" hidden>
-                                                        <label class="col-xs-12 col-md-6 control-label">patOthers'email
-                                                            Address <span style="color: red">*</span></label>
+                                                        <label class="col-xs-12 col-md-6 control-label">Email Address <span style="color: red">*</span></label>
                                                         <div class="col-xs-6 col-sm-4 col-md-3">
                                                             <iais:input type="text" value="${appCessHci.emailAddress}"
                                                                         maxLength="66" needDisabled="true"
