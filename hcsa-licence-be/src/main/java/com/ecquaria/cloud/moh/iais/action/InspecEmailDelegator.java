@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -179,7 +180,9 @@ public class InspecEmailDelegator {
         String mesContext;
         {
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
-            OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(leads.get(0)).getEntity();
+            List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
+            String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
+            OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
             Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
@@ -534,6 +537,47 @@ public class InspecEmailDelegator {
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return taskService.updateTask(taskDto);
     }
-
+    private String getLeadWithTheFewestScores(List<TaskDto> taskScoreDtos, List<String> leads) {
+        List<TaskDto> taskUserDtos = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isEmpty(taskScoreDtos)){
+            log.info(StringUtil.changeForLog("taskScoreDtos = null"));
+            JobLogger.log(StringUtil.changeForLog("taskScoreDtos = null"));
+            return leads.get(0);//NOSONAR
+        } else {
+            for(TaskDto taskDto : taskScoreDtos){
+                String userId = taskDto.getUserId();
+                for(String lead : leads) {//NOSONAR
+                    if (!StringUtil.isEmpty(userId)) {//NOSONAR
+                        if(userId.equals(lead)){
+                            taskUserDtos.add(taskDto);
+                        }
+                    }
+                }
+            }
+            String lead = getLeadByTaskScore(taskUserDtos, leads);
+            return lead;
+        }
+    }
+    private String getLeadByTaskScore(List<TaskDto> taskUserDtos, List<String> leads) {
+        if(IaisCommonUtils.isEmpty(taskUserDtos)){
+            return leads.get(0);//NOSONAR
+        } else {
+            int score1 = 0;
+            String lead = "";
+            for(TaskDto taskDto : taskUserDtos){
+                if(StringUtil.isEmpty(lead)){
+                    lead = taskDto.getUserId();
+                    score1 = taskDto.getScore();
+                } else {
+                    int scoreNow = taskDto.getScore();
+                    if(scoreNow < score1){
+                        lead = taskDto.getUserId();
+                        score1 = taskDto.getScore();
+                    }
+                }
+            }
+            return lead;
+        }
+    }
 
 }
