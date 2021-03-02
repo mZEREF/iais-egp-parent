@@ -179,18 +179,18 @@
     window.onload = function () {
         let checkBs = document.getElementsByName('inspWpTeamAmPmCheck');
         for(let i = 0; i < checkBs.length; i++){
-            checkBs[i].onclick = function () {
+            checkBs[i].onchange = function () {
                 if($(this).data("prohibit") == 1){
-                    $("#error_nonworking").show()
-                    if($(this).attr('checked')){
-                        $(this).prop('checked', true);
-                    }else{
+                    $("#error_nonworking").show();
+                    if(this.checked){
                         $(this).prop('checked', false);
+                    }else{
+                        $(this).prop('checked', true);
                     }
                 }else {
-                    $("#error_nonworking").hide()
+                    $("#error_nonworking").hide();
                     var id = $(this).attr('id').substring(2);
-                    if ($('#am' + id).attr('checked') && $('#pm' + id).attr('checked')) {
+                    if (document.getElementById('am' + id).checked && document.getElementById('pm' + id).checked) {
                         $('#nradio' + id).prop('checked', true);
                     } else {
                         $('#yradio' + id).prop('checked', true);
