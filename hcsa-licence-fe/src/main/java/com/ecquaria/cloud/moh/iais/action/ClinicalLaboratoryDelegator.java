@@ -72,6 +72,7 @@ import java.util.*;
  * @date 10/11/2019
  */
 @Delegator("clinicalLaboratoryDelegator")
+
 @Slf4j
 public class ClinicalLaboratoryDelegator {
 

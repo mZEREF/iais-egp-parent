@@ -36,7 +36,9 @@ public interface TaskOrganizationClient {
             ,method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(@PathVariable(name = "workGroupId") String workGroupId,
                                                                   @PathVariable(name = "status") String staus);
-
+    @RequestMapping(value = "/iais-orguser-be/users-account/{id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(@PathVariable(value = "id") String id);
     @RequestMapping(path = "/iais-task/taskscores/{workGroupId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskScores(@PathVariable(name = "workGroupId") String workGroupId);
 
