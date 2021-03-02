@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -543,6 +545,7 @@ public class LicenceViewServiceDelegator {
         try {
             disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
         }catch (Exception e){
+            log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","PRS mock server down !");
         }
 
@@ -1253,6 +1256,9 @@ public class LicenceViewServiceDelegator {
             creatAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
         }
         publicPH(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
+        event(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
+        weekly(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
+        ph(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(oldAppGrpPrimaryDocDtos==null){
@@ -2129,4 +2135,135 @@ public class LicenceViewServiceDelegator {
         }
     }
 
+    private void event(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
+            return;
+        }
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            List<AppPremEventPeriodDto> appPremEventPeriodDtos = appGrpPremisesDtoList.get(i).getEventDtoList();
+            List<AppPremEventPeriodDto> oldAppPremEventPeriodDtos = oldAppGrpPremisesDtoList.get(i).getEventDtoList();
+            List<AppPremEventPeriodDto> appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
+            if(appPremEventPeriodDtos==null&&oldAppPremEventPeriodDtos!=null){
+                for(AppPremEventPeriodDto eventPeriodDto : oldAppPremEventPeriodDtos){
+                    AppPremEventPeriodDto appPremEventPeriodDto=new AppPremEventPeriodDto();
+                    appPremEventPeriodDto.setEventName("");
+                    appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                }
+                appGrpPremisesDtoList.get(i).setEventDtoList(appPremEventPeriodDtoList);
+            }else if(appPremEventPeriodDtos!=null&&oldAppPremEventPeriodDtos==null){
+                for(AppPremEventPeriodDto eventPeriodDto : appPremEventPeriodDtos){
+                    AppPremEventPeriodDto appPremEventPeriodDto=new AppPremEventPeriodDto();
+                    appPremEventPeriodDto.setEventName("");
+                    appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                }
+                oldAppGrpPremisesDtoList.get(i).setEventDtoList(appPremEventPeriodDtoList);
+            }else if(appPremEventPeriodDtos!=null&&oldAppPremEventPeriodDtos!=null){
+                if(appPremEventPeriodDtos.size()>oldAppPremEventPeriodDtos.size()){
+                    for(int j=0;j<appPremEventPeriodDtos.size()-oldAppPremEventPeriodDtos.size();j++){
+                        AppPremEventPeriodDto appPremEventPeriodDto=new AppPremEventPeriodDto();
+                        appPremEventPeriodDto.setEventName("");
+                        appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                    }
+                    oldAppPremEventPeriodDtos.addAll(appPremEventPeriodDtoList);
+                }else if(oldAppPremEventPeriodDtos.size()>appPremEventPeriodDtos.size()){
+                    for(int j=0;j<oldAppPremEventPeriodDtos.size()-appPremEventPeriodDtos.size();j++){
+                        AppPremEventPeriodDto appPremEventPeriodDto=new AppPremEventPeriodDto();
+                        appPremEventPeriodDto.setEventName("");
+                        appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                    }
+                    appPremEventPeriodDtos.addAll(appPremEventPeriodDtoList);
+                }
+
+            }
+
+        }
+    }
+
+    private void weekly(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
+            return;
+        }
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
+            List<OperationHoursReloadDto> oldWeeklyDtoList = oldAppGrpPremisesDtoList.get(i).getWeeklyDtoList();
+            List<OperationHoursReloadDto> operationHoursReloadDtoList=IaisCommonUtils.genNewArrayList();
+            if(weeklyDtoList==null&&oldWeeklyDtoList!=null){
+                for(OperationHoursReloadDto hoursReloadDto : oldWeeklyDtoList){
+                    OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                    operationHoursReloadDtoList.add(operationHoursReloadDto);
+                }
+                appGrpPremisesDtoList.get(i).setWeeklyDtoList(operationHoursReloadDtoList);
+            }else if(weeklyDtoList!=null&&oldWeeklyDtoList==null){
+                for(OperationHoursReloadDto hoursReloadDto : weeklyDtoList){
+                    OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                    operationHoursReloadDtoList.add(operationHoursReloadDto);
+                }
+                oldAppGrpPremisesDtoList.get(i).setWeeklyDtoList(operationHoursReloadDtoList);
+            }else if(weeklyDtoList!=null&&oldWeeklyDtoList!=null){
+                if(weeklyDtoList.size()>oldWeeklyDtoList.size()){
+                    for(int j=0;j<weeklyDtoList.size()-oldWeeklyDtoList.size();j++){
+                        OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                        operationHoursReloadDtoList.add(operationHoursReloadDto);
+                    }
+                    oldWeeklyDtoList.addAll(operationHoursReloadDtoList);
+                }else if(oldWeeklyDtoList.size()>weeklyDtoList.size()){
+                    for(int j=0;j<oldWeeklyDtoList.size()-weeklyDtoList.size();j++){
+                        OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                        operationHoursReloadDtoList.add(operationHoursReloadDto);
+                    }
+                    weeklyDtoList.addAll(operationHoursReloadDtoList);
+                }
+
+            }
+
+        }
+    }
+
+    private void ph(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
+            return;
+        }
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
+            List<OperationHoursReloadDto> oldWeeklyDtoList = oldAppGrpPremisesDtoList.get(i).getPhDtoList();
+            List<OperationHoursReloadDto> operationHoursReloadDtoList=IaisCommonUtils.genNewArrayList();
+            if(weeklyDtoList==null&&oldWeeklyDtoList!=null){
+                for(OperationHoursReloadDto hoursReloadDto : oldWeeklyDtoList){
+                    OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                    operationHoursReloadDtoList.add(operationHoursReloadDto);
+                }
+                appGrpPremisesDtoList.get(i).setPhDtoList(operationHoursReloadDtoList);
+            }else if(weeklyDtoList!=null&&oldWeeklyDtoList==null){
+                for(OperationHoursReloadDto hoursReloadDto : weeklyDtoList){
+                    OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                    operationHoursReloadDtoList.add(operationHoursReloadDto);
+                }
+                oldAppGrpPremisesDtoList.get(i).setPhDtoList(operationHoursReloadDtoList);
+            }else if(weeklyDtoList!=null&&oldWeeklyDtoList!=null){
+                if(weeklyDtoList.size()>oldWeeklyDtoList.size()){
+                    for(int j=0;j<weeklyDtoList.size()-oldWeeklyDtoList.size();j++){
+                        OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                        operationHoursReloadDtoList.add(operationHoursReloadDto);
+                    }
+                    oldWeeklyDtoList.addAll(operationHoursReloadDtoList);
+                }else if(oldWeeklyDtoList.size()>weeklyDtoList.size()){
+                    for(int j=0;j<oldWeeklyDtoList.size()-weeklyDtoList.size();j++){
+                        OperationHoursReloadDto operationHoursReloadDto=new OperationHoursReloadDto();
+
+                        operationHoursReloadDtoList.add(operationHoursReloadDto);
+                    }
+                    weeklyDtoList.addAll(operationHoursReloadDtoList);
+                }
+
+            }
+
+        }
+    }
 }
