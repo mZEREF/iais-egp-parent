@@ -39,5 +39,14 @@ public interface PublicHolidayService {
       * @return: List<PublicHolidayDto>
       * @Descripation: filter holidays(To prevent the repeat)
       */
-    List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays);
+    List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays, List<PublicHolidayDto> duplicateDate);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/2
+      * @Param: duplicateDate
+      * @return: List<String>
+      * @Descripation: get Duplicate Date Str
+      */
+    List<String> getDuplicateDateStr(List<PublicHolidayDto> duplicateDate);
 }

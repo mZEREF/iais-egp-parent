@@ -119,7 +119,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <p style="margin-left: 100px"><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
+                            <p style="margin-left: 100px">
+                                <span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
+                                <c:if test="${not empty duplicateDateStrList}">
+                                    <c:forEach var="duplicateDateStr" items="${duplicateDateStrList}">
+                                        <br><span class="error-msg"><c:out value="${duplicateDateStr}"></c:out></span>
+                                    </c:forEach>
+                                </c:if>
+                            </p>
                         </div>
                     </div>
                 </div>
