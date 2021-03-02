@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -653,12 +654,17 @@ public class HcsaChklConfigDelegator {
     public void addChecklistItemNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         try {
-            String[] ckbItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if(ckbItemId == null || ckbItemId.length <= 0){
+            String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if(checked == null || checked.length <= 0){
                 return;
             }
 
-            List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(Arrays.asList(ckbItemId));
+            List<String> unMarkList = IaisCommonUtils.genNewArrayList();
+            for (String i : checked){
+                unMarkList.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
+            }
+
+            List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(unMarkList);
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
             List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
@@ -684,7 +690,7 @@ public class HcsaChklConfigDelegator {
 
             }
 
-            selectedItemIdToConfig.addAll(Arrays.asList(ckbItemId));
+            selectedItemIdToConfig.addAll(unMarkList);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdToConfig);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, disposition);
 

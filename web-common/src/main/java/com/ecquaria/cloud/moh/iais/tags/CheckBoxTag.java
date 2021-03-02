@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
@@ -213,13 +213,12 @@ public final class CheckBoxTag extends DivTagSupport {
                 //in <c:forEach> style
                 html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"')
                         .append("type=\"checkbox\"").append("value=").append('\"').append(MaskUtil.maskValue(name, value)).append('\"');
-                HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, forName);
-                if (checkedMap != null){
-                    if (checkedMap.containsKey(value)){
-                        html.append(" checked = \"checked\"");
-                    }
+                HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, forName);
+                if (set != null && set.contains(value)){
+                    html.append(" checked = \"checked\"");
                 }
-                html.append("/>");
+                html.append("data-redisplay-name=").append(forName);
+                html.append(" onchange = ajaxCallSelectCheckbox.apply(this) />");
             }
 
             log.info(html.toString());

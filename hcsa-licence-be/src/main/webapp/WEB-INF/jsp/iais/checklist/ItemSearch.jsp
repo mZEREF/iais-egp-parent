@@ -243,6 +243,7 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
   function exportToConfigTemplate(){
+      showWaiting();
       let url = '/hcsa-licence-web/eservice/INTRANET/MohChecklistItem/exportItemToConfigTemplate'
       callAjaxSetCheckBoxSelectedItem('itemCheckbox', '${pageContext.request.contextPath}/checklist-item/setup-checkbox');
       showPopupWindow(url);
@@ -253,6 +254,7 @@
   }
 
   function doUploadFile(value) {
+      showWaiting();
       SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
   }
 
@@ -266,6 +268,7 @@
   }
 
   function configToChecklist() {
+      showWaiting();
       var checkBoxLen = $('input[type=checkbox]:checked').length;
 
       if (checkBoxLen > 0){
@@ -274,10 +277,12 @@
   }
 
   function prepareAddItem() {
+      showWaiting();
       SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");
   }
 
   function prepareClone() {
+      showWaiting();
       SOP.Crud.cfxSubmit("mainForm", "viewCloneData");
   }
 

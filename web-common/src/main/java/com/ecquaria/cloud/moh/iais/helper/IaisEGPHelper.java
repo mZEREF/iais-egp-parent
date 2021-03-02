@@ -65,7 +65,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -803,20 +803,25 @@ public final class IaisEGPHelper extends EGPHelper {
         return authorization.toString();
     }
 
-    public static void setCheckboxStatus(HttpServletRequest request, String checkboxName, String redisplayName){
-        String[] checked = ParamUtil.getStrings(request, checkboxName);
-        if (checked == null){
-            return;
+    public static void onChangeCheckbox(HttpServletRequest request){
+        String action = ParamUtil.getString(request, "action");
+        String itemId = ParamUtil.getString(request, "itemId");
+        String redisplayName = ParamUtil.getString(request, "forName");
+        String checkboxName = ParamUtil.getString(request, "checkboxName");
+
+        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
+        if (set == null){
+            set = IaisCommonUtils.genNewHashSet();
         }
 
-        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, redisplayName);
-        if (checkedMap == null){
-            checkedMap = IaisCommonUtils.genNewHashMap();
+        String unMaskVal = MaskUtil.unMaskValue(checkboxName, itemId);
+        if ("checked".equals(action)){
+            set.add(unMaskVal);
+        }else {
+            if (set.contains(unMaskVal)){
+                set.remove(unMaskVal);
+            }
         }
-
-        for (String s : checked){
-            checkedMap.put(MaskUtil.unMaskValue(checkboxName, s), "checked");
-        }
-        ParamUtil.setSessionAttr(request, redisplayName, checkedMap);
+        ParamUtil.setSessionAttr(request, redisplayName, set);
     }
 }

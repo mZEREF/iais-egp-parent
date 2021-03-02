@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -310,9 +311,8 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        HashMap<String,String> checkedMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        if(checkedMap == null || checkedMap.size() <= 0){
+        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        if(set == null || set.size() <= 0){
             ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR045"));
@@ -320,8 +320,7 @@ public class HcsaChklItemDelegator {
         }
 
         int maxNum = paramConfig.getCloneChecklistMaxNum();
-        if(checkedMap.size() > maxNum){
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
+        if(set.size() > maxNum){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
                     MessageUtil.replaceMessage("CHKL_ERR026", String.valueOf(maxNum), "number")));
@@ -329,7 +328,7 @@ public class HcsaChklItemDelegator {
         }
 
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checkedMap.keySet()));
+        List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(set));
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) item);
 
     }
@@ -507,7 +506,6 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam, request);
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
 
@@ -522,7 +520,6 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,bpc.request);
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
     }
 
@@ -623,7 +620,6 @@ public class HcsaChklItemDelegator {
         checklistItem.setRiskLevel(riskLevel);
         checklistItem.setAnswerType(answerType);
 
-        IaisEGPHelper.setCheckboxStatus(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, cklItemStr);
