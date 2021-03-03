@@ -44,9 +44,6 @@ public interface TaskOrganizationClient {
 
     @GetMapping(value = "/iais-orgUserRole/user-by-id/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> getUserById(@PathVariable("userId") String userId);
-    @RequestMapping(value = "/iais-orguser-be/users-account/{id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(@PathVariable(value = "id") String id);
     @RequestMapping(path = "/iais-task/commpool/{workGroupId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getCommPoolTaskByWorkGroupId(@PathVariable(name = "workGroupId") String workGroupId);
 
