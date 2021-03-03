@@ -15,6 +15,8 @@
                         <li><a href="<iais:code code='MRUS011'/>">Rate This E-Service</a></li>
                         <li><a href="<iais:code code='MRUS012'/>">Sitemap</a></li>
                         <li><a href="<iais:code code='MRUS013'/>">Share your views @ Reach</a></li>
+                        <li><a href="<iais:code code='MRUS020'/>">Report vulnerability</a></li>
+                        <li><a href="<iais:code code='MRUS021'/>">Feedback</a></li>
                     </ul>
                 </div>
             </div>
