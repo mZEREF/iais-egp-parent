@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
@@ -122,6 +123,9 @@ public class AccessUtil {
                     loginContext.setLicenseeId(lDto.getId());
                     loginContext.setUenNo(lDto.getUenNo());
                     loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
+                }else{
+                    LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
+                    lc.createLicenseeByUenFromAcra(orgUser.getIdentityNo());
                 }
             }
         }

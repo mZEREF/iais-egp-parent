@@ -180,11 +180,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         }
         postCreate.getFeUserDto().setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
         FeUserDto dto = syncAccountInformationToBackend(postCreate);
-        //if enable acra, licensee info create by this method
-        if (!StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
-            eicGatewayFeMainClient.getUen(postCreate.getUenNo());
-        }
-
+        createLicenseeByUenFromAcra(postCreate.getUenNo());
         return dto;
     }
 
@@ -450,6 +446,16 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         claims.put("uen", uen);
         //edhClient.receiveEDHEntity(jwtt, uen);
         return Boolean.FALSE;
+    }
+
+    @Override
+    /**
+     * if enable acra, licensee info create by this method
+     */
+    public void createLicenseeByUenFromAcra(String uen) {
+        if (StringUtil.isNotEmpty(uen) && "Y".equals(enableAcra)){
+            feUserClient.createLicenseeByUenFromAcra(uen);
+        }
     }
 
     @Override

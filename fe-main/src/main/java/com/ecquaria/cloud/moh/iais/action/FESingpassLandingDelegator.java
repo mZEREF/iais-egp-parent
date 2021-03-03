@@ -109,15 +109,15 @@ public class FESingpassLandingDelegator {
 
     public void validatePwd(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
+        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
 
-        String testMode = FeLoginHelper.getTestMode(bpc.request);
+        String testMode = FeLoginHelper.getTestMode(request);
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
-                ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo());
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+                ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
                 return;
             }
         }
