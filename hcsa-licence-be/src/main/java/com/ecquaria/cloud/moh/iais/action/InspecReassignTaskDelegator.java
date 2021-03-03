@@ -242,13 +242,25 @@ public class InspecReassignTaskDelegator {
         List<String> workGroupIds = inspectionService.getWorkIdsByLogin(loginContext);
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //get userId
-        String memberValue = "";
-        if (!StringUtil.isEmpty(userIdKey)) {
+        if(!StringUtil.isEmpty(userIdKey)) {
             Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
             String userId = userIdMap.get(userIdKey);
             groupRoleFieldDto.setCheckUser(userIdKey);
             //get task ref_no by uerId
-            memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            String memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            int appCorIdStrsSize = 0;
+            if(StringUtil.isEmpty(memberValue)){
+                String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrsSize);
+                searchParam.addParam("appCorId_list", appCorrId);
+            } else {
+                String[] appCorIdStrs = memberValue.split(",");
+                appCorIdStrsSize = appCorIdStrs.length;
+                String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrsSize);
+                searchParam.addParam("appCorId_list", appCorrId);
+                for (int i = 0; i < appCorIdStrs.length; i++) {
+                    searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
+                }
+            }
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "memberId", null);
@@ -262,15 +274,6 @@ public class InspecReassignTaskDelegator {
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
-        }
-        String[] appCorIdStrs;
-        if (!(StringUtil.isEmpty(memberValue))) {
-            appCorIdStrs = memberValue.split(",");
-            String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrs.length);
-            searchParam.addParam("appCorId_list", appCorrId);
-            for (int i = 0; i < appCorIdStrs.length; i++) {
-                searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
-            }
         }
         if (!StringUtil.isEmpty(application_type)) {
             searchParam.addFilter("application_type", application_type, true);
