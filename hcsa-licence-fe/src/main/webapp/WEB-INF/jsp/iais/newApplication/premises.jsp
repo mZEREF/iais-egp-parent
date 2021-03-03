@@ -186,7 +186,7 @@
 
         otherLic();
 
-        addPubHolDay();
+        addPubHolDayHtml();
 
         removePH();
 
@@ -194,11 +194,17 @@
 
         operationDel();
 
-        addWeekly();
+        addWeeklyHtml();
+
+        addEventHtml();
 
         removeWeekly();
 
         removePh();
+
+        removeEvent();
+
+        clickAllDay();
 
         //Binding method
         $('#Back').click(function(){
@@ -215,7 +221,7 @@
             $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',$('#selectDraftNo').val());
         });
-<%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
+
         <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
@@ -237,6 +243,12 @@
             $(this).find('.opDel').addClass('hidden');
             $(this).find('button.addPubHolDay').addClass('hidden');
             $(this).find('.removePhBtn').addClass('hidden');
+            $(this).find('.weeklyDel').addClass('hidden');
+            $(this).find('.pubHolidayDel').addClass('hidden');
+            $(this).find('.eventDel').addClass('hidden');
+            $(this).find('.addWeeklyDiv').addClass('hidden');
+            $(this).find('.addPhDiv').addClass('hidden');
+            $(this).find('.addEventDiv').addClass('hidden');
         });
         </c:if>
 
@@ -262,12 +274,13 @@
           }
         </c:if>
 
+        var mainContent =$('.main-content');
+        mainContent.find('input.allDay:checked').each(function (k) {
+            console.log(k);
+            var $allDayDiv = $(this).closest('div.col-md-2');
+            disabeleForAllDay($allDayDiv);
+        });
 
-        <%--<c:if test="${PageCanEdit}">--%>
-        <%--var $PremEle = $('.premises-content');--%>
-        <%--unreadonlyPartPage($PremEle);--%>
-        <%--</c:if>--%>
-        <!-- init end-->
         init = 1;
     });
 

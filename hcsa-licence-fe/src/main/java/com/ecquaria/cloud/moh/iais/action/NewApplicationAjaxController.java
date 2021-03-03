@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -212,206 +213,9 @@ public class NewApplicationAjaxController {
         offSiteAddrTypesAttr.put("style", "display: none;");
         String offSiteAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(offSiteAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION, null);
 
-        //onsite operation time
-        Map<String, String> premiseHour = IaisCommonUtils.genNewHashMap();
-        premiseHour.put("class", "onSiteStartHH");
-        premiseHour.put("id", "onSiteStartHH");
-        premiseHour.put("name", "onSiteStartHH");
-        premiseHour.put("style", "display: none;");
-        String onsitestarHH = NewApplicationHelper.generateDropDownHtml(premiseHour, timeHourList, "--", null);
-
-        Map<String, String> premiseMinute = IaisCommonUtils.genNewHashMap();
-        premiseMinute.put("class", "onSiteStartMM");
-        premiseMinute.put("id", "onSiteStartMM");
-        premiseMinute.put("name", "onSiteStartMM");
-        premiseMinute.put("style", "display: none;");
-        String onsitestarMM = NewApplicationHelper.generateDropDownHtml(premiseMinute, timeMinList, "--", null);
-
-        Map<String, String> siteEndHH = IaisCommonUtils.genNewHashMap();
-        siteEndHH.put("class", "onSiteEndHH");
-        siteEndHH.put("id", "onSiteEndHH");
-        siteEndHH.put("name", "onSiteEndHH");
-        siteEndHH.put("style", "display: none;");
-        String onsiteEndHH = NewApplicationHelper.generateDropDownHtml(siteEndHH, timeHourList, "--", null);
-
-        Map<String, String> siteEndMM = IaisCommonUtils.genNewHashMap();
-        siteEndMM.put("class", "onSiteEndMM");
-        siteEndMM.put("id", "onSiteEndMM");
-        siteEndMM.put("name", "onSiteEndMM");
-        siteEndMM.put("style", "display: none;");
-        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeMinList, "--", null);
-
-        //onsite ph
-        String premName = currentLength;
-        List<SelectOption> publicHolidayList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-        Map<String, String> publicHoliday = IaisCommonUtils.genNewHashMap();
-        publicHoliday.put("class", "onSitePubHoliday");
-        publicHoliday.put("id", premName + "onSitePubHoliday0");
-        publicHoliday.put("name", premName + "onSitePubHoliday0");
-        publicHoliday.put("style", "display: none;");
-        String publicHolidayDD = NewApplicationHelper.generateDropDownHtml(publicHoliday, publicHolidayList, "Please Select", null);
-
-        Map<String, String> pbholidaystartHH = IaisCommonUtils.genNewHashMap();
-        pbholidaystartHH.put("class", "onSitePbHolDayStartHH");
-        pbholidaystartHH.put("id", premName + "onSitePbHolDayStartHH0");
-        pbholidaystartHH.put("name", premName + "onSitePbHolDayStartHH0");
-        pbholidaystartHH.put("style", "display: none;");
-        String holidaystartHH = NewApplicationHelper.generateDropDownHtml(pbholidaystartHH, timeHourList, "--", null);
-
-        Map<String, String> pbholidaystartMM = IaisCommonUtils.genNewHashMap();
-        pbholidaystartMM.put("class", "onSitePbHolDayStartMM");
-        pbholidaystartMM.put("id", premName + "onSitePbHolDayStartMM0");
-        pbholidaystartMM.put("name", premName + "onSitePbHolDayStartMM0");
-        pbholidaystartMM.put("style", "display: none;");
-        String holidaystartMM = NewApplicationHelper.generateDropDownHtml(pbholidaystartMM, timeMinList, "--", null);
-
-        Map<String, String> pbholidayendHH = IaisCommonUtils.genNewHashMap();
-        pbholidayendHH.put("class", "onSitePbHolDayEndHH");
-        pbholidayendHH.put("id", premName + "onSitePbHolDayEndHH0");
-        pbholidayendHH.put("name", premName + "onSitePbHolDayEndHH0");
-        pbholidayendHH.put("style", "display: none;");
-        String holidayendHH = NewApplicationHelper.generateDropDownHtml(pbholidayendHH, timeHourList, "--", null);
-
-        Map<String, String> pbholidayendMM = IaisCommonUtils.genNewHashMap();
-        pbholidayendMM.put("class", "onSitePbHolDayEndMM");
-        pbholidayendMM.put("id", premName + "onSitePbHolDayEndMM0");
-        pbholidayendMM.put("name", premName + "onSitePbHolDayEndMM0");
-        pbholidayendMM.put("style", "display: none;");
-        String holidayendMM = NewApplicationHelper.generateDropDownHtml(pbholidayendMM, timeMinList, "--", null);
 
 
-        //convyance operation time
-        Map<String, String> conveyancestartHour = IaisCommonUtils.genNewHashMap();
-        conveyancestartHour.put("class", "conveyanceStartHH");
-        conveyancestartHour.put("id", "conveyanceStartHH");
-        conveyancestartHour.put("name", "conveyanceStartHH");
-        conveyancestartHour.put("style", "display: none;");
-        String conveyancestartHH = NewApplicationHelper.generateDropDownHtml(conveyancestartHour, timeHourList, "--", null);
-
-        Map<String, String> conveyancestartMin = IaisCommonUtils.genNewHashMap();
-        conveyancestartMin.put("class", "conveyanceStartMM");
-        conveyancestartMin.put("id", "conveyanceStartMM");
-        conveyancestartMin.put("name", "conveyanceStartMM");
-        conveyancestartMin.put("style", "display: none;");
-        String conveyancestartMM = NewApplicationHelper.generateDropDownHtml(conveyancestartMin, timeMinList, "--", null);
-
-        Map<String, String> conveyanceendHour = IaisCommonUtils.genNewHashMap();
-        conveyanceendHour.put("class", "conveyanceEndHH");
-        conveyanceendHour.put("id", "conveyanceEndHH");
-        conveyanceendHour.put("name", "conveyanceEndHH");
-        conveyanceendHour.put("style", "display: none;");
-        String conveyanceendHH = NewApplicationHelper.generateDropDownHtml(conveyanceendHour, timeHourList, "--", null);
-
-        Map<String, String> conveyanceendMin = IaisCommonUtils.genNewHashMap();
-        conveyanceendMin.put("class", "conveyanceEndMM");
-        conveyanceendMin.put("id", "conveyanceEndMM");
-        conveyanceendMin.put("name", "conveyanceEndMM");
-        conveyanceendMin.put("style", "display: none;");
-        String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeMinList, "--", null);
-
-        //convyance ph
-        Map<String, String> convpublicHoliday = IaisCommonUtils.genNewHashMap();
-        convpublicHoliday.put("class", "conveyancePubHoliday");
-        convpublicHoliday.put("id", premName + "conveyancePubHoliday0");
-        convpublicHoliday.put("name", premName + "conveyancePubHoliday0");
-        convpublicHoliday.put("style", "display: none;");
-        String convpublicHolidayDD = NewApplicationHelper.generateDropDownHtml(convpublicHoliday, publicHolidayList, "Please Select", null);
-
-        Map<String, String> convpbholidaystartHH = IaisCommonUtils.genNewHashMap();
-        convpbholidaystartHH.put("class", "conveyancePbHolDayStartHH");
-        convpbholidaystartHH.put("id", premName + "conveyancePbHolDayStartHH0");
-        convpbholidaystartHH.put("name", premName + "conveyancePbHolDayStartHH0");
-        convpbholidaystartHH.put("style", "display: none;");
-        String convholidaystartHH = NewApplicationHelper.generateDropDownHtml(convpbholidaystartHH, timeHourList, "--", null);
-
-        Map<String, String> convpbholidaystartMM = IaisCommonUtils.genNewHashMap();
-        convpbholidaystartMM.put("class", "conveyancePbHolDayStartMM");
-        convpbholidaystartMM.put("id", premName + "conveyancePbHolDayStartMM0");
-        convpbholidaystartMM.put("name", premName + "conveyancePbHolDayStartMM0");
-        convpbholidaystartMM.put("style", "display: none;");
-        String convholidaystartMM = NewApplicationHelper.generateDropDownHtml(convpbholidaystartMM, timeMinList, "--", null);
-
-        Map<String, String> convpbholidayendHH = IaisCommonUtils.genNewHashMap();
-        convpbholidayendHH.put("class", "conveyancePbHolDayEndHH");
-        convpbholidayendHH.put("id", premName + "conveyancePbHolDayEndHH0");
-        convpbholidayendHH.put("name", premName + "conveyancePbHolDayEndHH0");
-        convpbholidayendHH.put("style", "display: none;");
-        String convholidayendHH = NewApplicationHelper.generateDropDownHtml(convpbholidayendHH, timeHourList, "--", null);
-
-        Map<String, String> convpbholidayendMM = IaisCommonUtils.genNewHashMap();
-        convpbholidayendMM.put("class", "conveyancePbHolDayEndMM");
-        convpbholidayendMM.put("id", premName + "conveyancePbHolDayEndMM0");
-        convpbholidayendMM.put("name", premName + "conveyancePbHolDayEndMM0");
-        convpbholidayendMM.put("style", "display: none;");
-        String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeMinList, "--", null);
-
-
-        //offSite operation time
-        Map<String, String> offSiteStartHour = IaisCommonUtils.genNewHashMap();
-        offSiteStartHour.put("class", "offSiteStartHH");
-        offSiteStartHour.put("id", "offSiteStartHH");
-        offSiteStartHour.put("name", "offSiteStartHH");
-        offSiteStartHour.put("style", "display: none;");
-        String offSiteStartHH = NewApplicationHelper.generateDropDownHtml(offSiteStartHour, timeHourList, "--", null);
-
-        Map<String, String> offSiteStartMin = IaisCommonUtils.genNewHashMap();
-        offSiteStartMin.put("class", "offSiteStartMM");
-        offSiteStartMin.put("id", "offSiteStartMM");
-        offSiteStartMin.put("name", "offSiteStartMM");
-        offSiteStartMin.put("style", "display: none;");
-        String offSiteStartMM = NewApplicationHelper.generateDropDownHtml(offSiteStartMin, timeMinList, "--", null);
-
-        Map<String, String> offSiteEndHour = IaisCommonUtils.genNewHashMap();
-        offSiteEndHour.put("class", "offSiteEndHH");
-        offSiteEndHour.put("id", "offSiteEndHH");
-        offSiteEndHour.put("name", "offSiteEndHH");
-        offSiteEndHour.put("style", "display: none;");
-        String offSiteEndHH = NewApplicationHelper.generateDropDownHtml(offSiteEndHour, timeHourList, "--", null);
-
-        Map<String, String> offSiteEndMin = IaisCommonUtils.genNewHashMap();
-        offSiteEndMin.put("class", "offSiteEndMM");
-        offSiteEndMin.put("id", "offSiteEndMM");
-        offSiteEndMin.put("name", "offSiteEndMM");
-        offSiteEndMin.put("style", "display: none;");
-        String offSiteEndMM = NewApplicationHelper.generateDropDownHtml(offSiteEndMin, timeMinList, "--", null);
-
-        //offSite ph
-        Map<String, String> offSitePublicHoliday = IaisCommonUtils.genNewHashMap();
-        offSitePublicHoliday.put("class", "offSitePubHoliday");
-        offSitePublicHoliday.put("id", premName + "offSitePubHoliday0");
-        offSitePublicHoliday.put("name", premName + "offSitePubHoliday0");
-        offSitePublicHoliday.put("style", "display: none;");
-        String offSitePublicHolidayDD = NewApplicationHelper.generateDropDownHtml(offSitePublicHoliday, publicHolidayList, "Please Select", null);
-
-        Map<String, String> offSitePhStartHH = IaisCommonUtils.genNewHashMap();
-        offSitePhStartHH.put("class", "offSitePbHolDayStartHH");
-        offSitePhStartHH.put("id", premName + "offSitePbHolDayStartHH0");
-        offSitePhStartHH.put("name", premName + "offSitePbHolDayStartHH0");
-        offSitePhStartHH.put("style", "display: none;");
-        String offSitePhStartHHStr = NewApplicationHelper.generateDropDownHtml(offSitePhStartHH, timeHourList, "--", null);
-
-        Map<String, String> offSitePhStartMM = IaisCommonUtils.genNewHashMap();
-        offSitePhStartMM.put("class", "offSitePbHolDayStartMM");
-        offSitePhStartMM.put("id", premName + "offSitePbHolDayStartMM0");
-        offSitePhStartMM.put("name", premName + "offSitePbHolDayStartMM0");
-        offSitePhStartMM.put("style", "display: none;");
-        String offSitePhStartMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhStartMM, timeMinList, "--", null);
-
-        Map<String, String> offSitePhEndHH = IaisCommonUtils.genNewHashMap();
-        offSitePhEndHH.put("class", "offSitePbHolDayEndHH");
-        offSitePhEndHH.put("id", premName + "offSitePbHolDayEndHH0");
-        offSitePhEndHH.put("name", premName + "offSitePbHolDayEndHH0");
-        offSitePhEndHH.put("style", "display: none;");
-        String offSitePhEndHHStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndHH, timeHourList, "--", null);
-
-        Map<String, String> offSitePhEndMM = IaisCommonUtils.genNewHashMap();
-        offSitePhEndMM.put("class", "offSitePbHolDayEndMM");
-        offSitePhEndMM.put("id", premName + "offSitePbHolDayEndMM0");
-        offSitePhEndMM.put("name", premName + "offSitePbHolDayEndMM0");
-        offSitePhEndMM.put("style", "display: none;");
-        String offSitePhEndMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndMM, timeMinList, "--", null);
-
-        sql = sql.replace("(0)", currentLength);
+        sql = sql.replace("${premVal}", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);
         sql = sql.replace("(3)", premConvSelectStr);
@@ -419,37 +223,18 @@ public class NewApplicationAjaxController {
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
         sql = sql.replace("(OFFSITEADDRTYPESELECT)", offSiteAddrTypeSelectStr);
-        sql = sql.replace("(ONSITESTARHH)", onsitestarHH);
-        sql = sql.replace("(ONSITESTARMM)", onsitestarMM);
-        sql = sql.replace("(ONSITEENDHH)", onsiteEndHH);
-        sql = sql.replace("(ONSITEENDMM)", onsiteEndMM);
-        sql = sql.replace("(CONVEYANCESTARTHH)", conveyancestartHH);
-        sql = sql.replace("(CONVEYANCESTARTMM)", conveyancestartMM);
-        sql = sql.replace("(CONVEYANCEENDHH)", conveyanceendHH);
-        sql = sql.replace("(CONVEYANCEENDMM)", conveyanceendMM);
-        sql = sql.replace("(OFFSITESTARTHH)", offSiteStartHH);
-        sql = sql.replace("(OFFSITESTARTMM)", offSiteStartMM);
-        sql = sql.replace("(OFFSITEENDHH)", offSiteEndHH);
-        sql = sql.replace("(OFFSITEENDMM)", offSiteEndMM);
         String fireTooltip = MessageUtil.getMessageDesc("NEW_ACK006");
         sql = sql.replace("(fireTooltip)", fireTooltip);
 
-        //ph
-        sql = sql.replace("(PUBLICHOLIDAYDD)", publicHolidayDD);
-        sql = sql.replace("(PBHOLDAYSTARTHH)", holidaystartHH);
-        sql = sql.replace("(PBHOLDAYSTARTMM)", holidaystartMM);
-        sql = sql.replace("(PBHOLDAYENDHH)", holidayendHH);
-        sql = sql.replace("(PBHOLDAYENDMM)", holidayendMM);
-        sql = sql.replace("(CONVPUBLICHOLIDAYDD)", convpublicHolidayDD);
-        sql = sql.replace("(CONVEYANCEPBHOLDAYSTARTHH)", convholidaystartHH);
-        sql = sql.replace("(CONVEYANCEPBHOLDAYSTARTMM)", convholidaystartMM);
-        sql = sql.replace("(CONVEYANCEPBHOLDAYENDHH)", convholidayendHH);
-        sql = sql.replace("(CONVEYANCEPBHOLDAYENDMM)", convholidayendMM);
-        sql = sql.replace("(OFFSITEPUBLICHOLIDAYDD)", offSitePublicHolidayDD);
-        sql = sql.replace("(OFFSITEPBHOLDAYSTARTHH)", offSitePhStartHHStr);
-        sql = sql.replace("(OFFSITEPBHOLDAYSTARTMM)", offSitePhStartMMStr);
-        sql = sql.replace("(OFFSITEPBHOLDAYENDHH)", offSitePhEndHHStr);
-        sql = sql.replace("(OFFSITEPBHOLDAYENDMM)", offSitePhEndMMStr);
+        //operation hour
+        List<SelectOption> hourList = NewApplicationHelper.getTimeHourList();
+        List<SelectOption> minList = NewApplicationHelper.getTimeMinList();
+        List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
+        List<SelectOption> phOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+
+        sql = setOperationHour(sql,weeklyOpList,phOpList,hourList,minList,"onSite",currentLength);
+        sql = setOperationHour(sql,weeklyOpList,phOpList,hourList,minList,"conveyance",currentLength);
+        sql = setOperationHour(sql,weeklyOpList,phOpList,hourList,minList,"offSite",currentLength);
 
         //premises header val
         Integer premHeaderVal = Integer.parseInt(currentLength) + 1;
@@ -842,11 +627,11 @@ public class NewApplicationAjaxController {
                 StringBuilder weeklyHtml = new StringBuilder();
                 for(int i =0;i<weeklyDtoList.size();i++){
                     String sql = genWeeklyCountHtml(premisesType,"","");
-                    String weeklyName = premPrefixName + "Weekly";
+                    String weeklyName =  "Weekly";
                     Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
                     weeklyAttr.put("class", weeklyName);
                     weeklyAttr.put("id", weeklyName);
-                    weeklyAttr.put("name", premisesType + weeklyName + i);
+                    weeklyAttr.put("name", premisesType+premPrefixName + weeklyName + i);
                     weeklyAttr.put("style", "display: none;");
                     List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
                     String weeklyDropHtml = NewApplicationHelper.generateMultipleDropDown(weeklyAttr,weeklyOpList,null,null);
@@ -861,11 +646,11 @@ public class NewApplicationAjaxController {
                 StringBuilder phHtml = new StringBuilder();
                 for(int i =0;i<phDtoList.size();i++){
                     String sql = genPhCountHtml(premisesType,"","");
-                    String pubHolidayName = premPrefixName + "PubHoliday";
+                    String pubHolidayName ="PubHoliday";
                     Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
                     pubHolidayAttr.put("class", pubHolidayName);
                     pubHolidayAttr.put("id", pubHolidayName);
-                    pubHolidayAttr.put("name", premisesType + pubHolidayName + i);
+                    pubHolidayAttr.put("name", premisesType +premPrefixName+ pubHolidayName + i);
                     pubHolidayAttr.put("style", "display: none;");
                     List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
                     String pubHolidayHtml = NewApplicationHelper.generateMultipleDropDown(pubHolidayAttr,phOpList,null,null);
@@ -875,7 +660,18 @@ public class NewApplicationAjaxController {
                 appGrpPremisesDto.setPhHtml(phHtml.toString());
             }
             //event
-
+            List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDto.getEventDtoList();
+            if(!IaisCommonUtils.isEmpty(eventDtoList)){
+                StringBuilder eventHtml = new StringBuilder();
+                String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+                sql = sql.replace("${premIndex}","");
+                sql = sql.replace("${premType}",premPrefixName);
+                sql = sql.replace("${eventCount}","");
+                for(int i =0;i<eventDtoList.size();i++){
+                    eventHtml.append(sql);
+                }
+                appGrpPremisesDto.setEventHtml(eventHtml.toString());
+            }
 
         }
 
@@ -1199,6 +995,7 @@ public class NewApplicationAjaxController {
     @PostMapping(value = "/operation-weekly-html")
     public @ResponseBody
     AjaxResDto genPremOperationalWeeklyHtml(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the gen weekly start ...."));
         AjaxResDto ajaxResDto = new AjaxResDto();
         ajaxResDto.setResCode("200");
         String premIndex = ParamUtil.getString(request,"premIndex");
@@ -1208,16 +1005,17 @@ public class NewApplicationAjaxController {
         String weeklyHtml = genWeeklyCountHtml(premType,premIndex,weeklyCount);
 
         String premPrefixName = getPremPrefixName(premType);
-        String weeklyName = premPrefixName + "Weekly";
+        String weeklyName = "Weekly";
         Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
         weeklyAttr.put("class", weeklyName);
         weeklyAttr.put("id", weeklyName);
-        weeklyAttr.put("name", premIndex + weeklyName + weeklyCount);
+        weeklyAttr.put("name", premIndex +premPrefixName+ weeklyName + weeklyCount);
         weeklyAttr.put("style", "display: none;");
         List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
         String weeklyDropHtml = NewApplicationHelper.generateMultipleDropDown(weeklyAttr,weeklyOpList,null,null);
         weeklyHtml = weeklyHtml.replace("${multipleDropDown}",weeklyDropHtml);
         ajaxResDto.setResultJson(weeklyHtml);
+        log.debug(StringUtil.changeForLog("the gen weekly end ...."));
         return ajaxResDto;
     }
 
@@ -1235,11 +1033,11 @@ public class NewApplicationAjaxController {
         String phHtml = genPhCountHtml(premType,premIndex,phCount);
 
         String premPrefixName = getPremPrefixName(premType);
-        String pubHolidayName = premPrefixName + "PubHoliday";
+        String pubHolidayName = "PubHoliday";
         Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
         pubHolidayAttr.put("class", pubHolidayName);
         pubHolidayAttr.put("id", pubHolidayName);
-        pubHolidayAttr.put("name", premIndex + pubHolidayName + phCount);
+        pubHolidayAttr.put("name", premIndex +premPrefixName+ pubHolidayName + phCount);
         pubHolidayAttr.put("style", "display: none;");
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         String pubHolidayHtml = NewApplicationHelper.generateMultipleDropDown(pubHolidayAttr,phOpList,null,null);
@@ -1248,7 +1046,28 @@ public class NewApplicationAjaxController {
 
         ajaxResDto.setResultJson(phHtml);
 
-        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml end ...."));
+        return ajaxResDto;
+    }
+
+    @PostMapping(value = "/operation-event-html")
+    public @ResponseBody
+    AjaxResDto genEventHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the gen event start ...."));
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        String premIndex = ParamUtil.getString(request,"premIndex");
+        String premType = ParamUtil.getString(request,"premType");
+        String eventCount = ParamUtil.getString(request,"eventCount");
+        String premPrefixName = getPremPrefixName(premType);
+        String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+        sql = sql.replace("${premIndex}",premIndex);
+        sql = sql.replace("${premType}",premPrefixName);
+        sql = sql.replace("${eventCount}",eventCount);
+        ajaxResDto.setResultJson(sql);
+
+        log.debug(StringUtil.changeForLog("the gen event end ...."));
         return ajaxResDto;
     }
 
@@ -1429,42 +1248,42 @@ public class NewApplicationAjaxController {
         List<SelectOption> hourList = NewApplicationHelper.getTimeHourList();
         List<SelectOption> minList = NewApplicationHelper.getTimeMinList();
 
-        String weeklyStartHourName = premPrefixName + "WeeklyStartHH";
+        String weeklyStartHourName = "WeeklyStartHH";
         Map<String, String> startHourAttr = IaisCommonUtils.genNewHashMap();
         startHourAttr.put("class", weeklyStartHourName);
         startHourAttr.put("id", weeklyStartHourName);
-        startHourAttr.put("name", premIndex+weeklyStartHourName+weeklyCount);
+        startHourAttr.put("name", premIndex+premPrefixName+weeklyStartHourName+weeklyCount);
         startHourAttr.put("style", "display: none;");
         String weeklyStartHourHtml = NewApplicationHelper.generateDropDownHtml(startHourAttr,hourList,"--",null);
 
-        String weeklyStartMinName =premPrefixName + "WeeklyStartMM";
+        String weeklyStartMinName = "WeeklyStartMM";
         Map<String, String> startMinAttr = IaisCommonUtils.genNewHashMap();
         startMinAttr.put("class", weeklyStartMinName);
         startMinAttr.put("id", weeklyStartMinName);
-        startMinAttr.put("name", premIndex+weeklyStartMinName+weeklyCount);
+        startMinAttr.put("name", premIndex+premPrefixName+weeklyStartMinName+weeklyCount);
         startMinAttr.put("style", "display: none;");
         String weeklyStartMinHtml = NewApplicationHelper.generateDropDownHtml(startMinAttr,minList,"--",null);
 
 
-        String weeklyEndHourName = premPrefixName + "WeeklyEndHH";
+        String weeklyEndHourName = "WeeklyEndHH";
         Map<String, String> endHourAttr = IaisCommonUtils.genNewHashMap();
         endHourAttr.put("class", weeklyEndHourName);
         endHourAttr.put("id", weeklyEndHourName);
-        endHourAttr.put("name", premIndex+weeklyEndHourName+weeklyCount);
+        endHourAttr.put("name", premIndex+premPrefixName+weeklyEndHourName+weeklyCount);
         endHourAttr.put("style", "display: none;");
         String weeklyEndHourHtml = NewApplicationHelper.generateDropDownHtml(endHourAttr,hourList,"--",null);
 
-        String weeklyEndMinName =premPrefixName + "WeeklyEndMM";
+        String weeklyEndMinName ="WeeklyEndMM";
         Map<String, String> endMinAttr = IaisCommonUtils.genNewHashMap();
         endMinAttr.put("class", weeklyEndMinName);
         endMinAttr.put("id", weeklyEndMinName);
-        endMinAttr.put("name", premIndex+weeklyEndMinName+weeklyCount);
+        endMinAttr.put("name", premIndex+premPrefixName+weeklyEndMinName+weeklyCount);
         endMinAttr.put("style", "display: none;");
         String weeklyEndMinHtml = NewApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
 
 
         String sql = SqlMap.INSTANCE.getSql("premises", "weekly").getSqlStr();
-        sql = sql.replace("${fieldName}","Weekly");
+        sql = sql.replace("${fieldName}","Weekly <span class=\"mandatory\">*</span>");
         sql = sql.replace("${opType}","Weekly");
         sql = sql.replace("${premPrefixName}", premPrefixName);
         sql = sql.replace("${premIndex}", premIndex);
@@ -1481,40 +1300,39 @@ public class NewApplicationAjaxController {
 
     private String genPhCountHtml(String premType,String premIndex,String phCount){
         String premPrefixName = getPremPrefixName(premType);
-        String pubHolidayName = premPrefixName + "PubHoliday";
         List<SelectOption> hourList = NewApplicationHelper.getTimeHourList();
         List<SelectOption> minList = NewApplicationHelper.getTimeMinList();
 
-        String pubHolidayStartHourName = premPrefixName + "PhStartHH";
+        String pubHolidayStartHourName = "PhStartHH";
         Map<String, String> startHourAttr = IaisCommonUtils.genNewHashMap();
         startHourAttr.put("class", pubHolidayStartHourName);
         startHourAttr.put("id", pubHolidayStartHourName);
-        startHourAttr.put("name", premIndex+pubHolidayStartHourName+phCount);
+        startHourAttr.put("name", premIndex+premPrefixName+pubHolidayStartHourName+phCount);
         startHourAttr.put("style", "display: none;");
         String pubHolidayStartHourHtml = NewApplicationHelper.generateDropDownHtml(startHourAttr,hourList,"--",null);
 
-        String pubHolidayStartMinName =premPrefixName + "PhStartMM";
+        String pubHolidayStartMinName = "PhStartMM";
         Map<String, String> startMinAttr = IaisCommonUtils.genNewHashMap();
         startMinAttr.put("class", pubHolidayStartMinName);
         startMinAttr.put("id", pubHolidayStartMinName);
-        startMinAttr.put("name", premIndex+pubHolidayStartMinName+phCount);
+        startMinAttr.put("name", premIndex+premPrefixName+pubHolidayStartMinName+phCount);
         startMinAttr.put("style", "display: none;");
         String pubHolidayStartMinHtml = NewApplicationHelper.generateDropDownHtml(startMinAttr,minList,"--",null);
 
 
-        String pubHolidayEndHourName = premPrefixName + "PhEndHH";
+        String pubHolidayEndHourName = "PhEndHH";
         Map<String, String> endHourAttr = IaisCommonUtils.genNewHashMap();
         endHourAttr.put("class", pubHolidayEndHourName);
         endHourAttr.put("id", pubHolidayEndHourName);
-        endHourAttr.put("name", premIndex+pubHolidayEndHourName+phCount);
+        endHourAttr.put("name", premIndex+premPrefixName+pubHolidayEndHourName+phCount);
         endHourAttr.put("style", "display: none;");
         String pubHolidayEndHourHtml = NewApplicationHelper.generateDropDownHtml(endHourAttr,hourList,"--",null);
 
-        String pubHolidayEndMinName =premPrefixName + "PhEndMM";
+        String pubHolidayEndMinName ="PhEndMM";
         Map<String, String> endMinAttr = IaisCommonUtils.genNewHashMap();
         endMinAttr.put("class", pubHolidayEndMinName);
         endMinAttr.put("id", pubHolidayEndMinName);
-        endMinAttr.put("name", premIndex+pubHolidayEndMinName+phCount);
+        endMinAttr.put("name", premIndex+premPrefixName+pubHolidayEndMinName+phCount);
         endMinAttr.put("style", "display: none;");
         String pubHolidayEndMinHtml = NewApplicationHelper.generateDropDownHtml(endMinAttr,minList,"--",null);
 
@@ -1534,4 +1352,52 @@ public class NewApplicationAjaxController {
         sql = sql.replace("${allDayName}",premIndex+premPrefixName+"PhAllDay"+phCount);
         return sql;
     }
+
+    private String genMultiDropDown(String premVal,String dropLength,List<SelectOption> dropDownOpList,String premType,String name){
+        Map<String, String> attr = IaisCommonUtils.genNewHashMap();
+        attr.put("class", name);
+        attr.put("id", name);
+        attr.put("name", premVal + premType + name + dropLength);
+        attr.put("style", "display: none;");
+        return NewApplicationHelper.generateMultipleDropDown(attr,dropDownOpList,null,null);
+    }
+
+    private String genOperationHourDropDown(String premVal,String dropLength,List<SelectOption> dropDownOpList,String premType,String name){
+        Map<String, String> ohAttr = IaisCommonUtils.genNewHashMap();
+        ohAttr.put("class", name);
+        ohAttr.put("id", name);
+        ohAttr.put("name", premVal+premType+name+dropLength);
+        ohAttr.put("style", "display: none;");
+        return NewApplicationHelper.generateDropDownHtml(ohAttr, dropDownOpList, "--", null);
+    }
+
+    private String setOperationHour(String html,List<SelectOption> weeklyList,List<SelectOption> phList,List<SelectOption> hourList,List<SelectOption> minList,String premType,String premVal){
+        //onsite weekly
+        String onSiteWeeklyDropHtml = genMultiDropDown(premVal,"0",weeklyList,premType,"Weekly");
+        String onSiteWeeklyStartHH = genOperationHourDropDown(premVal,"0",hourList,premType,"WeeklyStartHH");
+        String onSiteWeeklyStartMM = genOperationHourDropDown(premVal,"0",minList,premType,"WeeklyStartMM");
+        String onSiteWeeklyEndHH = genOperationHourDropDown(premVal,"0",hourList,premType,"WeeklyEndHH");
+        String onSiteWeeklyEndMM = genOperationHourDropDown(premVal,"0",minList,premType,"WeeklyEndMM");
+
+        html = html.replace("${"+premType+"WeeklySelect}", onSiteWeeklyDropHtml);
+        html = html.replace("${"+premType+"WeeklyStartHH}", onSiteWeeklyStartHH);
+        html = html.replace("${"+premType+"WeeklyStartMM}", onSiteWeeklyStartMM);
+        html = html.replace("${"+premType+"WeeklyEndHH}", onSiteWeeklyEndHH);
+        html = html.replace("${"+premType+"WeeklyEndMM}", onSiteWeeklyEndMM);
+        //onsite ph
+        String onSitePubHolidayDropHtml = genMultiDropDown(premVal,"0",phList,premType,"PubHoliday");
+        String onSitePhStartHH = genOperationHourDropDown(premVal,"0",hourList,premType,"PhStartHH");
+        String onSitePhStartMM = genOperationHourDropDown(premVal,"0",minList,premType,"PhStartMM");
+        String onSitePhEndHH = genOperationHourDropDown(premVal,"0",hourList,premType,"PhEndHH");
+        String onSitePhEndMM = genOperationHourDropDown(premVal,"0",minList,premType,"PhEndMM");
+
+        html = html.replace("${"+premType+"PhSelect}", onSitePubHolidayDropHtml);
+        html = html.replace("${"+premType+"PhStartHH}", onSitePhStartHH);
+        html = html.replace("${"+premType+"PhStartMM}", onSitePhStartMM);
+        html = html.replace("${"+premType+"PhEndHH}", onSitePhEndHH);
+        html = html.replace("${"+premType+"PhEndMM}", onSitePhEndMM);
+
+        return html;
+    }
+
 }
