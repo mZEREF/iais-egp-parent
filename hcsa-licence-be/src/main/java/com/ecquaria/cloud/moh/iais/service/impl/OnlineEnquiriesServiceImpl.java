@@ -170,10 +170,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
         }
-        try{
-            organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
-        }catch (NullPointerException e){
-            log.error(e.getMessage(), e);
+        if(organizationLicDto.getLicenseeIndividualDto()!=null){
+            try{
+                organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getSalutation()));
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+            }
+            try{
+                organizationLicDto.getLicenseeIndividualDto().setIdType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getIdType()));
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+            }
         }
 
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
