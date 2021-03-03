@@ -1592,6 +1592,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        NewApplicationHelper.validatePH(errorMap,appSubmissionDto);
         WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return errorMap;
     }
