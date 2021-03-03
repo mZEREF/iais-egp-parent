@@ -203,7 +203,7 @@ public class InspectionSearchDelegator {
         //get search filter
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
-        String application_status = ParamUtil.getRequestString(bpc.request, "application_status");
+        String application_status = ParamUtil.getRequestString(bpc.request, "superAppStatus");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
@@ -221,13 +221,25 @@ public class InspectionSearchDelegator {
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //get userId
-        String memberValue = "";
         if(!StringUtil.isEmpty(userIdKey)) {
             Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
             String userId = userIdMap.get(userIdKey);
             groupRoleFieldDto.setCheckUser(userIdKey);
             //get task ref_no by uerId
-            memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            String memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            int appCorIdStrsSize = 0;
+            if(StringUtil.isEmpty(memberValue)){
+                String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrsSize);
+                searchParam.addParam("appCorId_list", appCorrId);
+            } else {
+                String[] appCorIdStrs = memberValue.split(",");
+                appCorIdStrsSize = appCorIdStrs.length;
+                String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrsSize);
+                searchParam.addParam("appCorId_list", appCorrId);
+                for (int i = 0; i < appCorIdStrs.length; i++) {
+                    searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
+                }
+            }
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "memberId", null);
@@ -241,15 +253,6 @@ public class InspectionSearchDelegator {
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
-        }
-        String[] appCorIdStrs;
-        if(!(StringUtil.isEmpty(memberValue))) {
-            appCorIdStrs = memberValue.split(",");
-            String appCorrId = SqlHelper.constructInCondition("T5.APP_PREM_CORR_ID", appCorIdStrs.length);
-            searchParam.addParam("appCorId_list", appCorrId);
-            for(int i = 0; i < appCorIdStrs.length; i++){
-                searchParam.addFilter("T5.APP_PREM_CORR_ID" + i, appCorIdStrs[i]);
-            }
         }
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type", application_type,true);
