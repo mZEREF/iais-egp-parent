@@ -54,6 +54,9 @@
             autoclose:true,
             showOnFocus:false
         });
+        $('.date_picker').click({
+            this.datepicker('show');
+        });
     });
 </script>
 
