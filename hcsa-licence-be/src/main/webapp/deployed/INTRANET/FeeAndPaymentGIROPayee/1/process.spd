@@ -16,7 +16,7 @@
     <JavaCode defClass="" executor="" methodName="info_OnStepProcess_0" name="info_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prePayeeResult" x="400" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="prePayeeResult" x="380" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -119,86 +119,95 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="400" y="290">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/info" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(120,120)(295,150)}</position>
+   <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/info" style="oblique">
-   <position>{(295,150)(445,150)}</position>
+   <position>{(270,120)(400,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchPayeeResultPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prePayeeResult" style="oblique">
-   <position>{(445,150)(595,150)}</position>
+   <position>{(400,120)(570,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchPayeeResultPage" style="oblique">
-   <position>{(595,150)(745,150)}</position>
+   <position>{(570,120)(720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preOrgResult" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(745,150)(895,150)}</position>
+   <position>{(720,120)(870,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/deletePayee" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(745,150)(595,50)}</position>
+   <position>{(720,120)(570,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/reSearchPayee" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(745,150)(595,290)}</position>
+   <position>{(720,120)(570,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/reSearchPayee" style="oblique">
-   <position>{(595,290)(445,150)}</position>
+   <position>{(570,260)(400,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/deletePayee" style="oblique">
-   <position>{(595,50)(445,150)}</position>
+   <position>{(570,20)(400,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchOrgResultPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preOrgResult" style="oblique">
-   <position>{(895,150)(1045,150)}</position>
+   <position>{(870,120)(1020,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchOrgResultPage" style="oblique">
-   <position>{(1045,150)(1195,150)}</position>
+   <position>{(1020,120)(1170,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/reSearchOrg" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1195,150)(1075,60)}</position>
+   <position>{(1170,120)(1050,30)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSelect" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1195,150)(1195,290)}</position>
+   <position>{(1170,120)(1170,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preOrgResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/reSearchOrg" style="oblique">
-   <position>{(1075,60)(895,150)}</position>
+   <position>{(1050,30)(870,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/addPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSelect" style="oblique">
-   <position>{(1195,290)(1045,290)}</position>
+   <position>{(1170,260)(1020,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preView" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(755,290)(755,410)}</position>
+   <position>{(730,260)(730,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/refill" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(755,290)(1045,410)}</position>
+   <position>{(730,260)(1020,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSelect" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/refill" style="oblique">
-   <position>{(1045,410)(1195,290)}</position>
+   <position>{(1020,380)(1170,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/preViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preView" style="oblique">
-   <position>{(755,410)(575,410)}</position>
+   <position>{(730,380)(550,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preViewPage" style="oblique">
-   <position>{(575,410)(575,530)}</position>
+   <position>{(550,380)(560,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(575,530)(445,530)}</position>
+   <position>{(560,500)(420,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doBack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(575,530)(1195,530)}</position>
+   <position>{(560,500)(1170,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSelect" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBack" style="oblique">
-   <position>{(1195,530)(1195,290)}</position>
+   <position>{(1170,500)(1170,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(445,530)(445,150)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ackPage" style="oblique">
+   <position>{(445,340)(400,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doValidate" style="rectanular">
-   <position>{(905,290)(755,290)}</position>
+   <position>{(880,260)(730,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doValidate" linkstyle="Direct" name="" sourceName="/Pages/WebPage/addPage" style="oblique">
-   <position>{(1045,290)(905,290)}</position>
+   <position>{(1020,260)(880,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
+   <position>{(420,500)(445,340)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -218,7 +227,7 @@
    <SwitchCase component="/Steps/AutomaticStep/reSearchOrg" value="search"/>
    <SwitchCase component="/Steps/AutomaticStep/doSelect" value="select"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSubmit" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="530" y="480">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSubmit" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="540" y="480">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="submint"/>
    <SwitchCase component="/Steps/AutomaticStep/doBack" value="back"/>

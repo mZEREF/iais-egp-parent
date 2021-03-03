@@ -19,7 +19,7 @@
                 <div class="intranet-content">
                     <div class="row form-horizontal">
                         <div class="bg-title col-xs-12 col-md-12">
-                            <h2>List of GIRO Payees</h2>
+                            <strong>List of GIRO Payees</strong>
                         </div>
                         <iais:row>
                             <iais:field value="HCI Code :"/>

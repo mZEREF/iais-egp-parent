@@ -1,8 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * FeeAndPaymentGIROPayeeDelegator
@@ -15,7 +19,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class FeeAndPaymentGIROPayeeDelegator {
 
     public void start(BaseProcessClass bpc) {
-
+        log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT,  AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
     }
     public void info(BaseProcessClass bpc) {
 

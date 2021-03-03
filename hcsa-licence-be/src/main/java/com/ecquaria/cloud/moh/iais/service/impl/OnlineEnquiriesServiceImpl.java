@@ -171,7 +171,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             log.error(e.getMessage(), e);
         }
         try{
-            organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
+            organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getSalutation()));
+        }catch (NullPointerException e){
+            log.error(e.getMessage(), e);
+        }
+        try{
+            organizationLicDto.getLicenseeIndividualDto().setIdType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getIdType()));
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
         }

@@ -19,7 +19,7 @@
                 <div class="intranet-content">
                     <div class="row form-horizontal">
                         <div class="bg-title col-xs-12 col-md-12">
-                            <h2>Add a GIRO Payee</h2>
+                            <strong>Add a GIRO Payee</strong>
                         </div>
                         <iais:row>
                             Note: This function is to add a GIRO Payee who submitted a manual application.
