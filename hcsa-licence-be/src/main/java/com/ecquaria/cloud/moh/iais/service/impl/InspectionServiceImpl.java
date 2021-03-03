@@ -151,10 +151,36 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        String roleId = loginContext.getCurRoleId();
         for(UserGroupCorrelationDto ugcDto : userGroupCorrelationDtos){
             if(ugcDto != null) {
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus()) && ugcDto.getIsLeadForGroup() == 1) {
-                    workGroupIdList.add(ugcDto.getGroupId());
+                    WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
+                    String groupName = workingGroupDto.getGroupName();
+                    if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId)&&(groupName.contains("Inspection"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
+                    if(RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)&&(groupName.contains("Admin Screening officer"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
+                    if(RoleConsts.USER_ROLE_PSO_LEAD.equals(roleId)&&(groupName.contains("Professional"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
+                    if(RoleConsts.USER_ROLE_AO1_LEAD.equals(roleId)&&(groupName.contains("Level 1 Approval"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
+                    if(RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)&&(groupName.contains("Level 2 Approval"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
+                    if(RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)&&(groupName.contains("Level 3 Approval"))){
+                        workGroupIdList.add(ugcDto.getGroupId());
+                        continue;
+                    }
                 }
             }
         }
@@ -386,27 +412,27 @@ public class InspectionServiceImpl implements InspectionService {
             String groupName = workingGroupDto.getGroupName();
             if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId)&&(groupName.contains("Inspection"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
             if(RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)&&(groupName.contains("Admin Screening officer"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
             if(RoleConsts.USER_ROLE_PSO_LEAD.equals(roleId)&&(groupName.contains("Professional"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
             if(RoleConsts.USER_ROLE_AO1_LEAD.equals(roleId)&&(groupName.contains("Level 1 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
             if(RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)&&(groupName.contains("Level 2 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
             if(RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)&&(groupName.contains("Level 3 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
-                break;
+                continue;
             }
         }
         return workGroupIdList;
