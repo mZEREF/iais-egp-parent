@@ -413,10 +413,6 @@ public class CessationBeServiceImpl implements CessationBeService {
             String unitNo = premisesDto.getUnitNo();
             String postalCode = premisesDto.getPostalCode();
             String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
-            String hciCode = premisesDto.getHciCode();
-            String hciName = premisesDto.getHciName();
-            hciName = hciName+" - "+hciCode;
-            premisesDto.setHciName(hciName);
             premisesDto.setHciAddress(hciAddress);
         }
         return premisesDto;

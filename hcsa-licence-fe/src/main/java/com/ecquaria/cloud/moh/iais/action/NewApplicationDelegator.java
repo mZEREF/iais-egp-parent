@@ -1486,8 +1486,10 @@ private CessationFeService cessationFeService;
                             PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
                             String hciAddressPat = premisesDto.getHciAddress();
                             String hciNamePat = premisesDto.getHciName();
+                            String hciCodePat= premisesDto.getHciCode();
                             appCessHciDto.setHciNamePat(hciNamePat);
                             appCessHciDto.setHciAddressPat(hciAddressPat);
+                            appCessHciDto.setHciCodePat(hciCodePat);
                         } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatRegNo(patTransTo);
                             appCessHciDto.setPatNeedTrans(Boolean.TRUE);

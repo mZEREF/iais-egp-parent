@@ -44,7 +44,7 @@
                         <input type="hidden" name="crud_action_value" value="">
                         <div class="form-group">
                           <label class="col-xs-12 col-md-6 control-label">Effective
-                            Date <span style="color: red">*</span></label>
+                            Date</label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <fmt:formatDate value="${appCessHci.effectiveDate}"
                                             pattern="dd/MM/yyyy"/>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group">
                           <label class="col-xs-12 col-md-6 control-label">Cession
-                            Reasons <span style="color: red">*</span></label>
+                            Reasons </label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <iais:select disabled="true"
                                          id="reasonId"
@@ -68,8 +68,7 @@
                           </div>
                         </div>
                         <div class="form-group" id="reason" hidden>
-                          <label class="col-xs-12 col-md-6 control-label ">Others <span
-                                  style="color: red">*</span></label>
+                          <label class="col-xs-12 col-md-6 control-label ">Others</label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <iais:input needDisabled="true" type="text"
                                         name="otherReason"
@@ -78,7 +77,7 @@
                         </div>
                         <div class="form-group">
                           <label class="col-xs-12 col-md-6 control-label">Ratient's Record
-                            will be transferred <span style="color: red">*</span></label>
+                            will be transferred </label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <div class="form-check-gp">
                               <div class="row">
@@ -123,8 +122,7 @@
                         </div>
                         <div class="form-group" id="patYes" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Who will
-                            take over your patients' case records?<span
-                                    style="color: red">*</span></label>
+                            take over your patients' case records?</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:select disabled="true"
                                          name="patientSelect"
@@ -139,24 +137,37 @@
                         <div class="form-group" id="patHciName"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
-                            Name <span style="color: #ff0000">*</span></label>
+                            Name / Code</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input type="text" needDisabled="true"
                                         value="${appCessHci.patHciName}" maxLength="100"
                                         name="patHciName"/>
                           </div>
                         </div>
-                        <div class="form-group" id="hciName">
-                          <label class="col-xs-12 col-md-6 control-label"></label>
+                        <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">HCI
+                            Name </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
+                          </div>
+                        </div>
+                        <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
+                          </div>
+                        </div>
+                        <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
+                          <label class="col-xs-12 col-md-6 control-label">HCI
+                            Address </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                           </div>
                         </div>
                         <div class="form-group" id="patRegNo"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Professional
-                            Regn. No. <span style="color: #ff0000">*</span></label>
+                            Regn. No.</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input needDisabled="true" cssClass="disabled"
                                         type="text"
@@ -166,8 +177,7 @@
                         </div>
                         <div class="form-group" id="patOthers"
                              hidden>
-                          <label class="col-xs-12 col-md-6 control-label">Others <span
-                                  style="color: red">*</span></label>
+                          <label class="col-xs-12 col-md-6 control-label">Others</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input needDisabled="true" type="text"
                                         name="patOthers"
@@ -177,7 +187,7 @@
                         <div class="form-group"
                              id="patOthersMobileNo" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Mobile
-                            No. <span style="color: red">*</span></label>
+                            No.</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input type="text" needDisabled="true"
                                         value="${appCessHci.mobileNo}"
@@ -187,7 +197,7 @@
                         </div>
                         <div class="form-group"
                              id="patOthersEmailAddress" hidden>
-                          <label class="col-xs-12 col-md-6 control-label">Email Address <span style="color: red">*</span></label>
+                          <label class="col-xs-12 col-md-6 control-label">Email Address </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input type="text" value="${appCessHci.emailAddress}"
                                         maxLength="66" needDisabled="true"
@@ -196,7 +206,7 @@
                         </div>
                         <div class="form-group" id="patNo" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Reason for
-                            no patients' records transfer <span style="color: red">*</span></label>
+                            no patients' records transfer</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input needDisabled="true" type="text"
                                         name="patNoRemarks"
@@ -212,7 +222,7 @@
                                      name="patNoConfirm"
                                      <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
                               <label class="form-check-label" for="patNoConfirm"><span
-                                      class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
+                                      class="check-square"></span><iais:message key="CESS_DEC001"/></label>
                             </div>
                           </div>
                         </div>
@@ -220,7 +230,7 @@
                           <div>
                             <div class="form-group">
                               <label class="col-xs-12 col-md-6 control-label">To
-                                Cease <span style="color: red">*</span></label>
+                                Cease </label>
                               <div class="col-xs-6 col-sm-4 col-md-3">
                                 <div class="form-check">
                                   <input class="form-check-input"
@@ -365,6 +375,9 @@
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
             $("#patRegNo").hide();
+            $("#hciNamePat").show();
+            $("#hciCodePat").show();
+            $("#hciAddressPat").show();
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();
