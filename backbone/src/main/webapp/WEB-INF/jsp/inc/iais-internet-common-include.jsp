@@ -52,11 +52,9 @@
         $('.date_picker').datepicker({
             format:"dd/mm/yyyy",
             autoclose:true,
-            showOnFocus:false
+            todayHighlight:true
         });
-        $('.date_picker').click({
-            this.datepicker('show');
-        });
+
     });
 </script>
 
