@@ -436,7 +436,7 @@
                   else T1.DISTRIBUTION_NAME END) as DISTRIBUTION_NAME,T1.SERVICE_CODE,T1.DELIVERY_MODE,T1.CREATED_DT,T3.DISPLAY_NAME as CREATED_BY,T2.RECIPIENTS_ROLE
             FROM distribution T1
              JOIN distribution_role T2 ON T1.ID = T2.DISTRIBUTION_ID
-             LEFT JOIN user_account T3 ON T3.id = T1.CREATED_BY
+             LEFT JOIN userAccountView T3 ON T3.id = T1.CREATED_BY
              WHERE 1 = 1
             <#if status??> AND T1.STATUS = :status</#if>
             <#if description??> AND DISTRIBUTION_NAME like :description</#if>
