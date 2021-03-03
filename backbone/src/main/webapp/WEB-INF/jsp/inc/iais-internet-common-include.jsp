@@ -53,9 +53,8 @@
             format:"dd/mm/yyyy",
             autoclose:true,
             todayHighlight:true,
-            Orientation:auto top
+            Orientation:"auto top"
         });
-
     });
 </script>
 
