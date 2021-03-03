@@ -258,7 +258,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<String> listHciName() {
-        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        List<String> hciNames = licenceClient.listHciNames().getEntity();
         return hciNames;
     }
 

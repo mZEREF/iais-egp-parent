@@ -225,4 +225,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/get-premise-hciCodeName-be",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getPremiseDtoByHciCodeOrName(@RequestParam("hciCodeName") String hciCodeName);
+
+    @GetMapping(value = "/hcsa-licence/listHciName",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> listHciNames();
 }

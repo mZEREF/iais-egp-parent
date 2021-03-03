@@ -178,7 +178,7 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public List<String> listHciName() {
-        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        List<String> hciNames = hcsaLicenceClient.listHciNames().getEntity();
         return hciNames;
     }
 

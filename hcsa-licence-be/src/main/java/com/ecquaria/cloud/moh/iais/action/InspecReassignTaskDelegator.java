@@ -132,6 +132,10 @@ public class InspecReassignTaskDelegator {
             List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
             //get Members Option
             groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+            List<SelectOption> memberOption = groupRoleFieldDto.getMemberOption();
+            if(!IaisCommonUtils.isEmpty(memberOption)){
+                ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) memberOption);
+            }
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
             List<SelectOption> superPoolRoleIds = poolRoleCheckDto.getRoleOptions();
             ListIterator<SelectOption> selectOptionListIterator = superPoolRoleIds.listIterator();
@@ -161,7 +165,6 @@ public class InspecReassignTaskDelegator {
             ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
-            ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) groupRoleFieldDto.getMemberOption());
             ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", (Serializable) superPoolRoleIds);
