@@ -2310,7 +2310,7 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             msgInfoMap.put("ApplicationDate", applicationViewDto.getSubmissionDate().split(" ")[0]);
                             if (StringUtil.isEmpty(paymentMethod) ||
-                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1)) {
+                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || charity) {
                                 msgInfoMap.put("paymentType", "2");
                                 msgInfoMap.put("paymentMode", "");
                                 msgInfoMap.put("returnMount", 0.0);
