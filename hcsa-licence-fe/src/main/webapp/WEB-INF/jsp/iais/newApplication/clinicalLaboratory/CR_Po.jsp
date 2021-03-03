@@ -1176,6 +1176,7 @@
                 $('.dpo-content:eq(1) .assign-psn-item').html('');
             }
             DPO_number();
+            $('#isEditDpoHiddenVal').val('1');
         });
 
     }

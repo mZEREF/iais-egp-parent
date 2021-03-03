@@ -62,10 +62,10 @@
                                             </div>
                                             <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
                                                 <div class="row">
-                                                    <div class="col-xs-5">
-                                                        Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
+                                                    <div class="col-md-5"  style="text-align: justify;width: 30%">
+                                                        Please indicate an effective date of change for your licence information to be updated. The date of change will be effected on the indicated date or approval date, whichever is the later date
                                                     </div>
-                                                    <div class="col-xs-7">
+                                                    <div class="col-md-7" style="width: 70%">
                                                         <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
                                                     </div>
                                                 </div>
