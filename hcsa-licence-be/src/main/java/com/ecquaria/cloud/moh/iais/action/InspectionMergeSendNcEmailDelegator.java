@@ -293,9 +293,9 @@ public class InspectionMergeSendNcEmailDelegator {
                         if(recommendations.length>=observations.length){
                             for (int i=0;i<recommendations.length;i++){
                                 if(i<observations.length){
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
                                 }else {
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
                                 }
                                 sn++;
 
@@ -303,9 +303,9 @@ public class InspectionMergeSendNcEmailDelegator {
                         }else {
                             for (int i=0;i<observations.length;i++){
                                 if(i<recommendations.length){
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(recommendations[i])).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml(recommendations[i])).append("</td></tr>");
                                 }else {
-                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml("")).append(TD).append(StringUtil.viewHtml(observations[i])).append("</td></tr>");
+                                    stringBuilder2.append("<tr><td>").append(sn).append(TD).append(StringUtil.viewHtml(observations[i])).append(TD).append(StringUtil.viewHtml("")).append("</td></tr>");
                                 }
                                 sn++;
                             }
