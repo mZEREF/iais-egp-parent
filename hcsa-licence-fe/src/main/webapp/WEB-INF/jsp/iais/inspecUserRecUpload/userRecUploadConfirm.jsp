@@ -83,9 +83,7 @@
                         <iais:value width="300">
                           <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
                             <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile" varStatus="status">
-                              <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
-                                  ${recFile.realFileName}
-                              </a>
+                              <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${recFile.id}" docName="${recFile.realFileName}"/>
                               &nbsp;<button type="button" class="btn btn-secondary btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
                               <br><br>
                             </c:forEach>
