@@ -52,7 +52,8 @@
         $('.date_picker').datepicker({
             format:"dd/mm/yyyy",
             autoclose:true,
-            todayHighlight:true
+            todayHighlight:true,
+            Orientation:auto top
         });
 
     });
