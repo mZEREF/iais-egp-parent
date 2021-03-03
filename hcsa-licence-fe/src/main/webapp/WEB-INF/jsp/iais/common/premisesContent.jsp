@@ -579,14 +579,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addWeeklyDiv">
+                        <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() > weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
@@ -729,14 +729,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addPhDiv">
+                        <div class="form-group addPhDiv <c:if test="${phList.size() > phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
@@ -779,7 +779,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="">
                                             </div>
                                             <div class="col-md-8">
                                                 <span class="error-msg " name="iaisErrorMsg" id="error_onSiteEventDate${status.index}${eventStat.index}"></span>
@@ -824,14 +824,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addEventDiv">
+                        <div class="form-group addEventDiv <c:if test="${eventList.size() > eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <%--<div class="form-group">
@@ -1264,14 +1264,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addWeeklyDiv">
+                        <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() > weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
@@ -1414,14 +1414,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addPhDiv">
+                        <div class="form-group addPhDiv <c:if test="${phList.size() > phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
@@ -1464,7 +1464,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="">
                                             </div>
                                             <div class="col-md-8">
                                                 <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceEventDate${status.index}${eventStat.index}"></span>
@@ -1509,14 +1509,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addEventDiv">
+                        <div class="form-group addEventDiv <c:if test="${eventList.size() > eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
                     <%--<div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
@@ -1940,14 +1940,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addWeeklyDiv">
+                        <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() > weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="phList" value="${appGrpPremisesDto.phDtoList}"/>
@@ -2090,14 +2090,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addPhDiv">
+                        <div class="form-group addPhDiv <c:if test="${phList.size() > phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <c:set var="eventList" value="${appGrpPremisesDto.eventDtoList}"/>
@@ -2140,7 +2140,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="">
                                             </div>
                                             <div class="col-md-8">
                                                 <span class="error-msg " name="iaisErrorMsg" id="error_offSiteEventDate${status.index}${eventStat.index}"></span>
@@ -2185,14 +2185,14 @@
                             </c:otherwise>
                         </c:choose>
 
-                        <iais:row cssClass="addEventDiv">
+                        <div class="form-group addEventDiv <c:if test="${eventList.size() > eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-4">
                                 <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-8">
 
                             </iais:value>
-                        </iais:row>
+                        </div>
                     </div>
 
                     <%--<div class="form-group">

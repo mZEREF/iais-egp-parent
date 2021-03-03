@@ -522,9 +522,29 @@
             premContent.find('.weeklyDel').removeClass('hidden');
             premContent.find('.pubHolidayDel').removeClass('hidden');
             premContent.find('.eventDel').removeClass('hidden');
-            premContent.find('.addWeeklyDiv').removeClass('hidden');
-            premContent.find('.addPhDiv').removeClass('hidden');
-            premContent.find('.addEventDiv').removeClass('hidden');
+
+            console.log(premContent.find('.weeklyDiv').length);
+            console.log(premContent.find('.pubHolidayDiv').length);
+            console.log(premContent.find('.eventDiv').length);
+            var premType = premContent.find('input[name="premType"]').val();
+            var premDivName = "";
+            if("ONSITE" == premType){
+                premDivName = 'new-premise-form-on-site';
+            }else if ("CONVEYANCE" == premType) {
+                premDivName = 'new-premise-form-conv';
+            }else if ('OFFSITE' == premType){
+                premDivName = 'new-premise-form-off-site';
+            }
+
+            if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){
+                premContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+            if(premContent.find('.'+premDivName+' .pubHolidayDiv').length < ${phCount}){
+                premContent.find('.addPhDiv').removeClass('hidden');
+            }
+            if(premContent.find('.'+premDivName+' .eventDiv').length < ${eventCount}){
+                premContent.find('.addEventDiv').removeClass('hidden');
+            }
 
             premContent.find('input.allDay:checked').each(function(){
                 var $allDayDiv = $(this).closest('div.col-md-2');
