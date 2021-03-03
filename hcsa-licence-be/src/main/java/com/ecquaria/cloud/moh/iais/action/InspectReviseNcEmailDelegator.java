@@ -663,7 +663,7 @@ public class InspectReviseNcEmailDelegator {
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
-            mapTemplate.put("InspectorDID", leadDto.getMobileNo());
+            mapTemplate.put("InspectorDID", leadDto.getOfficeTelNo());
             mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
 
