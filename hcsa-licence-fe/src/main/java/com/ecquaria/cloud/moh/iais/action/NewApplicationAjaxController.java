@@ -478,7 +478,7 @@ public class NewApplicationAjaxController {
         }
         byte[] fileData = serviceConfigService.downloadFile(fileRepoId);
         if (fileData != null) {
-            response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+            response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
             response.addHeader("Content-Length", "" + fileData.length);
             response.setContentType("application/x-octet-stream");
             OutputStream ops = new BufferedOutputStream(response.getOutputStream());
@@ -503,7 +503,7 @@ public class NewApplicationAjaxController {
         }
         byte[] fileData = serviceConfigService.downloadFile(fileRepoId);
         response.setContentType("application/OCTET-STREAM");
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
         response.addHeader("Content-Length", "" + fileData.length);
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
         ops.write(fileData);
