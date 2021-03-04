@@ -19,6 +19,7 @@
         <![CDATA[
             SELECT distinct opv.OP_ID,opv.ID, opv.HCI_CODE, opv.HCI_NAME, opv.UEN_NO
             from organizationPremisesView opv
+            where 1 = 1
             <#if hciCode??> AND charindex(:hciCode, opv.HCI_CODE) >0 </#if>
             <#if hciName??> AND charindex(:hciName, opv.HCI_NAME) >0 </#if>
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
