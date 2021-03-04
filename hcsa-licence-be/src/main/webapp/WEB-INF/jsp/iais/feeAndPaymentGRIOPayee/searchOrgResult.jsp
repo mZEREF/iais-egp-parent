@@ -182,15 +182,18 @@
         }
     }
     function jumpToPagechangePage() {
+        showWaiting();
         $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();    }
 
     function doSearch() {
+        showWaiting();
         $('input[name="pageJumpNoTextchangePage"]').val(1);
         $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();
     }
     function doSelect(){
+        showWaiting();
         $("[name='crud_action_type']").val("select");
         $("#mainForm").submit();
     }

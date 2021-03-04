@@ -170,7 +170,6 @@
                                             <div class="row">&nbsp;</div>
                                             <iais:action style="text-align:right;">
                                                 <button type="button" class="btn btn-primary AddAcctBtn"
-                                                        disabled
                                                         onclick="javascript:doAddAcct();">Add
                                                 </button>
                                                 <button type="button" class="btn btn-primary DeleteBtn"
@@ -208,20 +207,24 @@
         }
     }
     function jumpToPagechangePage() {
+        showWaiting();
         $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();    }
 
     function doSearch() {
+        showWaiting();
         $('input[name="pageJumpNoTextchangePage"]').val(1);
         $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();
     }
 
     function doAddAcct(){
+        showWaiting();
         $("[name='crud_action_type']").val("add");
         $("#mainForm").submit();
     }
     function doDelete(){
+        showWaiting();
         $("[name='crud_action_type']").val("delete");
         $("#mainForm").submit();
     }

@@ -8,7 +8,7 @@
 
             FROM giro_account_info gai
             join premises p on p.HCI_CODE = gai.HCI_CODE
-            where gai.STATUS = "CMSTAT001"
+            where gai.STATUS = 'CMSTAT001'
             <#if hciCode??> AND charindex(:hciCode, gai.HCI_CODE) >0 </#if>
             <#if cusRefNo??> AND charindex(:cusRefNo, gai.DDA_REF_NO) >0 </#if>
 

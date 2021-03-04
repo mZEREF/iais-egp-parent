@@ -198,7 +198,7 @@
    <position>{(1170,500)(1170,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prePayeeResult" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ackPage" style="oblique">
-   <position>{(445,340)(400,120)}</position>
+   <position>{(420,310)(400,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doValidate" style="rectanular">
    <position>{(880,260)(730,260)}</position>
@@ -207,7 +207,7 @@
    <position>{(1020,260)(880,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(420,500)(445,340)}</position>
+   <position>{(420,500)(420,310)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -216,21 +216,21 @@
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/deletePayee" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preOrgResult" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preOrgResult" value="delete"/>
-   <SwitchCase component="/Steps/AutomaticStep/deletePayee" value="add"/>
-   <SwitchCase component="/Steps/AutomaticStep/reSearchPayee" value="search"/>
+   <SwitchCase component="/Steps/AutomaticStep/preOrgResult" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/deletePayee" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/reSearchPayee" value="&quot;search&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/reSearchOrg" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1150" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/reSearchOrg" value="search"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSelect" value="select"/>
+   <SwitchCase component="/Steps/AutomaticStep/reSearchOrg" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSelect" value="&quot;select&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSubmit" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="540" y="480">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="submint"/>
-   <SwitchCase component="/Steps/AutomaticStep/doBack" value="back"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;submint&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doBack" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

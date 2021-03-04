@@ -112,11 +112,13 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
         $("[name='crud_action_type']").val("back");
         $("#mainForm").submit();
     }
 
     function doSubmit(){
+        showWaiting();
         $("[name='crud_action_type']").val("submit");
         $("#mainForm").submit();
     }
