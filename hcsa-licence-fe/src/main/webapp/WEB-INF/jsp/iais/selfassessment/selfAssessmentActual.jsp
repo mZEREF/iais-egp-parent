@@ -84,7 +84,11 @@
         }
 
         if(val != null && 'Y' == val){
-            $('.print-hidden-flag').addClass("hidden")
+            $('.print-hidden-flag').addClass("hidden");
+            let aTagList = $("a");
+            for(let i = 0; i < aTagList.length; i++){
+                aTagList[i].href= '#';
+            }
             printpage('printContent');
         }
     });
