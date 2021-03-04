@@ -955,8 +955,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr = errorMap.get("conveyanceBlockNos" + i);
                         String floorNoErr = errorMap.get("conveyanceFloorNo" + i);
                         String unitNoErr = errorMap.get("conveyanceUnitNo" + i);
+                        String hciNAmeErr = errorMap.get("conveyanceHciName" + i);
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
-                        boolean hciFlag = StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        boolean hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
@@ -1305,8 +1306,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr = errorMap.get("offSiteBlockNo" + i);
                         String floorNoErr = errorMap.get("offSiteFloorNo" + i);
                         String unitNoErr = errorMap.get("offSiteUnitNo" + i);
+                        String hciNAmeErr = errorMap.get("offSiteHciName" + i);
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
-                        boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        boolean hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
