@@ -70,6 +70,9 @@
             $premContent.find('input[name="eventLength"]').val(1);
             $premContent.find('input[name="phLength"]').val(1);
             $premContent.find('.allDay').attr('disabled',false);
+            $premContent.find('.addWeeklyDiv').removeClass('hidden');
+            $premContent.find('.addPhDiv').removeClass('hidden');
+            $premContent.find('.addEventDiv').removeClass('hidden');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -461,7 +464,9 @@
                 removeEvent();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy",
-                    autoclose:true
+                    autoclose:true,
+                    todayHighlight:true,
+                    orientation:'bottom'
                 });
                 <!--set Scrollbar -->
                 /*$("div.premSelect->ul").mCustomScrollbar({
@@ -745,6 +750,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.conveyanceHciName);
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.conveyanceBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);
@@ -799,6 +805,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('offSite' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.offSiteHciName);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.offSiteBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.offSitePostalCode);
             $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.offSiteFloorNo);
@@ -986,7 +993,9 @@
         $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
         $premContent.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
 
     }
@@ -1259,7 +1268,9 @@
                         $premContentEle.find('.eventLength').val(length);
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
-                            autoclose:true
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
                         });
                         removeEvent();
                         if(length >= '${eventCount}'){
@@ -1496,7 +1507,9 @@
                     $contentDivEle.find('.eventDel').remove();
                     $('.date_picker').datepicker({
                         format:"dd/mm/yyyy",
-                        autoclose:true
+                        autoclose:true,
+                        todayHighlight:true,
+                        orientation:'bottom'
                     });
                 }
 

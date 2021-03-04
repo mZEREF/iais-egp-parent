@@ -983,7 +983,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public String getInspectionLeader(TaskDto taskDto) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType( taskDto.getRefNo(),InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
         if(appPremisesRecommendationDto != null){
-            return appPremisesRecommendationDto.getRecomDecision() ;
+            return appPremisesRecommendationDto.getRecomDecision().replace(",",", ");
         }
         List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if( taskDtos  != null && taskDtos.size() >0){
@@ -996,13 +996,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                         OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
                         if(userDto.getAvailable() != null && userDto.getAvailable() && ! userNames.contains(userDto.getDisplayName())){
                             userNames.add(userDto.getDisplayName());
-                            stringBuilder.append(userDto.getDisplayName()).append(',');
+                            stringBuilder.append(userDto.getDisplayName()).append(", ");
                         }
                     }
                 }
             }
             String leaderStr = stringBuilder.toString();
-            return StringUtil.isEmpty(leaderStr) ? "" : leaderStr.substring(0,leaderStr.length()-1);
+            return StringUtil.isEmpty(leaderStr) ? "" : leaderStr.substring(0,leaderStr.length()-2);
         }
          return  "";
     }

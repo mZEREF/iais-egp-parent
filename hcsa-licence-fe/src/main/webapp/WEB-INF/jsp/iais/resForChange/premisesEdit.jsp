@@ -214,7 +214,9 @@
         $Ele.find('input[type="text"]').css('color','');
         $Ele.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
     }
 

@@ -129,7 +129,7 @@ public class InspecReassignTaskDelegator {
                 groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             }
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
+            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, null);
             //get Members Option
             groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
             if(groupRoleFieldDto!=null){
@@ -146,18 +146,18 @@ public class InspecReassignTaskDelegator {
                     selectOptionListIterator.remove();
                 }
             }
-            StringBuilder sb = new StringBuilder("(");
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                sb.append(":appCorrId")
-                        .append(i)
-                        .append(',');
+            int appCorrId_listSize = 0;
+            if(!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                appCorrId_listSize = appCorrId_list.size();
+                String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+                searchParam.addParam("appCorrId_list", appPremCorrId);
+                for (int i = 0; i < appCorrId_list.size(); i++) {
+                    searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+                }
+            } else {
+                String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+                searchParam.addParam("appCorrId_list", appPremCorrId);
             }
-            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-            searchParam.addParam("appCorrId_list", appPremCorrId);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
-            }
-
 
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
             searchResult = inspectionService.getSupPoolByParam(searchParam);
@@ -267,10 +267,17 @@ public class InspecReassignTaskDelegator {
         }
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-        String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-        searchParam.addParam("appCorrId_list", appPremCorrId);
-        for (int i = 0; i < appCorrId_list.size(); i++) {
-            searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+        int appCorrId_listSize = 0;
+        if(!IaisCommonUtils.isEmpty(appCorrId_list)) {
+            appCorrId_listSize = appCorrId_list.size();
+            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for (int i = 0; i < appCorrId_list.size(); i++) {
+                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+            }
+        } else {
+            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+            searchParam.addParam("appCorrId_list", appPremCorrId);
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);

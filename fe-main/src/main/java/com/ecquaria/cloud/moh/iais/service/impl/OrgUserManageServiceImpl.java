@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -27,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.service.client.EDHClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
@@ -74,9 +72,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Value("${moh.halp.acra.enable}")
     private String enableAcra;
-
-    @Autowired
-    private EDHClient edhClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -453,7 +448,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
      * if enable acra, licensee info create by this method
      */
     public void createLicenseeByUenFromAcra(String uen) {
-        if (StringUtil.isNotEmpty(uen) && "Y".equals(enableAcra)){
+        if (StringUtil.isNotEmpty(uen) && "Y".equalsIgnoreCase(enableAcra)){
             feUserClient.createLicenseeByUenFromAcra(uen);
         }
     }
@@ -469,8 +464,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public IaisApiResult<Void> checkIssueUen(String idNo, String idType) {
-        return feUserClient.checkIssueUen(idNo, idType).getEntity();
+    public Boolean checkIssueUen(String idNo, String idType) {
+        log.info(StringUtil.changeForLog("SingPass Login service [checkIssueUen] ...ID " + idNo + " ID Type..." + idType));
+        return feUserClient.checkIssueUen(idNo, idType).getEntity().isHasError();
     }
 
     @Override

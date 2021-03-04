@@ -66,7 +66,7 @@ public class FECorppassLandingDelegator {
      */
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        log.info("corppassCallBack===========>>>Start");
+        log.info(StringUtil.changeForLog("Corppass Login service [corppassCallBack] START ...."));
 
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
@@ -133,13 +133,12 @@ public class FECorppassLandingDelegator {
             }else {
                 ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "Y");
             }
-
         }else {
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
         }
 
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-        log.info("corppassCallBack===========>>>End");
+        log.info(StringUtil.changeForLog("Corppass Login service [corppassCallBack] END ...."));
     }
 
     public void validatePwd(BaseProcessClass bpc){

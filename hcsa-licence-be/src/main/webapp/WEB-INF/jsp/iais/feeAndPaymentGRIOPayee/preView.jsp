@@ -34,89 +34,73 @@
                             <iais:row>
                                 <iais:field value="HCI Code(s) :"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:forEach items="${hciSession.rows}" var="hci">
+                                        ${hci.hciCode}<br>
+                                    </c:forEach>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="HCI Name(s) :"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:forEach items="${hciSession.rows}" var="hci">
+                                        ${hci.hciName}<br>
+                                    </c:forEach>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Account Name :" mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${acctName}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Bank Code :"  mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${bankCode}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Branch Code :"  mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${branchCode}"/>
                                 </div>
                             </iais:row>
 
                             <iais:row>
                                 <iais:field value="Bank Name :" mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${bankName}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Bank Account No. :" mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${bankAccountNo}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Customer Reference No. :" mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <c:out value="${cusRefNo}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="GIRO Form :" mandatory="ture"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
-                                </div>
-                            </iais:row>
-                            <iais:row>
-                                <iais:field value="Application No." mandatory="ture"/>
-                                <div class="col-sm-7 col-md-4 col-xs-10">
-
-                                    <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-
+                                    <div class="file-upload-gp">
+                                        <span>
+                                            <c:choose>
+                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>
+                                            </c:choose>
+                                        </span>
+                                    </div>
                                 </div>
                             </iais:row>
                         </iais:section>
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
-                                <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Back</button>
-                                <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Submit</button>
+                                <button class="btn btn-primary" type="button"  onclick="javascript:doBack()">Back</button>
+                                <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                             </iais:action>
                         </div>
                     </div>
@@ -126,3 +110,16 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<script type="text/javascript">
+    function doBack(){
+        showWaiting();
+        $("[name='crud_action_type']").val("back");
+        $("#mainForm").submit();
+    }
+
+    function doSubmit(){
+        showWaiting();
+        $("[name='crud_action_type']").val("submit");
+        $("#mainForm").submit();
+    }
+</script>

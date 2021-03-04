@@ -878,7 +878,7 @@
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                                                                                                    data-html="true"
-                                                                                                                                   data-original-title="<p>This is a sample message for KPI, pending MOH to provide.</p>">i</a></p>
+                                                                                                                                   data-original-title="${kpiInfo}">i</a></p>
                                                                     </td>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;<c:out

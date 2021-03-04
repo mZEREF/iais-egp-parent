@@ -238,10 +238,12 @@ public class ReCessationApplicationBeDelegator {
             if (premisesDto != null) {
                 String hciAddressPat = premisesDto.getHciAddress();
                 String hciNamePat = premisesDto.getHciName();
+                String hciCode = premisesDto.getHciCode();
                 appCessHciDto.setHciNamePat(hciNamePat);
                 appCessationDto.setHciNamePat(hciNamePat);
                 appCessHciDto.setHciAddressPat(hciAddressPat);
                 appCessationDto.setHciAddressPat(hciAddressPat);
+                appCessHciDto.setHciCodePat(hciCode);
             }
         }
         appCessationDto.setPatientSelect(patientSelect);

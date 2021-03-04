@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * TaskOrganizationClient
@@ -41,4 +42,7 @@ public interface LicenseeClient {
 
     @PutMapping(path = "/iais-acraUen-fe/entity/{uen}")
     FeignResponseEntity<GenerateUENDto> createLicenseeByUenFromAcra(@PathVariable("uen") String uen);
+
+    @PostMapping(value = "/imaginary/licensee/")
+    FeignResponseEntity<Void> imaginaryLicenseeByOrgId(@RequestParam(value = "orgnId") String orgnId);
 }

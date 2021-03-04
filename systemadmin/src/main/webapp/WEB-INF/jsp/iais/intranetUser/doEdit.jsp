@@ -65,6 +65,15 @@
                                         </iais:value>
                                     </div>
                                 <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="endDate">Status:<span style="color:red">*</span></label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <iais:select id="status" options="statusOptions" firstOption="Please Select" name="status" value="${orgUserDto.status}"/>
+                                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">

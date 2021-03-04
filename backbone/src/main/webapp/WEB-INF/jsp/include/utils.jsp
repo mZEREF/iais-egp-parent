@@ -104,7 +104,7 @@
 
     function jsonToHtmlTable(str, id) {
         if (str == undefined || str == '' ){
-            $("#" + id).html("<span> No Record! </span>")
+            $("#" + id).html("<span> No record found. </span>")
             return
         }
 

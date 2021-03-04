@@ -517,154 +517,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                     List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        /*String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
-                        String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
-                        int startDate = 0;
-                        int endDate = 0;
-                        if (StringUtil.isEmpty(onsiteStartHH) || StringUtil.isEmpty(onsiteStartMM)) {
-                            errorMap.put("onsiteStartMM" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Operating Hours (Start)", "field"));
-                        } else {
-                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i);
-                        }
-
-                        String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
-                        String onsiteEndMM = appGrpPremisesDtoList.get(i).getOnsiteEndMM();
-                        if (StringUtil.isEmpty(onsiteEndHH) || StringUtil.isEmpty(onsiteEndMM)) {
-                            errorMap.put("onsiteEndMM" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Operating Hours (End)", "field"));
-                        } else {
-                            endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
-                        }
-                        if (!StringUtil.isEmpty(onsiteStartHH) && !StringUtil.isEmpty(onsiteStartMM) && !StringUtil.isEmpty(onsiteEndHH) && !StringUtil.isEmpty(onsiteEndMM)) {
-                            if (endDate != 0) {
-                                if (endDate < startDate) {
-                                    errorMap.put("onsiteStartMM" + i, "NEW_ERR0015");
-                                }
-                            }
-                        }*/
 
                         String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
                         if (StringUtil.isEmpty(locateWithOthers)) {
                             errorMap.put("isOtherLic" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Are you co-locating with another licensee", "field"));
                         }
 
-                        //set  time
-                       /* if (!errorMap.containsKey("onsiteStartMM" + i) && !errorMap.containsKey("onsiteEndMM" + i)) {
-                            LocalTime startTime = LocalTime.of(Integer.parseInt(onsiteStartHH), Integer.parseInt(onsiteStartMM));
-                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
-
-                            LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndHH), Integer.parseInt(onsiteEndMM));
-                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
-                        }*/
-
-                        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
-                        if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)) {
-                            for (int j = 0; j < appPremPhOpenPeriodList.size(); j++) {
-                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
-                                String convStartFromHH = appPremPhOpenPeriodDto.getOnsiteStartFromHH();
-                                String convStartFromMM = appPremPhOpenPeriodDto.getOnsiteStartFromMM();
-                                String onsiteEndToHH = appPremPhOpenPeriodDto.getOnsiteEndToHH();
-                                String onsiteEndToMM = appPremPhOpenPeriodDto.getOnsiteEndToMM();
-                                String phDate = appPremPhOpenPeriodDto.getPhDate();
-                                if (!StringUtil.isEmpty(phDate)) {
-                                    if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM)) {
-                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start)", "field"));
-                                    }
-                                    if (StringUtil.isEmpty(onsiteEndToHH) || StringUtil.isEmpty(onsiteEndToMM)) {
-                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End)", "field"));
-                                    }
-                                } else if (StringUtil.isEmpty(phDate)) {
-                                    errorMap.put("onsitephDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Select Public Holiday", "field"));
-                                }
-                                if (!StringUtil.isEmpty(convStartFromHH) && !StringUtil.isEmpty(convStartFromMM) && !StringUtil.isEmpty(onsiteEndToHH)
-                                        && !StringUtil.isEmpty(onsiteEndToMM) || StringUtil.isEmpty(convStartFromHH) && StringUtil.isEmpty(convStartFromMM)
-                                        && StringUtil.isEmpty(onsiteEndToHH) && StringUtil.isEmpty(onsiteEndToMM)) {
-                                    if (!StringUtil.isEmpty(convStartFromHH) && !StringUtil.isEmpty(convStartFromMM) && !StringUtil.isEmpty(onsiteEndToHH)
-                                            && !StringUtil.isEmpty(onsiteEndToMM)) {
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-
-                                            if (i1 >= 24) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0013");
-                                            } else if (i2 >= 60) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0014");
-                                            }
-
-                                        } catch (Exception e) {
-                                            errorMap.put("onsiteStartToMM" + i + j, "GENERAL_ERR0002");
-                                        }
-                                        try {
-                                            int i3 = Integer.parseInt(onsiteEndToHH);
-                                            int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if (i3 >= 24) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0013");
-                                            } else if (i4 >= 60) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0014");
-                                            }
-                                        } catch (Exception e) {
-                                            errorMap.put("onsiteEndToMM" + i + j, "GENERAL_ERR0002");
-                                        }
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-                                            int i3 = Integer.parseInt(onsiteEndToHH);
-                                            int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if (i3 * 60 + i4 != 0) {
-                                                if ((i1 * 60 + i2) > (i3 * 60 + i4)) {
-                                                    errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0015");
-                                                }
-                                            }
-                                        } catch (Exception e) {
-                                        }
-                                    }
-
-
-                                } else {
-                                    if (StringUtil.isEmpty(convStartFromHH) && StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromHH)) {
-                                        errorMap.put("onsiteStartToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
-                                    } else {
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-
-                                            if (i1 >= 24) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0013");
-                                            } else if (i2 >= 60) {
-                                                errorMap.put("onsiteStartToMM" + i + j, "NEW_ERR0014");
-                                            }
-
-                                        } catch (Exception e) {
-                                            errorMap.put("onsiteStartToMM" + i + j, "GENERAL_ERR0002");
-                                        }
-                                    }
-                                    if (StringUtil.isEmpty(onsiteEndToHH) && StringUtil.isEmpty(onsiteEndToMM) || StringUtil.isEmpty(onsiteEndToHH) || StringUtil.isEmpty(onsiteEndToMM)) {
-                                        errorMap.put("onsiteEndToMM" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End)", "field"));
-                                    } else {
-                                        try {
-                                            int i3 = Integer.parseInt(onsiteEndToHH);
-                                            int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if (i3 >= 24) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0013");
-                                            } else if (i4 >= 60) {
-                                                errorMap.put("onsiteEndToMM" + i + j, "NEW_ERR0014");
-                                            }
-                                        } catch (Exception e) {
-                                            errorMap.put("onsiteEndToMM" + i + j, "GENERAL_ERR0002");
-                                        }
-
-                                    }
-                                }
-                                //set ph time
-                                String errorOnsiteStartToMM = errorMap.get("onsiteStartToMM" + i + j);
-                                String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM" + i + j);
-                                if (StringUtil.isEmpty(errorOnsiteEndToMM) && StringUtil.isEmpty(errorOnsiteStartToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)) {
-                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH), Integer.parseInt(convStartFromMM));
-                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
-                                    LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndToHH), Integer.parseInt(onsiteEndToMM));
-                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
-                                }
-                            }
-                        }*/
                         //weekly
                         List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
                         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
@@ -680,7 +538,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","onSiteWeeklyStart");
                                 errNameMap.put("end","onSiteWeeklyEnd");
                                 errNameMap.put("time","onSiteWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -695,7 +553,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","onSitePhStart");
                                 errNameMap.put("end","onSitePhEnd");
                                 errNameMap.put("time","onSitePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -708,21 +566,25 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
-                                }
-                                if(startDate == null){
-                                    errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("onSiteEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
-                                        errorMap.put("onSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("onSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("onSiteEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("onSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
                                 j++;
@@ -915,151 +777,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        /*String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
-                        String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
-                        int conStartDate = 0;
-                        int conEndDate = 0;
-
-                        if (StringUtil.isEmpty(conStartHH) || StringUtil.isEmpty(conStartMM)) {
-                            errorMap.put("conStartMM" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Operating Hours (Start)", "field"));
-                        } else {
-                            conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i);
-                        }
-                        String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
-                        String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
-                        if (StringUtil.isEmpty(conEndHH) || StringUtil.isEmpty(conEndMM)) {
-                            errorMap.put("conEndMM" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Operating Hours (End)", "field"));
-                        } else {
-                            conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
-                        }
-                        if (!StringUtil.isEmpty(conStartHH) && !StringUtil.isEmpty(conStartMM) && !StringUtil.isEmpty(conEndHH) && !StringUtil.isEmpty(conEndMM)) {
-                            if (0 != conEndDate) {
-                                if (conEndDate < conStartDate) {
-                                    errorMap.put("conStartMM" + i, "NEW_ERR0015");
-                                }
-                            }
-                        }
-
-
-                        //set  time
-                        String errorStartMM = errorMap.get("conStartMM" + i);
-                        String errorEndMM = errorMap.get("conEndMM" + i);
-                        if (StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)) {
-                            LocalTime startTime = LocalTime.of(Integer.parseInt(conStartHH), Integer.parseInt(conStartMM));
-                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
-
-                            LocalTime endTime = LocalTime.of(Integer.parseInt(conEndHH), Integer.parseInt(conEndMM));
-                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
-                        }
-*/
-                        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
-                        if (appPremPhOpenPeriodList != null) {
-                            for (int j = 0; j < appPremPhOpenPeriodList.size(); j++) {
-                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
-                                String convEndToHH = appPremPhOpenPeriodDto.getConvEndToHH();
-                                String convEndToMM = appPremPhOpenPeriodDto.getConvEndToMM();
-                                String convStartFromHH = appPremPhOpenPeriodDto.getConvStartFromHH();
-                                String convStartFromMM = appPremPhOpenPeriodDto.getConvStartFromMM();
-                                String phDate = appPremPhOpenPeriodDto.getPhDate();
-                                if (!StringUtil.isEmpty(phDate)) {
-                                    if (StringUtil.isEmpty(convEndToHH) || StringUtil.isEmpty(convEndToMM)) {
-                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
-                                    }
-                                    if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM)) {
-                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
-                                    }
-                                } else if (StringUtil.isEmpty(phDate)) {
-                                    errorMap.put("convphDate" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006","convphDate","field"));
-                                }
-
-                                if (StringUtil.isEmpty(convEndToHH) && StringUtil.isEmpty(convEndToMM) & StringUtil.isEmpty(convStartFromHH)
-                                        & StringUtil.isEmpty(convStartFromMM) || !StringUtil.isEmpty(convEndToHH) && !StringUtil.isEmpty(convEndToMM)
-                                        && !StringUtil.isEmpty(convStartFromHH) & !StringUtil.isEmpty(convStartFromMM)) {
-                                    if (!StringUtil.isEmpty(convEndToHH) && !StringUtil.isEmpty(convEndToMM)
-                                            && !StringUtil.isEmpty(convStartFromHH) & !StringUtil.isEmpty(convStartFromMM)) {
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-                                            if (i1 >= 24) {
-                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0013");
-                                            } else if (i2 >= 60) {
-                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0014");
-                                            }
-
-                                        } catch (Exception e) {
-                                            errorMap.put("convStartToHH" + i + j, "GENERAL_ERR0002");
-                                        }
-                                        try {
-                                            int i3 = Integer.parseInt(convEndToHH);
-                                            int i4 = Integer.parseInt(convEndToMM);
-                                            if (i3 >= 24) {
-                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0013");
-                                            } else if (i4 >= 60) {
-                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0014");
-                                            }
-                                        } catch (Exception e) {
-                                            errorMap.put("convEndToHH" + i + j, "GENERAL_ERR0002");
-                                        }
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-                                            int i3 = Integer.parseInt(convEndToHH);
-                                            int i4 = Integer.parseInt(convEndToMM);
-                                            if (i3 * 60 + i4 != 0) {
-                                                if ((i1 * 60 + i2) > (i3 * 60 + i4)) {
-                                                    errorMap.put("convStartToHH" + i + j, "NEW_ERR0015");
-                                                }
-                                            }
-                                        } catch (Exception e) {
-
-                                        }
-                                    }
-                                } else {
-                                    if (StringUtil.isEmpty(convStartFromHH) || StringUtil.isEmpty(convStartFromMM) || StringUtil.isEmpty(convStartFromMM) && StringUtil.isEmpty(convStartFromHH)) {
-                                        errorMap.put("convStartToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (Start) ", "field"));
-                                    } else {
-                                        try {
-                                            int i1 = Integer.parseInt(convStartFromHH);
-                                            int i2 = Integer.parseInt(convStartFromMM);
-                                            if (i1 >= 24) {
-                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0013");
-                                            } else if (i2 >= 60) {
-                                                errorMap.put("convStartToHH" + i + j, "NEW_ERR0014");
-                                            }
-                                        } catch (Exception e) {
-
-
-                                        }
-                                    }
-                                    if (StringUtil.isEmpty(convEndToHH) || StringUtil.isEmpty(convEndToMM) || StringUtil.isEmpty(convEndToHH) && StringUtil.isEmpty(convEndToMM)) {
-                                        errorMap.put("convEndToHH" + i + j, MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Holiday Operating Hours (End) ", "field"));
-                                    } else {
-                                        try {
-                                            int i3 = Integer.parseInt(convEndToHH);
-                                            int i4 = Integer.parseInt(convEndToMM);
-                                            if (i3 >= 24) {
-                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0013");
-                                            } else if (i4 >= 60) {
-                                                errorMap.put("convEndToHH" + i + j, "NEW_ERR0014");
-                                            }
-
-                                        } catch (Exception e) {
-
-
-                                        }
-                                    }
-                                }
-                                //set ph time
-                                String errorConvStartToMM = errorMap.get("convStartToHH" + i + j);
-                                String errorConvEndToMM = errorMap.get("convEndToHH" + i + j);
-                                if (StringUtil.isEmpty(errorConvStartToMM) && StringUtil.isEmpty(errorConvEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)) {
-                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH), Integer.parseInt(convStartFromMM));
-                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
-                                    LocalTime endTime = LocalTime.of(Integer.parseInt(convEndToHH), Integer.parseInt(convEndToMM));
-                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
-                                }
-                            }
-                        }*/
 
                         //weekly
                         List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
@@ -1076,7 +793,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","conveyanceWeeklyStart");
                                 errNameMap.put("end","conveyanceWeeklyEnd");
                                 errNameMap.put("time","conveyanceWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -1091,7 +808,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","conveyancePhStart");
                                 errNameMap.put("end","conveyancePhEnd");
                                 errNameMap.put("time","conveyancePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -1104,25 +821,40 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
-                                }
-                                if(startDate == null){
-                                    errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("conveyanceEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
-                                        errorMap.put("conveyanceEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("conveyanceEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("conveyanceEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("conveyanceEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
                                 j++;
                             }
+                        }
+
+                        String convHciName = appGrpPremisesDtoList.get(i).getConveyanceHciName();
+                        if (StringUtil.isEmpty(convHciName)) {
+                            errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
+                        }else{
+                            if(convHciName.length()>100){
+                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
+                                errorMap.put("conveyanceHciName" + i, general_err0041);
+                            }
+
                         }
 
                         String buildingName = appGrpPremisesDtoList.get(i).getConveyanceBuildingName();
@@ -1231,8 +963,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr = errorMap.get("conveyanceBlockNos" + i);
                         String floorNoErr = errorMap.get("conveyanceFloorNo" + i);
                         String unitNoErr = errorMap.get("conveyanceUnitNo" + i);
+                        String hciNAmeErr = errorMap.get("conveyanceHciName" + i);
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
-                        boolean hciFlag = StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        boolean hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
@@ -1273,7 +1006,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","offSiteWeeklyStart");
                                 errNameMap.put("end","offSiteWeeklyEnd");
                                 errNameMap.put("time","offSiteWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -1288,7 +1021,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","offSitePhStart");
                                 errNameMap.put("end","offSitePhEnd");
                                 errNameMap.put("time","offSitePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -1301,27 +1034,42 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
-                                }
-                                if(startDate == null){
-                                    errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("offSiteEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
-                                        errorMap.put("offSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("offSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("offSiteEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("offSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
+
                                 j++;
                             }
                         }
 
+                        String offSiteHciName = appGrpPremisesDtoList.get(i).getOffSiteHciName();
+                        if (StringUtil.isEmpty(offSiteHciName)) {
+                            errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
+                        }else{
+                            if(offSiteHciName.length()>100){
+                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
+                                errorMap.put("offSiteHciName" + i, general_err0041);
+                            }
+
+                        }
                         String buildingName = appGrpPremisesDtoList.get(i).getOffSiteBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
@@ -1571,8 +1319,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr = errorMap.get("offSiteBlockNo" + i);
                         String floorNoErr = errorMap.get("offSiteFloorNo" + i);
                         String unitNoErr = errorMap.get("offSiteUnitNo" + i);
+                        String hciNAmeErr = errorMap.get("offSiteHciName" + i);
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
-                        boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        boolean hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
                         boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                         if (newTypeFlag && hciFlag && !rfi) {
@@ -2216,7 +1965,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     }
 
-    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto,Map<String,String>errorMap,Map<String,String> errNameMap,String count){
+    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto,Map<String,String>errorMap,Map<String,String> errNameMap,String count,boolean isMandatory){
         boolean isEmpty = false;
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
@@ -2225,6 +1974,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String startMM = operationHoursReloadDto.getStartFromMM();
         String endHH = operationHoursReloadDto.getEndToHH();
         String endMM = operationHoursReloadDto.getEndToMM();
+        if(!isMandatory){
+            if(StringUtil.isEmpty(selectVal) &&
+                    StringUtil.isEmpty(startHH) &&
+                    StringUtil.isEmpty(startMM) &&
+                    StringUtil.isEmpty(endHH) &&
+                    StringUtil.isEmpty(endMM)){
+                return;
+            }
+        }
+
+
         if(StringUtil.isEmpty(selectVal)){
             errorMap.put(errNameMap.get("select") + count,emptyErrMsg);
         }

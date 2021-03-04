@@ -533,8 +533,41 @@
         }
     }
 
+    function changePatientCessFeAjax() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005"&&$('#' + i + 'radioYes' + j).is(':checked')) {
+                    $( "#" + i + "hciName" + j).trigger('blur');
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
+                }
+            }
+        }
+    }
+
     function changePatSelectCessFe() {
-        changePatientCessFe();
+        changePatientCessFeAjax();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {

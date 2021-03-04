@@ -148,7 +148,6 @@
             <iais:action style="text-align:center;">
                 <div class="text-right">
                     <a class="btn btn-primary" onclick="doCreate()">Create</a>
-                    <a class="btn btn-primary" onclick="doStatus()">Change</a>
                     <a class="btn btn-primary" onclick="doExport()">Export</a>
                     <input type="file" id="inputFile" name="xmlFile" style="display:none" onchange="javascript:doImport();"/>
                     <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()" value="Import"/>

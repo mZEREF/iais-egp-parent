@@ -14,7 +14,7 @@
         </c:forEach>
     </c:if>
 </ul>
-<div class="mobile-side-nav-tab visible-xs visible-sm">
+<div class="mobile-side-nav-tab ">
     <select id="serviceSelect">
         <option value="clinicalLab">Clinical Laboratory</option>
         <option value="bloodBanking">Blood Banking</option>

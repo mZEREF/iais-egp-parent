@@ -60,7 +60,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Time;
-import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -2156,10 +2155,10 @@ public class NewApplicationHelper {
                 premisesHciPre = appGrpPremisesDto.getHciName() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getFloorNo() + appGrpPremisesDto.getUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getConveyancePostalCode() + appGrpPremisesDto.getConveyanceBlockNo();
+                premisesHciPre = appGrpPremisesDto.getConveyanceHciName() + appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getConveyancePostalCode() + appGrpPremisesDto.getConveyanceBlockNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getConveyanceFloorNo() + appGrpPremisesDto.getConveyanceUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
+                premisesHciPre = appGrpPremisesDto.getOffSiteHciName() + appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getOffSiteFloorNo() + appGrpPremisesDto.getOffSiteUnitNo());
             }
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
@@ -2179,9 +2178,9 @@ public class NewApplicationHelper {
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName() +premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName() +premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
             List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
@@ -3042,6 +3041,7 @@ public class NewApplicationHelper {
                 }
                 List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
                 List<OperationHoursReloadDto> phDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
+                List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDtoList.get(i).getEventDtoList();
                 validate(phDtoList,errorMap,i,s+"PubHoliday");
                 validate(weeklyDtoList,errorMap,i,s+"Weekly");
             }
@@ -3065,13 +3065,13 @@ public class NewApplicationHelper {
                 boolean selectAllDay = list.get(i).isSelectAllDay();
                 boolean selectAllDay1 = list.get(j).isSelectAllDay();
                 if(selectAllDay ||selectAllDay1){
-                    errorMap.put(errorId+index+j,"There is conflicting value  ");
+                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                     continue;
                 }
                 int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
                 int   time1 = getTime(list.get(j).getStartFromHH(), list.get(i).getStartFromMM());
                 if(time>time1){
-                    errorMap.put(errorId+index+j,"There is conflicting value ");
+                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                 }
             }
         }
@@ -3084,6 +3084,25 @@ public class NewApplicationHelper {
             return i*60+i1;
         }catch (NumberFormatException e){
             return 0;
+        }
+    }
+    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList,Map<String,String> map){
+        if(appPremEventPeriodDtoList==null){
+            return;
+        }
+        for(int i=0;i<appPremEventPeriodDtoList.size();i++){
+            for(int j=1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
+                String eventName = appPremEventPeriodDtoList.get(i).getEventName();
+                String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
+                if(!eventName.equals(eventName1)){
+                    continue;
+                }
+                Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
+                Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
+                if(endDate.after(startDate)){
+
+                }
+            }
         }
     }
 }

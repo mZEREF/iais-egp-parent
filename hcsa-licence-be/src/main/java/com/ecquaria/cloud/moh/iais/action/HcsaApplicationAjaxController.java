@@ -28,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -117,8 +119,12 @@ public class HcsaApplicationAjaxController{
             ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
            String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
            String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
-            url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                   replaceAll("interalFile.docName",selectedFile.getOriginalFilename()).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+           try{
+               url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                       replaceAll("interalFile.docName",URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString())).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+           }catch (Exception e){
+               log.error(e.getMessage(),e);
+           }
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);

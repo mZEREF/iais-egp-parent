@@ -97,8 +97,40 @@ public class PageDataCopyUtil {
             }
 
         }
+        copy.setEventDtoList(copyEvent(appGrpPremisesDto.getEventDtoList()));
+        copy.setWeeklyDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getWeeklyDtoList()));
+        copy.setPhDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getPhDtoList()));
         copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
         return copy;
+    }
+    public static List<OperationHoursReloadDto> copyOperationHoursReloadDto(List<OperationHoursReloadDto> list){
+        if(list==null){
+            return new ArrayList<>();
+        }
+        List<OperationHoursReloadDto> operationHoursReloadDtoList=new ArrayList<>(list.size());
+        for(OperationHoursReloadDto operationHoursReloadDto : list){
+            OperationHoursReloadDto o=new OperationHoursReloadDto();
+            o.setSelectValList(operationHoursReloadDto.getSelectValList());
+            o.setSelectAllDay(operationHoursReloadDto.isSelectAllDay());
+            o.setStartFrom(operationHoursReloadDto.getStartFrom());
+            o.setEndTo(operationHoursReloadDto.getEndTo());
+            operationHoursReloadDtoList.add(o);
+        }
+        return operationHoursReloadDtoList;
+    }
+    public static List<AppPremEventPeriodDto> copyEvent(List<AppPremEventPeriodDto> list){
+        if(list==null){
+            return new ArrayList<>();
+        }
+        List<AppPremEventPeriodDto> appPremEventPeriodDtoList=new ArrayList<>(list.size());
+        for(AppPremEventPeriodDto appPremEventPeriodDto : list){
+            AppPremEventPeriodDto o=new AppPremEventPeriodDto();
+            o.setEventName(appPremEventPeriodDto.getEventName());
+            o.setEndDate(appPremEventPeriodDto.getEndDate());
+            o.setStartDate(o.getStartDate());
+            appPremEventPeriodDtoList.add(o);
+        }
+        return appPremEventPeriodDtoList;
     }
     public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
 
