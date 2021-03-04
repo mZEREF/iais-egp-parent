@@ -208,10 +208,12 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         //get Login Id and User Name
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(int i = 0; i < orgUserDtos.size(); i++){
-                userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
-                userIdMap.put(i + "", orgUserDtos.get(i).getId());
-                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getUserId());
-                inspectorOption.add(so);
+                if(orgUserDtos.get(i).getAvailable()) {
+                    userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
+                    userIdMap.put(i + "", orgUserDtos.get(i).getId());
+                    SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getUserId());
+                    inspectorOption.add(so);
+                }
             }
         }
         groupRoleFieldDto.setUserIdMap(userIdMap);
