@@ -538,7 +538,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","onSiteWeeklyStart");
                                 errNameMap.put("end","onSiteWeeklyEnd");
                                 errNameMap.put("time","onSiteWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -553,7 +553,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","onSitePhStart");
                                 errNameMap.put("end","onSitePhEnd");
                                 errNameMap.put("time","onSitePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -566,23 +566,25 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
-                                }else if(eventName.length() > 100){
-                                    errorMap.put("onSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
-                                }
-                                if(startDate == null){
-                                    errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("onSiteEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.after(endDate)){
-                                        errorMap.put("onSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("onSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("onSiteEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("onSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
                                 j++;
@@ -791,7 +793,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","conveyanceWeeklyStart");
                                 errNameMap.put("end","conveyanceWeeklyEnd");
                                 errNameMap.put("time","conveyanceWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -806,7 +808,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","conveyancePhStart");
                                 errNameMap.put("end","conveyancePhEnd");
                                 errNameMap.put("time","conveyancePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -819,23 +821,25 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
-                                }else if(eventName.length() > 100){
-                                    errorMap.put("conveyanceEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
-                                }
-                                if(startDate == null){
-                                    errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("conveyanceEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.after(endDate)){
-                                        errorMap.put("conveyanceEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("conveyanceEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("conveyanceEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("conveyanceEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
                                 j++;
@@ -1002,7 +1006,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","offSiteWeeklyStart");
                                 errNameMap.put("end","offSiteWeeklyEnd");
                                 errNameMap.put("time","offSiteWeeklyTime");
-                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(weeklyDto,errorMap,errNameMap,i+""+j,true);
                                 j++;
                             }
                             appGrpPremisesDto.setWeeklyDtoList(weeklyDtos);
@@ -1017,7 +1021,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errNameMap.put("start","offSitePhStart");
                                 errNameMap.put("end","offSitePhEnd");
                                 errNameMap.put("time","offSitePhTime");
-                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j);
+                                doOperationHoursValidate(phDto,errorMap,errNameMap,i+""+j,false);
                                 j++;
                             }
                             appGrpPremisesDto.setPhDtoList(phDtos);
@@ -1030,25 +1034,28 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String eventName = eventDto.getEventName();
                                 Date startDate  = eventDto.getStartDate();
                                 Date endDate  = eventDto.getEndDate();
-                                boolean dateIsEmpty = false;
-                                if(StringUtil.isEmpty(eventName)){
-                                    errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
-                                }else if(eventName.length() > 100){
-                                    errorMap.put("offSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
-                                }
-                                if(startDate == null){
-                                    errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(endDate == null){
-                                    errorMap.put("offSiteEventEnd" + i+j,emptyErrMsg);
-                                    dateIsEmpty = true;
-                                }
-                                if(!dateIsEmpty){
-                                    if(startDate.after(endDate)){
-                                        errorMap.put("offSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                if(!StringUtil.isEmpty(eventName) || startDate != null || endDate != null){
+                                    boolean dateIsEmpty = false;
+                                    if(StringUtil.isEmpty(eventName)){
+                                        errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
+                                    }else if(eventName.length() > 100){
+                                        errorMap.put("offSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
+                                    }
+                                    if(startDate == null){
+                                        errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(endDate == null){
+                                        errorMap.put("offSiteEventEnd" + i+j,emptyErrMsg);
+                                        dateIsEmpty = true;
+                                    }
+                                    if(!dateIsEmpty){
+                                        if(startDate.after(endDate)){
+                                            errorMap.put("offSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
+                                        }
                                     }
                                 }
+
                                 j++;
                             }
                         }
@@ -1958,7 +1965,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     }
 
-    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto,Map<String,String>errorMap,Map<String,String> errNameMap,String count){
+    private static void doOperationHoursValidate(OperationHoursReloadDto operationHoursReloadDto,Map<String,String>errorMap,Map<String,String> errNameMap,String count,boolean isMandatory){
         boolean isEmpty = false;
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         boolean selectAllDay = operationHoursReloadDto.isSelectAllDay();
@@ -1967,6 +1974,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String startMM = operationHoursReloadDto.getStartFromMM();
         String endHH = operationHoursReloadDto.getEndToHH();
         String endMM = operationHoursReloadDto.getEndToMM();
+        if(!isMandatory){
+            if(StringUtil.isEmpty(selectVal) &&
+                    StringUtil.isEmpty(startHH) &&
+                    StringUtil.isEmpty(startMM) &&
+                    StringUtil.isEmpty(endHH) &&
+                    StringUtil.isEmpty(endMM)){
+                return;
+            }
+        }
+
+
         if(StringUtil.isEmpty(selectVal)){
             errorMap.put(errNameMap.get("select") + count,emptyErrMsg);
         }

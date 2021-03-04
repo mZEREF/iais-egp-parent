@@ -249,6 +249,7 @@
             $(this).find('.addWeeklyDiv').addClass('hidden');
             $(this).find('.addPhDiv').addClass('hidden');
             $(this).find('.addEventDiv').addClass('hidden');
+            $(this).find('input.allDay').attr('disabled',true);
         });
         </c:if>
 
