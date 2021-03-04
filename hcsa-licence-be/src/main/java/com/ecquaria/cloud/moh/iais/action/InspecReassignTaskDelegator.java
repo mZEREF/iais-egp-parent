@@ -132,8 +132,8 @@ public class InspecReassignTaskDelegator {
             List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
             //get Members Option
             groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
-            List<SelectOption> memberOption = groupRoleFieldDto.getMemberOption();
-            if(!IaisCommonUtils.isEmpty(memberOption)){
+            if(groupRoleFieldDto!=null){
+                List<SelectOption> memberOption = groupRoleFieldDto.getMemberOption();
                 ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) memberOption);
             }
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
