@@ -24,6 +24,8 @@
                 </div>
                 <div class="row">You have successfully added a GIRO Payee.</div>
 
+                <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+
             </div>
         </div>
     </form>

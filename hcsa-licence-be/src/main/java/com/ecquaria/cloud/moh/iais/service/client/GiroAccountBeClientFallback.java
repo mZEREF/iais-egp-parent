@@ -57,4 +57,12 @@ public class GiroAccountBeClientFallback implements GiroAccountBeClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<GiroAccountInfoDto> findGiroAccountInfoDtoByAcctId(String acctId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

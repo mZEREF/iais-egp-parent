@@ -33,4 +33,5 @@ public interface GiroAccountService {
 
     List<GiroAccountFormDocDto> findGiroAccountFormDocDtoListByAcctId(String acctId);
 
+    GiroAccountInfoDto findGiroAccountInfoDtoByAcctId(String acctId);
 }

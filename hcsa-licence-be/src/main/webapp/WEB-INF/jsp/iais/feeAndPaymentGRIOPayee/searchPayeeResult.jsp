@@ -27,7 +27,7 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="hciCode" maxlength="100"
+                                           name="hciCode" maxlength="20"
                                            value="${hciCode}"/>
                                 </label>
                             </iais:value>
@@ -38,7 +38,7 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="cusRefNo" maxlength="100"
+                                           name="cusRefNo" maxlength="12"
                                            value="${cusRefNo}"/>
                                 </label>
                             </iais:value>

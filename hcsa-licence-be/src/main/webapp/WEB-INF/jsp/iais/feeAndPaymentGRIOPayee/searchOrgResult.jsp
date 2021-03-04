@@ -37,7 +37,7 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="uenNo" maxlength="100"
+                                           name="uenNo" maxlength="20"
                                            value="${uenNo}"/>
                                 </label>
                             </iais:value>
@@ -59,7 +59,7 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="hciCode" maxlength="100"
+                                           name="hciCode" maxlength="20"
                                            value="${hciCode}"/>
                                 </label>
                             </iais:value>
@@ -92,7 +92,7 @@
                                                             <th >&nbsp;</th>
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="UEN"
-                                                                                 value="UEN"/>
+                                                                                 value="UEN_NO"/>
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="HCI_NAME"
                                                                                  value="HCI Name"/>
@@ -116,27 +116,26 @@
                                                                            varStatus="status">
                                                                     <tr>
                                                                         <td class="form-check"
-                                                                            onclick="javascript:controlCease('${isASO}')">
+                                                                            onclick="javascript:controlCease()">
                                                                             <input class="form-check-input licenceCheck"
-                                                                                   id="licence${status.index + 1}"
+                                                                                   id="orgPer${status.index + 1}"
                                                                                    type="checkbox"
-                                                                                   name="appIds"
-                                                                                   value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
+                                                                                   name="opIds"
+                                                                                   value="${pool.id}">
                                                                             <label class="form-check-label"
-                                                                                   for="licence${status.index + 1}"><span
+                                                                                   for="orgPer${status.index + 1}"><span
                                                                                     class="check-square"></span>
                                                                             </label>
                                                                         </td>
-                                                                        <td class="row_no">
-                                                                            <c:out value="${status.index + 1+ (orgPremParam.pageNo - 1) * orgPremParam.pageSize}"/>
+                                                                        <td >
+                                                                            <c:out value="${pool.uenNo}"/>
                                                                         </td>
                                                                         <td>
-                                                                            <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
-                                                                            <c:if test="${pool.appCorrId!=null}"><a
-                                                                                    onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
+                                                                            <c:out value="${pool.hciName}"/>
                                                                         </td>
-                                                                        <td><c:out
-                                                                                value="${pool.applicationType}"/></td>
+                                                                        <td>
+                                                                            <c:out value="${pool.hciCode}"/>
+                                                                        </td>
                                                                     </tr>
                                                                 </c:forEach>
                                                             </c:otherwise>
@@ -147,20 +146,10 @@
 
                                             </div>
                                             <div class="row">&nbsp;</div>
-                                            <div class="row" height="1"
-                                                 style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                                                 id="selectDecisionMsg">
-                                                <iais:message key="CESS_ERR006" escape="flase"></iais:message>
-                                            </div>
-                                            <div class="row" height="1"
-                                                 style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
-                                                 id="selectDecisionMsgActive">
-                                                <iais:message key="CESS_ERR005" escape="flase"></iais:message>
-                                            </div>
                                             <iais:action style="text-align:right;">
-                                                <button type="button" class="btn btn-primary CeaseBtn"
+                                                <button type="button" class="btn btn-primary SelectBtn"
                                                         disabled
-                                                        onclick="javascript:doCessation();">Select
+                                                        onclick="javascript:doSelect();">Select
                                                 </button>
                                             </iais:action>
                                         </div>
@@ -178,7 +167,7 @@
 <script type="text/javascript">
     function controlCease() {
         var checkOne = false;
-        var checkBox = $("input[name='acctIds']");
+        var checkBox = $("input[name='opIds']");
         for (var i = 0; i < checkBox.length; i++) {
             if (checkBox[i].checked) {
                 checkOne = true;
@@ -187,9 +176,9 @@
         }
         ;
         if (checkOne) {
-            $('.DeleteBtn').prop('disabled', false);
+            $('.SelectBtn').prop('disabled', false);
         } else {
-            $('.DeleteBtn').prop('disabled', true);
+            $('.SelectBtn').prop('disabled', true);
         }
     }
     function jumpToPagechangePage() {
@@ -199,6 +188,10 @@
     function doSearch() {
         $('input[name="pageJumpNoTextchangePage"]').val(1);
         $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();
+    }
+    function doSelect(){
+        $("[name='crud_action_type']").val("select");
         $("#mainForm").submit();
     }
 </script>

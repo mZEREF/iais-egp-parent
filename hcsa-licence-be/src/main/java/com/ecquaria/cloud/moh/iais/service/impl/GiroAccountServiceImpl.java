@@ -52,4 +52,9 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     public List<GiroAccountFormDocDto> findGiroAccountFormDocDtoListByAcctId(String acctId) {
         return giroAccountBeClient.findGiroAccountFormDocDtoListByAcctId(acctId).getEntity();
     }
+
+    @Override
+    public GiroAccountInfoDto findGiroAccountInfoDtoByAcctId(String acctId) {
+        return giroAccountBeClient.findGiroAccountInfoDtoByAcctId(acctId).getEntity();
+    }
 }

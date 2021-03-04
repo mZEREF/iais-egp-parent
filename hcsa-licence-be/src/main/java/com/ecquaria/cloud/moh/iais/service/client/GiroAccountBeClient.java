@@ -41,4 +41,7 @@ public interface GiroAccountBeClient {
 
     @GetMapping(value = "/hcsa-giro/giro-acct-doc-by-id/{acctId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroAccountFormDocDto>> findGiroAccountFormDocDtoListByAcctId(@PathVariable(name = "acctId") String acctId);
+
+    @GetMapping(value = "/giro-acct-info-by-id/{acctId}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GiroAccountInfoDto> findGiroAccountInfoDtoByAcctId(@PathVariable(name = "acctId")String acctId);
 }

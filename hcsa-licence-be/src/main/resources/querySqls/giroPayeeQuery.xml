@@ -22,6 +22,7 @@
             <#if hciCode??> AND charindex(:hciCode, opv.HCI_CODE) >0 </#if>
             <#if hciName??> AND charindex(:hciName, opv.HCI_NAME) >0 </#if>
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
+            <#if orgPremIds??> AND ${orgPremIds} </#if>
 
         ]]>
     </sql>
