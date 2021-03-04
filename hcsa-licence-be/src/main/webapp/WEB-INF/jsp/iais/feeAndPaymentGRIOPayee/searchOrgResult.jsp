@@ -37,8 +37,8 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="hciCode" maxlength="100"
-                                           value="${uen}"/>
+                                           name="uenNo" maxlength="100"
+                                           value="${uenNo}"/>
                                 </label>
                             </iais:value>
                         </iais:row>
@@ -66,7 +66,7 @@
                         </iais:row>
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
-                                <button type="button" class="btn btn-primary" type="button"
+                                <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
                                 </button>
                             </iais:action>
@@ -83,7 +83,7 @@
                                                 <span>Search Results</span>
                                             </h3>
 
-                                            <iais:pagination param="SearchParam" result="SearchResult"/>
+                                            <iais:pagination param="orgPremParam" result="orgPremResult"/>
                                             <div class="table-responsive">
                                                 <div class="table-gp">
                                                     <table class="table">
@@ -102,7 +102,7 @@
                                                         </thead>
                                                         <tbody class="form-horizontal">
                                                         <c:choose>
-                                                            <c:when test="${empty SearchResult.rows}">
+                                                            <c:when test="${empty orgPremResult.rows}">
                                                                 <tr>
                                                                     <td colspan="15">
                                                                         <iais:message key="GENERAL_ACK018"
@@ -112,7 +112,7 @@
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <c:forEach var="pool"
-                                                                           items="${SearchResult.rows}"
+                                                                           items="${orgPremResult.rows}"
                                                                            varStatus="status">
                                                                     <tr>
                                                                         <td class="form-check"
@@ -128,7 +128,7 @@
                                                                             </label>
                                                                         </td>
                                                                         <td class="row_no">
-                                                                            <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
+                                                                            <c:out value="${status.index + 1+ (orgPremParam.pageNo - 1) * orgPremParam.pageSize}"/>
                                                                         </td>
                                                                         <td>
                                                                             <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
@@ -176,4 +176,29 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function controlCease() {
+        var checkOne = false;
+        var checkBox = $("input[name='acctIds']");
+        for (var i = 0; i < checkBox.length; i++) {
+            if (checkBox[i].checked) {
+                checkOne = true;
+            }
+            ;
+        }
+        ;
+        if (checkOne) {
+            $('.DeleteBtn').prop('disabled', false);
+        } else {
+            $('.DeleteBtn').prop('disabled', true);
+        }
+    }
+    function jumpToPagechangePage() {
+        $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();    }
+
+    function doSearch() {
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();
+    }
 </script>

@@ -38,15 +38,15 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="CusRefNo" maxlength="100"
-                                           value="${CusRefNo}"/>
+                                           name="cusRefNo" maxlength="100"
+                                           value="${cusRefNo}"/>
                                 </label>
                             </iais:value>
                         </iais:row>
 
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
-                                <button type="button" class="btn btn-primary" type="button"
+                                <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
                                 </button>
                             </iais:action>
@@ -63,7 +63,7 @@
                                                 <span>Search Results</span>
                                             </h3>
 
-                                            <iais:pagination param="SearchParam" result="SearchResult"/>
+                                            <iais:pagination param="searchGiroAccountParam" result="searchGiroDtoResult"/>
                                             <div class="table-responsive">
                                                 <div class="table-gp">
                                                     <table class="table">
@@ -102,7 +102,7 @@
                                                         </thead>
                                                         <tbody class="form-horizontal">
                                                         <c:choose>
-                                                            <c:when test="${empty SearchResult.rows}">
+                                                            <c:when test="${empty searchGiroDtoResult.rows}">
                                                                 <tr>
                                                                     <td colspan="15">
                                                                         <iais:message key="GENERAL_ACK018"
@@ -112,77 +112,52 @@
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <c:forEach var="pool"
-                                                                           items="${SearchResult.rows}"
+                                                                           items="${searchGiroDtoResult.rows}"
                                                                            varStatus="status">
                                                                     <tr>
                                                                         <td class="form-check"
-                                                                            onclick="javascript:controlCease('${isASO}')">
+                                                                            onclick="javascript:controlCease()">
                                                                             <input class="form-check-input licenceCheck"
-                                                                                   id="licence${status.index + 1}"
+                                                                                   id="giroAcct${status.index + 1}"
                                                                                    type="checkbox"
-                                                                                   name="appIds"
-                                                                                   value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}">
+                                                                                   name="acctIds"
+                                                                                   value="${pool.id}">
                                                                             <label class="form-check-label"
-                                                                                   for="licence${status.index + 1}"><span
+                                                                                   for="giroAcct${status.index + 1}"><span
                                                                                     class="check-square"></span>
                                                                             </label>
                                                                         </td>
-                                                                        <td class="row_no">
-                                                                            <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
+                                                                        <td >
+                                                                            <c:out value="${pool.hciCode}"/>
                                                                         </td>
                                                                         <td>
-                                                                            <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
-                                                                            <c:if test="${pool.appCorrId!=null}"><a
-                                                                                    onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
+                                                                            <c:out value="${pool.hciName}"/>
                                                                         </td>
-                                                                        <td><c:out
-                                                                                value="${pool.applicationType}"/></td>
                                                                         <td>
-                                                                            <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a
-                                                                                    onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
-                                                                            <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
+                                                                            <c:out value="${pool.acctName}"/>
                                                                         </td>
-                                                                        <td><c:out
-                                                                                value="${pool.hciCode}"/><c:if
-                                                                                test="${empty pool.hciCode}">-</c:if></td>
-                                                                        <td><c:out
-                                                                                value="${pool.hciName}"/></td>
                                                                         <td>
-                                                                            <c:if test="${pool.licenceNo==null}">
-                                                                                <c:choose>
-                                                                                    <c:when test="${pool.address.size() == 0}">
-                                                                                        <c:out value="-"/>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <c:out value="${pool.address[0]}"/>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </c:if>
-                                                                            <c:if test="${pool.licenceNo!=null}">
-                                                                                <c:choose>
-                                                                                    <c:when test="${pool.address.size() == 1}">
-                                                                                        <c:out value="${pool.address[0]}"/>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <select>
-                                                                                            <option value="">
-                                                                                                Multiple
-                                                                                            </option>
-                                                                                            <c:forEach
-                                                                                                    items="${pool.address}"
-                                                                                                    var="address"
-                                                                                                    varStatus="index">
-                                                                                                <option value="${address}">${address}</option>
-                                                                                            </c:forEach>
-                                                                                        </select>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </c:if>
+                                                                            <c:out value="${pool.bankCode}"/>
                                                                         </td>
-                                                                        <td><c:out
-                                                                                value="${pool.licenseeName}"/></td>
-                                                                        <td><iais:service
-                                                                                value="${pool.serviceName}"/></td>
+                                                                        <td>
+                                                                            <c:out value="${pool.branchCode}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.bankName}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.acctNo}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.customerReferenceNo}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:forEach items="${pool.giroAccountFormDocDtoList}"
+                                                                                       var="giroDoc" varStatus="docStatus">
+                                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${giroDoc.fileRepoId}"/>&fileRepoName=${giroDoc.docName}">${giroDoc.docName}</a>
+                                                                                <br>
+                                                                            </c:forEach>
+                                                                        </td>
                                                                     </tr>
                                                                 </c:forEach>
                                                             </c:otherwise>
@@ -193,24 +168,14 @@
 
                                             </div>
                                             <div class="row">&nbsp;</div>
-                                            <div class="row" height="1"
-                                                 style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                                                 id="selectDecisionMsg">
-                                                <iais:message key="CESS_ERR006" escape="flase"></iais:message>
-                                            </div>
-                                            <div class="row" height="1"
-                                                 style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
-                                                 id="selectDecisionMsgActive">
-                                                <iais:message key="CESS_ERR005" escape="flase"></iais:message>
-                                            </div>
                                             <iais:action style="text-align:right;">
-                                                <button type="button" class="btn btn-primary ReqForInfoBtn"
+                                                <button type="button" class="btn btn-primary AddAcctBtn"
                                                         disabled
-                                                        onclick="javascript:doReqForInfo();">Add
+                                                        onclick="javascript:doAddAcct();">Add
                                                 </button>
-                                                <button type="button" class="btn btn-primary CeaseBtn"
+                                                <button type="button" class="btn btn-primary DeleteBtn"
                                                         disabled
-                                                        onclick="javascript:doCessation();">Delete
+                                                        onclick="javascript:doDelete();">Delete
                                                 </button>
                                             </iais:action>
                                         </div>
@@ -226,4 +191,39 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function controlCease() {
+        var checkOne = false;
+        var checkBox = $("input[name='acctIds']");
+        for (var i = 0; i < checkBox.length; i++) {
+            if (checkBox[i].checked) {
+                checkOne = true;
+            }
+            ;
+        }
+        ;
+        if (checkOne) {
+            $('.DeleteBtn').prop('disabled', false);
+        } else {
+            $('.DeleteBtn').prop('disabled', true);
+        }
+    }
+    function jumpToPagechangePage() {
+        $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();    }
+
+    function doSearch() {
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
+        $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();
+    }
+
+    function doAddAcct(){
+        $("[name='crud_action_type']").val("add");
+        $("#mainForm").submit();
+    }
+    function doDelete(){
+        $("[name='crud_action_type']").val("delete");
+        $("#mainForm").submit();
+    }
+
 </script>

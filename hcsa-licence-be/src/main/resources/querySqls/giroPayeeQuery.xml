@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="giroPayee">
+    <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
+        <![CDATA[
+            SELECT distinct gai.ID, gai.ORGANIZATION_ID, gai.HCI_CODE,
+            gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
+            gai.DDA_REF_NO,p.HCI_NAME
+
+            FROM giro_account_info gai
+            join premises p on p.HCI_CODE = gai.HCI_CODE
+            where gai.STATUS = "CMSTAT001"
+            <#if hciCode??> AND charindex(:hciCode, gai.HCI_CODE) >0 </#if>
+            <#if cusRefNo??> AND charindex(:cusRefNo, gai.DDA_REF_NO) >0 </#if>
+
+        ]]>
+    </sql>
+
+    <sql key = "searchByOrgPremView" remarks="search by Organization Premises View">
+        <![CDATA[
+            SELECT distinct opv.OP_ID,opv.ID, opv.HCI_CODE, opv.HCI_NAME, opv.UEN_NO
+            from organizationPremisesView opv
+            <#if hciCode??> AND charindex(:hciCode, opv.HCI_CODE) >0 </#if>
+            <#if hciName??> AND charindex(:hciName, opv.HCI_NAME) >0 </#if>
+            <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
+
+        ]]>
+    </sql>
+
+</sqls>
