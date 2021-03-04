@@ -838,6 +838,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
 
+                        String convHciName = appGrpPremisesDtoList.get(i).getConveyanceHciName();
+                        if (StringUtil.isEmpty(convHciName)) {
+                            errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
+                        }else{
+                            if(convHciName.length()>100){
+                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
+                                errorMap.put("conveyanceHciName" + i, general_err0041);
+                            }
+
+                        }
+
                         String buildingName = appGrpPremisesDtoList.get(i).getConveyanceBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
@@ -1035,6 +1046,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
 
+                        String offSiteHciName = appGrpPremisesDtoList.get(i).getOffSiteHciName();
+                        if (StringUtil.isEmpty(offSiteHciName)) {
+                            errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
+                        }else{
+                            if(offSiteHciName.length()>100){
+                                String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
+                                errorMap.put("offSiteHciName" + i, general_err0041);
+                            }
+
+                        }
                         String buildingName = appGrpPremisesDtoList.get(i).getOffSiteBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
