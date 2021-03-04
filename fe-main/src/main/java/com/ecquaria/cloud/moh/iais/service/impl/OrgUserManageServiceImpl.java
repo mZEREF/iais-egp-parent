@@ -73,8 +73,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Value("${iais.current.domain}")
     private String currentDomain;
 
-    @Autowired
-    private SystemParamConfig paramConfig;
+    @Value("${moh.halp.acra.enable}")
+    private String enableAcra;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -451,7 +451,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
      * if enable acra, licensee info create by this method
      */
     public void createLicenseeByUenFromAcra(String uen) {
-        if (StringUtil.isNotEmpty(uen) && paramConfig.enableAcra()){
+        if (StringUtil.isNotEmpty(uen) && "Y".equalsIgnoreCase(enableAcra)){
             feUserClient.createLicenseeByUenFromAcra(uen);
         }
     }
