@@ -13,7 +13,7 @@
 <%@include file="./dashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <div class="container">
-  <form id="mainForm" enctype="multipart/form-data"  class="__egovform form-horizontal" method="post" action=<%=process.runtime.continueURL()%> >
+  <form id="mainForm" enctype="multipart/form-data" name="mainForm" class="__egovform form-horizontal" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
@@ -41,33 +41,6 @@
             <c:forEach items="${selectOptionList}" var="selectOption">
               <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
             </c:forEach>
-            <%-- <c:if test="${rejectEqDay==true}">
-               <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-                 <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-               </c:if>
-             </c:if>
-             <c:if test="${feeEqDay==true}">
-               <c:if test="${lateFee==true}">
-                 <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-               </c:if>
-             </c:if>
-             <c:if test="${cgoEqDay==true}">
-               <c:if test="${maxCGOnumber==true}">
-                 <c:if test="${type=='application'}">
-                   <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-                 </c:if>
-               </c:if>
-             </c:if>
-             <c:if test="${nameEqDay==true}">
-               <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-             </c:if>
-             <c:if test="${periodEqDay==true}">
-               <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-             </c:if>
-             <c:if test="${otherEqDay==true}">
-               <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
-             </c:if>--%>
-            <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -130,8 +103,8 @@
       </div>
 
       <div class="col-xs-12">
-        <div class="document-upload-list">
-          <div class="file-upload-gp">
+        <div class="document-upload-list" >
+          <div class="file-upload-gp row" >
             <div class="fileContent col-xs-5">
               ${upFile.originalFilename}
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile(event)">
@@ -224,7 +197,6 @@
       }
 
   });
-
 $('#submit').click(function () {
     if("N" == $('#isDelete').val()){
         uploadFileValidate();
@@ -242,9 +214,32 @@ $('#submit').click(function () {
     var allFleChoosers = $("input[type='file']");
     addEventListenersTo(allFleChoosers);
     function addEventListenersTo(fileChooser) {
-      fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
+      fileChooser.change(function (event) {
+          console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
+    /*  a();*/
+      });
       fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
     }
+  }
+
+  var a=function ajax(){
+      var form = new FormData($("#mainForm")[0]);
+      $.ajax({
+          type:"post",
+          url:"${pageContext.request.contextPath}/ajax-upload-file",
+          data: form,
+          async:true,
+          dataType: "json",
+          processData: false,
+          contentType: false,
+          success: function (data) {
+            var html ='';
+            for(var i=0;i<data.length;i++){
+                html+='<input type="text" value="'+v[i]+'" style="display: none" >';
+            }
+            alert(html);
+          }
+      });
   }
   function doUserRecUploadConfirmFile(event) {
     var fileElement = event.target;

@@ -38,17 +38,24 @@ import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +80,8 @@ public class AppealDelegator {
     private LicFeInboxClient licFeInboxClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    private  List<MultipartFile> comMultipartFile=new ArrayList<>();
+
     @Autowired
     private GenerateIdClient generateIdClient;
     public void preparetionData(BaseProcessClass bpc) throws Exception {
@@ -432,5 +441,15 @@ public class AppealDelegator {
         int configFileSize = systemParamConfig.getUploadFileLimit();
 
         ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
+    }
+    @ResponseBody
+    @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<String> ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
+        List<String> list=new ArrayList<>();
+        comMultipartFile.add(selectedFile);
+        for(MultipartFile multipartFile : comMultipartFile){
+            list.add(multipartFile.getOriginalFilename());
+        }
+        return list;
     }
 }

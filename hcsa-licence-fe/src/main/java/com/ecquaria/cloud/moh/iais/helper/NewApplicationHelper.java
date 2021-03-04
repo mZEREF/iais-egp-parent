@@ -3041,6 +3041,7 @@ public class NewApplicationHelper {
                 }
                 List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
                 List<OperationHoursReloadDto> phDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
+                List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDtoList.get(i).getEventDtoList();
                 validate(phDtoList,errorMap,i,s+"PubHoliday");
                 validate(weeklyDtoList,errorMap,i,s+"Weekly");
             }
@@ -3064,13 +3065,13 @@ public class NewApplicationHelper {
                 boolean selectAllDay = list.get(i).isSelectAllDay();
                 boolean selectAllDay1 = list.get(j).isSelectAllDay();
                 if(selectAllDay ||selectAllDay1){
-                    errorMap.put(errorId+index+j,"There is conflicting value  ");
+                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                     continue;
                 }
                 int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
                 int   time1 = getTime(list.get(j).getStartFromHH(), list.get(i).getStartFromMM());
                 if(time>time1){
-                    errorMap.put(errorId+index+j,"There is conflicting value ");
+                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                 }
             }
         }
@@ -3083,6 +3084,25 @@ public class NewApplicationHelper {
             return i*60+i1;
         }catch (NumberFormatException e){
             return 0;
+        }
+    }
+    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList,Map<String,String> map){
+        if(appPremEventPeriodDtoList==null){
+            return;
+        }
+        for(int i=0;i<appPremEventPeriodDtoList.size();i++){
+            for(int j=1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
+                String eventName = appPremEventPeriodDtoList.get(i).getEventName();
+                String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
+                if(!eventName.equals(eventName1)){
+                    continue;
+                }
+                Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
+                Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
+                if(endDate.after(startDate)){
+
+                }
+            }
         }
     }
 }

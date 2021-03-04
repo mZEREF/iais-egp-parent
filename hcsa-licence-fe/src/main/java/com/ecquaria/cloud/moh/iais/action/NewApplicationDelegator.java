@@ -2752,22 +2752,13 @@ private CessationFeService cessationFeService;
 
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
 
-        String newHciName = "";
-        String oldHciName = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getConveyanceVehicleNo();
-        }
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getHciName();
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
-        }
+        String  newHciName = appGrpPremisesDto.getHciName();
+        String  oldHciName = premisesListQueryDto.getHciName();
+
         if (!newHciName.equals(oldHciName)) {
             return false;
         }
-
+        
         return true;
     }
 
@@ -3612,12 +3603,13 @@ private CessationFeService cessationFeService;
     }
 
     private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        String hciName = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+        String   hciName = appGrpPremisesDto.getHciName();
+   /*     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-        }
+        }*/
+
         return hciName;
     }
 
