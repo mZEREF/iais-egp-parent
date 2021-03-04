@@ -179,7 +179,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-            if(ugcDto.getIsLeadForGroup() == 1){
+            if(ugcDto.getIsLeadForGroup() == 1 && AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus())){
                 workGroupIdList.add(ugcDto.getGroupId());
             }
         }
