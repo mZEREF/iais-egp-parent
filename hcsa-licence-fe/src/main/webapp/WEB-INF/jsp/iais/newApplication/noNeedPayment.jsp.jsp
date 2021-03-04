@@ -24,8 +24,9 @@
   <%--            </div>--%>
   <%--        </c:otherwise>--%>
   <%--    </c:choose>--%>
-  <div class="col-xs-12 col-sm-6">
-  </div>
+    <div class="col-xs-12 col-sm-6">
+      <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
+    </div>
   <div class="col-xs-12 col-sm-6">
     <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
   </div>
