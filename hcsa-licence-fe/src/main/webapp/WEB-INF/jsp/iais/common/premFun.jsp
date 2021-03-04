@@ -461,7 +461,9 @@
                 removeEvent();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy",
-                    autoclose:true
+                    autoclose:true,
+                    todayHighlight:true,
+                    orientation:'bottom'
                 });
                 <!--set Scrollbar -->
                 /*$("div.premSelect->ul").mCustomScrollbar({
@@ -986,7 +988,9 @@
         $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
         $premContent.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
 
     }
@@ -1259,7 +1263,9 @@
                         $premContentEle.find('.eventLength').val(length);
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
-                            autoclose:true
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
                         });
                         removeEvent();
                         if(length >= '${eventCount}'){
@@ -1496,7 +1502,9 @@
                     $contentDivEle.find('.eventDel').remove();
                     $('.date_picker').datepicker({
                         format:"dd/mm/yyyy",
-                        autoclose:true
+                        autoclose:true,
+                        todayHighlight:true,
+                        orientation:'bottom'
                     });
                 }
 

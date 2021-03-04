@@ -321,7 +321,9 @@
                         removeRFI();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
-                            autoclose:true
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
                         });
                         length=length+1;
                         var text=$('.docTitIndex');
@@ -388,7 +390,9 @@
                         removeRFIInfo();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
-                            autoclose:true
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
                         });
                         lengthInfo=lengthInfo+1;
                         var text=$('.infoTitIndex');
