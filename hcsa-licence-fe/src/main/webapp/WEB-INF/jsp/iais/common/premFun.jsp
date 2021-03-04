@@ -70,6 +70,9 @@
             $premContent.find('input[name="eventLength"]').val(1);
             $premContent.find('input[name="phLength"]').val(1);
             $premContent.find('.allDay').attr('disabled',false);
+            $premContent.find('.addWeeklyDiv').removeClass('hidden');
+            $premContent.find('.addPhDiv').removeClass('hidden');
+            $premContent.find('.addEventDiv').removeClass('hidden');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
