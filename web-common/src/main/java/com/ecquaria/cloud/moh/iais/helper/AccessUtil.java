@@ -130,8 +130,10 @@ public class AccessUtil {
                     OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
                     OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
                     if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
-                        log.info("=====>>>>> createLicenseeByUenFromAcra");
+                        log.info("=====>>>>> createLicenseeByUenFromAcra corppass");
                         lc.createLicenseeByUenFromAcra(organ.getUenNo());
+                    }else {
+                        lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
                     }
                 }
             }
