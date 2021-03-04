@@ -579,7 +579,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     dateIsEmpty = true;
                                 }
                                 if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
+                                    if(startDate.after(endDate)){
                                         errorMap.put("onSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
                                     }
                                 }
@@ -830,7 +830,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     dateIsEmpty = true;
                                 }
                                 if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
+                                    if(startDate.after(endDate)){
                                         errorMap.put("conveyanceEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
                                     }
                                 }
@@ -1027,7 +1027,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     dateIsEmpty = true;
                                 }
                                 if(!dateIsEmpty){
-                                    if(startDate.before(endDate)){
+                                    if(startDate.after(endDate)){
                                         errorMap.put("offSiteEventDate"+i+j,MessageUtil.getMessageDesc("NEW_ERR0020"));
                                     }
                                 }
