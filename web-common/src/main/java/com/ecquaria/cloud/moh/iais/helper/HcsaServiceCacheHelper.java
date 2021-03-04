@@ -29,7 +29,7 @@ public final class HcsaServiceCacheHelper {
 		log.debug(StringUtil.changeForLog("service info " + JsonUtil.parseToJson(hcsaServiceDto)));
 
 		if (hcsaServiceDto == null || StringUtil.isEmpty(hcsaServiceDto.getSvcName())){
-			return "-";
+			return id;
 		}else {
 			return hcsaServiceDto.getSvcName();
 		}
