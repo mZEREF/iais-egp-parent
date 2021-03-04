@@ -3716,6 +3716,7 @@ private CessationFeService cessationFeService;
         String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
         String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
         //conveyance
+        String[] conveyanceHciName = ParamUtil.getStrings(request, "conveyanceHciName");
         String[] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
         String[] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
         String[] conPostalCode = ParamUtil.getStrings(request, "conveyancePostalCode");
@@ -3730,6 +3731,7 @@ private CessationFeService cessationFeService;
         String[] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String[] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
         //offSite
+        String[] offSiteHciName = ParamUtil.getStrings(request, "offSiteHciName");
         String[] offSitePremisesSelect = ParamUtil.getStrings(request, "offSiteSelect");
         String[] offSitePostalCode = ParamUtil.getStrings(request, "offSitePostalCode");
         String[] offSiteBlkNo = ParamUtil.getStrings(request, "offSiteBlkNo");
@@ -3883,10 +3885,7 @@ private CessationFeService cessationFeService;
             }
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
-                /*appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
-                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
-                appGrpPremisesDto.setOnsiteEndHH(onsiteEndHHS[i]);
-                appGrpPremisesDto.setOnsiteEndMM(onsiteEndMMS[i]);*/
+
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
                 appGrpPremisesDto.setHciName(hciName[i]);
                 appGrpPremisesDto.setPostalCode(postalCode[i]);
@@ -3907,31 +3906,7 @@ private CessationFeService cessationFeService;
                 } else if (AppConsts.NO.equals(isOtherLic[i])) {
                     appGrpPremisesDto.setLocateWithOthers(AppConsts.NO);
                 }
-                /*for (int j = 0; j < length; j++) {
-                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String onsitePubHolidayName = premValue[i] + "onSitePubHoliday" + j;
-                    String onsitePbHolDayStartHHName = premValue[i] + "onSitePbHolDayStartHH" + j;
-                    String onsitePbHolDayStartMMName = premValue[i] + "onSitePbHolDayStartMM" + j;
-                    String onsitePbHolDayEndHHName = premValue[i] + "onSitePbHolDayEndHH" + j;
-                    String onsitePbHolDayEndMMName = premValue[i] + "onSitePbHolDayEndMM" + j;
 
-                    String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
-                    String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
-                    String onsitePbHolDayStartMM = ParamUtil.getString(request, onsitePbHolDayStartMMName);
-                    String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
-                    String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
-                    appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
-                    appPremPhOpenPeriod.setPhDate(onsitePubHoliday);
-                    appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
-                    appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
-                    appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
-                    appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(onsitePubHoliday));
-                    if (!StringUtil.isEmpty(onsitePubHoliday) || !StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
-                            || !StringUtil.isEmpty(onsitePbHolDayEndHH) || !StringUtil.isEmpty(onsitePbHolDayEndMM)) {
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
-                }*/
                 //weekly
                 String premVal = premValue[i];
                 for(int j = 0;j<weeklyLength;j++){
@@ -4025,10 +4000,8 @@ private CessationFeService cessationFeService;
                 }
 
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
-/*                appGrpPremisesDto.setConStartHH(conStartHH[i]);
-                appGrpPremisesDto.setConStartMM(conStartMM[i]);
-                appGrpPremisesDto.setConEndHH(conEndHHS[i]);
-                appGrpPremisesDto.setConEndMM(conEndMMS[i]);*/
+
+                appGrpPremisesDto.setConveyanceHciName(conveyanceHciName[i]);
                 appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
                 appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
                 appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);
@@ -4038,30 +4011,7 @@ private CessationFeService cessationFeService;
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-                /*for (int j = 0; j < length; j++) {
-                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String convPubHolidayName = premValue[i] + "conveyancePubHoliday" + j;
-                    String convPbHolDayStartHHName = premValue[i] + "conveyancePbHolDayStartHH" + j;
-                    String convPbHolDayStartMMName = premValue[i] + "conveyancePbHolDayStartMM" + j;
-                    String convPbHolDayEndHHName = premValue[i] + "conveyancePbHolDayEndHH" + j;
-                    String convPbHolDayEndMMName = premValue[i] + "conveyancePbHolDayEndMM" + j;
-                    String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
-                    String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
-                    String convPbHolDayStartMM = ParamUtil.getString(request, convPbHolDayStartMMName);
-                    String convPbHolDayEndHH = ParamUtil.getString(request, convPbHolDayEndHHName);
-                    String convPbHolDayEndMM = ParamUtil.getString(request, convPbHolDayEndMMName);
-                    appPremPhOpenPeriod.setPhDateStr(convPubHoliday);
-                    appPremPhOpenPeriod.setPhDate(convPubHoliday);
-                    appPremPhOpenPeriod.setConvStartFromHH(convPbHolDayStartHH);
-                    appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
-                    appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
-                    appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(convPubHoliday));
-                    if (!StringUtil.isEmpty(convPubHoliday) || !StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
-                            || !StringUtil.isEmpty(convPbHolDayEndHH) || !StringUtil.isEmpty(convPbHolDayEndMM)) {
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
-                }*/
+
                 //weekly
                 String premVal = premValue[i];
                 for(int j = 0;j<weeklyLength;j++){
@@ -4150,6 +4100,7 @@ private CessationFeService cessationFeService;
                     }
                 }
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
+                appGrpPremisesDto.setOffSiteHciName(offSiteHciName[i]);
                 appGrpPremisesDto.setPremisesSelect(offSitePremisesSelect[i]);
                 appGrpPremisesDto.setOffSitePostalCode(offSitePostalCode[i]);
                 appGrpPremisesDto.setOffSiteBlockNo(offSiteBlkNo[i]);
@@ -4158,35 +4109,6 @@ private CessationFeService cessationFeService;
                 appGrpPremisesDto.setOffSiteUnitNo(offSiteUnitNo[i]);
                 appGrpPremisesDto.setOffSiteBuildingName(offSiteBuildingName[i]);
                 appGrpPremisesDto.setOffSiteAddressType(offSiteSiteAddressType[i]);
-                /*appGrpPremisesDto.setOffSiteStartHH(offSiteStartHH[i]);
-                appGrpPremisesDto.setOffSiteStartMM(offSiteStartMM[i]);
-                appGrpPremisesDto.setOffSiteEndHH(offSiteEndHHS[i]);
-                appGrpPremisesDto.setOffSiteEndMM(offSiteEndMMS[i]);*/
-                /*for (int j = 0; j < length; j++) {
-                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String offSitePubHolidayName = premValue[i] + "offSitePubHoliday" + j;
-                    String offSitePbHolDayStartHHName = premValue[i] + "offSitePbHolDayStartHH" + j;
-                    String offSitePbHolDayStartMMName = premValue[i] + "offSitePbHolDayStartMM" + j;
-                    String offSitePbHolDayEndHHName = premValue[i] + "offSitePbHolDayEndHH" + j;
-                    String offSitePbHolDayEndMMName = premValue[i] + "offSitePbHolDayEndMM" + j;
-
-                    String offSitePubHoliday = ParamUtil.getDate(request, offSitePubHolidayName);
-                    String offSitePbHolDayStartHH = ParamUtil.getString(request, offSitePbHolDayStartHHName);
-                    String offSitePbHolDayStartMM = ParamUtil.getString(request, offSitePbHolDayStartMMName);
-                    String offSitePbHolDayEndHH = ParamUtil.getString(request, offSitePbHolDayEndHHName);
-                    String offSitePbHolDayEndMM = ParamUtil.getString(request, offSitePbHolDayEndMMName);
-                    appPremPhOpenPeriod.setPhDateStr(offSitePubHoliday);
-                    appPremPhOpenPeriod.setPhDate(offSitePubHoliday);
-                    appPremPhOpenPeriod.setOffSiteStartFromHH(offSitePbHolDayStartHH);
-                    appPremPhOpenPeriod.setOffSiteStartFromMM(offSitePbHolDayStartMM);
-                    appPremPhOpenPeriod.setOffSiteEndToHH(offSitePbHolDayEndHH);
-                    appPremPhOpenPeriod.setOffSiteEndToMM(offSitePbHolDayEndMM);
-                    appPremPhOpenPeriod.setDayName(MasterCodeUtil.getCodeDesc(offSitePubHoliday));
-                    if (!StringUtil.isEmpty(offSitePubHoliday) || !StringUtil.isEmpty(offSitePbHolDayStartHH) || !StringUtil.isEmpty(offSitePbHolDayStartMM)
-                            || !StringUtil.isEmpty(offSitePbHolDayEndHH) || !StringUtil.isEmpty(offSitePbHolDayEndMM)) {
-                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
-                    }
-                }*/
                 //weekly
                 String premVal = premValue[i];
                 for(int j = 0;j<weeklyLength;j++){

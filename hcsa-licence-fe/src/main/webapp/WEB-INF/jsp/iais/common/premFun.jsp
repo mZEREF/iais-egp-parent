@@ -747,6 +747,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.conveyanceHciName);
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.conveyanceBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);
@@ -801,6 +802,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('offSite' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.offSiteHciName);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.offSiteBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.offSitePostalCode);
             $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.offSiteFloorNo);
