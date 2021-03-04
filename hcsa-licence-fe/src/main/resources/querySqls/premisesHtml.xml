@@ -232,13 +232,13 @@
                                     <div class="col-md-5">
                                         ${onSiteWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${onSiteWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                     <div class="col-md-12">
@@ -251,13 +251,13 @@
                                     <div class="col-md-5">
                                         ${onSiteWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${onSiteWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                     <div class="col-md-12">
@@ -301,13 +301,13 @@
                                     <div class="col-md-5">
                                         ${onSitePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${onSitePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -317,13 +317,13 @@
                                     <div class="col-md-5">
                                         ${onSitePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${onSitePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -361,8 +361,8 @@
                         <div>
                             <div class="col-md-4">
                                 <div class="row">
-                                    <div class="col-md-10">
-                                        <input type="text" name="${premVal}onSiteEvent0" class="onSiteEvent" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    <div class="col-md-12">
+                                        <input maxLength="100" type="text" name="${premVal}onSiteEvent0" class="onSiteEvent" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
@@ -523,13 +523,13 @@
                                     <div class="col-md-5">
                                         ${conveyanceWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${conveyanceWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -539,13 +539,13 @@
                                     <div class="col-md-5">
                                         ${conveyanceWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${conveyanceWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -586,13 +586,13 @@
                                     <div class="col-md-5">
                                         ${conveyancePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${conveyancePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -602,13 +602,13 @@
                                     <div class="col-md-5">
                                         ${conveyancePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${conveyancePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -646,8 +646,8 @@
                         <div>
                             <div class="col-md-4">
                                 <div class="row">
-                                    <div class="col-md-10">
-                                        <input type="text" name="${premVal}conveyanceEvent0" class="conveyanceEvent" maxlength="null" autocomplete="off"><span id="error_0conveyanceEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    <div class="col-md-12">
+                                        <input maxLength="100" type="text" name="${premVal}conveyanceEvent0" class="conveyanceEvent" maxlength="null" autocomplete="off"><span id="error_0conveyanceEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
@@ -800,13 +800,13 @@
                                     <div class="col-md-5">
                                         ${offSiteWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${offSiteWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -816,13 +816,13 @@
                                     <div class="col-md-5">
                                         ${offSiteWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${offSiteWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -863,13 +863,13 @@
                                     <div class="col-md-5">
                                         ${offSitePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${offSitePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -879,13 +879,13 @@
                                     <div class="col-md-5">
                                         ${offSitePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5">
                                         ${offSitePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -923,8 +923,8 @@
                         <div>
                             <div class="col-md-4">
                                 <div class="row">
-                                    <div class="col-md-10">
-                                        <input type="text" name="${premVal}offSiteEvent0" class="offSiteEvent" maxlength="null" autocomplete="off"><span id="error_0offSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                                    <div class="col-md-12">
+                                        <input maxLength="100" type="text" name="${premVal}offSiteEvent0" class="offSiteEvent" maxlength="null" autocomplete="off"><span id="error_0offSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
@@ -1052,32 +1052,32 @@
                     </div>
                     <div class="col-md-3">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
                                 ${startHH}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                 (HH)
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
                                 ${startMM}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                 (MM)
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
                                 ${endHH}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                 (HH)
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
                                 ${endMM}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
                                 (MM)
                             </div>
                         </div>
@@ -1107,8 +1107,8 @@
             <div>
                 <div class="col-md-4">
                     <div class="row">
-                        <div class="col-md-10">
-                            <input type="text" name="${premIndex}${premType}Event${eventCount}" class="Event" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
+                        <div class="col-md-12">
+                            <input type="text" maxLength="100" name="${premIndex}${premType}Event${eventCount}" class="Event" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </div>
                 </div>

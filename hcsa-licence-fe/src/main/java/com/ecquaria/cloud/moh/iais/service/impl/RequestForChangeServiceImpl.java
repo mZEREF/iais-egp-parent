@@ -569,6 +569,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 boolean dateIsEmpty = false;
                                 if(StringUtil.isEmpty(eventName)){
                                     errorMap.put("onSiteEvent" + i+j,emptyErrMsg);
+                                }else if(eventName.length() > 100){
+                                    errorMap.put("onSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
                                 }
                                 if(startDate == null){
                                     errorMap.put("onSiteEventStart" + i+j,emptyErrMsg);
@@ -820,6 +822,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 boolean dateIsEmpty = false;
                                 if(StringUtil.isEmpty(eventName)){
                                     errorMap.put("conveyanceEvent" + i+j,emptyErrMsg);
+                                }else if(eventName.length() > 100){
+                                    errorMap.put("conveyanceEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
                                 }
                                 if(startDate == null){
                                     errorMap.put("conveyanceEventStart" + i+j,emptyErrMsg);
@@ -1029,6 +1033,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 boolean dateIsEmpty = false;
                                 if(StringUtil.isEmpty(eventName)){
                                     errorMap.put("offSiteEvent" + i+j,emptyErrMsg);
+                                }else if(eventName.length() > 100){
+                                    errorMap.put("offSiteEvent" + i+j,NewApplicationHelper.repLength("Event Name","100"));
                                 }
                                 if(startDate == null){
                                     errorMap.put("offSiteEventStart" + i+j,emptyErrMsg);
