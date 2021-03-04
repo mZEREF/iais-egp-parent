@@ -206,4 +206,6 @@ public interface InspectionService {
 
 
     List<String> getWorkIdsByLogin(LoginContext loginContext);
+
+    List<TaskDto> filterCommonPoolTask(List<TaskDto> superPool);
 }

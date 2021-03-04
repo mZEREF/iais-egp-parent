@@ -134,10 +134,17 @@ public class InspectionSearchDelegator {
                 groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
                 List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
                 List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-                String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-                searchParam.addParam("appCorrId_list", appPremCorrId);
-                for (int i = 0; i < appCorrId_list.size(); i++) {
-                    searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+                int appCorrId_listSize = 0;
+                if(!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                    appCorrId_listSize = appCorrId_list.size();
+                    String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+                    searchParam.addParam("appCorrId_list", appPremCorrId);
+                    for (int i = 0; i < appCorrId_list.size(); i++) {
+                        searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+                    }
+                } else {
+                    String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+                    searchParam.addParam("appCorrId_list", appPremCorrId);
                 }
                 QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
                 searchResult = inspectionService.getSupPoolByParam(searchParam);
@@ -220,7 +227,7 @@ public class InspectionSearchDelegator {
         //get Members Option
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
-        //get userId
+        //filter task pool by user
         if(!StringUtil.isEmpty(userIdKey)) {
             Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
             String userId = userIdMap.get(userIdKey);
@@ -244,21 +251,34 @@ public class InspectionSearchDelegator {
         } else {
             ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         }
+        //filter task pool by status
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
+        if(!StringUtil.isEmpty(application_status)) {
+            //Filter the Common Pool Task in another place
+            if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                searchParam.addFilter("application_status", application_status, true);
+            } else {//Filter the Common Pool Task
+                superPool = inspectionService.filterCommonPoolTask(superPool);
+            }
+        }
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-        String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-        searchParam.addParam("appCorrId_list", appPremCorrId);
-        for(int i = 0; i < appCorrId_list.size(); i++){
-            searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+        int appCorrId_listSize = 0;
+        if(!IaisCommonUtils.isEmpty(appCorrId_list)) {
+            appCorrId_listSize = appCorrId_list.size();
+            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+            }
+        } else {
+            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_listSize);
+            searchParam.addParam("appCorrId_list", appPremCorrId);
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
         }
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type", application_type,true);
-        }
-        if(!StringUtil.isEmpty(application_status)){
-            searchParam.addFilter("application_status", application_status,true);
         }
         if(!StringUtil.isEmpty(hci_code)){
             searchParam.addFilter("hci_code", hci_code,true);

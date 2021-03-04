@@ -438,6 +438,23 @@ public class InspectionServiceImpl implements InspectionService {
         return workGroupIdList;
     }
 
+    @Override
+    public List<TaskDto> filterCommonPoolTask(List<TaskDto> superPool) {
+        if(IaisCommonUtils.isEmpty(superPool)){
+            return superPool;
+        } else {
+            List<TaskDto> commonPool = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto : superPool){//NOSONAR
+                if(taskDto != null){
+                    if(StringUtil.isEmpty(taskDto.getUserId())){
+                        commonPool.add(taskDto);
+                    }
+                }
+            }
+            return commonPool;
+        }
+    }
+
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {
