@@ -344,8 +344,8 @@ def sonarqube(){
                         mvn \
                             --no-transfer-progress \
                             -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -Dsonar.projectKey=iais-test-egp \
-                            -Dsonar.projectName=iais-test-egp \
+                            -Dsonar.projectKey=iais-iais-egp-sit \
+                            -Dsonar.projectName=iais-iais-egp-sit \
                             -P sg-nexus \
                             -s settings.xml \
                             sonar:sonar
