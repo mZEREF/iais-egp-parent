@@ -71,7 +71,7 @@
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="18">
-                          <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                          <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:row>
@@ -93,7 +93,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Name"/>
+                        <iais:field value="${groupRoleFieldDto.groupMemBerName} Name"/>
                         <iais:value width="18">
                           <iais:select name="memberName" options="memberOption" firstOption="Please Select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
                         </iais:value>

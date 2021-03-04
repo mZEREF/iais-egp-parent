@@ -131,7 +131,7 @@
                                             </div>
                                             <div id="patHciName" hidden>
                                                 <iais:row>
-                                                    <iais:field value="HCI Name"/>
+                                                    <iais:field value="HCI Name / Code"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" needDisabled="true"
                                                                     value="${appCessHci.patHciName}" maxLength="100"
@@ -139,12 +139,27 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
-                                            <div id="hciName" hidden>
+                                            <div id="hciNamePat" hidden>
                                                 <iais:row>
-                                                    <iais:field value=""/>
+                                                    <iais:field value="HCI Name"/>
                                                     <iais:value width="7">
-                                                        <div><c:out value="${appCessHci.hciNamePat}"></c:out></div>
-                                                        <div><c:out value="${appCessHci.hciAddressPat}"></c:out></div>
+                                                        <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciCodePat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Code"/>
+                                                    <iais:value width="7">
+                                                        <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciAddressPat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Address"/>
+                                                    <iais:value width="7">
+                                                        <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
@@ -343,7 +358,6 @@
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
-            $("#hciName").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
@@ -354,6 +368,9 @@
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").show();
+            $("#hciCodePat").show();
+            $("#hciAddressPat").show();
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();

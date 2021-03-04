@@ -258,7 +258,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<String> listHciName() {
-        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        List<String> hciNames = licenceClient.listHciNames().getEntity();
         return hciNames;
     }
 
@@ -623,10 +623,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             String unitNo = premisesDto.getUnitNo();
             String postalCode = premisesDto.getPostalCode();
             String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
-            String hciCode = premisesDto.getHciCode();
-            String hciName = premisesDto.getHciName();
-            hciName = hciName+" - "+hciCode;
-            premisesDto.setHciName(hciName);
             premisesDto.setHciAddress(hciAddress);
         }
         return premisesDto;

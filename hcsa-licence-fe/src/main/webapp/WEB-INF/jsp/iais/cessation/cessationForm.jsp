@@ -157,7 +157,7 @@
                                                 <div class="form-group" id="${num.count}patHciName${uid.count}"
                                                      hidden>
                                                     <label class="col-xs-12 col-md-6 control-label">HCI
-                                                        Name <span style="color: red">*</span></label>
+                                                        Name / Code <span style="color: red">*</span></label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <input type="text" maxLength="100"
                                                                name="${num.count}patHciName${uid.count}"
@@ -168,14 +168,24 @@
                                                               name="iaisErrorMsg" class="error-msg"></span>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}hciName${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label"></label>
+                                                <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI
+                                                        Name </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <span class="nameLoad"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <span class="codeLoad"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI
+                                                        Address </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <span class="addressLoad"></span>
-<%--                                                        <div class="topheader">--%>
-<%--                                                            <p><c:set var="hcaiName1" value=""></c:set></p>--%>
-<%--                                                        </div>--%>
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="${num.count}patRegNo${uid.count}"
@@ -401,15 +411,6 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <style>
-
-    /*.col-md-5 {*/
-    /*    width: 31%;*/
-    /*}*/
-
-    /*.col-md-6 {*/
-    /*    width: 35%;*/
-    /*}*/
-
     #effectiveDate {
         margin-bottom: 0px;
     }
@@ -469,13 +470,22 @@
     const loadJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').next('.form-group');
         hciNme.show();
+        var hciCode = hciNme.next();
+        hciCode.show();
+        var hciAddress = hciCode.next();
+        hciAddress.show();
         hciNme.find('.nameLoad').html(data.hciName);
-        hciNme.find('.addressLoad').html(data.hciAddress);
+        hciCode.find('.codeLoad').html(data.hciCode);
+        hciAddress.find('.addressLoad').html(data.hciAddress);
     }
 
     const deleteJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').next('.form-group');
         hciNme.hide();
+        var hciCode = hciNme.next();
+        var hciAddress = hciCode.next();
+        hciCode.hide();
+        hciAddress.hide();
     }
 
     function changeReasonCessFe() {
@@ -499,7 +509,11 @@
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
+                    $( "#" + i + "hciName" + j).trigger('blur');
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
@@ -511,6 +525,9 @@
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 }
             }
         }
@@ -533,6 +550,9 @@
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patNoConfirmID" + j).show();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 }
             }
         }

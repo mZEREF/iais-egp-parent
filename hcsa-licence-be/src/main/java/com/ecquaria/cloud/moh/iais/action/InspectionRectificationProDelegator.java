@@ -257,7 +257,7 @@ public class InspectionRectificationProDelegator {
         }
         byte[] fileData = inspectionRectificationProService.downloadFile(fileRepoId);
         response.setContentType("application/OCTET-STREAM");
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
         response.addHeader("Content-Length", "" + fileData.length);
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
         ops.write(fileData);

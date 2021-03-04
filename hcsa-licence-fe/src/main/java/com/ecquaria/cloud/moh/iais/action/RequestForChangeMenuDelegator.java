@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -122,6 +123,8 @@ public class RequestForChangeMenuDelegator {
     private GenerateIdClient generateIdClient;
     @Autowired
     private ApplicationFeClient applicationFeClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     /**
      * @param bpc
      * @Decription start
@@ -398,6 +401,9 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);
+        ParamUtil.setRequestAttr(bpc.request,"weeklyCount",systemParamConfig.getWeeklyCount());
+        ParamUtil.setRequestAttr(bpc.request,"phCount",systemParamConfig.getPhCount());
+        ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
         ParamUtil.setRequestAttr(bpc.request, "not_view", "notView");
     }

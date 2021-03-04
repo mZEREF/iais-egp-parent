@@ -224,6 +224,7 @@ public class MohIntranetUserDelegator {
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+            orgUserDto.setAvailable(Boolean.FALSE);
             orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             intranetUserService.updateOrgUser(orgUserDto);
             deleteEgpUser(userId);
@@ -896,6 +897,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+                    orgUserDto.setAvailable(Boolean.FALSE);
                     orgUserDto.setAuditTrailDto(auditTrailDto);
                     String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
                     orgUserDto.setEndDateStr(endDate);
@@ -913,6 +915,7 @@ public class MohIntranetUserDelegator {
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     orgUserDto.setAuditTrailDto(auditTrailDto);
+                    orgUserDto.setAvailable(Boolean.TRUE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
@@ -926,6 +929,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+                    orgUserDto.setAvailable(Boolean.FALSE);
                     orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
@@ -940,6 +944,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    orgUserDto.setAvailable(Boolean.TRUE);
                     orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);

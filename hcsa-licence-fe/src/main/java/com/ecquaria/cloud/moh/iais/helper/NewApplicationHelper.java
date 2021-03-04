@@ -60,6 +60,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Time;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -3024,5 +3025,65 @@ public class NewApplicationHelper {
         list.add("DOC");
         Long size=4*1024*1024L;
         return validateFile(file,list,size);
+    }
+
+    public static void validatePH(Map<String,String> errorMap,AppSubmissionDto appSubmissionDto){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList!=null){
+            for(int i=0;i<appGrpPremisesDtoList.size();i++){
+                String premisesType = appGrpPremisesDtoList.get(i).getPremisesType();
+                String s="";
+                if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+                    s="conveyance";
+                }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+                    s="onSite";
+                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
+                    s="offSite";
+                }
+                List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
+                List<OperationHoursReloadDto> phDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
+                validate(phDtoList,errorMap,i,s+"PubHoliday");
+                validate(weeklyDtoList,errorMap,i,s+"Weekly");
+            }
+        }
+    }
+    public static void validate(List<OperationHoursReloadDto> list,Map<String,String> errorMap,int index,String errorId){
+        if(list==null) {
+            return;
+        }
+        for(int i=0;i< list.size();i++){
+            for(int j=1;j< list.size() &&i!=j ;j++){
+                List<String> selectValList = list.get(i).getSelectValList();
+                List<String> selectValList1 = list.get(j).getSelectValList();
+                if(selectValList==null || selectValList1==null){
+                    continue;
+                }
+                boolean disjoint = Collections.disjoint(selectValList, selectValList1);
+                if(disjoint){
+                    continue;
+                }
+                boolean selectAllDay = list.get(i).isSelectAllDay();
+                boolean selectAllDay1 = list.get(j).isSelectAllDay();
+                if(selectAllDay ||selectAllDay1){
+                    errorMap.put(errorId+index+j,"There is conflicting value  ");
+                    continue;
+                }
+                int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
+                int   time1 = getTime(list.get(j).getStartFromHH(), list.get(i).getStartFromMM());
+                if(time>time1){
+                    errorMap.put(errorId+index+j,"There is conflicting value ");
+                }
+            }
+        }
+    }
+
+    public static int getTime(String hh,String mm){
+        try {
+            int i = Integer.parseInt(hh);
+            int i1 = Integer.parseInt(mm);
+            return i*60+i1;
+        }catch (NumberFormatException e){
+            return 0;
+        }
     }
 }

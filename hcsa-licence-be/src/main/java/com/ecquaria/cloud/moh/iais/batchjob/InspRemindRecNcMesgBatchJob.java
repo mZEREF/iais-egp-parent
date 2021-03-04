@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -43,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -168,6 +170,11 @@ public class InspRemindRecNcMesgBatchJob {
         String applicantName = orgUserDto.getDisplayName();
         Date date = new Date();
         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
+                MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appNo;
+        String emailUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        maskParams.put("applicationNo", appNo);
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         templateContent.put("applicant", applicantName);
         templateContent.put("date", strDate);
@@ -179,6 +186,8 @@ public class InspRemindRecNcMesgBatchJob {
         emailParam.setReqRefNum(appNo);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(appNo);
+        emailParam.setMaskParams(maskParams);
+        templateContent.put("systemLink", emailUrl);
         notificationHelper.sendNotification(emailParam);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION_SMS);
@@ -193,8 +202,10 @@ public class InspRemindRecNcMesgBatchJob {
         msgParam.setTemplateContent(templateContent);
         msgParam.setQueryCode(appNo);
         msgParam.setReqRefNum(appNo);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
         msgParam.setRefId(appNo);
+        msgParam.setMaskParams(maskParams);
+        templateContent.put("systemLink", url);
         //set svc code
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         String serviceId = applicationDto.getServiceId();

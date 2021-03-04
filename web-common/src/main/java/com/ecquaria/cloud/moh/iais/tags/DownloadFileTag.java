@@ -2,12 +2,13 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-import lombok.extern.slf4j.Slf4j;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * DownloadFileTag
@@ -54,7 +55,7 @@ public class DownloadFileTag extends TagSupport {
         html.append('=').append(MaskUtil.maskValue(fileRepoIdName, fileRepoId));
         try {
             html.append("&fileRepoName=").append(URLEncoder.encode(docName, StandardCharsets.UTF_8.toString()));
-            html.append(" title=\"Download\" class=\"downloadFile\">").append(docName).append("</a>");
+            html.append("\" title=\"Download\" class=\"downloadFile\">").append(docName).append("</a>");
             pageContext.getOut().print(html.toString());
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);

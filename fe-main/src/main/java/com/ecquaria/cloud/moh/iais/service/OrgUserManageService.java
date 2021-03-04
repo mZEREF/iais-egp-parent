@@ -65,4 +65,6 @@ public interface OrgUserManageService {
     Boolean isNotExistUserAccount(String orgId);
 
     Boolean isKeyAppointment(String uen);
+
+    void createLicenseeByUenFromAcra(String uen);
 }

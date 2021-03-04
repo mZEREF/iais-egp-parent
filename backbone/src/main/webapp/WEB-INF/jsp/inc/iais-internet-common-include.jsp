@@ -51,7 +51,9 @@
     $(document).ready(function(){
         $('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            Orientation:"top"
         });
     });
 </script>

@@ -446,7 +446,7 @@
 
                                       </div>
                                       <div class="col-md-6">
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${weeklyDto.startFrom}">
                                                <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
@@ -459,7 +459,7 @@
                                           </div>
 
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${weeklyDto.endTo}">
                                                  <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
@@ -492,88 +492,71 @@
                                   <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <c:forEach items="${op.phDtoList}" var="phDto">
-                                          ${phDto}
-                                        </c:forEach>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-4">
-                                          <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="newVal" attr="${op.selectValList}">
+                                               <c:forEach items="${op.selectValList}" var="phDto">
+                                                 ${phDto}
+                                               </c:forEach>
+                                          </span>
                                         </div>
-
-                                        <div class="col-md-4">
-                                          <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
-                                        </div>
-
-                                        <div class="col-md-4">
-
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
+                                              <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList">
+                                                  ${oldPhDtoList}
+                                              </c:forEach>
+                                          </span>
                                         </div>
                                       </div>
-
-                                    </div>
-                                  </c:forEach>
-
-                                  <c:choose>
-                                    <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                      <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                      <c:set var="phLength" value="0"/>
-                                    </c:otherwise>
-                                  </c:choose>
-                                  <c:forEach varStatus="statu"  begin="0" end="${phLength}">
-                                    <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
-                                    <div class="row">
                                       <div class="col-md-6">
-                                        Public Holiday
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-6">
-                                             <span class="newVal " attr="${appPremPhOpenPeriod.dayName}">
-                                               <c:out value="${appPremPhOpenPeriod.dayName}"/>
-                                             </span>
-                                        </div>
-                                        <div class="col-md-6">
-                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}" style="display: none">
-                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}"/>
-                                           </span>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Public Holiday Operating Hours (Start)
-                                      </div>
-                                      <div class="col-md-6">
-                                          <div class="col-md-6">
-                                             <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}">
-                                               <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate>
-                                             </span>
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${op.startFrom}">
+                                              <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                            </span>
                                           </div>
-                                            <div class="col-md-6">
-                                              <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"/>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
+                                            </span>
+                                          </div>
+
+                                        </div>
+
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${op.endTo}">
+                                                 <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="col-md-6" >
+                                              <span class="newVal" attr="${op.selectAllDay}">
+                                                <c:if test="${op.selectAllDay}">
+                                                  <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                  </div>
+                                                </c:if>
                                               </span>
                                             </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Public Holiday Operating Hours (End)
-                                      </div>
-                                      <div class="col-md-6">
-                                          <div class="col-md-6">
-                                              <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"><fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
-                                                                                                                        pattern="HH : mm"></fmt:formatDate>
+                                            <div class="col-md-6">
+                                              <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                   <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                  </div>
+                                                 </c:if>
                                               </span>
-                                          </div>
-                                          <div class="col-md-6">
-                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                     style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}" pattern="HH : mm"></fmt:formatDate></span>
-                                          </div>
+                                            </div>
+                                        </div>
                                       </div>
+
                                     </div>
                                   </c:forEach>
                                   <div class="row">

@@ -149,17 +149,30 @@
                                                     <div class="form-group" id="${num.count}patHciName${uid.count}"
                                                          hidden>
                                                         <label class="col-xs-12 col-md-6 control-label">HCI
-                                                            Name <span style="color: #ff0000">*</span></label>
+                                                            Name / Code <span style="color: #ff0000">*</span></label>
                                                         <div class="col-xs-6 col-sm-4 col-md-3">
                                                             <iais:input type="text" needDisabled="true"
                                                                         value="${appCessHci.patHciName}" maxLength="100"
                                                                         name="${num.count}patHciName${uid.count}"/>
                                                         </div>
                                                     </div>
-                                                <div class="form-group" id="${num.count}hciName${uid.count}">
-                                                    <label class="col-xs-12 col-md-6 control-label"></label>
+                                                <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI
+                                                        Name </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-6 control-label">HCI
+                                                        Address </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                                                     </div>
                                                 </div>
@@ -438,6 +451,9 @@
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).show();
+                    $("#" + i + "hciCodePat" + j).show();
+                    $("#" + i + "hciAddressPat" + j).show();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();

@@ -315,7 +315,9 @@ public class CessationApplicationFeDelegator {
                     if (premisesDto != null) {
                         String hciAddressPat = premisesDto.getHciAddress();
                         String hciNamePat = premisesDto.getHciName();
+                        String hciCodePat = premisesDto.getHciCode();
                         appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciCodePat(hciCodePat);
                         appCessHciDto.setHciAddressPat(hciAddressPat);
                     }
                 }
@@ -531,12 +533,14 @@ public class CessationApplicationFeDelegator {
     @GetMapping(value = "/hci-info")
     public @ResponseBody
     PremisesDto getPsnSelectInfo(HttpServletRequest request) {
-        PremisesDto premisesDto;
         String hciNameCode = ParamUtil.getDate(request, "hciNameCode");
-        premisesDto = cessationFeService.getPremiseByHciCodeName(hciNameCode);
-        if (premisesDto == null) {
+        PremisesDto premisesDto ;
+        try{
+            premisesDto = cessationFeService.getPremiseByHciCodeName(hciNameCode);
+        }catch (Exception e){
             return null;
         }
+
         return premisesDto;
     }
 

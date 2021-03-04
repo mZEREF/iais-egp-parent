@@ -118,8 +118,7 @@
                                                                                          cssClass="nice-select nextStage"
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                                            <span id="error_submit" class="error-msg"
-                                                                                  hidden>This is mandatory</span>
+                                                                            <span id="error_submit" class="error-msg" hidden>This field is mandatory</span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">

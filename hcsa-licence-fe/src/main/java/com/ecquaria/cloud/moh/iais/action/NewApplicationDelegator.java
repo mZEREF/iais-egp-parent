@@ -91,7 +91,11 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -498,6 +502,9 @@ private CessationFeService cessationFeService;
         ParamUtil.setRequestAttr(bpc.request,"weeklyOpList",weeklyOpList);
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         ParamUtil.setRequestAttr(bpc.request,"phOpList",phOpList);
+        ParamUtil.setRequestAttr(bpc.request,"weeklyCount",systemParamConfig.getWeeklyCount());
+        ParamUtil.setRequestAttr(bpc.request,"phCount",systemParamConfig.getPhCount());
+        ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
@@ -1486,8 +1493,10 @@ private CessationFeService cessationFeService;
                             PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
                             String hciAddressPat = premisesDto.getHciAddress();
                             String hciNamePat = premisesDto.getHciName();
+                            String hciCodePat= premisesDto.getHciCode();
                             appCessHciDto.setHciNamePat(hciNamePat);
                             appCessHciDto.setHciAddressPat(hciAddressPat);
+                            appCessHciDto.setHciCodePat(hciCodePat);
                         } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatRegNo(patTransTo);
                             appCessHciDto.setPatNeedTrans(Boolean.TRUE);
@@ -3761,7 +3770,7 @@ private CessationFeService cessationFeService;
                 log.error(e.getMessage(), e);
             }
             String appType = appSubmissionDto.getAppType();
-            boolean newApp = requestInformationConfig == null && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+            boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
                 if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)) {
                     AppGrpPremisesDto licPremise = licAppGrpPremisesDtoMap.get(premisesSel);

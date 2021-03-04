@@ -197,7 +197,7 @@
     <div class="form-group" id="frameworkRe" hidden>
         <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength=="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
+            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
             <br/>
             <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
         </div>

@@ -152,7 +152,7 @@
                                                 </div>
                                                 <div id="${num.count}patHciName${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value="HCI Name" mandatory="true"/>
+                                                        <iais:field value="HCI Name / Code" mandatory="true"/>
                                                         <iais:value width="7">
                                                                 <input type="text" maxLength="100"
                                                                        name="${num.count}patHciName${uid.count}"
@@ -164,21 +164,30 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <div id="${num.count}hciName${uid.count}" hidden>
+                                                <div id="${num.count}hciNamePat${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="HCI Name"/>
                                                         <iais:value width="7">
                                                             <div class="nameLoad"></div>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
+                                                <div id="${num.count}hciCodePat${uid.count}" hidden>
+                                                    <iais:row>
+                                                        <iais:field value="HCI Code"/>
+                                                        <iais:value width="7">
+                                                            <div class="codeLoad"></div>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
+                                                <div id="${num.count}hciAddressPat${uid.count}" hidden>
+                                                    <iais:row>
+                                                        <iais:field value="HCI Address"/>
+                                                        <iais:value width="7">
                                                             <div class="addressLoad"></div>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-<%--                                                <div class="form-group-hciname" id="${num.count}hciName${uid.count}" hidden>--%>
-<%--                                                    <label class="col-xs-12 col-md-6 control-label"></label>--%>
-<%--                                                    <div class="col-xs-6 col-sm-4 col-md-3">--%>
-<%--                                                        --%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field value="Professional Regn. No." mandatory="true"/>
@@ -457,13 +466,22 @@
     const loadJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').parent().next();
         hciNme.show();
+        var hciCode = hciNme.next();
+        hciCode.show();
+        var hciAddress = hciCode.next();
+        hciAddress.show();
         hciNme.find('.nameLoad').html(data.hciName);
-        hciNme.find('.addressLoad').html(data.hciAddress);
+        hciCode.find('.codeLoad').html(data.hciCode);
+        hciAddress.find('.addressLoad').html(data.hciAddress);
     }
 
     const deleteJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').next('.form-group');
         hciNme.hide();
+        var hciCode = hciNme.next();
+        hciCode.hide();
+        var hciAddress = hciCode.next();
+        hciAddress.hide();
     }
 
 
@@ -489,7 +507,11 @@
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
+                    $( "#" + i + "hciName" + j).trigger('blur');
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
@@ -501,13 +523,49 @@
                     $("#" + i + "patOthers" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
+                }
+            }
+        }
+    }
+
+    function changePatientCessBeAjax() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005"&&$('#' + i + 'radioYes' + j).is(':checked')) {
+                    $( "#" + i + "hciName" + j).trigger('blur');
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 }
             }
         }
     }
 
     function changePatSelectCessBe() {
-        changePatientCessBe();
+        changePatientCessBeAjax();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
@@ -523,6 +581,9 @@
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#"+ i +"patNoConfirmID"+ j).show();
+                    $("#" + i + "hciNamePat" + j).hide();
+                    $("#" + i + "hciCodePat" + j).hide();
+                    $("#" + i + "hciAddressPat" + j).hide();
                 }
             }
         }

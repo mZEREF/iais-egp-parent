@@ -3299,7 +3299,9 @@ public class HcsaApplicationDelegator {
                         PremisesDto premisesDto = cessationBeService.getPremiseByHciCodeName(patTransTo);
                         String hciAddressPat = premisesDto.getHciAddress();
                         String hciNamePat = premisesDto.getHciName();
+                        String hciCodePat = premisesDto.getHciCode();
                         appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciCodePat(hciCodePat);
                         appCessHciDto.setHciAddressPat(hciAddressPat);
                     }
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
