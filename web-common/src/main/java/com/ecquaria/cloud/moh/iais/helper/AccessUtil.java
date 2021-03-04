@@ -129,7 +129,7 @@ public class AccessUtil {
                     LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
                     OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
                     OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
-                    if(organ != null){
+                    if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
                         log.info("=====>>>>> createLicenseeByUenFromAcra");
                         lc.createLicenseeByUenFromAcra(organ.getUenNo());
                     }
