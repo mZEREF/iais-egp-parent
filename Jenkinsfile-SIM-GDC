@@ -876,7 +876,10 @@ def runAutomatedTests(){
                     "--entrypoint=''",
                     "-e KATALON_USER_ID=1000",
                     "-e TZ=Asia/Singapore",
-                    "-u root"
+                    "-u root",
+                    "--add-host=egp.sit.inter.iais.com:192.168.1.229",
+                    "--add-host=nas.sit.inter.iais.com:192.168.1.229",
+                    "--add-host=egp.sit.intra.iais.com:192.168.0.222"
                 ]
 
                 docker
@@ -892,13 +895,13 @@ def runAutomatedTests(){
                             katalonc \
                                 -noSplash \
                                 -runMode=console \
-                                -projectPath="${CHECKOUT_DIRECTORY}/iais-qa/My First Web UI Project.prj" \
+                                -projectPath="${CHECKOUT_DIRECTORY}/iais-qa/moh_iais.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/my_first_test_suite" \
-                                -executionProfile="default" \
+                                -testSuitePath="Test Suites/Automation Test Suite - CICD" \
+                                -executionProfile="SG_SIT" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
-                                -remoteWebDriverType="Selenium"
+                                -remoteWebDriverType="Selenium"                            
                         """
                     }
             }
