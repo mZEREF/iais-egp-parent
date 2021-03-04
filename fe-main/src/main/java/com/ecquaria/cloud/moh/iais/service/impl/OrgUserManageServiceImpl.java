@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -72,11 +73,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Value("${iais.current.domain}")
     private String currentDomain;
 
-    @Value("${moh.halp.acra.enable}")
-    private String enableAcra;
-
     @Autowired
-    private EDHClient edhClient;
+    private SystemParamConfig paramConfig;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -453,7 +451,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
      * if enable acra, licensee info create by this method
      */
     public void createLicenseeByUenFromAcra(String uen) {
-        if (StringUtil.isNotEmpty(uen) && "Y".equals(enableAcra)){
+        if (StringUtil.isNotEmpty(uen) && paramConfig.enableAcra()){
             feUserClient.createLicenseeByUenFromAcra(uen);
         }
     }
