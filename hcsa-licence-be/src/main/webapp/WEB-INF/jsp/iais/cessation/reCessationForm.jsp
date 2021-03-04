@@ -151,7 +151,7 @@
                                             </div>
                                             <div id="patHciName" hidden>
                                                 <iais:row>
-                                                    <iais:field value="HCI Name" mandatory="true"/>
+                                                    <iais:field value="HCI Name / Code" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <input type="text" maxLength="100"
                                                                name="patHciName"
@@ -163,11 +163,26 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
-                                            <div id="hciName" hidden>
+                                            <div id="hciNamePat" hidden>
                                                 <iais:row>
-                                                    <iais:field value=""/>
+                                                    <iais:field value="HCI Name"/>
                                                     <iais:value width="7">
                                                         <div class="nameLoad"></div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciCodePat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Code"/>
+                                                    <iais:value width="7">
+                                                        <div class="codeLoad"></div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciAddressPat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Address"/>
+                                                    <iais:value width="7">
                                                         <div class="addressLoad"></div>
                                                     </iais:value>
                                                 </iais:row>
@@ -391,7 +406,11 @@
             $("#patRegNo").hide();
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
         } else if ($("#patientSelectId").val() == "CES005") {
+            $( "#hciName").trigger('blur');
             $("#patHciName").show();
             $("#hciName").show();
             $("#patOthers").hide();
@@ -405,6 +424,41 @@
             $("#patOthers").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
+        }
+    }
+
+    function changePatientAjax() {
+        if ($("#patientSelectId").val() == "CES004") {
+            $("#patOthers").show();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patRegNo").hide();
+            $("#patOthersMobileNo").show();
+            $("#patOthersEmailAddress").show();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
+        } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
+            $( "#hciName").trigger('blur');
+            $("#patHciName").show();
+            $("#hciName").show();
+            $("#patOthers").hide();
+            $("#patRegNo").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+        } else if ($("#patientSelectId").val() == "CES006") {
+            $("#patRegNo").show();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthers").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
         }
     }
 
@@ -434,16 +488,26 @@
     const loadJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').parent().next();
         hciNme.show();
+        var hciCode = hciNme.next();
+        hciCode.show();
+        var hciAddress = hciCode.next();
+        hciAddress.show();
         hciNme.find('.nameLoad').html(data.hciName);
-        hciNme.find('.addressLoad').html(data.hciAddress);
+        hciCode.find('.codeLoad').html(data.hciCode);
+        hciAddress.find('.addressLoad').html(data.hciAddress);
     }
 
     const deleteJsp = function (data, obj) {
         var hciNme = $(obj).closest('.form-group').next('.form-group');
         hciNme.hide();
+        var hciCode = hciNme.next();
+        hciCode.hide();
+        var hciAddress = hciCode.next();
+        hciAddress.hide();
     }
 
     function changePatSelect() {
+        changePatientAjax();
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
@@ -457,6 +521,9 @@
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
             $("#patNoConfirmID").show();
         }
     }

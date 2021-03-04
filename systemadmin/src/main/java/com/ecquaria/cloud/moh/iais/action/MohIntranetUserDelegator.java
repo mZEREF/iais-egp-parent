@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -178,6 +177,8 @@ public class MohIntranetUserDelegator {
         }
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
+            List<SelectOption> statusOptions = getStatusOption();
+            ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
@@ -867,105 +868,105 @@ public class MohIntranetUserDelegator {
     }
 
     public void saveStatus(BaseProcessClass bpc) {
-        String userId = ParamUtil.getRequestString(bpc.request, "statusUserId");
-        ParamUtil.setRequestAttr(bpc.request, "statusUserId", userId);
-        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("back".equals(actionType)) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        }
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        OrgUserDto orgUserDto;
-        ClientUser clientUser;
-        if (!StringUtil.isEmpty(userId)) {
-            clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
-            orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
-            if (clientUser == null || orgUserDto == null) {
-                errorMap.put("userId", "USER_ERR012");
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                return;
-            } else {
-                String status = orgUserDto.getStatus();
-                if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR004");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
-                    orgUserDto.setAvailable(Boolean.FALSE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
-                    orgUserDto.setEndDateStr(endDate);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR005");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    orgUserDto.setAvailable(Boolean.TRUE);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR014");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
-                    orgUserDto.setAvailable(Boolean.FALSE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR005");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                    orgUserDto.setAvailable(Boolean.TRUE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR016");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                }
-            }
-        } else {
-            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            return;
-        }
+//        String userId = ParamUtil.getRequestString(bpc.request, "statusUserId");
+//        ParamUtil.setRequestAttr(bpc.request, "statusUserId", userId);
+//        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
+//        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+//        if ("back".equals(actionType)) {
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//            return;
+//        }
+//        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+//        OrgUserDto orgUserDto;
+//        ClientUser clientUser;
+//        if (!StringUtil.isEmpty(userId)) {
+//            clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
+//            orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
+//            if (clientUser == null || orgUserDto == null) {
+//                errorMap.put("userId", "USER_ERR012");
+//                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                return;
+//            } else {
+//                String status = orgUserDto.getStatus();
+//                if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR004");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+//                    orgUserDto.setAvailable(Boolean.FALSE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
+//                    orgUserDto.setEndDateStr(endDate);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR005");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    orgUserDto.setAvailable(Boolean.TRUE);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR014");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+//                    orgUserDto.setAvailable(Boolean.FALSE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR005");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+//                    orgUserDto.setAvailable(Boolean.TRUE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR016");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                }
+//            }
+//        } else {
+//            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
+//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//            return;
+//        }
     }
 
     public void doSearch(BaseProcessClass bpc) {
@@ -1080,6 +1081,7 @@ public class MohIntranetUserDelegator {
             orgUserDto.setSalutation(salutation[0]);
         }
         String firstName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
+        String status = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_STATUS);
         String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_LASTNAME);
         String division = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DIVISION);
         String branch = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_BRANCH);
@@ -1096,6 +1098,10 @@ public class MohIntranetUserDelegator {
         }
         orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
+        orgUserDto.setStatus(status);
+        if(!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)){
+            orgUserDto.setAvailable(Boolean.FALSE);
+        }
         orgUserDto.setLastName(lastName);
         orgUserDto.setDisplayName(displayName);
         orgUserDto.setAccountDeactivateDatetime(endDate);
@@ -1106,7 +1112,6 @@ public class MohIntranetUserDelegator {
         orgUserDto.setMobileNo(mobileNo);
         orgUserDto.setOfficeTelNo(officeNo);
         orgUserDto.setRemarks(remarks);
-        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
         return orgUserDto;
     }

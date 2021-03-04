@@ -120,6 +120,8 @@ public class InsReportDelegator {
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
         ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "appType", null);
         ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
