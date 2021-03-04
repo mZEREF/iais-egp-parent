@@ -129,7 +129,7 @@ public class InspectionSearchDelegator {
                     groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
                 }
                 List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-                List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
+                List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, AppConsts.SUPERVISOR_POOL);
                 //get Members Option
                 groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
                 List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
@@ -289,7 +289,7 @@ public class InspectionSearchDelegator {
         if(!StringUtil.isEmpty(hci_address)){
             searchParam.addFilter("hci_address", hci_address,true);
         }
-        List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
+        List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, AppConsts.SUPERVISOR_POOL);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);

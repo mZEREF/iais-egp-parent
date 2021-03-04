@@ -90,9 +90,14 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<SelectOption> getAppStatusOption(LoginContext loginContext) {
+    public List<SelectOption> getAppStatusOption(LoginContext loginContext, String poolType) {
         String roleId = loginContext.getCurRoleId();
         List<SelectOption> appStatusOption = IaisEGPHelper.getAppStatusByRoleId(roleId);
+        if(AppConsts.SUPERVISOR_POOL.equals(poolType)){
+            String pendingTaskAssignStatus = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+            SelectOption so = new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT, pendingTaskAssignStatus);
+            appStatusOption.add(so);
+        }
         return appStatusOption;
     }
 

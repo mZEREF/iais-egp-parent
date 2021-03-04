@@ -39,7 +39,7 @@ public interface InspectionService {
      * @Descripation: get App Status
      * @param loginContext
      */
-    List<SelectOption> getAppStatusOption(LoginContext loginContext);
+    List<SelectOption> getAppStatusOption(LoginContext loginContext, String poolType);
 
     /**
      * @author: shicheng
@@ -207,5 +207,12 @@ public interface InspectionService {
 
     List<String> getWorkIdsByLogin(LoginContext loginContext);
 
+    /**
+      * @author: shicheng
+      * @Date 2021/3/4
+      * @Param: List<TaskDto> superPool
+      * @return: List<TaskDto>
+      * @Descripation: filter Common Pool Task
+      */
     List<TaskDto> filterCommonPoolTask(List<TaskDto> superPool);
 }

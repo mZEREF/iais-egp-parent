@@ -129,7 +129,7 @@ public class InspecReassignTaskDelegator {
                 groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             }
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
+            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, null);
             //get Members Option
             groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
             if(groupRoleFieldDto!=null){
