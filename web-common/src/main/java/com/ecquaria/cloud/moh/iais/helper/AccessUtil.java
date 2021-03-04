@@ -18,12 +18,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
@@ -125,7 +127,12 @@ public class AccessUtil {
                     loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 }else{
                     LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
-                    lc.createLicenseeByUenFromAcra(orgUser.getIdentityNo());
+                    OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
+                    OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
+                    if(organ != null){
+                        log.info("=====>>>>> createLicenseeByUenFromAcra");
+                        lc.createLicenseeByUenFromAcra(organ.getUenNo());
+                    }
                 }
             }
         }
