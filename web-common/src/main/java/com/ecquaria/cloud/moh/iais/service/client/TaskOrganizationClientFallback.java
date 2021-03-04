@@ -51,7 +51,6 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
         return entity;
     }
 
-
     @Override
     public FeignResponseEntity<List<TaskDto>> getTaskScores(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
