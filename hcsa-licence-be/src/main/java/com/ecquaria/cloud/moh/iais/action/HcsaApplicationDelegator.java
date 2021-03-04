@@ -3203,6 +3203,8 @@ public class HcsaApplicationDelegator {
     }
 
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(request, "kpiInfo", kpiInfo);
         boolean chooseInspection = chooseInspection(applicationViewDto, request);
         ParamUtil.setSessionAttr(request, "isChooseInspection", chooseInspection);
 //        ParamUtil.setSessionAttr(request,"isChooseInspection",true);
