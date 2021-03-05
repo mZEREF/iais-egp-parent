@@ -133,6 +133,7 @@ public class InspectionSearchDelegator {
                 List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, AppConsts.SUPERVISOR_POOL);
                 //get Members Option
                 groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+                List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
                 int workGroupIdsSize = 0;
                 if(!IaisCommonUtils.isEmpty(workGroupIds)) {
                     workGroupIdsSize = workGroupIds.size();
@@ -162,6 +163,7 @@ public class InspectionSearchDelegator {
                 QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
                 searchResult = inspectionService.getSupPoolByParam(searchParam);
                 searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
+                ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
                 ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
                 ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
                 ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) groupRoleFieldDto.getMemberOption());
@@ -252,6 +254,7 @@ public class InspectionSearchDelegator {
             ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         }
         //filter task pool by status
+        List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         if(!StringUtil.isEmpty(application_status)) {
             //Filter the Common Pool Task in another place
             if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
@@ -302,6 +305,7 @@ public class InspectionSearchDelegator {
         }
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, AppConsts.SUPERVISOR_POOL);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
+        ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
         ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
