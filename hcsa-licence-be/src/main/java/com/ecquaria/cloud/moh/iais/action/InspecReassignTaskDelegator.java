@@ -161,7 +161,7 @@ public class InspecReassignTaskDelegator {
 
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
             searchResult = inspectionService.getSupPoolByParam(searchParam);
-            searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
+            searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
             ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
@@ -377,7 +377,7 @@ public class InspecReassignTaskDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-        searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
+        searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
 
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
