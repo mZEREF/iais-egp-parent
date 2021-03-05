@@ -3705,7 +3705,7 @@ private CessationFeService cessationFeService;
         String[] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
         String[] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
         String[] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");*/
-        String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
+        //String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
         String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
         //conveyance
         String[] conveyanceHciName = ParamUtil.getStrings(request, "conveyanceHciName");
@@ -3877,7 +3877,8 @@ private CessationFeService cessationFeService;
             }
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
-
+                String premVal = premValue[i];
+                String fireSafetyCertIssuedDateStr = ParamUtil.getString(request, premVal+"onSiteFireSafetyCertIssuedDate");
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
                 appGrpPremisesDto.setHciName(hciName[i]);
                 appGrpPremisesDto.setPostalCode(postalCode[i]);
@@ -3889,7 +3890,7 @@ private CessationFeService cessationFeService;
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
@@ -3900,7 +3901,6 @@ private CessationFeService cessationFeService;
                 }
 
                 //weekly
-                String premVal = premValue[i];
                 for(int j = 0;j<weeklyLength;j++){
                     OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
                     String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"onSiteWeekly",j));

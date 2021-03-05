@@ -80,7 +80,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
                     <div class=" col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                         <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate"
-                               name="onSiteFireSafetyCertIssuedDate" id="" data-date-start-date="01/01/1900"
+                               name="${premVal}onSiteFireSafetyCertIssuedDate" id="" data-date-start-date="01/01/1900"
                                placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate"
                                                                              name="iaisErrorMsg"
                                                                              class="error-msg"></span>
