@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -74,6 +75,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -140,6 +142,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private LicenceViewService licenceViewService;
     @Autowired
     AcraUenBeClient acraUenBeClient;
+    @Autowired
+    private CessationClient cessationClient;
 
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
@@ -261,8 +265,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
                 appIds.add(appCorrelationDto.getApplicationId());
-                ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Off-Site Inspection":InspectionConstants.INSPECTION_TYPE_ONSITE);
+                AppGrpPremisesDto appGrpPremisesDto= cessationClient.getAppGrpPremisesDtoByAppId(appCorrelationDto.getApplicationId()).getEntity();
+                switch (appGrpPremisesDto.getPremisesType()){
+                    case ApplicationConsts.PREMISES_TYPE_ON_SITE:complianceHistoryDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);break;
+                    case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:complianceHistoryDto.setInspectionTypeName("Conveyance Inspection");break;
+                    case ApplicationConsts.PREMISES_TYPE_OFF_SITE:complianceHistoryDto.setInspectionTypeName("Off-Site Inspection");break;
+                    default:complianceHistoryDto.setInspectionTypeName("-");
+                }
                 complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
 
                 //add listReportNcRectifiedDto and add ncItemId
@@ -280,19 +289,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
                 }
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-//                try {
-//                    complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-//                    if(appPremisesCorrelationDto.getRiskScore()<=1){
-//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.LOW));
-//                    }else if(appPremisesCorrelationDto.getRiskScore()<=2){
-//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.MODERRATE));
-//                    }else {
-//                        complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(RiskConsts.HIGH));
-//                    }
-//                }catch (NullPointerException e){
-//                    log.error(e.getMessage(), e);
-//                    complianceHistoryDto.setRiskTag("-");
-//                }
                 try {
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
@@ -707,7 +703,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         List<TaskDto> taskDtos=taskService.getTaskbyApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
         for (TaskDto task:taskDtos
-             ) {
+        ) {
             if((task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING))&&task.getUserId()==null){
                 applicationViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
             }
@@ -769,7 +765,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType()));
         List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=applicationClient.getAppSvcPremisesScopeListByCorreId(appCorrId).getEntity();
         for (AppSvcPremisesScopeDto a:appSvcPremisesScopeDtos
-             ) {
+        ) {
             HcsaServiceSubTypeDto hcsaServiceSubTypeDto=hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity();
             if(hcsaServiceSubTypeDto!=null&&hcsaServiceSubTypeDto.getSubtypeName()!=null){
                 a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());
