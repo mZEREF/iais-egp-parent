@@ -180,8 +180,9 @@
                                                     </td>
                                                     <td><c:out
                                                             value="${pool.licenseeName}"/></td>
-                                                    <td><iais:service
-                                                            value="${pool.serviceName}"/></td>
+                                                    <td><c:if test="${pool.appCorrId==null}">${pool.serviceName}</c:if>
+                                                        <c:if test="${pool.appCorrId!=null}"><iais:service value="${pool.serviceName}"/></c:if>
+                                                    </td>
                                                     <td><fmt:formatDate
                                                             value="${pool.startDate}"
                                                             pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate
