@@ -106,6 +106,11 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
     }
 
+    public void searchPage(BaseProcessClass bpc){
+        SearchParam searchParamGroup = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParamGroup,bpc.request);
+    }
+
     /**
      * create
      * @param bpc

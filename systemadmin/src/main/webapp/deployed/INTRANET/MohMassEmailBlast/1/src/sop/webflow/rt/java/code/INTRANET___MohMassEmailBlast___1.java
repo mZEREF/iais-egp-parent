@@ -116,4 +116,9 @@ public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "auditPage", this); 
 	}
 
+	public void doPage_OnStepProcess_0() throws Exception {
+	// 		doPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPage", this); 
+	}
+
 }

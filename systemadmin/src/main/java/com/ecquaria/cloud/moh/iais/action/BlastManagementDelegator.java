@@ -315,6 +315,11 @@ public class BlastManagementDelegator {
 
     }
 
+    public void doPage(BaseProcessClass bpc){
+        SearchParam searchParamGroup = getSearchParam(bpc.request,false);
+        CrudHelper.doPaging(searchParamGroup,bpc.request);
+    }
+
     /**
      * save
      * @param bpc

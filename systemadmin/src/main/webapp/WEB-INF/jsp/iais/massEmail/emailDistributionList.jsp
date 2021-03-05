@@ -248,7 +248,7 @@ function edit(id) {
 
 }
 function jumpToPagechangePage() {
-    submit("search");
+    submit("page");
 }
 function searchResult() {
     submit("search");
