@@ -32,7 +32,7 @@
                 <div class="row premContent">
                   <div class="col-xs-12" style="margin-top:3%;">
                     <div>
-                      <h2>${PremisesListQueryDto.premisesType}:${PremisesListQueryDto.address}</h2>
+                      <h2>${PremisesListQueryDto.premisesType}:&nbsp;${PremisesListQueryDto.address}</h2>
                     </div>
                   </div>
                 </div>
