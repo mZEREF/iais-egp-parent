@@ -45,8 +45,10 @@ public class AntiSamyFilter implements Filter {
      */
     private final AntiSamy antiSamy;
     private static final List<String> xmlParams;
+    private static boolean debuglog;
 
     static {
+        debuglog = false;
         xmlParams = Collections.singletonList("messageContent");
     }
 
@@ -118,7 +120,7 @@ public class AntiSamyFilter implements Filter {
             if (obj instanceof String) {
                 String potentiallyDirtyParameter = (String)obj;
                 String strClean =filterString(potentiallyDirtyParameter);
-                if (log.isDebugEnabled()) {
+                if (debuglog) {
                     log.debug(StringUtil.changeForLog("dirtyValue:" + name + " = " +potentiallyDirtyParameter));
                     log.debug(StringUtil.changeForLog("cleanValue:" + name + " = " + strClean));
                 }
@@ -159,19 +161,19 @@ public class AntiSamyFilter implements Filter {
             }
             List<String> newValues = new ArrayList<String>(originalValues.length);
             if (escInputMap.get(name)!=null) {
-                if (log.isDebugEnabled()) {
+                if (debuglog) {
                     log.debug(StringUtil.changeForLog("escape paramName: " + name));
                 }
                 return originalValues;
             }else {
                 int i = 0;
-                if (log.isDebugEnabled()) {
+                if (debuglog) {
                     log.debug("filterString");
                 }
                 for (String value : originalValues) {
                     String strClean =filterString(value);
                     newValues.add(strClean);
-                    if (log.isDebugEnabled()) {
+                    if (debuglog) {
                         log.debug(StringUtil.changeForLog("originalValue: " + name + "[" + i + "]=" + value));
                         log.debug(StringUtil.changeForLog("cleanValue: " + name + "[" + i + "]=" +  strClean));
                     }
@@ -196,18 +198,18 @@ public class AntiSamyFilter implements Filter {
         @Override
         public String getParameter(String name) {
             String potentiallyDirtyParameter = super.getParameter(name);
-            if (log.isDebugEnabled()) {
+            if (debuglog) {
                 log.debug(StringUtil.changeForLog("originalValue [" + name + "]= " +potentiallyDirtyParameter));
             }
             String strClean = null;
             if (escInputMap.get(name)!=null) {
-                if (log.isDebugEnabled()) {
+                if (debuglog) {
                     log.debug(StringUtil.changeForLog("escape paramName: " + name));
                 }
                 return potentiallyDirtyParameter;
             }else {
                 strClean =filterString(potentiallyDirtyParameter);
-                if (log.isDebugEnabled()) {
+                if (debuglog) {
                     log.debug(StringUtil.changeForLog("cleanValue [" + name + "]= " + strClean));
                 }
             }
