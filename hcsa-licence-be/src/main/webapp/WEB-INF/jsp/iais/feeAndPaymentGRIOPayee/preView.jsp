@@ -48,50 +48,48 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Account Name :" mandatory="ture"/>
+                                <iais:field value="Account Name :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${acctName}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Bank Code :"  mandatory="ture"/>
+                                <iais:field value="Bank Code :"  mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${bankCode}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Branch Code :"  mandatory="ture"/>
+                                <iais:field value="Branch Code :"  mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${branchCode}"/>
                                 </div>
                             </iais:row>
 
                             <iais:row>
-                                <iais:field value="Bank Name :" mandatory="ture"/>
+                                <iais:field value="Bank Name :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${bankName}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Bank Account No. :" mandatory="ture"/>
+                                <iais:field value="Bank Account No. :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${bankAccountNo}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Customer Reference No. :" mandatory="ture"/>
+                                <iais:field value="Customer Reference No. :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <c:out value="${cusRefNo}"/>
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="GIRO Form :" mandatory="ture"/>
+                                <iais:field value="GIRO Form :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <div class="file-upload-gp">
                                         <span>
-                                            <c:choose>
-                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>
-                                            </c:choose>
+                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>
                                         </span>
                                     </div>
                                 </div>
