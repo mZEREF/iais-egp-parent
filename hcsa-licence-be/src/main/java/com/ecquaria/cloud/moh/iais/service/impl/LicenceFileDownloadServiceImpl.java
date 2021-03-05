@@ -599,7 +599,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         //not use generateFile function.this have floder name have dian
                         File file1 = new File(file.getPath()+File.separator, s);
                         flag=f.renameTo(file1);
-                        fileRepoDto.setFileName(f.getName());
+                        fileRepoDto.setFileName(s);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
