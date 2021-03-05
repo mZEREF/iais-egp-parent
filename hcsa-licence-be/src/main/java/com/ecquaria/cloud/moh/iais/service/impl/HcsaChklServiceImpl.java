@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -124,9 +125,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public List<ChecklistConfigExcel> convertToUploadTemplateByConfig(ChecklistConfigDto config) {
-        List<ChecklistConfigExcel> ret = IaisCommonUtils.genNewArrayList();
-        if (config != null){
+    public void convertToUploadTemplateByConfig(List<ChecklistConfigExcel> configExcelList, ChecklistConfigDto config) {
+        if (Optional.ofNullable(config).isPresent()){
             List<ChecklistSectionDto> section = config.getSectionDtos();
             for (ChecklistSectionDto i : section){
                 List<ChecklistItemDto> item = i.getChecklistItemDtos();
@@ -137,11 +137,10 @@ public class HcsaChklServiceImpl implements HcsaChklService {
                     excelItemDto.setItemId(j.getItemId());
                     excelItemDto.setSectionDisplayOrder(i.getOrder().toString());
                     excelItemDto.setSectionName(i.getSection());
-                    ret.add(excelItemDto);
+                    configExcelList.add(excelItemDto);
                 }
             }
         }
-        return ret;
     }
 
 
