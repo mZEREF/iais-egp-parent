@@ -102,6 +102,7 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", null);
         ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", null);
         ParamUtil.setSessionAttr(bpc.request, "assignMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "commonPoolStatus", null);
     }
 
     /**
@@ -259,9 +260,13 @@ public class InspectionSearchDelegator {
             //Filter the Common Pool Task in another place
             if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                 searchParam.addFilter("application_status", application_status, true);
+                ParamUtil.setSessionAttr(bpc.request, "commonPoolStatus", null);
             } else {//Filter the Common Pool Task
                 searchParam.addParam("commonPoolStatus", "commonPoolStatus");
+                ParamUtil.setSessionAttr(bpc.request, "commonPoolStatus", "commonPoolStatus");
             }
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
         }
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
@@ -557,7 +562,7 @@ public class InspectionSearchDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         List<TaskDto> superPool =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "superPool");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-         String saveFlag = inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
+        String saveFlag = inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
         if(AppConsts.FAIL.equals(saveFlag)){
             ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
         }

@@ -71,7 +71,12 @@
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="18">
-                          <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" needSort="true"></iais:select>
+                          <c:if test="${empty commonPoolStatus}">
+                            <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" needSort="true"></iais:select>
+                          </c:if>
+                          <c:if test="${not empty commonPoolStatus}">
+                            <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="APST029" needSort="true"></iais:select>
+                          </c:if>
                         </iais:value>
                       </iais:row>
                       <iais:row>
