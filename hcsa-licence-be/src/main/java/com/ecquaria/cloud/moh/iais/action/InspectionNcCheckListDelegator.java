@@ -80,7 +80,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void start(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======inspectionNcCheckListDelegator start=======");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, ADHOCLDTO, null);
         ParamUtil.setSessionAttr(request, COMMONDTO, null);
@@ -97,7 +97,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void successViewPre(BaseProcessClass bpc){
-        log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
+        log.info("=======inspectionNcCheckListDelegator successViewPre=======");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         serListDto.setCheckListTab("chkList");
@@ -105,7 +105,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void successViewBack(BaseProcessClass bpc){
-        log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
+        log.info("=======inspectionNcCheckListDelegator successViewBack=======");
         HttpServletRequest request = bpc.request;
 
     }
@@ -123,7 +123,7 @@ public class InspectionNcCheckListDelegator {
         }
     }
     public void init(BaseProcessClass bpc){
-        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("======inspectionNcCheckListDelegator initRequest======");
         HttpServletRequest request = bpc.request;
         String taskId = "";
         try{
