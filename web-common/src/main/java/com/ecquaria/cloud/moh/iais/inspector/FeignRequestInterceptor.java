@@ -26,22 +26,29 @@ import javax.servlet.http.HttpServletRequest;
 public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
+        log.info("--------FeignRequestInterceptor apply start ----------------------");
         AuditTrailDto dto = null;
         //when properties {feign.hystrix.enabled} is false , ServletRequestAttributes will be null
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
             if (request != null) {
+                log.info(StringUtil.changeForLog("--------FeignRequestInterceptor request url :"+ request.getRequestURI()+"----------------------"));
                 dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
             }
         }
-
         if (dto == null) {
+            log.info("--------FeignRequestInterceptor get AuditTrailConsts.SESSION_ATTR_PARAM_NAME is null----------------------");
             dto = AuditTrailDto.getThreadDto();
         }
 
         if (dto != null) {
+            log.info(StringUtil.changeForLog("--------FeignRequestInterceptor ssessionId :" + dto.getSessionId() +"----------"));
             requestTemplate.header("currentAuditTrail", JsonUtil.parseToJson(dto));
+        }else {
+            log.info(StringUtil.changeForLog("--------FeignRequestInterceptor ssessionId is null ----------"));
         }
+        log.info(StringUtil.changeForLog("--------FeignRequestInterceptor requestTemplate :" + requestTemplate.toString()+"----------"));
+        log.info("--------FeignRequestInterceptor apply end----------------------");
     }
 }

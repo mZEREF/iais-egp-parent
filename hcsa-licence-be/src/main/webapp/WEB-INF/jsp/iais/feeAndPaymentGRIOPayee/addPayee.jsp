@@ -15,19 +15,21 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="center-content">
             <div class="intranet-content">
                 <div class="bg-title col-xs-12 col-md-12">
-                    <strong>Add a GIRO Payee</strong>
+                    <h2>
+                        <span>Add a GIRO Payee</span>
+                    </h2>
                 </div>
-                <div class="row">Note: This function is to add a GIRO Payee who submitted a manual application.</div>
+                <div class="row col-xs-12 col-md-12">Note: This function is to add a GIRO Payee who submitted a manual application.</div>
                 <div class="row">&nbsp;</div>
-                <div class="row">The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.</div>
+                <div class="row col-xs-12 col-md-12">The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.</div>
                 <div class="row">&nbsp;</div>
                 <div class="row">&nbsp;</div>
-                <div class="row">Enter GIRO Payee Details</div>
+                <div class="row"><h3>Enter GIRO Payee Details</h3></div>
                 <div class="panel-body">
                     <div class="panel-main-content">
                         <iais:section title="" id = "supPoolList">
@@ -48,7 +50,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Account Name :" mandatory="ture"/>
+                                <iais:field value="Account Name :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="66" style=" font-weight:normal;" name="acctName" value="${acctName}" />
@@ -57,7 +59,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Bank Code :"  mandatory="ture"/>
+                                <iais:field value="Bank Code :"  mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="66" style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
@@ -66,7 +68,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Branch Code :"  mandatory="ture"/>
+                                <iais:field value="Branch Code :"  mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="66" style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
@@ -76,7 +78,7 @@
                             </iais:row>
 
                             <iais:row>
-                                <iais:field value="Bank Name :" mandatory="ture"/>
+                                <iais:field value="Bank Name :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="256" style=" font-weight:normal;" name="bankName" value="${bankName}" />
@@ -85,7 +87,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Bank Account No. :" mandatory="ture"/>
+                                <iais:field value="Bank Account No. :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="66" style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
@@ -94,7 +96,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Customer Reference No. :" mandatory="ture"/>
+                                <iais:field value="Customer Reference No. :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <label>
                                         <input type="text" maxlength="12" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
@@ -103,7 +105,7 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="GIRO Form :" mandatory="ture"/>
+                                <iais:field value="GIRO Form :" mandatory="true"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                     <div class="file-upload-gp">
                                             <input class="hidden validFlag" type="hidden" name="commValidFlag" <c:if test="${docDto.passDocValidate}">value="Y"</c:if> <c:if test="${!docDto.passDocValidate}">value="N"</c:if>/>

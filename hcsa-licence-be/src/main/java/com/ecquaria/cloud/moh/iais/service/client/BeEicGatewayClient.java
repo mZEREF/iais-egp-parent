@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
@@ -81,6 +82,12 @@ public class BeEicGatewayClient {
             String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/rfi-fe-bridge", HttpMethod.POST, licPremisesReqForInfoDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicPremisesReqForInfoDto.class);
+    }
+
+    public FeignResponseEntity<Void> updateGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtoList,
+                                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/giro-fe-bridge", HttpMethod.POST, giroAccountInfoDtoList,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, null);
     }
 
     public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto  appEditSelectDto,

@@ -3044,6 +3044,7 @@ public class NewApplicationHelper {
                 List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDtoList.get(i).getEventDtoList();
                 validate(phDtoList,errorMap,i,s+"PubHoliday");
                 validate(weeklyDtoList,errorMap,i,s+"Weekly");
+                validateEvent(eventDtoList,errorMap,i,s+"Event");
             }
         }
     }
@@ -3052,7 +3053,7 @@ public class NewApplicationHelper {
             return;
         }
         for(int i=0;i< list.size();i++){
-            for(int j=1;j< list.size() &&i!=j ;j++){
+            for(int j=i+1;j< list.size() &&i!=j ;j++){
                 List<String> selectValList = list.get(i).getSelectValList();
                 List<String> selectValList1 = list.get(j).getSelectValList();
                 if(selectValList==null || selectValList1==null){
@@ -3069,8 +3070,8 @@ public class NewApplicationHelper {
                     continue;
                 }
                 int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
-                int   time1 = getTime(list.get(j).getStartFromHH(), list.get(i).getStartFromMM());
-                if(time>time1){
+                int   time1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
+                if(time>=time1){
                     errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                 }
             }
@@ -3086,12 +3087,12 @@ public class NewApplicationHelper {
             return 0;
         }
     }
-    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList,Map<String,String> map){
+    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList,Map<String,String> map,int index,String errorId){
         if(appPremEventPeriodDtoList==null){
             return;
         }
         for(int i=0;i<appPremEventPeriodDtoList.size();i++){
-            for(int j=1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
+            for(int j=i+1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
                 String eventName = appPremEventPeriodDtoList.get(i).getEventName();
                 String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
                 if(!eventName.equals(eventName1)){
@@ -3099,8 +3100,8 @@ public class NewApplicationHelper {
                 }
                 Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
                 Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
-                if(endDate.after(startDate)){
-
+                if(endDate.after(startDate)||endDate.compareTo(startDate)==0){
+                    map.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
                 }
             }
         }

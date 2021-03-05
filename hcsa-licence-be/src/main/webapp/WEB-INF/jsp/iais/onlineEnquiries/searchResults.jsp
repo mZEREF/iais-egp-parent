@@ -182,7 +182,7 @@
                                                             value="${pool.licenseeName}"/></td>
                                                     <td><c:if test="${pool.appCorrId==null}">${pool.serviceName}</c:if>
                                                         <c:if test="${pool.appCorrId!=null}"><iais:service value="${pool.serviceName}"/></c:if>
-                                                        </td>
+                                                    </td>
                                                     <td><fmt:formatDate
                                                             value="${pool.startDate}"
                                                             pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>-<fmt:formatDate

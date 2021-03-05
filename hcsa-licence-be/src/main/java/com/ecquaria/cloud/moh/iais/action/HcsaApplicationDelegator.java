@@ -2245,8 +2245,8 @@ public class HcsaApplicationDelegator {
              * Send Withdrawal Application Email
              */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
+                boolean isCharity = false;
                 String applicantName = "";
-                boolean charity = false;
                 String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                 AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
                 if (premiseMiscDto != null) {
@@ -2286,11 +2286,8 @@ public class HcsaApplicationDelegator {
                                     entityType = licenseeEntityDto.getEntityType();
                                 }
                             }
-                            boolean isCharity = false;
                             if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
                                 isCharity = true;
-                            } else {
-                                isCharity = false;
                             }
                             for (ApplicationDto applicationDto1 : applicationDtoList) {
                                 applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
@@ -2310,7 +2307,7 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             msgInfoMap.put("ApplicationDate", applicationViewDto.getSubmissionDate().split(" ")[0]);
                             if (StringUtil.isEmpty(paymentMethod) ||
-                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1)) {
+                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
                                 msgInfoMap.put("paymentType", "2");
                                 msgInfoMap.put("paymentMode", "");
                                 msgInfoMap.put("returnMount", 0.0);

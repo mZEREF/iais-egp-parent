@@ -331,7 +331,25 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
+             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align: center;">
+                        <div class="row">
+                            <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                        </div>
+                    </div>
+                    <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
+                                data-dismiss="modal" onclick="cancel()">OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <style>
@@ -399,38 +417,6 @@
     }
 
     function changePatient() {
-        if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").show();
-            $("#patOthersEmailAddress").show();
-            $("#hciNamePat").hide();
-            $("#hciCodePat").hide();
-            $("#hciAddressPat").hide();
-        } else if ($("#patientSelectId").val() == "CES005") {
-            $( "#hciName").trigger('blur');
-            $("#patHciName").show();
-            $("#hciName").show();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-        } else if ($("#patientSelectId").val() == "CES006") {
-            $("#patRegNo").show();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthers").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-            $("#hciNamePat").hide();
-            $("#hciCodePat").hide();
-            $("#hciAddressPat").hide();
-        }
-    }
-
-    function changePatientAjax() {
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
@@ -532,7 +518,6 @@
         changePatient();
         changeReason();
         changePatSelect();
-        $("#hciName").trigger('blur')
     });
 
     $(document).ready(function () {
@@ -543,6 +528,16 @@
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#div").hide();
+        }
+    });
+
+    function cancel() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+
+    $(document).ready(function () {
+        if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
+            $('#PRS_SERVICE_DOWN').modal('show');
         }
     });
 

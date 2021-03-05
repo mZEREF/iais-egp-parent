@@ -34,14 +34,14 @@ public interface GiroAccountBeClient {
     FeignResponseEntity<SearchResult<OrganizationPremisesViewQueryDto>> searchOrgPremByParam(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/hcsa-giro/create-giro-acct")
-    FeignResponseEntity<GiroAccountInfoDto> createGiroAccountInfo(@RequestBody GiroAccountInfoDto giroAccountInfoDto);
+    FeignResponseEntity<List<GiroAccountInfoDto>> createGiroAccountInfo(@RequestBody List<GiroAccountInfoDto> giroAccountInfoDtos);
 
     @PostMapping(value = "/hcsa-giro/update-giro-acct")
-    FeignResponseEntity<Void> updateGiroAccountInfo(@RequestBody GiroAccountInfoDto giroAccountInfoDto);
+    FeignResponseEntity<Void> updateGiroAccountInfo(@RequestBody List<GiroAccountInfoDto> giroAccountInfoDtos);
 
     @GetMapping(value = "/hcsa-giro/giro-acct-doc-by-id/{acctId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroAccountFormDocDto>> findGiroAccountFormDocDtoListByAcctId(@PathVariable(name = "acctId") String acctId);
 
-    @GetMapping(value = "/giro-acct-info-by-id/{acctId}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-giro/giro-acct-info-by-id/{acctId}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GiroAccountInfoDto> findGiroAccountInfoDtoByAcctId(@PathVariable(name = "acctId")String acctId);
 }

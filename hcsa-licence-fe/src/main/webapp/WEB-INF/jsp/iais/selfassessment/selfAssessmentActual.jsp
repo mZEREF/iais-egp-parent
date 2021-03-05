@@ -20,8 +20,8 @@
     <div class = "container">
         <form id = "mainForm" name="mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
             <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-            <input type="hidden" name="tabIndex" value="<iais:mask name="tabIndex" value="${requestScope.tabIndex}"/>">
-            <input type="hidden" name="prevTabIndex" value="<iais:mask name="prevTabIndex" value="${requestScope.prevTabIndex}"/>">
+            <input type="hidden" name="tagIndex" value="${tagIndex}">
+            <input type="hidden" name="prevTagIndex" value="${prevTagIndex}">
             <input type="hidden" name="selfAssessmentCorrId" value="${param.selfAssessmentCorrId}"/>
             <input type="hidden" name="loadPopupPrint" value="${param.loadPopupPrint}" />
             <div id="printContent">
@@ -55,7 +55,7 @@
     }
 
     function switchNextStep(index){
-        $("[name='tabIndex']").val(index);
+        $("[name='tagIndex']").val(index);
         $("[name='crud_action_type']").val("switchNextStep");
         let mainForm = document.getElementById('mainForm');
         mainForm.submit();
@@ -66,10 +66,10 @@
     }
 
     clearButtonId.onclick = (function () {
-        let tabIndex = $("[name='tabIndex']").val();
+        let tagIndex = $("[name='tagIndex']").val();
         /*$("input[type='radio']").removeAttr('checked');*/
         //clear answer with current tab
-        SOP.Crud.cfxSubmit("mainForm", "clearAnswer", tabIndex);
+        SOP.Crud.cfxSubmit("mainForm", "clearAnswer", tagIndex);
     });
 
     submitButtonId.onclick = (function () {

@@ -2752,8 +2752,22 @@ private CessationFeService cessationFeService;
 
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
 
-        String  newHciName = appGrpPremisesDto.getHciName();
-        String  oldHciName = premisesListQueryDto.getHciName();
+        String newHciName = "";
+        String oldHciName = "";
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
+            oldHciName = premisesListQueryDto.getHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
+            oldHciName = premisesListQueryDto.getConveyanceHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            oldHciName = premisesListQueryDto.getOffSiteHciName();
+        }
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            newHciName = appGrpPremisesDto.getHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            newHciName = appGrpPremisesDto.getConveyanceHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            newHciName = appGrpPremisesDto.getOffSiteHciName();
+        }
 
         if (!newHciName.equals(oldHciName)) {
             return false;
@@ -3604,12 +3618,13 @@ private CessationFeService cessationFeService;
 
     private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
         String   hciName = appGrpPremisesDto.getHciName();
-   /*     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-        }*/
-
+            hciName = appGrpPremisesDto.getConveyanceHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName=appGrpPremisesDto.getOffSiteHciName();
+        }
         return hciName;
     }
 
@@ -3705,7 +3720,7 @@ private CessationFeService cessationFeService;
         String[] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
         String[] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
         String[] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");*/
-        String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
+        //String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
         String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
         //conveyance
         String[] conveyanceHciName = ParamUtil.getStrings(request, "conveyanceHciName");
@@ -3877,7 +3892,8 @@ private CessationFeService cessationFeService;
             }
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
-
+                String premVal = premValue[i];
+                String fireSafetyCertIssuedDateStr = ParamUtil.getString(request, premVal+"onSiteFireSafetyCertIssuedDate");
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
                 appGrpPremisesDto.setHciName(hciName[i]);
                 appGrpPremisesDto.setPostalCode(postalCode[i]);
@@ -3889,7 +3905,7 @@ private CessationFeService cessationFeService;
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
@@ -3900,7 +3916,6 @@ private CessationFeService cessationFeService;
                 }
 
                 //weekly
-                String premVal = premValue[i];
                 for(int j = 0;j<weeklyLength;j++){
                     OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
                     String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"onSiteWeekly",j));

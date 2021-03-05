@@ -436,7 +436,7 @@
             $("#patRegNo").hide();
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
-        } else if ($("#patientSelectId").val() == "CES005") {
+        } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
             $("#patHciName").show();
             $("#hciName").show();
             $("#patOthers").hide();

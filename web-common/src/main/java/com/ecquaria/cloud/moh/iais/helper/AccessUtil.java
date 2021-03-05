@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -120,12 +121,7 @@ public class AccessUtil {
                 }
             } else if (AppConsts.USER_DOMAIN_INTERNET.equals(orgUser.getUserDomain())) {
                 LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
-                if (lDto != null) {
-                    loginContext.setNricNum(orgUser.getIdNumber());
-                    loginContext.setLicenseeId(lDto.getId());
-                    loginContext.setUenNo(lDto.getUenNo());
-                    loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
-                }else{
+                if (lDto == null) {
                     LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
                     OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
                     OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
@@ -136,6 +132,12 @@ public class AccessUtil {
                         lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
                     }
                 }
+                lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
+                loginContext.setNricNum(orgUser.getIdNumber());
+                loginContext.setLicenseeId(lDto.getId());
+                loginContext.setUenNo(lDto.getUenNo());
+                loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
+                log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
             }
         }
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);

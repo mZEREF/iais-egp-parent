@@ -528,6 +528,16 @@
         ]]>
     </sql>
 
+
+    <sql key="userFeAccount"  remarks="userFeAccount">
+        <![CDATA[
+			SELECT T1.id,T1.ID_NO,T1.ID_TYPE,T1.SALUTATION,T1.DISPLAY_NAME,T1.DESIGNATION,
+			T1.STATUS,T3.ROLE_ID
+			from user_account T1
+			left join (SELECT ROLE_ID,USER_ACCT_ID from user_role GROUP BY user_role.ROLE_ID,user_role.USER_ACCT_ID) T3 on T1.id = T3.USER_ACCT_ID
+			WHERE T1.user_domain = 'internet'
+        ]]>
+    </sql>
 </sqls>
 
 

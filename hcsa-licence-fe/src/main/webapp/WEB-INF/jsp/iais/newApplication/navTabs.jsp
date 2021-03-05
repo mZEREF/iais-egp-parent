@@ -267,7 +267,7 @@
         <!--add disabled bg color-->
         $Ele.find('input[type="text"]').css('border-color','#ededed');
         $Ele.find('input[type="text"]').css('color','#999');
-        $Ele.find('.date_picker').unbind();
+        //$Ele.find('.fireIssuedDate').unbind();
         <!--multi -->
         $Ele.find('div.multi-select input').prop('disabled',true);
     }

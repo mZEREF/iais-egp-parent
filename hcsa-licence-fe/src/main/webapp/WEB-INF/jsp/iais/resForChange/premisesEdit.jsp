@@ -32,7 +32,7 @@
                 <div class="row premContent">
                   <div class="col-xs-12" style="margin-top:3%;">
                     <div>
-                      <h2>${PremisesListQueryDto.premisesType}:${PremisesListQueryDto.address}</h2>
+                      <h2>${PremisesListQueryDto.premisesType}:&nbsp;${PremisesListQueryDto.address}</h2>
                     </div>
                   </div>
                 </div>
@@ -162,7 +162,13 @@
         doEdit();
         addOperational();
         operationDel();
-        addPubHolDay();
+        addPubHolDayHtml();
+        addWeeklyHtml();
+        addEventHtml();
+        removeWeekly();
+        removePh();
+        removeEvent();
+        clickAllDay();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
@@ -200,7 +206,9 @@
         <!--add disabled bg color-->
         $Ele.find('input[type="text"]').css('border-color','#ededed');
         $Ele.find('input[type="text"]').css('color','#999');
-        $Ele.find('.date_picker').unbind();
+        //$Ele.find('.date_picker').unbind();
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',true);
     }
 
     function unreadonlyPartPage($Ele) {
@@ -218,6 +226,8 @@
             todayHighlight:true,
             orientation:'bottom'
         });
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
     var unbindAllTabs = function () {
@@ -247,6 +257,8 @@
         $Ele.find('div.nice-select').removeClass('disabled');
         $Ele.find('input[type="text"]').css('border-color','');
         $Ele.find('input[type="text"]').css('color','');
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
 </script>

@@ -73,14 +73,17 @@
             $premContent.find('.addWeeklyDiv').removeClass('hidden');
             $premContent.find('.addPhDiv').removeClass('hidden');
             $premContent.find('.addEventDiv').removeClass('hidden');
+            $premContent.find('.date_picker').attr('disabled',false);
+            //remove placeHolder disabled style
+            $premContent.find('.date_picker').removeClass('disabled-placeHolder');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
                 premDivName = 'new-premise-form-on-site';
                 //
-                if('0' != init){
+                /*if('0' != init){
                     replaceFireIssueDateHtml($premContent,'');
-                }
+                }*/
             }else if ("conveyanceSel" == thisId) {
                 premDivName = 'new-premise-form-conv';
             }else if ('offSiteSel' == thisId){
@@ -98,8 +101,7 @@
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
                     //initPhForm('onSite',$premContent);
-                    //remove placeHolder disabled style
-                    $premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
+
                     //gen weekly html
                     var $weeklyDivEle = $premContent.find('.'+premDivName).find('div.weeklyContent');
                     genWeeklyHtml($premContent,$weeklyDivEle);
@@ -363,6 +365,9 @@
                             $premContent.find('input[name="chooseExistData"]').val('1');
                             //disable allday
                             $premContent.find('.allDay').attr('disabled',true);
+                            $premContent.find('.date_picker').attr('disabled',true);
+                            //add placeHolder disabled style
+                            $premContent.find('.date_picker').addClass('disabled-placeHolder');
                         }
                     },
                     'error':function () {
@@ -511,13 +516,13 @@
             $('#isEditHiddenVal').val('1');
             premContent.find('input[name="isPartEdit"]').val('1');
             <!--replace fire issued date -->
-            var fireIssueDate = premContent.find('.fireIssuedDate').val();
-            replaceFireIssueDateHtml(premContent,fireIssueDate);
+            //var fireIssueDate = premContent.find('.fireIssuedDate').val();
+            //replaceFireIssueDateHtml(premContent,fireIssueDate);
             <!--remove ph hidden-->
             premContent.find('.addPubHolDay').removeClass('hidden');
             premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
             <!--remove placeHolder disabled style -->
-            premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
+            premContent.find('.date_picker').removeClass('disabled-placeHolder');
 
             premContent.find('.addOperational').removeClass('hidden');
             premContent.find('.opDel').removeClass('hidden');
@@ -706,9 +711,7 @@
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.buildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
             $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
-            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
-            //add placeHolder disabled style
-            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+            $premSelect.find('.fireIssuedDate').val(data.certIssuedDtStr);
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
             $premSelect.find('input.other-lic').each(function () {
@@ -912,10 +915,19 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                     $premCountEle.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-                    $premCountEle.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -945,6 +957,17 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -974,6 +997,17 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
                 }
 
             }
@@ -1161,6 +1195,7 @@
     }
 
     var addWeeklyHtml = function () {
+        $('.addWeekly').unbind('click');
         $('.addWeekly').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1202,6 +1237,7 @@
     }
 
     var addPubHolDayHtml = function () {
+        $('.addPubHolDay').unbind('click');
         $('.addPubHolDay').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1243,6 +1279,7 @@
 
 
     var addEventHtml = function () {
+        $('.addEvent').unbind('click');
         $('.addEvent').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');

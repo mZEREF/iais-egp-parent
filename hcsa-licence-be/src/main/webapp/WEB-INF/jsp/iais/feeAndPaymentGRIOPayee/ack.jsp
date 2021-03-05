@@ -20,9 +20,13 @@
         <div class="center-content">
             <div class="intranet-content">
                 <div class="bg-title col-xs-12 col-md-12">
-                    <strong>Add a GIRO Payee</strong>
+                    <h2>
+                        <span>Add a GIRO Payee</span>
+                    </h2>
                 </div>
-                <div class="row">You have successfully added a GIRO Payee.</div>
+                <div class="row col-xs-12 col-md-12">
+                    You have successfully added a GIRO Payee.
+                </div>
 
                 <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
 

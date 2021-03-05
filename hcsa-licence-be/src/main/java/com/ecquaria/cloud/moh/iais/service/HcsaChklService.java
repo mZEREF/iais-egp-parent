@@ -111,7 +111,7 @@ public interface HcsaChklService {
 
     List<ErrorMsgContent> updateUploadItems(List<ChecklistItemExcel> updateItems);
 
-    List<ChecklistConfigExcel> convertToUploadTemplateByConfig(ChecklistConfigDto config);
+    void convertToUploadTemplateByConfig(List<ChecklistConfigExcel> configExcelList, ChecklistConfigDto config);
 
     String callProceduresGenUUID();
 }

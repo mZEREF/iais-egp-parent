@@ -404,4 +404,6 @@ public interface ApplicationClient {
 
     @PostMapping(value="/halp-prs/prs-api/getDisciplinaryRecord", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DisciplinaryRecordResponseDto>> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
+    @PostMapping(value = "/iais-application-be/applications-appids",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByAppIds(@RequestBody List<String> appIds);
 }

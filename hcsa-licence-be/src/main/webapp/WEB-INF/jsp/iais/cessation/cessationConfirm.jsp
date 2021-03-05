@@ -425,7 +425,7 @@
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005") {
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005"&&$('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "hciName" + j).show();
                     $("#" + i + "patOthers" + j).hide();

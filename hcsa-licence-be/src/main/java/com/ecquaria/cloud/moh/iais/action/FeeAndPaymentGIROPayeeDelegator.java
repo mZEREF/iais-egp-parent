@@ -5,14 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
@@ -74,7 +77,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
 
     public void start(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_PAYMENT,  AuditTrailConsts.FUNCTION_ONLINE_PAYMENT);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
     }
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
@@ -139,12 +142,20 @@ public class FeeAndPaymentGIROPayeeDelegator {
     public void deletePayee(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
         String [] acctIds=ParamUtil.getStrings(request,"acctIds");
+        List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
+        String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
              ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            giroAccountService.updateGiroAccountInfo(giroAccountInfoDto);
+            giroAccountInfoDto.setEventRefNo(refNo);
+
+            giroAccountInfoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            giroAccountInfoDtoList.add(giroAccountInfoDto);
         }
+        giroAccountService.updateGiroAccountInfo(giroAccountInfoDtoList);
+
+        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList);
 
     }
     public void reSearchPayee(BaseProcessClass bpc) {
@@ -377,11 +388,34 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void doSubmit(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-
+        String refNo=System.currentTimeMillis()+"";
         List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,"giroAccountInfoDtoList");
         for (GiroAccountInfoDto giro:giroAccountInfoDtoList
              ) {
-            giroAccountService.createGiroAccountInfo(giro);
+            giro.setEventRefNo(refNo);
+            giro.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
+        List<GiroAccountInfoDto> giroAccountInfoDtoList1= giroAccountService.createGiroAccountInfo(giroAccountInfoDtoList);
+
+
+        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+    }
+
+    private void eicSyncGiroAcctToFe(String refNo, List<GiroAccountInfoDto> giroAccountInfoDtoList1) {
+        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        Date now = new Date();
+        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.GiroAccountServiceImpl");
+        eicRequestTrackingDto.setActionMethod("eicCallFeGiroLic");
+        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
+        eicRequestTrackingDto.setDtoClsName(List.class.getName());
+        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(giroAccountInfoDtoList1));
+        eicRequestTrackingDto.setProcessNum(1);
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        eicRequestTrackingDto.setRefNo(refNo);
+        giroAccountService.updateGiroAccountInfoTrackingDto(eicRequestTrackingDto);
+        giroAccountService.syncFeGiroAcctDto(giroAccountInfoDtoList1);
     }
 }

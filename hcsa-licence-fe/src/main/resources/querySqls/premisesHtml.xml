@@ -80,7 +80,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
                     <div class=" col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                         <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate"
-                               name="onSiteFireSafetyCertIssuedDate" id="" data-date-start-date="01/01/1900"
+                               name="${premVal}onSiteFireSafetyCertIssuedDate" id="" data-date-start-date="01/01/1900"
                                placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate"
                                                                              name="iaisErrorMsg"
                                                                              class="error-msg"></span>
@@ -267,7 +267,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0onSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -330,7 +330,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0onSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -552,7 +552,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0conveyanceWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -615,7 +615,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0conveyancePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -829,7 +829,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0offSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -892,7 +892,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0offSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6">
@@ -1084,7 +1084,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="row">
-                            <div class="col-md-6 text-center">
+                            <div class="col-md-6 text-center" style="padding-top: 14px">
                                 <input class="form-check-input allDay" name="${allDayName}" type="checkbox" aria-invalid="false" value="true">
                             </div>
                             <div class="col-md-6">

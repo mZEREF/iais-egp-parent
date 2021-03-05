@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -348,8 +349,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
                             Long l = System.currentTimeMillis();
-                            fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId,l);
-                            saveFileRepo( fileName,groupPath,submissionId,l);
+                           fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+
+                           saveFileRepo( fileName,groupPath,submissionId,l);
+
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
                         }finally {
@@ -537,6 +540,33 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return Boolean.TRUE;
 
     }
+    public boolean withdrowAppToBe(List<ApplicationDto> applicationDtos,ApplicationListFileDto applicationListDto,ProcessFileTrackDto processFileTrackDto){
+        if(applicationDtos==null || applicationDtos.isEmpty()){
+            return false;
+        }
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+                return false;
+            }
+        }
+        List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
+        if(appPremiseMiscEntities!=null && !appPremiseMiscEntities.isEmpty()){
+            List<String> list=new ArrayList<>(appPremiseMiscEntities.size());
+            for(AppPremiseMiscDto appPremiseMiscDto : appPremiseMiscEntities){
+                String relateRecId = appPremiseMiscDto.getRelateRecId();
+                if(!StringUtil.isEmpty(relateRecId)){
+                    list.add(relateRecId);
+                }
+            }
+            List<ApplicationDto> entity = applicationClient.getApplicationDtoByAppIds(list).getEntity();
+            if(!entity.isEmpty()){
+                processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+                applicationClient.updateProcessFileTrack(processFileTrackDto);
+                return true;
+            }
+        }
+        return false;
+    }
 
     private List<ApplicationDto> withdrow(List<ApplicationDto> applicationDtos){
         log.info("withdrow function start");
@@ -599,7 +629,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         //not use generateFile function.this have floder name have dian
                         File file1 = new File(file.getPath()+File.separator, s);
                         flag=f.renameTo(file1);
-                        fileRepoDto.setFileName(f.getName());
+                        fileRepoDto.setFileName(s);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);

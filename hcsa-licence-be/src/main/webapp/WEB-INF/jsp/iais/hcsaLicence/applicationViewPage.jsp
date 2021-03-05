@@ -689,7 +689,8 @@
         var recommendation = $("[name='recommendation']").val();
         var appealRecommendation = $("[name='appealRecommendationValues']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
-        if('other' == recommendation || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
+        var isAppealType = $('#isAppealType').val();
+        if((('other' == recommendation) && !isAppealType) || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
             if('${applicationViewDto.applicationDto.status}' != 'APST014'){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             }

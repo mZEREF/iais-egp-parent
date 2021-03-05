@@ -250,6 +250,9 @@
             $(this).find('.addPhDiv').addClass('hidden');
             $(this).find('.addEventDiv').addClass('hidden');
             $(this).find('input.allDay').attr('disabled',true);
+            //for rfi
+            $(this).find('.date_picker').attr('disabled',true);
+            $(this).find('.date_picker').addClass('disabled-placeHolder');
         });
         </c:if>
 

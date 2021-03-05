@@ -265,7 +265,7 @@
     }
 
     function jumpToPagechangePage() {
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
     function searchCondition() {
