@@ -152,8 +152,8 @@ public class InspectionSearchDelegator {
                     roleIdList.add(curRoleId.replace(RoleConsts.USER_LEAD, ""));
                     String roleId = SqlHelper.constructInCondition("T7.ROLE_ID", roleIdList.size());
                     searchParam.addParam("roleId_List", roleId);
-                    for (int i = 0; i < workGroupIds.size(); i++) {
-                        searchParam.addFilter("T7.ROLE_ID" + i, workGroupIds.get(i));
+                    for (int i = 0; i < roleIdList.size(); i++) {
+                        searchParam.addFilter("T7.ROLE_ID" + i, roleIdList.get(i));
                     }
                 } else {
                     String roleId = SqlHelper.constructInCondition("T7.ROLE_ID", 0);
@@ -278,8 +278,8 @@ public class InspectionSearchDelegator {
             roleIdList.add(roleId.replace(RoleConsts.USER_LEAD, ""));
             String roleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", roleIdList.size());
             searchParam.addParam("roleId_List", roleIdStr);
-            for (int i = 0; i < workGroupIds.size(); i++) {
-                searchParam.addFilter("T7.ROLE_ID" + i, workGroupIds.get(i));
+            for (int i = 0; i < roleIdList.size(); i++) {
+                searchParam.addFilter("T7.ROLE_ID" + i, roleIdList.get(i));
             }
         } else {
             String roleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", 0);
