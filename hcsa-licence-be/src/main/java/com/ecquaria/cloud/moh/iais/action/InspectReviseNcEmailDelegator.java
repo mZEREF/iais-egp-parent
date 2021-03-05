@@ -274,7 +274,7 @@ public class InspectReviseNcEmailDelegator {
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -481,7 +481,7 @@ public class InspectReviseNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
     }
 

@@ -35,7 +35,7 @@ public class GiroAccountBeClientFallback implements GiroAccountBeClient{
     }
 
     @Override
-    public FeignResponseEntity<GiroAccountInfoDto> createGiroAccountInfo(GiroAccountInfoDto giroAccountInfoDto) {
+    public FeignResponseEntity<List<GiroAccountInfoDto>> createGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -43,7 +43,7 @@ public class GiroAccountBeClientFallback implements GiroAccountBeClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> updateGiroAccountInfo(GiroAccountInfoDto giroAccountInfoDto) {
+    public FeignResponseEntity<Void> updateGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

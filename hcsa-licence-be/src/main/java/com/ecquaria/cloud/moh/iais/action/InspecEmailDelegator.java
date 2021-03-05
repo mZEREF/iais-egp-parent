@@ -382,7 +382,7 @@ public class InspecEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
