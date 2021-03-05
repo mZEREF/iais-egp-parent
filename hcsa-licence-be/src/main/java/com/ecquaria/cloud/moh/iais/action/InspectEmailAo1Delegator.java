@@ -239,7 +239,7 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"processing");
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
     }
 
@@ -288,7 +288,7 @@ public class InspectEmailAo1Delegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
 
         if (decision.equals(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT)){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);

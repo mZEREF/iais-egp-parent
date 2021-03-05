@@ -392,7 +392,7 @@ public class InspectionMergeSendNcEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, IntranetUserConstant.INTRANET_REMARKS));
+        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         String decision=ParamUtil.getString(request,"decision");
         if("Select".equals(decision)){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");

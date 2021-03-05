@@ -91,7 +91,7 @@
                                                     <iais:row>
                                                         <iais:field value="Internal Remarks"/>
                                                         <iais:value width="4000">
-                                                            <textarea name="remarks" cols="60" rows="7"
+                                                            <textarea name="Remarks" cols="60" rows="7"
                                                                       maxlength="300"
                                                                       >${insEmailDto.remarks}</textarea>
                                                         </iais:value>
@@ -99,13 +99,7 @@
                                                     <iais:row>
                                                         <iais:field value="Processing Decision" required="true"/>
                                                         <iais:value width="7">
-                                                            <select id="decision_email" name="decision">
-                                                                <option value="Select" selected>Please Select
-                                                                </option>
-                                                                <c:forEach items="${appTypeOption}" var="decision">
-                                                                    <option value="${decision.value}">${decision.text}</option>
-                                                                </c:forEach>
-                                                            </select>
+                                                            <iais:select id="decision_email" name="decision" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
                                                             <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
                                                         </iais:value>
                                                     </iais:row>
@@ -131,7 +125,7 @@
                                                     </iais:row>
                                                     <iais:action>
                                                         <a style="float:left;padding-top: 1.1%;text-decoration:none;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
-                                                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSend()">Submit</button>
+                                                        <button name="submitBtn" class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSend()">Submit</button>
                                                     </iais:action>
                                                     <br><br><br>
                                                 </iais:section>
