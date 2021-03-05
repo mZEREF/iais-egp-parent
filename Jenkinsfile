@@ -275,6 +275,15 @@ def sendEmailNotification(){
         subjectHeader = "Build aborted: ${currentBuild.fullDisplayName}"
         emailBody = "Build aborted, see ${env.BUILD_URL}"
     }
+    else if (currentBuild.result == 'UNSTABLE')
+    {
+        subjectHeader = "Build unstable: ${currentBuild.fullDisplayName}"
+        emailBody = "Build unstable, see ${env.BUILD_URL}"
+    }
+    else{
+        println "Email for build result -> [${currentBuild.result}], not handled yet."
+    }
+
 
     // send email
     mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
@@ -546,7 +555,7 @@ def dependencyCheck() {
         // Note that we using the installed tool instead of going the Docker container route.
         // This is because, integration to Jenkins would be handled by the plugin.
         dependencycheck additionalArguments: cliArgs.join(" "), odcInstallation: '5.3.2'
-        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml', unstableTotalCritical: 13, unstableTotalHigh: 34, unstableTotalMedium: 119, unstableTotalLow: 10
 
         archiveArtifacts 'dependency-check-report.html'
     }
