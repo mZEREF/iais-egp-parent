@@ -142,56 +142,54 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String svcName = hcsaServiceDto.getSvcName();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
-
             ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            if (Optional.ofNullable(serviceConfig).isPresent()){
+                List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
+                for (AppPremisesCorrelationDto correlationDto : correlationList) {
+                    String corrId = correlationDto.getId();
+                    String appGrpPremId = correlationDto.getAppGrpPremId();
+                    AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
+                    String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+                            appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
-            if (serviceConfig == null){
+                    SelfAssessment selfAssessment = new SelfAssessment();
+                    selfAssessment.setSvcId(svcId);
+                    selfAssessment.setCorrId(corrId);
+                    selfAssessment.setApplicationNumber(appNo);
+                    selfAssessment.setCanEdit(true);
+                    selfAssessment.setSvcName(svcName);
+                    selfAssessment.setPremises(address);
+
+                    List<SelfAssessmentConfig> configList = IaisCommonUtils.genNewArrayList();
+                    configList.add(commonConfig);
+
+                    SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
+                    svcConfig.setSvcId(svcId);
+                    svcConfig.setSvcName(svcName);
+                    svcConfig.setConfigId(serviceConfig.getId());
+                    svcConfig.setCommon(false);
+                    svcConfig.setSvcCode(serviceConfig.getSvcCode());
+                    svcConfig.setSvcName(serviceConfig.getSvcName());
+
+                    LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                    List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
+                    for(String subTypeName : serviceSubtypeName){
+                        ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
+                        if (Optional.ofNullable(subTypeConfig).isPresent()){
+                            svcConfig.setHasSubtype(true);
+                            Map<String, List<PremCheckItem>> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
+                            serviceQuestion.putAll(subTypeQuestion);
+                        }
+                    }
+
+                    svcConfig.setSqMap(serviceQuestion);
+                    configList.add(svcConfig);
+                    selfAssessment.setSelfAssessmentConfig(configList);
+                    selfAssessmentList.add(selfAssessment);
+                }
+            }else {
                 //if don't have checklist , cannot do next step.
                 continue;
-            }
-
-            List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
-            for (AppPremisesCorrelationDto correlationDto : correlationList) {
-                String corrId = correlationDto.getId();
-                String appGrpPremId = correlationDto.getAppGrpPremId();
-                AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
-                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
-                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
-
-                SelfAssessment selfAssessment = new SelfAssessment();
-                selfAssessment.setSvcId(svcId);
-                selfAssessment.setCorrId(corrId);
-                selfAssessment.setApplicationNumber(appNo);
-                selfAssessment.setCanEdit(true);
-                selfAssessment.setSvcName(svcName);
-                selfAssessment.setPremises(address);
-
-                List<SelfAssessmentConfig> configList = IaisCommonUtils.genNewArrayList();
-                configList.add(commonConfig);
-
-                SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
-                svcConfig.setSvcId(svcId);
-                svcConfig.setSvcName(svcName);
-                svcConfig.setConfigId(serviceConfig.getId());
-                svcConfig.setCommon(false);
-                svcConfig.setSvcCode(serviceConfig.getSvcCode());
-                svcConfig.setSvcName(serviceConfig.getSvcName());
-
-                LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
-                List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
-                for(String subTypeName : serviceSubtypeName){
-                    ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
-                    if (subTypeConfig != null){
-                        svcConfig.setHasSubtype(true);
-                        Map<String, List<PremCheckItem>> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
-                        serviceQuestion.putAll(subTypeQuestion);
-                    }
-                }
-
-                svcConfig.setSqMap(serviceQuestion);
-                configList.add(svcConfig);
-                selfAssessment.setSelfAssessmentConfig(configList);
-                selfAssessmentList.add(selfAssessment);
             }
         }
 
@@ -402,11 +400,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
         //TODO if from inbox , should not create task
-        if (!IaisCommonUtils.isEmpty(selfAssessmentList)){
-            //set audit trail
-            selfAssessmentList.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        }
-
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationFeClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
@@ -473,7 +466,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void changePendingSelfAssMtStatus(String value, Boolean isGroupId) {
-        log.info(StringUtil.changeForLog("changePendingSelfAssMtStatus =====>>" + value + "isGroupId" + isGroupId));
+        log.info("SelfAssessmentServiceImpl [changePendingSelfAssMtStatus] value {}, isGroupId {}", value, isGroupId);
         List<ApplicationDto> appList;
         if (isGroupId){
             appList = applicationFeClient.listApplicationByGroupId(value).getEntity();
@@ -485,13 +478,15 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return;
         }
 
-        log.info(StringUtil.changeForLog("=====>>>>>>>>need update application size" + appList.size()));
         for(ApplicationDto app : appList){
             //change app status when rfi
             if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getStatus())) {
                 app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             }
             app.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
+
+            log.info("SelfAssessmentServiceImpl [changePendingSelfAssMtStatus] need update application application number {}", app.getApplicationNo());
+            log.info("SelfAssessmentServiceImpl [changePendingSelfAssMtStatus] self ass status {}", app.getStatus());
         }
 
         applicationFeClient.updateApplicationList(appList);
