@@ -71,7 +71,7 @@
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="18">
-                          <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                          <iais:select name="superAppStatus" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" needSort="true"></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:row>
