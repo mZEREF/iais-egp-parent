@@ -120,8 +120,8 @@ public class AccessUtil {
                     loginContext.getWrkGrpIds().addAll(wrkGrps);
                 }
             } else if (AppConsts.USER_DOMAIN_INTERNET.equals(orgUser.getUserDomain())) {
-                LicenseeDto lDto;
-                if ((lDto  = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity()) == null) {
+                LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
+                if (lDto == null) {
                     LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
                     OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
                     OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
@@ -131,10 +131,8 @@ public class AccessUtil {
                     }else {
                         lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
                     }
-                }else{
-                    lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
                 }
-
+                lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
                 loginContext.setNricNum(orgUser.getIdNumber());
                 loginContext.setLicenseeId(lDto.getId());
                 loginContext.setUenNo(lDto.getUenNo());
