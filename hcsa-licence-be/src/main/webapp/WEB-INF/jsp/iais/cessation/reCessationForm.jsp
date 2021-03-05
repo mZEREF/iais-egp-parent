@@ -409,38 +409,6 @@
             $("#hciNamePat").hide();
             $("#hciCodePat").hide();
             $("#hciAddressPat").hide();
-        } else if ($("#patientSelectId").val() == "CES005") {
-            $( "#hciName").trigger('blur');
-            $("#patHciName").show();
-            $("#hciName").show();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-        } else if ($("#patientSelectId").val() == "CES006") {
-            $("#patRegNo").show();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthers").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-            $("#hciNamePat").hide();
-            $("#hciCodePat").hide();
-            $("#hciAddressPat").hide();
-        }
-    }
-
-    function changePatientAjax() {
-        if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").show();
-            $("#patOthersEmailAddress").show();
-            $("#hciNamePat").hide();
-            $("#hciCodePat").hide();
-            $("#hciAddressPat").hide();
         } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
             $( "#hciName").trigger('blur');
             $("#patHciName").show();
@@ -532,7 +500,6 @@
         changePatient();
         changeReason();
         changePatSelect();
-        $("#hciName").trigger('blur')
     });
 
     $(document).ready(function () {
