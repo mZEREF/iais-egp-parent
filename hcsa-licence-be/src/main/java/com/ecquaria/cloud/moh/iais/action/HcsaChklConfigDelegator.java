@@ -61,6 +61,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -191,11 +192,10 @@ public class HcsaChklConfigDelegator {
 
         try {
             ChecklistConfigDto conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-            if(conf != null){
+            if(Optional.ofNullable(conf).isPresent()){
                 List<ChecklistSectionDto> secList = conf.getSectionDtos();
-                if(secList == null){
-                    secList = IaisCommonUtils.genNewArrayList();
-                }
+
+                secList = Optional.ofNullable(secList).orElseGet(() -> IaisCommonUtils.genNewArrayList());
 
                 ChecklistSectionDto cs = new ChecklistSectionDto();
 

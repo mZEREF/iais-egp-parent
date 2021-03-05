@@ -271,7 +271,7 @@ public class SelfAssessmentDelegator {
     private Integer getCurrentSelfAssessmentIndexInList(HttpServletRequest request) {
         String selfAssessmentCorrId = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_EACH_DETAIL_CORR_ID);
         Map<String, Integer> correlationMap = (Map<String, Integer>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP);
-        return Optional.ofNullable(correlationMap).map(item -> item.get(selfAssessmentCorrId)).orElse(-1);
+        return Optional.ofNullable(correlationMap).map(item -> item.get(selfAssessmentCorrId)).orElseGet(() -> -1);
     }
 
     /**
