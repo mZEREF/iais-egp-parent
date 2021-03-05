@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -115,12 +116,27 @@ public class InspecAssignTaskDelegator {
             GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-            List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
-            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-            searchParam.addParam("appCorrId_list", appPremCorrId);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+            List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+            int workGroupIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+                workGroupIdsSize = workGroupIds.size();
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
+                for (int i = 0; i < workGroupIds.size(); i++) {
+                    searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                }
+            } else {
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
             }
+            String curRoleId;
+            if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+                curRoleId = loginContext.getCurRoleId();
+            } else {
+                curRoleId = RoleConsts.USER_LEAD;
+            }
+            searchParam.addFilter("commonPoolRoleId", curRoleId,true);
+
             QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
@@ -368,13 +384,27 @@ public class InspecAssignTaskDelegator {
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-        List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
-        String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-        searchParam.addParam("appCorrId_list", appPremCorrId);
-        for(int i = 0; i < appCorrId_list.size(); i++){
-            searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+        List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+        int workGroupIdsSize = 0;
+        if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+            workGroupIdsSize = workGroupIds.size();
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+            }
+        } else {
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
         }
+        String curRoleId;
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+            curRoleId = loginContext.getCurRoleId();
+        } else {
+            curRoleId = RoleConsts.USER_LEAD;
+        }
+        searchParam.addFilter("commonPoolRoleId", curRoleId,true);
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no",application_no,true);
         }
