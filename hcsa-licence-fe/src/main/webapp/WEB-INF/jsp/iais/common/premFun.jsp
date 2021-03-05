@@ -1161,6 +1161,7 @@
     }
 
     var addWeeklyHtml = function () {
+        $('.addWeekly').unbind('click');
         $('.addWeekly').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1202,6 +1203,7 @@
     }
 
     var addPubHolDayHtml = function () {
+        $('.addPubHolDay').unbind('click');
         $('.addPubHolDay').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1243,6 +1245,7 @@
 
 
     var addEventHtml = function () {
+        $('.addEvent').unbind('click');
         $('.addEvent').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
