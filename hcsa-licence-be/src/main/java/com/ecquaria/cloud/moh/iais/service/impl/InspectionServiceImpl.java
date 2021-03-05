@@ -249,13 +249,15 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool) {
+    public SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext) {
         if(!IaisCommonUtils.isEmpty(searchResult.getRows())){
             for(InspectionSubPoolQueryDto iDto : searchResult.getRows()){
-                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(iDto.getId()).getEntity();
-                if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos) && !IaisCommonUtils.isEmpty(superPool)) {
-                    for (TaskDto taskDto : superPool) {
-                        iDto = getLeadByAppPremCorrId(taskDto, appPremisesCorrelationDtos, iDto);
+                if(iDto != null) {
+                    String workingGroupId = iDto.getWorkGroupId();
+                    if (!StringUtil.isEmpty(workingGroupId)) {
+                        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workingGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        List<String> leadName = getWorkGroupLeadsByGroupId(workingGroupId, orgUserDtoList);
+                        iDto.setGroupLead(leadName);
                     }
                 }
             }

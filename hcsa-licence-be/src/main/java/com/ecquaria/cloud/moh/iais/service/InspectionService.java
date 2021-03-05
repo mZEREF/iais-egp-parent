@@ -166,7 +166,7 @@ public interface InspectionService {
       * @return: SearchResult<InspectionSubPoolQueryDto>
       * @Descripation: getGroupLeadName
       */
-    SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool);
+    SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext);
 
     /**
       * @author: shicheng
