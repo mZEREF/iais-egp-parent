@@ -916,6 +916,13 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -945,6 +952,14 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -974,6 +989,14 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
                 }
 
             }
