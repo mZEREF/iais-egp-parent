@@ -292,7 +292,7 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/app-fee-detail-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam ("applicationNo") String applicationNo);
 
-    @PostMapping(value = "/hcsa-app-common/save-app-return-fee",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-application-be/save-app-return-fee",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppReturnFeeDto> saveAppReturnFee(@RequestBody AppReturnFeeDto appReturnFeeDto);
 
     @GetMapping(value = "/iais-apppreinsncitem-be/adhoc-item-be/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -301,10 +301,10 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
-    @GetMapping(value = "/hcsa-app-common/get-returnfee-appNo")
+    @GetMapping(value = "/iais-application-be/get-returnfee-appNo")
     FeignResponseEntity<AppReturnFeeDto> getReturnFeeByAppNo(@RequestParam(name = "appNo")String appNo,@RequestParam("returnType") String returnType);
 
-    @GetMapping(value = "/hcsa-app-common/get-returnfee-status")
+    @GetMapping(value = "/iais-application-be/get-returnfee-status")
     FeignResponseEntity<List<AppReturnFeeDto>> getAppReturnFeeByStatus(@RequestParam("status") String status);
 
     @GetMapping(value = "/iais-application-be/application/pending-reminder/self-assessment/", produces = MediaType.APPLICATION_JSON_VALUE)
