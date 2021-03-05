@@ -494,7 +494,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}onSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -567,7 +567,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}onSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
                                                 <div class="col-md-6">
@@ -650,7 +650,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -717,7 +717,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
                                                 <div class="col-md-6">
@@ -1027,7 +1027,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}conveyanceWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -1100,7 +1100,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}conveyanceWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
                                                 <div class="col-md-6">
@@ -1183,7 +1183,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}conveyancePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -1250,7 +1250,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}conveyancePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
                                                 <div class="col-md-6">
@@ -1554,7 +1554,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}offSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -1627,7 +1627,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}offSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
                                                 <div class="col-md-6">
@@ -1710,7 +1710,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="row">
-                                                    <div class="col-md-6 text-center">
+                                                    <div class="col-md-6 text-center" style="padding-top: 14px">
                                                         <input class="form-check-input allDay" name="${premValue}offSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
                                                     <div class="col-md-6">
@@ -1777,7 +1777,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="row">
-                                                <div class="col-md-6 text-center">
+                                                <div class="col-md-6 text-center" style="padding-top: 14px">
                                                     <input class="form-check-input allDay" name="${premValue}offSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
                                                 <div class="col-md-6">
