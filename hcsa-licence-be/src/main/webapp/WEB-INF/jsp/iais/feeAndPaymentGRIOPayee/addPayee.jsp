@@ -20,14 +20,16 @@
         <div class="center-content">
             <div class="intranet-content">
                 <div class="bg-title col-xs-12 col-md-12">
-                    <strong>Add a GIRO Payee</strong>
+                    <h2>
+                        <span>Add a GIRO Payee</span>
+                    </h2>
                 </div>
-                <div class="row">Note: This function is to add a GIRO Payee who submitted a manual application.</div>
+                <div class="row col-xs-12 col-md-12">Note: This function is to add a GIRO Payee who submitted a manual application.</div>
                 <div class="row">&nbsp;</div>
-                <div class="row">The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.</div>
+                <div class="row col-xs-12 col-md-12">The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.</div>
                 <div class="row">&nbsp;</div>
                 <div class="row">&nbsp;</div>
-                <div class="row">Enter GIRO Payee Details</div>
+                <div class="row"><h3>Enter GIRO Payee Details</h3></div>
                 <div class="panel-body">
                     <div class="panel-main-content">
                         <iais:section title="" id = "supPoolList">

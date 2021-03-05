@@ -19,17 +19,26 @@
                 <div class="intranet-content">
                     <div class="row form-horizontal">
                         <div class="bg-title col-xs-12 col-md-12">
-                            <strong>Add a GIRO Payee</strong>
+                            <h2>
+                                <span>Add a GIRO Payee</span>
+                            </h2>
                         </div>
                         <iais:row>
-                            Note: This function is to add a GIRO Payee who submitted a manual application.
-                        </iais:row>
-                        <iais:row>
-                            The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
+                            <div class=" col-xs-12 col-md-12">
+                                Note: This function is to add a GIRO Payee who submitted a manual application.
+                            </div>
                         </iais:row>
                         <iais:row>&nbsp;</iais:row>
                         <iais:row>
-                            Search Organisation
+                            <div class=" col-xs-12 col-md-12">
+                                The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
+                            </div>
+                        </iais:row>
+                        <iais:row>&nbsp;</iais:row>
+                        <iais:row>
+                            <h3>
+                                Search Organisation
+                            </h3>
                         </iais:row>
                         <iais:row>
                             <iais:field value="UEN :"/>
