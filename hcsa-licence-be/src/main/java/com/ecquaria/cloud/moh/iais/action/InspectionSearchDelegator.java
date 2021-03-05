@@ -557,7 +557,7 @@ public class InspectionSearchDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         List<TaskDto> superPool =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "superPool");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        String saveFlag = inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
+         String saveFlag = inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
         if(AppConsts.FAIL.equals(saveFlag)){
             ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
         }
