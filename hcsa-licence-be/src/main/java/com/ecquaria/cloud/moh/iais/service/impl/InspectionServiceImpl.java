@@ -127,29 +127,33 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks) {
-        TaskDto taskDto = getTaskDtoByPool(commPools, inspectionTaskPoolListDto);
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //create history, update application, update/create inspection status
-        String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
-        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)){
-            //create inspManHours recommendation or update
-            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
-            if(appPremisesRecommendationDto != null){
-                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            } else {
-                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                appPremisesRecommendationDto.setVersion(1);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
-                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskId())) {
+            TaskDto taskDto = taskService.getTaskById(inspectionTaskPoolListDto.getTaskId());
+            ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            //create history, update application, update/create inspection status
+            String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
+            if (!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)) {
+                //create inspManHours recommendation or update
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+                if (appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                } else {
+                    appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                    appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appPremisesRecommendationDto.setVersion(1);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+                    appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+                }
             }
+            return saveFlag;
+        } else {
+            return null;
         }
-        return saveFlag;
     }
 
     @Override
