@@ -464,9 +464,6 @@ public class BackendInboxDelegator {
                     log.info(StringUtil.changeForLog("the do approve end ...."));
                 }
             }
-            //update commPools
-            List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
-
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(successStatus)){
                 successInfo = "LOLEV_ACK009";
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(successStatus)){
@@ -1510,29 +1507,10 @@ public class BackendInboxDelegator {
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
         if(commPools != null && !commPools.isEmpty()){
-            int i =0;
-            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
-            String sb = SqlHelper.constructInCondition("T5.corrid", commPools.size());
-            String sbAjax = SqlHelper.constructInCondition("T5.ID", commPools.size());
-            for (TaskDto item: commPools) {
-                searchParamGroup.addFilter("T5.corrid" + i,
-                        item.getRefNo());
-                searchParamAjax.addFilter("T5.ID" + i,
-                        item.getRefNo());
-                    i++;
-            }
-
-            while (!StringUtil.isEmpty(searchParamGroup.getFilters().get("T5.corrid" + i))){
-                searchParamGroup.removeFilter("T5.corrid" + i);
-                searchParamAjax.removeFilter("T5.ID" + i);
-                i++;
-            }
-            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
-            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
-            log.info(StringUtil.changeForLog("i size = "+commPools.size()));
-            searchParamGroup.addParam("remises_corr_id_in", sb);
-            searchParamAjax.addParam("remises_corr_id_in", sbAjax);
-
+            searchParamGroup.addFilter("userId",loginContext.getUserId(),true);
+            searchParamAjax.addFilter("userId",loginContext.getUserId(),true);
+            searchParamGroup.addFilter("roleId",loginContext.getCurRoleId(),true);
+            searchParamAjax.addFilter("roleId",loginContext.getCurRoleId(),true);
             if(!StringUtil.isEmpty(application_no)){
                 searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
                 searchParamAjax.addFilter("application_no", "%" +application_no +"%",true);
