@@ -47,9 +47,9 @@
 
     <sql key = "supervisorPoolSearch" remarks = "Leader Assign Task For Members">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE FROM
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE FROM, T5.WRK_GRP_ID
             (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
-            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID,
+            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
