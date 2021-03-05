@@ -14,12 +14,12 @@
         </c:forEach>
     </c:if>
 </ul>
-<div class="mobile-side-nav-tab ">
-    <select id="serviceSelect">
-        <option value="clinicalLab">Clinical Laboratory</option>
-        <option value="bloodBanking">Blood Banking</option>
-    </select>
-</div>
+<%--<div class="mobile-side-nav-tab hidden-xs hidden-sm">--%>
+<%--    <select id="serviceSelect">--%>
+<%--        <option value="clinicalLab">Clinical Laboratory</option>--%>
+<%--        <option value="bloodBanking">Blood Banking</option>--%>
+<%--    </select>--%>
+<%--</div>--%>
 
 
 <script type="text/javascript">

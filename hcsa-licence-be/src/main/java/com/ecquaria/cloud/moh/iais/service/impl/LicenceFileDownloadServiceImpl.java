@@ -349,10 +349,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
                             Long l = System.currentTimeMillis();
-                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
-                            if(Boolean.TRUE.equals(aBoolean)){
-                                saveFileRepo( fileName,groupPath,submissionId,l);
-                            }
+                           fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+
+                           saveFileRepo( fileName,groupPath,submissionId,l);
+
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
                         }finally {
@@ -519,10 +519,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(listApplicationDto);
         withdrow(requestForInfList);
         withdrow(cessionOrwith);
-        boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
-        if(b){
-            return Boolean.FALSE;
-        }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);

@@ -440,7 +440,6 @@
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
                                             <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList">
                                               <iais:code code="${oldSelectValList}"/>
-
                                             </c:forEach>
                                           </span>
                                         </div>
@@ -474,7 +473,7 @@
                                         </div>
                                         <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
-                                            <span class="newVal">
+                                            <span class="newVal" attr="${weeklyDto.selectAllDay}">
                                               <c:if test="${weeklyDto.selectAllDay}">
                                                 <div class="form-check active">
                                                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
@@ -483,7 +482,7 @@
                                             </span>
                                           </div>
                                           <div class="col-md-6" style="padding: 0px">
-                                            <span class="oldVal" style="display: none">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                                 <div class="form-check active">
                                                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>

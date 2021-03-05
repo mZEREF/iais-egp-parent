@@ -44,7 +44,7 @@
                                                 <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-                                        <div class="mobile-side-nav-tab " ${isSingle == 'Y' ? 'hidden' : ''}>
+                                        <div class="mobile-side-nav-tab hidden-xs hidden-sm " ${isSingle == 'Y' ? 'hidden' : ''}>
                                             <select id="serviceSelect">
                                                 <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
                                                     <option value="serviceName${status.index}">${serviceName}</option>
