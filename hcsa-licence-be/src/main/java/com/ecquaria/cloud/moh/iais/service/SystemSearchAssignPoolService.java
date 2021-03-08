@@ -108,4 +108,13 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: systemAssignTask
       */
     void systemAssignTask(SystemAssignTaskDto systemAssignTaskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/8
+      * @Param: groupRoleFieldDto
+      * @return: String
+      * @Descripation: getSysCurStageId
+      */
+    String getSysCurStageId(GroupRoleFieldDto groupRoleFieldDto);
 }

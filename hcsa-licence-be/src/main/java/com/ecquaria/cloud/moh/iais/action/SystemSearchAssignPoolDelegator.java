@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -114,18 +113,18 @@ public class SystemSearchAssignPoolDelegator {
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         //get userId
-        String userId = loginContext.getUserId();
-        List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
+        String taskUserId = loginContext.getUserId();
+        List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(taskUserId);
         //First search
         if(searchResult == null && groupRoleFieldDto == null) {
             //get stage
             groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
-            List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
-            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-            searchParam.addParam("appCorrId_list", appPremCorrId);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+            String curStageId = systemSearchAssignPoolService.getSysCurStageId(groupRoleFieldDto);
+            if(!StringUtil.isEmpty(curStageId)){
+                searchParam.addFilter("curStageId", curStageId,true);
+            }
+            if(!StringUtil.isEmpty(taskUserId)){
+                searchParam.addFilter("taskUserId", taskUserId,true);
             }
             QueryHelp.setMainSql("inspectionQuery", "systemGroupPoolSearch",searchParam);
             searchResult = systemSearchAssignPoolService.getSystemGroupPoolByParam(searchParam);
@@ -208,16 +207,19 @@ public class SystemSearchAssignPoolDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        //get userId
+        String taskUserId = loginContext.getUserId();
         //systemAssignStage is true and Set current stage
         boolean stageFlag = getStageBooleanAndSet(systemAssignStage, groupRoleFieldDto);
         if(stageFlag) {
             searchParam = getSearchParam(bpc, true);
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
-            List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
-            String appPremCorrId = SqlHelper.constructInCondition("T1.ID", appCorrId_list.size());
-            searchParam.addParam("appCorrId_list", appPremCorrId);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("T1.ID" + i, appCorrId_list.get(i));
+            String curStageId = systemSearchAssignPoolService.getSysCurStageId(groupRoleFieldDto);
+            if(!StringUtil.isEmpty(curStageId)){
+                searchParam.addFilter("curStageId", curStageId,true);
+            }
+            if(!StringUtil.isEmpty(taskUserId)){
+                searchParam.addFilter("taskUserId", taskUserId,true);
             }
             if (!StringUtil.isEmpty(application_no)) {
                 searchParam.addFilter("application_no", application_no, true);
