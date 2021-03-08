@@ -205,6 +205,7 @@ public class SelfAssessmentDelegator {
         String prevTagIdx = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION);
         String tagIndex = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
         SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
+        log.info("SelfAssessmentDelegator [switchNextStep] selfAssessment INFO  ..{}..", JsonUtil.parseToJson(selfAssessment));
         Map<String, List<PremCheckItem>> answerMap = getTabQuestionByTagIndex(selfAssessment, prevTagIdx);
         setAnswerWithQuestion(request, answerMap);
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessment);
