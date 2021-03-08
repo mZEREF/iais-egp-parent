@@ -20,8 +20,8 @@
     <div class = "container">
         <form id = "mainForm" name="mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
             <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-            <input type="hidden" name="tagIndex" value="${tagIndex}">
-            <input type="hidden" name="prevTagIndex" value="${prevTagIndex}">
+            <input type="hidden" name="tagIndex" value="<iais:mask name="tagIndex" value="${tagIndex}"/>">
+            <input type="hidden" name="prevTagIndex" value="<iais:mask name="prevTagIndex" value="${prevTagIndex}"/>">
             <input type="hidden" name="selfAssessmentCorrId" value="${param.selfAssessmentCorrId}"/>
             <input type="hidden" name="loadPopupPrint" value="${param.loadPopupPrint}" />
             <div id="printContent">

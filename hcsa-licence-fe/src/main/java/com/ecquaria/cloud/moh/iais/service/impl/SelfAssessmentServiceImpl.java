@@ -111,8 +111,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentByGroupId(String groupId) {
+        log.info("SelfAssessmentServiceImpl [receiveSelfAssessmentByGroupId] START GroupID... {}", groupId);
         List<SelfAssessment> selfAssessmentList = IaisCommonUtils.genNewArrayList();
-
         // (S) Group , (M) application
         List<ApplicationDto> appList = applicationFeClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
@@ -137,6 +137,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String appId = app.getId();
             String svcId = app.getServiceId();
             String appNo = app.getApplicationNo();
+            log.info("SelfAssessmentServiceImpl [receiveSelfAssessmentByGroupId]  appId... {} , service id ...{,} app number  ...{} ", appId, svcId, appNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
             String svcCode = hcsaServiceDto.getSvcCode();
             String svcName = hcsaServiceDto.getSvcName();
@@ -145,9 +146,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
             if (Optional.ofNullable(serviceConfig).isPresent()){
                 List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
-                for (AppPremisesCorrelationDto correlationDto : correlationList) {
-                    String corrId = correlationDto.getId();
-                    String appGrpPremId = correlationDto.getAppGrpPremId();
+                for (AppPremisesCorrelationDto correlation : correlationList) {
+                    String corrId = correlation.getId();
+                    String appGrpPremId = correlation.getAppGrpPremId();
                     AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
                     String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
                             appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
