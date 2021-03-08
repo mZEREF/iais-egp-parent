@@ -2,11 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,8 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
     }
 
     /**
@@ -51,7 +53,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionInit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionInit start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionInit start ...."));
     }
 
     /**
@@ -61,7 +63,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionPre(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
     }
 
     /**
@@ -71,7 +73,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionStep start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionStep start ...."));
     }
 
     /**
@@ -81,7 +83,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionDoSearch(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionDoSearch start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionDoSearch start ...."));
     }
 
     /**
@@ -91,7 +93,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionSort(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionSort start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionSort start ...."));
     }
 
     /**
@@ -101,7 +103,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionPage(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionPage start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionPage start ...."));
     }
 
     /**
@@ -111,7 +113,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionQuery(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionQuery start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionQuery start ...."));
     }
 
     /**
@@ -132,7 +134,7 @@ public class GiroDeductionBeDelegator {
                 appGroupList.add(appGroupNos[i]);
             }
         } else {
-            errMap.put(retValiError, MessageUtil.replaceMessage("GENERAL_ERR0006", "GIRO Deduction Checkbox","field"));
+            errMap.put(retValiError, "GENERAL_ERR0006");
         }
         if(errMap != null && errMap.size() > 0){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
@@ -151,7 +153,7 @@ public class GiroDeductionBeDelegator {
      * @throws
      */
     public void beGiroDeductionRetrigger(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the beGiroDeductionRetrigger start ...."));
+        log.info(StringUtil.changeForLog("the beGiroDeductionRetrigger start ...."));
         List<String> appGroupList = (List<String>)ParamUtil.getRequestAttr(bpc.request, "appGroupList");
         giroDeductionBeService.sendMessageEmail(appGroupList);
     }
