@@ -110,6 +110,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
         giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
         CrudHelper.doPaging(giroAccountParam,bpc.request);
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            giroAccountParameter.setSortType(sortType);
+            giroAccountParameter.setSortField(sortFieldName);
+            giroAccountParameter.setPageNo(1);
+        }
         QueryHelp.setMainSql("giroPayee","searchByGiroAcctInfo",giroAccountParam);
         SearchResult<GiroAccountInfoQueryDto> giroAccountResult = giroAccountService.searchGiroInfoByParam(giroAccountParam);
         if(giroAccountResult.getRowCount()!=0){
@@ -190,6 +197,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
         orgPremParameter.setFilters(filter);
         SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
         CrudHelper.doPaging(orgPremParam,bpc.request);
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            orgPremParameter.setSortType(sortType);
+            orgPremParameter.setSortField(sortFieldName);
+            orgPremParameter.setPageNo(1);
+        }
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
         ParamUtil.setRequestAttr(request,"orgPremParam",orgPremParam);

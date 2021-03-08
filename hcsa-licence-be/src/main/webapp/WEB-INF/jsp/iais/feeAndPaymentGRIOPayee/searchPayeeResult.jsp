@@ -74,27 +74,27 @@
                                                             <th >
 
                                                             </th>
-                                                            <iais:sortableHeader needSort="false" field="HCI_CODE"
+                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"
                                                                                  value="HCI Code"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="HCI_NAME"
                                                                                  value="HCI Name"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="BANK_CODE"
                                                                                  value="Bank Code"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="BRANCH_CODE"
                                                                                  value="Branch Code"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="BANK_NAME"
                                                                                  value="Bank Name"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NO"
                                                                                  value="Bank Account No."/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="DDA_REF_NO"
                                                                                  value="Customer Reference No."/>
                                                             <iais:sortableHeader needSort="false"
@@ -230,5 +230,11 @@
         $("[name='crud_action_type']").val("delete");
         $("#mainForm").submit();
     }
-
+    function sortRecords(sortFieldName, sortType) {
+        showWaiting();
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val("search");
+        $("#mainForm").submit();
+    }
 </script>

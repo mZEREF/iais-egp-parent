@@ -98,13 +98,13 @@
                                                         <thead>
                                                         <tr align="center">
                                                             <th >&nbsp;</th>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="UEN"
                                                                                  value="UEN_NO"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="HCI_NAME"
                                                                                  value="HCI Name"/>
-                                                            <iais:sortableHeader needSort="false" field="HCI_CODE"
+                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"
                                                                                  value="HCI Code"/>
                                                         </tr>
                                                         </thead>
@@ -203,6 +203,13 @@
     function doSelect(){
         showWaiting();
         $("[name='crud_action_type']").val("select");
+        $("#mainForm").submit();
+    }
+    function sortRecords(sortFieldName, sortType) {
+        showWaiting();
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();
     }
 </script>
