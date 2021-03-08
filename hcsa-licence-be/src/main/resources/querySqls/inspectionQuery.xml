@@ -130,7 +130,7 @@
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
-             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.USER_ID is NOT NULL
              WHERE 1 = 1
              <#if workGroup_list??> and ${workGroup_list} </#if>
              <#if roleId_List??> and ${roleId_List} </#if>
@@ -141,7 +141,6 @@
             <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
-            <#if reassignStatus??> and T5.USER_ID is NOT NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>

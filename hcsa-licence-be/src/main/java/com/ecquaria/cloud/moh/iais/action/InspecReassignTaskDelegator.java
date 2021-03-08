@@ -397,7 +397,7 @@ public class InspecReassignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
+        QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
         searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
 
