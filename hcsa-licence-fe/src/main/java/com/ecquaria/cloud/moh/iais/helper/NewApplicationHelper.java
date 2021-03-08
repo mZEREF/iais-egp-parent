@@ -3095,13 +3095,17 @@ public class NewApplicationHelper {
             for(int j=i+1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
                 String eventName = appPremEventPeriodDtoList.get(i).getEventName();
                 String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
-                if(!eventName.equals(eventName1)){
-                    continue;
-                }
-                Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
-                Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
-                if(endDate.after(startDate)||endDate.compareTo(startDate)==0){
-                    map.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
+                if(!StringUtil.isEmpty(eventName) && !StringUtil.isEmpty(eventName1)){
+                    if(!eventName.equals(eventName1)){
+                        continue;
+                    }
+                    Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
+                    Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
+                    if(endDate != null && startDate != null){
+                        if(endDate.after(startDate)||endDate.compareTo(startDate)==0){
+                            map.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
+                        }
+                    }
                 }
             }
         }
