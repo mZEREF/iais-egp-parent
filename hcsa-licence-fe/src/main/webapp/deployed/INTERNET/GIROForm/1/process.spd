@@ -5,7 +5,9 @@
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
   </StartStep>
  </Steps>
  <Pages>
@@ -19,7 +21,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/applyGiroPage" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(120,120)(295,150)}</position>
+   <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

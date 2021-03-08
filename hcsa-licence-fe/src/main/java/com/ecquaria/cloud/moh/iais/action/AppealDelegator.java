@@ -80,7 +80,6 @@ public class AppealDelegator {
     private LicFeInboxClient licFeInboxClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
-    private  List<MultipartFile> comMultipartFile=new ArrayList<>();
 
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -441,15 +440,5 @@ public class AppealDelegator {
         int configFileSize = systemParamConfig.getUploadFileLimit();
 
         ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
-    }
-    @ResponseBody
-    @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<String> ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile){
-        List<String> list=new ArrayList<>();
-        comMultipartFile.add(selectedFile);
-        for(MultipartFile multipartFile : comMultipartFile){
-            list.add(multipartFile.getOriginalFilename());
-        }
-        return list;
     }
 }

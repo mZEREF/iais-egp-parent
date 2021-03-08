@@ -19,17 +19,21 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="center-content">
             <div class="intranet-content">
-                <div class="bg-title col-xs-12 col-md-12">
-                    <h2>
-                        <span>Add a GIRO Payee</span>
-                    </h2>
-                </div>
-                <div class="row col-xs-12 col-md-12">
-                    You have successfully added a GIRO Payee.
-                </div>
+                <div class="row form-horizontal">
+                    <div class="bg-title col-xs-12 col-md-12">
+                        <h2>
+                            <span>Add a GIRO Payee</span>
+                        </h2>
+                        <iais:row>
+                            <div class=" col-xs-12 col-md-12">
+                                You have successfully added a GIRO Payee.
+                            </div>
+                        </iais:row>
 
-                <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                        <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
 
+                    </div>
+                </div>
             </div>
         </div>
     </form>

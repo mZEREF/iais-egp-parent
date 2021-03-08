@@ -1,5 +1,5 @@
 <c:forEach var="selfAssessmentConfig" items="${selfAssessmentDetail.selfAssessmentConfig}" varStatus="status">
-    <c:if test="${status.index eq tagIndex}">
+    <c:if test="${selfAssessmentConfig.configId eq tagIndex}">
         <c:forEach var="sqMap" items="${selfAssessmentConfig.sqMap}">
             <div class="panel panel-default">
                 <div class="panel-heading" id="headingPremise" role="tab">

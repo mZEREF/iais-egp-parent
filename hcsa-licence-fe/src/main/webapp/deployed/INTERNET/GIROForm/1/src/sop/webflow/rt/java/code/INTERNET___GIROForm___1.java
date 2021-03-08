@@ -12,6 +12,14 @@
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import com.ecquaria.cloud.helper.EngineHelper;
+
 public class INTERNET___GIROForm___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="applyGiroFromDelegator";
+
+	public void step1_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	// 		Step1->OnStepProcess
+	}
 
 }

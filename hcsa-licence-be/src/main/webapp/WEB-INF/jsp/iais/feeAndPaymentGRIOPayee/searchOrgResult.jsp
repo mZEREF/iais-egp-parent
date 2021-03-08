@@ -23,57 +23,56 @@
                                 <span>Add a GIRO Payee</span>
                             </h2>
                         </div>
-                        <iais:row>
-                            <div class=" col-xs-12 col-md-12">
-                                Note: This function is to add a GIRO Payee who submitted a manual application.
-                            </div>
-                        </iais:row>
-                        <iais:row>&nbsp;</iais:row>
-                        <iais:row>
-                            <div class=" col-xs-12 col-md-12">
-                                The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
-                            </div>
-                        </iais:row>
-                        <iais:row>&nbsp;</iais:row>
-                        <iais:row>
-                            <h3>
-                                Search Organisation
-                            </h3>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="UEN :"/>
-                            <iais:value width="18">
-                                <label>
-                                    <input type="text"
-                                           style="width:180%; font-weight:normal;"
-                                           name="uenNo" maxlength="20"
-                                           value="${uenNo}"/>
-                                </label>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="HCI Name :"/>
-                            <iais:value width="18">
-                                <label>
-                                    <input type="text"
-                                           style="width:180%; font-weight:normal;"
-                                           name="hciName" maxlength="100"
-                                           value="${hciName}"/>
-                                </label>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="HCI Code :"/>
-                            <iais:value width="18">
-                                <label>
-                                    <input type="text"
-                                           style="width:180%; font-weight:normal;"
-                                           name="hciCode" maxlength="20"
-                                           value="${hciCode}"/>
-                                </label>
-                            </iais:value>
-                        </iais:row>
                         <div class="col-xs-12 col-md-12">
+                            <iais:row>
+                                <div class=" col-xs-12 col-md-12">
+                                    Note: This function is to add a GIRO Payee who submitted a manual application.
+                                </div>
+                            </iais:row>
+                            <iais:row>
+                                <div class=" col-xs-12 col-md-12">
+                                    The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
+                                </div>
+                            </iais:row>
+                            <iais:row>&nbsp;</iais:row>
+                            <iais:row>
+                                <h3>
+                                    Search Organisation
+                                </h3>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field value="UEN :"/>
+                                <iais:value width="18">
+                                    <label>
+                                        <input type="text"
+                                               style="width:180%; font-weight:normal;"
+                                               name="uenNo" maxlength="20"
+                                               value="${uenNo}"/>
+                                    </label>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field value="HCI Name :"/>
+                                <iais:value width="18">
+                                    <label>
+                                        <input type="text"
+                                               style="width:180%; font-weight:normal;"
+                                               name="hciName" maxlength="100"
+                                               value="${hciName}"/>
+                                    </label>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field value="HCI Code :"/>
+                                <iais:value width="18">
+                                    <label>
+                                        <input type="text"
+                                               style="width:180%; font-weight:normal;"
+                                               name="hciCode" maxlength="20"
+                                               value="${hciCode}"/>
+                                    </label>
+                                </iais:value>
+                            </iais:row>
                             <iais:action style="text-align:right;">
                                 <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
@@ -99,13 +98,13 @@
                                                         <thead>
                                                         <tr align="center">
                                                             <th >&nbsp;</th>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="UEN"
                                                                                  value="UEN_NO"/>
-                                                            <iais:sortableHeader needSort="false"
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="HCI_NAME"
                                                                                  value="HCI Name"/>
-                                                            <iais:sortableHeader needSort="false" field="HCI_CODE"
+                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"
                                                                                  value="HCI Code"/>
                                                         </tr>
                                                         </thead>
@@ -204,6 +203,13 @@
     function doSelect(){
         showWaiting();
         $("[name='crud_action_type']").val("select");
+        $("#mainForm").submit();
+    }
+    function sortRecords(sortFieldName, sortType) {
+        showWaiting();
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='crud_action_type']").val("search");
         $("#mainForm").submit();
     }
 </script>

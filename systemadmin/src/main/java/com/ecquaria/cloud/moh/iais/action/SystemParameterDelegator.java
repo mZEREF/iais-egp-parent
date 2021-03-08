@@ -31,6 +31,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /*
     @author yichen_guo@ecquaria.com
@@ -61,8 +62,6 @@ public class SystemParameterDelegator {
      * @throws
      */
     public void prepareSwitch(BaseProcessClass bpc) {
-        log.debug("The prepareSwitch start ...");
-        log.debug("The prepareSwitch end ...");
     }
 
     /**
@@ -72,7 +71,6 @@ public class SystemParameterDelegator {
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_SYSTEM_PARAMETER_MANAGEMENT);
         HttpServletRequest request = bpc.request;
-
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, null);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_MODULE, null);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, null);
@@ -87,10 +85,8 @@ public class SystemParameterDelegator {
      */
     public void loadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         //flush cache
         //SystemParamCacheHelper.flush();
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
         SearchResult searchResult = parameterService.doQuery(searchParam);
@@ -115,13 +111,11 @@ public class SystemParameterDelegator {
         String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
         String status = ParamUtil.getString(request, SystemParameterConstant.PARAM_STATUS);
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
-
         query.setDomainType(domainType);
         query.setModule(module);
         query.setStatus(status);
         query.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_MODULE, module);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_STATUS, status);
@@ -134,14 +128,15 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
             searchParam.addFilter(SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType, true);
-            if(!StringUtil.isEmpty(description)){
+            if(StringUtil.isNotEmpty(description)){
                 searchParam.addFilter(SystemParameterConstant.PARAM_DESCRIPTION, description, true);
             }
 
-            if(!StringUtil.isEmpty(module)){
+            if(StringUtil.isNotEmpty(module)){
                 searchParam.addFilter(SystemParameterConstant.PARAM_MODULE, module, true);
             }
-            if(!StringUtil.isEmpty(status)){
+
+            if(StringUtil.isNotEmpty(status)){
                 searchParam.addFilter(SystemParameterConstant.PARAM_STATUS, status, true);
             }
         }
@@ -171,7 +166,6 @@ public class SystemParameterDelegator {
             return;
         }
 
-
         String value = ParamUtil.getString(request, SystemParameterConstant.PARAM_VALUE);
         String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO);
@@ -179,9 +173,9 @@ public class SystemParameterDelegator {
         editDto.setAuditTrailDto(att);
         editDto.setValue(value);
         editDto.setDescription(description);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
+        ValidationResult vResult = WebValidationHelper.validateProperty(editDto, "edit");
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
@@ -218,7 +212,7 @@ public class SystemParameterDelegator {
     public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String pid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(pid)) {
+        if(StringUtil.isNotEmpty(pid)) {
             SystemParameterDto dto = parameterService.getParameterByPid(pid);
             dto.setStatus(AppConsts.COMMON_STATUS_DELETED);
             parameterService.saveSystemParameter(dto);
@@ -233,9 +227,9 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PRE_SAVE_USER_ID, null);
         String pid = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
-        if (!StringUtils.isEmpty(pid)){
+        if (StringUtils.isNotEmpty(pid)){
             SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT);
-            if (result != null){
+            if (Optional.ofNullable(result).isPresent()){
                 List<SystemParameterQueryDto> parameterQueryDtos =  result.getRows();
                 for (SystemParameterQueryDto query : parameterQueryDtos){
                     if (query.getId().equals(pid)){
@@ -257,7 +251,7 @@ public class SystemParameterDelegator {
                         systemParameterDto.setValueType(query.getValueType());
 
                         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                        if (loginContext != null){
+                        if (Optional.ofNullable(loginContext).isPresent()){
                             systemParameterDto.setModifiedByName(loginContext.getUserName());
                             systemParameterDto.setModifiedBy(loginContext.getUserId());
                         }else {

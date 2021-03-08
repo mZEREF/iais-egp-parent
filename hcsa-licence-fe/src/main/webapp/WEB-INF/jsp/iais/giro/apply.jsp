@@ -40,12 +40,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        Click <a href="https://www.moh.gov.sg/docs/librariesprovider5/licensing-terms-and-conditions/ib_giro_form.pdf">here</a> to download the Authorisation Letter.
+                                        Click <a href="#">here</a> to download the Authorisation Letter.
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        Click <a href="https://www.moh.gov.sg/docs/librariesprovider5/licensing-terms-and-conditions/ib_giro_form.pdf">here</a> to download the DCA form.
+                                        Click <a href="#">here</a> to download the DCA form.
                                     </div>
                                 </div>
                             </div>

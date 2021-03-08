@@ -89,8 +89,6 @@ public class AuditTrailDelegator {
     */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-
         log.debug("The prepareSwitch end ...");
     }
 
@@ -102,14 +100,6 @@ public class AuditTrailDelegator {
     */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
-        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(request,
-                AppConsts.SESSION_ATTR_LOGIN_USER);
-
-        if (!Optional.ofNullable(lc).isPresent()){
-            log.info(StringUtil.changeForLog("===>> don't have loginContext" + lc));
-        }
-
         boolean isAdmin = AccessUtil.isAdministrator();
         preSelectOption(request);
         if (isAdmin){
@@ -120,19 +110,14 @@ public class AuditTrailDelegator {
     }
 
     public void prepareFullMode(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        log.info("entry prepareFullMode");
     }
 
     public void prepareDataMode(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        log.info("entry prepareDataMode");
     }
 
 
     public void viewActivities(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         String auditId = ParamUtil.getMaskedString(request, "auditId");
         AuditTrailDto att = auditTrailService.getAuditTrailById(auditId);
         ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_ACTION_DATA, att);
@@ -176,7 +161,7 @@ public class AuditTrailDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         SearchResult<AuditTrailQueryDto> searchResult = new SearchResult<>();
-        if (!searchParam.getFilters().isEmpty()){
+        if (IaisCommonUtils.isNotEmpty(searchParam.getFilters())){
             searchParam.setPageNo(0);
             searchParam.setPageSize(Integer.MAX_VALUE);
             searchResult = auditTrailService.listAuditTrailDto(searchParam);
@@ -209,7 +194,6 @@ public class AuditTrailDelegator {
                         atExcel.setCorppassNric(nricNum);
                         atExcel.setUen(uenId);
                     }
-
                     atExcel.setCreateBy(nricNum);
                 }
                 atExcel.setOperation(i.getOperationDesc());
@@ -232,15 +216,9 @@ public class AuditTrailDelegator {
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);
         } catch (Exception e) {
-            log.error("=======>fileHandler error >>>>>", e);
+            log.error(e.getMessage(), e);
         }
-
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-
     }
-
-
-
 
     /**
     * @AutoStep: doQuery
@@ -264,31 +242,31 @@ public class AuditTrailDelegator {
         String dataActivites = ParamUtil.getString(request, "dataActivites");
 
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
-        if(operation != null){
+        if(StringUtil.isNotEmpty(operation)){
             queryDto.setOperation(Integer.parseInt(operation));
         }
 
-	    if(!StringUtil.isEmpty(operationType)) {
+	    if(StringUtil.isNotEmpty(operationType)) {
 		    queryDto.setDomain(Integer.valueOf(operationType));
 	    }
 
         queryDto.setDateStart(startDate);
         queryDto.setDateEnd(endDate);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "query");
-        if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
+        ValidationResult vResult = WebValidationHelper.validateProperty(queryDto, "query");
+        if(vResult != null && vResult.isHasErrors()) {
+            Map<String, String> errorMap = vResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
             //Corresponding XML param
             searchParam.addFilter(AuditTrailConstant.PARAM_OPERATIONTYPE, Integer.valueOf(operationType), true);
 
-            if(!StringUtil.isEmpty(operation)){
+            if(StringUtil.isNotEmpty(operation)){
                 searchParam.addFilter(AuditTrailConstant.PARAM_OPERATION, Integer.valueOf(operation), true);
             }
 
-            if(!StringUtil.isEmpty(operationType) && !StringUtil.isEmpty(user)){
+            if(StringUtil.isNotEmpty(operationType) && StringUtil.isNotEmpty(user)){
                 int n = Integer.parseInt(operationType);
                 switch (n){
                     case AuditTrailConsts.OPERATION_TYPE_INTERNET:
@@ -304,20 +282,20 @@ public class AuditTrailDelegator {
                 }
             }
 
-            if(!StringUtil.isEmpty(startDate)){
+            if(StringUtil.isNotEmpty(startDate)){
                 Date d = IaisEGPHelper.parseToDate(startDate);
                 startDate = IaisEGPHelper.parseToString(d, "yyyy-MM-dd HH:mm:ss");
                 searchParam.addFilter(AuditTrailConstant.PARAM_STARTDATE, startDate, true);
             }
 
-            if(!StringUtil.isEmpty(endDate)){
+            if(StringUtil.isNotEmpty(endDate)){
                 Date e = IaisEGPHelper.parseToDate(endDate);
                 e = IaisEGPHelper.getLastSecond(e);
                 endDate = IaisEGPHelper.parseToString(e, "yyyy-MM-dd HH:mm:ss");
                 searchParam.addFilter(AuditTrailConstant.PARAM_ENDDATE, endDate, true);
             }
 
-            if(!StringUtil.isEmpty(dataActivites)){
+            if(StringUtil.isNotEmpty(dataActivites)){
                 searchParam.addFilter(AuditTrailConstant.PARAM_OPERATION, Integer.valueOf(dataActivites), true);
             }
 
@@ -333,8 +311,7 @@ public class AuditTrailDelegator {
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
-        if (!IaisCommonUtils.isEmpty(searchParam.getFilters())){
+        if (IaisCommonUtils.isNotEmpty(searchParam.getFilters())){
             setQuerySql(searchParam);
             CrudHelper.doPaging(searchParam,bpc.request);
             queryResult(request, searchParam);
@@ -355,7 +332,6 @@ public class AuditTrailDelegator {
         ParamUtil.setSessionAttr(request, AuditTrailConstant.PARAM_SEARCHRESULT, trailDtoSearchResult);
         ParamUtil.setSessionAttr(request, AuditTrailConstant.PARAM_SEARCH, searchParam);
     }
-
     /**
      * AutoStep: sortRecords
      * @param bpc
@@ -363,11 +339,10 @@ public class AuditTrailDelegator {
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        if (!IaisCommonUtils.isEmpty(searchParam.getFilters())){
+        if (IaisCommonUtils.isNotEmpty(searchParam.getFilters())){
             setQuerySql(searchParam);
             CrudHelper.doSorting(searchParam,  request);
             queryResult(request, searchParam);
         }
     }
-
 }

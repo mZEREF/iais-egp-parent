@@ -43,7 +43,7 @@ public final class FeSelfChecklistHelper {
                 List<ChecklistItemDto> item = i.getChecklistItemDtos();
                 if (IaisCommonUtils.isNotEmpty(item)){
                     List<PremCheckItem> premCheckItemList = answerMap.get(sectionName);
-                    premCheckItemList = Optional.ofNullable(premCheckItemList).orElse(IaisCommonUtils.genNewArrayList());
+                    premCheckItemList = Optional.ofNullable(premCheckItemList).orElseGet(() -> IaisCommonUtils.genNewArrayList());
                     for (ChecklistItemDto j : item){
                         PremCheckItem premCheckItem = new PremCheckItem();
 

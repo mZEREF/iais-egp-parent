@@ -4500,6 +4500,15 @@ private CessationFeService cessationFeService;
                                 operationalUnitDto.setPremisesId(null);
                             }
                         }
+                        //clear event id
+                        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+                        if(!IaisCommonUtils.isEmpty(eventDtos)){
+                            for(AppPremEventPeriodDto eventDto:eventDtos){
+                                eventDto.setId(null);
+                                eventDto.setAppGrpPremId(null);
+                            }
+                        }
+
                     }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }

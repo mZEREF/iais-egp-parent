@@ -86,8 +86,8 @@ public class BeEicGatewayClient {
 
     public FeignResponseEntity<Void> updateGiroAccountInfo(List<GiroAccountInfoDto> giroAccountInfoDtoList,
                                                                                  String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/giro-fe-bridge", HttpMethod.POST, giroAccountInfoDtoList,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, null);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/giro-acct-sync", HttpMethod.POST, giroAccountInfoDtoList,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 
     public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(AppEditSelectDto  appEditSelectDto,
