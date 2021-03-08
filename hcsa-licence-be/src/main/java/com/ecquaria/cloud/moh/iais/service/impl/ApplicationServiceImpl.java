@@ -354,7 +354,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 appList = i.getAppList();
                 boolean flag = false;
                 List<String> svcNames = IaisCommonUtils.genNewArrayList();
-                if (!IaisCommonUtils.isEmpty(appList)) {
+                if (IaisCommonUtils.isNotEmpty(appList)) {
                     for (ApplicationDto app : appList) {
                         if (!flag) {
                             String appNum = app.getApplicationNo();
@@ -373,7 +373,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
                         String svcId = app.getServiceId();
                         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                        if (serviceDto != null) {
+                        if (Optional.ofNullable(serviceDto).isPresent()) {
                             String svcName = serviceDto.getSvcName();
                             String svcCode = serviceDto.getSvcCode();
                             tlSvcName = svcName;
@@ -409,7 +409,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
                 List<String> svcNames = IaisCommonUtils.genNewArrayList();
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
-                if (serviceDto != null) {
+                if (Optional.ofNullable(serviceDto).isPresent()) {
                     String svcName = serviceDto.getSvcName();
                     String svcCode = serviceDto.getSvcCode();
                     tlSvcName = svcName;
@@ -431,9 +431,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             String today = Formatter.formatDate(new Date());
 
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
-            if (applicationGroupDto != null){
+            if (Optional.ofNullable(applicationGroupDto).isPresent()){
                 OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                if (orgUserDto != null){
+                if (Optional.ofNullable(orgUserDto).isPresent()){
                     templateContent.put("ApplicantName", StringUtil.viewHtml(orgUserDto.getDisplayName()));
                 }
             }
@@ -466,7 +466,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
-            if (!IaisCommonUtils.isEmpty(appList)){
+            if (IaisCommonUtils.isNotEmpty(appList)){
                 ApplicationDto applicationDto = appList.get(0);
                 emailParam.setTemplateId(noticeId);
                 emailParam.setRefId(applicationDto.getApplicationNo());
