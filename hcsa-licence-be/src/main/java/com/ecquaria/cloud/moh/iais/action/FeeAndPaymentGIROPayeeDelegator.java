@@ -95,7 +95,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void prePayeeResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
         String hciCode= ParamUtil.getString(request,"hciCode");
         String cusRefNo =ParamUtil.getString(request,"cusRefNo");
         ParamUtil.setSessionAttr(request,"hciCode",hciCode);
@@ -163,7 +162,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void preOrgResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request,"acctName",null);
+        ParamUtil.setSessionAttr(request,"bankCode",null);
+        ParamUtil.setSessionAttr(request,"branchCode",null);
+        ParamUtil.setSessionAttr(request,"bankName",null);
+        ParamUtil.setSessionAttr(request,"bankAccountNo",null);
+        ParamUtil.setSessionAttr(request,"cusRefNo",null);
+        ParamUtil.setSessionAttr(request,"docDto",null);
+        ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
         String hciCode= ParamUtil.getString(request,"hciCode");
         String hciName =ParamUtil.getString(request,"hciName");
         String uenNo =ParamUtil.getString(request,"uenNo");
@@ -194,28 +200,23 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void doSelect(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"acctName",null);
-        ParamUtil.setSessionAttr(request,"bankCode",null);
-        ParamUtil.setSessionAttr(request,"branchCode",null);
-        ParamUtil.setSessionAttr(request,"bankName",null);
-        ParamUtil.setSessionAttr(request,"bankAccountNo",null);
-        ParamUtil.setSessionAttr(request,"cusRefNo",null);
-        ParamUtil.setSessionAttr(request,"docDto",null);
-        ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
-        String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
-        SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-        String typeStr = SqlHelper.constructInCondition("opv.OP_ID",orgPerIds.length);
-        int indx = 0;
-        for (String s : orgPerIds){
-            orgPremParam.addFilter("opv.OP_ID"+indx, s);
-            indx++;
-        }
-        orgPremParam.addParam("orgPremIds",typeStr);
+        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
+        if(orgPremResult==null){
+            String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
+            SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
+            String typeStr = SqlHelper.constructInCondition("opv.OP_ID",orgPerIds.length);
+            int indx = 0;
+            for (String s : orgPerIds){
+                orgPremParam.addFilter("opv.OP_ID"+indx, s);
+                indx++;
+            }
+            orgPremParam.addParam("orgPremIds",typeStr);
 
-        CrudHelper.doPaging(orgPremParam,bpc.request);
-        QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
-        ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
+            CrudHelper.doPaging(orgPremParam,bpc.request);
+            QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
+             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+            ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
+        }
 
     }
     public void doBack(BaseProcessClass bpc) {
