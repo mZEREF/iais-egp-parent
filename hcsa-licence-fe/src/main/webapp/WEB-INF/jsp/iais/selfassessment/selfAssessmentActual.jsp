@@ -56,9 +56,17 @@
 
     function switchNextStep(index){
         $("[name='tagIndex']").val(index);
-        $("[name='crud_action_type']").val("switchNextStep");
-        let mainForm = document.getElementById('mainForm');
-        mainForm.submit();
+        let val = getPrintLoadParam();
+        if(val != null && 'Y' == val){
+            let prevTagIndex = $("[name='prevTagIndex']").val();
+            let selfAssessmentCorrId = $("[name='selfAssessmentCorrId']").val();
+            window.location.href= "/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit/1/switchNextStep?tagIndex=" + index
+            + "&selfAssessmentCorrId=" + selfAssessmentCorrId + "&loadPopupPrint=" + val + "&prevTagIndex=" + prevTagIndex;
+        }else{
+            $("[name='crud_action_type']").val("switchNextStep");
+            let mainForm = document.getElementById('mainForm');
+            mainForm.submit();
+        }
     }
 
     function doSubmit(){
@@ -76,13 +84,17 @@
         SOP.Crud.cfxSubmit("mainForm", "draftItem");
     });
 
-    $(document).ready(function () {
+    function getPrintLoadParam(){
         let val = $("input[name='loadPopupPrint']").val();
         if (val == null || val == ''){
             val = getQueryVariable('loadPopupPrint');
             $("input[name='loadPopupPrint']").val(val);
         }
+        return val;
+    }
 
+    $(document).ready(function () {
+        let val = getPrintLoadParam();
         if(val != null && 'Y' == val){
             $('.print-hidden-flag').addClass("hidden");
             let aTagList = $("a");
@@ -92,5 +104,6 @@
             printpage('printContent');
         }
     });
+
 
 </script>
