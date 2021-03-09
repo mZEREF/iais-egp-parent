@@ -71,6 +71,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -90,6 +91,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -661,7 +663,10 @@ public class InspectReviseNcEmailDelegator {
 
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
-            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
+            AppPremisesRecommendationDto appPreRecommentdationDtoInspDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+            List<Date> holidays = appointmentClient.getHolidays().getEntity();
+            Date addTenDays= WorkDayCalculateUtil.getDate(appPreRecommentdationDtoInspDate.getRecomInDate(),10,holidays);
+            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(addTenDays,Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getOfficeTelNo());
             mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
