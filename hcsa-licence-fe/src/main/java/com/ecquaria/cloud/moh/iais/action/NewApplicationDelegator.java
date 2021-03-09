@@ -1518,8 +1518,8 @@ private CessationFeService cessationFeService;
                     //spec
                     String applicationNo = applicationDto.getApplicationNo();
                     ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
-                    List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                     if(specApp!=null){
+                        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                         String specId = specApp.getOriginLicenceId();
                         LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
                         if (specLicenceDto != null) {
@@ -1535,6 +1535,7 @@ private CessationFeService cessationFeService;
                             appSpecifiedLicDto.setSpecLicId(licenceDtoId);
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
+                        ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
                     }
                     List<SelectOption> reasonOption = getReasonOption();
                     List<SelectOption> patientsOption = getPatientsOption();
@@ -1544,7 +1545,6 @@ private CessationFeService cessationFeService;
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
-                    ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
