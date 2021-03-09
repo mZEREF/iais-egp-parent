@@ -352,6 +352,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
         String sql = searchParam.getMainSql();
         String sort = "risk_score";
+        if(!StringUtil.isEmpty(dto.getPostalCode())){
+           sql = sql.replace("repalcePostalCodeSearch"," '"+dto.getPostalCode()+"%'");
+        }
      if (!StringUtil.isEmpty(dto.getTypeOfRisk())){
       if("RT001".equalsIgnoreCase(dto.getTypeOfRisk())){
           sql=  sql.replace("replaceSql","t8.risk_type_fir_ins_socre");
@@ -378,6 +381,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
      }
         searchParam.setSort(sort,SearchParam.DESCENDING);
         searchParam.setMainSql(sql);
+        if(!StringUtil.isEmpty(dto.getPostalCode())){
+            searchParam.removeFilter("postalCode");
+        }
         return searchParam;
     }
 
