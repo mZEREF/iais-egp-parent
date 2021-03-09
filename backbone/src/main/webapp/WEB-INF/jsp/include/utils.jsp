@@ -126,7 +126,7 @@
 <%--                let subEndTag = ("</thead>").concat("</table>").concat("</td>").concat("</tr>")--%>
 <%--                result = subStartTag.concat(buildHtmlTable(subJson)).concat(subEndTag)--%>
 <%--            }else {--%>
-                result = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td>").concat(value).concat("</td>").concat("</tr>")
+                result = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td style=\"width:150px;overflow:hidden; white-space:nowrap; text-overflow:ellipsis\"><xmp>").concat(value).concat("</xmp></td>").concat("</tr>")
 <%--            }--%>
         })
         result = result.concat("</tr>")

@@ -21,6 +21,7 @@
         <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
         <input type="hidden" name="operationType" value="${param.operationType}">
             <br><br><br>
+        <div class="table-responsive">
             <tr height="100%">
                 <td style="width: 100%;" class="first last">
                     <div id="control--printerFriendly--33" class="section control " style="overflow: visible;">
@@ -28,7 +29,7 @@
                             <h2>Search Param</h2>
                         </div>
                         <div id="control--printerFriendly--33**errorMsg_section_top" class="error_placements"></div>
-                        <span id="searchParam"></span>
+                        <p id="searchParam"></p>
                     </div>
                 </td>
             </tr>
@@ -40,7 +41,7 @@
                             <h2>Before Data</h2>
                         </div>
                         <div id="control--printerFriendly--34**errorMsg_section_top" class="error_placements"></div>
-                        <span id="beforeValue"></span>
+                        <p id="beforeValue"></p>
                     </div>
                 </td>
             </tr>
@@ -52,7 +53,7 @@
                             <h2>After Data</h2>
                         </div>
 
-                        <span id="afterValue"></span>
+                        <p id="afterValue"></p>
                     </div>
                 </td>
             </tr>
@@ -65,11 +66,11 @@
                             <h2>Validation Fail Detail</h2>
                         </div>
                         <div class="error_placements"></div>
-                        <span id="validationFail"></span>
+                        <p id="validationFail"></p>
                     </div>
                 </td>
             </tr>
-
+        </div>
         <br>
         <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
@@ -80,6 +81,13 @@
 <input hidden id="hsearchParam" value="<c:out value="${viewAuditActionData.viewParams}"/>"/>
 <input hidden id="hvalidationFail" value="<c:out value="${viewAuditActionData.validationFail}"/>"/>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<style>
+    .line-limit-length {
+        overflow:hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
 <script>
     $(document).ready(function() {
         let hbeforeValue = $("#hbeforeValue").val()
