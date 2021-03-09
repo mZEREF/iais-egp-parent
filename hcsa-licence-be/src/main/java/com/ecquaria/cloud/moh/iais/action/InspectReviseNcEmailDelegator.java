@@ -663,10 +663,12 @@ public class InspectReviseNcEmailDelegator {
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
+            AppPremisesRecommendationDto appPreRecommentdationDtoInspDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+            calendar.setTime(appPreRecommentdationDtoInspDate.getRecomInDate());
             calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 10);
-            Date tenDays= calendar.getTime();
-            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(tenDays,Formatter.DATE)));            mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
+            Date addTenDays= calendar.getTime();
+            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(addTenDays,Formatter.DATE)));
+            mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getOfficeTelNo());
             mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
