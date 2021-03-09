@@ -99,10 +99,12 @@ public class NewApplicationHelper {
                         boolean selectOtherChildrenScope = false;
                         //check children scope is selected
                         List<String> childrenConfigIdList = getOtherScopeChildrenIdList(hcsaSvcSubtypeOrSubsumedDtos);
-                        for(AppSvcChckListDto appSvcChckListDto:listDtos){
-                            if(childrenConfigIdList.contains(appSvcChckListDto.getChkLstConfId())){
-                                selectOtherChildrenScope = true;
-                                break;
+                        if(!IaisCommonUtils.isEmpty(childrenConfigIdList)){
+                            for(AppSvcChckListDto appSvcChckListDto:listDtos){
+                                if(childrenConfigIdList.contains(appSvcChckListDto.getChkLstConfId())){
+                                    selectOtherChildrenScope = true;
+                                    break;
+                                }
                             }
                         }
                         if(!selectOtherChildrenScope){
