@@ -120,14 +120,14 @@
         $.each(strToObj, function(i) {
             let fieldName = i
             let value = strToObj[i]
-<%--            if (isJSON(value)){--%>
-<%--                let subJson = JSON.parse(value)--%>
-<%--                let subStartTag = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td>").concat('<table width="100%" border="1">').concat("<thead>").concat("<tr></tr>")--%>
-<%--                let subEndTag = ("</thead>").concat("</table>").concat("</td>").concat("</tr>")--%>
-<%--                result = subStartTag.concat(buildHtmlTable(subJson)).concat(subEndTag)--%>
-<%--            }else {--%>
-                result = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td style=\"width:150px;overflow:hidden; white-space:nowrap; text-overflow:ellipsis\"><xmp>").concat(value).concat("</xmp></td>").concat("</tr>")
-<%--            }--%>
+            if (isJSON(value)){
+                let subJson = JSON.parse(value)
+                let subStartTag = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td>").concat('<table width="100%" border="1">').concat("<thead>").concat("<tr></tr>")
+                let subEndTag = ("</thead>").concat("</table>").concat("</td>").concat("</tr>")
+                result = subStartTag.concat(buildHtmlTable(subJson)).concat(subEndTag)
+            }else {
+                result = result.concat("<tr><td>").concat(fieldName).concat("</td>").concat("<td>").concat(value).concat("</td>").concat("</tr>")
+            }
         })
         result = result.concat("</tr>")
         return result
