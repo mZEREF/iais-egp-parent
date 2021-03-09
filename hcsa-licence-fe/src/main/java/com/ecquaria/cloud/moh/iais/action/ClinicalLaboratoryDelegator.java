@@ -693,7 +693,7 @@ public class ClinicalLaboratoryDelegator {
             }
             String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
             if ("next".equals(crud_action_type)) {
-                errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId);
+                errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
 
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
