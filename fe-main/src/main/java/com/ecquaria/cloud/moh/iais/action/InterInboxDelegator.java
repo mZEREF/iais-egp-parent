@@ -1250,7 +1250,6 @@ public class InterInboxDelegator {
 
     public void doSelfAssMt(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-
         //selfDeclAction // selfDeclApplicationNumber // appGroupId
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
         String appGroupId = ParamUtil.getString(request, "action_grp_value");
