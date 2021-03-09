@@ -24,11 +24,13 @@
                         <h2>
                             <span>Add a GIRO Payee</span>
                         </h2>
-                        <iais:row>
-                            <div class=" col-xs-12 col-md-12">
-                                You have successfully added a GIRO Payee.
-                            </div>
-                        </iais:row>
+                        <div class="col-xs-12 col-md-12">
+                            <iais:row>
+                                <div class=" col-xs-12 col-md-12">
+                                    You have successfully added a GIRO Payee.
+                                </div>
+                            </iais:row>
+                        </div>
 
                         <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
 

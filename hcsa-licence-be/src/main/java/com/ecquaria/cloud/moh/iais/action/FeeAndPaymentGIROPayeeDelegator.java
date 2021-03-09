@@ -297,7 +297,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         doc.setPassDocValidate(true);
         String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
         String commValidFlag = ParamUtil.getString(mulReq, "commValidFlag");
-        List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
+        List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
         Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
         if(("N".equals(commValidFlag)||doc.getDocSize()==null)){
 
@@ -320,7 +320,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 //type
                 if(!booleanMap.get("fileType")){
                     doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
                 }
             }
         }
@@ -350,7 +350,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 //type
                 if(!map.get("fileType")){
                     doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
                 }
                 if(filename.length()>100){
                     doc.setPassDocValidate(false);
