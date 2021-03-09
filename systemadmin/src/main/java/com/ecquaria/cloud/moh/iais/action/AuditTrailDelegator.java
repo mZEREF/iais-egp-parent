@@ -7,7 +7,6 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -21,7 +20,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.AuditLogDetailView;
+import com.ecquaria.cloud.moh.iais.dto.AuditLogRecView;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -32,19 +32,19 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
+import com.ecquaria.sz.commons.util.JsonUtil;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -120,8 +120,45 @@ public class AuditTrailDelegator {
         HttpServletRequest request = bpc.request;
         String auditId = ParamUtil.getMaskedString(request, "auditId");
         AuditTrailDto att = auditTrailService.getAuditTrailById(auditId);
+        ParamUtil.setRequestAttr(request, "auditLogDetailView", generateViewDetail(att));
         ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_ACTION_DATA, att);
         log.info(StringUtil.changeForLog("audit id........" + auditId));
+    }
+
+    private AuditLogDetailView generateViewDetail(AuditTrailDto atd) {
+        AuditLogDetailView view = new AuditLogDetailView();
+        if (!StringUtil.isEmpty(atd.getBeforeAction())) {
+            view.setBeforeChange(genAuditLogRecList(atd.getBeforeAction()));
+        }
+        if (!StringUtil.isEmpty(atd.getAfterAction())) {
+            view.setAfterChange(genAuditLogRecList(atd.getAfterAction()));
+        }
+        if (!StringUtil.isEmpty(atd.getViewParams())) {
+            view.setSearchParam(genAuditLogRecList(atd.getViewParams()));
+        }
+        if (!StringUtil.isEmpty(atd.getValidationFail())) {
+            view.setErrorMsg(genAuditLogRecList(atd.getValidationFail()));
+        }
+
+        return view;
+    }
+
+    private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
+        ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
+        Map<String, String> map = JsonUtil.fromJson(detail, Map.class);
+        for (Map.Entry<String, String> ent : map.entrySet()) {
+            AuditLogRecView arv = new AuditLogRecView();
+            arv.setColName(ent.getKey());
+            if (ent.getValue() != null && ent.getValue().length() > 300) {
+                arv.setColDetail(ent.getValue().substring(0, 300) + " ...");
+                arv.setLongText(ent.getValue());
+            } else {
+                arv.setColDetail(ent.getValue());
+            }
+            list.add(arv);
+        }
+
+        return list;
     }
 
     private void preSelectOption(HttpServletRequest request) {
