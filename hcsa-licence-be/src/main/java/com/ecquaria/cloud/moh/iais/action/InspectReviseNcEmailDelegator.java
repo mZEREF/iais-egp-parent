@@ -90,6 +90,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -661,8 +662,11 @@ public class InspectReviseNcEmailDelegator {
 
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
-            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
-            mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 10);
+            Date tenDays= calendar.getTime();
+            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(tenDays,Formatter.DATE)));            mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getOfficeTelNo());
             mapTemplate.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
             msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
