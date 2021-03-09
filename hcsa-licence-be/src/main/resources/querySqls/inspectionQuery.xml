@@ -290,7 +290,7 @@
                on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR (t1.STATUS != 'AUTACPS001'))
             <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
-            <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
+            <#if postalCode??> and t5.POSTAL_CODE like repalcePostalCodeSearch </#if>
             <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>
             <#if premType??> and charindex(:premType,t5.PREMISES_TYPE) != 0 </#if>
             <#if isTcuNeeded??> and t3.IS_TCU_NEEDED = :isTcuNeeded </#if>
