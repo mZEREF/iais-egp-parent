@@ -301,8 +301,8 @@
                       </tr>
                     </c:forEach>
                   </table>
-                </c:if>
                 </div>
+                </c:if>
               </div>
               </c:forEach>
           </div>
@@ -364,7 +364,7 @@
             $("#patOthersMobileNo").show();
             $("#patOthersEmailAddress").show();
             $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES005"$('#radioYes').is(':checked')) {
+        } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
             $("#patHciName").show();
             $("#hciName").show();
             $("#patOthers").hide();
