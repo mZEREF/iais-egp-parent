@@ -59,12 +59,6 @@
                       </iais:value>
                     </iais:row>
                     <iais:row>
-                      <iais:field value="Payment Reference No."/>
-                      <iais:value width="18">
-                        <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['paymentRefNo']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
                       <iais:field value="Payment Amount"/>
                       <iais:value width="18">
                         <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['paymentAmount']}" />
@@ -189,7 +183,6 @@
         $('input[name="transactionId"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="bankAccountNo"]').val("");
-        $('input[name="paymentRefNo"]').val("");
         $('input[name="paymentAmount"]').val("");
         $('input[name="paymentDescription"]').val("");
     }
