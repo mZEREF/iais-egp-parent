@@ -26,21 +26,20 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
-
-
       <form class="form-horizontal">
-        <c:if test="${isGroupLead == 'Y'}">
         <iais:section title="" id = "demoList">
           <iais:row>
             <iais:field value="Working Group:" required="true"/>
             <iais:value width="18">
-              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt"  value="${param.shortName}" ></iais:select>
+              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="Please Select" value="${param.wrlGrpNameOpt}" ></iais:select>
               <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
           </iais:row>
+          ${param.shortName}
 
           <div class="clearRow">
 
+            <c:if test="${isGroupLead == 'Y'}">
               <iais:row>
                 <iais:field value="Inspector ID:" required="true"/>
                 <iais:value width="18">
@@ -97,20 +96,19 @@
               </iais:value>
             </iais:row>
 
+            </c:if>
             <iais:action style="text-align:center;">
               <div class="text-right">
-                <a class="btn btn-secondary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>"  onclick="javascript:doClear()" href="#">Clear</a>
-                <a class="btn btn-primary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>" id="crud_search_button" value="doQuery" href="#">Search</a>
+                <c:if test="${isGroupLead == 'Y'}"><a class="btn btn-secondary"  onclick="javascript:doClear()" href="#">Clear</a></c:if>
+                <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
               </div>
             </iais:action>
-
-
 
           </div>
         </iais:section>
       </form>
       <br><br><br>
-    </c:if>
+
 
     <div>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
