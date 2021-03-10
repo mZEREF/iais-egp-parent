@@ -75,6 +75,14 @@ public interface TaskService {
       * @Descripation: get  lowest score User Id By workGroupId
       */
     TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException;
+    /**
+     * @author: shicheng
+     * @Date 2020/1/6
+     * @Param:
+     * @return:
+     * @Descripation: get  lowest score User Id By workGroupId
+     */
+    TaskDto getUserIdForWorkGroup(String workGroupId,String excpetUserId) throws FeignException;
 
 
     /**
@@ -92,7 +100,7 @@ public interface TaskService {
      * @param: [date]
      * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto>
      */
-    List<TaskDto> getTaskDtoByDate(String date);
+    List<TaskDto> getTaskDtoByDate(String roundDate,boolean isRouting);
     List<TaskDto> getTaskbyApplicationNo(String applicationNo);
 
     List<TaskDto> getTaskByUrlAndRefNo( String refNo, String processUrl);

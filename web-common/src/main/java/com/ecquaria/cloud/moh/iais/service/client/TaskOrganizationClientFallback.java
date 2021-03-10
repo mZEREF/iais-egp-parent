@@ -125,7 +125,7 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date) {
+    public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date, boolean isRouting) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

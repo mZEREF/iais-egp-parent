@@ -401,6 +401,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
+        return getUserIdForWorkGroup(workGroupId,null);
+    }
+
+    @Override
+    public TaskDto getUserIdForWorkGroup(String workGroupId,String excpetUserId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
         TaskDto result = null;
         if(StringUtil.isEmpty(workGroupId)){
@@ -408,7 +413,7 @@ public class TaskServiceImpl implements TaskService {
         }
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup workGroupId is -->:"+workGroupId));
         List<OrgUserDto> orgUserDtos = getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
-        orgUserDtos = removeUnavailableUser(orgUserDtos);
+        orgUserDtos = removeUnavailableUser(orgUserDtos,excpetUserId);
         List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
         result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);
         if(result != null && StringUtil.isEmpty(result.getWkGrpId())){
@@ -418,8 +423,6 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
-
-
     @Override
     public Set<String> getInspectiors(String appNo , String processUrl, String roleId) {
         Set<String> entity = taskOrganizationClient.getInspectors(appNo, processUrl, roleId).getEntity();
@@ -427,8 +430,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTaskDtoByDate(String date) {
-        return taskOrganizationClient.getTaskDtoByDate(date).getEntity();
+    public List<TaskDto> getTaskDtoByDate(String roundDate,boolean isRouting) {
+        return taskOrganizationClient.getTaskDtoByDate(roundDate,isRouting).getEntity();
     }
 
     @Override
@@ -607,14 +610,18 @@ public class TaskServiceImpl implements TaskService {
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
     }
-    private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos){
+    private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos,String excpetUserId){
         log.debug(StringUtil.changeForLog("the do removeUnavailableUser start ...."));
         List<OrgUserDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
             log.debug(StringUtil.changeForLog("the do removeUnavailableUser orgUserDtos.size() -->:"+orgUserDtos.size()));
             for (OrgUserDto orgUserDto : orgUserDtos){
                 if(orgUserDto.getAvailable()){
-                    result.add(orgUserDto);
+                    if(StringUtil.isEmpty(excpetUserId)||!excpetUserId.equals(orgUserDto.getUserId())){
+                        result.add(orgUserDto);
+                    }else{
+                        log.debug(StringUtil.changeForLog("This user id is the excpetUserId -->:"+excpetUserId));
+                    }
                 }else{
                     log.debug(StringUtil.changeForLog("the do removeUnavailableUser is not Available-->:"+orgUserDto.getUserId()));
                 }

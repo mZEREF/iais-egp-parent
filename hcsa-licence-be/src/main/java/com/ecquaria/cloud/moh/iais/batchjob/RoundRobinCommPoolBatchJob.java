@@ -64,6 +64,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -169,78 +170,24 @@ public class RoundRobinCommPoolBatchJob {
 
     public void jobExecute(){
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob start ..."));
-        String date = getDate();
-        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob date -- >:" +date));
-        List<TaskDto> taskDtoList = taskService.getTaskDtoByDate(date);
+        String roundDate = getDate();
+        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob roundDate -- >:" +roundDate));
+        List<TaskDto> taskDtoList = taskService.getTaskDtoByDate(roundDate,false);
+
+        int rountingBackupDay = systemParamConfig.getRountingBackupDay();
+        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob day -- >:" +rountingBackupDay));
+        List<Date> holidays = appointmentClient.getHolidays().getEntity();
+        Date rountingDate= WorkDayCalculateUtil.getDate(new Date(),-rountingBackupDay,holidays);
+        String rountingDateStr = Formatter.formatDateTime(rountingDate,AppConsts.DEFAULT_DATE_FORMAT);
+        List<TaskDto> routingTaskDtoList = taskService.getTaskDtoByDate(rountingDateStr,true);
+
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskDtoList.size() -- >:" +taskDtoList.size()));
             for (TaskDto taskDto : taskDtoList){
                 try{
                 ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
-
-                if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())&&!(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
-                        ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus()))){
-
-                        //completed the old task
-                        TaskDto oldTaskDto = (TaskDto) CopyUtil.copyMutableObject(taskDto);
-                        oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                        oldTaskDto.setAuditTrailDto(auditTrailDto);
-                        oldTaskDto = taskService.updateTask(oldTaskDto);
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update old task status"));
-
-                        String workGroupId = taskDto.getWkGrpId();
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
-                        TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
-                        String userId = null;
-                        if(taskScoreDto!= null){
-                            userId = taskScoreDto.getUserId();
-                        }
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
-                        if(StringUtil.isEmpty(userId)){
-                            //0066643
-                            List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
-                            if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                userId = orgUserDtos.get(0).getId();
-                                log.info(StringUtil.changeForLog("The RoundRobinCommPoolBatchJob sendNoteToAdm "));
-                                taskService.sendNoteToAdm(taskDto.getApplicationNo(),taskDto.getRefNo(),orgUserDtos.get(0));
-                            }
-                        }
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
-                        taskDto.setUserId(userId);
-                        taskDto.setDateAssigned(new Date());
-                        taskDto.setAuditTrailDto(auditTrailDto);
-                        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
-                        taskDto.setId(null);
-                        taskDtos.add(taskDto);
-                        taskDtos = taskService.createTasks(taskDtos);
-                        //update the application.
-                        String taskType = taskDto.getTaskType();
-                        String appNo = taskDto.getApplicationNo();
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskType -- >:" + taskType));
-                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob appNo -- >:" + appNo));
-                        if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)||TaskConsts.TASK_TYPE_MAIN_FLOW.equals(taskType)){
-                            List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);
-                            if(!IaisCommonUtils.isEmpty(applicationDtos)){
-                                ApplicationDto applicationDto = applicationDtos.get(0);
-                                if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
-                                    log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update this applicaiton status to -- >:"
-                                            + ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING));
-                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
-                                    applicationDto.setAuditTrailDto(auditTrailDto);
-                                    applicationDto = applicationService.updateBEApplicaiton(applicationDto);
-                                    log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob BE update success ..."));
-                                    applicationDto = applicationService.updateFEApplicaiton(applicationDto);
-                                    log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob FE update success ..."));
-                                }
-                            }else{
-                                log.debug(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob this appNo can not get the Application"));
-                            }
-                        }
-                }else{
-                    log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
-                }
+                assignTask(taskDto,auditTrailDto,applicationViewDto);
 
                 if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())&&(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
                         ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus()))){
@@ -277,9 +224,88 @@ public class RoundRobinCommPoolBatchJob {
         }else{
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob do  not need roud robin task !!!"));
         }
+        //rounting the backup Ao1 Ao2 or Ao3
+        if(!IaisCommonUtils.isEmpty(routingTaskDtoList)){
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob routingTaskDtoList.size() -- >:" +routingTaskDtoList.size()));
+            for (TaskDto taskDto : routingTaskDtoList){
+                try{
+                    ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+                    assignTask(taskDto,auditTrailDto,applicationViewDto);
+                }catch (Exception e ){
+                    log.debug(StringUtil.changeForLog("This  Task can not assign to backup id-->:"+taskDto.getId()));
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }else{
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob do  not need roud assign to backup !!!"));
+        }
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob end ..."));
     }
+    private void assignTask(TaskDto taskDto,AuditTrailDto auditTrailDto,ApplicationViewDto applicationViewDto) throws CloneNotSupportedException, FeignException {
+        if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())&&!(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
+                ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus()))){
 
+            //completed the old task
+            TaskDto oldTaskDto = (TaskDto) CopyUtil.copyMutableObject(taskDto);
+            oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+            oldTaskDto.setAuditTrailDto(auditTrailDto);
+            oldTaskDto = taskService.updateTask(oldTaskDto);
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update old task status"));
+
+            String workGroupId = taskDto.getWkGrpId();
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
+            String oldUserId = taskDto.getUserId();
+            TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
+            String userId = null;
+            if(taskScoreDto!= null){
+                userId = taskScoreDto.getUserId();
+            }
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
+            if(StringUtil.isEmpty(userId)){
+                //0066643
+                List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                    userId = orgUserDtos.get(0).getId();
+                    log.info(StringUtil.changeForLog("The RoundRobinCommPoolBatchJob sendNoteToAdm "));
+                    taskService.sendNoteToAdm(taskDto.getApplicationNo(),taskDto.getRefNo(),orgUserDtos.get(0));
+                }
+            }
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
+            taskDto.setUserId(userId);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setAuditTrailDto(auditTrailDto);
+            List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+            taskDto.setId(null);
+            taskDtos.add(taskDto);
+            taskDtos = taskService.createTasks(taskDtos);
+            //update the application.
+            String taskType = taskDto.getTaskType();
+            String appNo = taskDto.getApplicationNo();
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskType -- >:" + taskType));
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob appNo -- >:" + appNo));
+            if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)||TaskConsts.TASK_TYPE_MAIN_FLOW.equals(taskType)){
+                List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);
+                if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                    ApplicationDto applicationDto = applicationDtos.get(0);
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
+                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update this applicaiton status to -- >:"
+                                + ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING));
+                        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                        applicationDto.setAuditTrailDto(auditTrailDto);
+                        applicationDto = applicationService.updateBEApplicaiton(applicationDto);
+                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob BE update success ..."));
+                        applicationDto = applicationService.updateFEApplicaiton(applicationDto);
+                        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob FE update success ..."));
+                    }
+                }else{
+                    log.debug(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob this appNo can not get the Application"));
+                }
+            }
+        }else{
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
+        }
+    }
     private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
         if(appPremisesRecommendationDto == null){
