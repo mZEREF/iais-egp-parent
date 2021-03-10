@@ -149,12 +149,8 @@ public class AuditTrailDelegator {
         for (Map.Entry<String, String> ent : map.entrySet()) {
             AuditLogRecView arv = new AuditLogRecView();
             arv.setColName(ent.getKey());
-            if (ent.getValue() != null && ent.getValue().length() > 300) {
-                arv.setColDetail(ent.getValue().substring(0, 300) + " ...");
-                arv.setLongText(ent.getValue());
-            } else {
-                arv.setColDetail(ent.getValue());
-            }
+            arv.setColDetail(ent.getValue());
+            arv.setLongText(ent.getValue());
             list.add(arv);
         }
 
