@@ -329,53 +329,53 @@
                     </c:if>
                   </div>
                   </c:forEach>
-
                 </div>
                 <br/>
-                <ul>
-                  <li>
-                    <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
-                      before
-                      the cessation of operation, letting, sale or disposal of his private hospital, medical
-                      clinic or clinical laboratory.</p>
-                  </li>
-                  <li>
-                    <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
-                      intends to
-                      cease operating the medical clinic shall take all measures as are reasonable and
-                      necessary
-                      to ensure that the medical records of every patient are properly transferred to the
-                      medical
-                      clinic or other healthcare institution to which such patient is to be transferred.</p>
-                  </li>
-                </ul>
-                <div class="form-check disabled">
-                  <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                         aria-invalid="false">
-                  <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-                    and
-                    agreed with the above information</label>
-                </div>
-                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-                <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-            </form>
-            <div class="application-tab-footer">
-              <div class="row">
-                <div class="col-xs-12 col-sm-6">
+
+          </div>
+        </div>
+        <ul>
+          <li>
+            <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
+              before
+              the cessation of operation, letting, sale or disposal of his private hospital, medical
+              clinic or clinical laboratory.</p>
+          </li>
+          <li>
+            <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
+              intends to
+              cease operating the medical clinic shall take all measures as are reasonable and
+              necessary
+              to ensure that the medical records of every patient are properly transferred to the
+              medical
+              clinic or other healthcare institution to which such patient is to be transferred.</p>
+          </li>
+        </ul>
+        <div class="form-check disabled">
+          <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
+                 aria-invalid="false">
+          <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
+            and
+            agreed with the above information</label>
+        </div>
+        <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
+        <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
+        <div class="application-tab-footer">
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
                                 <span style="padding-right: 10%" class="components">
                         <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                     </span>
-                </div>
-                <div class="col-xs-12 col-sm-6">
+            </div>
+            <div class="col-xs-12 col-sm-6">
                                 <span style="padding-left: 73%" class="components">
                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="confirmSubmit('submit')">Submit</a>
                     </span>
-                </div>
-              </div>
             </div>
-            <br/>
           </div>
         </div>
+
+          </form>
       </div>
     </div>
     <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
