@@ -27,6 +27,7 @@
         )
     }
     function ajaxCallUpload(idForm,fileAppendId){
+        showWaiting();
         $("#fileAppendId").val(fileAppendId);
         $("#uploadFormId").val(idForm);
         var reloadIndex =  $("#reloadIndex").val();
@@ -57,5 +58,6 @@
                 alert("error");
             }
         });
+        dismissWaiting();
     }
 </script>
