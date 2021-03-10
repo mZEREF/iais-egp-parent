@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -711,6 +712,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }
         List<ApplicationDto> applicationDtos = applicationFeClient.listApplicationByGroupId(appGroupId).getEntity();
         String acc = "";
+        List<String> hciCodeList = IaisCommonUtils.genNewArrayList(applicationDtos.size());
         for(ApplicationDto applicationDto : applicationDtos){
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
             AppGrpPremisesDto appGrpPremisesDto = applicationFeClient.getAppGrpPremisesByCorrId(appPremisesCorrelationDto.getId()).getEntity();
@@ -718,11 +720,24 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             if(StringUtil.isEmpty(hciCode)){
                 return "";
             }else {
-                if(StringUtil.isEmpty(acc)){
-                   //todo api get account
-                }
+                hciCodeList.add(hciCode);
             }
         }
+
+        List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountByHciCodeAndOrgId( hciCodeList,orgId).getEntity();
+        if( !IaisCommonUtils.isEmpty(giroAccountInfoDtos)){
+            for(GiroAccountInfoDto giroAccountInfoDto : giroAccountInfoDtos){
+                if(StringUtil.isEmpty(giroAccountInfoDto.getAcctNo())){
+                    return "";
+                }
+               if(StringUtil.isEmpty(acc)){
+                       acc = giroAccountInfoDto.getAcctNo();
+               }else if( !StringUtil.isEmpty(acc) && !acc.equalsIgnoreCase(giroAccountInfoDto.getAcctNo())){
+                    return "";
+               }
+            }
+        }
+
         return acc;
     }
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
