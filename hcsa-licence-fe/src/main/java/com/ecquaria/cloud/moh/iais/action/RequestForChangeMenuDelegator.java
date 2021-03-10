@@ -1284,7 +1284,14 @@ public class RequestForChangeMenuDelegator {
             }
         }
         bpc.request.getSession().setAttribute("dAmount", Formatter.formatterMoney(dAmount));
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+//        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = "";
+        if(loginContext != null){
+            orgId = loginContext.getOrgId();
+        }
+        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto.getAppGrpPremisesDtoList(),orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }

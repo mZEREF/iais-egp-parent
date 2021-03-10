@@ -19,7 +19,22 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
@@ -58,7 +73,6 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
-import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -573,7 +587,20 @@ public class WithOutRenewalDelegator {
         appEditSelectDto.setDocEdit(true);
         List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        List<AppGrpPremisesDto> allPremiseList = IaisCommonUtils.genNewArrayList();
+        for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
+            List<AppGrpPremisesDto> appGrpPremisesDtos1 = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos1)){
+                allPremiseList.addAll(appGrpPremisesDtos1);
+            }
+        }
+//        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(appSubmissionDtos));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = "";
+        if(loginContext != null){
+            orgId = loginContext.getOrgId();
+        }
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(allPremiseList,orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
       /*  String hasSubmit = (String) ParamUtil.getSessionAttr(bpc.request, "hasAppSubmit");
         if ("Y".equals(hasSubmit)) {
