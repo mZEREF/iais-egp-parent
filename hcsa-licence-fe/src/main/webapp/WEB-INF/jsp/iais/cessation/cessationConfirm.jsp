@@ -329,211 +329,203 @@
                     </c:if>
                   </div>
                   </c:forEach>
-
                 </div>
                 <br/>
-                <ul>
-                  <li>
-                    <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
-                      before
-                      the cessation of operation, letting, sale or disposal of his private hospital, medical
-                      clinic or clinical laboratory.</p>
-                  </li>
-                  <li>
-                    <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
-                      intends to
-                      cease operating the medical clinic shall take all measures as are reasonable and
-                      necessary
-                      to ensure that the medical records of every patient are properly transferred to the
-                      medical
-                      clinic or other healthcare institution to which such patient is to be transferred.</p>
-                  </li>
-                </ul>
-                <div class="form-check disabled">
-                  <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                         aria-invalid="false">
-                  <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-                    and
-                    agreed with the above information</label>
-                </div>
-                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-                <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-            </form>
-            <div class="application-tab-footer">
-              <div class="row">
-                <div class="col-xs-12 col-sm-6">
+              </div>
+          </div>
+          <ul>
+            <li>
+              <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
+                before
+                the cessation of operation, letting, sale or disposal of his private hospital, medical
+                clinic or clinical laboratory.</p>
+            </li>
+            <li>
+              <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
+                intends to
+                cease operating the medical clinic shall take all measures as are reasonable and
+                necessary
+                to ensure that the medical records of every patient are properly transferred to the
+                medical
+                clinic or other healthcare institution to which such patient is to be transferred.</p>
+            </li>
+          </ul>
+          <div class="form-check disabled">
+            <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
+                   aria-invalid="false">
+            <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
+              and
+              agreed with the above information</label>
+          </div>
+          <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
+          <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
+          <div class="application-tab-footer">
+            <div class="row">
+              <div class="col-xs-12 col-sm-6">
                                 <span style="padding-right: 10%" class="components">
                         <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                     </span>
-                </div>
-                <div class="col-xs-12 col-sm-6">
+              </div>
+              <div class="col-xs-12 col-sm-6">
                                 <span style="padding-left: 73%" class="components">
                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="confirmSubmit('submit')">Submit</a>
                     </span>
-                </div>
               </div>
             </div>
-            <br/>
           </div>
+
+          </form>
         </div>
       </div>
-    </div>
-    <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
-         style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <%--                <div class="modal-header">--%>
-          <%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
-          <%--                            aria-hidden="true">&times;</span></button>--%>
-          <%--                </div>--%>
-          <div class="modal-body" style="text-align: center;">
-            <div class="row">
-              <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+      <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
+           style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <%--                <div class="modal-header">--%>
+            <%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
+            <%--                            aria-hidden="true">&times;</span></button>--%>
+            <%--                </div>--%>
+            <div class="modal-body" style="text-align: center;">
+              <div class="row">
+                <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+              </div>
             </div>
-          </div>
-          <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-            <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                    data-dismiss="modal" onclick="cancel()">OK
-            </button>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+              <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
+                      data-dismiss="modal" onclick="cancel()">OK
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+<style>
+  #effectiveDate {
+    margin-bottom: 0px;
+  }
 
-  <style>
-    /*.col-md-5 {*/
-    /*    width: 31%;*/
-    /*}*/
+  input[type='text'] {
+    margin-bottom: 0px;
+  }
+</style>
+<script type="text/javascript">
 
-    /*.col-md-6 {*/
-    /*    width: 35%;*/
-    /*}*/
-
-    #effectiveDate {
-      margin-bottom: 0px;
+    function confirmSubmit(action) {
+        showWaiting();
+        $("[name='crud_action_type']").val(action);
+        $("#mainForm").submit();
     }
 
-    input[type='text'] {
-      margin-bottom: 0px;
+    function confirmBack(action) {
+        $("[name='crud_action_type']").val(action);
+        $("#mainForm").submit();
     }
-  </style>
-  <script type="text/javascript">
 
-      function confirmSubmit(action) {
-          showWaiting();
-          $("[name='crud_action_type']").val(action);
-          $("#mainForm").submit();
-      }
+    function changeReasonCessFe() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "reasonId" + j).val() == "CES001") {
+                    $("#" + i + "reason" + j).show();
+                } else {
+                    $("#" + i + "reason" + j).hide();
+                }
+            }
+        }
+    }
 
-      function confirmBack(action) {
-          $("[name='crud_action_type']").val(action);
-          $("#mainForm").submit();
-      }
+    function changePatientCessFe() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005" && $('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "hciName" + j).show();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).show();
+                    $("#" + i + "hciCodePat" + j).show();
+                    $("#" + i + "hciAddressPat" + j).show();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                }
+            }
+        }
+    }
 
-      function changeReasonCessFe() {
-          for (var i = 1; i < 8; i++) {
-              for (var j = 1; j < 8; j++) {
-                  if ($("#" + i + "reasonId" + j).val() == "CES001") {
-                      $("#" + i + "reason" + j).show();
-                  } else {
-                      $("#" + i + "reason" + j).hide();
-                  }
-              }
-          }
-      }
+    function changePatSelectCessFe() {
+        changePatientCessFe();
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).show();
+                    $("#" + i + "patNo" + j).hide();
+                    $("#" + i + "patNoConfirmID" + j).hide();
+                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patNo" + j).show();
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patNoConfirmID" + j).show();
+                }
+            }
+        }
+    }
 
-      function changePatientCessFe() {
-          for (var i = 1; i < 8; i++) {
-              for (var j = 1; j < 8; j++) {
-                  if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                      $("#" + i + "patOthers" + j).show();
-                      $("#" + i + "patOthersMobileNo" + j).show();
-                      $("#" + i + "patOthersEmailAddress" + j).show();
-                      $("#" + i + "patHciName" + j).hide();
-                      $("#" + i + "hciName" + j).hide();
-                      $("#" + i + "patRegNo" + j).hide();
-                  } else if ($("#" + i + "patientSelectId" + j).val() == "CES005" && $('#' + i + 'radioYes' + j).is(':checked')) {
-                      $("#" + i + "patHciName" + j).show();
-                      $("#" + i + "hciName" + j).show();
-                      $("#" + i + "patOthers" + j).hide();
-                      $("#" + i + "patOthersMobileNo" + j).hide();
-                      $("#" + i + "patOthersEmailAddress" + j).hide();
-                      $("#" + i + "patRegNo" + j).hide();
-                      $("#" + i + "hciNamePat" + j).show();
-                      $("#" + i + "hciCodePat" + j).show();
-                      $("#" + i + "hciAddressPat" + j).show();
-                  } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
-                      $("#" + i + "patRegNo" + j).show();
-                      $("#" + i + "patHciName" + j).hide();
-                      $("#" + i + "hciName" + j).hide();
-                      $("#" + i + "patOthers" + j).hide();
-                      $("#" + i + "patOthersMobileNo" + j).hide();
-                      $("#" + i + "patOthersEmailAddress" + j).hide();
-                  }
-              }
-          }
-      }
+    $(document).ready(function () {
+        changeReasonCessFe();
+        changePatientCessFe();
+        changePatSelectCessFe();
+    });
 
-      function changePatSelectCessFe() {
-          changePatientCessFe();
-          for (var i = 1; i < 8; i++) {
-              for (var j = 1; j < 8; j++) {
-                  if ($('#' + i + 'radioYes' + j).is(':checked')) {
-                      $("#" + i + "patYes" + j).show();
-                      $("#" + i + "patNo" + j).hide();
-                      $("#" + i + "patNoConfirmID" + j).hide();
-                  } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                      $("#" + i + "patNo" + j).show();
-                      $("#" + i + "patYes" + j).hide();
-                      $("#" + i + "patHciName" + j).hide();
-                      $("#" + i + "hciName" + j).hide();
-                      $("#" + i + "patOthers" + j).hide();
-                      $("#" + i + "patRegNo" + j).hide();
-                      $("#" + i + "patOthersMobileNo" + j).hide();
-                      $("#" + i + "patOthersEmailAddress" + j).hide();
-                      $("#" + i + "patNoConfirmID" + j).show();
-                  }
-              }
-          }
-      }
+    $(document).ready(function () {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
+                }
+            }
+        }
+    });
 
-      $(document).ready(function () {
-          changeReasonCessFe();
-          changePatientCessFe();
-          changePatSelectCessFe();
-      });
+    $(document).ready(function () {
+        $('input[type="text"]').css('border-color', '#ededed');
+        $('input[type="text"]').css('color', '#999');
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
+                }
+            }
+        }
+    });
 
-      $(document).ready(function () {
-          for (var i = 1; i < 8; i++) {
-              for (var j = 1; j < 8; j++) {
-                  if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                      $("#" + i + "patYes" + j).hide();
-                      $("#" + i + "patHciName" + j).hide();
-                      $("#" + i + "hciName" + j).hide();
-                      $("#" + i + "patOthers" + j).hide();
-                      $("#" + i + "patRegNo" + j).hide();
-                      $("#" + i + "div" + j).hide();
-                  }
-              }
-          }
-      });
-
-      $(document).ready(function () {
-          $('input[type="text"]').css('border-color', '#ededed');
-          $('input[type="text"]').css('color', '#999');
-          for (var i = 1; i < 8; i++) {
-              for (var j = 1; j < 8; j++) {
-                  if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                      $("#" + i + "patYes" + j).hide();
-                      $("#" + i + "patHciName" + j).hide();
-                      $("#" + i + "hciName" + j).hide();
-                      $("#" + i + "patOthers" + j).hide();
-                      $("#" + i + "patRegNo" + j).hide();
-                      $("#" + i + "div" + j).hide();
-                  }
-              }
-          }
-      });
-
-  </script>
+</script>
