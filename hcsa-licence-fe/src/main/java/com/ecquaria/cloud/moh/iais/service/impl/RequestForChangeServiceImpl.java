@@ -854,6 +854,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("conveyanceHciName" + i, general_err0041);
                             }
+                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
+                            if(2==hciNameChanged){
+                                //no need validate hci name have keyword (is migrated and hci name never changed)
+                            }else {
+                                if (masterCodeDto != null) {
+                                    String[] s = masterCodeDto.split(" ");
+                                    for (int index = 0; index < s.length; index++) {
+                                        if (convHciName.toUpperCase().contains(s[index].toUpperCase())) {
+                                            errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                        }
+                                    }
+                                }
+                            }
 
                         }
 
@@ -1068,6 +1081,20 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("offSiteHciName" + i, general_err0041);
                             }
+                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
+                            if(2==hciNameChanged){
+                                //no need validate hci name have keyword (is migrated and hci name never changed)
+                            }else {
+                                if (masterCodeDto != null) {
+                                    String[] s = masterCodeDto.split(" ");
+                                    for (int index = 0; index < s.length; index++) {
+                                        if (offSiteHciName.toUpperCase().contains(s[index].toUpperCase())) {
+                                            errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                        }
+                                    }
+                                }
+                            }
+
 
                         }
                         String buildingName = appGrpPremisesDtoList.get(i).getOffSiteBuildingName();

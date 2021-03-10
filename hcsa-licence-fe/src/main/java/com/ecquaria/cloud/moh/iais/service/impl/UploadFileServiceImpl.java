@@ -593,8 +593,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                     if(appEditSelects!=null){
                         for(AppEditSelectDto appEditSelectDto:appEditSelects){
                             String applicationId = appEditSelectDto.getApplicationId();
-                            String editType = appEditSelectDto.getEditType();
-                            if(applicationDto.getId().equals(applicationId)&&ApplicationConsts.APPLICATION_EDIT_TYPE_RFC.equals(editType)){
+                            if(applicationDto.getId().equals(applicationId)){
                                 appEditSelectDtos.add(appEditSelectDto);
 
                             }

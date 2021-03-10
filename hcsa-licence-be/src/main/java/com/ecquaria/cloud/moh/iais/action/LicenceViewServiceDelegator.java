@@ -379,9 +379,9 @@ public class LicenceViewServiceDelegator {
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                 String premisesType = appGrpPremisesDto.getPremisesType();
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
-                    String hciName = appGrpPremisesDto.getHciName();
-                    if(hciName!=null){
-                        List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(hciName, licenseeId).getEntity();
+                    String checkhciName = appGrpPremisesDto.getHciName();
+                    if(checkhciName!=null){
+                        List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(checkhciName, licenseeId).getEntity();
                         for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
                             LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
                             applicationViewHciNameDto.setLicensee(licenseeDto.getName());

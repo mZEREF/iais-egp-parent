@@ -10,8 +10,8 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 	
@@ -65,11 +65,11 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preparePersonnelBank", this);
 	}
 
-	public void jumpBank_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "jumpPersonnelBank", this);
-	}
-
 	public void dash_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "personnelDashboard", this);
+	}
+
+	public void controlSwitch_OnStepProcess_1() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "paymentSwitch", this);
 	}
 }

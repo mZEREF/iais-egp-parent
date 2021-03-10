@@ -559,25 +559,29 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology">
                                                 <span>
                                                     <c:if test="${!weeklyDto.selectAllDay}">
-                                                        <c:choose>
-                                                            <c:when test="${weeklyDto.startFromHH.length()>1}">
-                                                                ${weeklyDto.startFromHH}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${weeklyDto.startFromHH}
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                        <c:if test="${weeklyDto.startFromHH != null || weeklyDto.startFromMM != null}">
+                                                        <c:if test="${weeklyDto.startFromHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.startFromHH.length()>1}">
+                                                                    ${weeklyDto.startFromHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.startFromHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                        <c:if test="${!weeklyDto.selectAllDay && (weeklyDto.startFromHH != null || weeklyDto.startFromMM != null)}">
                                                             :
                                                         </c:if>
-                                                        <c:choose>
-                                                            <c:when test="${weeklyDto.startFromMM.length()>1}">
-                                                                ${weeklyDto.startFromMM}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${weeklyDto.startFromMM}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${weeklyDto.startFromMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.startFromMM.length()>1}">
+                                                                    ${weeklyDto.startFromMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.startFromMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                     </c:if>
                                                 </span>
                                             </p>
@@ -586,25 +590,29 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology">
                                                 <span>
                                                     <c:if test="${!weeklyDto.selectAllDay}">
-                                                        <c:choose>
-                                                            <c:when test="${weeklyDto.endToHH.length()>1}">
-                                                                ${weeklyDto.endToHH}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${weeklyDto.endToHH}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${weeklyDto.endToHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.endToHH.length()>1}">
+                                                                    ${weeklyDto.endToHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.endToHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                         <c:if test="${!weeklyDto.selectAllDay && (weeklyDto.endToHH != null || weeklyDto.endToMM != null)}">
                                                             :
                                                         </c:if>
-                                                        <c:choose>
-                                                            <c:when test="${weeklyDto.endToMM.length()>1}">
-                                                                ${weeklyDto.endToMM}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${weeklyDto.endToMM}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${weeklyDto.endToMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.endToMM.length()>1}">
+                                                                    ${weeklyDto.endToMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.endToMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                     </c:if>
                                                 </span>
                                             </p>
@@ -655,25 +663,29 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology">
                                                 <span>
                                                     <c:if test="${!phDto.selectAllDay}">
-                                                        <c:choose>
-                                                            <c:when test="${phDto.startFromHH.length()>1}">
-                                                                ${phDto.startFromHH}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${phDto.startFromHH}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${phDto.startFromHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.startFromHH.length()>1}">
+                                                                    ${phDto.startFromHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.startFromHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                         <c:if test="${phDto.startFromHH != null || phDto.startFromMM != null}">
                                                             :
                                                         </c:if>
-                                                        <c:choose>
-                                                            <c:when test="${phDto.startFromMM.length()>1}">
-                                                                ${phDto.startFromMM}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${phDto.startFromMM}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${phDto.startFromMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.startFromMM.length()>1}">
+                                                                    ${phDto.startFromMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.startFromMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                     </c:if>
                                                 </span>
                                             </p>
@@ -682,25 +694,29 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology">
                                                 <span>
                                                     <c:if test="${!phDto.selectAllDay}">
-                                                        <c:choose>
-                                                            <c:when test="${phDto.endToHH.length()>1}">
-                                                                ${phDto.endToHH}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${phDto.endToHH}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${phDto.endToHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.endToHH.length()>1}">
+                                                                    ${phDto.endToHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.endToHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                         <c:if test="${phDto.endToHH != null || phDto.endToMM != null}">
                                                             :
                                                         </c:if>
-                                                        <c:choose>
-                                                            <c:when test="${phDto.endToMM.length()>1}">
-                                                                ${phDto.endToMM}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                0${phDto.endToMM}
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <c:if test="${phDto.endToMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.endToMM.length()>1}">
+                                                                    ${phDto.endToMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.endToMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
                                                     </c:if>
                                                 </span>
                                             </p>

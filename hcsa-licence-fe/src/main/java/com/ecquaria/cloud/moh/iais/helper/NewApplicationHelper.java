@@ -77,7 +77,7 @@ import java.util.Map;
 
 @Slf4j
 public class NewApplicationHelper {
-    public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId){
+    public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int premCount = 0 ;
         if(appSvcLaboratoryDisciplinesDtos.isEmpty()){
@@ -94,6 +94,23 @@ public class NewApplicationHelper {
                 if(listDtos.isEmpty()){
                     /*   map.put("checkError","NEW_ERR0012");*/
                 }else {
+                    boolean selectOtherScope = selectOtherScope(listDtos);
+                    if(selectOtherScope){
+                        boolean selectOtherChildrenScope = false;
+                        //check children scope is selected
+                        List<String> childrenConfigIdList = getOtherScopeChildrenIdList(hcsaSvcSubtypeOrSubsumedDtos);
+                        if(!IaisCommonUtils.isEmpty(childrenConfigIdList)){
+                            for(AppSvcChckListDto appSvcChckListDto:listDtos){
+                                if(childrenConfigIdList.contains(appSvcChckListDto.getChkLstConfId())){
+                                    selectOtherChildrenScope = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!selectOtherChildrenScope){
+                            map.put("otherScopeError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
+                        }
+                    }
                     for(int i=0;i<listDtos.size();i++){
                         if(NewApplicationConstant.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
                             map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
@@ -3109,5 +3126,41 @@ public class NewApplicationHelper {
                 }
             }
         }
+    }
+
+    private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList){
+        List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
+        HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;
+        if(!IaisCommonUtils.isEmpty(scopeConfigDtoList)){
+            for(HcsaSvcSubtypeOrSubsumedDto scopeConfigDto:scopeConfigDtoList){
+                if(NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(scopeConfigDto.getName())){
+                    otherScopeConfigDto = scopeConfigDto;
+                    break;
+                }
+            }
+            if(otherScopeConfigDto != null){
+                List<HcsaSvcSubtypeOrSubsumedDto> otherScopeChildrenDtoList = otherScopeConfigDto.getList();
+                if(!IaisCommonUtils.isEmpty(otherScopeChildrenDtoList)){
+                    for(HcsaSvcSubtypeOrSubsumedDto otherScopeChildrenDto:otherScopeChildrenDtoList){
+                        otherScopeChildrenList.add(otherScopeChildrenDto.getId());
+                    }
+                }
+
+            }
+        }
+        return otherScopeChildrenList;
+    }
+
+    private static  boolean selectOtherScope(List<AppSvcChckListDto> appSvcChckListDtos){
+        boolean flag = false;
+        if(!IaisCommonUtils.isEmpty(appSvcChckListDtos)){
+            for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtos){
+                if(NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(appSvcChckListDto.getChkName())){
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
     }
 }

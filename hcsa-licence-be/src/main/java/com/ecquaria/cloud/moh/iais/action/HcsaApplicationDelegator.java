@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.method.RfiCanCheck;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
@@ -160,7 +161,8 @@ public class HcsaApplicationDelegator {
     private String systemAddressOne;
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
-
+    @Autowired
+    private RfiCanCheck rfiCanCheck;
     @Autowired
     private NotificationHelper notificationHelper;
 
@@ -225,17 +227,10 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if (applicationDto != null) {
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())|| ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
                 //RFC
                 String applicationNo = applicationDto.getApplicationNo();
-                List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
-                List<String> list = IaisCommonUtils.genNewArrayList();
-                if (applicationDtosByApplicationNo != null) {
-                    for (ApplicationDto applicationDto1 : applicationDtosByApplicationNo) {
-                        list.add(applicationDto1.getId());
-                    }
-                }
-                List<AppEditSelectDto> appEditSelectDtosByAppIds = applicationService.getAppEditSelectDtosByAppIds(list);
+                List<AppEditSelectDto> appEditSelectDtosByAppIds = rfiCanCheck.getAppEditSelectDtoSForRfi(applicationNo);
                 if (!appEditSelectDtosByAppIds.isEmpty()) {
                     applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
                 }

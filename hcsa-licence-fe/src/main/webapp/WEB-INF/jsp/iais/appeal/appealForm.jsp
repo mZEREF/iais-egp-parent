@@ -26,7 +26,9 @@
 
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-        <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+        <input type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >
+        <input type="hidden" value="${id}" id="licenceId">
+        <input type="hidden" value="${type}" id="parametertype">
         <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
       </div>
     </div>
@@ -227,6 +229,14 @@ $('#submit').click(function () {
        }
      }
 
+    function link(){
+      var type = $('#parametertype').val();
+      if(type=='application'){
+          showPopupWindow("MohFeApplicationView?appNo="+$('#appealingFor').val());
+      }else if(type=="licence"){
+          showPopupWindow("MohLicenceView?licenceId="+$('#licenceId').val());
+      }
+    }
      var a=function ajax(){
          var form = new FormData($("#mainForm")[0]);
          $.ajax({

@@ -185,12 +185,12 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <div id="${num.count}patOthers${uid.count}" hidden>
+                                                <div id="${num.count}patOthersTakeOver${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text"
-                                                                        name="${num.count}patOthers${uid.count}"
+                                                                        name="${num.count}patOthersTakeOver${uid.count}"
                                                                         value="${appCessHci.patOthers}"></iais:input>
                                                         </iais:value>
                                                     </iais:row>
@@ -419,7 +419,7 @@
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersTakeOver" + j).show();
                     $("#" + i + "patOthersMobileNo" + j).show();
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
@@ -428,7 +428,7 @@
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005"&&$('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "hciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
@@ -439,7 +439,7 @@
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                 }
@@ -460,7 +460,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -483,7 +483,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
                 }
@@ -500,7 +500,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
                 }

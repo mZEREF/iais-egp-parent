@@ -72,7 +72,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -285,7 +284,7 @@ public class InspecEmailDelegator {
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             AppPremisesRecommendationDto appPreRecommentdationDtoInspDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             List<Date> holidays = appointmentClient.getHolidays().getEntity();
-            Date addTenDays= WorkDayCalculateUtil.getDate(appPreRecommentdationDtoInspDate.getRecomInDate(),10,holidays);
+            Date addTenDays= WorkDayCalculateUtil.getDate(appPreRecommentdationDtoInspDate.getRecomInDate(),systemParamConfig.getRectificateDay(),holidays);
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(addTenDays,Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getOfficeTelNo());

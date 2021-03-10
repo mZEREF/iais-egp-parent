@@ -17,11 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack2OrAck3.InputHeaderAck2
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -29,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -71,8 +69,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private FileRepoClient fileRepoClient;
     @Autowired
     private AppConfigClient appConfigClient;
-    @Autowired
-    private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
@@ -697,14 +693,52 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if( applicationGroupDto == null){
             return "";
         }
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
-        if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
-            return orgGiroAccountInfoDto.getAcctNo();
-        }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+        String submitBy = applicationGroupDto.getSubmitBy();
+        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(submitBy).getEntity();
+        if(orgUserDto == null){
+            return "";
+        }
+        String accNo = getAccountNoByOrgIdAndAppGroupId(orgUserDto.getOrgId(),applicationGroupDto.getId());
+        if(!StringUtil.isEmpty(accNo)){
+            return accNo;
+        }else {
             return  ConfigHelper.getString("col.giro.test.account","");
         }
-        return "";
+    }
+
+    private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
+        if(StringUtil.isEmpty(orgId)){
+            return "";
+        }
+        List<ApplicationDto> applicationDtos = applicationFeClient.listApplicationByGroupId(appGroupId).getEntity();
+        String acc = "";
+        List<String> hciCodeList = IaisCommonUtils.genNewArrayList(applicationDtos.size());
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = applicationFeClient.getAppGrpPremisesByCorrId(appPremisesCorrelationDto.getId()).getEntity();
+            String hciCode = appGrpPremisesDto.getHciCode();
+            if(StringUtil.isEmpty(hciCode)){
+                return "";
+            }else {
+                hciCodeList.add(hciCode);
+            }
+        }
+
+        List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountByHciCodeAndOrgId( hciCodeList,orgId).getEntity();
+        if( !IaisCommonUtils.isEmpty(giroAccountInfoDtos)){
+            for(GiroAccountInfoDto giroAccountInfoDto : giroAccountInfoDtos){
+                if(StringUtil.isEmpty(giroAccountInfoDto.getAcctNo())){
+                    return "";
+                }
+               if(StringUtil.isEmpty(acc)){
+                       acc = giroAccountInfoDto.getAcctNo();
+               }else if( !StringUtil.isEmpty(acc) && !acc.equalsIgnoreCase(giroAccountInfoDto.getAcctNo())){
+                    return "";
+               }
+            }
+        }
+
+        return acc;
     }
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{

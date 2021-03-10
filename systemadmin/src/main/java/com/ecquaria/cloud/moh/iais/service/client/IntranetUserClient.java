@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -22,8 +23,14 @@ public interface IntranetUserClient {
     @PostMapping(value = "/iais-orguser-be/user-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> createOrgUserDto(@RequestBody OrgUserDto user);
 
+    @PostMapping(value = "/iais-orguser-be/user-management-internet", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrgUserDto> createIntrenetUser(@RequestBody OrgUserDto user);
+
     @PostMapping(value = "/iais-orguser-be/users-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> createOrgUserDtos(@RequestBody List<OrgUserDto> orgUserDtos);
+
+    @GetMapping(value = "/iais-orguser-be/user-account/{nric}/{idType}")
+    FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
     @PostMapping(value = "/iais-orguser-be/intranet-user-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<OrgUserQueryDto>> doQuery(@RequestBody SearchParam searchParam);
@@ -36,6 +43,9 @@ public interface IntranetUserClient {
 
     @GetMapping(value = "/iais-orguser-be/users-account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> findIntranetUserById(@PathVariable("id")String id);
+
+    @GetMapping(value = "/iais-orguser-be/findLicenseesFe",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeDto>> findLicenseesFe();
 
     @PostMapping(value = "/iais-task//task/results", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<TaskDto>> getTaskListBySearchParam(@RequestBody SearchParam searchParam);
@@ -62,6 +72,9 @@ public interface IntranetUserClient {
 
     @DeleteMapping(value = "/iais-orguser-be/removeRole")
     FeignResponseEntity<String> removeRole(@RequestBody List<OrgUserRoleDto> orgUserRoleDtos);
+
+    @DeleteMapping(value = "/iais-orguser-be/removeRoleByAccount")
+    FeignResponseEntity<String> removeRoleByAccount(@RequestParam("userAccId") String userAccId);
 
     @GetMapping(value = "/iais-orguser-be/intranet-user-role-list/{userAccId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByuserAccId(@RequestParam("userAccId") String userAccId);

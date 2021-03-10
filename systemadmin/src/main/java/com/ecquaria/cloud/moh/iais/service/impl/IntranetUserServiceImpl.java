@@ -7,7 +7,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -51,8 +59,18 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public OrgUserDto createIntrenetUser(OrgUserDto orgUserDto) {
+        return intranetUserClient.createIntrenetUser(orgUserDto).getEntity();
+    }
+
+    @Override
     public void createIntranetUsers(List<OrgUserDto> orgUserDtos) {
         intranetUserClient.createOrgUserDtos(orgUserDtos);
+    }
+
+    @Override
+    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
+        return intranetUserClient.getInternetUserByNricAndIdType(nric, idType).getEntity();
     }
 
     @Override
@@ -76,6 +94,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         return intranetUserClient.findIntranetUserById(id).getEntity();
     }
 
+    @Override
+    public List<LicenseeDto> findLicenseesFe(){
+        return intranetUserClient.findLicenseesFe().getEntity();
+    }
     @Override
     public OrgUserDto findIntranetUserByUserId(String userId) {
         OrgUserDto orgUserDto = null;
@@ -120,6 +142,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public void removeRole(List<OrgUserRoleDto> orgUserRoleDtos) {
         intranetUserClient.removeRole(orgUserRoleDtos);
+    }
+
+    @Override
+    public void removeRoleByAccount(String accountId){
+        intranetUserClient.removeRoleByAccount(accountId);
     }
 
     @Override

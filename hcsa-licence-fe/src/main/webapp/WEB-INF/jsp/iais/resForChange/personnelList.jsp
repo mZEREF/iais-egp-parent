@@ -40,7 +40,7 @@
                                     </div>
                                 </form>
                                 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-                                <div class="table-gp">
+                                <div class="table-gp personnel-info-table">
                                     <div id="personPagDiv"></div>
                                     <table class="table">
                                         <thead style="align-content: center">

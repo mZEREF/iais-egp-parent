@@ -43,7 +43,7 @@
                                 <iais:section title="" id = "supPoolList">
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">HCI Code(s) :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:forEach items="${hciSession.rows}" var="hci">
                                                 ${hci.hciCode}<br>
                                             </c:forEach>
@@ -51,7 +51,7 @@
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">HCI Name(s) :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:forEach items="${hciSession.rows}" var="hci">
                                                 ${hci.hciName}<br>
                                             </c:forEach>
@@ -59,44 +59,44 @@
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Account Name :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${acctName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Bank Code :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankCode}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Branch Code :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${branchCode}"/>
                                         </div>
                                     </iais:row>
 
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Bank Name :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Bank Account No. :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankAccountNo}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Customer Reference No. :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${cusRefNo}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-4 col-xs-10 ">
+                                        <div class="col-sm-7 col-md-6 col-xs-10 ">
                                             <div class="file-upload-gp">
                                         <span>
                                             <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -69,6 +70,14 @@ public class EicGatewayClient {
 		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/message-template", HttpMethod.PUT, msgTemplateDto,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), Void.class);
+	}
+
+	public FeignResponseEntity<Void> syncFeUser(FeUserDto feUserDto) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/licensee-user-sync", HttpMethod.POST, feUserDto,
 				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 				signature2.date(), signature2.authorization(), Void.class);
 	}
