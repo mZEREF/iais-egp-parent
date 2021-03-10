@@ -796,6 +796,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
                 }
                 if(!IaisCommonUtils.isEmpty(taskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos1){
+                        appPremisesRoutingHistoryDto.setWrkGrpId(null);
+                    }
                     appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
                 }
             }
