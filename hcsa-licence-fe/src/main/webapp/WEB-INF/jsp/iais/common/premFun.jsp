@@ -1133,6 +1133,7 @@
     }
 
     var addOperational = function () {
+        $('.addOperational').unbind('click');
         $('.addOperational').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
