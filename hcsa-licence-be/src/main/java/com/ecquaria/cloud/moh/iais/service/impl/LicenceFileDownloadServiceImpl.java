@@ -625,11 +625,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         String name = f.getName();//file_id
                         fileRepoDto.setId(name);
                         fileRepoDto.setAuditTrailDto(intranet);
-                        String s = f.getName().replaceAll("-", "");
                         //not use generateFile function.this have floder name have dian
-                        File file1 = new File(file.getPath()+File.separator, s);
-                        flag=f.renameTo(file1);
-                        fileRepoDto.setFileName(s);
+                        fileRepoDto.setFileName(name);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
@@ -796,6 +793,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
                 }
                 if(!IaisCommonUtils.isEmpty(taskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos1){
+                        appPremisesRoutingHistoryDto.setWrkGrpId(null);
+                    }
                     appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
                 }
             }
