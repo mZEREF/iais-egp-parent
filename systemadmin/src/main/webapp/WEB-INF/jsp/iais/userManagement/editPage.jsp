@@ -40,7 +40,8 @@
                                 </c:when>
                                 <c:otherwise>
                                     <iais:value width="11">
-                                        <input name="organizationId" id="organizationId" type="text" value="${licenseeName}" readonly/>
+                                        <input name="licenseeName" id="licenseeName" type="text" value="${licenseeName}" readonly/>
+                                        <input name="organizationId" id="organizationId" type="text" value="${organizationId}" hidden/>
                                     </iais:value>
                                 </c:otherwise>
                             </c:choose>

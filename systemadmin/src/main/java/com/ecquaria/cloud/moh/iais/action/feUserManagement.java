@@ -76,6 +76,7 @@ public class feUserManagement {
             ) {
                 if(item.getOrganizationId().equals(orgId)){
                     ParamUtil.setRequestAttr(bpc.request,"licenseeName",item.getName());
+                    ParamUtil.setRequestAttr(bpc.request,"organizationId",orgId);
                 }
             }
         }else{
@@ -131,6 +132,23 @@ public class feUserManagement {
 
     public void delete(BaseProcessClass bpc){
         String[] userId =  ParamUtil.getMaskedStrings(bpc.request, "userId");
+        for (String item:userId
+             ) {
+            if (!StringUtil.isEmpty(item)){
+                OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
+                orgUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                intranetUserService.updateOrgUser(orgUserDto);
+                //sync fe db
+                try {
+                    FeUserDto feUserDto = intranetUserService.getFeUserAccountByNricAndType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
+                    feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    eicGatewayClient.syncFeUser(feUserDto);
+                    intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
 
     }
 
@@ -141,8 +159,14 @@ public class feUserManagement {
 
     public void edit(BaseProcessClass bpc){
         String userId = ParamUtil.getMaskedString(bpc.request,"userId");
-        FeUserDto feUserDto = organizationClient.getUserAccount(userId).getEntity();
-        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
+        FeUserDto feUserDto;
+
+        if(!StringUtil.isEmpty(userId)){
+            feUserDto = organizationClient.getUserAccount(userId).getEntity();
+            ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
+        }else{
+            feUserDto = (FeUserDto)ParamUtil.getSessionAttr(bpc.request,"inter_user_attr");
+        }
         ParamUtil.setSessionAttr(bpc.request,"feusertitle", "Edit");
         organizationSelection(bpc,feUserDto.getOrgId());
     }
@@ -266,6 +290,7 @@ public class feUserManagement {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                 if("Edit".equals(title)) {
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "editErr");
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "editErr");
                 }else{
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
