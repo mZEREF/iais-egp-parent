@@ -199,12 +199,12 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
-                                            <div id="patOthers" hidden>
+                                            <div id="patOthersTakeOver" hidden>
                                                 <iais:row>
                                                     <iais:field value="Others"/>
                                                     <iais:value width="7">
                                                         <iais:input needDisabled="true" type="text"
-                                                                    name="patOthers"
+                                                                    name="patOthersTakeOver"
                                                                     value="${appCessHci.patOthers}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
@@ -430,7 +430,7 @@
 
     function changePatient() {
         if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
+            $("#patOthersTakeOver").show();
             $("#patHciName").hide();
             $("#hciName").hide();
             $("#patRegNo").hide();
@@ -439,7 +439,7 @@
         } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
             $("#patHciName").show();
             $("#hciName").show();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
@@ -450,7 +450,7 @@
             $("#patRegNo").show();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
         }
@@ -466,7 +466,7 @@
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
@@ -484,7 +484,7 @@
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#div").hide();
         }
@@ -497,7 +497,7 @@
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#div").hide();
         }
