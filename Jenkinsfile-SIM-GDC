@@ -1,3 +1,6 @@
+// List of email recipients.
+EMAILS_TO_NOTIFY = 'tanweijie@toppanecquaria.com, zamri@toppanecquaria.com'
+
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // DOCKER_TLS_CREDENTIALS_ID =
 HUB_IP = '192.168.0.228'
@@ -102,77 +105,87 @@ KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
 
 configurePipeline()
 
-node{
-    echo "Build started for: ${target_file}."
-    cleanWs()
-    initVariables()
-
-    docker.withServer(DOCKER_URL) {
-        verifyPackage()
-        pushToGitlab()
-        updateMavenDependencies()
-
-        checkout()
-        buildAndDeploy()
-        sonarqube()
-    }
-}
-
-qualityGate()
-
-node{
-    docker.withServer(DOCKER_URL) {
-        dependencyCheck()
-
-        withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-            buildDockerImages()
-            scanDockerImages()
-            uploadToUAT()
-        }
-
-        deployUAT()
-    }
-}
-
-// block progression of pipeline until deployer has test environment ready.
-if(doAutomatedTestGate()){
+try{
     node{
-        currentBuild.result = 'ABORTED'
-    }
-    return
-}
+        echo "Build started for: ${target_file}."
+        cleanWs()
+        initVariables()
 
-node{
-    docker.withServer(DOCKER_URL) {
-        runAutomatedTests()
-    }
-}
+        docker.withServer(DOCKER_URL) {
+            verifyPackage()
+            pushToGitlab()
+            updateMavenDependencies()
 
-// block progression of pipeline until QA makes a decision.
-if(doReleaseGateToProduction()){
-    node{
-        currentBuild.result = 'ABORTED'
-    }
-    return
-}
-
-// // block progression of pipeline until QA makes a decision.
-// if(doGate('Release Gate to Production', 'rgtp', 'Release Gate: Release to Production?')){
-//     node{
-//         currentBuild.result = 'ABORTED'
-//     }
-//     return
-// }
-
-
-node{
-    docker.withServer(DOCKER_URL) {
-        withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-            uploadToProduction()
+            checkout()
+            buildAndDeploy()
+            sonarqube()
         }
-
-        deployProduction()
     }
+
+    qualityGate()
+
+    node{
+        docker.withServer(DOCKER_URL) {
+            dependencyCheck()
+
+            withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
+                buildDockerImages()
+                scanDockerImages()
+                uploadToUAT()
+            }
+
+            deployUAT()
+        }
+    }
+
+    // block progression of pipeline until deployer has test environment ready.
+    if(doAutomatedTestGate()){
+        node{
+            currentBuild.result = 'ABORTED'
+        }
+        return
+    }
+
+    node{
+        docker.withServer(DOCKER_URL) {
+            runAutomatedTests()
+        }
+    }
+
+    // block progression of pipeline until QA makes a decision.
+    if(doReleaseGateToProduction()){
+        node{
+            currentBuild.result = 'ABORTED'
+        }
+        return
+    }
+
+    // // block progression of pipeline until QA makes a decision.
+    // if(doGate('Release Gate to Production', 'rgtp', 'Release Gate: Release to Production?')){
+    //     node{
+    //         currentBuild.result = 'ABORTED'
+    //     }
+    //     return
+    // }
+
+
+    node{
+        docker.withServer(DOCKER_URL) {
+            withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
+                uploadToProduction()
+            }
+
+            deployProduction()
+        }
+    }
+}
+catch(err){
+    println "Build caught an exception: ${err.getMessage()}"
+
+    currentBuild.result = 'FAILURE'
+}
+finally{
+    sendEmailNotification()
 }
 
 /**
@@ -431,8 +444,8 @@ def sonarqube(){
                         mvn \
                             --no-transfer-progress \
                             -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -Dsonar.projectKey=iais-test-egp \
-                            -Dsonar.projectName=iais-test-egp \
+                            -Dsonar.projectKey=iais-iais-egp-rel \
+                            -Dsonar.projectName=iais-iais-egp-rel \
                             -P sg-nexus \
                             -s settings.xml \
                             sonar:sonar
@@ -460,7 +473,7 @@ def dependencyCheck() {
         // Note that we using the installed tool instead of going the Docker container route.
         // This is because, integration to Jenkins would be handled by the plugin.
         dependencycheck additionalArguments: cliArgs.join(" "), odcInstallation: '5.3.2'
-        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml', unstableTotalCritical: 13, unstableTotalHigh: 34, unstableTotalMedium: 119, unstableTotalLow: 10
 
         archiveArtifacts 'dependency-check-report.html'
     }
@@ -924,4 +937,35 @@ def runAutomatedTests(){
             }
 		}
     }
+}
+
+def sendEmailNotification(){
+    def subjectHeader = ""
+    def emailBody = ""
+
+    if (currentBuild.result == 'SUCCESS'){
+        subjectHeader = "Build succeeded: ${currentBuild.fullDisplayName}"
+        emailBody = "Build succeeded, see ${env.BUILD_URL}"
+    }
+    else if (currentBuild.result == 'FAILURE'){
+        subjectHeader = "Build failed: ${currentBuild.fullDisplayName}"
+        emailBody = "Something went wrong with ${env.BUILD_URL}"
+    }
+    else if (currentBuild.result == 'ABORTED')
+    {
+        subjectHeader = "Build aborted: ${currentBuild.fullDisplayName}"
+        emailBody = "Build aborted, see ${env.BUILD_URL}"
+    }
+    else if (currentBuild.result == 'UNSTABLE')
+    {
+        subjectHeader = "Build unstable: ${currentBuild.fullDisplayName}"
+        emailBody = "Build unstable, see ${env.BUILD_URL}"
+    }
+    else{
+        println "Email for build result -> [${currentBuild.result}], not handled yet."
+    }
+
+
+    // send email
+    mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
 }
