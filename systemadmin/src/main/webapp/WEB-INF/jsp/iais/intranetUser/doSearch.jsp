@@ -33,14 +33,14 @@
                              value="${role}"></iais:select></div>
         </iais:value>
     </iais:row>
-    <iais:row>
-        <iais:field value="Privileges Assigned:"/>
-        <iais:value width="18">
-            <div class="form-horizontal">
-                <iais:select id="privilege" name="privilege" options="privilegeOption" firstOption="Please Select"
-                             value="${privilege}"></iais:select></div>
-        </iais:value>
-    </iais:row>
+    <%--    <iais:row>--%>
+    <%--        <iais:field value="Privileges Assigned:"/>--%>
+    <%--        <iais:value width="18">--%>
+    <%--            <div class="form-horizontal">--%>
+    <%--                <iais:select id="privilege" name="privilege" options="privilegeOption" firstOption="Please Select"--%>
+    <%--                             value="${privilege}"></iais:select></div>--%>
+    <%--        </iais:value>--%>
+    <%--    </iais:row>--%>
 
     <iais:action style="text-align:center;">
         <div class="text-right">
