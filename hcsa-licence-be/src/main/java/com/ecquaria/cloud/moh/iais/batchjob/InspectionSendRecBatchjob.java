@@ -177,7 +177,7 @@ public class InspectionSendRecBatchjob {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), 10, holidays);
+                Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays);
                 String appNo = aDto.getApplicationNo();
                 String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +

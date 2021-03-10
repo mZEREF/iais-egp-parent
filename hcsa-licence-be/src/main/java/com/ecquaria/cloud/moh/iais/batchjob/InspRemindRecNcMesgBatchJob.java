@@ -182,7 +182,7 @@ public class InspRemindRecNcMesgBatchJob {
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
         String applicantName = orgUserDto.getDisplayName();
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), 10, holidays);
+        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays);
         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appNo;
