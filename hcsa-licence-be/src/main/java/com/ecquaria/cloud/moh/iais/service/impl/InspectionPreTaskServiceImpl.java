@@ -739,18 +739,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             appEditSelectDto.setPremisesListEdit(true);
             appEditSelectDto.setApplicationId(applicationDto.getId());
             applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-            appEditSelectDto.setServiceEdit(true);
-            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appEditSelectDto.setPoEdit(true);
-            appEditSelectDto.setDocEdit(true);
-            appEditSelectDto.setMedAlertEdit(true);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setApplicationId(applicationDto.getId());
-            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+        }  else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             String applicationNo = applicationDto.getApplicationNo();
             List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
             List<String> list = IaisCommonUtils.genNewArrayList();
