@@ -188,8 +188,9 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
   function exportTemplate(id) {
-    $('#currentMaskId').val(id);
-    SOP.Crud.cfxSubmit("mainForm", "exportConfigTemplate", id);
+    showWaiting();
+    let url = '/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration/exportConfigTemplate?currentMaskId=' + id
+    showPopupWindow(url);
   }
 
   function doSearch(){

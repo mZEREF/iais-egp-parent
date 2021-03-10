@@ -119,6 +119,9 @@
               <a class="btn btn-secondary btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">Delete</a>
             </div>
           </div>
+          <div class="col-xs-12" >
+            <span  name="selectedFileShowId" id="selectedFileShowId"></span>
+          </div>
         </div>
         <div class="col-xs-12">
           <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
@@ -149,6 +152,7 @@
       <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
     </c:if>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+    <%@ include file="./FeFileCallAjax.jsp" %>
   </form>
 </div>
 <style>
@@ -217,16 +221,17 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-      });
-      fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
-    }
-  }
+          /*    ajaxCallUpload('mainForm',"selectedFile");*/
+         });
+         fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
+       }
+     }
 
-  var a=function ajax(){
-      var form = new FormData($("#mainForm")[0]);
-      $.ajax({
-          type:"post",
-          url:"${pageContext.request.contextPath}/ajax-upload-file",
+     var a=function ajax(){
+         var form = new FormData($("#mainForm")[0]);
+         $.ajax({
+             type:"post",
+             url:"${pageContext.request.contextPath}/ajax-upload-file",
           data: form,
           async:true,
           dataType: "json",

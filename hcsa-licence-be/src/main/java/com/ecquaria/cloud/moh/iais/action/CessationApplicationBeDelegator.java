@@ -71,7 +71,7 @@ public class CessationApplicationBeDelegator {
     private static final String PATNOREMARKS = "patNoRemarks";
     private static final String PATHCINAME = "patHciName";
     private static final String PATREGNO = "patRegNo";
-    private static final String PATOTHERS = "patOthers";
+    private static final String PATOTHERS = "patOthersTakeOver";
     private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
     private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String ERROR = "GENERAL_ERR0006";

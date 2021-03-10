@@ -179,6 +179,8 @@
           $PremEle.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
         </c:if>
         <!-- init end-->
+        //68744
+        $('.premSelect').addClass('disabled');
         init = 1;
     });
 

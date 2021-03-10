@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @Author: yichen
@@ -186,10 +185,12 @@ public class SelfAssessmentDelegator {
     }
 
     private void loadSelfAssessment(HttpServletRequest request) {
-        int tagIndex = getCurrentSelfAssessmentIndexInList(request).intValue();
+        int index = getCurrentSelfAssessmentIndexInList(request).intValue();
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
-        if (tagIndex >= 0 && IaisCommonUtils.isNotEmpty(selfAssessmentList)) {
-            ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentList.get(tagIndex));
+        if (index >= 0 && IaisCommonUtils.isNotEmpty(selfAssessmentList)) {
+            ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentList.get(index));
+            // look <input type="hidden" name="tagIndex" value="<iais:mask name="tagIndex" value="${tagIndex}"/>">
+            String tagIndex = selfAssessmentList.get(index).getSelfAssessmentConfig().get(0).getConfigId();
             ParamUtil.setRequestAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
             ParamUtil.setRequestAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
         }
@@ -201,9 +202,10 @@ public class SelfAssessmentDelegator {
      */
     public void switchNextStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        int prevTagIdx = ParamUtil.getInt(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION);
-        int tagIndex = ParamUtil.getInt(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
+        String prevTagIdx = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION);
+        String tagIndex = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
         SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
+        log.info("SelfAssessmentDelegator [switchNextStep] selfAssessment INFO  ..{}..", JsonUtil.parseToJson(selfAssessment));
         Map<String, List<PremCheckItem>> answerMap = getTabQuestionByTagIndex(selfAssessment, prevTagIdx);
         setAnswerWithQuestion(request, answerMap);
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessment);
@@ -280,7 +282,7 @@ public class SelfAssessmentDelegator {
      */
     public void clearAnswer(BaseProcessClass bpc) {
         SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
-        int tagIndex = ParamUtil.getInt(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
+        String tagIndex = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
         Map<String, List<PremCheckItem>> currentTabQuestion = getTabQuestionByTagIndex(selfAssessment, tagIndex);
         for (Map.Entry<String, List<PremCheckItem>> entry : currentTabQuestion.entrySet()){
             List<PremCheckItem> list = entry.getValue();
@@ -315,7 +317,7 @@ public class SelfAssessmentDelegator {
      */
     public void draftItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        int tagIndex = ParamUtil.getInt(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
+        String tagIndex = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
         ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
         ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
         SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
@@ -339,12 +341,17 @@ public class SelfAssessmentDelegator {
         }
     }
 
-    private Map<String, List<PremCheckItem>> getTabQuestionByTagIndex(SelfAssessment selfAssessment, Integer tagIndex) {
+    private Map<String, List<PremCheckItem>> getTabQuestionByTagIndex(SelfAssessment selfAssessment, String tagIndex) {
         Map<String, List<PremCheckItem>> answerMap = IaisCommonUtils.genNewHashMap();
-        if (Optional.ofNullable(selfAssessment).isPresent() && Optional.ofNullable(selfAssessment.getSelfAssessmentConfig()).isPresent()) {
+        if (Optional.ofNullable(selfAssessment).isPresent()) {
             List<SelfAssessmentConfig> confList = selfAssessment.getSelfAssessmentConfig();
-            SelfAssessmentConfig assessmentConfig = confList.get(tagIndex);
-            answerMap = assessmentConfig.getSqMap();
+             if (Optional.ofNullable(confList).isPresent()){
+                 for (SelfAssessmentConfig s : confList){
+                     if (tagIndex.equals(s.getConfigId())){
+                         answerMap = s.getSqMap();
+                     }
+                 }
+             }
         }
         log.info("SelfAssessmentDelegator [getTabQuestionByTagIndex] answerMap Info {}", JsonUtil.parseToJson(answerMap));
         return answerMap;

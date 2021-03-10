@@ -139,6 +139,7 @@
                                 </c:forEach>
                                 <input type="hidden" name="needTextArea" value="1"/>
                                 <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                <br/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                               </c:when>
                               <c:otherwise>
@@ -182,6 +183,10 @@
                                     <span class="check-square"></span>
                                     <c:out value="${levelTwoList.name}"/>
                                     </label>
+                                    <br/>
+                                    <c:if test="${levelOneList.name=='Others' && levelTwo.last}">
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_otherScopeError${status.index}"></span>
+                                    </c:if>
                                     <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo2}"/>" value="<iais:mask name="${checkIndexNo2}" value="${levelTwoList.id}"/>"/>
                                   </div>
                                 </td>
@@ -204,6 +209,7 @@
                                       </c:forEach>
                                       <input type="hidden" name="needTextArea" value="1"/>
                                       <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                      <br/>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                     </c:when>
                                     <c:otherwise>

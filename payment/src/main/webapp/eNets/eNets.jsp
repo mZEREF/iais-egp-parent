@@ -7,11 +7,11 @@
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
     <webui:setLayout name="none"/>
     <title>Merchant Page</title>
-    <script src="https://uat2.enets.sg/GW2/js/jquery-3.1.1.min.js"
+    <script src="${jquery_js}"
             type="text/javascript"></script>
-    <script src="https://uat2.enets.sg/GW2/pluginpages/env.jsp"></script>
+    <script src="${env_jsp}"></script>
     <script type="text/javascript"
-            src="https://uat2.enets.sg/GW2/js/apps.js"></script>
+            src="${apps_js}"></script>
 </head>
 <body>
 <input type="hidden" id="txnReq" name="txnReq" value='${txnReq}'>
