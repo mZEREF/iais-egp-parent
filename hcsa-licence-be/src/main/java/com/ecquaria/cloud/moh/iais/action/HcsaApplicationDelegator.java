@@ -225,7 +225,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if (applicationDto != null) {
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
                 //RFC
                 String applicationNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
