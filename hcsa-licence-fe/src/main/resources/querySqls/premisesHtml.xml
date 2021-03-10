@@ -203,19 +203,19 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="col-md-12">
+                    <div class="col-md-12 col-xs-12">
                         <label class="control-label">Operating Hours</label>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-xs-4">
                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">Start</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">End</label>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-xs-2">
                         <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
@@ -224,53 +224,53 @@
                 <div class="weeklyContent">
                     <div class="form-group weeklyDiv">
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${onSiteWeeklySelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyStart00"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeeklyEnd00"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0onSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -278,10 +278,10 @@
                         <div class="clear"></div>
                     </div>
                     <div class="form-group addWeeklyDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -289,51 +289,51 @@
 
                 <div class="pubHolDayContent">
                     <div class="form-group pubHolidayDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Public Holiday</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${onSitePhSelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSitePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSitePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSitePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${onSitePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0onSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -344,10 +344,10 @@
 
 
                     <div class="form-group addPhDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -355,28 +355,28 @@
 
                 <div class="eventContent">
                     <div class="form-group eventDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Event</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <input maxLength="100" type="text" name="${premVal}onSiteEvent0" class="onSiteEvent" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control onSiteEventStart" name="${premVal}onSiteEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control onSiteEventEnd" name="${premVal}onSiteEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center col-xs-6">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
 
                                     </div>
                                 </div>
@@ -386,10 +386,10 @@
                     </div>
 
                     <div class="form-group addEventDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div>
@@ -494,19 +494,19 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="col-md-12">
+                    <div class="col-md-12 col-xs-12">
                         <label class="control-label">Operating Hours</label>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-xs-4">
                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">Start</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">End</label>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-xs-2">
                         <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
@@ -515,47 +515,47 @@
                 <div class="weeklyContent">
                     <div class="form-group weeklyDiv">
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${conveyanceWeeklySelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0conveyanceWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -563,10 +563,10 @@
                         <div class="clear"></div>
                     </div>
                     <div class="form-group addWeeklyDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -574,51 +574,51 @@
 
                 <div class="pubHolDayContent">
                     <div class="form-group pubHolidayDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Public Holiday</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${conveyancePhSelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyancePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyancePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyancePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${conveyancePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0conveyancePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -629,10 +629,10 @@
 
 
                     <div class="form-group addPhDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -640,28 +640,28 @@
 
                 <div class="eventContent">
                     <div class="form-group eventDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Event</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <input maxLength="100" type="text" name="${premVal}conveyanceEvent0" class="conveyanceEvent" maxlength="null" autocomplete="off"><span id="error_0conveyanceEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control conveyanceEventStart" name="${premVal}conveyanceEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0conveyanceEventStart0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control conveyanceEventEnd" name="${premVal}conveyanceEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0conveyanceEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center col-xs-6">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
 
                                     </div>
                                 </div>
@@ -671,10 +671,10 @@
                     </div>
 
                     <div class="form-group addEventDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div>
@@ -771,19 +771,19 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="col-md-12">
+                    <div class="col-md-12 col-xs-12">
                         <label class="control-label">Operating Hours</label>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-xs-4">
                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">Start</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <label class="control-label">End</label>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-xs-2">
                         <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
@@ -792,47 +792,47 @@
                 <div class="weeklyContent">
                     <div class="form-group weeklyDiv">
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${offSiteWeeklySelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSiteWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSiteWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSiteWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSiteWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0offSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -840,10 +840,10 @@
                         <div class="clear"></div>
                     </div>
                     <div class="form-group addWeeklyDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -851,51 +851,51 @@
 
                 <div class="pubHolDayContent">
                     <div class="form-group pubHolidayDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Public Holiday</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 ${offSitePhSelect}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSitePhStartHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSitePhStartMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSitePhEndHH}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (HH)
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-xs-5">
                                         ${offSitePhEndMM}
                                     </div>
-                                    <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                         <input class="form-check-input allDay" name="0offSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
                                     </div>
                                 </div>
                             </div>
@@ -906,10 +906,10 @@
 
 
                     <div class="form-group addPhDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div></div>
@@ -917,28 +917,28 @@
 
                 <div class="eventContent">
                     <div class="form-group eventDiv">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <label class="control-label">Event</label>
                         </div>
                         <div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <input maxLength="100" type="text" name="${premVal}offSiteEvent0" class="offSiteEvent" maxlength="null" autocomplete="off"><span id="error_0offSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control offSiteEventStart" name="${premVal}offSiteEventStart0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0offSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-3">
                                 <input type="text" autocomplete="off" class="date_picker form-control offSiteEventEnd" name="${premVal}offSiteEventEnd0"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0offSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-12">
                                 <div class="row">
-                                    <div class="col-md-6 text-center">
+                                    <div class="col-md-6 text-center col-xs-6">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xs-6">
 
                                     </div>
                                 </div>
@@ -948,10 +948,10 @@
                     </div>
 
                     <div class="form-group addEventDiv">
-                        <div class=" col-xs-7 col-sm-4 col-md-4">
+                        <div class=" col-xs-4 col-sm-4 col-md-4">
                             <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-8">
+                        <div class=" col-xs-8 col-sm-4 col-md-8">
 
                         </div>
                         <div class="clear"></div>
@@ -1044,50 +1044,50 @@
         <![CDATA[
             <div class="form-group ${divClass}">
                 <div>
-                    <div class="col-md-12">
+                    <div class="col-md-12 col-xs-12">
                         <label class="control-label">${fieldName}</label>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-xs-4">
                         ${multipleDropDown}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <div class="row">
-                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
+                            <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
                                 ${startHH}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                            <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                 (HH)
                             </div>
-                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
+                            <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
                                 ${startMM}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                            <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                 (MM)
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <div class="row">
-                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
+                            <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
                                 ${endHH}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                            <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                 (HH)
                             </div>
-                            <div class="col-md-5" style="padding-right:5px;padding-left: 20px;">
+                            <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
                                 ${endMM}
                             </div>
-                            <div class="col-md-1" style="padding-left: unset;padding-top: 14px">
+                            <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
                                 (MM)
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-xs-2">
                         <div class="row">
-                            <div class="col-md-6 text-center" style="padding-top: 14px">
+                            <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
                                 <input class="form-check-input allDay" name="${allDayName}" type="checkbox" aria-invalid="false" value="true">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-xs-6">
                                 <div class="fa fa-times-circle del-size-36 text-danger ${delClass}"></div>
                             </div>
                         </div>
@@ -1101,28 +1101,28 @@
     <sql key="event" cached="no">
         <![CDATA[
         <div class="form-group eventDiv">
-            <div class="col-md-12">
+            <div class="col-md-12 col-xs-12">
                 <label class="control-label">Event</label>
             </div>
             <div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-xs-4">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-xs-12">
                             <input type="text" maxLength="100" name="${premIndex}${premType}Event${eventCount}" class="Event" maxlength="null" autocomplete="off"><span id="error_0onSiteEvent0" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-xs-3">
                     <input type="text" autocomplete="off" class="date_picker form-control EventStart" name="${premIndex}${premType}EventStart${eventCount}"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventStart0" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-xs-3">
                     <input type="text" autocomplete="off" class="date_picker form-control EventEnd" name="${premIndex}${premType}EventEnd${eventCount}" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onSiteEventEnd0" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-xs-2">
                     <div class="row">
-                        <div class="col-md-6 text-center">
+                        <div class="col-md-6 text-center col-xs-6">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-xs-6">
                             <div class="fa fa-times-circle del-size-36 text-danger eventDel"></div>
                         </div>
                     </div>
