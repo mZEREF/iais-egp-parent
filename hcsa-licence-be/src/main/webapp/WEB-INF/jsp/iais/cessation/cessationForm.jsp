@@ -198,13 +198,13 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <div id="${num.count}patOthers${uid.count}" hidden>
+                                                <div id="${num.count}patOthersTakeOver${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patOthers}"
                                                                         maxLength="100"
-                                                                        name="${num.count}patOthers${uid.count}"></iais:input>
+                                                                        name="${num.count}patOthersTakeOver${uid.count}"></iais:input>
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
@@ -520,7 +520,7 @@
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersTakeOver" + j).show();
                     $("#" + i + "patOthersMobileNo" + j).show();
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
@@ -531,14 +531,14 @@
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005"&&$('#' + i + 'radioYes' + j).is(':checked')) {
                     $( "#" + i + "hciName" + j).trigger('blur');
                     $("#" + i + "patHciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "hciNamePat" + j).hide();
@@ -561,7 +561,7 @@
                     $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -586,7 +586,7 @@
                 if ($('#' + i + 'radioNo' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
                 }

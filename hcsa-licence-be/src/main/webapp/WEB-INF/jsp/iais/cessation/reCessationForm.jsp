@@ -197,13 +197,13 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
-                                            <div id="patOthers" hidden>
+                                            <div id="patOthersTakeOver" hidden>
                                                 <iais:row>
                                                     <iais:field value="Others" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" value="${appCessHci.patOthers}"
                                                                     maxLength="100"
-                                                                    name="patOthers"></iais:input>
+                                                                    name="patOthersTakeOver"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
@@ -418,7 +418,7 @@
 
     function changePatient() {
         if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
+            $("#patOthersTakeOver").show();
             $("#patHciName").hide();
             $("#hciName").hide();
             $("#patRegNo").hide();
@@ -431,7 +431,7 @@
             $( "#hciName").trigger('blur');
             $("#patHciName").show();
             $("#hciName").show();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
@@ -439,7 +439,7 @@
             $("#patRegNo").show();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
             $("#hciNamePat").hide();
@@ -503,7 +503,7 @@
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#patOthersMobileNo").hide();
             $("#patOthersEmailAddress").hide();
@@ -525,7 +525,7 @@
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
-            $("#patOthers").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#div").hide();
         }

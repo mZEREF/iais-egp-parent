@@ -189,13 +189,13 @@
                                         value="${appCessHci.patRegNo}"/>
                           </div>
                         </div>
-                        <div class="form-group" id="${num.count}patOthers${uid.count}"
+                        <div class="form-group" id="${num.count}patOthersTakeOver${uid.count}"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Others <span
                                   style="color: red">*</span></label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <iais:input needDisabled="true" type="text"
-                                        name="${num.count}patOthers${uid.count}"
+                                        name="${num.count}patOthersTakeOver${uid.count}"
                                         value="${appCessHci.patOthers}"/>
                           </div>
                         </div>
@@ -439,7 +439,7 @@
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthers" + j).show();
+                    $("#" + i + "patOthersTakeOver" + j).show();
                     $("#" + i + "patOthersMobileNo" + j).show();
                     $("#" + i + "patOthersEmailAddress" + j).show();
                     $("#" + i + "patHciName" + j).hide();
@@ -448,7 +448,7 @@
                 } else if ($("#" + i + "patientSelectId" + j).val() == "CES005" && $('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patHciName" + j).show();
                     $("#" + i + "hciName" + j).show();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
@@ -459,7 +459,7 @@
                     $("#" + i + "patRegNo" + j).show();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
                 }
@@ -480,7 +480,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
@@ -503,7 +503,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
                 }
@@ -520,7 +520,7 @@
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "div" + j).hide();
                 }
