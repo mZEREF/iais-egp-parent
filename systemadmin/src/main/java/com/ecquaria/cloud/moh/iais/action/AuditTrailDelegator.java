@@ -33,18 +33,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import com.ecquaria.sz.commons.util.JsonUtil;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -122,38 +123,57 @@ public class AuditTrailDelegator {
         AuditTrailDto att = auditTrailService.getAuditTrailById(auditId);
         ParamUtil.setRequestAttr(request, "auditLogDetailView", generateViewDetail(att));
         ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_ACTION_DATA, att);
-        log.info(StringUtil.changeForLog("audit id........" + auditId));
+        log.info("audit id........ {} ", auditId);
     }
 
     private AuditLogDetailView generateViewDetail(AuditTrailDto atd) {
         AuditLogDetailView view = new AuditLogDetailView();
-        if (!StringUtil.isEmpty(atd.getBeforeAction())) {
+        if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
             view.setBeforeChange(genAuditLogRecList(atd.getBeforeAction()));
         }
-        if (!StringUtil.isEmpty(atd.getAfterAction())) {
+        if (StringUtil.isNotEmpty(atd.getAfterAction())) {
             view.setAfterChange(genAuditLogRecList(atd.getAfterAction()));
         }
-        if (!StringUtil.isEmpty(atd.getViewParams())) {
+        if (StringUtil.isNotEmpty(atd.getViewParams())) {
             view.setSearchParam(genAuditLogRecList(atd.getViewParams()));
         }
-        if (!StringUtil.isEmpty(atd.getValidationFail())) {
+        if (StringUtil.isNotEmpty(atd.getValidationFail())) {
             view.setErrorMsg(genAuditLogRecList(atd.getValidationFail()));
         }
 
         return view;
     }
 
-    private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
-        ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
-        Map<String, String> map = JsonUtil.fromJson(detail, Map.class);
-        for (Map.Entry<String, String> ent : map.entrySet()) {
+    private void parseToMap(Map<String, Object> param, String[] strings, int index){
+        if (strings == null || strings.length == 0 || index > strings.length - 1) return;
+        String s = strings[index];
+        Map<String, String> map = JsonUtil.fromJson(s, Map.class);
+        param.putAll(map);
+        parseToMap(param, strings, index + 1);
+    }
+
+    private void addAuditLogRevToList(ArrayList<AuditLogRecView> list, Map<String, Object> map){
+        for (Map.Entry<String, Object> ent : map.entrySet()) {
             AuditLogRecView arv = new AuditLogRecView();
             arv.setColName(ent.getKey());
-            arv.setColDetail(ent.getValue());
-            arv.setLongText(ent.getValue());
+            arv.setColDetail(String.valueOf(ent.getValue()));
+            arv.setLongText(String.valueOf(ent.getValue()));
             list.add(arv);
         }
+    }
 
+    private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
+        ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
+        if (detail.contains("[") && detail.contains("]") && detail.length() > 2){
+            detail = detail.replace("[", " ").replace("]", " ");
+            String[] strings = detail.split(",");
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            parseToMap(map, strings, 0);
+            addAuditLogRevToList(list, map);
+        }else{
+            Map<String, Object> map = JsonUtil.fromJson(detail, Map.class);
+            addAuditLogRevToList(list, map);
+        }
         return list;
     }
 
