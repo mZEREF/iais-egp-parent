@@ -720,7 +720,12 @@ private CessationFeService cessationFeService;
         bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(appSubmissionDto.getLicenseeId());
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = "";
+        if(loginContext != null){
+            orgId = loginContext.getOrgId();
+        }
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto.getAppGrpPremisesDtoList(),orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }

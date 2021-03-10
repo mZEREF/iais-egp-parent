@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -344,6 +345,14 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<List<String>> listHciNames() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountByHciCodeAndOrgId(List<String> hciCodeList, String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
