@@ -40,7 +40,7 @@
                                     </div>
                                 </form>
                                 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-                                <div class="table-gp">
+                                <div class="table-responsive">
                                     <div id="personPagDiv"></div>
                                     <table class="table">
                                         <thead style="align-content: center">
@@ -65,8 +65,10 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </table>
-                                    <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
+
+                                <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+
                             </div>
                         </div>
                     </div>

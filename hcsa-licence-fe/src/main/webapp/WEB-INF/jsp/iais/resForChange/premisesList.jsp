@@ -40,41 +40,43 @@
   </div>
   <div class="row col-xs-11 " style="margin-left: 10%">
     <div class="col-xs-12">
-      <div class="table-gp">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
+      <div class="table-responsive">
         <table class="table col-xs-12 col-md-12 col-lg-12" style="margin-right: 20%">
           <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
           <thead>
-            <tr>
+          <tr>
             <th style="width: 40%">Address</th>
             <th style="width: 20%">Type</th>
             <th style="width: 40%">Licence</th>
-            </tr>
+          </tr>
           </thead>
-        <tbody>
-      <c:forEach var="prem" items="${PremisesListDtos}" varStatus="status">
-        <tr class="premTr">
-          <td>
-            <a  class="premAddr"><c:out value="${prem.address}"/></a>
-            <label ><em class="fa fa-pencil-square-o"></em></label>
-            <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
-            <input type="hidden" class="licId" name="licId${status.index}" value="<iais:mask name="licId${status.index}" value="${prem.licenceId}" />" />
-            <input type="hidden" class="premisesId" name="premisesId${status.index}" value="<iais:mask name="premisesId${status.index}" value="${prem.premisesId}"/>" />
-          </td>
-          <td>
-            <c:if test="${prem.premisesType=='ONSITE'}"><c:out value="On-site"/></c:if>
-            <c:if test="${prem.premisesType=='CONVEYANCE'}"><c:out value="Conveyance"/></c:if>
-            <c:if test="${prem.premisesType=='OFFSITE'}"><c:out value="Off-site"/></c:if>
-          </td>
-          <td><c:out value="${prem.svcId}"/></td>
-        </tr>
-      </c:forEach>
-      <c:if test="${ACK018!=null}">
-        <tr><td>${ACK018}</td></tr>
-      </c:if>
-        </tbody>
+          <tbody>
+          <c:forEach var="prem" items="${PremisesListDtos}" varStatus="status">
+            <tr class="premTr">
+              <td>
+                <a  class="premAddr"><c:out value="${prem.address}"/></a>
+                <label ><em class="fa fa-pencil-square-o"></em></label>
+                <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
+                <input type="hidden" class="licId" name="licId${status.index}" value="<iais:mask name="licId${status.index}" value="${prem.licenceId}" />" />
+                <input type="hidden" class="premisesId" name="premisesId${status.index}" value="<iais:mask name="premisesId${status.index}" value="${prem.premisesId}"/>" />
+              </td>
+              <td>
+                <c:if test="${prem.premisesType=='ONSITE'}"><c:out value="On-site"/></c:if>
+                <c:if test="${prem.premisesType=='CONVEYANCE'}"><c:out value="Conveyance"/></c:if>
+                <c:if test="${prem.premisesType=='OFFSITE'}"><c:out value="Off-site"/></c:if>
+              </td>
+              <td><c:out value="${prem.svcId}"/></td>
+            </tr>
+          </c:forEach>
+          <c:if test="${ACK018!=null}">
+            <tr><td>${ACK018}</td></tr>
+          </c:if>
+          </tbody>
         </table>
       </div>
+
+
     </div>
   </div>
 
