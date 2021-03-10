@@ -33,7 +33,7 @@
 
         <div class="form-group">
             <div class="col-xs-5 col-md-10">
-                <iais:field value="Operation" required="false"></iais:field>
+                <iais:field value="Operation" required="true"></iais:field>
                 <div class="col-xs-5 col-md-5">
                     <iais:select name="operation" id="operation" value="${param.operation}"
                                  options="operationValueTypeSelect" firstOption="Please Select" needSort="true"></iais:select>

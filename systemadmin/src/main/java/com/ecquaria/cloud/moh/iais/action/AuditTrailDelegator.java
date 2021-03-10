@@ -296,6 +296,7 @@ public class AuditTrailDelegator {
 
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
         if(StringUtil.isNotEmpty(operation)){
+            //@Min(value = 1, message = "GENERAL_ERR0006", profiles = "query")
             queryDto.setOperation(Integer.parseInt(operation));
         }
 
