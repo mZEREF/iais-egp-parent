@@ -44,7 +44,7 @@ public class ComFileRepoClient {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-        if (IaisCommonUtils.isEmpty(files)) {
+        if (!IaisCommonUtils.isEmpty(files)) {
             for (File file : files) {
                 HttpHeaders fileHeader = new HttpHeaders();
                 try (FileInputStream fis = new FileInputStream(file);
