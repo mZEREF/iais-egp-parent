@@ -555,6 +555,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), compTask.getTaskKey(), null,
                 null, HcsaConsts.ROUTING_STAGE_INS, taskDto.getWkGrpId(), null);
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
+        //send email
+        try {
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), stageKey);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     @Override
