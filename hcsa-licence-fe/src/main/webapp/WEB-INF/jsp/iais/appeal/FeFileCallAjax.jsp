@@ -27,6 +27,7 @@
         )
     }
     function ajaxCallUpload(idForm,fileAppendId){
+        showWaiting();
         $("#fileAppendId").val(fileAppendId);
         $("#uploadFormId").val(idForm);
         var reloadIndex =  $("#reloadIndex").val();
@@ -42,15 +43,21 @@
             success: function (data) {
                 if(data != null && data.description != null){
                     if(reloadIndex != -1){
+                        $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
                         deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
                         $("#reloadIndex").val(-1);
+                        $("#"+fileAppendId+"Div"+reloadIndex+"Copy").after(data.description);
+                        deleteFileFeDiv("#"+fileAppendId+"Div"+reloadIndex+"Copy");
+                    }else {
+                        $("#"+fileAppendId+"ShowId").append(data.description);
                     }
-                    $("#"+fileAppendId+"ShowId").append(data.description);
+
                 }
             },
             error: function (msg) {
                 alert("error");
             }
         });
+        dismissWaiting();
     }
 </script>
