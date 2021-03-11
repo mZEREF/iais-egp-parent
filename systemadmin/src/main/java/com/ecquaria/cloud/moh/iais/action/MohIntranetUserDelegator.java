@@ -600,12 +600,14 @@ public class MohIntranetUserDelegator {
                         }
                     }
                 }
-                intranetUserService.removeRole(orgUserRoleDtos);
-                intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
 
-                //remove group
-                if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                    intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                Boolean isSuccessEgp = intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
+                if(isSuccessEgp){
+                    intranetUserService.removeRole(orgUserRoleDtos);
+                    //remove group
+                    if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+                        intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                    }
                 }
             }
         }

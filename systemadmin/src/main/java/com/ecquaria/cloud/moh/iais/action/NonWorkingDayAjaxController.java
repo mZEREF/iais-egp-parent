@@ -67,17 +67,18 @@ public class NonWorkingDayAjaxController {
                 int am = "Y".equals(amAvailability) ? 0x1 : 0x0;
                 int pm = "Y".equals(pmAvailability) ? 0x1 : 0x0;
 
-                nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
-                nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-
                 if ((am & 0x1) == 1) {
+                    nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
                     nonWorkingDateDto.setAm(true);
                 } else {
+                    nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
                     nonWorkingDateDto.setAm(false);
                 }
                 if ((pm & 0x1) == 1) {
+                    nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
                     nonWorkingDateDto.setPm(true);
                 } else {
+                    nonWorkingDateDto.setEndAt(Time.valueOf(AM_END));
                     nonWorkingDateDto.setPm(false);
                 }
 

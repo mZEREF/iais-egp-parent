@@ -7,7 +7,9 @@
     <div class="container">
         <div class="navigation-gp">
             <div class="row">
+                <c:if test="${!isPopApplicationView}">
                 <%@ include file="../../common/dashboardDropDown.jsp" %>
+                </c:if>
                 <div class="col-xs-12">
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">
