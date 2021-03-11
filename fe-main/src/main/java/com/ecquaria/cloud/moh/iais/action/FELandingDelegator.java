@@ -11,11 +11,12 @@ import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.process5.ProcessCacheHelper;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: yichen
@@ -51,7 +52,7 @@ public class FELandingDelegator {
 		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 		String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
 		UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-		if (us != null && "Active".equals(us.getStatus()) && lc != null
+		if (us != null && lc != null && "Active".equals(us.getStatus())
 				&& AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
