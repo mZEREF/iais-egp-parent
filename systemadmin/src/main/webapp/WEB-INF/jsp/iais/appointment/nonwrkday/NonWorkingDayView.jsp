@@ -208,12 +208,12 @@
       console.log(dayid)
       var pm ;
       var am ;
-      if($('#am'+id).attr('checked')){
+      if(document.getElementById('am' + id).checked){
         am = 'Y';
       }else{
         am = 'N';
       }
-      if($('#pm'+id).attr('checked')){
+      if(document.getElementById('pm' + id).checked){
         pm = 'Y';
       }else{
         pm = 'N';

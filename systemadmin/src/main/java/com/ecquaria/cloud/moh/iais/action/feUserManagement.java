@@ -137,6 +137,7 @@ public class feUserManagement {
             if (!StringUtil.isEmpty(item)){
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                orgUserDto.setIdNumber(orgUserDto.getIdentityNo());
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
