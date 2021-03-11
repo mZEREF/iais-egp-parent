@@ -378,16 +378,14 @@ public class LicenceViewServiceDelegator {
             String licenseeId =applicationViewDto.getApplicationGroupDto().getLicenseeId();
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                 String premisesType = appGrpPremisesDto.getPremisesType();
-                if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
-                    String checkhciName = appGrpPremisesDto.getHciName();
-                    if(checkhciName!=null){
-                        List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(checkhciName, licenseeId).getEntity();
-                        for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
-                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
-                            applicationViewHciNameDto.setLicensee(licenseeDto.getName());
-                        }
-                        appGrpPremisesDto.setApplicationViewHciNameDtos(applicationViewHciNameDtos);
+                String checkhciName = appGrpPremisesDto.getHciName();
+                if(checkhciName!=null){
+                    List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(checkhciName, licenseeId,premisesType).getEntity();
+                    for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
+                        applicationViewHciNameDto.setLicensee(licenseeDto.getName());
                     }
+                    appGrpPremisesDto.setApplicationViewHciNameDtos(applicationViewHciNameDtos);
                 }
                 Map<String,String> map=new HashMap<>(5);
                 String blkNo = appGrpPremisesDto.getBlkNo();

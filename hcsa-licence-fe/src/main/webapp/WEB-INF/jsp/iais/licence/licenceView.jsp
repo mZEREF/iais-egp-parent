@@ -9,7 +9,10 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../common/dashboard.jsp" %>
+<c:if test="${appeal!='appeal'}">
+  <%@ include file="../common/dashboard.jsp" %>
+</c:if>
+
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
@@ -59,7 +62,9 @@
               <div class="application-tab-footer">
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                      <a id = "Back" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic" ><em class="fa fa-angle-left"></em> Back</a>
+                      <c:if test="${appeal!='appeal'}">
+                        <a id = "Back" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic" ><em class="fa fa-angle-left"></em> Back</a>
+                      </c:if>
                   </div>
                   <div class="col-xs-12 col-sm-3">
                   </div>

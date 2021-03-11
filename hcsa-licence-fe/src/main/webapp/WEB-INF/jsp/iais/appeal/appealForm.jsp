@@ -26,7 +26,8 @@
 
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-        <input type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >
+        <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+        <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
         <input type="hidden" value="${id}" id="licenceId">
         <input type="hidden" value="${type}" id="parametertype">
         <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
@@ -122,7 +123,17 @@
             </div>
           </div>
           <div class="col-xs-12" >
-            <span  name="selectedFileShowId" id="selectedFileShowId"></span>
+            <span  name="selectedFileShowId" id="selectedFileShowId">
+            <c:forEach items="${pageShowFiles}" var="pageShowFile">
+              <div id="${pageShowFile.fileMapId}">
+                 ${pageShowFile.fileName}
+              <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',0);">
+                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',0,'mainForm');">
+              ReUpload</button>
+              </div>
+
+            </c:forEach>
+            </span>
           </div>
         </div>
         <div class="col-xs-12">
@@ -223,7 +234,7 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-          /*    ajaxCallUpload('mainForm',"selectedFile");*/
+            /*  ajaxCallUpload('mainForm',"selectedFile");*/
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }
@@ -232,9 +243,12 @@ $('#submit').click(function () {
     function link(){
       var type = $('#parametertype').val();
       if(type=='application'){
-          showPopupWindow("MohFeApplicationView?appNo="+$('#appealingFor').val());
-      }else if(type=="licence"){
-          showPopupWindow("MohLicenceView?licenceId="+$('#licenceId').val());
+         var v= $('.appMaskNo').html();
+          showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo="+v);
+      }else {
+          if (type == "licence") {
+              showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohLicenceView?licenceId=" + $('#licenceId').val() + "&appeal=appeal");
+          }
       }
     }
      var a=function ajax(){

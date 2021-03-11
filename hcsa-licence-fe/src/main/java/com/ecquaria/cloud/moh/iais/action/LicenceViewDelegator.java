@@ -65,6 +65,8 @@ public class LicenceViewDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
+        String appeal = bpc.request.getParameter("appeal");
+        bpc.request.setAttribute("appeal",appeal);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
