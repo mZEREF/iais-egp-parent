@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.util;
 
 
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +40,9 @@ public class WorkDayCalculateUtil {
             }else {
                 for (Date holiday:holidays
                      ) {
-                    if (holiday.equals(calendar.getTime())){
+                    String holidayStr= Formatter.formatDateTime(holiday, Formatter.DATE);
+                    String calendarStr= Formatter.formatDateTime(calendar.getTime(), Formatter.DATE);
+                    if (holidayStr.equals(calendarStr)){
                         i--;
                     }
                 }
