@@ -12,13 +12,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -32,19 +32,24 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * FeeAndPaymentGIROPayeeDelegator
@@ -86,6 +91,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"hciName",null);
         ParamUtil.setSessionAttr(request,"uenNo",null);
         ParamUtil.setSessionAttr(request,"hciSession",null);
+        ParamUtil.setSessionAttr(bpc.request, "valid", null);
 
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
@@ -214,6 +220,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void doSelect(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request,"giroAcctFileDto",new BlastManagementDto());
+
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
         if(orgPremResult==null){
             String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
@@ -230,6 +238,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
              orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
+
         }
 
     }
@@ -273,106 +282,93 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(StringUtil.isEmpty(cusRefNo)){
             errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
         }
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
-        String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
-        GiroAccountFormDocDto doc= (GiroAccountFormDocDto) ParamUtil.getSessionAttr(request,"docDto");
-        if(doc==null){
-            doc=new GiroAccountFormDocDto();
-        }
-        if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-            file.getFileItem().setFieldName("selectedFile");
-            long size = file.getSize() / 1024;
-            doc.setDocName(file.getOriginalFilename());
-            doc.setDocSize(Integer.valueOf(String.valueOf(size)));
-            String fileRepoGuid = serviceConfigService.saveFiles(file);
-            doc.setFileRepoId(fileRepoGuid);
-            doc.setPassDocValidate(false);
-        }else if("N".equals(commDelFlag)){
-            doc.setDocName(null);
-            doc.setDocSize(null);
-            doc.setFileRepoId(null);
-            doc.setPassDocValidate(false);
-        }
-        doc.setPassDocValidate(true);
-        String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
-        String commValidFlag = ParamUtil.getString(mulReq, "commValidFlag");
-        List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
-        Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
-        if(("N".equals(commValidFlag)||doc.getDocSize()==null)){
 
-            if(file == null || file.getSize() == 0){
-                doc.setPassDocValidate(false);
-                errorMap.put("UploadFile",errDocument);
-            }else{
-                Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,fileSize);
-                //name size
-                int fileNameLen= Objects.requireNonNull(file.getOriginalFilename()).length();
-                if(fileNameLen>100){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile", MessageUtil.getMessageDesc("GENERAL_ERR0022"));
-                }
-                //file size
-                if(!booleanMap.get("fileSize")){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
-                }
-                //type
-                if(!booleanMap.get("fileType")){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
-                }
-            }
+        //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        //CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
+        //String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
+        List<GiroAccountFormDocDto> docs= (List<GiroAccountFormDocDto>) ParamUtil.getSessionAttr(request,"docDto");
+        if(docs==null){
+            docs=IaisCommonUtils.genNewArrayList();
         }
-        if(("Y".equals(commValidFlag)&&doc.getDocSize()!=null)||(file == null || file.getSize() == 0)&& "Y".equals(commDelFlag)){
-            Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
-            if (doc.getDocSize() != null) {
-                long size = doc.getDocSize();
-                String filename = doc.getDocName();
-                String fileType = filename.substring(filename.lastIndexOf(46) + 1);
-                String s = fileType.toUpperCase();
-                if (!fileTypes.contains(s)) {
-                    map.put("fileType", Boolean.FALSE);
-                } else {
-                    map.put("fileType", Boolean.TRUE);
-                }
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
+        if(blastManagementDto != null){
+            if(!IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
+                for (AttachmentDto fileBit:blastManagementDto.getAttachmentDtos()
+                ) {
+                    try {
+                        MultipartFile file = toMultipartFile(fileBit.getDocName(),fileBit.getDocName(), fileBit.getData());
+                        GiroAccountFormDocDto doc =new GiroAccountFormDocDto();
+                        if( file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+                            long size = file.getSize() / 1024;
+                            doc.setDocName(file.getOriginalFilename());
+                            doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+                            String fileRepoGuid = serviceConfigService.saveFiles(file);
+                            doc.setFileRepoId(fileRepoGuid);
+                            doc.setPassDocValidate(false);
+                        }
+                        doc.setPassDocValidate(true);
+                        List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
+                        Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
+                        if((doc.getDocSize()!=null)){
+                            Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+                            if (doc.getDocSize() != null) {
+                                long size = doc.getDocSize();
+                                String filename = doc.getDocName();
+                                String fileType = filename.substring(filename.lastIndexOf(46) + 1);
+                                String s = fileType.toUpperCase();
+                                if (!fileTypes.contains(s)) {
+                                    map.put("fileType", Boolean.FALSE);
+                                } else {
+                                    map.put("fileType", Boolean.TRUE);
+                                }
 
-                if (size > fileSize) {
-                    map.put("fileSize", Boolean.FALSE);
-                } else {
-                    map.put("fileSize", Boolean.TRUE);
+                                if (size > fileSize) {
+                                    map.put("fileSize", Boolean.FALSE);
+                                } else {
+                                    map.put("fileSize", Boolean.TRUE);
+                                }
+                                //size
+                                if(!map.get("fileSize")){
+                                    doc.setPassDocValidate(false);
+                                    errorMap.put("UploadFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
+                                }
+                                //type
+                                if(!map.get("fileType")){
+                                    doc.setPassDocValidate(false);
+                                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
+                                }
+                                if(filename.length()>100){
+                                    doc.setPassDocValidate(false);
+                                    errorMap.put("UploadFile", MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                                }
+                            }
+                        }
+                        docs.add(doc);
+
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                    }
                 }
-                //size
-                if(!map.get("fileSize")){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
-                }
-                //type
-                if(!map.get("fileType")){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile",MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType"));
-                }
-                if(filename.length()>100){
-                    doc.setPassDocValidate(false);
-                    errorMap.put("UploadFile", MessageUtil.getMessageDesc("GENERAL_ERR0022"));
-                }
+            }else {
+                String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","GIRO Form","field");
+                errorMap.put("UploadFile", errDocument);
+
             }
         }
 
-
-
-
-
-        ParamUtil.setSessionAttr(request,"docDto",doc);
+        ParamUtil.setSessionAttr(request,"docDto", (Serializable) docs);
 
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            ParamUtil.setSessionAttr(bpc.request, "valid", "N");
 
+        }else {
+            ParamUtil.setSessionAttr(bpc.request, "valid", "Y");
         }
 
         List<GiroAccountFormDocDto> giroAccountFormDocDtoList=IaisCommonUtils.genNewArrayList();
-        giroAccountFormDocDtoList.add(doc);
+        giroAccountFormDocDtoList.addAll(docs);
 
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
@@ -396,7 +392,22 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
 
     }
-    
+
+    public static MultipartFile toMultipartFile(String fieldName, String fileName, byte[] fileByteArray) throws Exception {
+         DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+         String contentType = new MimetypesFileTypeMap().getContentType(fileName);
+         FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
+         try (
+         InputStream inputStream = new ByteArrayInputStream(fileByteArray);
+         OutputStream outputStream = fileItem.getOutputStream()
+         ) {
+             FileCopyUtils.copy(inputStream, outputStream);
+         } catch (Exception e) {
+             throw e;
+         }
+        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+        return multipartFile;
+    }
 
     public void preView(BaseProcessClass bpc) {
 
