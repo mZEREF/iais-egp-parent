@@ -168,8 +168,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
 
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
-        OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
-        if (organizationLicDto != null) {
+        try{
+            OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+            try {
+                if (StringUtil.isEmpty(organizationLicDto.getUenNo())) {
+                    ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
+                } else {
+                    ParamUtil.setSessionAttr(request, "registeredWithACRA", "Yes");
+                }
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
             try {
                 organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
             } catch (NullPointerException e) {
@@ -208,6 +217,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     }
                 }
             }
+
+            ParamUtil.setSessionAttr(request, "organizationLicDto", organizationLicDto);
+        }catch (Exception e){
+            log.error("organizationLicDto is null");
         }
         List<PersonnelsDto> personnelsDto = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
 
@@ -246,21 +259,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             Set<String> appIds = IaisCommonUtils.genNewHashSet();
             complianceHistoryDtos = complianceHistoryDtosByLicId(complianceHistoryDtos, licenceId, appIds);
             ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
-            try {
-                if (StringUtil.isEmpty(organizationLicDto.getUenNo())) {
-                    ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
-                } else {
-                    ParamUtil.setSessionAttr(request, "registeredWithACRA", "Yes");
-                }
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
-            }
+
             complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
             ParamUtil.setSessionAttr(request, "complianceHistoryDtos", (Serializable) complianceHistoryDtos);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        ParamUtil.setSessionAttr(request, "organizationLicDto", organizationLicDto);
         ParamUtil.setSessionAttr(request, "personnelsDto", (Serializable) personnelsDto);
     }
 
