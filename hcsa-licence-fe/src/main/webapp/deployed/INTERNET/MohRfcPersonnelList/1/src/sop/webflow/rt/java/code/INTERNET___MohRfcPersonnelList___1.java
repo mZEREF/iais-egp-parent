@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
-	
+
 	private static final String DELEGATOR ="MohRequestForChangeMenuDelegator";
 
 	public void preparePersonnelList_OnStepProcess_0() throws Exception {
@@ -33,11 +33,11 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPersonnelEdit", this);
 	}
 
-	public void init_OnStepProcess_0 () throws Exception { 
+	public void init_OnStepProcess_0 () throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preparePersonnel", this);
-	} 
+	}
 
-	public void controlSwitch_OnStepProcess_0 () throws Exception { 
+	public void controlSwitch_OnStepProcess_0 () throws Exception {
 		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
 
@@ -65,11 +65,11 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preparePersonnelBank", this);
 	}
 
-	public void dash_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "personnelDashboard", this);
+	public void jumpBank_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "jumpPersonnelBank", this);
 	}
 
-	public void controlSwitch_OnStepProcess_1() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "paymentSwitch", this);
+	public void dash_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "personnelDashboard", this);
 	}
 }
