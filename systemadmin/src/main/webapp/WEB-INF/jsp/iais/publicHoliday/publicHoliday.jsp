@@ -13,6 +13,15 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<style type="text/css">
+    .btn.btn-md {
+        font-size: .986rem;
+        font-weight: 600;
+        padding: 10px 25px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <div class="main-content">
     <form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -99,7 +108,7 @@
                                                     <td><c:out value="${item.nonWorking}"/></td>
                                                     <td><iais:code code="${item.phCode}"></iais:code></td>
                                                     <td><iais:code code="${item.status}"></iais:code></td>
-                                                    <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
+                                                    <td><a class="editHoliday btn btn-secondary btn-md" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:otherwise>
