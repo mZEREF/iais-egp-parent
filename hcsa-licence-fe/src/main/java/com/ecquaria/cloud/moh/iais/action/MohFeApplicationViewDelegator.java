@@ -23,5 +23,6 @@ public class MohFeApplicationViewDelegator {
 //        NewApplicationDelegator newApplicationDelegator = new NewApplicationDelegator();
         NewApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(NewApplicationDelegator.class);
         newApplicationDelegator.inboxToPreview(bpc);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", true);
     }
 }

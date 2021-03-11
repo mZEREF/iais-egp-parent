@@ -17,9 +17,11 @@
     <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
         <div class="container">
             <div class="navigation-gp">
+                <c:if test="${!isPopApplicationView}">
                 <div class="row">
                     <%@ include file="../common/dashboardDropDown.jsp" %>
                 </div>
+                </c:if>
                 <div class="row">
                     <div class="col-xs-12" style="padding-left: 95px;">
                         <h1>Cessation Form</h1>
@@ -29,12 +31,14 @@
         </div>
     </div>
 </c:if>
-<c:if test="${applicationDto.applicationType == 'APTY008'}">
-    <%@include file="../newApplication/cessationViewApp.jsp" %>
-</c:if>
-<c:if test="${applicationDto.applicationType != 'APTY008'}">
-    <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
-</c:if>
+
+    <c:if test="${applicationDto.applicationType == 'APTY008'}">
+        <%@include file="../newApplication/cessationViewApp.jsp" %>
+    </c:if>
+    <c:if test="${applicationDto.applicationType != 'APTY008'}">
+        <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
+    </c:if>
+
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -59,14 +63,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="container">
-                                                <div class="col-xs-12 col-md-6 text-left">
-                                                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
-                                                            class="fa fa-angle-left"></em> Back</a>
+                                        <c:if test="${!isPopApplicationView}">
+                                            <div class="row">
+                                                <div class="container">
+                                                    <div class="col-xs-12 col-md-6 text-left">
+                                                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                                                class="fa fa-angle-left"></em> Back</a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
