@@ -123,12 +123,21 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public void removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+    public Boolean removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+        Boolean flag = Boolean.FALSE;
         if (!IaisCommonUtils.isEmpty(roleIds)) {
             for (String roleId : roleIds) {
-                egpUserClient.deleteUerRoleIds(userDomain, userId, roleId);
+                try {
+                    flag = egpUserClient.deleteUerRoleIds(userDomain, userId, roleId).getEntity();
+                    if (!flag) {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return Boolean.FALSE;
+                }
             }
         }
+        return flag;
     }
 
 
