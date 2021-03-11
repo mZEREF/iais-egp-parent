@@ -6,10 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,12 +25,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * ComFileRepoClient
@@ -44,17 +44,26 @@ public class ComFileRepoClient {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-        if (!IaisCommonUtils.isEmpty(files)) {
+        if (IaisCommonUtils.isEmpty(files)) {
             for (File file : files) {
                 HttpHeaders fileHeader = new HttpHeaders();
-                try (FileInputStream fis = new FileInputStream(file)) {
-                    InputStreamResource fileContentAsResource = new InputStreamResource(fis) {
+                try (FileInputStream fis = new FileInputStream(file);
+                     ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    byte[] con = new byte[1024];
+                    int count = fis.read(con);
+                    while (count != -1) {
+                        baos.write(con, 0, count);
+                        count = fis.read(con);
+                    }
+
+                    byte[] content =  baos.toByteArray();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content){
                         @Override
                         public String getFilename() {
                             return file.getName();
                         }
                     };
-                    HttpEntity<InputStreamResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
                     multipartRequest.add("selectedFiles", fileEnt);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
