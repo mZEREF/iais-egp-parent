@@ -465,11 +465,12 @@ public class CessationApplicationBeDelegator {
             }
         }
         if ("no".equals(patRadio)) {
+            String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
             if (StringUtil.isEmpty(patNoRemarks)) {
-                errorMap.put(i + PATNOREMARKS + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+                errorMap.put(i + PATNOREMARKS + j, genErr006);
             }
             if (StringUtil.isEmpty(patNoConfirm)) {
-                errorMap.put(i + "patNoConfirm" + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+                errorMap.put(i + "patNoConfirm" + j, genErr006);
             }
         }
         //max length
