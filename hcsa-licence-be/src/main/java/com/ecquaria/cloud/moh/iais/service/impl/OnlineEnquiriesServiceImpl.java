@@ -170,6 +170,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         try{
             OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+            ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
             try {
                 if (StringUtil.isEmpty(organizationLicDto.getUenNo())) {
                     ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
@@ -258,7 +259,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             List<ComplianceHistoryDto> complianceHistoryDtos = IaisCommonUtils.genNewArrayList();
             Set<String> appIds = IaisCommonUtils.genNewHashSet();
             complianceHistoryDtos = complianceHistoryDtosByLicId(complianceHistoryDtos, licenceId, appIds);
-            ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
 
             complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
             ParamUtil.setSessionAttr(request, "complianceHistoryDtos", (Serializable) complianceHistoryDtos);
