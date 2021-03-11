@@ -115,8 +115,8 @@
                                     </iais:row>
                                 </iais:section>
                                 <iais:action style="text-align:right;">
-                                    <button class="btn btn-primary" type="button"  onclick="javascript:doBack()">Back</button>
-                                    <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <button  class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                                 </iais:action>
                             </div>
                         </div>
