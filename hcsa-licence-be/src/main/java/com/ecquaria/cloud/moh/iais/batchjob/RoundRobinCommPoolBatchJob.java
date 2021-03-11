@@ -175,10 +175,11 @@ public class RoundRobinCommPoolBatchJob {
         List<TaskDto> taskDtoList = taskService.getTaskDtoByDate(roundDate,false);
 
         int rountingBackupDay = systemParamConfig.getRountingBackupDay();
-        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob day -- >:" +rountingBackupDay));
+        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob rountingBackupDay -- >:" +rountingBackupDay));
         List<Date> holidays = appointmentClient.getHolidays().getEntity();
         Date rountingDate= WorkDayCalculateUtil.getDate(new Date(),-rountingBackupDay,holidays);
         String rountingDateStr = Formatter.formatDateTime(rountingDate,AppConsts.DEFAULT_DATE_FORMAT);
+        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob rountingDateStr -- >:" +rountingDateStr));
         List<TaskDto> routingTaskDtoList = taskService.getTaskDtoByDate(rountingDateStr,true);
 
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
