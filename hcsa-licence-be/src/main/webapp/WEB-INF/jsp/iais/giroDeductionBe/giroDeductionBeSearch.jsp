@@ -67,13 +67,13 @@
                     <iais:row>
                       <iais:field value="Payment Description"/>
                       <iais:value width="18">
-                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
+                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['paymentDescription']}"></c:out></textarea>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hci_address']}" />
+                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hci_name']}" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
@@ -107,7 +107,7 @@
                     <c:choose>
                       <c:when test="${empty giroDedSearchResult.rows}">
                         <tr>
-                          <td colspan="7">
+                          <td colspan="9">
                             <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                           </td>
                         </tr>
