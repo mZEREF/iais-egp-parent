@@ -91,7 +91,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"hciName",null);
         ParamUtil.setSessionAttr(request,"uenNo",null);
         ParamUtil.setSessionAttr(request,"hciSession",null);
-        ParamUtil.setSessionAttr(bpc.request, "valid", null);
+        ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
 
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
@@ -181,7 +181,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"bankName",null);
         ParamUtil.setSessionAttr(request,"bankAccountNo",null);
         ParamUtil.setSessionAttr(request,"cusRefNo",null);
-        ParamUtil.setSessionAttr(request,"docDto",null);
         ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
         String hciCode= ParamUtil.getString(request,"hciCode");
         String hciName =ParamUtil.getString(request,"hciName");
@@ -214,14 +213,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
         ParamUtil.setRequestAttr(request,"orgPremParam",orgPremParam);
         ParamUtil.setRequestAttr(request,"orgPremResult",orgPremResult);
+        ParamUtil.setSessionAttr(request,"giroAcctFileDto",new BlastManagementDto());
     }
     public void reSearchOrg(BaseProcessClass bpc) {
 
     }
     public void doSelect(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"giroAcctFileDto",new BlastManagementDto());
-
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult= (SearchResult<OrganizationPremisesViewQueryDto>) ParamUtil.getSessionAttr(request,"hciSession");
         if(orgPremResult==null){
             String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
@@ -286,10 +286,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
         //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         //CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
         //String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
-        List<GiroAccountFormDocDto> docs= (List<GiroAccountFormDocDto>) ParamUtil.getSessionAttr(request,"docDto");
-        if(docs==null){
-            docs=IaisCommonUtils.genNewArrayList();
-        }
+        List<GiroAccountFormDocDto> docs= IaisCommonUtils.genNewArrayList();
+
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null){
             if(!IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
@@ -304,9 +302,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
                             doc.setDocSize(Integer.valueOf(String.valueOf(size)));
                             String fileRepoGuid = serviceConfigService.saveFiles(file);
                             doc.setFileRepoId(fileRepoGuid);
-                            doc.setPassDocValidate(false);
+                            fileBit.setId(fileRepoGuid);
                         }
-                        doc.setPassDocValidate(true);
                         List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
                         Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
                         if((doc.getDocSize()!=null)){
@@ -356,15 +353,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
             }
         }
 
-        ParamUtil.setSessionAttr(request,"docDto", (Serializable) docs);
-
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
-            ParamUtil.setSessionAttr(bpc.request, "valid", "N");
-
-        }else {
-            ParamUtil.setSessionAttr(bpc.request, "valid", "Y");
         }
 
         List<GiroAccountFormDocDto> giroAccountFormDocDtoList=IaisCommonUtils.genNewArrayList();
@@ -425,6 +416,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
 
         eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
     }
 
     private void eicSyncGiroAcctToFe(String refNo, List<GiroAccountInfoDto> giroAccountInfoDtoList1) {

@@ -13,10 +13,20 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <div class="center-content">
             <div class="intranet-content">
                 <div class="row form-horizontal">
@@ -154,15 +164,15 @@
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
         console.log(error)
         if (error == "N"){
-            $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_UploadFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
             $("#selectFile").val('');
             $(".filename").html("");
         }else if(error == "Y"){
             if("Y" == validateAllFileSize()){
                 callAjaxUploadFile();
-                $('#error_fileUploadError').html('');
+                $('#error_UploadFile').html('');
             }else{
-                $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+                $('#error_UploadFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
                 $("#selectFile").val('');
             }
         }
