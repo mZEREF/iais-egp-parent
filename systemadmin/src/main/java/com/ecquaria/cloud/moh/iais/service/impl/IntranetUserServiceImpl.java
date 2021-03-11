@@ -95,9 +95,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<LicenseeDto> findLicenseesFe(){
+    public List<LicenseeDto> findLicenseesFe() {
         return intranetUserClient.findLicenseesFe().getEntity();
     }
+
     @Override
     public OrgUserDto findIntranetUserByUserId(String userId) {
         OrgUserDto orgUserDto = null;
@@ -145,17 +146,26 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public void removeRoleByAccount(String accountId){
+    public void removeRoleByAccount(String accountId) {
         intranetUserClient.removeRoleByAccount(accountId);
     }
 
     @Override
-    public void removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+    public Boolean removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+        Boolean flag = Boolean.FALSE;
         if (!IaisCommonUtils.isEmpty(roleIds)) {
             for (String roleId : roleIds) {
-                egpUserClient.deleteUerRoleIds(userDomain, userId, roleId);
+                try {
+                    flag = egpUserClient.deleteUerRoleIds(userDomain, userId, roleId).getEntity();
+                    if (!flag) {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return Boolean.FALSE;
+                }
             }
         }
+        return flag;
     }
 
 
@@ -186,7 +196,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<UserGroupCorrelationDto> getUserGroupCorrelationDtos(String userId, List<String> grpIds,int isLeadForGroup) {
+    public List<UserGroupCorrelationDto> getUserGroupCorrelationDtos(String userId, List<String> grpIds, int isLeadForGroup) {
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(grpIds)) {
             UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
@@ -325,7 +335,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Element root = document.getRootElement();
             list = root.elements();
             if (list != null) {
-                Element elementCheck = (Element)list.get(0);
+                Element elementCheck = (Element) list.get(0);
                 elementCheck.element("roleId").getText();
             }
             //ele

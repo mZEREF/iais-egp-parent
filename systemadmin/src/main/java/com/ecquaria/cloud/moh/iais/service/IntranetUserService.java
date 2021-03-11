@@ -38,7 +38,6 @@ public interface IntranetUserService {
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRoleByAccount(String accountId);
-    void removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
     String getWrkGrpById(String groupId);
@@ -47,6 +46,7 @@ public interface IntranetUserService {
     List<String> getRoleIdByUserId(String userId);
 
     String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos);
+    Boolean removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     List<OrgUserRoleDto> retrieveRolesByuserAccId (String userAccId);
     List<OrgUserRoleDto> getOrgUserRoleDtoById(List<String> ids);
     List<Role> getRolesByDomain(String domain);
