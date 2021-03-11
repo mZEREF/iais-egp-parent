@@ -1278,6 +1278,7 @@ public class InterInboxDelegator {
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", false);
         if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
