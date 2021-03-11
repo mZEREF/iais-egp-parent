@@ -89,9 +89,11 @@ public class HcsaFileAjaxController {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
+            ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
             }
         }
         log.info("-----------deleteFeCallFile end------------");
+
         return AppConsts.YES;
     }
 }
