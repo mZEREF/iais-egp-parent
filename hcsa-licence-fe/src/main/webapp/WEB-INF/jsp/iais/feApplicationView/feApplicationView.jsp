@@ -9,7 +9,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-internet"/>
+<webui:setLayout name="iais-blank"/>
 <c:if test="${applicationDto.applicationType == 'APTY008'}">
     <%
         String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
