@@ -245,6 +245,7 @@
     });
 
     $('#BACK').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });

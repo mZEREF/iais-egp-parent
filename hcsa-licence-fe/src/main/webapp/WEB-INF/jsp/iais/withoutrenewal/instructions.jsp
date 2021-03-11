@@ -88,6 +88,7 @@
 <iais:confirm msg="GENERAL_ERR0043"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 <script>
     $('#proceed').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('doInstructions');
         $('#InstructionsForm').submit();
     });
