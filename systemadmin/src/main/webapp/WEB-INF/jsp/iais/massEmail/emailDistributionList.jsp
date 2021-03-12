@@ -157,7 +157,7 @@
         <input hidden id="editDistribution" name="editDistribution" value="">
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
-        <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
@@ -240,7 +240,7 @@ function edit(id) {
                 $("#editDistribution").val(id);
                 submit("edit");
             }else{
-                $('#support').find("span").eq(1).html("The distribution list cannot be amended as it is still in used by other mass email or sms blast.");
+                $('#support').find("span").eq(1).html("Please select record for deletion.");
                 $('#support').modal('show');
             }
         }
