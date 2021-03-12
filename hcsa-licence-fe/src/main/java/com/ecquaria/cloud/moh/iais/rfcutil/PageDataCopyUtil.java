@@ -70,8 +70,9 @@ public class PageDataCopyUtil {
                 copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
             }
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-
+            copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
             copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
         }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());

@@ -75,7 +75,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-md-2" style="padding-top: 15px" >Service Sub-Type &nbsp;</label>
+          <label class="col-md-2" style="padding-top: 15px">Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
           </div>
@@ -83,7 +83,7 @@
 
         <iais:action style="text-align:center;">
           <div class="text-right">
-            <a class="btn btn-secondary" id="crud_clear_button" href="#">Clear</a>
+            <a class="btn btn-secondary" id="crud_clear_button" onclick="javascript: $('#svcSubType').val('')" href="#">Clear</a>
             <a class="btn btn-primary" id="crud_search_button" value="doSearch" href="#">Search</a>
           </div>
         </iais:action>
