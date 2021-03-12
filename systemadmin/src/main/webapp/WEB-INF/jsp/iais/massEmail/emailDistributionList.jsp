@@ -126,7 +126,7 @@
                                                     <p><c:out value="${item.mode}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><fmt:formatDate value="${item.createDt}" pattern="MM/dd/yyyy"/></p>
+                                                    <p><fmt:formatDate value="${item.createDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.createBy}"/></p>
