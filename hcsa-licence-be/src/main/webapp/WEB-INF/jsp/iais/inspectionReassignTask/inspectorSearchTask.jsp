@@ -100,8 +100,8 @@
                       </iais:row>
                     </div>
                     <iais:action style="text-align:right;">
-                      <button class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
-                      <button class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                      <button class="btn btn-secondary" type="button" onclick="javascript:doReassignSearchTaskClear()">Clear</button>
+                      <button class="btn btn-primary" type="button" onclick="javascript:doReassignSearchTaskSearch()">Search</button>
                     </iais:action>
                   </iais:section>
 
@@ -168,12 +168,12 @@
 </div>
 <script type="text/javascript">
 
-  function doInspectorSearchTaskAssign(taskId) {
+  function doReassignTaskAssign(taskId) {
     $("#taskId").val(taskId);
-    inspectorSearchTaskSubmit('assign');
+      resaaignTaskSubmit('assign');
   }
 
-  function doInspectorSearchTaskClear() {
+  function doReassignSearchTaskClear() {
     $('input[name="application_no"]').val("");
     $('#application_type option:first').prop('selected', 'selected');
     $('#application_status option:first').prop('selected', 'selected');
@@ -184,28 +184,28 @@
     $('input[name="hci_address"]').val("");
   }
 
-  function inspectorSearchTaskSubmit(action){
+  function resaaignTaskSubmit(action){
     $("[name='InspectionSupSearchSwitchType']").val(action);
     var mainPoolForm = document.getElementById('mainSupForm');
     mainPoolForm.submit();
   }
 
-  function doInspectorSearchTaskSearch() {
-    inspectorSearchTaskSubmit('search');
+  function doReassignSearchTaskSearch() {
+      resaaignTaskSubmit('search');
   }
 
   $("#supervisorPoolRole").change(function() {
-    doInspectorSearchTaskSearch();
+      doReassignSearchTaskSearch();
   });
 
   function jumpToPagechangePage(){
-    inspectorSearchTaskSubmit('page');
+      resaaignTaskSubmit('page');
   }
 
   function sortRecords(sortFieldName,sortType){
     $("[name='crud_action_value']").val(sortFieldName);
     $("[name='crud_action_additional']").val(sortType);
-    inspectorSearchTaskSubmit('sort');
+      resaaignTaskSubmit('sort');
   }
 
   var superPool = new Array();
@@ -245,7 +245,7 @@
                           '<tbody>';
                   for (var i = 0; i < res.rowCount; i++) {
                     html += '<tr>';
-                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doInspectorSearchTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
+                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doReassignTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
