@@ -91,9 +91,6 @@ public class HcsaChklConfigDelegator {
             .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT)
             .sortField("config_id").build();
 
-    private List<String> subtypeNames = null;
-    private List<String> svcNames = null;
-
     //Save the section that user added to the current page
     private Set<String> curSecName = null;
 
@@ -218,8 +215,8 @@ public class HcsaChklConfigDelegator {
      * @param request
      */
     private void preSelectOption(HttpServletRequest request){
-        this.subtypeNames =  hcsaChklService.listSubTypeName();
-        this.svcNames = hcsaChklService.listServiceName();
+        List<String> subtypeNames =  hcsaChklService.listSubTypeName();
+        List<String> svcNames = hcsaChklService.listServiceName();
         List<SelectOption> subTypeOptList = IaisCommonUtils.genNewArrayList();
         List<SelectOption> svcNameOptList = IaisCommonUtils.genNewArrayList();
 
@@ -227,13 +224,12 @@ public class HcsaChklConfigDelegator {
             subTypeOptList.add(new SelectOption(sn, sn));
         }
 
-        ParamUtil.setSessionAttr(request, "subtypeSelect", (Serializable) subTypeOptList);
-
         for (String s : svcNames){
             svcNameOptList.add(new SelectOption(s,s));
         }
 
-        ParamUtil.setSessionAttr(request, "svcNameSelect", (Serializable) svcNameOptList);
+        ParamUtil.setSessionAttr(request, "checklist_config_subtype_select", (Serializable) subTypeOptList);
+        ParamUtil.setSessionAttr(request, "checklist_svc_name_select", (Serializable) svcNameOptList);
 
     }
 
