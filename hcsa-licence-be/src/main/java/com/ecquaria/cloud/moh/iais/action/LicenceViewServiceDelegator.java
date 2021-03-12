@@ -542,14 +542,20 @@ public class LicenceViewServiceDelegator {
         List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
         try {
             disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
-        }catch (Exception e){
+        }catch (Throwable e){
             log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","PRS mock server down !");
         }
 
       /*  List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();*/
-        List<HfsmsDto> hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
+        List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
+        try {
+            hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
+        }catch (Throwable e){
+            log.error(e.getMessage(),e);
+            request.setAttribute("beEicGatewayClient","Not able to connect to HERIMS at this moment!");
+        }
         HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
         for(HfsmsDto hfsmsDto : hfsmsDtos){
             String identificationNo = hfsmsDto.getIdentificationNo();
