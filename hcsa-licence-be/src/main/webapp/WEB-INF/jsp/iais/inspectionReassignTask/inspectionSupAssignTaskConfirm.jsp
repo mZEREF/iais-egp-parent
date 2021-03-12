@@ -44,8 +44,8 @@
                     </iais:value>
                   </iais:row>
                   <iais:action>
-                    <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskConfirmSubmit()">Submit</button>
+                    <a class="back" id="Back" onclick="javascript:doInspectionReassignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionReassignTaskConfirmSubmit()">Submit</button>
                   </iais:action>
                 </iais:section>
               </iais:body>
@@ -57,11 +57,11 @@
   </form>
 </div>
 <script type="text/javascript">
-  function doInspectionSupAssignTaskConfirmBack() {
+  function doInspectionReassignTaskConfirmBack() {
     inspectionSupAssignTaskConfirmSubmit('assign');
   }
 
-  function doInspectionSupAssignTaskConfirmSubmit() {
+  function doInspectionReassignTaskConfirmSubmit() {
     inspectionSupAssignTaskConfirmSubmit('success');
   }
   function inspectionSupAssignTaskConfirmSubmit(action){
