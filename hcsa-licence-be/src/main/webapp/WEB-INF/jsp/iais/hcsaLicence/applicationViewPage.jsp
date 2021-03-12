@@ -460,6 +460,7 @@
         DMSCheck();
         checkRecommendationOtherDropdown();
         checkInspectionShow();
+        checkRecomendationOtherShow();
         //route back
         routeBackCheck();
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}'){
@@ -677,13 +678,17 @@
 
     //recommendation
     $("[name='recommendation']").change(function selectChange() {
+        checkRecomendationOtherShow();
+    });
+
+    function checkRecomendationOtherShow(){
         var recommendation = $("[name='recommendation']").val();
         if('other' == recommendation){
             $('#recommendationOtherDropdown').removeClass('hidden');
         }else{
             $('#recommendationOtherDropdown').addClass('hidden');
         }
-    });
+    }
 
     function checkRecommendationOtherDropdown(){
         var recommendation = $("[name='recommendation']").val();
