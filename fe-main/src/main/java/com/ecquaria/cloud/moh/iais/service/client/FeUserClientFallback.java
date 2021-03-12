@@ -154,10 +154,20 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(String uen, Boolean isPermit) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(String idNo, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
+
 }
