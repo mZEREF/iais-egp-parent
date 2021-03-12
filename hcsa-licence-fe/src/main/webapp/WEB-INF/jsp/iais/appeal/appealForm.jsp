@@ -124,15 +124,15 @@
           </div>
           <div class="col-xs-12" >
             <span  name="selectedFileShowId" id="selectedFileShowId">
-            <c:forEach items="${pageShowFiles}" var="pageShowFile">
+           <%-- <c:forEach items="${pageShowFiles}" var="pageShowFile">
               <div id="${pageShowFile.fileMapId}">
                  ${pageShowFile.fileName}
-              <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',0);">
-                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',0,'mainForm');">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFile.index});">
+                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFile.index},'mainForm');">
               ReUpload</button>
               </div>
 
-            </c:forEach>
+            </c:forEach>--%>
             </span>
           </div>
         </div>
@@ -234,7 +234,7 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-            /*  ajaxCallUpload('mainForm',"selectedFile");*/
+           /*   ajaxCallUpload('mainForm',"selectedFile");*/
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }
