@@ -134,7 +134,7 @@
                                                             <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                                         </c:forEach>
                                                     </div>
-                                                    <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                                    <a class="btn btn-file-upload btn-secondary" href="#">Upload</a><br>
                                                     <span name="iaisErrorMsg" class="error-msg"
                                                           id="error_UploadFile"></span>
                                                     <ul class="upload-enclosure-ul">
@@ -218,7 +218,7 @@
         console.log(deleteWriteMessageFileId)
         $.ajax({
             type: "post",
-            url:  "${pageContext.request.contextPath}/deleteWriteMessageFile",
+            url:  "${pageContext.request.contextPath}/deleteGiroFromFile",
             data: {deleteWriteMessageFileId:deleteWriteMessageFileId},
             dataType: "text",
             success: function (data) {
@@ -235,7 +235,7 @@
         var formData = new FormData($("#mainForm")[0]);
         $.ajax({
             type: "post",
-            url:  "${pageContext.request.contextPath}/uploadWriteMessageFile",
+            url:  "${pageContext.request.contextPath}/uploadGiroFromFile",
             data: formData,
             async:true,
             processData: false,

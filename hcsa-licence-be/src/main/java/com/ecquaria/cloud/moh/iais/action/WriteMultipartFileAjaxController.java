@@ -30,7 +30,7 @@ public class WriteMultipartFileAjaxController {
 
 
     //upload file
-    @RequestMapping(value = "/uploadWriteMessageFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadGiroFromFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     public @ResponseBody String uploadInternalFile(HttpServletRequest request,@RequestParam("selectFile") MultipartFile selectedFile) throws Exception {
         String data = "";
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
@@ -60,7 +60,7 @@ public class WriteMultipartFileAjaxController {
         return data;
     }
 
-    @RequestMapping(value = "/deleteWriteMessageFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteGiroFromFile", method = RequestMethod.POST)
     @ResponseBody
     public String deleteInternalFile(HttpServletRequest request){
         String data = "";
