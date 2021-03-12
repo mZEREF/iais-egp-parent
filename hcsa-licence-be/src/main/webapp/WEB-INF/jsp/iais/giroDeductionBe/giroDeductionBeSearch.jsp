@@ -93,7 +93,6 @@
                       <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
                                  onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Transaction Reference No."></iais:sortableHeader>
@@ -134,7 +133,7 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Search</button>
+                    <a name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger Payment</a>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="Are you sure you want to do this?" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>
