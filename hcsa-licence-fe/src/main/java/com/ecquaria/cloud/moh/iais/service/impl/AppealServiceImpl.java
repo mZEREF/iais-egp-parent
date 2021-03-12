@@ -184,7 +184,7 @@ public class AppealServiceImpl implements AppealService {
         String othersReason = request.getParameter("othersReason");
         String draftStatus = (String) request.getAttribute("draftStatus");
         AppealPageDto appealPageDto = reAppealPage(request);
-        Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+      /*  Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos =new ArrayList<>(5);
         List<PageShowFile> pageShowFiles=new ArrayList<>(5);
         List<File> files=new ArrayList<>(5);
@@ -218,8 +218,8 @@ public class AppealServiceImpl implements AppealService {
                 pageShowFiles.get(i).setFileUploadUrl(list.get(i));
             }
         }
-        appealPageDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);
-        req.getSession().setAttribute("pageShowFiles",pageShowFiles);
+        appealPageDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);*/
+     /*   req.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
         CommonsMultipartFile selectedFile = (CommonsMultipartFile) request.getFile("selectedFile");
         if (selectedFile != null && selectedFile.getSize() > 0) {
             String filename = selectedFile.getOriginalFilename();
@@ -368,7 +368,7 @@ public class AppealServiceImpl implements AppealService {
                     request.getSession().setAttribute("fileReportIdForAppeal", appPremisesSpecialDocDto.getFileRepoId());
                     request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
                 }
-                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
+              /*  List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
                 List<PageShowFile> pageShowFiles=new ArrayList<>(5);
                 Map<String,File> map=new HashMap<>();
                 if(appPremisesSpecialDocDtos!=null&&!appPremisesSpecialDocDtos.isEmpty()){
@@ -384,7 +384,7 @@ public class AppealServiceImpl implements AppealService {
                     request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appPremisesSpecialDocDtos.size());
 
                 }
-                request.getSession().setAttribute("pageShowFiles",pageShowFiles);
+                request.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
                     List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
                     request.getSession().setAttribute("CgoMandatoryCount", appSvcCgoDto.size());
