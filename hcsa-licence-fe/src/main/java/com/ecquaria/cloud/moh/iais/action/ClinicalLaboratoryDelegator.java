@@ -3307,19 +3307,28 @@ public class ClinicalLaboratoryDelegator {
                     List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                         for(AppSvcCgoDto psn:appSvcCgoDtos){
-                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                            if(!psn.isLicPerson()){
+                                boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
+                                if(partValidate){
+                                    personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                                }else {
+                                    psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
+                                }
+                            }else{
+                                personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                            }
                         }
                     }
                     List<AppSvcPrincipalOfficersDto> appSvcPoDpoDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcPoDpoDtos)){
                         for(AppSvcPrincipalOfficersDto psn:appSvcPoDpoDtos){
-                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                            setPsnKeySet(psn,personKeySet);
                         }
                     }
                     List<AppSvcPrincipalOfficersDto> appSvcMapDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
                     if(!IaisCommonUtils.isEmpty(appSvcMapDtos)){
                         for(AppSvcPrincipalOfficersDto psn:appSvcMapDtos){
-                            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+                            setPsnKeySet(psn,personKeySet);
                         }
                     }
                 }
@@ -3345,5 +3354,19 @@ public class ClinicalLaboratoryDelegator {
             }
         });
         return newPersonMap;
+    }
+
+    private void setPsnKeySet(AppSvcPrincipalOfficersDto psn,Set<String> personKeySet){
+        if(!psn.isLicPerson()){
+            boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
+            if(partValidate){
+                personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+            }else {
+                psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
+            }
+        }else{
+            personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
+        }
+
     }
 }
