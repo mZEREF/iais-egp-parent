@@ -302,6 +302,26 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
     });
 }
 
+function ajaxCallSelectCheckbox(){
+        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+        if (this.checked) {
+            destUrl += '?action=checked'
+          }else{
+            destUrl += '?action=unchecked'
+          }
+        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+        $.ajax({
+                'url': destUrl,
+                'type': 'GET',
+                'traditional':true,
+                'async': true,
+                'success': function (data) {
+                },
+                'error': function () {
+                }
+        });
+    }
+
 //This is All Just For Logging:
 var debugFile = true;//true: add debug logs when cloning
 var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
