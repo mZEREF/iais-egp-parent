@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/InspectionSupSearchStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReassignTask" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/InspectionSupSearchStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReassignTask" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="InspectionSupSearchStart" x="20" y="170">
@@ -119,6 +119,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="460" y="280">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -188,8 +194,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionSupSearchQuery2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionSupSearchConfirmPage" style="rectanular">
    <position>{(520,450)(540,750)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionSupSearchStartStep1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionSupSearchQuery2" style="oblique">
-   <position>{(540,750)(384,750)(384,297)(720,190)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionSupSearchQuery2" style="oblique">
+   <position>{(540,750)(384,750)(384,297)(480,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionSupSearchPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionSupSearchQuery1" style="oblique">
    <position>{(1340,190)(1400,870)(284,869)(284,297)(380,190)}</position>
