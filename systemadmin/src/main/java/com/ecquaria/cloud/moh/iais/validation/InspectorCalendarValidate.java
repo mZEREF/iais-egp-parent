@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,7 +18,7 @@ public class InspectorCalendarValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         InspectorCalendarQueryDto icq = (InspectorCalendarQueryDto)
-                ParamUtil.getRequestAttr(httpServletRequest, "inspectorCalendarQueryDto");
+                ParamUtil.getRequestAttr(httpServletRequest, AppointmentConstants.INSPECTOR_CALENDAR_VALIDATION_ATTR);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (icq == null){
             return errorMap;

@@ -122,6 +122,14 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
+        ParamUtil.setSessionAttr(request,"isBasic",null);
+        ParamUtil.setSessionAttr(request,"SearchResult", null);
+        ParamUtil.setSessionAttr(request,"SearchParam", null);
+        ParamUtil.setSessionAttr(request,"count", null);
+        ParamUtil.setSessionAttr(request,"licIds", null);
+        ParamUtil.setSessionAttr(request,"licRfiIds", null);
+        ParamUtil.setSessionAttr(request, "kpiInfo", null);
+
         appLicenceParameter.setPageNo(1);
         licenseeParameter.setPageNo(1);
         String p = systemParamConfig.getPagingSize();

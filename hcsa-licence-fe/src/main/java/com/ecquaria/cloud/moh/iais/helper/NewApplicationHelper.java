@@ -2558,6 +2558,31 @@ public class NewApplicationHelper {
         return workingDaySp;
     }
 
+    public static boolean psnDoPartValidate(String idType,String idNo,String name){
+        boolean result = true;
+        if(StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)){
+            result = false;
+        }else{
+            if(idNo.length() > 9){
+                result = false;
+            }
+            if("FIN".equals(idType)){
+                boolean b = SgNoValidator.validateFin(idNo);
+                if(!b){
+                    result = false;
+                }
+            }
+            if("NRIC".equals(idType)){
+                boolean b1 = SgNoValidator.validateNric(idNo);
+                if(!b1){
+                    result = false;
+                }
+            }
+
+        }
+        return result;
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -2914,30 +2939,7 @@ public class NewApplicationHelper {
         return result;
     }
 
-    private static boolean psnDoPartValidate(String idType,String idNo,String name){
-        boolean result = true;
-        if(StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)){
-            result = false;
-        }else{
-            if(idNo.length() > 9){
-                result = false;
-            }
-            if("FIN".equals(idType)){
-                boolean b = SgNoValidator.validateFin(idNo);
-                if(!b){
-                    result = false;
-                }
-            }
-            if("NRIC".equals(idType)){
-                boolean b1 = SgNoValidator.validateNric(idNo);
-                if(!b1){
-                    result = false;
-                }
-            }
 
-        }
-        return result;
-    }
 
     private static String[] removeArrIndex(String[] arrs, int index) {
         if (arrs == null) {

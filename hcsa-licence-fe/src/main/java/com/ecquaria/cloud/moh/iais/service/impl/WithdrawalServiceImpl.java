@@ -29,11 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -477,6 +473,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId) {
         List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationFeClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
+        for (WithdrawApplicationDto withdrawApplicationDto:withdrawApplicationDtoList
+                ) {
+            String appNoMaskId = MaskUtil.maskValue("appNo", withdrawApplicationDto.getApplicationNo());
+            withdrawApplicationDto.setMaskId(appNoMaskId);
+        }
         return withdrawApplicationDtoList;
     }
 

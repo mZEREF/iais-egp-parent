@@ -33,7 +33,7 @@ public interface IntranetUserService {
     ClientUser getUserByIdentifier(String userId,String userDomain);
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
-    void removeEgpRoles(String userDomain,String userId,List<String> roleIds);
+    Boolean removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
     String getWrkGrpById(String groupId);
