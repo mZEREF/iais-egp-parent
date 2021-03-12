@@ -26,4 +26,12 @@ public class INTERNET___MohFeApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "feApplicationViewPrepareData", this);
 	}
 
+	public void toApplicationStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "toApplicationStep", this);
+	}
+
+	public void toAppealStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "toAppealStep", this);
+	}
+
 }

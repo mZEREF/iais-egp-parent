@@ -19,10 +19,26 @@ public class MohFeApplicationViewDelegator {
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
     }
 
-    public void feApplicationViewPrepareData(BaseProcessClass bpc) throws Exception {
+    public void feApplicationViewPrepareData(BaseProcessClass bpc) {
 //        NewApplicationDelegator newApplicationDelegator = new NewApplicationDelegator();
+        String page = ParamUtil.getRequestString(bpc.request,"app_type");
+        if ("ar".equals(page)){
+            ParamUtil.setRequestAttr(bpc.request,"app_action_type","toAppeal");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"app_action_type","");
+        }
+    }
+
+    public void toApplicationStep(BaseProcessClass bpc) throws Exception {
         NewApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(NewApplicationDelegator.class);
         newApplicationDelegator.inboxToPreview(bpc);
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", true);
     }
+
+    public void toAppealStep(BaseProcessClass bpc){
+        AppealDelegator appealDelegator = SpringContextHelper.getContext().getBean(AppealDelegator.class);
+        appealDelegator.inbox(bpc);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", true);
+    }
+
 }
