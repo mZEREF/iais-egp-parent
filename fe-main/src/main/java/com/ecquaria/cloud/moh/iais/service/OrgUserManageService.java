@@ -67,5 +67,5 @@ public interface OrgUserManageService {
 
     void createLicenseeByUenFromAcra(String uen);
 
-    void setPermitLoginStatusInUenTrack(String uen, boolean isPermit);
+    void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit);
 }

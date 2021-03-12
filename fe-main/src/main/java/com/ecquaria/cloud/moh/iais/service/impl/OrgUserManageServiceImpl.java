@@ -480,8 +480,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public void setPermitLoginStatusInUenTrack(String uen, boolean isPermit) {
-        feUserClient.setPermitLoginStatusInUenTrack(uen, isPermit);
+    public void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit) {
+        feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
     }
 
 }

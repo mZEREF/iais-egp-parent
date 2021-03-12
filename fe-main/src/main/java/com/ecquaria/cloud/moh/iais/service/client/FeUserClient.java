@@ -83,6 +83,8 @@ public interface FeUserClient {
     @PutMapping(path = "/iais-acraUen-fe/entity/{uen}")
     FeignResponseEntity<GenerateUENDto> createLicenseeByUenFromAcra(@PathVariable("uen") String uen);
 
-    @GetMapping(path = "/iais-internet-user/uen-track/{uen}/permit-status/{isPermit}")
-    FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(@PathVariable("uen") String uen, @PathVariable("isPermit") Boolean isPermit);
+    @GetMapping(path = "/iais-internet-user/uen-track/{uen}/{nricNumber}/permit-status/{isPermit}")
+    FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(@PathVariable("uen") String uen,
+                                                             @PathVariable("nricNumber") String nricNumber,
+                                                             @PathVariable("isPermit") Boolean isPermit);
 }

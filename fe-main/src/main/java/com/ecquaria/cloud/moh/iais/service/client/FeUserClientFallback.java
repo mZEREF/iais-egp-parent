@@ -154,7 +154,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(String uen, Boolean isPermit) {
+    public FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(String uen, String nricNumber, Boolean isPermit) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

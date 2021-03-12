@@ -186,7 +186,7 @@ public class FECorppassLandingDelegator {
         String identityNo =  userSession.getIdentityNo();
         String scp = userSession.getScp();
         userSession =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
-        if (userSession != null){
+        if (Optional.ofNullable(userSession).isPresent()){
             userSession.setScp(scp);
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
@@ -199,7 +199,7 @@ public class FECorppassLandingDelegator {
             user.setIdentityNo(userSession.getIdentityNo());
             FeLoginHelper.initUserInfo(bpc.request, user);
             //issue 68766
-            orgUserManageService.setPermitLoginStatusInUenTrack(uen, false);
+            orgUserManageService.setPermitLoginStatusInUenTrack(uen, identityNo, false);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");
