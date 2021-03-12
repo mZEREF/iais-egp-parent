@@ -104,6 +104,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
         ParamUtil.setSessionAttr(bpc.request, "isLeader", false);
+        ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
     }
 
     /**
@@ -177,6 +178,8 @@ public class InspecReassignTaskDelegator {
             searchResult = inspectionService.getSupPoolByParam(searchParam);
             searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
             List<InspectionSubPoolQueryDto> reassignPool = searchResult.getRows();
+            List<TaskDto> taskDtos = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
+            ParamUtil.setSessionAttr(bpc.request, "taskDtos", (Serializable) taskDtos);
             ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) reassignPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
@@ -520,7 +523,7 @@ public class InspecReassignTaskDelegator {
     public void inspectionSupSearchSuccess(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchSuccess start ...."));
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
-        List<TaskDto> superPool = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "superPool");
+        List<TaskDto> superPool = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "taskDtos");
         String reassignRemarks = inspectionTaskPoolListDto.getReassignRemarks();
         inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, reassignRemarks);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);

@@ -49,8 +49,8 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:action >
-                                        <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskNext()">Next</button>
+                                        <a class="back" id="Back" onclick="javascript:doInspectionReassignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                                            <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionReassignTaskNext()">Next</button>
                                     </iais:action>
                                 </iais:section>
                             </iais:body>
@@ -63,20 +63,20 @@
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script>
-    function doInspectionSupAssignTaskBack() {
+    function doInspectionReassignTaskBack() {
         clearErrorMsg();
         showWaiting();
         $("[name='actionValue']").val('back');
-        inspectionSupAssignTaskSubmit('back');
+        InspectionReassignTaskSubmit('back');
     }
 
-    function doInspectionSupAssignTaskNext() {
+    function doInspectionReassignTaskNext() {
         clearErrorMsg();
         showWaiting();
         $("[name='actionValue']").val('confirm');
-        inspectionSupAssignTaskSubmit('confirm');
+        InspectionReassignTaskSubmit('confirm');
     }
-    function inspectionSupAssignTaskSubmit(action){
+    function InspectionReassignTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainAssignForm');
         mainPoolForm.submit();

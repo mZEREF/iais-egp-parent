@@ -617,17 +617,28 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setPreInspection(preOrPostInspectionResultDto1.isPreInspection());
                 appSubmissionDto.setRequirement(preOrPostInspectionResultDto1.isRequirement());
             }
-            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
+            if(appSubmissionDtos.size() == 1){
+                boolean eqDocChange = EqRequestForChangeSubmitResultChange.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
+                boolean eqServiceChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+                if(eqDocChange){
+                    appEditSelectDto.setDocEdit(true);
+                }
+                if(eqServiceChange){
+                    appEditSelectDto.setServiceEdit(true);
+                }
+            }
+
             if(appGrpPremisesDtoList != null){
                 eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
             } else {
                 eqGrpPremisesResult = false;
             }
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
+                appEditSelectDto.setPremisesEdit(true);
                 if (appGrpPremisesDtoList != null) {
                     for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                         if(appGrpPremisesDtoList.size()==oldAppSubmissionDtoAppGrpPremisesDtoList.size()){
@@ -752,6 +763,8 @@ public class WithOutRenewalDelegator {
             renewLicIds.add(licenceId);
             //FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
             appSubmissionDto.setLicenseeId(licenseeId);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
