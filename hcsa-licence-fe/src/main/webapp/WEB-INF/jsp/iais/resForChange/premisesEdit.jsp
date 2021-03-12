@@ -181,6 +181,14 @@
         <!-- init end-->
         //68744
         $('.premSelect').addClass('disabled');
+
+
+        var mainContent =$('.main-content');
+        mainContent.find('input.allDay:checked').each(function (k) {
+            console.log(k);
+            var $allDayDiv = $(this).closest('div.col-md-2');
+            disabeleForAllDay($allDayDiv);
+        });
         init = 1;
     });
 
