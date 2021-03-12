@@ -167,28 +167,27 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">Name</td>
-                                                                        <td class="col-xs-6">&nbsp;Tan Ah Kow</td>
+                                                                        <td class="col-xs-6">&nbsp;-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Salutation</td>
-                                                                        <td>&nbsp;Dr</td>
+                                                                        <td>&nbsp;-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID Type</td>
-                                                                        <td>&nbsp;NRIC</td>
+                                                                        <td>&nbsp;-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID No</td>
-                                                                        <td>&nbsp;S123456789I</td>
+                                                                        <td>&nbsp;-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Designation</td>
-                                                                        <td>&nbsp;Director</td>
+                                                                        <td>&nbsp;-</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="right">Designation Appointment Date
-                                                                        </td>
-                                                                        <td>&nbsp;01/01/2020</td>
+                                                                        <td align="right">Designation Appointment Date</td>
+                                                                        <td>&nbsp;-</td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -349,7 +348,9 @@
                                         </div>
 
                                         <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
-
+                                            <c:if test="${empty personnelsDto}">
+                                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                                            </c:if>
                                             <!-- Default panel contents -->
                                             <c:forEach var="personnel" items="${personnelsDto}">
                                                 <div class="panel panel-default">
@@ -877,8 +878,8 @@
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                                                                                                   data-html="true"
-                                                                                                                                   data-original-title="${kpiInfo}">i</a></p>
+                                                                                                          data-html="true"
+                                                                                                          data-original-title="${kpiInfo}">i</a></p>
                                                                     </td>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;<c:out
