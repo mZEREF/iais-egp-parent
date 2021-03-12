@@ -743,7 +743,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{
             if( FileUtil.writeToFile(fileName,xmlData)){
-                SFTPUtil.upload(fileName,path);
+                // SFTPUtil.upload(fileName,path);
                 return true;
             }
              return false;
@@ -771,13 +771,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                   String fileName = tag;
                   String downPath = ApplicationConsts.GIRO_DOWN_FILE_PATH+ConfigHelper.getString("giro.sftp.linux.seperator");
                   String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder");
-                      List<String> remoteFileNames = SFTPUtil.getRemoteFileNames(fileName,downloadfilefolder);
+                      List<String> remoteFileNames = FileUtil.getRemoteFileNames(fileName,downloadfilefolder);
                       if(IaisCommonUtils.isEmpty(remoteFileNames)){
                           log.info(StringUtil.changeForLog("----- SFTP NO FIND FILE LIKE "+ fileName +"-----------"));
                       }else {
-                          for(String remoteFileName : remoteFileNames){
-                              SFTPUtil.download(downPath,remoteFileName,downloadfilefolder);
-                          }
                           boolean ack01Stfp = true;
                           boolean ack02Stfp = true;
 
@@ -840,6 +837,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                               rejectSaveAppGroupSendEmailStatus(DATAS);
                               saveGiroPaymentDtosByDatas(DATAS,GrioConsts.GIRO_PAY_STATUS_FAILED);
                           }
+                          FileUtil.deleteFilesByFileNames(remoteFileNames,downPath);
                   }
               }catch (Exception e){
                   log.error(e.getMessage(),e);
