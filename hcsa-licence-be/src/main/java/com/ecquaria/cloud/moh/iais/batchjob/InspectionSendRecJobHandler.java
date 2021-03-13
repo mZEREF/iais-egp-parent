@@ -7,6 +7,7 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -15,7 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -37,15 +40,18 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,6 +109,12 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     @Autowired
     private LicenseeService licenseeService;
 
+    @Autowired
+    private AppointmentClient appointmentClient;
+
+    @Autowired
+    private InsepctionNcCheckListService insepctionNcCheckListService;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -129,6 +141,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
             AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
+            List<Date> holidays = appointmentClient.getHolidays().getEntity();
             for(ApplicationViewDto dto : mapApp){
                 ApplicationDto aDto = dto.getApplicationDto();
                 try {
@@ -147,13 +160,18 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
                             applicantName = orgUserDto.getDisplayName();
                         }
-                        Date date = new Date();
                         String appNo = aDto.getApplicationNo();
+                        //get rec date
+                        List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays, nonWorkingDateListByWorkGroupId);
                         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+                        //get url
                         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                                 MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appNo;
                         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                         maskParams.put("applicationNo", appNo);
+                        //set map
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                         templateContent.put("applicant", applicantName);
                         templateContent.put("date", strDate);
