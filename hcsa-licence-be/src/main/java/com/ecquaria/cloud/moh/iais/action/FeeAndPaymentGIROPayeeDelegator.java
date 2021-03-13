@@ -296,20 +296,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
                     try {
                         MultipartFile file = toMultipartFile(fileBit.getDocName(),fileBit.getDocName(), fileBit.getData());
                         GiroAccountFormDocDto doc =new GiroAccountFormDocDto();
-                        if( file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-                            long size = file.getSize() / 1024;
-                            doc.setDocName(file.getOriginalFilename());
-                            doc.setDocSize(Integer.valueOf(String.valueOf(size)));
-                            String fileRepoGuid = serviceConfigService.saveFiles(file);
-                            doc.setFileRepoId(fileRepoGuid);
-                            fileBit.setId(fileRepoGuid);
-                        }
+                        long size = file.getSize() / 1024;
+                        doc.setDocName(file.getOriginalFilename());
+                        doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        doc.setPassDocValidate(true);
                         List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
                         Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
                         if((doc.getDocSize()!=null)){
                             Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
                             if (doc.getDocSize() != null) {
-                                long size = doc.getDocSize();
                                 String filename = doc.getDocName();
                                 String fileType = filename.substring(filename.lastIndexOf(46) + 1);
                                 String s = fileType.toUpperCase();
@@ -339,6 +334,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
                                     errorMap.put("UploadFile", MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                                 }
                             }
+                        }
+                        if(doc.isPassDocValidate()){
+                            String fileRepoGuid = serviceConfigService.saveFiles(file);
+                            doc.setFileRepoId(fileRepoGuid);
+                            fileBit.setId(fileRepoGuid);
                         }
                         docs.add(doc);
 
