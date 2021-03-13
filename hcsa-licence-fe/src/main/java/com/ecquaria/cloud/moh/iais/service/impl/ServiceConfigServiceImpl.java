@@ -418,8 +418,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String xml = genXmlByGiroPaymentXmlDtos(grioXmlPaymentDto);
         String uploadGrioFileData = dbsFileDataByGiroXmlPaymentDto(grioXmlPaymentDto);
         String tag = genFileNameUploadSFTP();
-        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag;
-        if(genXmlFileToSftp(uploadGrioFileData,fileName, ConfigHelper.getString("giro.sftp.uploadfilefolder"))){
+        String path = ConfigHelper.getString("giro.sftp.uploadfilefolder",ApplicationConsts.GIRO_UPLOAD_FILE_PATH);
+        String fileName =  path+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag;
+        if(genXmlFileToSftp(uploadGrioFileData,fileName, path)){
             GiroPaymentXmlDto giroPaymentXmlDtoSend = new GiroPaymentXmlDto();
             giroPaymentXmlDtoSend.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             giroPaymentXmlDtoSend.setTag(tag);
@@ -476,8 +477,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InputTrailerDto INPUT_TRAILER = grioXmlPaymentDto.getINPUT_TRAILER();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(inputHeaderAck1Dto.toString()).append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK1";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK1";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private boolean genAck02File(GiroXmlPaymentDto grioXmlPaymentDto,String tag){
         String dateString =  Formatter.formatDateTime(new Date(),Formatter.DATE_FILE_NAME);
@@ -493,8 +495,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
         stringBuilder.append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK2";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK2";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private boolean genAck03File(GiroXmlPaymentDto grioXmlPaymentDto,String tag){
         String dateString =  Formatter.formatDateTime(new Date(),Formatter.DATE_FILE_NAME);
@@ -510,8 +513,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
         stringBuilder.append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK3";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK3";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private String genFileNameUploadSFTP(){
         StringBuilder stringBuilder = new StringBuilder();
@@ -742,9 +746,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{
-            if( FileUtil.writeToFile(fileName,xmlData)){
-                // SFTPUtil.upload(fileName,path);
-                return true;
+            if(!StringUtil.isEmpty(path)){
+                if( FileUtil.writeToFile(fileName,xmlData)){
+                    // SFTPUtil.upload(fileName,path);
+                    return true;
+                }
             }
              return false;
         }catch (Exception e){
@@ -769,8 +775,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
               try{
                   String tag = giroPaymentXmlDto.getTag();
                   String fileName = tag;
-                  String downPath = ApplicationConsts.GIRO_DOWN_FILE_PATH+ConfigHelper.getString("giro.sftp.linux.seperator");
-                  String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder");
+                  String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+                  String downPath = downloadfilefolder + ConfigHelper.getString("giro.sftp.linux.seperator");
                       List<String> remoteFileNames = FileUtil.getRemoteFileNames(fileName,downloadfilefolder);
                       if(IaisCommonUtils.isEmpty(remoteFileNames)){
                           log.info(StringUtil.changeForLog("----- SFTP NO FIND FILE LIKE "+ fileName +"-----------"));
