@@ -854,7 +854,7 @@ public class InterInboxDelegator {
 //                }else{
 //                    h.setCanInspection(Boolean.FALSE);
 //                }
-                if(0==h.getHasSubmitPrefDate()){
+                if(h.getHasSubmitPrefDate() == null || 0 == h.getHasSubmitPrefDate()){
                     h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
