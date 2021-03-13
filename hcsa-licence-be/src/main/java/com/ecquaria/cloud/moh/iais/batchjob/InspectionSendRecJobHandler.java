@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -159,14 +160,18 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
                             applicantName = orgUserDto.getDisplayName();
                         }
-                        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-                        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays);
                         String appNo = aDto.getApplicationNo();
+                        //get rec date
+                        List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays, nonWorkingDateListByWorkGroupId);
                         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+                        //get url
                         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                                 MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appNo;
                         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                         maskParams.put("applicationNo", appNo);
+                        //set map
                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                         templateContent.put("applicant", applicantName);
                         templateContent.put("date", strDate);
