@@ -2231,6 +2231,14 @@ public class HcsaApplicationDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        if(!StringUtil.isEmpty(stageId)){
+            if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                    HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                    HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+                //close submit pref insp date
+                broadcastApplicationDto.getApplicationDto().setHasSubmitPrefDate(1);
+            }
+        }
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());

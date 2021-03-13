@@ -26,7 +26,10 @@
 
       <div  class="col-xs-12 col-md-10">
         <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-          <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+          <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+          <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
+          <input type="hidden" value="${id}" id="licenceId">
+          <input type="hidden" value="${type}" id="parametertype">
           <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
         </div>
       </div>
@@ -197,7 +200,17 @@
 
 
     });
-
+    function link(){
+        var type = $('#parametertype').val();
+        if(type=='application'){
+            var v= $('.appMaskNo').html();
+            showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo="+v);
+        }else {
+            if (type == "licence") {
+                showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohLicenceView?licenceId=" + $('#licenceId').val() + "&appeal=appeal");
+            }
+        }
+    }
     $('#Back').click(function (){
       location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
 

@@ -30,7 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -237,16 +236,17 @@ public class SelfAssessmentDelegator {
     public void submitAllSelfAssessment(BaseProcessClass bpc) {
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
         if (Optional.ofNullable(selfAssessmentList).isPresent()) {
-            HashMap<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            StringBuilder errorIndexStr = new StringBuilder();
             for (int i = 0; i < selfAssessmentList.size(); i++) {
                 boolean isFilled = isFilledAnswer(selfAssessmentList.get(i));
                 if (!isFilled) {
-                    //confirm with mingde , no error msg will be displayed
-                    errorMap.put("noFillUpItemError" + i++, "X");
+                    errorIndexStr.append(i + 1).append("/");
                 }
             }
 
-            if (!errorMap.isEmpty()) {
+            if (errorIndexStr.length() > 0) {
+                errorMap.put("noFillUpItemError", MessageUtil.replaceMessage("NEW_ERR0022",errorIndexStr.substring(0, errorIndexStr.length() -1),"errorIndex"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 WebValidationHelper.saveAuditTrailForNoUseResult(selfAssessmentList, errorMap);

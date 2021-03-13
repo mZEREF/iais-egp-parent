@@ -160,6 +160,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"paymentMessageValidateMessage",null);
         ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, null);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
@@ -436,13 +437,9 @@ public class WithOutRenewalDelegator {
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         String groupId = "";
-        Double amount = 0.0;
-        String licenseeId = null;
         if (appSubmissionDtos != null && appSubmissionDtos.size() != 0) {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
-            amount = appSubmissionDtos.get(0).getAmount();
-            licenseeId = appSubmissionDtos.get(0).getLicenseeId();
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
             boolean flag=false;
             if (oldAppSubmissionDto == null) {
                 oldAppSubmissionDto = appSubmissionDtos.get(0);
@@ -450,14 +447,9 @@ public class WithOutRenewalDelegator {
             }
             Object loadingDraft = ParamUtil.getSessionAttr(bpc.request, LOADING_DRAFT);
             if (loadingDraft != null) {
-                AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldAppSubmissionDto();
+                AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldRenewAppSubmissionDto();
                 if (oldAppSubmisDto != null) {
                     oldAppSubmissionDto = oldAppSubmisDto;
-                }
-            } else {
-                //set oldAppSubmissionDto
-                if(renewDto.getAppSubmissionDtos().get(0).getOldAppSubmissionDto()==null){
-                    renewDto.getAppSubmissionDtos().get(0).setOldAppSubmissionDto(oldAppSubmissionDto);
                 }
             }
             requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
@@ -467,7 +459,11 @@ public class WithOutRenewalDelegator {
                 }
             }
             if(flag){
-                bpc.request.getSession().setAttribute("oldAppSubmissionDto", oldAppSubmissionDto);
+                if(renewDto.getAppSubmissionDtos().get(0).getOldRenewAppSubmissionDto()==null){
+                    Object object = CopyUtil.copyMutableObject(oldAppSubmissionDto);
+                    renewDto.getAppSubmissionDtos().get(0).setOldRenewAppSubmissionDto((AppSubmissionDto)object);
+                }
+                bpc.request.getSession().setAttribute("oldRenewAppSubmissionDto", oldAppSubmissionDto);
             }
         }
         String result = ParamUtil.getMaskedString(bpc.request, "result");
@@ -595,7 +591,7 @@ public class WithOutRenewalDelegator {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
 
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -621,6 +617,11 @@ public class WithOutRenewalDelegator {
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
+            if(appGrpPremisesDtoList != null){
+                eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+            } else {
+                eqGrpPremisesResult = false;
+            }
             if(appSubmissionDtos.size() == 1){
                 boolean eqDocChange = EqRequestForChangeSubmitResultChange.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
                 boolean eqServiceChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
@@ -632,11 +633,6 @@ public class WithOutRenewalDelegator {
                 }
             }
 
-            if(appGrpPremisesDtoList != null){
-                eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
-            } else {
-                eqGrpPremisesResult = false;
-            }
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
                 appEditSelectDto.setPremisesEdit(true);
                 if (appGrpPremisesDtoList != null) {
@@ -670,7 +666,7 @@ public class WithOutRenewalDelegator {
                                         hciNameChange=0;
                                     }
                                     List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = oldAppGrpPremisesDto.getAppPremisesOperationalUnitDtos();
-                                     eqUnitDto = EqRequestForChangeSubmitResultChange.eqOperationalUnitDtoList(appPremisesOperationalUnitDtos1, appPremisesOperationalUnitDtos);
+                                    eqUnitDto = EqRequestForChangeSubmitResultChange.eqOperationalUnitDtoList(appPremisesOperationalUnitDtos1, appPremisesOperationalUnitDtos);
                                     amendmentFeeDto.setChangeInHCIName(!b);
                                     String olAddress = oldAppGrpPremisesDto.getAddress();
                                     equals = olAddress.equals(address);
@@ -792,169 +788,169 @@ public class WithOutRenewalDelegator {
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         //Boolean update = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         if (appSubmissionDtos.size() == 1) {
-        Set<String> idNos = IaisCommonUtils.genNewHashSet();
-        List<String> updateCgo = outRenewalService.isUpdateCgo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        List<String> updatePo = outRenewalService.isUpdatePo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        List<String> updateDpo = outRenewalService.isUpdateDpo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        List<String> updateMat = outRenewalService.isUpdateMat(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        if (!IaisCommonUtils.isEmpty(updateCgo)) {
-            for (String idNo : updateCgo) {
-                idNos.add(idNo);
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(updatePo)) {
-            for (String idNo : updatePo) {
-                idNos.add(idNo);
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(updateDpo)) {
-            for (String idNo : updateDpo) {
-                idNos.add(idNo);
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(updateMat)) {
-            for (String idNo : updateMat) {
-                idNos.add(idNo);
-            }
-        }
-        Map<String, List<String>> idNoPsnTypeMap = IaisCommonUtils.genNewHashMap();
-        if (!IaisCommonUtils.isEmpty(idNos)) {
-            for (String idNo : idNos) {
-                if (updateCgo.contains(idNo)) {
-                    List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
-                    if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                    } else {
-                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                        idNoPsnTypeMap.put(idNo, psnTypes);
-                    }
-                }
-                if (updatePo.contains(idNo)) {
-                    List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
-                    if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                    } else {
-                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                        idNoPsnTypeMap.put(idNo, psnTypes);
-                    }
-                }
-                if (updateDpo.contains(idNo)) {
-                    List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
-                    if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-                    } else {
-                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-                        idNoPsnTypeMap.put(idNo, psnTypes);
-                    }
-                }
-                if (updateMat.contains(idNo)) {
-                    List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
-                    if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                    } else {
-                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                        idNoPsnTypeMap.put(idNo, psnTypes);
-                    }
+            Set<String> idNos = IaisCommonUtils.genNewHashSet();
+            List<String> updateCgo = outRenewalService.isUpdateCgo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            List<String> updatePo = outRenewalService.isUpdatePo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            List<String> updateDpo = outRenewalService.isUpdateDpo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            List<String> updateMat = outRenewalService.isUpdateMat(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            if (!IaisCommonUtils.isEmpty(updateCgo)) {
+                for (String idNo : updateCgo) {
+                    idNos.add(idNo);
                 }
             }
-        }
-        String currentLicenceId = appSubmissionDtos.get(0).getLicenceId();
-        String finalLicenseeId = licenseeId;
-        idNoPsnTypeMap.forEach((idNo, psnTypes) -> {
-            List<String> notReNewLicIds = IaisCommonUtils.genNewArrayList();
-            notReNewLicIds.clear();
-            List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
-            List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
-            for (LicKeyPersonnelDto dto : licByPerId) {
-                String licenceId = dto.getLicenceId();
-                String licseeId = dto.getLicenseeId();
-                if (finalLicenseeId.equals(licseeId) && !notReNewLicIds.contains(licenceId) && !currentLicenceId.equals(licenceId)) {
-                    notReNewLicIds.add(licenceId);
+            if (!IaisCommonUtils.isEmpty(updatePo)) {
+                for (String idNo : updatePo) {
+                    idNos.add(idNo);
                 }
             }
-            if (!IaisCommonUtils.isEmpty(notReNewLicIds)) {
-                List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
-                for (AppSubmissionDto appSubmissionDto : notReNewappSubmissionDtos) {
-                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
-                        List<AppSvcCgoDto> appSvcCgoDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcCgoDtoList();
-                        appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcCgoDtoList(appSvcCgoDtoList);
+            if (!IaisCommonUtils.isEmpty(updateDpo)) {
+                for (String idNo : updateDpo) {
+                    idNos.add(idNo);
+                }
+            }
+            if (!IaisCommonUtils.isEmpty(updateMat)) {
+                for (String idNo : updateMat) {
+                    idNos.add(idNo);
+                }
+            }
+            Map<String, List<String>> idNoPsnTypeMap = IaisCommonUtils.genNewHashMap();
+            if (!IaisCommonUtils.isEmpty(idNos)) {
+                for (String idNo : idNos) {
+                    if (updateCgo.contains(idNo)) {
+                        List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
+                        if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
+                            psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                        } else {
+                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                            psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                            idNoPsnTypeMap.put(idNo, psnTypes);
+                        }
                     }
-                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
-                        List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
-                        List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
-                        if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
-                            for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
-                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
-                                String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-                                    newPOList.add(appSvcPrincipalOfficersDto);
+                    if (updatePo.contains(idNo)) {
+                        List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
+                        if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
+                            psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                        } else {
+                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                            psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                            idNoPsnTypeMap.put(idNo, psnTypes);
+                        }
+                    }
+                    if (updateDpo.contains(idNo)) {
+                        List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
+                        if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
+                            psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                        } else {
+                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                            psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                            idNoPsnTypeMap.put(idNo, psnTypes);
+                        }
+                    }
+                    if (updateMat.contains(idNo)) {
+                        List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
+                        if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
+                            psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                        } else {
+                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                            psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                            idNoPsnTypeMap.put(idNo, psnTypes);
+                        }
+                    }
+                }
+            }
+            String currentLicenceId = appSubmissionDtos.get(0).getLicenceId();
+            String finalLicenseeId = licenseeId;
+            idNoPsnTypeMap.forEach((idNo, psnTypes) -> {
+                List<String> notReNewLicIds = IaisCommonUtils.genNewArrayList();
+                notReNewLicIds.clear();
+                List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
+                List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
+                for (LicKeyPersonnelDto dto : licByPerId) {
+                    String licenceId = dto.getLicenceId();
+                    String licseeId = dto.getLicenseeId();
+                    if (finalLicenseeId.equals(licseeId) && !notReNewLicIds.contains(licenceId) && !currentLicenceId.equals(licenceId)) {
+                        notReNewLicIds.add(licenceId);
+                    }
+                }
+                if (!IaisCommonUtils.isEmpty(notReNewLicIds)) {
+                    List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
+                    for (AppSubmissionDto appSubmissionDto : notReNewappSubmissionDtos) {
+                        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
+                            List<AppSvcCgoDto> appSvcCgoDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcCgoDtoList();
+                            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcCgoDtoList(appSvcCgoDtoList);
+                        }
+                        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
+                            List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
+                            List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
+                            if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
+                                for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
+                                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
+                                    String psnType = appSvcPrincipalOfficersDto.getPsnType();
+                                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+                                        newPOList.add(appSvcPrincipalOfficersDto);
+                                    }
                                 }
                             }
+                            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
                         }
-                        appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
-                    }
-                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) {
-                        List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
-                        List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
-                        if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
-                            for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
-                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
-                                String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                                if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
-                                    newPOList.add(appSvcPrincipalOfficersDto);
+                        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) {
+                            List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
+                            List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
+                            if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
+                                for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
+                                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
+                                    String psnType = appSvcPrincipalOfficersDto.getPsnType();
+                                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
+                                        newPOList.add(appSvcPrincipalOfficersDto);
+                                    }
                                 }
                             }
+                            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
                         }
-                        appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
-                    }
-                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
-                        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcMedAlertPersonList();
-                        appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
-                    }
-                    appSubmissionDto.setLicenseeId(finalLicenseeId);
-                    try {
-                        NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
-                    } catch (CloneNotSupportedException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                    appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                    appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-                    appSubmissionDto.setAppGrpNo(appGroupNo);
-                    appSubmissionDto.setAmount(0.0);
-                    appSubmissionDto.setAutoRfc(true);
-                    String draftNo = appSubmissionDto.getDraftNo();
-                    if (StringUtil.isEmpty(draftNo)) {
-                        appSubmissionService.setDraftNo(appSubmissionDto);
-                    }
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                        if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
+                            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcMedAlertPersonList();
+                            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
                         }
+                        appSubmissionDto.setLicenseeId(finalLicenseeId);
+                        try {
+                            NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                        } catch (CloneNotSupportedException e) {
+                            log.error(e.getMessage(), e);
+                        }
+                        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+                        appSubmissionDto.setAppGrpNo(appGroupNo);
+                        appSubmissionDto.setAmount(0.0);
+                        appSubmissionDto.setAutoRfc(true);
+                        String draftNo = appSubmissionDto.getDraftNo();
+                        if (StringUtil.isEmpty(draftNo)) {
+                            appSubmissionService.setDraftNo(appSubmissionDto);
+                        }
+                        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                                appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                            }
+                        }
+                        //judge is the preInspection
+                        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+                        if (preOrPostInspectionResultDto == null) {
+                            appSubmissionDto.setPreInspection(true);
+                            appSubmissionDto.setRequirement(true);
+                        } else {
+                            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+                            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+                        }
+                        //set Risk Score
+                        appSubmissionService.setRiskToDto(appSubmissionDto);
+                        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
                     }
-                    //judge is the preInspection
-                    PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-                    if (preOrPostInspectionResultDto == null) {
-                        appSubmissionDto.setPreInspection(true);
-                        appSubmissionDto.setRequirement(true);
-                    } else {
-                        appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-                        appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-                    }
-                    //set Risk Score
-                    appSubmissionService.setRiskToDto(appSubmissionDto);
-                    appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-                    requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
+                    autoAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
                 }
-                autoAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
-            }
-        });
-    }
+            });
+        }
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
@@ -1784,7 +1780,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-             if(appNoIndex == 2){
+            if(appNoIndex == 2){
                 temp = "has";
             }
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDtos.get(0).getServiceName());

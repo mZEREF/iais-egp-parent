@@ -187,6 +187,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         //close self-checklist
         applicationDto.setSelfAssMtFlag(4);
+        //close submit pref insp date
+        applicationDto.setHasSubmitPrefDate(1);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION);
         applicationDto1.setAuditTrailDto(auditTrailDto);
         applicationService.updateFEApplicaiton(applicationDto1);
@@ -565,7 +567,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 int index = 0;
                 for (ApplicationDto applicationDto : applicationDtos) {
-                    if (index <= 1) {
+                    if (index <= 1 && applicationDto != null) {
+                        log.info(StringUtil.changeForLog("insp history application No." + applicationDto.getApplicationNo()));
                         InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
                         String appId = applicationDto.getId();
                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
