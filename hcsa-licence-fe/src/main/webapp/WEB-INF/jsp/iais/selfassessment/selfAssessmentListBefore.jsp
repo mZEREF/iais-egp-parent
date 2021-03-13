@@ -27,6 +27,7 @@
                     <input type="hidden" id="selfAssessmentCorrId" name="selfAssessmentCorrId" value="">
                     <input type="hidden" id="assessmentBySvcId" name="assessmentBySvcId" value="">
                     <div class="personal-info-section">
+                        &nbsp;<span id="error_noFillUpItemError" name="iaisErrorMsg" class="error-msg"></span>
                         <c:if test="${hasSubmitted eq 'Y'}">
                             <span id="hasSubmitted" name="hasSubmitted" class="error-msg"><c:out value="${hasSubmittedMsg}"></c:out></span>
                         </c:if>
