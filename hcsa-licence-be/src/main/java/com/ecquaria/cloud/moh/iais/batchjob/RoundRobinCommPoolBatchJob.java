@@ -257,7 +257,7 @@ public class RoundRobinCommPoolBatchJob {
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
             String oldUserId = taskDto.getUserId();
-            TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
+            TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId,oldUserId);
             String userId = null;
             if(taskScoreDto!= null){
                 userId = taskScoreDto.getUserId();
@@ -285,6 +285,13 @@ public class RoundRobinCommPoolBatchJob {
             String appNo = taskDto.getApplicationNo();
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskType -- >:" + taskType));
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob appNo -- >:" + appNo));
+            String processDec = InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN;
+            if(!StringUtil.isEmpty(oldUserId)){
+                processDec = InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN;
+            }
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob processDec -- >:" + processDec));
+            createAppPremisesRoutingHistory(appNo, applicationViewDto.getApplicationDto().getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), null, taskDto.getWkGrpId());
+
             if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)||TaskConsts.TASK_TYPE_MAIN_FLOW.equals(taskType)){
                 List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);
                 if(!IaisCommonUtils.isEmpty(applicationDtos)){
