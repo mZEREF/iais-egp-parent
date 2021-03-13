@@ -43,37 +43,43 @@
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
-                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['applicationNo']}" />
+                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['application_no']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Transaction ID"/>
                       <iais:value width="18">
-                        <input type="text" name="transactionId" value="${giroDedSearchParam.filters['transactionId']}" />
+                        <input type="text" name="transactionId" value="${giroDedSearchParam.filters['application_no']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
                       <iais:value width="18">
-                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['bankAccountNo']}" />
+                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['hci_code']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="Payment Reference No."/>
+                      <iais:value width="18">
+                        <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['hci_name']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
                       <iais:value width="18">
-                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['paymentAmount']}" />
+                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['hci_address']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Description"/>
                       <iais:value width="18">
-                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['paymentDescription']}"></c:out></textarea>
+                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hci_name']}" />
+                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hci_address']}" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
@@ -85,13 +91,14 @@
                 <h3>
                   <span>Search Results</span>
                 </h3>
-                <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                 <div class="table-gp">
                   <table class="table application-group">
+                    <iais:pagination  param="GiroSearchParam" result="GiroSearchResult"/>
                     <thead>
                     <tr align="center">
                       <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
                                  onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
+                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
@@ -106,7 +113,7 @@
                     <c:choose>
                       <c:when test="${empty giroDedSearchResult.rows}">
                         <tr>
-                          <td colspan="9">
+                          <td colspan="7">
                             <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                           </td>
                         </tr>
@@ -133,8 +140,8 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <a name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger Payment</a>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="Are you sure you want to do this?" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
+                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
+                    <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>
               </iais:body>
@@ -182,8 +189,9 @@
         $('input[name="transactionId"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="bankAccountNo"]').val("");
+        $('input[name="paymentRefNo"]').val("");
         $('input[name="paymentAmount"]').val("");
-        $('input[name="paymentDescription"]').val("");
+        $('textarea[name="paymentDescription"]').val("");
     }
 
     function giroDeductionSubmit(action){
@@ -199,13 +207,13 @@
 
     function jumpToPagechangePage(){
         showWaiting();
-        giroDeductionSubmit('page');
+        inspectionCommonPoolSubmit('page');
     }
 
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        giroDeductionSubmit('sort');
+        inspectionCommonPoolSubmit('sort');
     }
 </script>
 
