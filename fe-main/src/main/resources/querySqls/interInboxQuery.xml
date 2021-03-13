@@ -56,6 +56,7 @@
             FROM (SELECT
                     app.id,
                     app.application_no,
+                    app.has_submit_pref_date,
                     app.app_grp_id,
                     (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
                     app.app_type,
