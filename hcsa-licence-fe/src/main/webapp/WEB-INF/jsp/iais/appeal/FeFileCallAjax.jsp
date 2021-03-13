@@ -6,9 +6,11 @@
     function deleteFileFeAjax(id,fileIndex) {
         callAjaxDeleteFile(id,fileIndex);
     }
-    function reUploadFileFeAjax(idForm,index,fileAppendId) {
+    function reUploadFileFeAjax(fileAppendId,index,idForm) {
          $("#reloadIndex").val(index);
-        $("#selectedFile").click();
+         $("#fileAppendId").val(fileAppendId);
+         $("#uploadFormId").val(idForm);
+         $("#selectedFile").click();
     }
 
     function deleteFileFeDiv(id) {
@@ -28,9 +30,11 @@
     }
     function ajaxCallUpload(idForm,fileAppendId){
         showWaiting();
-        $("#fileAppendId").val(fileAppendId);
-        $("#uploadFormId").val(idForm);
         var reloadIndex =  $("#reloadIndex").val();
+        if(reloadIndex == -1){
+            $("#fileAppendId").val(fileAppendId);
+        }
+        $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         $.ajax({
             type:"post",
