@@ -20,8 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.Serializable;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +89,13 @@ public class HcsaFileAjaxController {
         String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
         //name
         String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
-        stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").append(fileName)
+        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+        String url ="<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+        fileName = url + fileName +"</a>";
+        stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                append( fileName.replace("pageContext.request.contextPath","/hcsa-licence-web")
+                        .replace("replaceFileAppendIdDown",fileAppendId)
+                        .replace("replaceFileIndexDown",String.valueOf(size)).replace("replaceCsrf",CSRF))
                 .append(" ").append(deleteButtonString.replace("replaceForDelete",fileAppendId).
                                       replace("indexReplace",String.valueOf(size)))
                 .append( reUploadButtonString.replace("replaceForUploadForm",uploadFormId).
@@ -129,7 +137,7 @@ public class HcsaFileAjaxController {
         String index  = ParamUtil.getString(request,"fileIndex");
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
-        if( !map.isEmpty()) {
+        if( !IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
@@ -139,5 +147,52 @@ public class HcsaFileAjaxController {
         log.info("-----------deleteFeCallFile end------------");
 
         return AppConsts.YES;
+    }
+
+    @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("download-session-file start ...."));
+
+        String fileAppendId =  ParamUtil.getString(request,"fileAppendIdDown");
+        String index = (String) ParamUtil.getSessionAttr(request,"fileIndexDown");
+
+        if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
+            if( !IaisCommonUtils.isEmpty(map)) {
+                log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
+                log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
+                File file = map.get(fileAppendId+index);
+                if(file != null){
+                    byte[] fileData = FileUtils.readFileToByteArray(file);
+                    if(fileData != null){
+                        try {
+                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())+"\"");
+                            response.addHeader("Content-Length", "" + fileData.length);
+                            response.setContentType("application/x-octet-stream");
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                        }
+                        OutputStream ops = null;
+                        try {
+                            ops = new BufferedOutputStream(response.getOutputStream());
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
+                        }
+                        try {
+                            ops.write(fileData);
+                            ops.close();
+                            ops.flush();
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
+                        }
+                    }
+                    return;
+                }else {
+                    log.info(StringUtil.changeForLog("------no find file :" +fileAppendId+index +" parh -----------"));
+                }
+                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
+            }
+        }
+        log.debug(StringUtil.changeForLog("download-session-file end ...."));
     }
 }
