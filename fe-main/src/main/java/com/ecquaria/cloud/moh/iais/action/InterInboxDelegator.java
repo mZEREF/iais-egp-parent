@@ -840,17 +840,22 @@ public class InterInboxDelegator {
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
-                String appGroupId = h.getAppGrpId();
-//                if (h.getApplicationType())
-                if (!StringUtil.isEmpty(appGroupId)){
-                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
-                    if (applicationGroupDto != null){
-                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
-                            h.setCanInspection(Boolean.FALSE);
-                        }else{
-                            h.setCanInspection(Boolean.TRUE);
-                        }
-                    }
+//                String appGroupId = h.getAppGrpId();
+////                if (h.getApplicationType())
+//                if (!StringUtil.isEmpty(appGroupId)){
+//                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
+//                    if (applicationGroupDto != null){
+//                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
+//                            h.setCanInspection(Boolean.FALSE);
+//                        }else{
+//                            h.setCanInspection(Boolean.TRUE);
+//                        }
+//                    }
+//                }else{
+//                    h.setCanInspection(Boolean.FALSE);
+//                }
+                if(0==h.getHasSubmitPrefDate()){
+                    h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
                 }

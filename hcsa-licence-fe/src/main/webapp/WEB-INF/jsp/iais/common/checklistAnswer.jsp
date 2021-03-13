@@ -31,14 +31,14 @@
                                         </p>
                                     </td>
 
-                                    <div class="modal fade" id="DeleteTemplateModal${status.index + 1}" tabindex="-1"
+                                    <div class="modal fade " id="DeleteTemplateModal${status.index + 1}" tabindex="-1"
                                          role="dialog" aria-labelledby="regOutsideWindow"
                                          style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-8 col-md-offset-2"
+                                                    <div class="row" style="height:500px;overflow:auto; ">
+                                                        <div class="col-md-10 col-md-offset-2"
                                                              style="width: 100%; margin: 0;white-space:pre-wrap;"><span
                                                                 id="regulationClauseText"
                                                                 style="font-size: 2rem">${item.regulationClause}</span>

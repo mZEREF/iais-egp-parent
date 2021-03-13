@@ -102,6 +102,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         applicationGroupDto.setId(groupId);
         applicationGroupDto.setPrefInspStartDate(sDate);
         applicationGroupDto.setPrefInspEndDate(eDate);
+        applicationGroupDto.setSubmittedPrefDateFlag(true);
 
         //save to fe
         applicationFeClient.doUpDate(applicationGroupDto);

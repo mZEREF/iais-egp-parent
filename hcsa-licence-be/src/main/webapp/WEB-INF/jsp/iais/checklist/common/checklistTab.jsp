@@ -78,7 +78,7 @@
                             <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
                                 <tr>
                                     <td>
-                                        <p>${adhocItem.question}</p>
+                                        <p><c:out value="${adhocItem.question}"></c:out></p>
                                     </td>
                                     <td>
                                         <p><iais:code code="${adhocItem.answerType}"></iais:code></p>

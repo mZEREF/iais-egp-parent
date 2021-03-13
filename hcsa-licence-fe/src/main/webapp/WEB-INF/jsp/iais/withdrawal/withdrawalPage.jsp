@@ -27,7 +27,7 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p><a class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>')">${withdrawAppNo}</a></p>
+                                                    <p><a class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a></p>
                                                 </div>
                                                 <div class="withdraw-delete">
 
@@ -278,7 +278,7 @@
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
                     '                                            <div class="withdraw-info">\n' +
-                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+')">'+appNo+'</a></p>\n' +
+                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+'+'+appNo+')">'+appNo+'</a></p>\n' +
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
                     '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
@@ -303,11 +303,17 @@
         submit("withdrawalStep");
     }
 
-    function toApplicationView(appNo){
+    function toApplicationView(appMaskNo,appNo){
         // let appNo = $(this).closest("p").find(".appNo").html();
-
-        let url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appNo;
-        console.log(url);
+        let url = "";
+        console.log(appMaskNo);
+        var appNoStr = appNo.substr(0,2);
+        console.log(appNoStr);
+        if('AA' == appNoStr){
+            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appMaskNo+"&app_type=ar";
+        }else{
+            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appMaskNo+"&app_type=an";
+        }
         showPopupWindow(url);
     }
     <%--$(".appNo").click(function () {--%>

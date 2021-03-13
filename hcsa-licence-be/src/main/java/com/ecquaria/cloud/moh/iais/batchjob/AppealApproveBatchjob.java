@@ -464,14 +464,19 @@ public class AppealApproveBatchjob {
         o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
         String appId = o.getId();
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
-        String oldLicenceId = licAppCorrelationDto.getLicenceId();
-        o.setNeedNewLicNo(false);
-        o.setOriginLicenceId(oldLicenceId);
-        appealApplicaiton.add(o);
-        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
-        ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
-        a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-        appealApplicationGroupDtos.add(a);
+        if(licAppCorrelationDto!=null){
+            String oldLicenceId = licAppCorrelationDto.getLicenceId();
+            o.setNeedNewLicNo(false);
+            o.setOriginLicenceId(oldLicenceId);
+            appealApplicaiton.add(o);
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
+            ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
+            a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            appealApplicationGroupDtos.add(a);
+        }else {
+            //
+        }
+
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
