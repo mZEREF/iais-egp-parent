@@ -42,7 +42,7 @@ import java.util.Map;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
-public class feUserManagement {
+public class FeUserManagement {
 
     @Autowired
     EicGatewayClient eicGatewayClient;
