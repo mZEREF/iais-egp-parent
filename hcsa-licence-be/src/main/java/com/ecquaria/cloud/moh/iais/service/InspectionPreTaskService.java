@@ -125,4 +125,13 @@ public interface InspectionPreTaskService {
     ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto);
 
     int preInspRfiTogether(ApplicationDto applicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/12
+      * @Param: refNo
+      * @return: void
+      * @Descripation: selfAssMtPdfReport
+      */
+    void selfAssMtPdfReport(String refNo);
 }

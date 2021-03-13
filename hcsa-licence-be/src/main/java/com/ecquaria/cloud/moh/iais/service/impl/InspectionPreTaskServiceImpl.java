@@ -572,7 +572,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 int index = 0;
                 for (ApplicationDto applicationDto : applicationDtos) {
-                    if (index <= 1) {
+                    if (index <= 1 && applicationDto != null) {
+                        log.info(StringUtil.changeForLog("insp history application No." + applicationDto.getApplicationNo()));
                         InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
                         String appId = applicationDto.getId();
                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
@@ -782,6 +783,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         return 0;
+    }
+
+    @Override
+    public void selfAssMtPdfReport(String refNo) {
+        inspectionTaskClient.selfAssMtPdfReport(refNo);
     }
 
     private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {

@@ -362,13 +362,19 @@ public class InspectionPreDelegator {
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO);
         List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
+        //adhoc Checklist and send email
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
             ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
             fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
+        //set Checklist
         if(inspectionChecklist == null){
             inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto));
+        }
+        //generate self report
+        if(taskDto != null) {
+            inspectionPreTaskService.selfAssMtPdfReport(taskDto.getRefNo());
         }
         inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks(), inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
