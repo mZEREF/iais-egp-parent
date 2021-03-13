@@ -1786,6 +1786,7 @@ public class HcsaApplicationDelegator {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+
         AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
@@ -1818,6 +1819,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+
         //set risk score
         setRiskScore(applicationDto,newCorrelationId);
         //send reject email
@@ -2033,6 +2035,7 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
+
         broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
         if (!StringUtil.isEmpty(stageId)) {
@@ -2229,6 +2232,14 @@ public class HcsaApplicationDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto, bpc.process, submissionId);
+        if(!StringUtil.isEmpty(stageId)){
+            if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                    HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                    HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+                //close submit pref insp date
+                broadcastApplicationDto.getApplicationDto().setHasSubmitPrefDate(1);
+            }
+        }
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
