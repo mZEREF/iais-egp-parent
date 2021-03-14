@@ -3,11 +3,15 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,11 @@ import java.util.Map;
 @Delegator(value = "giroDeductionBeDelegator")
 @Slf4j
 public class GiroDeductionBeDelegator {
-
+    private final FilterParameter premiseFilterParameter = new FilterParameter.Builder()
+            .clz(GiroDeductionDto.class)
+            .searchAttr("GiroSearchParam")
+            .resultAttr("GiroSearchResult")
+            .sortField("APP_GROUP_NO").build();
     @Autowired
     private GiroDeductionBeService giroDeductionBeService;
 
@@ -44,6 +52,8 @@ public class GiroDeductionBeDelegator {
     public void beGiroDeductionStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
+        premiseFilterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
+        premiseFilterParameter.setPageNo(1);
     }
 
     /**
@@ -64,6 +74,9 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
+
+
+
     }
 
     /**

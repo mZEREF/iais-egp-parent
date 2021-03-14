@@ -529,11 +529,15 @@
 
     <sql key="userFeAccount"  remarks="userFeAccount">
         <![CDATA[
-			SELECT T1.id,T1.ID_NO,T1.ID_TYPE,T1.SALUTATION,T1.DISPLAY_NAME,T1.DESIGNATION,
+			SELECT T1.id,T1.ID_NO,T1.ID_TYPE,T1.SALUTATION,T1.DISPLAY_NAME,T1.DESIGNATION,T1.ORGANIZATION_ID,T4.NAME as licenseeName,
 			T1.STATUS,T3.ROLE_ID
 			from user_account T1
-			left join (SELECT ROLE_ID,USER_ACCT_ID from user_role GROUP BY user_role.ROLE_ID,user_role.USER_ACCT_ID) T3 on T1.id = T3.USER_ACCT_ID
+			left join (SELECT MIN(ROLE_ID) as ROLE_ID,USER_ACCT_ID as USER_ACCT_ID from user_role GROUP BY USER_ACCT_ID) T3 on T1.id = T3.USER_ACCT_ID
+			left join licensee T4 on T4.ORGANIZATION_ID = T1.ORGANIZATION_ID
 			WHERE T1.user_domain = 'internet'
+			<#if licenseeName??> and T4.NAME like :licenseeName</#if>
+			<#if designation??> and T1.DESIGNATION = :designation</#if>
+			<#if idNo??> and T1.ID_NO = :idNo</#if>
         ]]>
     </sql>
 </sqls>

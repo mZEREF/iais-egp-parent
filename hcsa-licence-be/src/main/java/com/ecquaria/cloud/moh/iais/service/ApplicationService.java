@@ -70,4 +70,6 @@ public interface ApplicationService {
     boolean closeTaskWhenWhAppApprove(String appId);
 
     EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);
+
+    void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole) throws Exception;
 }

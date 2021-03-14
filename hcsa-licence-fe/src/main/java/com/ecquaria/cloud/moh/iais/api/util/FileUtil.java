@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.jcraft.jsch.ChannelSftp;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -31,6 +32,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -292,5 +294,55 @@ public class FileUtil {
 			}
 		}
 		return "";
+	}
+
+	public static List<String> getRemoteFileNames(String fileName, String remotePath){
+		File[] files = new File(remotePath).listFiles();
+		if(files == null){
+			return null;
+		}
+		List<String> remoteFileNames = new ArrayList<>(3);
+		for(File file :files) {
+			String sftpName = file.getName();
+			if (sftpName.indexOf(fileName) != -1) {
+				remoteFileNames.add(sftpName);
+			}
+
+			String sftpfullName = sftpName;
+			String[] sftpfullNmaes = sftpName.split("\\.");
+			if (sftpfullNmaes != null && sftpfullNmaes.length > 0) {
+				sftpfullName = sftpfullNmaes[0];
+			}
+			if (fileName.equals(sftpfullName)) {
+				remoteFileNames.clear();
+				remoteFileNames.add(sftpName);
+				break;
+			}
+			//
+		}
+		return remoteFileNames;
+	}
+
+	public static void deleteFilesByFileNames(List<String> fileNames,String downPath){
+		if(!IaisCommonUtils.isEmpty(fileNames)){
+			log.info(StringUtil.changeForLog("------------downpath :" + downPath + "----------------"));
+			File[] files = new File(downPath).listFiles();
+			if(files != null){
+				for(File file :files){
+					for(String fileName : fileNames){
+						if(fileName.equalsIgnoreCase(file.getName())){
+							if(file.isFile()){
+								if(!file.delete()){
+									log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
+								}
+							}
+						}
+					}
+
+				}
+			}else {
+				log.info(StringUtil.changeForLog("------------downpath :" + downPath + " is no files----------------"));
+			}
+		}
 	}
 }

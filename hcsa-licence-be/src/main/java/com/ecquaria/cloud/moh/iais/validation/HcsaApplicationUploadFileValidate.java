@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,31 +42,11 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
             }
             //type
             if(!fileType){
-                String type = getFileType(applicationViewDto.getSystemFileType());
+                String type =  FileUtils.getFileTypeMessage(applicationViewDto.getSystemFileType());
                 errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018",type,"fileType"));
             }
         }
         return errMap;
     }
 
-    private String getFileType(String type){
-        String[] fileTypelist = type.split(",");
-        if(fileTypelist.length >5) {
-            StringBuilder stringBiff = new StringBuilder();
-            stringBiff.append("<br/>");
-            for(int indexlist = 0;indexlist <fileTypelist.length; indexlist++){
-                if(indexlist== fileTypelist.length-1){
-                    stringBiff .append( fileTypelist[indexlist]);
-                }  else if(indexlist >0 && indexlist %5 == 0) {
-                    stringBiff .append(fileTypelist[indexlist]).append(",<br/>");
-
-                }else {
-                    stringBiff.append(fileTypelist[indexlist]).append(',') ;
-                }
-            }
-            return stringBiff.toString();
-        }else {
-            return "<br/>" + type;
-        }
-    }
 }

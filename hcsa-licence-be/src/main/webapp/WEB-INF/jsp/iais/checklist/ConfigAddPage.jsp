@@ -45,7 +45,7 @@
                 <div class="form-group">
                     <iais:field value="Service" id="serviceNameField"></iais:field>
                     <div class="col-md-5">
-                        <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Please Select"
+                        <iais:select name="svcName" id="svcName" options="checklist_svc_name_select" firstOption="Please Select"
                                      value="${svcName}"></iais:select>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <iais:field value="Service Sub-Type" id="subTypeField"></iais:field>
                     <div class="col-md-5">
-                        <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect"
+                        <iais:select name="svcSubType" id="svcSubType" options="checklist_config_subtype_select"
                                      firstOption="Please Select" value="${svcSubType}"></iais:select>
                     </div>
                 </div>

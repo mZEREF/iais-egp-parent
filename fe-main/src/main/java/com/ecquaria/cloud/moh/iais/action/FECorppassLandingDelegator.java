@@ -121,7 +121,6 @@ public class FECorppassLandingDelegator {
         userSession.setScp(scp);
 
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
-
         Optional<OrganizationDto> optional = Optional.ofNullable(orgUserManageService.findOrganizationByUen(uen));
         if (optional.isPresent()) {
             OrganizationDto orgn = optional.get();
@@ -186,15 +185,11 @@ public class FECorppassLandingDelegator {
         String uen = userSession.getUenNo();
         String identityNo =  userSession.getIdentityNo();
         String scp = userSession.getScp();
-
-        log.info("corppassCallBack=====loginUser======>>>Start");
-
         userSession =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
-        if (userSession != null){
+        if (Optional.ofNullable(userSession).isPresent()){
             userSession.setScp(scp);
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
-
             //normal user also can login  (2020/12)
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "Y");
             User user = new User();
@@ -203,6 +198,8 @@ public class FECorppassLandingDelegator {
             user.setId(userSession.getUserId());
             user.setIdentityNo(userSession.getIdentityNo());
             FeLoginHelper.initUserInfo(bpc.request, user);
+            //issue 68766
+            orgUserManageService.setPermitLoginStatusInUenTrack(uen, identityNo, false);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");

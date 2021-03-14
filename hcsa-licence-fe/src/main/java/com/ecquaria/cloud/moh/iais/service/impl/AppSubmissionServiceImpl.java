@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -282,6 +283,48 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos) {
         return licenceClient.setPremAdditionalInfo(menuLicenceDtos).getEntity();
+    }
+
+    @Override
+    public List<GiroAccountInfoDto> getGiroAccountByHciCodeAndOrgId(List<String> hciCode, String orgId) {
+        log.debug("AppSubmissionServiceImpl getGiroAccount [hciCode] hciCode is empty: {},[orgId] orgId:{}",IaisCommonUtils.isEmpty(hciCode) ,orgId);
+        return licenceClient.getGiroAccountByHciCodeAndOrgId(hciCode,orgId).getEntity();
+    }
+
+    @Override
+    public boolean checkIsGiroAcc(List<AppGrpPremisesDto> appGrpPremisesDtos, String orgId) {
+        boolean isGiroAcc = false;
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            List<String> hciCodeList = IaisCommonUtils.genNewArrayList();
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                String hciCode = appGrpPremisesDto.getHciCode();
+                if(!StringUtil.isEmpty(hciCode)){
+                    hciCodeList.add(hciCode);
+                }
+            }
+            if(hciCodeList.size() > 0 && !StringUtil.isEmpty(orgId)){
+                log.debug("checkIsGiroAcc [orgId] orgId is {}",orgId);
+                List<GiroAccountInfoDto> giroAccountInfoDtos = getGiroAccountByHciCodeAndOrgId(hciCodeList,orgId);
+                if(giroAccountInfoDtos != null && giroAccountInfoDtos.size() > 1){
+                    String targetAcctNo = giroAccountInfoDtos.get(0).getAcctNo();
+                    log.debug("checkIsGiroAcc [targetAcctNo] targetAcctNo is {}",targetAcctNo);
+                    if(!StringUtil.isEmpty(targetAcctNo)){
+                        for(int i=1;i<giroAccountInfoDtos.size();i++){
+                            String acctNo = giroAccountInfoDtos.get(i).getAcctNo();
+                            log.debug("checkIsGiroAcc [acctNo] acctNo is {}",acctNo);
+                            if(!StringUtil.isEmpty(acctNo) && !targetAcctNo.equals(acctNo)){
+                                break;
+                            }
+                            if(i == giroAccountInfoDtos.size()-1){
+                                isGiroAcc = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        log.debug("checkIsGiroAcc [isGiroAcc] isGiroAcc {}",isGiroAcc);
+        return isGiroAcc;
     }
 
     @Override

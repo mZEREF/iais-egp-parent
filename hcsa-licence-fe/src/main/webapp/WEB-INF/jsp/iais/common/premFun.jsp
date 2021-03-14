@@ -1133,6 +1133,7 @@
     }
 
     var addOperational = function () {
+        $('.addOperational').unbind('click');
         $('.addOperational').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1451,7 +1452,7 @@
 
                     //remove field name
                     // $contentDivEle.find('.weeklyDiv:eq(0) .div:eq(0) div.col-md-12:eq(0)').remove();
-                    console.log($contentDivEle.find('.weeklyDiv:eq(0)').children('div:eq(0)').children('div:eq(0)').html());
+                    //console.log($contentDivEle.find('.weeklyDiv:eq(0)').children('div:eq(0)').children('div:eq(0)').html());
                     $contentDivEle.find('.weeklyDiv:eq(0)').children('div:eq(0)').children('div:eq(0)').remove();
                     //remove del btn
                     $contentDivEle.find('.weeklyDel').remove();

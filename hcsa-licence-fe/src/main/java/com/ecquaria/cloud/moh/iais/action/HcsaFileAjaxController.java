@@ -1,14 +1,18 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.sz.commons.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.Serializable;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,18 +35,36 @@ import java.util.Map;
 @Controller
 @Slf4j
 public class HcsaFileAjaxController {
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     public  final static String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
+    public  final static String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
     @ResponseBody
     @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile, @RequestParam("fileAppendId")String fileAppendId,@RequestParam("uploadFormId") String uploadFormId,@RequestParam("reloadIndex") int reloadIndex){
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId);
+        Integer size;
         if(map == null){
+            size = 0;
             map = IaisCommonUtils.genNewHashMap();
+         }else {
+            size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX);
+        }
+        String errerMesssage = getErrorMessage(selectedFile);
+        MessageDto messageCode = new MessageDto();
+         if(!StringUtil.isEmpty(errerMesssage)){
+             messageCode.setMsgType("N");
+             messageCode.setDescription(errerMesssage);
+             return JsonUtil.toJson(messageCode);
+         }else {
+             messageCode.setMsgType("Y");
          }
-         int size = map.size();
          try{
              if(reloadIndex == -1){
+                 ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
              }else {
                  map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
@@ -63,7 +89,13 @@ public class HcsaFileAjaxController {
         String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
         //name
         String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
-        stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").append(fileName)
+        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+        String url ="<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+        fileName = url + fileName +"</a>";
+        stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                append( fileName.replace("pageContext.request.contextPath","/hcsa-licence-web")
+                        .replace("replaceFileAppendIdDown",fileAppendId)
+                        .replace("replaceFileIndexDown",String.valueOf(size)).replace("replaceCsrf",CSRF))
                 .append(" ").append(deleteButtonString.replace("replaceForDelete",fileAppendId).
                                       replace("indexReplace",String.valueOf(size)))
                 .append( reUploadButtonString.replace("replaceForUploadForm",uploadFormId).
@@ -71,12 +103,32 @@ public class HcsaFileAjaxController {
                         replace("indexReplace",String.valueOf(size))
                 ).append("</Div>")
         ;
-        MessageDto messageCode = new MessageDto();
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.toJson(messageCode);
     }
 
+    private  String getErrorMessage(MultipartFile selectedFile){
+        if(selectedFile.isEmpty()){
+            return MessageUtil.getMessageDesc("GENERAL_ACK018");
+        }
+        int maxSize = systemParamConfig.getUploadFileLimit();
+        String fileTypesString = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
+        List<String> fileTypes = Arrays.asList(fileTypesString.split(","));
+        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile,fileTypes,(maxSize * 1024 *1024l));
+        Boolean fileSize = booleanMap.get("fileSize");
+        Boolean fileType = booleanMap.get("fileType");
+        //size
+        if(!fileSize){
+            return MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf( maxSize),"sizeMax");
+        }
+        //type
+        if(!fileType){
+            String type = FileUtils.getFileTypeMessage(fileTypesString);
+            return MessageUtil.replaceMessage("GENERAL_ERR0018",type,"fileType");
+        }
+        return "";
+    }
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     @ResponseBody
     public String deleteFeCallFile(HttpServletRequest request){
@@ -85,13 +137,62 @@ public class HcsaFileAjaxController {
         String index  = ParamUtil.getString(request,"fileIndex");
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
-        if( !map.isEmpty()) {
+        if( !IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
+            ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
             }
         }
         log.info("-----------deleteFeCallFile end------------");
+
         return AppConsts.YES;
+    }
+
+    @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("download-session-file start ...."));
+
+        String fileAppendId =  ParamUtil.getString(request,"fileAppendIdDown");
+        String index = (String) ParamUtil.getSessionAttr(request,"fileIndexDown");
+
+        if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
+            if( !IaisCommonUtils.isEmpty(map)) {
+                log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
+                log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
+                File file = map.get(fileAppendId+index);
+                if(file != null){
+                    byte[] fileData = FileUtils.readFileToByteArray(file);
+                    if(fileData != null){
+                        try {
+                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())+"\"");
+                            response.addHeader("Content-Length", "" + fileData.length);
+                            response.setContentType("application/x-octet-stream");
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                        }
+                        OutputStream ops = null;
+                        try {
+                            ops = new BufferedOutputStream(response.getOutputStream());
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
+                        }
+                        try {
+                            ops.write(fileData);
+                            ops.close();
+                            ops.flush();
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
+                        }
+                    }
+                    return;
+                }else {
+                    log.info(StringUtil.changeForLog("------no find file :" +fileAppendId+index +" parh -----------"));
+                }
+                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
+            }
+        }
+        log.debug(StringUtil.changeForLog("download-session-file end ...."));
     }
 }

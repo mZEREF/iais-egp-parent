@@ -65,19 +65,17 @@
           </div>
         </div>
 
-
-        <br><br>
         <div class="form-group">
           <label class="col-md-2" style="padding-top: 15px">Service</label>
           <div class="col-md-5">
-            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${param.svcName}"></iais:select>
+            <iais:select name="svcName" id="svcName" options = "checklist_svc_name_select" firstOption="Please Select" value="${param.svcName}"></iais:select>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-md-2" style="padding-top: 15px">Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
+            <iais:select name="svcSubType" id="svcSubType"   options = "checklist_config_subtype_select" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
           </div>
         </div>
 

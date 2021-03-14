@@ -151,6 +151,17 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, null);
+
+        String inbox_ack016 = MessageUtil.getMessageDesc("INBOX_ACK016");
+        String inbox_ack017 = MessageUtil.getMessageDesc("INBOX_ACK017");
+        String inbox_ack018 = MessageUtil.getMessageDesc("INBOX_ACK018");
+        String inbox_ack019 = MessageUtil.getMessageDesc("INBOX_ACK019");
+
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack016",inbox_ack016);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack017",inbox_ack017);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack018",inbox_ack018);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack019);
+
     }
 
     public void perDate(BaseProcessClass bpc) {

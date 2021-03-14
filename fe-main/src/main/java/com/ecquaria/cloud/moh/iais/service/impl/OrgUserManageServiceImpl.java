@@ -478,4 +478,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public Boolean validatePwd(FeUserDto feUserDto) {
         return feUserClient.validatePwd(feUserDto).getEntity();
     }
+
+    @Override
+    public void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit) {
+        feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
+    }
+
 }

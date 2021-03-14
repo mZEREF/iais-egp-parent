@@ -10,11 +10,11 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
-	
+
 	private static final String DELEGATOR ="MohRequestForChangeMenuDelegator";
 
 	public void preparePersonnelList_OnStepProcess_0() throws Exception {
@@ -33,11 +33,11 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPersonnelEdit", this);
 	}
 
-	public void init_OnStepProcess_0 () throws Exception { 
+	public void init_OnStepProcess_0 () throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preparePersonnel", this);
-	} 
+	}
 
-	public void controlSwitch_OnStepProcess_0 () throws Exception { 
+	public void controlSwitch_OnStepProcess_0 () throws Exception {
 		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
 

@@ -198,7 +198,7 @@ public class EmailAjaxController {
         List<String> emailAddress = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(email)){
             List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
-            List<String> commaemaillist = Arrays.asList(email.split(" "));
+            List<String> commaemaillist = Arrays.asList(email.split("\n"));
             if(rnemaillist.size() > commaemaillist.size() ){
                 emailAddress = rnemaillist;
             }else{

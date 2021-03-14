@@ -474,10 +474,18 @@ public class AppealApproveBatchjob {
             a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
             appealApplicationGroupDtos.add(a);
         }else {
-            //
+            //if licence no generate to do
+           /* ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
+            if(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA.equals(applicationGroupDto.getStatus())){
+                return;
+            }
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+            if(appPremisesCorrelationDto!=null){
+                AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getAppGrpPremise(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
+                appGrpPremisesEntityDto.setHciName(appealDto.getNewHciName());
+
+            }*/
         }
-
-
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
     private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,

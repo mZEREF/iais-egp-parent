@@ -32,7 +32,7 @@
 <%--                                        <div class="modal-title" style="font-size: 2rem;"></div>--%>
 <%--                                    </div>--%>
                                     <div class="modal-body">
-                                        <div class="row">
+                                        <div class="row" style="height:500px;overflow:auto;">
                                             <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span style="font-size: 2rem">${item.incqDto.regClause}</span></div>
                                         </div>
                                     </div>

@@ -96,18 +96,27 @@
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10 ">
-                                            <div class="file-upload-gp">
-                                        <span>
-                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>
-                                        </span>
+                                        <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
+                                            <div class="document-upload-list">
+                                                <div class="file-upload-gp">
+                                                    <input id="selectFile" name="selectFile" type="file" class="iptFile" style="display: none;">
+                                                    <div id="uploadFileBox" class="file-upload-gp">
+                                                        <c:forEach var="attachmentDto" items="${giroAcctFileDto.attachmentDtos}"
+                                                                   varStatus="docStatus">
+                                                            <p class="fileList">
+                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${attachmentDto.id}"/>&fileRepoName=${attachmentDto.docName}">${attachmentDto.docName}</a>
+                                                                <br>
+                                                            </p>
+                                                        </c:forEach>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </iais:row>
                                 </iais:section>
                                 <iais:action style="text-align:right;">
-                                    <button class="btn btn-primary" type="button"  onclick="javascript:doBack()">Back</button>
-                                    <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <button  class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                                 </iais:action>
                             </div>
                         </div>

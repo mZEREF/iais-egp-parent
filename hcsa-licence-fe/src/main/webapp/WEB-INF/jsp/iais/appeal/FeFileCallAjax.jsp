@@ -6,9 +6,11 @@
     function deleteFileFeAjax(id,fileIndex) {
         callAjaxDeleteFile(id,fileIndex);
     }
-    function reUploadFileFeAjax(idForm,index,fileAppendId) {
+    function reUploadFileFeAjax(fileAppendId,index,idForm) {
          $("#reloadIndex").val(index);
-        $("#selectedFile").click();
+         $("#fileAppendId").val(fileAppendId);
+         $("#uploadFormId").val(idForm);
+         $("#selectedFile").click();
     }
 
     function deleteFileFeDiv(id) {
@@ -27,9 +29,12 @@
         )
     }
     function ajaxCallUpload(idForm,fileAppendId){
-        $("#fileAppendId").val(fileAppendId);
-        $("#uploadFormId").val(idForm);
+        showWaiting();
         var reloadIndex =  $("#reloadIndex").val();
+        if(reloadIndex == -1){
+            $("#fileAppendId").val(fileAppendId);
+        }
+        $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         $.ajax({
             type:"post",
@@ -41,16 +46,26 @@
             contentType: false,
             success: function (data) {
                 if(data != null && data.description != null){
-                    if(reloadIndex != -1){
-                        deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
-                        $("#reloadIndex").val(-1);
+                    if( data.msgType == "Y"){
+                        if(reloadIndex != -1){
+                            $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
+                            deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
+                            $("#reloadIndex").val(-1);
+                            $("#"+fileAppendId+"Div"+reloadIndex+"Copy").after(data.description);
+                            deleteFileFeDiv(fileAppendId+"Div"+reloadIndex+"Copy");
+                        }else {
+                            $("#"+fileAppendId+"ShowId").append(data.description);
+                        }
+                        $("#"+fileAppendId+"ErrorMsg").html("");
+                    }else {
+                        $("#"+fileAppendId+"ErrorMsg").html(data.description);
                     }
-                    $("#"+fileAppendId+"ShowId").append(data.description);
                 }
             },
             error: function (msg) {
                 alert("error");
             }
         });
+        dismissWaiting();
     }
 </script>

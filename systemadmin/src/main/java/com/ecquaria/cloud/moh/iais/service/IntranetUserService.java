@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.role.Role;
 import org.dom4j.DocumentException;
@@ -19,11 +20,14 @@ import java.util.Map;
  */
 public interface IntranetUserService {
     void createIntranetUser(OrgUserDto orgUserDto);
+    OrgUserDto createIntrenetUser(OrgUserDto orgUserDto);
     void createIntranetUsers(List<OrgUserDto> orgUserDtos);
+    FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);
     OrgUserDto findIntranetUserById(String id);
+    List<LicenseeDto> findLicenseesFe();
     OrgUserDto findIntranetUserByUserId(String userId);
     Boolean UserIsExist(String userId);
 
@@ -33,7 +37,7 @@ public interface IntranetUserService {
     ClientUser getUserByIdentifier(String userId,String userDomain);
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
-    Boolean removeEgpRoles(String userDomain,String userId,List<String> roleIds);
+    void removeRoleByAccount(String accountId);
     void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
     String getWrkGrpById(String groupId);
@@ -42,6 +46,7 @@ public interface IntranetUserService {
     List<String> getRoleIdByUserId(String userId);
 
     String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos);
+    Boolean removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     List<OrgUserRoleDto> retrieveRolesByuserAccId (String userAccId);
     List<OrgUserRoleDto> getOrgUserRoleDtoById(List<String> ids);
     List<Role> getRolesByDomain(String domain);

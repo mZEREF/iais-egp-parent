@@ -62,9 +62,9 @@
               <div class="application-tab-footer">
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <c:if test="${appeal!='appeal'}">
-                      <a id = "Back" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic" ><em class="fa fa-angle-left"></em> Back</a>
-                    </c:if>
+                      <c:if test="${appeal!='appeal'}">
+                        <a id = "Back" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic" ><em class="fa fa-angle-left"></em> Back</a>
+                      </c:if>
                   </div>
                   <div class="col-xs-12 col-sm-3">
                   </div>

@@ -378,7 +378,9 @@ public class InspecAssignTaskDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "commonRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        loginContext.setCurRoleId(roleId);
+        if(loginContext != null) {
+            loginContext.setCurRoleId(roleId);
+        }
         if(!StringUtil.isEmpty(roleId)){
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);

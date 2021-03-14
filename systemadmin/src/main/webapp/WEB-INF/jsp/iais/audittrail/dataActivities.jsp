@@ -21,123 +21,123 @@
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
         <input type="hidden" name="operationType" value="${param.operationType}">
-        <br><br><br>
+            <br><br><br>
         <div class="col-lg-12 col-xs-12"><div class="center-content"><div class="row">
-            <div id="control--printerFriendly--33" class="section control " style="overflow: visible;">
-                <div class="control-set-font control-font-header section-header">
-                    <h2>Search Param</h2>
-                </div>
-
-                <c:choose>
-                    <c:when test="${!empty auditLogDetailView.searchParam}">
-                        <div class="table-responsive col-xs-12">
-                            <div class="table-gp">
-                                <table class="table">
-                                    <thead>
-                                    <tr><th>Field</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="msg" items="${auditLogDetailView.searchParam}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div id="control--printerFriendly--33" class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>Search Param</h2>
                         </div>
-                    </c:when>
-                    <c:otherwise>
-                        <tr><td>No record found.</td></tr>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+
+                        <c:choose>
+                            <c:when test="${!empty auditLogDetailView.searchParam}">
+                                <div class="table-responsive col-xs-12">
+                                    <div class="table-gp">
+                                        <table class="table">
+                                            <thead>
+                                            <tr><th>Field</th><th>Value</th></tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="msg" items="${auditLogDetailView.searchParam}">
+                                                <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
+                                                </td></tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <tr><td>No record found.</td></tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+        <br>
+                    <div id="control--printerFriendly--34" class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>Before Data</h2>
+                        </div>
+
+                        <c:choose>
+                            <c:when test="${!empty auditLogDetailView.beforeChange}">
+                                <div class="table-responsive col-xs-12">
+                                    <div class="table-gp">
+                                        <table class="table">
+                                            <thead>
+                                            <tr><th>Field</th><th>Value</th></tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="msg" items="${auditLogDetailView.beforeChange}">
+                                                <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
+                                                </td></tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <tr><td>No record found.</td></tr>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </div>
             <br>
-            <div id="control--printerFriendly--34" class="section control " style="overflow: visible;">
-                <div class="control-set-font control-font-header section-header">
-                    <h2>Before Data</h2>
-                </div>
-
-                <c:choose>
-                    <c:when test="${!empty auditLogDetailView.beforeChange}">
-                        <div class="table-responsive col-xs-12">
-                            <div class="table-gp">
-                                <table class="table">
-                                    <thead>
-                                    <tr><th>Field</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="msg" items="${auditLogDetailView.beforeChange}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div id="control--printerFriendly--35" class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>After Data</h2>
                         </div>
-                    </c:when>
-                    <c:otherwise>
-                        <tr><td>No record found.</td></tr>
-                    </c:otherwise>
-                </c:choose>
-
-            </div>
-            <br>
-            <div id="control--printerFriendly--35" class="section control " style="overflow: visible;">
-                <div class="control-set-font control-font-header section-header">
-                    <h2>After Data</h2>
-                </div>
-                <c:choose>
-                    <c:when test="${!empty auditLogDetailView.afterChange}">
-                        <div class="table-responsive col-xs-12">
-                            <div class="table-gp">
-                                <table class="table">
-                                    <thead>
-                                    <tr><th>Field</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="msg" items="${auditLogDetailView.afterChange}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <tr><td>No record found.</td></tr>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+                        <c:choose>
+                            <c:when test="${!empty auditLogDetailView.afterChange}">
+                                <div class="table-responsive col-xs-12">
+                                    <div class="table-gp">
+                                        <table class="table">
+                                            <thead>
+                                            <tr><th>Field</th><th>Value</th></tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="msg" items="${auditLogDetailView.afterChange}">
+                                                <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
+                                                </td></tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <tr><td>No record found.</td></tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
 
             <br>
-            <div  class="section control " style="overflow: visible;">
-                <div class="control-set-font control-font-header section-header">
-                    <h2>Validation Fail Detail</h2>
-                </div>
-                <c:choose>
-                    <c:when test="${!empty auditLogDetailView.errorMsg}">
-                        <div class="table-responsive col-xs-12">
-                            <div class="table-gp">
-                                <table class="table">
-                                    <thead>
-                                    <tr><th>Field</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="msg" items="${auditLogDetailView.errorMsg}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div  class="section control " style="overflow: visible;">
+                        <div class="control-set-font control-font-header section-header">
+                            <h2>Validation Fail Detail</h2>
                         </div>
-                    </c:when>
-                    <c:otherwise>
-                        <tr><td>No record found.</td></tr>
-                    </c:otherwise>
-                </c:choose>
-            </div></div></div>
+                        <c:choose>
+                            <c:when test="${!empty auditLogDetailView.errorMsg}">
+                                <div class="table-responsive col-xs-12">
+                                    <div class="table-gp">
+                                        <table class="table">
+                                            <thead>
+                                            <tr><th>Field</th><th>Value</th></tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="msg" items="${auditLogDetailView.errorMsg}">
+                                                <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
+                                                </td></tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <tr><td>No record found.</td></tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </div></div></div>
         </div>
         <br>
         <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>

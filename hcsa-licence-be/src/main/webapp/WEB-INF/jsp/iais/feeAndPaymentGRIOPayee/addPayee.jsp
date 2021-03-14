@@ -13,10 +13,20 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <div class="center-content">
             <div class="intranet-content">
                 <div class="row form-horizontal">
@@ -113,39 +123,23 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="GIRO Form :" mandatory="true"/>
-                                        <div class="col-sm-7 col-md-6 col-xs-10">
-                                            <div class="file-upload-gp">
-                                                <input class="hidden validFlag" type="hidden" name="commValidFlag" <c:if test="${docDto.passDocValidate}">value="Y"</c:if> <c:if test="${!docDto.passDocValidate}">value="N"</c:if>/>
-                                                <input class="hidden delFlag" type="hidden" name="commDelFlag" value="Y"/>
-                                                <span>
-                                                <c:choose>
-                                                    <c:when test="${docDto.passDocValidate}">
-                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${docDto.fileRepoId}"/>&fileRepoName=${docDto.docName}">${docDto.docName}</a>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        ${docDto.docName}
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </span>
-                                                <c:choose>
-                                                    <c:when test="${docDto.docName == '' || docDto.docName == null }">
-                                                        <span class="existFile delBtn "></span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                    <span class="existFile delBtn ">
-                                                    &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
-                                                </span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <br/>
-                                                <input class="selectedFile commDoc" id="commonDoc"
-                                                       name="UploadFile" type="file"
-                                                       style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
-                                                       aria-label="selectedFile">
-                                                <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
-                                                <span name="iaisErrorMsg" class="error-msg"
-                                                      id="error_UploadFile"></span>
+                                        <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
+                                        <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
+                                            <div class="document-upload-list">
+                                                <div class="file-upload-gp">
+                                                    <input id="selectFile" name="selectFile" type="file" class="iptFile" style="display: none;">
+                                                    <div id="uploadFileBox" class="file-upload-gp">
+                                                        <c:forEach var="attachmentDto" items="${giroAcctFileDto.attachmentDtos}"
+                                                                   varStatus="status">
+                                                            <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                        </c:forEach>
+                                                    </div>
+                                                    <a class="btn btn-file-upload btn-secondary" href="#">Upload</a><br>
+                                                    <span name="iaisErrorMsg" class="error-msg"
+                                                          id="error_UploadFile"></span>
+                                                    <ul class="upload-enclosure-ul">
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </iais:row>
@@ -164,54 +158,95 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
+    $('#selectFile').change(function (event) {
+        var maxFileSize = $('#configFileSize').val();
+        console.log('maxFileSize : '+maxFileSize);
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
+        console.log(error)
+        if (error == "N"){
+            $('#error_UploadFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $("#selectFile").val('');
+            $(".filename").html("");
+        }else if(error == "Y"){
+            if("Y" == validateAllFileSize()){
+                callAjaxUploadFile();
+                $('#error_UploadFile').html('');
+            }else{
+                $('#error_UploadFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+                $("#selectFile").val('');
+            }
+        }
+    });
+
+    function validateAllFileSize(){
+        var maxSize = $('#configFileSize').val();
+        var fileSize = (Math.floor(getAllFileSize() / 1024));
+        console.log('all file size : ' + fileSize);
+        if(fileSize >= maxSize){
+            return "N";
+            console.log('validate all fileSize flag : N');
+        }
+        console.log('validate all fileSize flag : Y');
+        return "Y";
     }
 
-    $('.selectedFile').change(function () {
-        var file = $(this).val();
-        $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
-        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input.validFlag').val('N');
-    });
-
-    $('.delBtn').click(function () {
-        $(this).parent().children('span:eq(0)').html('');
-        $(this).parent().children('span:eq(0)').next().html();
-        $(this).parent().children('span:eq(0)').next().addClass("hidden");
-        $(this).parent().children('input.selectedFile').val('');
-        $(this).parent().children('input.validFlag').val('N');
-        $(this).parent().children('input.delFlag').val('N');
-
-    });
-
-    $('.commDoc').change(function () {
-        var maxFileSize = $('#sysFileSize').val();
-        var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
-        if (error == "N"){
-            $(this).closest('.file-upload-gp').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
-            $(this).closest('.file-upload-gp').find('span.delBtn').trigger('click');
-            dismissWaiting();
-        }else{
-            $(this).closest('.file-upload-gp').find('.error-msg').html('');
-            dismissWaiting();
-        }
-
-    });
-
-    function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
-        var fileV = $fileEle.val();
-        var file = $fileEle.get(0).files[0];
+    function getAllFileSize(){
+        var allSize = 0;
+        $('input[name="fileSize"]').each(function(){
+            allSize += Math.round($(this).val());
+        });
+        var fileId= '#selectFile';
+        var fileV = $(fileId).val();
+        var file = $(fileId).get(0).files[0];
+        console.log(fileV)
+        console.log(file)
+        console.log(file.size / (1024))
+        var currentFileSize = 0;
         if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            return "E";
+            currentFileSize = 0;
+        }else{
+            currentFileSize = Math.round(file.size / (1024)) + Math.round(allSize);
+            console.log('test currentFileSize1 : ' + currentFileSize);
         }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= maxSize){
-            return "N";
-        }
-        return "Y";
+        console.log('currentFileSize2 : ' + currentFileSize);
+        console.log('all size : ' + allSize);
+        return currentFileSize;
+    }
+
+    function writeMessageDeleteFile(deleteWriteMessageFileId){
+        showWaiting();
+        console.log(deleteWriteMessageFileId)
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/deleteGiroFromFile",
+            data: {deleteWriteMessageFileId:deleteWriteMessageFileId},
+            dataType: "text",
+            success: function (data) {
+                $('#uploadFileBox').html(data);
+                dismissWaiting();
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
+    }
+
+    function callAjaxUploadFile(){
+        var formData = new FormData($("#mainForm")[0]);
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/uploadGiroFromFile",
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            dataType: "text",
+            success: function (data) {
+                $('#uploadFileBox').html(data);
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
     }
 </script>

@@ -91,9 +91,9 @@
                 <h3>
                   <span>Search Results</span>
                 </h3>
-                <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                 <div class="table-gp">
                   <table class="table application-group">
+                    <iais:pagination  param="GiroSearchParam" result="GiroSearchResult"/>
                     <thead>
                     <tr align="center">
                       <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
@@ -140,7 +140,7 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Search</button>
+                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>
@@ -191,7 +191,7 @@
         $('input[name="bankAccountNo"]').val("");
         $('input[name="paymentRefNo"]').val("");
         $('input[name="paymentAmount"]').val("");
-        $('input[name="paymentDescription"]').val("");
+        $('textarea[name="paymentDescription"]').val("");
     }
 
     function giroDeductionSubmit(action){
