@@ -145,33 +145,27 @@
                                                                     <td class="col-xs-6" align="right">Licensee Name (Company)</td>
                                                                     <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>
                                                                 </tr>
-                                                                <tr>
-                                                                    <td align="right">Authorised Person Name</td>
-                                                                    <td>&nbsp;Mo Delan</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Authorised Person ID</td>
-                                                                    <td>&nbsp;S0002491J (NRIC)</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Authorised Person Name</td>
-                                                                    <td>&nbsp;Shun Qiu</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Authorised Person ID</td>
-                                                                    <td>&nbsp;S7290054E (NRIC)</td>
-                                                                </tr>
 
-                                                                    <%--                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">--%>
-                                                                    <%--                                                        <tr>--%>
-                                                                    <%--                                                            <td align="right">Authorised Person Name</td>--%>
-                                                                    <%--                                                            <td>&nbsp;${person.name}</td>--%>
-                                                                    <%--                                                        </tr>--%>
-                                                                    <%--                                                        <tr>--%>
-                                                                    <%--                                                            <td align="right">Authorised Person ID</td>--%>
-                                                                    <%--                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>--%>
-                                                                    <%--                                                        </tr>--%>
-                                                                    <%--                                                    </c:forEach>--%>
+                                                                <c:if test="${empty licenseeKeyApptPersonDtos}">
+                                                                    <tr>
+                                                                        <td align="right">Authorised Person Name</td>
+                                                                        <td>&nbsp;-</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="right">Authorised Person ID</td>
+                                                                        <td>&nbsp;-</td>
+                                                                    </tr>
+                                                                </c:if>
+                                                                <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">
+                                                                    <tr>
+                                                                        <td align="right">Authorised Person Name</td>
+                                                                        <td>&nbsp;${person.name}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="right">Authorised Person ID</td>
+                                                                        <td>&nbsp;${person.idNo} (${person.idType})</td>
+                                                                    </tr>
+                                                                </c:forEach>
                                                                 <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person</td>
