@@ -394,7 +394,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                if (isAppealType || isWithdrawal || isCessation) {
+                if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
 //                    appPremisesRecommendationDto.setRecomDecision("reject");
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
                 }
@@ -413,7 +413,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
-                if (isAppealType || isWithdrawal || isCessation) {
+                if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
 //                    appPremisesRecommendationDto.setRecomDecision("approve");
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 }
@@ -1697,13 +1697,27 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void checkRecommendationDropdownValue(Integer recomInNumber, String chronoUnit, String codeDesc, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
-        if (StringUtil.isEmpty(recomInNumber)) {
-            ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
-            return;
-        } else if (recomInNumber == 0) {
-            ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "reject");
-            return;
+    private void checkRecommendationDropdownValue(Integer recomInNumber, String chronoUnit, String recomDecision, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
+        if(!isRequestForChange){
+            if (StringUtil.isEmpty(recomInNumber)) {
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
+                return;
+            } else if (recomInNumber == 0) {
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "reject");
+                return;
+            }
+        }else{
+            if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "approve");
+                return;
+            }else if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "reject");
+                return;
+            }else{
+                ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
+                return;
+            }
         }
         HcsaServiceDto hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         String svcCode = hcsaServiceDto.getSvcCode();
@@ -1713,7 +1727,6 @@ public class HcsaApplicationDelegator {
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
         boolean flag = true;
-        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
         if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
@@ -2384,23 +2397,21 @@ public class HcsaApplicationDelegator {
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos) {
         List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
-        if(saveReturnFeeDtos!=null){
-            for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-            ) {
-                ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-                ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                    saveReturnFeeDtosStripe.add(appreturn);
-                }
+        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+        ) {
+            ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                saveReturnFeeDtosStripe.add(appreturn);
             }
-            List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
-            for (PaymentRequestDto refund : paymentRequestDtos
+        }
+        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+        for (PaymentRequestDto refund : paymentRequestDtos
+        ) {
+            for (AppReturnFeeDto appreturn : saveReturnFeeDtos
             ) {
-                for (AppReturnFeeDto appreturn : saveReturnFeeDtos
-                ) {
-                    if (appreturn.getApplicationNo().equals(refund.getReqRefNo())) {
-                        appreturn.setStatus(refund.getStatus());
-                    }
+                if (appreturn.getApplicationNo().equals(refund.getReqRefNo())) {
+                    appreturn.setStatus(refund.getStatus());
                 }
             }
         }
@@ -3091,19 +3102,24 @@ public class HcsaApplicationDelegator {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             String codeDesc = "";
             String recommendationOnlyShow = "";
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             if (recomInNumber == null || recomInNumber == 0) {
                 recommendationOnlyShow = "Reject";
             } else {
                 recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
-                if (isRequestForChange) {
+            }
+            if (isRequestForChange) {
+                if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
                     recommendationOnlyShow = "Approve";
+                }else if(InspectionReportConstants.RFC_REJECTED.equals(recomDecision)){
+                    recommendationOnlyShow = "Reject";
                 }
             }
             //PSO 0062307
             boolean needFillingBack = (RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso) && !ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status);
             if (needFillingBack) {
                 //pso back fill
-                checkRecommendationDropdownValue(recomInNumber, chronoUnit, codeDesc, applicationViewDto, bpc);
+                checkRecommendationDropdownValue(recomInNumber, chronoUnit, recomDecision, applicationViewDto, bpc);
             }
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String recomInDateOnlyShow = "-";
