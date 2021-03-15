@@ -306,20 +306,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(hciCodeList.size() > 0 && !StringUtil.isEmpty(orgId)){
                 log.debug("checkIsGiroAcc [orgId] orgId is {}",orgId);
                 List<GiroAccountInfoDto> giroAccountInfoDtos = getGiroAccountByHciCodeAndOrgId(hciCodeList,orgId);
-                if(giroAccountInfoDtos != null && giroAccountInfoDtos.size() > 1){
-                    String targetAcctNo = giroAccountInfoDtos.get(0).getAcctNo();
-                    log.debug("checkIsGiroAcc [targetAcctNo] targetAcctNo is {}",targetAcctNo);
-                    if(!StringUtil.isEmpty(targetAcctNo)){
-                        for(int i=1;i<giroAccountInfoDtos.size();i++){
-                            String acctNo = giroAccountInfoDtos.get(i).getAcctNo();
-                            log.debug("checkIsGiroAcc [acctNo] acctNo is {}",acctNo);
-                            if(!StringUtil.isEmpty(acctNo) && !targetAcctNo.equals(acctNo)){
-                                break;
-                            }
-                            if(i == giroAccountInfoDtos.size()-1){
-                                isGiroAcc = true;
+                if(giroAccountInfoDtos != null){
+                    if(giroAccountInfoDtos.size() > 1){
+                        String targetAcctNo = giroAccountInfoDtos.get(0).getAcctNo();
+                        log.debug("checkIsGiroAcc [targetAcctNo] targetAcctNo is {}",targetAcctNo);
+                        if(!StringUtil.isEmpty(targetAcctNo)){
+                            for(int i=1;i<giroAccountInfoDtos.size();i++){
+                                String acctNo = giroAccountInfoDtos.get(i).getAcctNo();
+                                log.debug("checkIsGiroAcc [acctNo] acctNo is {}",acctNo);
+                                if(!StringUtil.isEmpty(acctNo) && !targetAcctNo.equals(acctNo)){
+                                    break;
+                                }
+                                if(i == giroAccountInfoDtos.size()-1){
+                                    isGiroAcc = true;
+                                }
                             }
                         }
+                    }else if(giroAccountInfoDtos.size() == 1){
+                        isGiroAcc = true;
                     }
                 }
             }
