@@ -64,6 +64,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
@@ -2393,7 +2394,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         oneErrorMap.put("emailAddr" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","emailAddr","field"));
                     }
                     if (!StringUtil.isEmpty(officeTelNo)) {
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                             oneErrorMap.put("officeTelNo" + poIndex, "GENERAL_ERR0015");
                         }
                     } else {
@@ -2441,7 +2442,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if (StringUtil.isEmpty(officeTelNo)) {
                     oneErrorMap.put("deputyofficeTelNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyofficeTelNo","field"));
                 } else {
-                    if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                    if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                         oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "GENERAL_ERR0015");
                     }
                 }

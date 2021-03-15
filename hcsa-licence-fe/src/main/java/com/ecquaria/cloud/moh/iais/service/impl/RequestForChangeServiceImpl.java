@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -643,7 +644,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String general_err0041=NewApplicationHelper.repLength("Office Telephone No.","8");
                                 errorMap.put("offTelNo" + i, general_err0041);
                             }
-                            boolean matches = offTelNo.matches("^[6][0-9]{7}$");
+                            boolean matches = offTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH);
                             if (!matches) {
                                 errorMap.put("offTelNo" + i, "GENERAL_ERR0015");
                             }

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         }
 
         if (!StringUtil.isEmpty(officeNo)) {
-            if (!officeNo.matches("^[6][0-9]{7}$")) {
+            if (!officeNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errorMap.put("officeTelNo", "GENERAL_ERR0015");
             }
         }

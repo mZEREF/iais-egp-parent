@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class NewAppValidator implements CustomizeValidator {
                     if(StringUtil.isEmpty(list.get(i).getOffTelNo())){
                         map.put("offTelNo"+i,"cannot be blank");
                     }else {
-                        if( !list.get(i).getOffTelNo().matches("^[6][0-9]{7}$")){
+                        if( !list.get(i).getOffTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)){
                             map.put("offTelNo"+i,"GENERAL_ERR0015");
                         }
                     }
@@ -152,7 +153,7 @@ public class NewAppValidator implements CustomizeValidator {
                     map.put("emailAddr", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
-                    if (!officeTelNo.matches("^[3|6][0-9]{7}$")) {
+                    if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                         map.put("officeTelNo", "Please key in a valid phone number");
                     }
                 }else {
