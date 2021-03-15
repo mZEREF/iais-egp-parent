@@ -5,8 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
@@ -24,9 +22,7 @@ public interface RequestForInformationService {
     List<SelectOption> getLicSvcTypeOption();
     List<SelectOption> getLicSvcSubTypeOption();
     List<SelectOption> getLicStatusOption();
-    List<String> getActionBysByLicPremCorrId(String licPremCorrId);
-    SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
-    SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
+    SearchResult<ApplicationLicenceQueryDto> appLicenceDoForCommPoolQuery(SearchParam searchParam);
     SearchResult<ApplicationLicenceQueryDto> appLicenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType();
     LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);

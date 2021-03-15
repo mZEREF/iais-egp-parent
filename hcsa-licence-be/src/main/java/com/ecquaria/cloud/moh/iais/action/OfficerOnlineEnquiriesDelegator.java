@@ -415,7 +415,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)){
+                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
                         filters.put("appStatus", status);
                     }
                 }
@@ -572,7 +576,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)&&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)){
+                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                            &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
                         filters.put("appStatus", status);
                     }
                     appCount++;
@@ -761,9 +769,15 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 appParam.addParam("licenseeId",typeStr);
             }
-            QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
             if (appParam != null) {
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if(appResult.getRowCount()!=0){
@@ -846,7 +860,12 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus)&&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION))){
+        if(!StringUtil.isEmpty(appStatus)
+                &&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION))
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
             licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
@@ -1039,7 +1058,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
-                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)){
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1225,8 +1245,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
+
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
@@ -1297,7 +1324,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
-                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)){
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1483,8 +1511,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
+
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
@@ -1595,7 +1630,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
-                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)){
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                            &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1778,8 +1814,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult ;
+                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+
+                }
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
