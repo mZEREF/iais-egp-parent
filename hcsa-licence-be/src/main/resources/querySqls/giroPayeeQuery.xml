@@ -27,5 +27,21 @@
 
         ]]>
     </sql>
+    <sql key = "searchGiroDeduction" remarks="search ">
+        <![CDATA[
+        SELECT * from (
+        select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
+        a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
+        from hcsala.dbo.application_group as ag , giro_payment_view as a  WHERE ag.GROUP_NO=a.APP_GROUP_NO )
+        t1 where 1=1
+        <#if groupNo??> and a.APP_GROUP_NO like CONCAT('%',:groupNo,'%') </#if>
+        <#if acctNo??>and a.ACCT_NO like CONCAT('%',:acctNo,'%')</#if>
+        <#if amount??>and a.AMOUNT like CONCAT('%',:amount,'%')</#if>
+        <#if desc??>and a.PAY_DESC like CONCAT('%',:desc,'%')</#if>
+        <#if invoiceNo??> and a.INVOICE_NO like CONCAT('%',:invoiceNo,'%')</#if>
+        <#if hciName??> and HCI_NAME like CONCAT('%',:hciName,'%')</#if>
+        <#if refNo??> and a.TXN_REF_NO like CONCAT('%',:refNo,'%')</#if>
+        ]]>
+    </sql>
 
 </sqls>

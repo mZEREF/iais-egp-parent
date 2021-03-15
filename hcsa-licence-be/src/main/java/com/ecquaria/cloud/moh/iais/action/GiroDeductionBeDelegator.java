@@ -3,17 +3,23 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
+import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -30,14 +36,15 @@ import java.util.Map;
 @Delegator(value = "giroDeductionBeDelegator")
 @Slf4j
 public class GiroDeductionBeDelegator {
-    private final FilterParameter premiseFilterParameter = new FilterParameter.Builder()
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(GiroDeductionDto.class)
-            .searchAttr("GiroSearchParam")
-            .resultAttr("GiroSearchResult")
+            .searchAttr("giroDedSearchParam")
+            .resultAttr("giroDedSearchResult")
             .sortField("APP_GROUP_NO").build();
     @Autowired
     private GiroDeductionBeService giroDeductionBeService;
-
+    @Autowired
+    private GiroDeductionClient giroDeductionClient;
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -52,8 +59,8 @@ public class GiroDeductionBeDelegator {
     public void beGiroDeductionStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
-        premiseFilterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
-        premiseFilterParameter.setPageNo(1);
+        filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
+        filterParameter.setPageNo(1);
     }
 
     /**
@@ -74,8 +81,39 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
-
-
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, false);
+        String transactionId = bpc.request.getParameter("transactionId");
+        String bankAccountNo = bpc.request.getParameter("bankAccountNo");
+        String group_no = bpc.request.getParameter("applicationNo");
+        String paymentRefNo = bpc.request.getParameter("paymentRefNo");
+        String paymentAmount = bpc.request.getParameter("paymentAmount");
+        String paymentDescription = bpc.request.getParameter("paymentDescription");
+        String hci_name = bpc.request.getParameter("hci_name");
+        if(!StringUtil.isEmpty(group_no)){
+            searchParam.addFilter("groupNo",group_no,true);
+        }
+        if(!StringUtil.isEmpty(paymentDescription)){
+            searchParam.addFilter("desc",paymentDescription,true);
+        }
+        if(!StringUtil.isEmpty(paymentAmount)){
+            searchParam.addFilter("amount",paymentAmount,true);
+        }
+        if(!StringUtil.isEmpty(bankAccountNo)){
+            searchParam.addFilter("acctNo",bankAccountNo,true);
+        }
+        if(!StringUtil.isEmpty(hci_name)){
+            searchParam.addFilter("hciName",hci_name,true);
+        }
+        if(!StringUtil.isEmpty(paymentRefNo)){
+            searchParam.addFilter("refNo",paymentRefNo,true);
+        }
+        if(!StringUtil.isEmpty(transactionId)){
+            searchParam.addFilter("invoiceNo",transactionId,true);
+        }
+        QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
+        SearchResult<GiroDeductionDto> body = giroDeductionClient.giroDeductionDtoSearchResult(searchParam).getEntity();
+        ParamUtil.setRequestAttr(bpc.request, "giroDedSearchResult", body);
+        ParamUtil.setRequestAttr(bpc.request, "giroDedSearchParam", searchParam);
 
     }
 
@@ -117,6 +155,8 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionPage(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPage start ...."));
+        filterParameter.setPageNo(1);
+        SearchResultHelper.doPage(bpc.request, filterParameter);
     }
 
     /**

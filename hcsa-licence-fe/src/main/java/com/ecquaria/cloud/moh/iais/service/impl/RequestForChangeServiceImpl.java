@@ -474,9 +474,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
         //do validate one premiss
         List<String> list = IaisCommonUtils.genNewArrayList();//NOSONAR
+        List<String> opFloorUnitNo=new ArrayList<>(20);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        int migrated = appSubmissionDto.getMigrated();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         List<String> oldPremiseHciList = IaisCommonUtils.genNewArrayList();
         //new rfi
@@ -515,6 +515,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     errorMap.put("premisesSelect" + i, selectPremises);
                 } else if (needValidate || !StringUtil.isEmpty(premisesSelect) || "newPremise".equals(premisesSelect)) {
                     StringBuilder stringBuilder = new StringBuilder();
+                    List<String> floorUnitNo=new ArrayList<>(10);
                     List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
                     List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
@@ -619,11 +620,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
+                                    StringBuilder sb=new StringBuilder();
                                     for (int index = 0; index < s.length; index++) {
                                         if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                            sb.append(s[index].toUpperCase()).append(' ');
                                         }
                                     }
+                                  if(!"".equals(sb.toString())){
+                                      errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
+                                  }
                                 }
                             }
 
@@ -709,16 +714,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                             }
                             if (!empty && !empty1 && !empty2) {
-                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                StringBuilder sb=new StringBuilder();
+                                sb.append(appGrpPremisesDtoList.get(i).getFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getBlkNo())
                                         .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                                floorUnitNo.add(sb.toString());
                             }
                         }
                         if(addrTypeFlag){
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getFloorNo() + appGrpPremisesDtoList.get(i).getUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opFloorNo"+i,"opUnitNo"+i,floorUnitList,"floorUnit"+i);
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opFloorNo"+i,"opUnitNo"+i,floorUnitList,"floorUnit"+i, floorUnitNo,appGrpPremisesDtoList.get(i));
 
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
@@ -730,14 +737,34 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             } else if (!postalCode.matches("^[0-9]{6}$")) {
                                 errorMap.put("postalCode" + i, "NEW_ERR0004");
                             } else {
-                                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                                if (!floorUnitNo.isEmpty()) {
                                     stringBuilder.append(postalCode);
-                                    if (list.contains(stringBuilder.toString())) {
+                                    if(list.isEmpty()){
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            list.add(sb.toString());
+                                        }
+                                    }else {
+                                        List<String> sbList=new ArrayList<>();
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            if(list.contains(sb.toString())){
+                                                errorMap.put("postalCode" + i, "NEW_ACK010");
+                                            }else {
+                                                sbList.add(sb.toString());
+                                            }
+                                        }
+                                        list.addAll(sbList);
+                                    }
+
+                                 /*   if (list.contains(stringBuilder.toString())) {
                                         errorMap.put("postalCode" + i, "NEW_ACK010");
 
                                     } else {
                                         list.add(stringBuilder.toString());
-                                    }
+                                    }*/
                                 }
                             }
                         } else {
@@ -861,10 +888,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
+                                    StringBuilder sb=new StringBuilder();
                                     for (int index = 0; index < s.length; index++) {
                                         if (convHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                            sb.append( s[index].toUpperCase()).append(' ');
                                         }
+                                    }
+                                    if(!"".equals(sb.toString())){
+                                        errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                                     }
                                 }
                             }
@@ -936,16 +967,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                             }
                             if (!empty && !empty1 && !empty2) {
-                                stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
+                                StringBuilder sb=new StringBuilder();
+                                sb.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
+                                floorUnitNo.add(sb.toString());
                             }
                         }
                         if(addrTypeFlag){
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getConveyanceFloorNo() + appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opConvFloorNo"+i,"opConvUnitNo"+i,floorUnitList,"ConvFloorUnit"+i);
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opConvFloorNo"+i,"opConvUnitNo"+i,floorUnitList,"ConvFloorUnit"+i,floorUnitNo,appGrpPremisesDtoList.get(i));
 
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
                         if (StringUtil.isEmpty(conveyancePostalCode)) {
@@ -959,13 +992,34 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             } else if (!conveyancePostalCode.matches("^[0-9]{6}$")) {
                                 errorMap.put("conveyancePostalCode" + i, "NEW_ERR0004");
                             } else {
-                                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                                if (!floorUnitNo.isEmpty()) {
                                     stringBuilder.append(conveyancePostalCode);
-                                    if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("conveyancePostalCode" + i, "NEW_ACK010");
+                                    if(list.isEmpty()){
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            list.add(sb.toString());
+                                        }
+                                    }else {
+                                        List<String> sbList=new ArrayList<>();
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            if(list.contains(sb.toString())){
+                                                errorMap.put("conveyancePostalCode" + i, "NEW_ACK010");
+                                            }else {
+                                                sbList.add(sb.toString());
+                                            }
+                                        }
+                                        list.addAll(sbList);
+                                    }
+
+                                 /*   if (list.contains(stringBuilder.toString())) {
+                                        errorMap.put("postalCode" + i, "NEW_ACK010");
+
                                     } else {
                                         list.add(stringBuilder.toString());
-                                    }
+                                    }*/
                                 }
                             }
                         }
@@ -1088,10 +1142,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
+                                    StringBuilder sb=new StringBuilder();
                                     for (int index = 0; index < s.length; index++) {
                                         if (offSiteHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", s[index].toUpperCase(), "keywords"));
+                                            sb.append(s[index].toUpperCase()).append(' ');
                                         }
+                                    }
+                                    if(!"".equals(sb.toString())){
+                                        errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
+
                                     }
                                 }
                             }
@@ -1160,16 +1219,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                             }
                             if (!empty && !empty1 && !empty2) {
-                                stringBuilder.append(appGrpPremisesDtoList.get(i).getOffSiteFloorNo())
+                                StringBuilder sb=new StringBuilder();
+                                sb.append(appGrpPremisesDtoList.get(i).getOffSiteFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getOffSiteBlockNo())
                                         .append(appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
+                                floorUnitNo.add(sb.toString());
                             }
                         }
                         if(addrTypeFlag){
                             floorUnitList.add(appGrpPremisesDtoList.get(i).getOffSiteFloorNo() + appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
                         }
 
-                        checkOperaionUnit(operationalUnitDtos,errorMap,"opOffFloorNo"+i,"opOffUnitNo"+i,floorUnitList,"offFloorUnit"+i);
+                        checkOperaionUnit(operationalUnitDtos,errorMap,"opOffFloorNo"+i,"opOffUnitNo"+i,floorUnitList,"offFloorUnit"+i,floorUnitNo,appGrpPremisesDtoList.get(i));
 
                         String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
                         if (!StringUtil.isEmpty(offSitePostalCode)) {
@@ -1181,14 +1242,34 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             } else if (!offSitePostalCode.matches("^[0-9]{6}$")) {
                                 errorMap.put("offSitePostalCode" + i, "NEW_ERR0004");
                             } else {
-                                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                                if (!floorUnitNo.isEmpty()) {
                                     stringBuilder.append(offSitePostalCode);
-                                    if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("offSitePostalCode" + i, "NEW_ACK010");
+                                    if(list.isEmpty()){
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            list.add(sb.toString());
+                                        }
+                                    }else {
+                                        List<String> sbList=new ArrayList<>();
+                                        for(String str:floorUnitNo){
+                                            StringBuilder sb=new StringBuilder(stringBuilder);
+                                            sb.append(str);
+                                            if(list.contains(sb.toString())){
+                                                errorMap.put("offSitePostalCode" + i, "NEW_ACK010");
+                                            }else {
+                                                sbList.add(sb.toString());
+                                            }
+                                        }
+                                        list.addAll(sbList);
+                                    }
+
+                                 /*   if (list.contains(stringBuilder.toString())) {
+                                        errorMap.put("postalCode" + i, "NEW_ACK010");
 
                                     } else {
                                         list.add(stringBuilder.toString());
-                                    }
+                                    }*/
                                 }
                             }
                         } else {
@@ -1788,7 +1869,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
     }
 
-    private void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos,Map<String, String> errorMap,String floorErrName,String unitErrName,List<String> floorUnitList,String floorUnitErrName){
+    private void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos,Map<String, String> errorMap,String floorErrName,String unitErrName,List<String> floorUnitList,String floorUnitErrName,List<String> floorUnitNo,AppGrpPremisesDto appGrpPremisesDto){
 
         if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
             int opLength = 0;
@@ -1838,6 +1919,33 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }else{
                             floorUnitList.add(floorUnitStr);
                         }
+                        String premisesType = appGrpPremisesDto.getPremisesType();
+                        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+                            String addrType = appGrpPremisesDto.getAddrType();
+                            String blkNo = appGrpPremisesDto.getBlkNo();
+                            if(!StringUtil.isEmpty(blkNo)){
+                                floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                            }
+                        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)){
+                            String offSiteAddressType = appGrpPremisesDto.getOffSiteAddressType();
+                            if(!StringUtil.isEmpty(offSiteAddressType)){
+                                String blkNo = appGrpPremisesDto.getOffSiteBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
+
+                        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+                            String conveyanceAddressType = appGrpPremisesDto.getConveyanceAddressType();
+                            if(!StringUtil.isEmpty(conveyanceAddressType)){
+                                String blkNo = appGrpPremisesDto.getConveyanceBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
+
+                        }
+
                     }
                 }
                 opLength++;
