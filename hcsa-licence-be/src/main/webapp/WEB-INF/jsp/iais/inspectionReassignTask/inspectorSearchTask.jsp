@@ -152,7 +152,7 @@
                                 <a class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                   onclick="javascript:supervisorByGroupId('<iais:mask name="appGroupId"
+                                   onclick="javascript:reassignByGroupId('<iais:mask name="appGroupId"
                                                                                        value="${superPool.id}"/>','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
                                 </a>
                               </p>
@@ -222,7 +222,7 @@
 
     var superPool = new Array();
 
-    function supervisorByGroupId(appGroupId, divid) {
+    function reassignByGroupId(appGroupId, divid) {
         var superFlag = true;
         for (var i = 0; i < superPool.length; i++) {
             if (superPool[i] == divid) {
