@@ -316,6 +316,7 @@ public class NotificationHelper {
 				if (MessageConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)) {
 					int smsFlag = systemParamConfig.getEgpSmsNotifications();
 					if (0 == smsFlag) {
+						log.info("please turn on sms param.......");
 						return;
 					}
 					sendSms(refIdType, subject, refId, smsOnlyOfficerHour, msgTemplateDto,
