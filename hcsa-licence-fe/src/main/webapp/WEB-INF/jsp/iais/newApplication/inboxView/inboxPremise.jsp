@@ -270,91 +270,53 @@
                                 </div>
                             </c:forEach>
                             <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
-                            <c:choose>
-                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:set var="phLength" value="0"/>
-                                </c:otherwise>
-                            </c:choose>
-                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
-                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                             <c:choose>
-                                                 <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                 </c:when>
-                                                 <c:when test="${appPremPhOpenPeriod.onsiteStartFromHH.length()>1}">
-                                                     ${appPremPhOpenPeriod.onsiteStartFromHH}
-                                                 </c:when>
-                                                 <c:otherwise>
-                                                     0${appPremPhOpenPeriod.onsiteStartFromHH}
-                                                 </c:otherwise>
-                                             </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteStartFromMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteStartFromMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteStartFromMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
-                                    </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
                                 </div>
-
+                            </div>
+                            <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
+                                        <div class="col-md-6" style="padding: 0px">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                               <c:forEach items="${op.selectValList}" var="phDto">
+                                                   <iais:code code="${phDto}"></iais:code>
+                                               </c:forEach>
+                                                </span>
+                                            </p>
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
+                                        <div class="row">
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                  <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                                </span>
+                                                </p>
+                                        </div>
 
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteEndToHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteEndToHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteEndToHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                 <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                                </span>
+                                                </p>
+                                        </div>
+
+                                        <div class="col-md-3" style="padding-right: 0px">
+                                            <c:if test="${op.selectAllDay}">
+                                              <div class="form-check active">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                              </div>
                                             </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteEndToMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteEndToMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteEndToMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </c:forEach>
