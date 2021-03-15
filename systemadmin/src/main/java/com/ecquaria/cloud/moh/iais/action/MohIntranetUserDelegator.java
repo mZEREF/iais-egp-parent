@@ -1405,7 +1405,7 @@ public class MohIntranetUserDelegator {
         }
         String officeTelNo = orgUserDto.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
-            if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+            if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errors.add("Please key in a valid office number");
             }
         }

@@ -69,7 +69,7 @@ public class UserValidator implements CustomizeValidator {
             }
 
             if(dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
-                if (!dto.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
+                if (!dto.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                     map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
                 }
             }

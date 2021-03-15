@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
@@ -500,7 +501,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("officeTelNo" + poIndex, general_err0041);
                         }
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                             oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
@@ -566,7 +567,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("deputyofficeTelNo" + dpoIndex, general_err0041);
                         }
-                        if(!officeTelNo.matches("^[6][0-9]{7}$")){
+                        if(!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)){
                             oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                         }
                     }
