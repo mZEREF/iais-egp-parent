@@ -205,5 +205,6 @@
         $("#licType option:first").prop("selected", 'selected').val("");
         $("#licStatus option:first").prop("selected", 'selected').val("");
         $("#clearBody .current").text("All");
+        $(".error-msg").text("")
     }
 </script>

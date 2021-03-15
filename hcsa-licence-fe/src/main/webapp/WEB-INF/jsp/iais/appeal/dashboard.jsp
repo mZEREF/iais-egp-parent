@@ -7,7 +7,9 @@
     <div class="container">
         <div class="navigation-gp">
             <div class="row">
+                <c:if test="${!isPopApplicationView}">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
+                </c:if>
                 <div style="margin-top: 20px;margin-left: 4%" >
                     <h1>Appeal Form</h1>
                 </div>

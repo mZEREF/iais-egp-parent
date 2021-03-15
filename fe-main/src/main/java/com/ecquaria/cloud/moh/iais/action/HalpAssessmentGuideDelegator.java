@@ -156,11 +156,17 @@ public class HalpAssessmentGuideDelegator {
         String inbox_ack017 = MessageUtil.getMessageDesc("INBOX_ACK017");
         String inbox_ack018 = MessageUtil.getMessageDesc("INBOX_ACK018");
         String inbox_ack019 = MessageUtil.getMessageDesc("INBOX_ACK019");
+        String inbox_ack020 = MessageUtil.getMessageDesc("INBOX_ACK020");
+        String inbox_ack021 = MessageUtil.getMessageDesc("INBOX_ACK021");
+        String inbox_ack022 = MessageUtil.getMessageDesc("INBOX_ACK022");
 
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack016",inbox_ack016);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack017",inbox_ack017);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack018",inbox_ack018);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack019);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack020);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack021);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack022);
 
     }
 
