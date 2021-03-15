@@ -1237,21 +1237,23 @@ public class BackendInboxDelegator {
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
         List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
-        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-        ) {
-            ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-            ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                saveReturnFeeDtosStripe.add(appreturn);
-            }
-        }
-        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
-        for (PaymentRequestDto refund:paymentRequestDtos
-        ) {
+        if(saveReturnFeeDtos!=null){
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
-                if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
-                    appreturn.setStatus(refund.getStatus());
+                ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+                ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                    saveReturnFeeDtosStripe.add(appreturn);
+                }
+            }
+            List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+            for (PaymentRequestDto refund:paymentRequestDtos
+            ) {
+                for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+                ) {
+                    if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
+                        appreturn.setStatus(refund.getStatus());
+                    }
                 }
             }
         }
