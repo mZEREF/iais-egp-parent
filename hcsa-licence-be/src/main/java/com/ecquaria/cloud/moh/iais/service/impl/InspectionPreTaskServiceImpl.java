@@ -652,20 +652,20 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 if(!StringUtil.isEmpty(premisesType) && premisesType.equals(premisesDto.getPremisesType())){
                     String premisesStr = null;
                     String premisesStr2 = null;
+                    String hciName = appGrpPremisesDto.getHciName();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                        String hciName = appGrpPremisesDto.getHciName();
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName);
+                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, "");
                         premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getHciName());
+                                premisesDto.getBlkNo(), premisesDto.getHciName(), "");
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
                         String vehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, vehicleNo);
+                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, vehicleNo);
                         premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getVehicleNo());
+                                premisesDto.getBlkNo(), premisesDto.getHciName(), premisesDto.getVehicleNo());
                     } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, "");
+                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, "");
                         premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), "");
+                                premisesDto.getBlkNo(), premisesDto.getHciName(), "");
                     }
                     if(premisesStr != null && premisesStr2 != null) {
                         if (premisesStr.equals(premisesStr2)) {
@@ -679,7 +679,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         return hicCode;
     }
 
-    private String splicingAddressInformation(String postalCode, String unitNo, String floorNo, String blkNo, String last) {
+    private String splicingAddressInformation(String postalCode, String unitNo, String floorNo, String blkNo, String hciName, String last) {
         StringBuilder stringBuilder = new StringBuilder();
         if(postalCode == null){
             postalCode = "";
@@ -693,6 +693,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if(blkNo == null){
             blkNo = "";
         }
+        if(hciName == null){
+            hciName = "";
+        }
         if(last == null){
             last = "";
         }
@@ -700,6 +703,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         stringBuilder.append(unitNo);
         stringBuilder.append(floorNo);
         stringBuilder.append(blkNo);
+        stringBuilder.append(hciName);
         stringBuilder.append(last);
         String premisesStr = stringBuilder.toString();
         return premisesStr;
