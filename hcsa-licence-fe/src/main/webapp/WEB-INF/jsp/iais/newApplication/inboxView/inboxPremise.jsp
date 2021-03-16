@@ -284,8 +284,8 @@
                                         <div class="col-md-6" style="padding: 0px">
                                             <p class="form-check-label" aria-label="premise-1-cytology">
                                                 <span>
-                                               <c:forEach items="${op.selectValList}" var="phDto">
-                                                   <iais:code code="${phDto}"></iais:code>
+                                               <c:forEach items="${op.selectValList}" var="phDto" varStatus="phDtoStat">
+                                                   <iais:code code="${phDto}"/><c:if test="${!phDtoStat.last}">,</c:if>
                                                </c:forEach>
                                                 </span>
                                             </p>
@@ -296,7 +296,9 @@
                                             <div class="col-md-4" style="padding-right: 0px">
                                                     <p class="form-check-label" aria-label="premise-1-cytology">
                                                     <span>
-                                                      <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                                        <c:if test="${!op.selectAllDay}">
+                                                            <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                                        </c:if>
                                                     </span>
                                                     </p>
                                             </div>
@@ -304,7 +306,9 @@
                                             <div class="col-md-4" style="padding-right: 0px">
                                                     <p class="form-check-label" aria-label="premise-1-cytology">
                                                     <span>
-                                                     <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                                        <c:if test="${!op.selectAllDay}">
+                                                            <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                                        </c:if>
                                                     </span>
                                                     </p>
                                             </div>
@@ -322,50 +326,39 @@
                             </c:forEach>
 
 
-                            <div class="row">
-                                <div class="col-md-6">Event</div>
-                                <div class="col-md-6">
-
-                                </div>
-                            </div>
                             <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="col-md-6" style="padding: 0px">
-                                            <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
-                                        </div>
-                                        <div class="col-md-6" style="padding: 0px">
-                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                                  ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
-                                          </span>
-                                        </div>
-
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="col-md-6">
-                                            <div class="col-md-6" style="padding: 0px">
-                                            <span class="newVal" attr="${eventDto.startDate}">
-                                              <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
-                                            </span>
-                                            </div>
-                                            <div class="col-md-6" style="padding: 0px">
-                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}" pattern="dd/MM/yyyy"/>
-                                            </span>
-                                            </div>
-
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6" style="padding: 0px">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                    <span>${eventDto.eventName}</span>
+                                            </p>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="col-md-6" style="padding: 0px">
-                                            <span class="newVal" attr="${eventDto.endDate}">
-                                                <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
-                                            </span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                                    <span>
+                                                     <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
+                                                    </span>
+                                                </p>
                                             </div>
-                                            <div class="col-md-6" style="padding: 0px">
-                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}" pattern="dd/MM/yyyy"/>
-                                            </span>
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                                    <span>
+                                                     <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
+                                                    </span>
+                                                </p>
                                             </div>
+                                            <div class="col-md-3"></div>
                                         </div>
                                     </div>
                                 </div>
