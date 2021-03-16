@@ -231,11 +231,11 @@
             if(canedit == 1 ){
                 $('#deleteSupport').modal('show');
             }else{
-                $('#support').find("span").eq(1).html("The message cannot be deleted as it has been sent out to recipients.");
+                $('#support').find("span").eq(0).html("The message cannot be deleted as it has been sent out to recipients.");
                 $('#support').modal('show');
             }
         } else {
-            $('#support').find("span").eq(1).html("Please select record for deletion.");
+            $('#support').find("span").eq(0).html("Please select record for deletion.");
             $('#support').modal('show');
         }
     }
@@ -247,7 +247,7 @@
             $("#editBlast").val(id);
             SOP.Crud.cfxSubmit("mainForm", "edit");
         }else{
-            $('#support').find("span").eq(1).html("Please select record for deletion.");
+            $('#support').find("span").eq(0).html("The message cannot be amended as it has been sent out to recipients.");
             $('#support').modal('show');
         }
 
