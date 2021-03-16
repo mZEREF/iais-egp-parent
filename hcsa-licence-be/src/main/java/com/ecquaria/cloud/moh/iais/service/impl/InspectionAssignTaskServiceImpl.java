@@ -280,14 +280,23 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         List<String> leadNames = IaisCommonUtils.genNewArrayList();
         List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+        StringBuilder leadStrBu = new StringBuilder();
         for (String id : leadIds) {
             for (OrgUserDto oDto : orgUserDtos) {
                 if (id.equals(oDto.getId())) {
                     leadNames.add(oDto.getDisplayName());
+                    if(StringUtil.isEmpty(leadStrBu.toString())) {
+                        leadStrBu.append(oDto.getDisplayName());
+                    } else {
+                        leadStrBu.append(',');
+                        leadStrBu.append(' ');
+                        leadStrBu.append(oDto.getDisplayName());
+                    }
                 }
             }
         }
         inspecTaskCreAndAssDto.setInspectionLeads(leadNames);
+        inspecTaskCreAndAssDto.setGroupLeadersShow(leadStrBu.toString());
     }
 
     @Override
