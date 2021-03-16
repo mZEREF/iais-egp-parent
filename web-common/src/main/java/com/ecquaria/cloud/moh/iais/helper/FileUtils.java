@@ -53,7 +53,7 @@ public final class FileUtils {
 
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
         response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("applicatoin/octet-stream");
+        response.setContentType("application/octet-stream");
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
         ops.write(fileData);
         ops.close();
