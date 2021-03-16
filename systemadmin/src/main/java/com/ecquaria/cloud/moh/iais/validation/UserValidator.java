@@ -44,6 +44,10 @@ public class UserValidator implements CustomizeValidator {
                 }
             }
 
+
+            if (StringUtil.isEmpty(dto.getOrgId())) {
+                map.put("organizationId", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
             if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
                 map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
