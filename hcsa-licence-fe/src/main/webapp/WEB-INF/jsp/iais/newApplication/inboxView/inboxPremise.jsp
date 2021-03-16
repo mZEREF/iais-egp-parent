@@ -320,6 +320,56 @@
                                     </div>
                                 </div>
                             </c:forEach>
+
+
+                            <div class="row">
+                                <div class="col-md-6">Event</div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
+                                        </div>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
+                                                  ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                          </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.startDate}">
+                                              <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                            </div>
+                                            <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.endDate}">
+                                                <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
+                                            </span>
+                                            </div>
+                                            <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
                         </c:if>
 
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
