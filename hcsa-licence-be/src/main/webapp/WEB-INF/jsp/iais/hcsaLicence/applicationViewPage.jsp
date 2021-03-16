@@ -261,7 +261,8 @@
                                                                         </c:if>
 
                                                                         <%--application type == appeal --%>
-                                                                        <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
+                                                                        <div id="appealRecommendationDiv">
+                                                                            <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
                                                                             <div id="appealRecommendation">
                                                                                 <iais:row>
                                                                                     <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
@@ -300,8 +301,10 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
+                                                                        </div>
 
-                                                                        <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
+                                                                        <div id="normalRecommendationDiv">
+                                                                            <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
                                                                             <iais:row>
                                                                                 <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
                                                                                 <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
@@ -321,6 +324,8 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
+                                                                        </div>
+
                                                                         <div id="recommendationOtherDropdown">
                                                                             <iais:row>
                                                                                 <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
@@ -653,12 +658,16 @@
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
             checkAppealPso();
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
@@ -666,6 +675,8 @@
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
+            $('#appealRecommendationDiv').addClass('hidden');
+            $('#normalRecommendationDiv').addClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
@@ -673,6 +684,8 @@
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         }
     }
 
@@ -717,7 +730,8 @@
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
-
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
@@ -727,6 +741,8 @@
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
             checkAppealPso();
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
@@ -738,6 +754,8 @@
             $('#appealRecommendationFalse').removeClass('hidden');
             $('#recommendationFieldTrue').addClass('hidden');
             $('#recommendationFieldFalse').removeClass('hidden');
+            $('#appealRecommendationDiv').addClass('hidden');
+            $('#normalRecommendationDiv').addClass('hidden');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
             $('#comments').addClass('hidden');
@@ -747,6 +765,8 @@
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
             $('#rfiSelect').hide();
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         }
     });
 
