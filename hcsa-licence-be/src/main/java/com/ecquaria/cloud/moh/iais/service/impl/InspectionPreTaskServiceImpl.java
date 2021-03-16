@@ -556,7 +556,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, inspectionPreTaskDto.getReMarks(),
                 InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), compTask.getTaskKey(), null,
-                null, HcsaConsts.ROUTING_STAGE_INS, taskDto.getWkGrpId(), null);
+                null, stageKey, taskDto.getWkGrpId(), null);
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
         //send email
         try {
@@ -710,28 +710,23 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto) {
+    public InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto) {
         List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
-        //get history
-        AppPremisesRoutingHistoryDto asoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
-        AppPremisesRoutingHistoryDto psoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
-        String asoUserId = asoHistory.getActionby();
-        if(psoHistory != null){
-            String psoUserId = psoHistory.getActionby();
-            OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
-            OrgUserDto pso = organizationClient.retrieveOrgUserAccountById(psoUserId).getEntity();
-            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, aso.getDisplayName() + " (" + RoleConsts.USER_ROLE_ASO + ")");
-            SelectOption psoSo = new SelectOption(RoleConsts.USER_ROLE_PSO, pso.getDisplayName() + " (" + RoleConsts.USER_ROLE_PSO + ")");
-            preInspRbOption.add(asoSo);
-            preInspRbOption.add(psoSo);
-            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
-            userIdMap.put(RoleConsts.USER_ROLE_PSO, psoUserId);
-        } else {
-            OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
-            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, aso.getDisplayName() + " (" + RoleConsts.USER_ROLE_ASO + ")");
-            preInspRbOption.add(asoSo);
-            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
+        //get history to route back
+        if(applicationViewDto != null){
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+                if(appPremisesRoutingHistoryDto != null) {
+                    String actionUserId = appPremisesRoutingHistoryDto.getActionby();
+                    if(!StringUtil.isEmpty(actionUserId)) {
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionUserId).getEntity();
+                        SelectOption selectOption = new SelectOption(appPremisesRoutingHistoryDto.getRoleId(), orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
+                        preInspRbOption.add(selectOption);
+                        userIdMap.put(appPremisesRoutingHistoryDto.getRoleId(), actionUserId);
+                    }
+                }
+            }
         }
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
