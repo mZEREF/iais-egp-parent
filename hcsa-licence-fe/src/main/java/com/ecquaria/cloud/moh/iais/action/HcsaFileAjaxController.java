@@ -154,7 +154,7 @@ public class HcsaFileAjaxController {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
 
         String fileAppendId =  ParamUtil.getString(request,"fileAppendIdDown");
-        String index = (String) ParamUtil.getSessionAttr(request,"fileIndexDown");
+        String index =  ParamUtil.getString(request,"fileIndexDown");
 
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
             Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
