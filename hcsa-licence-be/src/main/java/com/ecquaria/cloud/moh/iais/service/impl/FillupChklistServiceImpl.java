@@ -3,10 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -68,6 +70,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private InspectionTaskClient inspectionTaskClient;
     @Autowired
     private AdhocChecklistService adhocChecklistService;
+    @Autowired
+    private AppointmentClient appointmentClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Override
@@ -1941,6 +1945,91 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     if (deconflict.equalsIgnoreCase(answerForDifDto.getSubmitId())) {
                         getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForDifDto);
                         break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto, String refNo) {
+        log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile ------------------");
+         setRemark(serListDto,commonDto);
+         setStartTimeAndEndTime(serListDto,refNo);
+        log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile  end------------------");
+    }
+
+    private void setRemark(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto){
+        if(StringUtil.isEmpty(serListDto.getTcuRemark())){
+            log.info("---------get Remarks From mobile -------");
+            Map<String, String> draftRemarkMaps  = commonDto.getDraftRemarkMaps();
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            Map<String, String> remarkMap = IaisCommonUtils.genNewHashMap();
+            if(!IaisCommonUtils.isEmpty(fdtoList)){
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                    if(IaisCommonUtils.isEmpty(draftRemarkMaps) && !IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getDraftRemarkMaps())){
+                        draftRemarkMaps = inspectionFillCheckListDto.getDraftRemarkMaps();
+                    }else if ( !IaisCommonUtils.isEmpty(draftRemarkMaps) && !IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getDraftRemarkMaps())){
+                        for(Map.Entry<String, String> entry: draftRemarkMaps.entrySet()){
+                            String key =  entry.getKey();
+                            String value = entry.getValue();
+                            if(StringUtil.isEmpty(value)){
+                                value = "";
+                            }
+                            StringBuilder  stringBuilderValue = new StringBuilder();
+                            stringBuilderValue.append(value);
+                            for(Map.Entry<String, String> entryIns: inspectionFillCheckListDto.getDraftRemarkMaps().entrySet()){
+                                if(key.equalsIgnoreCase(entryIns.getKey())){
+                                    stringBuilderValue.append(" \n") .append(entryIns.getValue());
+                                }
+                            }
+                            remarkMap.put(key,stringBuilderValue.toString());
+                        }
+                    }
+                }
+            }
+            StringBuilder  stringBuilderRemarks = new StringBuilder();
+            if(!IaisCommonUtils.isEmpty(remarkMap) ){
+                for (String value : remarkMap.values()) {
+                    stringBuilderRemarks.append(value).append(" \n");
+                }
+            } else if(IaisCommonUtils.isEmpty(remarkMap) && !IaisCommonUtils.isEmpty(draftRemarkMaps)){
+                for (String value : draftRemarkMaps.values()) {
+                    stringBuilderRemarks.append(value).append(" \n");
+                }
+            }
+            serListDto.setTcuRemark(stringBuilderRemarks.toString());
+            log.info("---------get Remarks From mobile -------");
+        }
+    }
+
+    private void  setStartTimeAndEndTime(InspectionFDtosDto serListDto,String refNo){
+        if(StringUtil.isEmpty(serListDto.getStartTime()) || StringUtil.isEmpty(serListDto.getEndTime())){
+            AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionTaskClient.getSpecificDtoByAppPremCorrId(refNo).getEntity();
+            if(appPremisesInspecApptDto != null){
+                ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+                cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
+                cancelCalendarDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
+                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
+                    Date startDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
+                    Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getEndSlot().get(0);
+                    String startDateTime = Formatter.formatDateTime( startDate,"HH : mm");
+                    String endDateDateTime = Formatter.formatDateTime(endDate,"HH : mm");
+                    String [] startDateHHMM = getStringsByHHDD(startDateTime);
+                    if(startDateHHMM != null && startDateHHMM.length == 2){
+                        serListDto.setStartHour(startDateHHMM[0]);
+                        serListDto.setStartMin(startDateHHMM[1]); //NOSONAR
+                        serListDto.setStartTime(startDateTime);
+                    }
+                    String [] endDateHHMM = getStringsByHHDD(endDateDateTime);
+                    if(endDateHHMM != null && endDateHHMM.length == 2){
+                        String endHour = String.valueOf(Integer.parseInt(endDateHHMM[0]) + 1);
+                        serListDto.setEndHour(endHour);
+                        String endMin = endDateHHMM[1]; //NOSONAR
+                        serListDto.setEndMin(endMin);
+                        serListDto.setEndTime( endHour+" : " + endMin);
                     }
                 }
             }
