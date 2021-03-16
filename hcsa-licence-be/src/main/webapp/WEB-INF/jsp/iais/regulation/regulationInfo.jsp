@@ -5,7 +5,7 @@
   Time: 14:13
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -62,17 +62,17 @@
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
                     <c:choose>
-                        <c:when test="${isUpdate eq 'Y'}">
-                             <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'update')">Update</a></div>
-                        </c:when>
-                        <c:otherwise>
-                            <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'create')">Create</a></div>
-                        </c:otherwise>
-                    </c:choose>
+                    <c:when test="${isUpdate eq 'Y'}">
+                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'update')">Update</a></div>
+                </c:when>
+                <c:otherwise>
+                <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'create')">Create</a></div>
+            </c:otherwise>
+            </c:choose>
 
-            </div>
         </div>
-    </form>
+</div>
+</form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
