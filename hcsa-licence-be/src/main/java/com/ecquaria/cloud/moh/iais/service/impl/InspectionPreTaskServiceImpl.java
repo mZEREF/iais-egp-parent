@@ -734,6 +734,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         preInspRbOption.add(selectOption);
                         userIdMap.put(index + "", actionUserId);
                         roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                        index++;
                     }
                 }
             }
