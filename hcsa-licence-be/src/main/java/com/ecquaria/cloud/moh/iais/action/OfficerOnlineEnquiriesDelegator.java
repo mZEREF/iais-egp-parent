@@ -412,7 +412,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
                     if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
@@ -573,7 +573,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
                     if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
@@ -863,9 +863,13 @@ public class OfficerOnlineEnquiriesDelegator {
         if(!StringUtil.isEmpty(appStatus)
                 &&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
+                ||appStatus.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
-                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT))){
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)
+                )
+        )
+        {
             licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
@@ -1052,7 +1056,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
@@ -1318,7 +1322,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
@@ -1624,7 +1628,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)

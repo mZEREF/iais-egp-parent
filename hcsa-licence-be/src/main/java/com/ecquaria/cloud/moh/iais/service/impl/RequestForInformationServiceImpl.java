@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -88,8 +87,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     HcsaChklClient hcsaChklClient;
     @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-    @Autowired
     private LicEicClient licEicClient;
 
     @Value("${iais.hmac.keyId}")
@@ -152,7 +149,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
