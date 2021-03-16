@@ -164,7 +164,7 @@ public class InspectionPreDelegator {
         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
             if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
                 //set stage and userId map
-                inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationDto.getApplicationNo(), inspectionPreTaskDto);
+                inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationViewDto, inspectionPreTaskDto);
                 List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
                 inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
                 ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
