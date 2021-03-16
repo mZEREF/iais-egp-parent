@@ -370,7 +370,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod) || !StringUtil.isEmpty(fee)){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
