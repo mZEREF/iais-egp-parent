@@ -312,7 +312,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             msgInfoMap.put("S_LName",serviceName);
             msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-            if (isRfc || StringUtil.isEmpty(payMethod) || charity){
+            if (isRfc || StringUtil.isEmpty(payMethod) || charity || StringUtil.isEmpty(fee)){
                 msgInfoMap.put("paymentType","2");
                 msgInfoMap.put("paymentMode","");
                 msgInfoMap.put("returnMount",0.0);
@@ -370,7 +370,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod) || !StringUtil.isEmpty(fee)){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
