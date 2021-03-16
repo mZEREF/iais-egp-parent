@@ -42,7 +42,7 @@ public interface LicenceService {
     List<String> getLicenceOutDate(int outMonth);
     List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
-
+    void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
 
     void updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
