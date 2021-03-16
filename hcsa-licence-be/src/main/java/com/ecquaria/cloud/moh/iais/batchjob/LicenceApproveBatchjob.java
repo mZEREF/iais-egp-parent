@@ -150,7 +150,6 @@ public class LicenceApproveBatchjob {
                     GenerateResult generalGenerateResult = null;
                     GenerateResult groupGenerateResult = null;
                     try {
-                        generateUEN(applicationGroupDto);
                         if (groupApplicationLicenceDto != null) {
                             //generate the Group licence
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto, hcsaServiceDtos);
@@ -194,6 +193,13 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
 
+                        try {
+                            generateUEN(applicationGroupDto);
+                            //send uen email
+                            licenceService.sendUenEmail(eventBusLicenceGroupDtos);
+                        }catch (Exception ex){
+                            log.error(ex.getMessage(), ex);
+                        }
                     }
 
                 }
