@@ -864,8 +864,8 @@ public class OfficerOnlineEnquiriesDelegator {
                 &&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
-                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION))
-                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)){
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
+                ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT))){
             licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
