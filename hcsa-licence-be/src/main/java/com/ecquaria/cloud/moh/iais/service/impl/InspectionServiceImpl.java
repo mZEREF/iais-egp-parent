@@ -340,15 +340,19 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
+        //set leaders' name
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
         Set<String> leadNameSet = new HashSet<>(leadName);
         leadName = new ArrayList<>(leadNameSet);
-
+        inspectionTaskPoolListDto.setInspectorLeads(leadName);
+        String leadersStr = setLeadersStrShow(leadName);
+        inspectionTaskPoolListDto.setGroupLeadersShow(leadersStr);
+        //set task data
         inspectionTaskPoolListDto.setTaskId(taskId);
         inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
-        inspectionTaskPoolListDto.setInspectorLeads(leadName);
+        //set application data
         if(taskDto != null && !StringUtil.isEmpty(taskDto.getUserId())) {
             inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
         } else {
@@ -363,6 +367,7 @@ public class InspectionServiceImpl implements InspectionService {
         //todo: get authentic Inspection Type
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         String appPremCorrId = taskDto.getRefNo();
+        //save leaders in recommendation
         if(StringUtil.isEmpty(taskDto.getUserId())) {
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
             if (appPremisesRecommendationDto == null) {
@@ -388,6 +393,23 @@ public class InspectionServiceImpl implements InspectionService {
             }
         }
         return inspectionTaskPoolListDto;
+    }
+
+    private String setLeadersStrShow(List<String> leadName) {
+        if(leadName != null){
+            StringBuilder leadStrBu = new StringBuilder();
+            for(String lead : leadName){
+                if(StringUtil.isEmpty(leadStrBu.toString())) {
+                    leadStrBu.append(lead);
+                } else {
+                    leadStrBu.append(',');
+                    leadStrBu.append(' ');
+                    leadStrBu.append(lead);
+                }
+            }
+            return leadStrBu.toString();
+        }
+        return "";
     }
 
     @Override
