@@ -504,9 +504,16 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         applicationDtos.add(applicationDto);
         String applicationNo = applicationDto.getApplicationNo();
         //routing
-        //get check stage
-        String stageKey = inspectionPreTaskDto.getCheckRbStage();
-        String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(stageKey);
+        //get check stage, role, userId, email stage
+        String checkRbData = inspectionPreTaskDto.getCheckRbStage();
+        String roleId = inspectionPreTaskDto.getStageRoleMap().get(checkRbData);
+        String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbData);
+        String emailStage;
+        if(RoleConsts.USER_ROLE_ASO.equals(roleId)){
+            emailStage = NotificationHelper.RECEIPT_ROLE_ASSIGNED_ASO;
+        } else {
+            emailStage = NotificationHelper.RECEIPT_ROLE_ASSIGNED_PSO;
+        }
         //update task
         List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtos){
@@ -538,7 +545,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setUserId(checkUserId);
             createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             createTask.setDateAssigned(new Date());
-            createTask.setRoleId(stageKey);
+            createTask.setRoleId(roleId);
             createTask.setApplicationNo(applicationNo);
             createTask.setAuditTrailDto(auditTrailDto);
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
@@ -556,11 +563,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, inspectionPreTaskDto.getReMarks(),
                 InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), compTask.getTaskKey(), null,
-                null, stageKey, taskDto.getWkGrpId(), null);
+                null, roleId, taskDto.getWkGrpId(), null);
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
         //send email
         try {
-            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), stageKey,checkUserId);
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), emailStage, checkUserId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -713,17 +720,20 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     public InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto) {
         List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> roleIdMap = IaisCommonUtils.genNewHashMap();
         //get history to route back
         if(applicationViewDto != null){
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
+            int index = 0;
             for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
                 if(appPremisesRoutingHistoryDto != null) {
                     String actionUserId = appPremisesRoutingHistoryDto.getActionby();
                     if(!StringUtil.isEmpty(actionUserId)) {
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionUserId).getEntity();
-                        SelectOption selectOption = new SelectOption(appPremisesRoutingHistoryDto.getRoleId(), orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
+                        SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
                         preInspRbOption.add(selectOption);
-                        userIdMap.put(appPremisesRoutingHistoryDto.getRoleId(), actionUserId);
+                        userIdMap.put(index + "", actionUserId);
+                        roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
                     }
                 }
             }
