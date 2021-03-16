@@ -560,7 +560,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
         //send email
         try {
-            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), stageKey);
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), stageKey,checkUserId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

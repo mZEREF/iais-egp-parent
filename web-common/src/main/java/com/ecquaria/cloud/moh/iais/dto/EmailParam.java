@@ -22,6 +22,7 @@ public class EmailParam {
     private String reqRefNum;
     private String refIdType;
     private String refId;
+    private String recipientUserId;
     private JobRemindMsgTrackingDto jobRemindMsgTrackingDto;
     private String subject;
     private String recipientType;
