@@ -3008,7 +3008,7 @@ private CessationFeService cessationFeService;
         appEditSelectDto.setDocEdit(true);
         appEditSelectDto.setServiceEdit(true);
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            if (StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
+            if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
                 appEditSelectDto.setPremisesEdit(false);
                 break;
             }
