@@ -740,6 +740,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
+        inspectionPreTaskDto.setStageRoleMap(roleIdMap);
         return inspectionPreTaskDto;
     }
 
