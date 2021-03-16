@@ -34,6 +34,7 @@
         if(reloadIndex == -1){
             $("#fileAppendId").val(fileAppendId);
         }
+        fileAppendId =  $("#fileAppendId").val();
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         $.ajax({
