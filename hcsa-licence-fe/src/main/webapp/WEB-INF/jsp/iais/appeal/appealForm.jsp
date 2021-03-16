@@ -234,7 +234,7 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-              ajaxCallUpload('mainForm',"selectedFile");
+             /* ajaxCallUpload('mainForm',"selectedFile");*/
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }
