@@ -340,15 +340,19 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
+        //set leaders' name
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
         Set<String> leadNameSet = new HashSet<>(leadName);
         leadName = new ArrayList<>(leadNameSet);
-
+        inspectionTaskPoolListDto.setInspectorLeads(leadName);
+        String leadersStr = setLeadersStrShow(leadName);
+        inspectionTaskPoolListDto.setGroupLeadersShow(leadersStr);
+        //set task data
         inspectionTaskPoolListDto.setTaskId(taskId);
         inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
-        inspectionTaskPoolListDto.setInspectorLeads(leadName);
+        //set application data
         if(taskDto != null && !StringUtil.isEmpty(taskDto.getUserId())) {
             inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
         } else {
@@ -363,6 +367,7 @@ public class InspectionServiceImpl implements InspectionService {
         //todo: get authentic Inspection Type
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         String appPremCorrId = taskDto.getRefNo();
+        //save leaders in recommendation
         if(StringUtil.isEmpty(taskDto.getUserId())) {
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
             if (appPremisesRecommendationDto == null) {
@@ -390,6 +395,23 @@ public class InspectionServiceImpl implements InspectionService {
         return inspectionTaskPoolListDto;
     }
 
+    private String setLeadersStrShow(List<String> leadName) {
+        if(leadName != null){
+            StringBuilder leadStrBu = new StringBuilder();
+            for(String lead : leadName){
+                if(StringUtil.isEmpty(leadStrBu.toString())) {
+                    leadStrBu.append(lead);
+                } else {
+                    leadStrBu.append(',');
+                    leadStrBu.append(' ');
+                    leadStrBu.append(lead);
+                }
+            }
+            return leadStrBu.toString();
+        }
+        return "";
+    }
+
     @Override
     public List<String> getUserIdByWorkGrpId(String workGrpId) {
         List<String> userIds = IaisCommonUtils.genNewArrayList();
@@ -409,39 +431,36 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public List<String> getWorkIdsByLogin(LoginContext loginContext) {
         List<String> roleIds = loginContext.getRoleIds();
-        String roleId = null;
-        for(String role : roleIds){
-            if(role.contains("LEAD")){
-                roleId = role;
-                break;
-            }
-        }
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
             String groupName = workingGroupDto.getGroupName();
-            if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId)&&(groupName.contains("Inspection"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if(RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)&&(groupName.contains("Admin Screening officer"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_ASO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_ASO))&&(groupName.contains("Admin Screening officer"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if(RoleConsts.USER_ROLE_PSO_LEAD.equals(roleId)&&(groupName.contains("Professional"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_PSO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_PSO))&&(groupName.contains("Professional"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if(RoleConsts.USER_ROLE_AO1_LEAD.equals(roleId)&&(groupName.contains("Level 1 Approval"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO1_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO1))&&(groupName.contains("Level 1 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if(RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)&&(groupName.contains("Level 2 Approval"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO1_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO1))&&(groupName.contains("Level 1 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if(RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)&&(groupName.contains("Level 3 Approval"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO2_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO2))&&(groupName.contains("Level 2 Approval"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO3_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO3))&&(groupName.contains("Level 3 Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
@@ -543,7 +562,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks,
-                                        ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
+                                          ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<SelectOption> inspectorCheckList = inspectionTaskPoolListDto.getInspectorCheck();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
@@ -580,7 +599,7 @@ public class InspectionServiceImpl implements InspectionService {
                             if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
                                 for (int i = 0; i < inspectorCheckList.size(); i++) {
                                     if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                         applicationService.updateFEApplicaiton(applicationDto1);
                                         inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
                                         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
