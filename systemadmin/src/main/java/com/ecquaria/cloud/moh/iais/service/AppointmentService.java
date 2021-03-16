@@ -43,4 +43,5 @@ public interface AppointmentService {
 	SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam);
 
 
+
 }

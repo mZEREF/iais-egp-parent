@@ -153,13 +153,10 @@ public class InspectorCalendarDelegator {
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 		initCurrentGroupResult(request, workingGroupQueryList, searchParam, groupIdMap, userName);
 
-		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
-		if (!AppConsts.TRUE.equals(isNew)){
-			SearchResult<InspectorCalendarQueryDto> calendarSearchResult = appointmentService.queryInspectorCalendar(searchParam);
-			setYearDrop(request, calendarSearchResult);
-			ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
-		}
+		SearchResult<InspectorCalendarQueryDto> calendarSearchResult = appointmentService.queryInspectorCalendar(searchParam);
+		setYearDrop(request, calendarSearchResult);
 
+		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.FALSE);
 		ParamUtil.setSessionAttr(request, INSPECTOR_CALENDAR_GROUP_ID_MAP, (Serializable) groupIdMap);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
@@ -189,7 +186,7 @@ public class InspectorCalendarDelegator {
 				}else {
 					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
 				}
-
+				ParamUtil.setRequestAttr(request, "Display_Group_Name_For_New", groupName);
 				break;
 			default:
 				groupId = groupIdMap.containsKey(selectedGroup)
@@ -282,8 +279,6 @@ public class InspectorCalendarDelegator {
 		if(StringUtil.isNotEmpty(yearVal)){
 			searchParam.addFilter(AppointmentConstants.YEAR_ATTR, yearVal, true);
 		}
-
-
 
 		if(StringUtil.isNotEmpty(blockDateStart)){
 			String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(blockDateStart), SystemAdminBaseConstants.DATE_FORMAT);

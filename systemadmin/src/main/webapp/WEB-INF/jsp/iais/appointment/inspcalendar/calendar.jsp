@@ -31,7 +31,8 @@
           <iais:row>
             <iais:field value="Working Group:" required="true"/>
             <iais:value width="18">
-              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="Please Select" value="${param.wrlGrpNameOpt}" ></iais:select>
+              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="" value="${requestScope.Display_Group_Name_For_New != null
+              ? Display_Group_Name_For_New : param.wrlGrpNameOpt}" ></iais:select>
               <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
             </iais:value>
           </iais:row>
