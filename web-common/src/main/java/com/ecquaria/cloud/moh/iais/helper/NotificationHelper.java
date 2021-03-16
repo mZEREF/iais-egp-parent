@@ -929,7 +929,7 @@ public class NotificationHelper {
 
 	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
 		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType)){
-			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo);//NOSONAR
+			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo,recipientUserId);//NOSONAR
 		}else {
 			//The default function
 			inspectionEmailTemplateDto = getDefaultAssignedOfficer(roles, inspectionEmailTemplateDto, appNo,recipientUserId);//NOSONAR
@@ -952,7 +952,7 @@ public class NotificationHelper {
 				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 	}
 
-	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo) {
+	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo,String recipientUserId) {
 		if (StringUtil.isEmpty(appNo) || inspectionEmailTemplateDto == null) {
 			return inspectionEmailTemplateDto;
 		}
@@ -988,7 +988,7 @@ public class NotificationHelper {
 
 		int index = officerNameMap.size();
 		for (OrgUserDto u : orgUserList) {
-			if (!StringUtil.isEmpty(u.getEmail())) {
+			if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
 				officerNameMap.put(String.valueOf(index), u.getDisplayName());
 				emailAddressMap.put(String.valueOf(index), u.getEmail());
 				index++;
