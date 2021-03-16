@@ -435,6 +435,7 @@ public class InspectionSearchDelegator {
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremCorrId);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+                //set hours flag
                 inspectionTaskPoolListDto = setEditHoursFlagByAppAndUser(inspectionTaskPoolListDto, applicationDto);
             }
             if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){
