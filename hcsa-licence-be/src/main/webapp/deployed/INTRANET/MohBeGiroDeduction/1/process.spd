@@ -131,8 +131,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/beGiroDeductionSearchPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/beGiroDeductionRetCond" style="oblique">
    <position>{(910,370)(865,174)(540,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionStep" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetrigger" style="oblique">
-   <position>{(910,510)(730,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetrigger" style="rectanular">
+   <position>{(910,510)(599,501)(503,303)(390,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

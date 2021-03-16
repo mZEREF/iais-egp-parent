@@ -122,7 +122,7 @@
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}">
                             <td>
                               <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
-                                     onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${proRec.appPremisesPreInspectionNcItemDto.id}"/>"/>
+                                     onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
                             <td><c:out value="${pool.hciName}"/></td>
@@ -131,7 +131,7 @@
                             <td><iais:code code="${pool.invoiceNo}"/></td>
                             <td><iais:code code="${pool.acctNo}"/></td>
                             <td><iais:code code="${pool.pmtStatus}"/></td>
-                            <td><iais:code code="${pool.amount}"/></td>
+                            <td><iais:code code="$${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -140,6 +140,8 @@
                   </table>
                   <iais:action style="text-align:right;">
                     <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
+                    <button name="" class="btn btn-primary" type="button" >Download Spreadsheet</button>
+                    <button name="" class="btn btn-primary" type="button" >Upload Status</button>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>

@@ -177,7 +177,7 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionRetVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the beGiroDeductionRetVali start ...."));
-        String[] appGroupNos = ParamUtil.getStrings(bpc.request,"appGroupNo");
+        String[] appGroupNos = ParamUtil.getStrings(bpc.request,"giroDueCheck");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String retValiError = "giroDeductionError";
         List<String> appGroupList = IaisCommonUtils.genNewArrayList();
