@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -40,7 +41,8 @@ public class UserValidator implements CustomizeValidator {
         String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD);
                 if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
                 boolean b;
-                if("FIN".equals(dto.getIdType())){
+                if(OrganizationConstants.ID_TYPE_FIN.equals(dto.getIdType())
+                        || "FIN".equalsIgnoreCase(dto.getIdType())){
                     b = SgNoValidator.validateFin(dto.getIdentityNo());
                 }else{
                     b = SgNoValidator.validateNric(dto.getIdentityNo());
