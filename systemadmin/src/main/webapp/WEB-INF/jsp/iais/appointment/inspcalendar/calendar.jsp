@@ -29,7 +29,7 @@
       <form class="form-horizontal">
         <iais:section title="" id = "demoList">
           <iais:row>
-            <iais:field value="Working Group:" required="true"/>
+            <iais:field value="Working Group:"/>
             <iais:value width="18">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="" value="${requestScope.Display_Group_Name_For_New != null
               ? Display_Group_Name_For_New : param.wrlGrpNameOpt}" ></iais:select>
