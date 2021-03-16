@@ -99,8 +99,8 @@
                                                         <tr align="center">
                                                             <th >&nbsp;</th>
                                                             <iais:sortableHeader needSort="true"
-                                                                                 field="UEN"
-                                                                                 value="UEN_NO"/>
+                                                                                 field="UEN_NO"
+                                                                                 value="UEN"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="HCI_NAME"
                                                                                  value="HCI Name"/>
