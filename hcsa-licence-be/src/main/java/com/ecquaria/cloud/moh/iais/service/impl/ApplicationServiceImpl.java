@@ -810,7 +810,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if(!StringUtil.isEmpty(eventRefNum)){
             EicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
             if(appEicRequestTrackingDto!=null){
-                 eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
+                eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
                 if(eventApplicationGroupDto!= null){
                     eicCallFeApplication(eventApplicationGroupDto);
                 }else{
@@ -828,7 +828,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     //Send EN_RFC_005_CLARIFICATION
     @Override
-    public void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole) throws Exception {
+    public void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception {
         String licenseeName = null;
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
@@ -870,6 +870,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setRecipientType(recipientRole);
+        emailParam.setRecipientUserId(recipientUserId);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION).getEntity();
         map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());

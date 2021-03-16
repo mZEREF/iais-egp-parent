@@ -71,5 +71,5 @@ public interface ApplicationService {
 
     EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);
 
-    void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole) throws Exception;
+    void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception;
 }

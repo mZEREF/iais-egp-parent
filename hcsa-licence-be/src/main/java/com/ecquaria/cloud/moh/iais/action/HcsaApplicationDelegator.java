@@ -870,7 +870,7 @@ public class HcsaApplicationDelegator {
         //send internal route back email
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try {
-            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, recipientRole);
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, recipientRole,userId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
