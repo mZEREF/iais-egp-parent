@@ -293,30 +293,30 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                        <div class="col-md-4" style="padding-right: 0px">
-                                                <p class="form-check-label" aria-label="premise-1-cytology">
-                                                <span>
-                                                  <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
-                                                </span>
-                                                </p>
-                                        </div>
+                                            <div class="col-md-4" style="padding-right: 0px">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                                    <span>
+                                                      <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                                    </span>
+                                                    </p>
+                                            </div>
 
-                                        <div class="col-md-4" style="padding-right: 0px">
-                                                <p class="form-check-label" aria-label="premise-1-cytology">
-                                                <span>
-                                                 <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
-                                                </span>
-                                                </p>
-                                        </div>
+                                            <div class="col-md-4" style="padding-right: 0px">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                                    <span>
+                                                     <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                                    </span>
+                                                    </p>
+                                            </div>
 
-                                        <div class="col-md-3" style="padding-right: 0px">
-                                            <c:if test="${op.selectAllDay}">
-                                              <div class="form-check active">
-                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                                              </div>
-                                            </c:if>
+                                            <div class="col-md-3" style="padding-right: 0px">
+                                                <c:if test="${op.selectAllDay}">
+                                                  <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                  </div>
+                                                </c:if>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
                                 </div>
                             </c:forEach>
