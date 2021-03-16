@@ -422,7 +422,7 @@ public class InspectionServiceImpl implements InspectionService {
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
-            if((roleIds.contains(RoleConsts.USER_ROLE_PSO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_PSO_LEAD))&&(groupName.contains("Professional"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_PSO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_PSO))&&(groupName.contains("Professional"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
