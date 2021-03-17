@@ -1,35 +1,56 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @JobHandler(value="approveWithdrawalJobHandler")
 @Component
@@ -54,24 +75,114 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     @Autowired
     private OrganizationClient organizationClient;
 
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+
+    @Value("${iais.system.one.address}")
+    private String systemAddressOne;
+
     @Override
     public ReturnT<String> execute(String s) {
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
+            List<ApplicationDto> withdrawApplicationDtoList = applicationClient.saveWithdrawn().getEntity();
             //get old application
-            if (!IaisCommonUtils.isEmpty(applicationDtoList)){
-                applicationDtoList.forEach(h -> {
+            HcsaApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(HcsaApplicationDelegator.class);
+            if (!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
+                withdrawApplicationDtoList.forEach(h -> {
                     applicationService.updateFEApplicaiton(h);
+                    boolean isCharity = false;
+                    String applicantName = "";
+                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(h.getId()).getEntity();
+                    if (premiseMiscDto != null) {
+                        String oldAppId = premiseMiscDto.getRelateRecId();
+                        if (!StringUtil.isEmpty(oldAppId)) {
+                            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                            String serviceId = oldApplication.getServiceId();
+                            String applicationNo = oldApplication.getApplicationNo();
+                            String applicationType1 = oldApplication.getApplicationType();
+                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
+                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                            if (orgUserDto != null) {
+                                applicantName = orgUserDto.getDisplayName();
+                            }
+                            String licenseeId = applicationGroupDto.getLicenseeId();
+                            String paymentMethod = applicationGroupDto.getPayMethod();
+                            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(h.getStatus())
+                                    || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(h.getStatus())) {
+                                Double fee = 0.0;
+                                applicationService.closeTaskWhenWhAppApprove(h.getId());
+                                List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                                applicationDtoList.add(oldApplication);
+                                String entityType = "";
+                                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                                if (licenseeDto != null) {
+                                    LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                                    if (licenseeEntityDto != null) {
+                                        entityType = licenseeEntityDto.getEntityType();
+                                    }
+                                }
+                                if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                                    isCharity = true;
+                                }
+                                for (ApplicationDto applicationDto1 : applicationDtoList) {
+                                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                                    applicationDto1.setIsCharity(isCharity);
+                                }
+                                List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+                                if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
+                                    fee = applicationDtoList2.get(0).getReturnFee();
+                                }
+                                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                                msgInfoMap.put("Applicant", applicantName);
+                                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                                msgInfoMap.put("ApplicationNumber", applicationNo);
+                                msgInfoMap.put("reqAppNo", applicationNo);
+                                msgInfoMap.put("S_LName", serviceName);
+                                msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                                msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                                if (StringUtil.isEmpty(paymentMethod) ||
+                                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
+                                    msgInfoMap.put("paymentType", "2");
+                                    msgInfoMap.put("paymentMode", "");
+                                    msgInfoMap.put("returnMount", 0.0);
+                                } else {
+                                    msgInfoMap.put("returnMount", fee);
+                                    if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                                        msgInfoMap.put("paymentType", "0");
+                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+                                    } else {
+                                        msgInfoMap.put("paymentType", "1");
+                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
+                                    }
+                                }
+                                msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
+                                msgInfoMap.put("systemLink", loginUrl);
+                                msgInfoMap.put("emailAddress", systemAddressOne);
+                                try {
+                                    newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
+                                    newApplicationDelegator.sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
+                                    newApplicationDelegator.sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                                } catch (Exception e) {
+                                    log.info(e.getMessage(),e);
+                                }
+                            }
+                        }
+                    }
                 });
-                log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+applicationDtoList.size()));
+                log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+withdrawApplicationDtoList.size()));
                 List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-                    for(ApplicationDto oldApplicationDto : applicationDtoList){
+                if(!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
+                    for(ApplicationDto oldApplicationDto : withdrawApplicationDtoList){
                         doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
                     }
                 }
-                JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + applicationDtoList.size()));
+                JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + withdrawApplicationDtoList.size()));
             }else{
                 JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
             }
