@@ -769,6 +769,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_SEND_XML_SFTP).getEntity();
           if(IaisCommonUtils.isEmpty( giroPaymentXmlDtos)){
               log.info("getGiroXmlFromSftpAndSaveXml is null");
+              sysnSaveGroupToBe();
               return;
           }
           for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
