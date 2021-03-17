@@ -385,21 +385,18 @@
             var thisId = $(this).attr('id');
             //alert(postalCode);
             var re=new RegExp('^[0-9]*$');
-            var errMsg = '';
-            if(''== postalCode ){
-                errMsg = 'the postal code could not be null';
-            }else if(postalCode.length != 6){
-                errMsg = 'the postal code length must be 6';
-            }else if(!re.test(postalCode)){
-                errMsg = 'the postal code must be numbers';
-            }
-            if("" != errMsg){
-                $postalCodeEle.find('.postalCodeMsg').html(errMsg);
-                return;
-            }
             var data = {
                 'postalCode':postalCode
             };
+            var premType = '';
+            var prefixName = '';
+            if("conveyance" == thisId){
+                prefixName = 'conveyance';
+            }else if("onSite" == thisId){
+                prefixName = 'site';
+            }else if("offSite" == thisId){
+                prefixName = 'offSite';
+            }
             $.ajax({
                 'url':'${pageContext.request.contextPath}/retrieve-address',
                 'dataType':'json',
@@ -407,17 +404,19 @@
                 'type':'GET',
                 'success':function (data) {
                     if(data == null){
-                        $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                        // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                        //show pop
+                        $('#postalCodePop').modal('show');
+                        $premContent.find('.'+prefixName+'BlkNo').val('');
+                        $premContent.find('.'+prefixName+'StreetName').val('');
+                        $premContent.find('.'+prefixName+'BuildingName').val('');
+
+                        $premContent.find('.'+prefixName+'BlkNo').prop('readonly',false);
+                        $premContent.find('.'+prefixName+'StreetName').prop('readonly',false);
+                        $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
+
+                        $premContent.find('input[name="retrieveflag"]').val('0');
                         return;
-                    }
-                    var premType = '';
-                    var prefixName = '';
-                    if("conveyance" == thisId){
-                        prefixName = 'conveyance';
-                    }else if("onSite" == thisId){
-                        prefixName = 'site';
-                    }else if("offSite" == thisId){
-                        prefixName = 'offSite';
                     }
                     $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
                     $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
@@ -430,7 +429,18 @@
                     $premContent.find('input[name="retrieveflag"]').val('1');
                 },
                 'error':function () {
-                    $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                    //$postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                    //show pop
+                    $('#postalCodePop').modal('show');
+                    $premContent.find('.'+prefixName+'BlkNo').val('');
+                    $premContent.find('.'+prefixName+'StreetName').val('');
+                    $premContent.find('.'+prefixName+'BuildingName').val('');
+
+                    $premContent.find('.'+prefixName+'BlkNo').prop('readonly',false);
+                    $premContent.find('.'+prefixName+'StreetName').prop('readonly',false);
+                    $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
+
+                    $premContent.find('input[name="retrieveflag"]').val('0');
                 }
             });
 

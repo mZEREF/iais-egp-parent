@@ -131,6 +131,7 @@
   </div>--%>
   <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
   <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
 </form>
@@ -140,6 +141,7 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
+        $('#postalCodePop').modal('hide');
         if($('#RFC_ERROR_NO_CHANGE').val()!=''){
             $('#rfc_ERROR').modal('show');
         }
@@ -271,4 +273,7 @@
         $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
+    function postalCodeCon(){
+        $('#postalCodePop').modal('hide');
+    }
 </script>
