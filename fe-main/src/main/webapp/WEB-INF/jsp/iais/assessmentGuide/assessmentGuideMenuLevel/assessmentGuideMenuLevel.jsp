@@ -9,7 +9,7 @@
                 <label class="form-check-label" for="applyLicence">
                     <span class="check-circle"></span>
                     <span class="left-content">Apply for a new licence </span>
-                    <span class="right-content">For new services or premises</span>
+                    <span class="right-content">${self_ack001}</span>
                 </label>
             </div>
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
@@ -28,7 +28,7 @@
                 <label class="form-check-label" for="renewLicence">
                     <span class="check-circle"></span>
                     <span class="left-content">Renew my licence</span>
-                    <span class="right-content">For expiring licences</span>
+                    <span class="right-content">${self_ack002}</span>
                 </label>
             </div>
             <%--
@@ -45,8 +45,8 @@
                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                             data-toggle="tooltip" data-html="true"
                             title='${inbox_ack017}' data-original-title=''
-                            style="position: absolute;left: 200px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For changes in address, personnel, or subsumed services</span>
+                            style="position: absolute;left: 200px; top: 66px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack004}</span>
                 </label>
             </div>
             <%--
@@ -64,7 +64,7 @@
                             data-toggle="tooltip" data-html="true"
                             title='${inbox_ack018}' data-original-title=''
                             style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For service cessation and premises removal</span>
+                    <span class="right-content">${self_ack008}</span>
                 </label>
             </div>
             <%--
@@ -83,7 +83,7 @@
                           data-toggle="tooltip" data-html="true"
                           title='${inbox_ack019}' data-original-title=''
                           style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For withdrawing my application</span>
+                    <span class="right-content">${self_ack007}</span>
                 </label>
             </div>
             <%--
@@ -98,7 +98,7 @@
                        for="resumeDraftApplication">
                     <span class="check-circle"></span>
                     <span class="left-content">Resume my draft application</span>
-                    <span class="right-content">For resuming a draft application</span>
+                    <span class="right-content">${self_ack003}</span>
                 </label>
             </div>
             <%--
@@ -111,8 +111,8 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="submitDataMoh">
                     <span class="check-circle"></span>
-                    <span class="left-content">Submit data to MOH</span>
-                    <span class="right-content">For submission of data to MOH (e.g. Lab Development Tests)</span>
+                    <span class="left-content">Data Submission</span>
+                    <span class="right-content">${self_ack006}</span>
                 </label>
             </div>
             <%--
@@ -126,8 +126,8 @@
                 <label class="form-check-label"
                        for="updateAdminPersonnel">
                     <span class="check-circle"></span>
-                    <span class="left-content">Update admin personnel</span>
-                    <span class="right-content">For licensee/authorised persons to add/remove admin personnel</span>
+                    <span class="left-content">Manage admin personnel</span>
+                    <span class="right-content">${self_ack005}</span>
                 </label>
             </div>
         </div>
