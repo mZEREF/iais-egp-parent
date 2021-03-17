@@ -33,12 +33,13 @@
                                     <label class="form-check-label" for="ao1Check"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="ao1" hidden>
-                                        <iais:select name="ao1GroupSelect" value="${role}" firstOption="Please Select"
-                                                     options="ao1GroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="ao1" hidden>
+                                    <c:forEach items="${ao1GroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:when test="${role=='Approval Officer 1 Officer'}">
                                 <div class="form-check">
@@ -47,12 +48,13 @@
                                     <label class="form-check-label" for="ao1LeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="ao1Lead" hidden>
-                                        <iais:select name="ao1GroupLeadSelect" value="${role}" firstOption="Please Select"
-                                                     options="ao1GroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="ao1Lead" hidden>
+                                    <c:forEach items="${ao1GroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:when test="${role=='Inspector'}">
                                 <div class="form-check">
@@ -61,12 +63,14 @@
                                     <label class="form-check-label" for="insCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="ins" hidden>
-                                        <iais:select name="insGroupSelect" value="${role}" firstOption="Please Select"
-                                                     options="insGroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="ins" hidden>
+                                        <%--                                    <iais:multipleSelect name="insGroupSelect" selectValue="" options="insGroupOptions"></iais:multipleSelect>--%>
+                                    <c:forEach items="${insGroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:when test="${role=='Inspector Leader'}">
                                 <div class="form-check">
@@ -75,12 +79,13 @@
                                     <label class="form-check-label" for="insLeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="insLead" hidden>
-                                        <iais:select name="insGroupLeadSelect" value="${role}" firstOption="Please Select"
-                                                     options="insGroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="insLead" hidden>
+                                    <c:forEach items="${insGroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="insGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:when test="${role=='Professional Screening Officer'}">
                                 <div class="form-check">
@@ -89,12 +94,13 @@
                                     <label class="form-check-label" for="psoCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="pso" hidden>
-                                        <iais:select name="psoGroupSelect" value="${role}" firstOption="Please Select"
-                                                     options="psoGroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="pso" hidden>
+                                    <c:forEach items="${psoGroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="psoGroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:when test="${role=='Professional Screening Officer Leader'}">
                                 <div class="form-check">
@@ -103,12 +109,13 @@
                                     <label class="form-check-label" for="psoLeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role}</span>
-                                    <div id="psoLead" hidden>
-                                        <iais:select name="psoGroupLeadSelect" value="${role}" firstOption="Please Select"
-                                                     options="psoGroupOptions"></iais:select>
-                                    </div>
                                 </div>
                                 <br/>
+                                <div id="psoLead" hidden>
+                                    <c:forEach items="${psoGroupOptions}" var="groupId">
+                                        <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                    </c:forEach>
+                                </div>
                             </c:when>
                             <c:otherwise>
                                 <div class="form-check">
@@ -142,7 +149,11 @@
                                     class="check-square"></span></label>
                             <span style="font-size: 18px">${role.key}</span>
                         </div>
-                        <br/>
+                        <%--                        <div>--%>
+                        <%--                            <c:forEach items="${ao1GroupOptionsExist}" var="groupId">--%>
+                        <%--                                <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>--%>
+                        <%--                            </c:forEach>--%>
+                        <%--                        </div>--%>
                     </c:forEach>
                     <span id="error_roleLeader" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
