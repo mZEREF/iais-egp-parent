@@ -52,7 +52,16 @@
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <p> <c:out value="${commonDto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/></p>
+                                            <p> <c:out value="${commonDto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/>
+                                             <c:if test="${not empty serListDto.fdtoList}">
+                                            <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
+                                                <c:if test="${not empty cdto.draftRemarkMaps[inspectorUserFinishChecklistId]}">
+                                                    <br>
+                                                    <c:out value="${cdto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/>
+                                                </c:if>
+                                            </c:forEach>
+                                            </c:if>
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="table-gp">
