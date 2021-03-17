@@ -8,7 +8,12 @@
 
 
 %>
-<webui:setLayout name="iais-internet"/>
+<c:if test="${appeal=='appeal'}">
+  <webui:setLayout name="iais-blank"/>
+</c:if>
+<c:if test="${appeal!='appeal'}">
+  <webui:setLayout name="iais-internet"/>
+</c:if>
 <c:if test="${appeal!='appeal'}">
   <%@ include file="../common/dashboard.jsp" %>
 </c:if>
