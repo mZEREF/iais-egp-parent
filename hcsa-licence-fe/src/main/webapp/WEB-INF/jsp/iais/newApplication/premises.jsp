@@ -143,7 +143,7 @@
     </div>
   </div>--%>
   <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
-  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false"></iais:confirm>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
@@ -333,6 +333,10 @@
       $("[name='crud_action_type_continue']").val("continue");
       submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
   }
+
+  function postalCodeCon(){
+      $('#postalCodePop').modal('hide');
+    }
 
 </script>
 
