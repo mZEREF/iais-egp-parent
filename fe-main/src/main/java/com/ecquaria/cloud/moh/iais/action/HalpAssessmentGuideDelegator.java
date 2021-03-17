@@ -173,26 +173,26 @@ public class HalpAssessmentGuideDelegator {
         String self_ack012 = MessageUtil.getMessageDesc("SELF_ACK012");
         String self_ack013 = MessageUtil.getMessageDesc("SELF_ACK013");
 
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack016",inbox_ack016);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack017",inbox_ack017);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack018",inbox_ack018);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack019);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack020",inbox_ack020);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack021",inbox_ack021);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack022",inbox_ack022);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack001",self_ack001);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack002",self_ack002);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack003",self_ack003);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack004",self_ack004);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack005",self_ack005);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack006",self_ack006);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack007",self_ack007);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack008",self_ack008);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack009",self_ack009);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack010",self_ack010);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack011",self_ack011);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack012",self_ack012);
-        ParamUtil.setRequestAttr(bpc.request,"self_ack013",self_ack013);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack016",inbox_ack016);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack017",inbox_ack017);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack018",inbox_ack018);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack019",inbox_ack019);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack020",inbox_ack020);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack021",inbox_ack021);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack022",inbox_ack022);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack001",self_ack001);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack002",self_ack002);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack003",self_ack003);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack004",self_ack004);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack005",self_ack005);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack006",self_ack006);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack007",self_ack007);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack008",self_ack008);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack009",self_ack009);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack010",self_ack010);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack011",self_ack011);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack012",self_ack012);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack013",self_ack013);
 
     }
 
