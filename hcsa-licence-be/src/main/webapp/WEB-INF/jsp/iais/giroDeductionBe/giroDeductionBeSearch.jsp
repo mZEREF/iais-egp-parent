@@ -127,7 +127,7 @@
                               </c:if>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
-                            <td><c:out value="${pool.hciName}"/></td>
+                            <td>${pool.hciName}</td>
                             <td><iais:code code="${pool.appGroupNo}"/></td>
                             <td><c:out value="${pool.txnRefNo}"/></td>
                             <td><iais:code code="${pool.invoiceNo}"/></td>

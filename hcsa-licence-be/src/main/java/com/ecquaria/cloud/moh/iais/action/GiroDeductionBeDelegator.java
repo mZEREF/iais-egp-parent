@@ -88,7 +88,7 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, false);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
         String transactionId = bpc.request.getParameter("transactionId");
         String bankAccountNo = bpc.request.getParameter("bankAccountNo");
         String group_no = bpc.request.getParameter("applicationNo");
@@ -216,5 +216,6 @@ public class GiroDeductionBeDelegator {
         log.info(StringUtil.changeForLog("the beGiroDeductionRetrigger start ...."));
         List<String> appGroupList = (List<String>)ParamUtil.getRequestAttr(bpc.request, "appGroupList");
         giroDeductionBeService.sendMessageEmail(appGroupList);
+        giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author Wenkang
  * @date 2021/3/15 15:31
@@ -17,4 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface GiroDeductionClient {
     @PostMapping(value = "search-realut-giro",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<GiroDeductionDto>> giroDeductionDtoSearchResult(@RequestBody SearchParam searchParam);
+    @PostMapping(value = "/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<GiroDeductionDto>> updateDeductionDtoSearchResultUseGroups(@RequestBody List<String> groups);
+
 }
