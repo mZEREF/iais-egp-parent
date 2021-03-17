@@ -673,6 +673,7 @@ public class WithOutRenewalDelegator {
                         List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
                         if (attribute != null) {
                             for (LicenceDto licenceDto : attribute) {
+                                AppEditSelectDto rfcAppEditSelectDto = new AppEditSelectDto();
                                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
                                 appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                                 appSubmissionService.transform(appSubmissionDtoByLicenceId, licenseeId);
@@ -757,11 +758,11 @@ public class WithOutRenewalDelegator {
                                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                                 }
                                 appSubmissionDtoByLicenceId.setAutoRfc(flag);
-                                appEditSelectDto.setPremisesEdit(true);
-                                appEditSelectDto.setServiceEdit(false);
-                                appEditSelectDto.setDocEdit(false);
-                                appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
-                                appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
+                                rfcAppEditSelectDto.setPremisesEdit(true);
+                                rfcAppEditSelectDto.setServiceEdit(false);
+                                rfcAppEditSelectDto.setDocEdit(false);
+                                appSubmissionDtoByLicenceId.setAppEditSelectDto(rfcAppEditSelectDto);
+                                appSubmissionDtoByLicenceId.setChangeSelectDto(rfcAppEditSelectDto);
                                 appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                                 appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
                                 String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
