@@ -508,6 +508,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"weeklyCount",systemParamConfig.getWeeklyCount());
         ParamUtil.setRequestAttr(bpc.request,"phCount",systemParamConfig.getPhCount());
         ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
+        ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
