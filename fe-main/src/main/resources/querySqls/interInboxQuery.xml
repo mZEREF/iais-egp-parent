@@ -66,7 +66,7 @@
                     repalceService  as code,
                     app.self_assmt_flag,
                     app.is_fast_tracking,
-                    (select SUBMIT_DT from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id) as created_dt,
+                    (select SUBMIT_DT from application_group as ag where ag.ID =  app.APP_GRP_ID) as created_dt,
                     app.version
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
