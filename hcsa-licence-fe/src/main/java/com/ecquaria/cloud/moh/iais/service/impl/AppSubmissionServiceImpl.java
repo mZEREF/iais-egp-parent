@@ -172,7 +172,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName){
         try{
-            ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
+            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+            if(IaisCommonUtils.isEmpty(applicationDtos)){
+                applicationDtos = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo()).getEntity();
+                appSubmissionDto.setApplicationDtos(applicationDtos);
+            }
+            ApplicationDto applicationDto =  applicationDtos.get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
@@ -191,8 +196,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             String applicationNumber = stringBuilderAPPNum.toString();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationType", applicationType);
             subMap.put("ApplicationNumber", applicationNumber);
             subMap.put("temp", temp);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
