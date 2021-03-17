@@ -159,14 +159,40 @@ public class HalpAssessmentGuideDelegator {
         String inbox_ack020 = MessageUtil.getMessageDesc("INBOX_ACK020");
         String inbox_ack021 = MessageUtil.getMessageDesc("INBOX_ACK021");
         String inbox_ack022 = MessageUtil.getMessageDesc("INBOX_ACK022");
+        String self_ack001 = MessageUtil.getMessageDesc("SELF_ACK001");
+        String self_ack002 = MessageUtil.getMessageDesc("SELF_ACK002");
+        String self_ack003 = MessageUtil.getMessageDesc("SELF_ACK003");
+        String self_ack004 = MessageUtil.getMessageDesc("SELF_ACK004");
+        String self_ack005 = MessageUtil.getMessageDesc("SELF_ACK005");
+        String self_ack006 = MessageUtil.getMessageDesc("SELF_ACK006");
+        String self_ack007 = MessageUtil.getMessageDesc("SELF_ACK007");
+        String self_ack008 = MessageUtil.getMessageDesc("SELF_ACK008");
+        String self_ack009 = MessageUtil.getMessageDesc("SELF_ACK009");
+        String self_ack010 = MessageUtil.getMessageDesc("SELF_ACK010");
+        String self_ack011 = MessageUtil.getMessageDesc("SELF_ACK011");
+        String self_ack012 = MessageUtil.getMessageDesc("SELF_ACK012");
+        String self_ack013 = MessageUtil.getMessageDesc("SELF_ACK013");
 
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack016",inbox_ack016);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack017",inbox_ack017);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack018",inbox_ack018);
         ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack019);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack020);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack021);
-        ParamUtil.setRequestAttr(bpc.request,"inbox_ack019",inbox_ack022);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack020",inbox_ack020);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack021",inbox_ack021);
+        ParamUtil.setRequestAttr(bpc.request,"inbox_ack022",inbox_ack022);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack001",self_ack001);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack002",self_ack002);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack003",self_ack003);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack004",self_ack004);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack005",self_ack005);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack006",self_ack006);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack007",self_ack007);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack008",self_ack008);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack009",self_ack009);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack010",self_ack010);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack011",self_ack011);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack012",self_ack012);
+        ParamUtil.setRequestAttr(bpc.request,"self_ack013",self_ack013);
 
     }
 

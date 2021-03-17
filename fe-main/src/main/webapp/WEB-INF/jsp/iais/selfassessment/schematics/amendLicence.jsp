@@ -7,12 +7,12 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence1">
             <span class="check-circle"></span>
-            <span class="left-content">Update Service Details<a
+            <span class="left-content">Amend Service Information<a
                     class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                     data-toggle="tooltip" data-html="true"
                     title='${inbox_ack020}' data-original-title=''
-                    style="position: absolute;left: 230px; top: 12px;z-index: 10" >i</a></span>
-            <span class="right-content">Add/Remove subsumed service(s), service subcategory(ies)</span>
+                    style="position: absolute;left: 260px; top: 22px;z-index: 10" >i</a></span>
+            <span class="right-content">${self_ack009}</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -21,12 +21,12 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence2">
             <span class="check-circle"></span>
-            <span class="left-content">Update Healthcare Institution (HCI) Information<a
+            <span class="left-content">Amend Business Information<a
                     class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                     data-toggle="tooltip" data-html="true"
                     title='${inbox_ack021}' data-original-title=''
-                    style="position: absolute;left: 190px; top: 34px;z-index: 10">i</a></span>
-            <span class="right-content">Update a change in HCI name, premises address, contact information, operating hours</span>
+                    style="position: absolute;left: 275px; top: 15px;z-index: 10">i</a></span>
+            <span class="right-content">${self_ack010}</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -35,8 +35,8 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence3">
             <span class="check-circle"></span>
-            <span class="left-content">Update licensee information</span>
-            <span class="right-content">Update a change in licensee, or licensee's information</span>
+            <span class="left-content">Amend Licensee Information</span>
+            <span class="right-content">${self_ack011}</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -45,12 +45,12 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence4">
             <span class="check-circle"></span>
-            <span class="left-content">Update personnel information<a
+            <span class="left-content">Amend Personnel Information<a
                     class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                     data-toggle="tooltip" data-html="true"
                     title='${inbox_ack022}' data-original-title=''
-                    style="position: absolute;left: 294px; top: 22px;z-index: 10">i</a></span>
-            <span class="right-content">Update a change in Principal Officer, Clinical Governance Officer, other Service Personnel and/or his/her contact information</span>
+                    style="position: absolute;left: 280px; top: 22px;z-index: 10">i</a></span>
+            <span class="right-content">${self_ack012}</span>
         </label>
     </div>
 </div>
