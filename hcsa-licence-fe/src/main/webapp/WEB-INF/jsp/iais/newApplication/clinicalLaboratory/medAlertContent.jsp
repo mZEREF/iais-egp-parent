@@ -84,7 +84,7 @@
                                 <div class="col-sm-2 text-right">
                                     <div class="edit-content">
                                         <c:if test="${'true' == canEdit}">
-                                            <label class="control-font-label"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                            <label class="control-font-label"><a class="edit mapEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
                                         </c:if>
                                     </div>
                                 </div>

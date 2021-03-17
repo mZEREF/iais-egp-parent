@@ -141,7 +141,7 @@
                                                                                 <c:if test="${'true' == canEdit}">
                                                                                     <p>
                                                                                     <div class="text-right app-font-size-16">
-                                                                                        <a class="edit"><em
+                                                                                        <a class="edit cgoEdit"><em
                                                                                                 class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
                                                                                     </div>
                                                                                     </p>
