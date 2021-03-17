@@ -2013,8 +2013,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
                 List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
-                    Date startDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
-                    Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getEndSlot().get(0);
+                    Date startDate = apptUserCalendarDtos.get(0).getTimeSlot();
+                    Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getTimeSlot();
                     String startDateTime = Formatter.formatDateTime( startDate,"HH : mm");
                     String endDateDateTime = Formatter.formatDateTime(endDate,"HH : mm");
                     String [] startDateHHMM = getStringsByHHDD(startDateTime);
