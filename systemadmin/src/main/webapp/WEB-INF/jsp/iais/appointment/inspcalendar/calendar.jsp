@@ -28,16 +28,6 @@
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
       <form class="form-horizontal">
         <iais:section title="" id = "demoList">
-          <iais:row>
-            <iais:field value="Working Group:"/>
-            <iais:value width="18">
-              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" firstOption="" value="${requestScope.Display_Group_Name_For_New != null
-              ? Display_Group_Name_For_New : param.wrlGrpNameOpt}" ></iais:select>
-              <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
-            </iais:value>
-          </iais:row>
-          ${param.shortName}
-
           <div class="clearRow">
 
             <c:if test="${isGroupLead == 'Y'}">
@@ -77,7 +67,7 @@
             <iais:row>
               <iais:field value="Non-Available Date Description:"/>
               <iais:value width="18">
-                <input type="text" name="userBlockDateDescription" maxlength="255" value="${param.userBlockDateDescription}" />
+                <input type="text" id = "userBlockDateDescription" name="userBlockDateDescription" maxlength="255" value="${param.userBlockDateDescription}" />
                 <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -97,7 +87,7 @@
               </iais:value>
             </iais:row>
 
-            </c:if>
+
             <iais:action style="text-align:center;">
               <div class="text-right">
                 <c:if test="${isGroupLead == 'Y'}"><a class="btn btn-secondary"  onclick="javascript:doClear()" href="#">Clear</a></c:if>
@@ -105,6 +95,7 @@
               </div>
             </iais:action>
 
+            </c:if>
           </div>
         </iais:section>
       </form>
