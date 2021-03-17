@@ -121,8 +121,10 @@
                         <c:forEach var="pool" items="${giroDedSearchResult.rows}" varStatus="status">
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}">
                             <td>
-                              <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
-                                     onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
+                              <c:if test="${pool.pmtStatus=='FAIL'}">
+                                <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
+                                       onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
+                              </c:if>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
                             <td><c:out value="${pool.hciName}"/></td>

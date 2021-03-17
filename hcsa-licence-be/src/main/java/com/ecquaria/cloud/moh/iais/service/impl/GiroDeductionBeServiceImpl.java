@@ -85,8 +85,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 sendMessageByAppGroup(map, appTypeShow, applicationDtos, appGroupNo);
             }
             //todo eic update appGroup
-            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
-            apptAppInfoShowDto.setApplicationGroupDtos(applicationGroupDtos);
+
         } else {
             log.info("Giro Deduction appGroupList is null");
         }

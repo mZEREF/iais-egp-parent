@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -61,8 +63,13 @@ public class GiroDeductionBeDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         filterParameter.setPageNo(1);
+        removeSession(bpc.request);
     }
 
+    private void removeSession(HttpServletRequest request){
+        request.getSession().removeAttribute("giroDedSearchResult");
+        request.getSession().removeAttribute("giroDedSearchParam");
+    }
     /**
      * StartStep: beGiroDeductionInit
      *
@@ -112,8 +119,8 @@ public class GiroDeductionBeDelegator {
         }
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
         SearchResult<GiroDeductionDto> body = giroDeductionClient.giroDeductionDtoSearchResult(searchParam).getEntity();
-        ParamUtil.setRequestAttr(bpc.request, "giroDedSearchResult", body);
-        ParamUtil.setRequestAttr(bpc.request, "giroDedSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
+        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
 
     }
 

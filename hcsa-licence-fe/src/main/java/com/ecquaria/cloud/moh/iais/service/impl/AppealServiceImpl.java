@@ -779,7 +779,7 @@ public class AppealServiceImpl implements AppealService {
         String isDelete = request.getParameter("isDelete");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
-        Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+/*        Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
         List<PageShowFile> pageShowFiles=new ArrayList<>(5);
         if(fileMap!=null&&!fileMap.isEmpty()){
             fileMap.forEach((k,v)->{
@@ -791,7 +791,7 @@ public class AppealServiceImpl implements AppealService {
                 pageShowFiles.add(pageShowFile);
             });
         }
-        req.getSession().setAttribute("pageShowFiles",pageShowFiles);
+        req.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
         if (file != null && file.getSize() > 0) {
             int configFileSize = systemParamConfig.getUploadFileLimit();
             String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
