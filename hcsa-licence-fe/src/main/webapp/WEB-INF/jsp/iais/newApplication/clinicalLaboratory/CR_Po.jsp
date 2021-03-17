@@ -86,7 +86,7 @@
                             <div class="col-sm-2 text-right">
                               <div class="edit-content">
                                 <c:if test="${'true' == canEdit}">
-                                  <label class="control-font-label"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                  <label class="control-font-label"><a class="edit poEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
                                   <%--<p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>--%>
                                 </c:if>
                               </div>
@@ -277,7 +277,7 @@
                   <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                     <c:choose>
                       <c:when test="${canEditDpoEdit}">
-                          <p><div class="text-right app-font-size-16"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
+                          <p><div class="text-right app-font-size-16"><a id="edit-dpo" class="dpoSelectEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
                       </c:when>
                       <c:otherwise>
 

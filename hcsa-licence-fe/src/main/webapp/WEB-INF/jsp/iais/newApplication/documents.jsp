@@ -61,7 +61,7 @@
                         <div id="edit-content">
                           <c:choose>
                             <c:when test="${canEdit}">
-                              <p><div class="text-right app-font-size-16"><a id="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
+                              <p><div class="text-right app-font-size-16"><a class="primaryDocEdit" id="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
                             </c:when>
                             <c:otherwise>
 
