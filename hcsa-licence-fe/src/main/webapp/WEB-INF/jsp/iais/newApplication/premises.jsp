@@ -143,6 +143,7 @@
     </div>
   </div>--%>
   <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false"></iais:confirm>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
@@ -150,6 +151,7 @@
 <script type="text/javascript">
     var init;
     $(document).ready(function() {
+        $('#postalCodePop').modal('hide');
         cl();
         preperChange();
         $("select[name='onSiteAddressType']").trigger('change');
