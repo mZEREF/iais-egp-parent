@@ -4759,9 +4759,9 @@ public class NewApplicationDelegator {
             }
             if (!StringUtil.isEmpty(premisesId)) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionService.getLicPremisesInfo(premisesId);
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                /*for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     appGrpPremisesDto.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
-                }
+                }*/
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();

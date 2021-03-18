@@ -79,7 +79,7 @@
                             <div class="col-sm-10">
                               <label class="control-font-label">
                                 <c:if test="${!empty principalOfficer.name && !empty principalOfficer.idNo && !empty principalOfficer.idType}">
-                                  ${principalOfficer.name}, ${principalOfficer.idNo} (${principalOfficer.idType})
+                                  ${principalOfficer.name}, ${principalOfficer.idNo} (<iais:code code="${principalOfficer.idType}"/>)
                                 </c:if>
                               </label>
                             </div>
@@ -145,7 +145,7 @@
                             </div>
                             <div class="col-sm-4">
                               <div class="" id="idType${suffix}">
-                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" options="IdTypeSelect"></iais:select>
+                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
                               </div>
                             </div>
@@ -363,7 +363,7 @@
                               <c:if test="${'-1' != deputy.assignSelect}">
                               <label class="control-font-label">
                                 <c:if test="${!empty deputy.name && !empty deputy.idNo && !empty deputy.idType}">
-                                  ${deputy.name}, ${deputy.idNo} (${deputy.idType})
+                                  ${deputy.name}, ${deputy.idNo} (<iais:code code="${deputy.idType}"/>)
                                 </c:if>
                               </label>
                               </c:if>
@@ -424,7 +424,7 @@
                             </div>
                             <div class="col-sm-4" id="deputyIdType${suffix}">
                               <div class="">
-                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" options="IdTypeSelect"></iais:select>
+                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
                                 <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
                               </div>
                             </div>

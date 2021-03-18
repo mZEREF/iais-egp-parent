@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -874,7 +875,7 @@ public class AppealServiceImpl implements AppealService {
                         map.put("assignSelect" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
                     } else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
-                        if ("-1".equals(idTyp)) {
+                        if ("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)) {
                             map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                         }
                         String salutation = appSvcCgoList.get(i).getSalutation();
@@ -932,14 +933,14 @@ public class AppealServiceImpl implements AppealService {
                         if (StringUtil.isEmpty(idNo)) {
                             map.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.  ","field"));
                         } else {
-                            if ("FIN".equals(idTyp)) {
+                            if (OrganizationConstants.ID_TYPE_FIN.equals(idTyp)) {
                                 boolean b = SgNoValidator.validateFin(idNo);
                                 if (!b) {
                                     map.put("idNo" + i, "RFC_ERR0012");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
 
-                            } else if ("NRIC".equals(idTyp)) {
+                            } else if (OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)) {
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if (!b1) {
                                     map.put("idNo" + i, "RFC_ERR0012");
