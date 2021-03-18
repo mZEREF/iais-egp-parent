@@ -139,14 +139,6 @@ public class InspecReassignTaskDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) memberOption);
             }
             List<SelectOption> superPoolRoleIds = poolRoleCheckDto.getRoleOptions();
-//            ListIterator<SelectOption> selectOptionListIterator = superPoolRoleIds.listIterator();
-//            while(selectOptionListIterator.hasNext()){
-//                SelectOption selectOption = selectOptionListIterator.next();
-//                String value = selectOption.getText();
-//                if(!value.contains("Leader")){
-//                    selectOptionListIterator.remove();
-//                }
-//            }
             int workGroupIdsSize = 0;
             if(!IaisCommonUtils.isEmpty(workGroupIds)) {
                 workGroupIdsSize = workGroupIds.size();
@@ -173,7 +165,8 @@ public class InspecReassignTaskDelegator {
                 String roleId = SqlHelper.constructInCondition("T7.ROLE_ID", 0);
                 searchParam.addParam("roleId_List", roleId);
             }
-            String userId = loginContext.getUserId();
+            //Distinguish between leaders and not leaders
+            String userId = distinguishLeaderByLogInfo(loginContext);
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("taskUserId", userId,true);
             }
@@ -192,17 +185,19 @@ public class InspecReassignTaskDelegator {
             ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", (Serializable) superPoolRoleIds);
             ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", poolRoleCheckDto);
         }
-//        ArrayList<String> roleIds = loginContext.getRoleIds();
-//        if(!IaisCommonUtils.isEmpty(roleIds)){
-//            for(String role :roleIds){
-//                if(role.contains("LEAD")){
-//                    ParamUtil.setSessionAttr(bpc.request, "isLeader", true);
-//                    break;
-//                }
-//            }
-//        }
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+    }
+
+    private String distinguishLeaderByLogInfo(LoginContext loginContext) {
+        String userId = "";
+        if(loginContext != null){
+            String curRole = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(curRole) && !curRole.contains(RoleConsts.USER_LEAD)){
+                userId = loginContext.getUserId();
+            }
+        }
+        return userId;
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc) {
@@ -274,7 +269,14 @@ public class InspecReassignTaskDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         } else {
-            ParamUtil.setSessionAttr(bpc.request, "memberId", null);
+            //Distinguish between leaders and not leaders
+            String userId = distinguishLeaderByLogInfo(loginContext);
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("taskUserId", userId,true);
+                ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "memberId", null);
+            }
         }
         //filter task pool by status
         if(!StringUtil.isEmpty(application_status)) {
