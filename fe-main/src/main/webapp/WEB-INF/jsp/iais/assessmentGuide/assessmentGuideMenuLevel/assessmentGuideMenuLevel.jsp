@@ -45,7 +45,7 @@
                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                             data-toggle="tooltip" data-html="true"
                             title='${inbox_ack017}' data-original-title=''
-                            style="position: absolute;left: 200px; top: 66px;z-index: 10">i</a></span>
+                            style="position: absolute;left: 195px; top: 12px;z-index: 10">i</a></span>
                     <span class="right-content">${self_ack004}</span>
                 </label>
             </div>
