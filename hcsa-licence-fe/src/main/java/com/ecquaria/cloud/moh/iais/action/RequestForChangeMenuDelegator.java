@@ -378,7 +378,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
 
-        AppSubmissionDto oldAppSubmissionDto = new AppSubmissionDto();
+        AppSubmissionDto oldAppSubmissionDto ;
         oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         AppSubmissionDto appSubmissionDto1 = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         if (appSubmissionDto1 != null) {
@@ -536,6 +536,7 @@ public class RequestForChangeMenuDelegator {
             if (!StringUtil.isEmpty(hciNameUsed)) {
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
+            bpc.request.setAttribute("errormapIs", "error");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;

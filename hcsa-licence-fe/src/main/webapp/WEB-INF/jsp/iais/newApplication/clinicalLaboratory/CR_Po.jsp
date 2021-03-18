@@ -541,7 +541,7 @@
     </div>
   </div>
 </div>
-
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>
     var init;
     $(document).ready(function () {
@@ -661,6 +661,10 @@
 
         <!-- init end-->
         init = 1;
+        if($("#errorMapIs").val()=='error'){
+            $('.edit').trigger('click');
+            $('.dpoEdit').trigger('click');
+        }
     });
 
     var poLoadByAjax =  function ($poContentEle,selectVal) {

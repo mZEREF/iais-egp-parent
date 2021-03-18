@@ -590,6 +590,7 @@
         </div>
     </div>
 </div>
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -677,6 +678,9 @@
         doEdit();
         //ajac();
         //init end
+        if($("#errorMapIs").val()=='error'){
+            $('.edit').trigger('click');
+        }
         init = 1;
     });
 

@@ -141,7 +141,7 @@
   </c:forEach>
 </c:forEach>
 
-
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>
     $(document).ready(function() {
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
@@ -150,6 +150,9 @@
         }
 
         doEdit();
+        if($("#errorMapIs").val()=='error'){
+            $('#edit').trigger('click');
+        }
     });
 
     <!-- 108635 start-->
