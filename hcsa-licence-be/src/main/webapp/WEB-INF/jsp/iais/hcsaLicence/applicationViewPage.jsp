@@ -660,6 +660,12 @@
             $('#comments').addClass('hidden');
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
+            let recommenVal = $('#recommendation').val();
+            if('other' == recommenVal){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+            } else {
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
@@ -677,6 +683,7 @@
             $('#comments').removeClass('hidden');
             $('#appealRecommendationDiv').addClass('hidden');
             $('#normalRecommendationDiv').addClass('hidden');
+            $('#recommendationOtherDropdown').addClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
@@ -732,6 +739,12 @@
             $('#appealRecommendationTrue').removeClass('hidden');
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
+            let recommenVal = $('#recommendation').val();
+            if('other' == recommenVal){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+            } else {
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
@@ -756,6 +769,7 @@
             $('#recommendationFieldFalse').removeClass('hidden');
             $('#appealRecommendationDiv').addClass('hidden');
             $('#normalRecommendationDiv').addClass('hidden');
+            $('#recommendationOtherDropdown').addClass('hidden');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
             $('#comments').addClass('hidden');

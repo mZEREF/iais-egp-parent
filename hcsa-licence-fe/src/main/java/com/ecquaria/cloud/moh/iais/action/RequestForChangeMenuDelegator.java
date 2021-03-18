@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -405,6 +406,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, "weeklyCount", systemParamConfig.getWeeklyCount());
         ParamUtil.setRequestAttr(bpc.request, "phCount", systemParamConfig.getPhCount());
         ParamUtil.setRequestAttr(bpc.request, "eventCount", systemParamConfig.getEventCount());
+        ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
         ParamUtil.setRequestAttr(bpc.request, "not_view", "notView");
     }
@@ -641,7 +643,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
-        List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
+        List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
@@ -889,13 +891,13 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(idNo1)) {
                 errMap.put("idNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
             } else {
-                if ("FIN".equals(idType1)) {
+                if (OrganizationConstants.ID_TYPE_FIN.equals(idType1)) {
                     boolean b = SgNoValidator.validateFin(idNo1);
                     if (!b) {
                         errMap.put("idNo1", "RFC_ERR0012");
                     }
                 }
-                if ("NRIC".equals(idType1)) {
+                if (OrganizationConstants.ID_TYPE_NRIC.equals(idType1)) {
                     boolean b1 = SgNoValidator.validateNric(idNo1);
                     if (!b1) {
                         errMap.put("idNo1", "RFC_ERR0012");

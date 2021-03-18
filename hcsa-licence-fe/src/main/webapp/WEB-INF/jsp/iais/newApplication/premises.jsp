@@ -255,6 +255,7 @@
             //for rfi
             $(this).find('.date_picker').attr('disabled',true);
             $(this).find('.date_picker').addClass('disabled-placeHolder');
+            $(this).find('a.retrieveAddr').addClass('hidden');
         });
         </c:if>
 

@@ -65,7 +65,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                         </td>
                                         <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idType}</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.idType}"></iais:code></p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -132,7 +132,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                         </td>
                                         <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idType}</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.idType}"></iais:code></p>
                                         </td>
                                     </tr>
                                     <tr>
