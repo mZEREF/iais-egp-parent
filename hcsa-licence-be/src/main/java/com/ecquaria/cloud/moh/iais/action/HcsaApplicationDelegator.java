@@ -224,7 +224,7 @@ public class HcsaApplicationDelegator {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
             appPremisesCorrelationDto.setOldCorrelationId(correlationId);
             String newCorrelationId = appPremisesCorrelationDto.getId();
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
             applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
@@ -3060,7 +3060,7 @@ public class HcsaApplicationDelegator {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import antlr.ASdebug.IASDebugStream;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -146,6 +147,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId) {
+        return getApplicationViewDtoByCorrId(appCorId,null);
+    }
+
+    @Override
+    public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId,String currentRoleId) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(appCorId);
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
@@ -250,6 +256,19 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+        //RollBackHistory remove currentRoleId
+        log.info(StringUtil.changeForLog("The currentRoleId is -->:"+currentRoleId));
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
+        List<AppPremisesRoutingHistoryDto> newAppPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(currentRoleId)&&!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+                if(!currentRoleId.equals(appPremisesRoutingHistoryDto.getRoleId())){
+                    newAppPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The newAppPremisesRoutingHistoryDtos.size() is -->:"+newAppPremisesRoutingHistoryDtos.size()));
+        applicationViewDto.setRollBackHistroyList(newAppPremisesRoutingHistoryDtos);
         return applicationViewDto;
     }
 
