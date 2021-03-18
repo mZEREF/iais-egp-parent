@@ -205,10 +205,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             if (recallApplicationDto.getResult()){
 //                ApplicationTruckDto applicationTruckDto = new ApplicationTruckDto();
                 List<ApplicationDto> updateWithdrawApp = IaisCommonUtils.genNewArrayList();
-                oldApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
-//                newApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                updateWithdrawApp.add(oldApplication);
-//                updateWithdrawApp.add(newApplication);
+//                oldApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
+                newApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+//                updateWithdrawApp.add(oldApplication);
+                updateWithdrawApp.add(newApplication);
                 applicationFeClient.updateApplicationList(updateWithdrawApp);
 //                applicationTruckDto.setApplicationDtoList(updateWithdrawApp);
 //                autoApproveApplicationDtoList.add(h);
