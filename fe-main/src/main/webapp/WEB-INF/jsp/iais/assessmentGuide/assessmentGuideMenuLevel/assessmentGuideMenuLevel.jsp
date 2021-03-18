@@ -31,6 +31,19 @@
                     <span class="right-content">${self_ack002}</span>
                 </label>
             </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input"
+                       id="resumeDraftApplication" type="radio"
+                       name="selfAssessmentType" aria-invalid="false">
+                <label class="form-check-label"
+                       for="resumeDraftApplication">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Resume my draft application</span>
+                    <span class="right-content">${self_ack003}</span>
+                </label>
+            </div>
             <%--
                 3
             --%>
@@ -45,76 +58,11 @@
                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                             data-toggle="tooltip" data-html="true"
                             title='${inbox_ack017}' data-original-title=''
-                            style="position: absolute;left: 195px; top: 12px;z-index: 10">i</a></span>
+                            style="position: absolute;left: 200px; top: 66px;z-index: 10">i</a></span>
                     <span class="right-content">${self_ack004}</span>
                 </label>
             </div>
-            <%--
-                4
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="ceaseLicence"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label" for="ceaseLicence">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Cease my licence<a href="javascript:void(0);"
-                            class="btn-tooltip styleguide-tooltip"
-                            data-toggle="tooltip" data-html="true"
-                            title='${inbox_ack018}' data-original-title=''
-                            style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">${self_ack008}</span>
-                </label>
-            </div>
-            <%--
-                5
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="withdrawApplication"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="withdrawApplication">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Withdraw my application<a href="javascript:void(0);"
-                          class="btn-tooltip styleguide-tooltip"
-                          data-toggle="tooltip" data-html="true"
-                          title='${inbox_ack019}' data-original-title=''
-                          style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">${self_ack007}</span>
-                </label>
-            </div>
-            <%--
-                6
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input"
-                       id="resumeDraftApplication" type="radio"
-                       name="selfAssessmentType" aria-invalid="false">
-                <label class="form-check-label"
-                       for="resumeDraftApplication">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Resume my draft application</span>
-                    <span class="right-content">${self_ack003}</span>
-                </label>
-            </div>
-            <%--
-                7
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="submitDataMoh"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label" for="submitDataMoh">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Data Submission</span>
-                    <span class="right-content">${self_ack006}</span>
-                </label>
-            </div>
+
             <%--
                 8
             --%>
@@ -128,6 +76,51 @@
                     <span class="check-circle"></span>
                     <span class="left-content">Manage admin personnel</span>
                     <span class="right-content">${self_ack005}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="submitDataMoh"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label" for="submitDataMoh">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Data Submission</span>
+                    <span class="right-content">${self_ack006}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="withdrawApplication"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label"
+                       for="withdrawApplication">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Withdraw my application<a href="javascript:void(0);"
+                                                                         class="btn-tooltip styleguide-tooltip"
+                                                                         data-toggle="tooltip" data-html="true"
+                                                                         title='${inbox_ack019}' data-original-title=''
+                                                                         style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack007}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="ceaseLicence"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label" for="ceaseLicence">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Cease my licence<a href="javascript:void(0);"
+                                                                  class="btn-tooltip styleguide-tooltip"
+                                                                  data-toggle="tooltip" data-html="true"
+                                                                  title='${inbox_ack018}' data-original-title=''
+                                                                  style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack008}</span>
                 </label>
             </div>
         </div>
