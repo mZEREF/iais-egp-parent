@@ -10,9 +10,9 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
+
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohBeGiroDeduction___1 extends BaseProcessClass {
 
@@ -68,5 +68,15 @@ public class INTRANET___MohBeGiroDeduction___1 extends BaseProcessClass {
 	// 		beGiroDeductionRetrigger->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "beGiroDeductionRetrigger", this);
 	}
+
+    public void uploadCsv_OnStepProcess_0() throws Exception {
+    // 		uploadCsv->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "uploadCsv", this);
+    }
+
+    public void download_OnStepProcess_0() throws Exception {
+    // 		download->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "download", this);
+    }
 
 }
