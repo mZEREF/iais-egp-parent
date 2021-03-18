@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -78,8 +80,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
             .resultAttr("orgPremResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     @Autowired
-    SystemParamConfig systemParamConfig;
-
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
@@ -130,7 +133,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             searchGiroDtoResult.setRowCount(giroAccountResult.getRowCount());
             List<GiroAccountInfoViewDto> giroAccountInfoViewDtos=IaisCommonUtils.genNewArrayList();
             for (GiroAccountInfoQueryDto gai:
-            giroAccountResult.getRows()) {
+                    giroAccountResult.getRows()) {
                 GiroAccountInfoViewDto giroAccountInfoViewDto=new GiroAccountInfoViewDto();
                 List<GiroAccountFormDocDto> giroAccountFormDocDtoList=giroAccountService.findGiroAccountFormDocDtoListByAcctId(gai.getId());
                 giroAccountInfoViewDto.setAcctName(gai.getAcctName());
@@ -140,7 +143,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
                 giroAccountInfoViewDto.setHciCode(gai.getHciCode());
-                giroAccountInfoViewDto.setHciName(gai.getHciName());
+                PremisesDto premisesDto = hcsaLicenceClient.getLatestVersionPremisesByHciCode(gai.getHciCode()).getEntity();
+                giroAccountInfoViewDto.setHciName(premisesDto.getHciName());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
@@ -157,7 +161,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
-             ) {
+        ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             giroAccountInfoDto.setEventRefNo(refNo);
@@ -236,7 +240,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+            orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
@@ -408,7 +412,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String refNo=System.currentTimeMillis()+"";
         List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,"giroAccountInfoDtoList");
         for (GiroAccountInfoDto giro:giroAccountInfoDtoList
-             ) {
+        ) {
             giro.setEventRefNo(refNo);
             giro.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
