@@ -1005,7 +1005,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 }
             }
 
-            if(!IaisCommonUtils.isEmpty(userNames)){
+            if(!IaisCommonUtils.isEmpty(userNames) && userNames.size() >1){
                 userNames.sort(String::compareTo);
                 for(String userName :  userNames){
                     stringBuilder.append(userName).append(", ");
