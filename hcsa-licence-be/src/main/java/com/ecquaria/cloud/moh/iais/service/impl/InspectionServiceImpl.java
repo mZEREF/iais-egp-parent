@@ -368,7 +368,7 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         String appPremCorrId = taskDto.getRefNo();
         //save leaders in recommendation
-        if(StringUtil.isEmpty(taskDto.getUserId())) {
+        if(StringUtil.isEmpty(taskDto.getUserId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
             if (appPremisesRecommendationDto == null) {
                 if (!IaisCommonUtils.isEmpty(leadName)) {
