@@ -91,6 +91,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -281,6 +282,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<String> leadNames = IaisCommonUtils.genNewArrayList();
         List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
         StringBuilder leadStrBu = new StringBuilder();
+        Collections.sort(leadIds);
         for (String id : leadIds) {
             for (OrgUserDto oDto : orgUserDtos) {
                 if (id.equals(oDto.getId())) {
