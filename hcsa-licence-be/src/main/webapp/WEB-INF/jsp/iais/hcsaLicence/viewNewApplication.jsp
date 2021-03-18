@@ -142,13 +142,13 @@
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.idType}"><c:out value="${cgo.idType}"/></span>
+                      <span class="newVal " attr="<iais:code code="${cgo.idType}"/>"><iais:code code="${cgo.idType}"/></span>
 
                     </div>
                     <div class="col-xs-6">
                       <span class=" oldVal"
-                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"
-                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}</span>
+                            attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"/>"
+                            style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"/></span>
 
                     </div>
                     </p>
@@ -1442,12 +1442,12 @@
                     </td>
                     <td>
                       <div class="col-xs-6">
-                        <span class="newVal " attr="${po.idType}"><c:out value="${po.idType}"/></span>
+                        <span class="newVal " attr="<iais:code code="${po.idType}"/>"><iais:code code="${po.idType}"/></span>
                       </div>
                       <div class="col-xs-6">
                         <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"
-                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}</span>
+                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"/>"
+                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"/></span>
                       </div>
 
                     </td>
@@ -1713,14 +1713,13 @@
                   </td>
                   <td>
                     <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcMedAlertPerson.idType}"><c:out
-                                value="${appSvcMedAlertPerson.idType}"/></span>
+                        <span class="newVal " attr="<iais:code code="${appSvcMedAlertPerson.idType}"/>"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
 
                     </div>
                     <div class="col-xs-6">
                         <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"
-                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}</span>
+                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/>"
+                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/></span>
                     </div>
 
                   </td>

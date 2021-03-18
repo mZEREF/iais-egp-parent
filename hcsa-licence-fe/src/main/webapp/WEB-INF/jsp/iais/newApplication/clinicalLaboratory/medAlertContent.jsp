@@ -77,7 +77,7 @@
                                 <div class="col-sm-10">
                                     <label class="control-font-label">
                                         <c:if test="${!empty medAlertPsn.name && !empty medAlertPsn.idNo && !empty medAlertPsn.idType}">
-                                            ${medAlertPsn.name}, ${medAlertPsn.idNo} (${medAlertPsn.idType})
+                                            ${medAlertPsn.name}, ${medAlertPsn.idNo} (<iais:code code="${medAlertPsn.idType}"/>)
                                         </c:if>
                                     </label>
                                 </div>
@@ -140,7 +140,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="">
-                                        <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>

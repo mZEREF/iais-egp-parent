@@ -325,12 +325,12 @@ public class NewApplicationAjaxController {
             String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //ID Type
-            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
             Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "idTypeSel");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
             List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -493,12 +493,12 @@ public class NewApplicationAjaxController {
             String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //ID Type
-            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
             Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "idType");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
             List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -559,12 +559,12 @@ public class NewApplicationAjaxController {
             salutationAttr.put("style", "display: none;");
             String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
             //ID Type
-            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
             Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "deputyIdType");
             idTypeAttr.put("name", "deputyIdType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
             List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -900,12 +900,12 @@ public class NewApplicationAjaxController {
             salutationAttr.put("style", "display: none;");
             String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
             //ID Type
-            List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
+            List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
             Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "idType");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
             //pre mode
             List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList();
             Map<String, String> medAlertAttr = IaisCommonUtils.genNewHashMap();
@@ -940,7 +940,7 @@ public class NewApplicationAjaxController {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
         if (feUserDtos != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo)) {
             for (FeUserDto feUserDto : feUserDtos) {
-                String userIdType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                String userIdType = feUserDto.getIdType();
                 if (idType.equals(userIdType) && idNo.equals(feUserDto.getIdNumber())) {
                     Map<String, AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
                     if (psnMap != null) {
