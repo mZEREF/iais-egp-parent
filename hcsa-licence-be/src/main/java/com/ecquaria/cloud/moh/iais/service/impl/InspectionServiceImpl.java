@@ -368,7 +368,7 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         String appPremCorrId = taskDto.getRefNo();
         //save leaders in recommendation
-        if(StringUtil.isEmpty(taskDto.getUserId())) {
+        if(StringUtil.isEmpty(taskDto.getUserId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
             if (appPremisesRecommendationDto == null) {
                 if (!IaisCommonUtils.isEmpty(leadName)) {
@@ -599,7 +599,7 @@ public class InspectionServiceImpl implements InspectionService {
                             if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
                                 for (int i = 0; i < inspectorCheckList.size(); i++) {
                                     if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                         applicationService.updateFEApplicaiton(applicationDto1);
                                         inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
                                         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
