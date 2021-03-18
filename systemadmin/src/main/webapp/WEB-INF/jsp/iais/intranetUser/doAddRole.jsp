@@ -23,7 +23,7 @@
             </iais:row>
             <iais:row>
                 <iais:field value="Add Role" required="true"/>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <c:forEach items="${assignRoleOption}" var="role">
                         <c:choose>
                             <c:when test="${role=='Approval Officer 1'}">
@@ -149,11 +149,26 @@
                                     class="check-square"></span></label>
                             <span style="font-size: 18px">${role.key}</span>
                         </div>
-                        <%--                        <div>--%>
-                        <%--                            <c:forEach items="${ao1GroupOptionsExist}" var="groupId">--%>
-                        <%--                                <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>--%>
-                        <%--                            </c:forEach>--%>
-                        <%--                        </div>--%>
+                        <div>
+                            <c:forEach items="${insLeaderGroupOptionsExist}" var="insLeader">
+                                <c:if test="${role.value eq insLeader.value}"><c:out value="${insLeader.text}"/><br/></c:if>
+                            </c:forEach>
+                            <c:forEach items="${psoLeaderGroupOptionsExist}" var="psoLeader">
+                                <c:if test="${role.value eq psoLeader.value}"><c:out value="${psoLeader.text}"/><br/></c:if>
+                            </c:forEach>
+                            <c:forEach items="${ao1LeaderGroupOptionsExist}" var="ao1Leader">
+                                <c:if test="${role.value eq ao1Leader.value}"><c:out value="${ao1Leader.text}"/><br/></c:if>
+                            </c:forEach>
+                            <c:forEach items="${insGroupOptionsExist}" var="insGroup">
+                                <c:if test="${role.value eq insGroup.value}"><c:out value="${insGroup.text}"/><br/></c:if>
+                            </c:forEach>
+                            <c:forEach items="${psoGroupOptionsExist}" var="psoGroup">
+                                <c:if test="${role.value eq psoGroup.value}"><c:out value="${psoGroup.text}"/><br/></c:if>
+                            </c:forEach>
+                            <c:forEach items="${ao1GroupOptionsExist}" var="ao1Group">
+                                <c:if test="${role.value eq ao1Group.value}"><c:out value="${ao1Group.text}"/><br/></c:if>
+                            </c:forEach>
+                        </div>
                     </c:forEach>
                     <span id="error_roleLeader" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
