@@ -151,7 +151,7 @@ public class InspectionPreDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
         if(applicationViewDto == null) {
             //get application info show
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
             //set Application RFI Info
             applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
         }
