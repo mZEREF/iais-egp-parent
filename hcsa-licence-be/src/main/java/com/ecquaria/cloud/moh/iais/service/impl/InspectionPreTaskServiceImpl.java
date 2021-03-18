@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -614,7 +613,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         //get group premises and address
                         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
                         //get history Hci_code
-                        String hciCode = getHciCodeByFiveField(appGrpPremisesDto, originLicenceId);
+                        String hciCode = getHciCodeByAppPremCorrId(taskRefNo);
                         String hciName = appGrpPremisesDto.getHciName();
                         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
                         inspectionHistoryShowDto.setHciCode(hciCode);
@@ -646,74 +645,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         return inspectionHistoryShowDtos;
     }
 
-    private String getHciCodeByFiveField(AppGrpPremisesDto appGrpPremisesDto, String originLicenceId) {
-        String postalCode = appGrpPremisesDto.getPostalCode();
-        String unitNo = appGrpPremisesDto.getUnitNo();
-        String floorNo = appGrpPremisesDto.getFloorNo();
-        String blkNo = appGrpPremisesDto.getBlkNo();
-        String premisesType = appGrpPremisesDto.getPremisesType();
-        String hicCode = "-";
-        List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(originLicenceId).getEntity();
-        if(!IaisCommonUtils.isEmpty(premisesDtos)){
-            for(PremisesDto premisesDto : premisesDtos){
-                if(!StringUtil.isEmpty(premisesType) && premisesType.equals(premisesDto.getPremisesType())){
-                    String premisesStr = null;
-                    String premisesStr2 = null;
-                    String hciName = appGrpPremisesDto.getHciName();
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, "");
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getHciName(), "");
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-                        String vehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, vehicleNo);
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getHciName(), premisesDto.getVehicleNo());
-                    } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName, "");
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getHciName(), "");
-                    }
-                    if(premisesStr != null && premisesStr2 != null) {
-                        if (premisesStr.equals(premisesStr2)) {
-                            hicCode = premisesDto.getHciCode();
-                            return hicCode;
-                        }
-                    }
-                }
-            }
+    private String getHciCodeByAppPremCorrId(String taskRefNo) {
+        String hciCode = "-";
+        if(!StringUtil.isEmpty(taskRefNo)){
+            hciCode = hcsaLicenceClient.getHciCodeByCorrId(taskRefNo).getEntity();
         }
-        return hicCode;
-    }
-
-    private String splicingAddressInformation(String postalCode, String unitNo, String floorNo, String blkNo, String hciName, String last) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if(postalCode == null){
-            postalCode = "";
-        }
-        if(unitNo == null){
-            unitNo = "";
-        }
-        if(floorNo == null){
-            floorNo = "";
-        }
-        if(blkNo == null){
-            blkNo = "";
-        }
-        if(hciName == null){
-            hciName = "";
-        }
-        if(last == null){
-            last = "";
-        }
-        stringBuilder.append(postalCode);
-        stringBuilder.append(unitNo);
-        stringBuilder.append(floorNo);
-        stringBuilder.append(blkNo);
-        stringBuilder.append(hciName);
-        stringBuilder.append(last);
-        String premisesStr = stringBuilder.toString();
-        return premisesStr;
+        return hciCode;
     }
 
     @Override
