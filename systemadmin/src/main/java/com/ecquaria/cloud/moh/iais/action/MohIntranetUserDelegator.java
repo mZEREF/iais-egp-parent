@@ -389,7 +389,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", ao1);
                     String roleId = roleMap.get(assignRoleAo1);
                     assignRoles.add(roleId);
-                    Integer integer = groupIds.get(ao1GroupSelect);
+                    Integer integer = groupIds.get(groupId);
                     if (integer != null && integer == 1) {
                         return;
                     } else {
@@ -418,7 +418,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", ins);
                     String roleId = roleMap.get(assignRoleIns);
                     assignRoles.add(roleId);
-                    Integer integer = groupIds.get(insGroupSelect);
+                    Integer integer = groupIds.get(groupId);
                     if (integer != null && integer == 1) {
                         return;
                     } else {
@@ -447,7 +447,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", pso);
                     String roleId = roleMap.get(assignRolePso);
                     assignRoles.add(roleId);
-                    Integer integer = groupIds.get(psoGroupSelect);
+                    Integer integer = groupIds.get(groupId);
                     if (integer != null && integer == 1) {
                         return;
                     } else {
