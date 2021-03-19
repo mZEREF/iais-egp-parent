@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,13 +20,23 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +62,17 @@ public class GiroDeductionBeDelegator {
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
     }
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     /**
      * StartStep: beGiroDeductionStart
      *
@@ -118,7 +139,10 @@ public class GiroDeductionBeDelegator {
             searchParam.addFilter("invoiceNo",transactionId,true);
         }
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
-        SearchResult<GiroDeductionDto> body = giroDeductionClient.giroDeductionDtoSearchResult(searchParam).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        SearchResult<GiroDeductionDto> body = beEicGatewayClient.giroDeductionDtoSearchResult(searchParam, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
 
@@ -206,6 +230,31 @@ public class GiroDeductionBeDelegator {
         }
     }
 
+    public void uploadCsv(BaseProcessClass bpc) throws Exception{
+        String[] HEADERS = { "author", "title"};
+        Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
+            {
+                put("Dan Simmons", "Hyperion");
+                put("Douglas Adams", "The Hitchhiker's Guide to the Galaxy");
+            }
+        };
+        FileWriter out = new FileWriter("D://book_new.csv");
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
+                .withHeader(HEADERS))) {
+            AUTHOR_BOOK_MAP.forEach((author, title) -> {
+                try {
+                    printer.printRecord(author, title);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void download(BaseProcessClass bpc){
+
+    }
+
     /**
      * StartStep: beGiroDeductionRetrigger
      *
@@ -217,5 +266,8 @@ public class GiroDeductionBeDelegator {
         List<String> appGroupList = (List<String>)ParamUtil.getRequestAttr(bpc.request, "appGroupList");
         giroDeductionBeService.sendMessageEmail(appGroupList);
         giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);
+    }
+    public void generatorFileCsv(){
+
     }
 }

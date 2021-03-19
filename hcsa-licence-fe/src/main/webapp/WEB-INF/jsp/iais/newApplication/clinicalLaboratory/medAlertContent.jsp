@@ -242,7 +242,7 @@
     </div>
 </div>
 
-
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>
     var init;
     $(function () {
@@ -299,6 +299,9 @@
         //doEdit();
         //init end
         init =1;
+        if($("#errorMapIs").val()=='error'){
+            $('.edit').trigger('click');
+        }
     })
 
 

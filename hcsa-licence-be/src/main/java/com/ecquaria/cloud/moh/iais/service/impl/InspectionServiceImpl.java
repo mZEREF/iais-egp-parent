@@ -398,6 +398,7 @@ public class InspectionServiceImpl implements InspectionService {
     private String setLeadersStrShow(List<String> leadName) {
         if(leadName != null){
             StringBuilder leadStrBu = new StringBuilder();
+            Collections.sort(leadName);
             for(String lead : leadName){
                 if(StringUtil.isEmpty(leadStrBu.toString())) {
                     leadStrBu.append(lead);

@@ -2,79 +2,93 @@
 <Application defaultStart="/Steps/StartStep/beGiroDeductionStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBeGiroDeduction" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="beGiroDeductionStart" x="20" y="100">
+  <StartStep defClass="" executor="" icon="" name="beGiroDeductionStart" x="144" y="-276">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionStart_OnStepProcess_0" name="beGiroDeductionStart_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionInit" x="200" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionInit" x="156" y="-60">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionInit_OnStepProcess_0" name="beGiroDeductionInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionPre" x="370" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionPre" x="144" y="168">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionPre_OnStepProcess_0" name="beGiroDeductionPre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionStep" x="710" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionStep" x="600" y="-216">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionStep_OnStepProcess_0" name="beGiroDeductionStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionDoSearch" x="1070" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionDoSearch" x="1176" y="-396">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionDoSearch_OnStepProcess_0" name="beGiroDeductionDoSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionPage" x="1080" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionPage" x="1164" y="-108">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionPage_OnStepProcess_0" name="beGiroDeductionPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionSort" x="1080" y="-10">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionSort" x="876" y="-396">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionSort_OnStepProcess_0" name="beGiroDeductionSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionQuery" x="1270" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionQuery" x="1380" y="-36">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionQuery_OnStepProcess_0" name="beGiroDeductionQuery_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionRetrigger" x="890" y="490">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionRetrigger" x="720" y="490">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionRetrigger_OnStepProcess_0" name="beGiroDeductionRetrigger_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionRetVali" x="890" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="beGiroDeductionRetVali" x="612" y="24">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="beGiroDeductionRetVali_OnStepProcess_0" name="beGiroDeductionRetVali_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="uploadCsv" x="1200" y="168">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="uploadCsv_OnStepProcess_0" name="uploadCsv_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="download" x="1032" y="288">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="download_OnStepProcess_0" name="download_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="beGiroDeductionSearchPage" stageIndicator="" x="520" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="beGiroDeductionSearchPage" stageIndicator="" x="384" y="-12">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -83,70 +97,84 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/beGiroDeductionStart" style="rectanular">
-   <position>{(40,120)(220,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionInit" linkstyle="Direct" name="" sourceName="/Steps/StartStep/beGiroDeductionStart" style="oblique">
+   <position>{(164,-256)(176,-40)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionInit" style="rectanular">
-   <position>{(220,120)(390,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionInit" style="oblique">
+   <position>{(176,-40)(164,188)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/beGiroDeductionSearchPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionPre" style="rectanular">
-   <position>{(390,120)(540,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/beGiroDeductionSearchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionPre" style="oblique">
+   <position>{(164,188)(404,8)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/beGiroDeductionSearchPage" style="rectanular">
-   <position>{(540,120)(730,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/beGiroDeductionSearchPage" style="oblique">
+   <position>{(404,8)(620,-196)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/beGiroDeductionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionStep" style="rectanular">
-   <position>{(730,120)(910,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/beGiroDeductionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionStep" style="oblique">
+   <position>{(620,-196)(800,-88)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
-   <position>{(910,120)(1100,10)}</position>
+   <position>{(800,-88)(896,-376)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionDoSearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="rectanular">
-   <position>{(910,120)(1090,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionDoSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
+   <position>{(800,-88)(1196,-376)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionQuery" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionDoSearch" style="rectanular">
-   <position>{(1090,120)(1290,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionDoSearch" style="oblique">
+   <position>{(1196,-376)(1400,-16)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
-   <position>{(910,120)(1100,240)}</position>
+   <position>{(800,-88)(1184,-88)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionPage" style="oblique">
-   <position>{(1100,240)(1290,120)}</position>
+   <position>{(1184,-88)(1400,-16)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionSort" style="oblique">
-   <position>{(1100,10)(1290,120)}</position>
+   <position>{(896,-376)(1400,-16)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionQuery" style="oblique">
-   <position>{(1290,120)(1337,571)(428,570)(390,120)}</position>
+   <position>{(1400,-16)(1337,571)(428,570)(164,188)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionRetVali" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="rectanular">
-   <position>{(910,120)(910,240)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionRetVali" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
+   <position>{(800,-88)(632,44)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/beGiroDeductionRetCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetVali" style="rectanular">
-   <position>{(910,240)(910,370)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/beGiroDeductionRetCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetVali" style="oblique">
+   <position>{(632,44)(760,360)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionRetrigger" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/beGiroDeductionRetCond" style="rectanular">
-   <position>{(910,370)(910,510)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionRetrigger" linkstyle="Direct" name="" sourceName="/Conditions/Condition/beGiroDeductionRetCond" style="oblique">
+   <position>{(760,360)(740,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/beGiroDeductionSearchPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/beGiroDeductionRetCond" style="oblique">
-   <position>{(910,370)(865,174)(540,120)}</position>
+   <position>{(760,360)(404,8)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetrigger" style="rectanular">
-   <position>{(910,510)(599,501)(503,303)(390,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/beGiroDeductionRetrigger" style="oblique">
+   <position>{(740,510)(599,501)(503,303)(164,188)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/uploadCsv" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
+   <position>{(800,-88)(1220,188)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/uploadCsv" style="oblique">
+   <position>{(1220,188)(164,188)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/download" linkstyle="Direct" name="" sourceName="/Switches/Switch/beGiroDeductionSwitch" style="oblique">
+   <position>{(800,-88)(1052,308)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beGiroDeductionPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/download" style="oblique">
+   <position>{(1052,308)(164,188)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/beGiroDeductionSearchPage" componentIfTrue="/Steps/AutomaticStep/beGiroDeductionRetrigger" defClass="" executor="" icon="" leftOperand="flag" name="beGiroDeductionRetCond" operator="=" rightOperand="&quot;true&quot;" x="890" y="350">
+  <Condition componentIfFalse="/Pages/WebPage/beGiroDeductionSearchPage" componentIfTrue="/Steps/AutomaticStep/beGiroDeductionRetrigger" defClass="" executor="" icon="" leftOperand="flag" name="beGiroDeductionRetCond" operator="=" rightOperand="&quot;true&quot;" x="740" y="340">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="beGiroDeductionType" name="beGiroDeductionSwitch" x="890" y="100">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="beGiroDeductionType" name="beGiroDeductionSwitch" x="780" y="-108">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/beGiroDeductionSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beGiroDeductionDoSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beGiroDeductionPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beGiroDeductionRetVali" value="&quot;retrigger&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/uploadCsv" value="&quot;uploadCsv&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/download" value="&quot;download&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

@@ -1000,11 +1000,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                         OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
                         if(userDto.getAvailable() != null && userDto.getAvailable() && ! userNames.contains(userDto.getDisplayName())){
                             userNames.add(userDto.getDisplayName());
-                            stringBuilder.append(userDto.getDisplayName()).append(", ");
                         }
                     }
                 }
             }
+
+            if(!IaisCommonUtils.isEmpty(userNames) && userNames.size() >1){
+                userNames.sort(String::compareTo);
+                for(String userName :  userNames){
+                    stringBuilder.append(userName).append(", ");
+                }
+            }
+
             String leaderStr = stringBuilder.toString();
             return StringUtil.isEmpty(leaderStr) ? "" : leaderStr.substring(0,leaderStr.length()-2);
         }

@@ -309,30 +309,76 @@ public class MohIntranetUserDelegator {
 
         //already assign role group
         List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(userAccId);
-        List<String> groupIdsExist = IaisCommonUtils.genNewArrayList();
-        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId) {
-            String groupId = userGroupCorrelationDto.getGroupId();
-            groupIdsExist.add(groupId);
-        }
         List<SelectOption> insGroupOptionsExist = IaisCommonUtils.genNewArrayList();
         List<SelectOption> psoGroupOptionsExist = IaisCommonUtils.genNewArrayList();
         List<SelectOption> ao1GroupOptionsExist = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(groupIdsExist)) {
-            for (String groupId : groupIdsExist) {
-                String groupName = groupIdAndName.get(groupId);
-                String maskGroupId = MaskUtil.maskValue("groupId", groupId);
-                if (groupName.contains("Inspection -")) {
-                    SelectOption so = new SelectOption(maskGroupId, groupName);
-                    insGroupOptionsExist.add(so);
-                } else if (groupName.contains("Professional")) {
-                    SelectOption so = new SelectOption(maskGroupId, groupName);
-                    psoGroupOptionsExist.add(so);
-                } else if (groupName.contains("Level 1")) {
-                    SelectOption so = new SelectOption(maskGroupId, groupName);
-                    ao1GroupOptionsExist.add(so);
+        List<SelectOption> insLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> psoLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> ao1LeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+
+        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId) {
+            String groupName = groupIdAndName.get(userGroupCorrelationDto.getGroupId());
+            String maskRoleId = "";
+            if (groupName.contains("Inspection -")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            insGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            insLeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                }
+            } else if (groupName.contains("Professional")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            psoGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            psoLeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                }
+            } else if (groupName.contains("Level 1")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            ao1GroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            ao1LeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
                 }
             }
         }
+
 
 
 
@@ -346,6 +392,9 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptionsExist", (Serializable) insGroupOptionsExist);
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptionsExist", (Serializable) psoGroupOptionsExist);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptionsExist", (Serializable) ao1GroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "insLeaderGroupOptionsExist", (Serializable) insLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "psoLeaderGroupOptionsExist", (Serializable) psoLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "ao1LeaderGroupOptionsExist", (Serializable) ao1LeaderGroupOptionsExist);
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
