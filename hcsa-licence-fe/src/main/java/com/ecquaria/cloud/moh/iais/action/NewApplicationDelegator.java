@@ -3600,7 +3600,7 @@ private CessationFeService cessationFeService;
             for (int i = 0; i < length; i++) {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))) {
+                if (getHciName(appGrpPremisesDto,oldAppGrpPremisesDto)) {
                     return false;
                 }
             }
@@ -3625,16 +3625,31 @@ private CessationFeService cessationFeService;
         return true;
     }
 
-    private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        String   hciName = appGrpPremisesDto.getHciName();
+    private boolean getHciName(AppGrpPremisesDto appGrpPremisesDto,AppGrpPremisesDto oldAppGrpPremisesDto) {
+        String   hciName = "";
+        String  oldHciName="";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             hciName=appGrpPremisesDto.getOffSiteHciName();
         }
-        return hciName;
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getHciName();
+        } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getConveyanceHciName();
+            oldVehicleNo=oldAppGrpPremisesDto.getConveyanceVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getOffSiteHciName();
+        }
+        if(!hciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)){
+            return true;
+        }
+        return false;
     }
 
     private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
