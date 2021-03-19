@@ -280,6 +280,7 @@
         $("#modeDelivery option:first").prop("selected", 'selected');
         $("#distributionList option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
+        $("#error_errDate").hide();
     }
 
     $("#modeDelivery").change(function () {
