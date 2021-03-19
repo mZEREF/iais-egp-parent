@@ -2339,8 +2339,10 @@ private CessationFeService cessationFeService;
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
                     appEditSelectDto1.setDocEdit(docIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
+                    String groupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                    appSubmissionDto1.setAppGrpNo(groupNo);
                     notAutoSaveAppsubmission.add(appSubmissionDto1);
-                    autoSaveAppsubmission.clear();
+                    autoSaveAppsubmission.remove(autoSaveAppsubmission.size() - 1);
                 }else {
                     notAutoSaveAppsubmission.add(personAppsubmit);
                 }
@@ -2841,7 +2843,8 @@ private CessationFeService cessationFeService;
         List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = oldAppSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         if(appSvcDisciplineAllocationDtoList!=null && oldAppSvcDisciplineAllocationDtoList!=null){
             if(appSvcDisciplineAllocationDtoList.size()==oldAppSvcDisciplineAllocationDtoList.size()){
-                if(!appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList)){
+                boolean b = EqRequestForChangeSubmitResultChange.eqAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList, oldAppSvcDisciplineAllocationDtoList);
+                if(b){
                  return true;
                 }
             }else if(appSvcDisciplineAllocationDtoList.size()<oldAppSvcDisciplineAllocationDtoList.size()){
