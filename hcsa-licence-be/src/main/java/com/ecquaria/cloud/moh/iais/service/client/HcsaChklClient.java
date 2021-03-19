@@ -165,4 +165,7 @@ public interface HcsaChklClient {
 
     @PostMapping(value = "/iais-hcsa-checklist/config-excel-template", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ErrorMsgContent>> saveConfigByTemplate(@RequestBody ChecklistConfigDto excelTemplate);
+
+    @PostMapping(value = "/iais-regulation/results/ids", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaChklSvcRegulationDto>> listRegulationByIds(@RequestBody List<String> ids);
 }

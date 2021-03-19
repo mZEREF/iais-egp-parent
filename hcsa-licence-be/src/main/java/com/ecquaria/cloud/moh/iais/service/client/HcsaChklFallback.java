@@ -333,4 +333,12 @@ public class HcsaChklFallback implements HcsaChklClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<HcsaChklSvcRegulationDto>> listRegulationByIds(List<String> ids) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

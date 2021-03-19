@@ -43,7 +43,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,6 +69,8 @@ public class RegulationDelegator {
             .resultAttr(HcsaRegulationConstants.PARAM_RESULT)
             .sortField("id").build();
 
+    private static final String REGULATION_CHECK_BOX_REDISPLAY = "regulation_item_CheckboxReDisplay";
+
     /**
      * @AutoStep: startStep
      * @param:
@@ -78,6 +81,7 @@ public class RegulationDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT,  AuditTrailConsts.FUNCTION_CHECKLIST_REGULATION);
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", null);
 
+        ParamUtil.setSessionAttr(bpc.request, REGULATION_CHECK_BOX_REDISPLAY, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaRegulationConstants.PARAM_SEARCH, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
@@ -337,30 +341,33 @@ public class RegulationDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-        SearchResult searchResult =  regulationService.searchRegulation(searchParam);
+        HashSet<String> checked = (HashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
+        List<RegulationQueryDto> export = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(checked)){
+            List<HcsaChklSvcRegulationDto> list = regulationService.listRegulationByIds(new ArrayList<>(checked));
+            for (HcsaChklSvcRegulationDto i : list){
+                RegulationQueryDto regulation = new RegulationQueryDto();
+                regulation.setId(i.getId());
+                regulation.setClause(i.getClause());
+                regulation.setClauseNo(i.getClauseNo());
+                regulation.setStatus(i.getStatus());
+                export.add(regulation);
+            }
+        }
+
         File file = null;
-        if (Optional.ofNullable(searchResult).isPresent()){
-            List<RegulationQueryDto> regulationResult = searchResult.getRows();
-            try {
-                file = ExcelWriter.writerToExcel(regulationResult, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
-            } catch (Exception  e) {
-                log.error("=======>fileHandler error >>>>>", e);
-            }
-        }
-
-        if(Optional.ofNullable(file).isPresent()){
-            try {
-                FileUtils.writeFileResponseContent(response, file);
+        try {
+            file = ExcelWriter.writerToExcel(export, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
+            FileUtils.writeFileResponseContent(response, file);
+        } catch (Exception  e) {
+            log.error("=======>fileHandler error >>>>>", e);
+        }finally {
+            if (file != null){
                 FileUtils.deleteTempFile(file);
-            } catch (IOException e) {
-                log.debug(e.getMessage());
             }
         }
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
 
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
 }

@@ -17,16 +17,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -69,7 +67,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -696,40 +693,37 @@ public class HcsaChklItemDelegator {
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
-
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
-        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
-
-        //master code to description
-        List<CheckItemQueryDto> itemQueryList = searchResult.getRows();
-        for (CheckItemQueryDto cklItemQuery : itemQueryList){
-            cklItemQuery.setAnswerType(MasterCodeUtil.getCodeDesc(cklItemQuery.getAnswerType()));
-            String riskLvl = MasterCodeUtil.getCodeDesc(cklItemQuery.getRiskLevel());
-            cklItemQuery.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
-            cklItemQuery.setStatus(MasterCodeUtil.getCodeDesc(cklItemQuery.getStatus()));
+        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        List<CheckItemQueryDto> export = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(set)){
+            List<ChecklistItemDto> itemQueryList = hcsaChklService.listChklItemByItemId(new ArrayList<>(set));
+            for (ChecklistItemDto i : itemQueryList){
+                CheckItemQueryDto itemQueryDto = new CheckItemQueryDto();
+                itemQueryDto.setItemId(i.getItemId());
+                itemQueryDto.setChecklistItem(i.getChecklistItem());
+                itemQueryDto.setRegulationClause(i.getRegulationClause());
+                itemQueryDto.setRegulationClauseNo(i.getRegulationClauseNo());
+                itemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(i.getAnswerType()));
+                String riskLvl = MasterCodeUtil.getCodeDesc(i.getRiskLevel());
+                itemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
+                itemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(i.getStatus()));
+                export.add(itemQueryDto);
+            }
         }
 
         boolean blockExcel = false;
-        if (IaisCommonUtils.isEmpty(itemQueryList)){
+        if (IaisCommonUtils.isNotEmpty(export)){
             blockExcel = true;
         }
 
         File file = null;
         try {
-            file = ExcelWriter.writerToExcel(itemQueryList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
+            file = ExcelWriter.writerToExcel(export, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
+            FileUtils.writeFileResponseContent(response, file);
         } catch (Exception e) {
             log.error("=======>fileHandler error >>>>>", e);
-        }
-
-        if(Optional.ofNullable(file).isPresent()){
-            try {
-                FileUtils.writeFileResponseContent(response, file);
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }finally {
+        }finally {
+            if (!Optional.ofNullable(file).isPresent()){
                 FileUtils.deleteTempFile(file);
             }
         }
@@ -762,18 +756,16 @@ public class HcsaChklItemDelegator {
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
-            String[] checked = (String[]) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if (checked == null || checked.length <= 0) {
+
+            HashSet<String> checked = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            if (IaisCommonUtils.isEmpty(checked)) {
                 FileUtils.writeFileResponseProcessContent(request, inputFile);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 return;
             }
 
-            List<String> ids = IaisCommonUtils.genNewArrayList();
-            Stream.of(checked).forEach(i -> ids.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i)));
-
             if (inputFile.exists() && inputFile.isFile()) {
-                List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(ids);
+                List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checked));
                 List<ChecklistConfigExcel> uploadTemplate = IaisCommonUtils.genNewArrayList();
 
                 for (ChecklistItemDto i : item) {
