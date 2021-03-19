@@ -527,8 +527,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         TaskDto compTask = getCompletedTaskByHistory(taskDto, checkUserId);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(compTask != null){
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
-            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
             TaskDto createTask = new TaskDto();
             createTask.setId(null);
             createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -542,7 +540,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setTaskType(compTask.getTaskType());
             createTask.setWkGrpId(compTask.getWkGrpId());
             createTask.setUserId(checkUserId);
-            createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+            createTask.setScore(0);
             createTask.setDateAssigned(new Date());
             createTask.setRoleId(roleId);
             createTask.setApplicationNo(applicationNo);
