@@ -96,9 +96,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     applicationService.updateFEApplicaiton(h);
                     boolean isCharity = false;
                     String applicantName = "";
-                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(h.getId()).getEntity();
-                    if (premiseMiscDto != null) {
-                        String oldAppId = premiseMiscDto.getRelateRecId();
+                        String oldAppId = h.getId();
                         if (!StringUtil.isEmpty(oldAppId)) {
                             ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                             String serviceId = oldApplication.getServiceId();
@@ -113,8 +111,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                             String licenseeId = applicationGroupDto.getLicenseeId();
                             String paymentMethod = applicationGroupDto.getPayMethod();
                             String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(h.getStatus())
-                                    || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(h.getStatus())) {
                                 Double fee = 0.0;
                                 applicationService.closeTaskWhenWhAppApprove(h.getId());
                                 List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
@@ -171,8 +167,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 } catch (Exception e) {
                                     log.info(e.getMessage(),e);
                                 }
-                            }
-                        }
                     }
                 });
                 log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+withdrawApplicationDtoList.size()));
