@@ -2559,7 +2559,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendInboxMessage(ApplicationDto applicationDto, String serviceId, Map<String, Object> map, String messageTemplateId) throws IOException, TemplateException {
+    public void sendInboxMessage(ApplicationDto applicationDto, String serviceId, Map<String, Object> map, String messageTemplateId) throws IOException, TemplateException {
         EmailParam messageParam = new EmailParam();
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
@@ -2613,7 +2613,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void sendEmail(String msgId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
+    public void sendEmail(String msgId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application Email  *****************"));
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         EmailParam emailParam = new EmailParam();
@@ -2632,7 +2632,7 @@ public class HcsaApplicationDelegator {
         notificationHelper.sendNotification(emailParam);
     }
 
-    private void sendSMS(ApplicationDto applicationDto, String msgId, Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+    public void sendSMS(ApplicationDto applicationDto, String msgId, Map<String, Object> msgInfoMap) throws IOException, TemplateException {
         log.info(StringUtil.changeForLog("***************** send withdraw application sms  *****************"));
         EmailParam emailParam = new EmailParam();
         MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
