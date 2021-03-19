@@ -1930,17 +1930,25 @@ public class RequestForChangeMenuDelegator {
 
         String newHciName = "";
         String oldHciName = "";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getVehicleNo();
+            oldHciName = premisesListQueryDto.getHciName();
+            oldVehicleNo=premisesListQueryDto.getVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName = premisesListQueryDto.getHciName();
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+            newHciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getOffSiteHciName();
         }
-        if (!oldHciName.equals(newHciName)) {
+        if (!newHciName.equals(oldHciName)||!newVehicleNo.equals(oldVehicleNo)) {
             return false;
         }
 

@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+
 import java.util.List;
 
 /**
@@ -7,5 +9,5 @@ import java.util.List;
  * @date 2020/10/19 15:52
  **/
 public interface GiroDeductionBeService {
-    void sendMessageEmail(List<String> appGroupList);
+    List<ApplicationGroupDto> sendMessageEmail(List<String> appGroupList);
 }

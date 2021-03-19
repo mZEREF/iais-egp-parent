@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -28,9 +29,11 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -250,7 +253,6 @@ public class GiroDeductionBeDelegator {
             });
         }
     }
-
     public void download(BaseProcessClass bpc){
 
     }
@@ -264,10 +266,37 @@ public class GiroDeductionBeDelegator {
     public void beGiroDeductionRetrigger(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionRetrigger start ...."));
         List<String> appGroupList = (List<String>)ParamUtil.getRequestAttr(bpc.request, "appGroupList");
-        giroDeductionBeService.sendMessageEmail(appGroupList);
+        List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);
+        /*beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(appGroupList, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());*/
+        beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
-    public void generatorFileCsv(){
 
+    @GetMapping(value = "/generatorFileCsv")
+    public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        Object giroDedSearchResult = request.getSession().getAttribute("giroDedSearchResult");
+        Object giroDedSearchParam = request.getSession().getAttribute("giroDedSearchParam");
+        String[] HEADERS = { "author", "title"};
+        Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
+            {
+                put("Dan Simmons", "Hyperion");
+                put("Douglas Adams", "The Hitchhiker's Guide to the Galaxy");
+            }
+        };
+        FileWriter out = new FileWriter("D://book_new.csv");
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
+                .withHeader(HEADERS))) {
+            AUTHOR_BOOK_MAP.forEach((author, title) -> {
+                try {
+                    printer.printRecord(author, title);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 }

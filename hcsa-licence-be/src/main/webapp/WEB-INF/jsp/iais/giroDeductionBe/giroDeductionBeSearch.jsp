@@ -142,7 +142,7 @@
                   </table>
                   <iais:action style="text-align:right;">
                     <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
-                    <a  class="btn btn-primary" href="">Download Spreadsheet</a>
+                    <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
                     <button name="" class="btn btn-primary" type="button" >Upload Status</button>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
@@ -183,7 +183,11 @@
             allNcItemCheck.checked = false;
         }
     }
-
+    $('#download').click(function (){
+        $("[name='beGiroDeductionType']").val('download');
+        var mainPoolForm = document.getElementById('giroDeductionForm');
+        mainPoolForm.submit();
+    });
     function giroDeductionCheckAll(){
         if ($('#allGiroDeductionCheck').is(':checked')) {
             $("input[name = 'giroDueCheck']").attr("checked","true");
