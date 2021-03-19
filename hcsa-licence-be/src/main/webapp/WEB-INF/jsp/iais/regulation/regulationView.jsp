@@ -54,7 +54,7 @@
         <div class="col-xs-12 col-md-12">
             <div class="text-right">
                 <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-                <a class="btn btn-secondary"  id="exportButtonId" href="${pageContext.request.contextPath}/regulation-result-file?action=regulation" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Regulation</a>
+                <a class="btn btn-secondary"  id="exportButtonId" href="${pageContext.request.contextPath}/regulation-result-file?action=regulation">Export Regulation</a>
                 <a class="btn btn-primary next" id="crud_search_button" value="doQuery" href="#">Search</a>
             </div>
         </div>
@@ -70,7 +70,8 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" style="width:5%; padding-bottom:10px" field="" value="No."></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="" value="No."></iais:sortableHeader>
+                                    <td></td>
                                     <iais:sortableHeader needSort="true" style="width:15%" field="CLAUSE_NO"
                                                          value="Regulation Clause Number"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="true" style="width:10%"  field="CLAUSE"
@@ -92,7 +93,7 @@
                                         <c:forEach var="item" items="${regulationResult.rows}" varStatus="status">
                                             <tr>
                                                 <td class="row_no">${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}</td>
-                                                </td>
+                                                <td><iais:checkbox name="regulation_itemCheckbox" checkboxId="regulation_itemCheckbox" request="${pageContext.request}"  value="${item.id}" forName="regulation_item_CheckboxReDisplay"></iais:checkbox></td>
                                                 <td style="width: 25%;" >${item.clauseNo}</td>
                                                 <td style="width: 60%;" >${item.clause}</td>
                                                 <td><iais:code code="${item.status}"></iais:code></td>

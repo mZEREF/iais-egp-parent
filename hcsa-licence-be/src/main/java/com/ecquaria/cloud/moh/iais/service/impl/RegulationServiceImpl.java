@@ -51,4 +51,9 @@ public class RegulationServiceImpl implements RegulationService {
         IaisApiResult<List<ErrorMsgContent>> apiResult = hcsaChklClient.submitHcsaChklSvcRegulation(regulationDtoList).getEntity();
         return apiResult.getEntity();
     }
+
+    @Override
+    public List<HcsaChklSvcRegulationDto> listRegulationByIds(List<String> ids) {
+        return hcsaChklClient.listRegulationByIds(ids).getEntity();
+    }
 }
