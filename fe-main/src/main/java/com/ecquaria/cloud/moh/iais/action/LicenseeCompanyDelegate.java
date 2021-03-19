@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -108,6 +109,7 @@ public class LicenseeCompanyDelegate {
         List<LicenseeDto> licenseesDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
         LicenseeDto licenseeDto = licenseesDto.get(0);
         licenseeDto.setLicenseeType(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()));
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
         ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
@@ -120,6 +122,7 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
     }
 
@@ -165,6 +168,7 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
     }
 
