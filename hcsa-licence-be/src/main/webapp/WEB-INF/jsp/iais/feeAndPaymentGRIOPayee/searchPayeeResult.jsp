@@ -71,7 +71,7 @@
                                                     <table class="table">
                                                         <thead>
                                                         <tr align="center">
-                                                            <th >
+                                                            <th style="width:2%">
 
                                                             </th>
                                                             <iais:sortableHeader needSort="true" field="HCI_CODE"

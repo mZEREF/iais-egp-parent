@@ -97,7 +97,7 @@
                                                     <table class="table">
                                                         <thead>
                                                         <tr align="center">
-                                                            <th >&nbsp;</th>
+                                                            <th style="width:2%">&nbsp;</th>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="UEN_NO"
                                                                                  value="UEN"/>
