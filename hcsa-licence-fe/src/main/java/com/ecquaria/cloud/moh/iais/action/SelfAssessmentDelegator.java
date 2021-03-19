@@ -4,9 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -171,27 +169,11 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR, (Serializable) selfAssessmentList);
     }
 
-    private void setAnswerWithQuestion(HttpServletRequest request, Map<String, List<PremCheckItem>> answerMap) {
-        for (Map.Entry<String, List<PremCheckItem>> entry : answerMap.entrySet()){
-            List<PremCheckItem> list = entry.getValue();
-            for (PremCheckItem item : list) {
-                String answer = ParamUtil.getString(request, item.getAnswerKey());
-                if (StringUtil.isNotEmpty(answer)) {
-                    item.setAnswer(answer);
-                }
-            }
-        }
-    }
-
     private void loadSelfAssessment(HttpServletRequest request) {
         int index = getCurrentSelfAssessmentIndexInList(request).intValue();
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
         if (index >= 0 && IaisCommonUtils.isNotEmpty(selfAssessmentList)) {
             ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentList.get(index));
-            // look <input type="hidden" name="tagIndex" value="<iais:mask name="tagIndex" value="${tagIndex}"/>">
-            String tagIndex = selfAssessmentList.get(index).getSelfAssessmentConfig().get(0).getConfigId();
-            ParamUtil.setRequestAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
-            ParamUtil.setRequestAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
         }
     }
 
@@ -200,16 +182,6 @@ public class SelfAssessmentDelegator {
      * @author: yichen
      */
     public void switchNextStep(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String prevTagIdx = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION);
-        String tagIndex = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
-        SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
-        log.info("SelfAssessmentDelegator [switchNextStep] selfAssessment INFO  ..{}..", JsonUtil.parseToJson(selfAssessment));
-        Map<String, List<PremCheckItem>> answerMap = getTabQuestionByTagIndex(selfAssessment, prevTagIdx);
-        setAnswerWithQuestion(request, answerMap);
-        ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessment);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
     }
 
     /**
@@ -239,8 +211,8 @@ public class SelfAssessmentDelegator {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             StringBuilder errorIndexStr = new StringBuilder();
             for (int i = 0; i < selfAssessmentList.size(); i++) {
-                boolean isFilled = isFilledAnswer(selfAssessmentList.get(i));
-                if (!isFilled) {
+                SelfAssessment mt = selfAssessmentList.get(i);
+                if (mt.isCanEdit()){
                     errorIndexStr.append(i + 1).append("/");
                 }
             }
@@ -282,33 +254,8 @@ public class SelfAssessmentDelegator {
      */
     public void clearAnswer(BaseProcessClass bpc) {
         SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
-        String tagIndex = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
-        Map<String, List<PremCheckItem>> currentTabQuestion = getTabQuestionByTagIndex(selfAssessment, tagIndex);
-        for (Map.Entry<String, List<PremCheckItem>> entry : currentTabQuestion.entrySet()){
-            List<PremCheckItem> list = entry.getValue();
-            for (PremCheckItem item : list) {
-                item.setAnswer(null);
-            }
-        }
+        selfAssessmentService.doAnswerAction(bpc.request, selfAssessment, true);
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessment);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
-    }
-
-    private boolean isFilledAnswer(SelfAssessment selfAssessmentDetail) {
-        boolean isFilled = true;
-        List<SelfAssessmentConfig> selfAssessmentConfig = selfAssessmentDetail.getSelfAssessmentConfig();
-        for (SelfAssessmentConfig s : selfAssessmentConfig) {
-            for (Map.Entry<String, List<PremCheckItem>> entry : s.getSqMap().entrySet()){
-                List<PremCheckItem> premCheckItemList = entry.getValue();
-                for (PremCheckItem item : premCheckItemList) {
-                    if (StringUtils.isEmpty(item.getAnswer())) {
-                        isFilled = false;
-                    }
-                }
-            }
-        }
-        return isFilled;
     }
 
     /**
@@ -317,44 +264,25 @@ public class SelfAssessmentDelegator {
      */
     public void draftItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String tagIndex = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tagIndex);
-        ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION, tagIndex);
-        SelfAssessment selfAssessment = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
-        if (Optional.ofNullable(selfAssessment).isPresent()) {
-            Map<String, List<PremCheckItem>> prevTagAnswer = getTabQuestionByTagIndex(selfAssessment, tagIndex);
-            setAnswerWithQuestion(request, prevTagAnswer);
-            boolean isFilled = isFilledAnswer(selfAssessment);
-            if (isFilled) {
-                selfAssessment.setCanEdit(false);
-                List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
+        SelfAssessment mt = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
+        if (Optional.ofNullable(mt).isPresent()) {
+            selfAssessmentService.doAnswerAction(request, mt, false);
+            if (mt.isCompletedAnswer()) {
+                mt.setCanEdit(false);
+                List<SelfAssessment> list = (List<SelfAssessment>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
                 int index = getCurrentSelfAssessmentIndexInList(request);
-                if (index != -1) {
-                    selfAssessmentList.set(index, selfAssessment);
+                if (index >= 0) {
+                    list.set(index, mt);
                 }
-                ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR, (Serializable) selfAssessmentList);
+
+                ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR, (Serializable) list);
+                ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, mt);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             } else {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("noFillUpItemError", "UC_INSTA004_ERR008"));
             }
         }
-    }
-
-    private Map<String, List<PremCheckItem>> getTabQuestionByTagIndex(SelfAssessment selfAssessment, String tagIndex) {
-        Map<String, List<PremCheckItem>> answerMap = IaisCommonUtils.genNewHashMap();
-        if (Optional.ofNullable(selfAssessment).isPresent()) {
-            List<SelfAssessmentConfig> confList = selfAssessment.getSelfAssessmentConfig();
-             if (Optional.ofNullable(confList).isPresent()){
-                 for (SelfAssessmentConfig s : confList){
-                     if (tagIndex.equals(s.getConfigId())){
-                         answerMap = s.getSqMap();
-                     }
-                 }
-             }
-        }
-        log.info("SelfAssessmentDelegator [getTabQuestionByTagIndex] answerMap Info {}", JsonUtil.parseToJson(answerMap));
-        return answerMap;
     }
 
     private void responseMsg(HttpServletRequest request){
