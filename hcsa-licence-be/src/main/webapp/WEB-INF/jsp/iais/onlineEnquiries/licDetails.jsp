@@ -118,88 +118,89 @@
                                                 </div>
                                             </div>
 
-                                            <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-heading"><strong>Board Members</strong></div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="table-gp">
-                                                                <table class="table table-bordered">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td class="col-xs-6" align="right">Name</td>
-                                                                        <td class="col-xs-6">&nbsp;-</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Salutation</td>
-                                                                        <td>&nbsp;-</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">ID Type</td>
-                                                                        <td>&nbsp;-</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">ID No</td>
-                                                                        <td>&nbsp;-</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Designation</td>
-                                                                        <td>&nbsp;-</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Designation Appointment Date</td>
-                                                                        <td>&nbsp;-</td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
+                                            <c:if test="${ organizationLicDto.licenseeDto.licenseeType=='LICT001'}">
+                                                <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading"><strong>Board Members</strong></div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-gp">
+                                                                    <table class="table table-bordered">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td class="col-xs-6" align="right">Name</td>
+                                                                            <td class="col-xs-6">&nbsp;-</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Salutation</td>
+                                                                            <td>&nbsp;-</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID Type</td>
+                                                                            <td>&nbsp;-</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID No</td>
+                                                                            <td>&nbsp;-</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Designation</td>
+                                                                            <td>&nbsp;-</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Designation Appointment Date</td>
+                                                                            <td>&nbsp;-</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </c:if>
+
+                                                <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
+
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading"><strong>Board Members</strong></div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-gp">
+                                                                    <table class="table table-bordered">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td class="col-xs-6" align="right">Name</td>
+                                                                            <td class="col-xs-6">&nbsp;${member.name}<c:if test="${empty member.name}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Salutation</td>
+                                                                            <td>&nbsp;${member.salutation}<c:if test="${empty member.salutation}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID Type</td>
+                                                                            <td>&nbsp;${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID No</td>
+                                                                            <td>&nbsp;${member.idNo}<c:if test="${empty member.idNo}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Designation</td>
+                                                                            <td>&nbsp;${member.designation}<c:if test="${empty member.designation}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Designation Appointment Date</td>
+                                                                            <td>&nbsp;<fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
+                                                                        </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
                                             </c:if>
-
-                                            <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
-
-                                                <div class="panel panel-default">
-                                                    <div class="panel-heading"><strong>Board Members</strong></div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="table-gp">
-                                                                <table class="table table-bordered">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td class="col-xs-6" align="right">Name</td>
-                                                                        <td class="col-xs-6">&nbsp;${member.name}<c:if test="${empty member.name}">-</c:if></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Salutation</td>
-                                                                        <td>&nbsp;${member.salutation}<c:if test="${empty member.salutation}">-</c:if></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">ID Type</td>
-                                                                        <td>&nbsp;${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">ID No</td>
-                                                                        <td>&nbsp;${member.idNo}<c:if test="${empty member.idNo}">-</c:if></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Designation</td>
-                                                                        <td>&nbsp;${member.designation}<c:if test="${empty member.designation}">-</c:if></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td align="right">Designation Appointment Date</td>
-                                                                        <td>&nbsp;<fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
-                                                                    </tr>
-
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </c:forEach>
-
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading"><strong>Sole Proprietor - Licensee</strong></div>
