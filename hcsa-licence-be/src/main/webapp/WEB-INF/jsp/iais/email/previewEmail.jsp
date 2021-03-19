@@ -10,22 +10,16 @@
 <div class="main-content dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="center-content">
-            <div class="intranet-content">
-                <div class="row form-horizontal">
-                    <div class="bg-title col-xs-12 col-md-12">
-                        <h2>
-                            <span>${subject}</span>
-                        </h2>
-                        <iais:row>
-                            <div class=" col-xs-12 col-md-12">
-                                    ${messageContent}
-                            </div>
-                        </iais:row>
-
-                        <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
-                    </div>
+        <div class="intranet-content">
+            <div style="padding: 30px 30px 30px 30px;">
+                <h2>
+                    <span>${subject}</span>
+                </h2>
+                <div >
+                    <span>${messageContent}</span>
                 </div>
+
+                <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
             </div>
         </div>
     </form>

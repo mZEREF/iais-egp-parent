@@ -4,7 +4,7 @@
         <![CDATA[
             SELECT distinct gai.ID, gai.ORGANIZATION_ID, gai.HCI_CODE,
             gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
-            gai.DDA_REF_NO,p.HCI_NAME
+            gai.DDA_REF_NO
 
             FROM giro_account_info gai
             join premises p on p.HCI_CODE = gai.HCI_CODE

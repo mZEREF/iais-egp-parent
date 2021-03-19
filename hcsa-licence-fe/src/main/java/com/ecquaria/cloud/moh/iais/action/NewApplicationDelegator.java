@@ -505,6 +505,7 @@ private CessationFeService cessationFeService;
         ParamUtil.setRequestAttr(bpc.request,"weeklyCount",systemParamConfig.getWeeklyCount());
         ParamUtil.setRequestAttr(bpc.request,"phCount",systemParamConfig.getPhCount());
         ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
+        ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
@@ -720,7 +721,12 @@ private CessationFeService cessationFeService;
         bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(appSubmissionDto.getLicenseeId());
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = "";
+        if(loginContext != null){
+            orgId = loginContext.getOrgId();
+        }
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto.getAppGrpPremisesDtoList(),orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
@@ -1518,8 +1524,8 @@ private CessationFeService cessationFeService;
                     //spec
                     String applicationNo = applicationDto.getApplicationNo();
                     ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
-                    List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                     if(specApp!=null){
+                        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                         String specId = specApp.getOriginLicenceId();
                         LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
                         if (specLicenceDto != null) {
@@ -1535,6 +1541,7 @@ private CessationFeService cessationFeService;
                             appSpecifiedLicDto.setSpecLicId(licenceDtoId);
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
+                        ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
                     }
                     List<SelectOption> reasonOption = getReasonOption();
                     List<SelectOption> patientsOption = getPatientsOption();
@@ -1544,7 +1551,6 @@ private CessationFeService cessationFeService;
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
-                    ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
@@ -3003,7 +3009,7 @@ private CessationFeService cessationFeService;
         appEditSelectDto.setDocEdit(true);
         appEditSelectDto.setServiceEdit(true);
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            if (StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
+            if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())) {
                 appEditSelectDto.setPremisesEdit(false);
                 break;
             }
@@ -4500,15 +4506,6 @@ private CessationFeService cessationFeService;
                                 operationalUnitDto.setPremisesId(null);
                             }
                         }
-                        //clear event id
-                        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
-                        if(!IaisCommonUtils.isEmpty(eventDtos)){
-                            for(AppPremEventPeriodDto eventDto:eventDtos){
-                                eventDto.setId(null);
-                                eventDto.setAppGrpPremId(null);
-                            }
-                        }
-
                     }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }
@@ -4831,9 +4828,9 @@ private CessationFeService cessationFeService;
             }
             if (!StringUtil.isEmpty(premisesId)) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionService.getLicPremisesInfo(premisesId);
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                /*for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     appGrpPremisesDto.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
-                }
+                }*/
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();

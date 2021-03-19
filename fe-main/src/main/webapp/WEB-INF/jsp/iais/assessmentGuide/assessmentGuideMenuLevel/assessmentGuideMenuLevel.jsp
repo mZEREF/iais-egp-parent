@@ -9,11 +9,11 @@
                 <label class="form-check-label" for="applyLicence">
                     <span class="check-circle"></span>
                     <span class="left-content">Apply for a new licence </span>
-                    <span class="right-content">For new services or premises</span>
+                    <span class="right-content">${self_ack001}</span>
                 </label>
             </div>
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-               title='<p>"Base Licence" is a licence that a licensee must have to provide a special licensable healthcare service. "Special Licensable Services" are services where the licensee will require the relevant base licence in order to provide the service.</p>'
+               title='${inbox_ack016}'
                style="position: absolute;left: 340px; top: 55px;z-index: 10"
                data-original-title=""
                >i</a>
@@ -28,7 +28,20 @@
                 <label class="form-check-label" for="renewLicence">
                     <span class="check-circle"></span>
                     <span class="left-content">Renew my licence</span>
-                    <span class="right-content">For expiring licences</span>
+                    <span class="right-content">${self_ack002}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input"
+                       id="resumeDraftApplication" type="radio"
+                       name="selfAssessmentType" aria-invalid="false">
+                <label class="form-check-label"
+                       for="resumeDraftApplication">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Resume my draft application</span>
+                    <span class="right-content">${self_ack003}</span>
                 </label>
             </div>
             <%--
@@ -44,77 +57,12 @@
                     <span class="left-content">Amend my licence
                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                             data-toggle="tooltip" data-html="true"
-                            title="" data-original-title='"Subsumed Service" is a service that does not have its own licence, but has regulatory requirements that will be issued under the relevant licensable healthcare service.'
-                            style="position: absolute;left: 200px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For changes in address, personnel, or subsumed services</span>
+                            title='${inbox_ack017}' data-original-title=''
+                            style="position: absolute;left: 200px; top: 66px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack004}</span>
                 </label>
             </div>
-            <%--
-                4
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="ceaseLicence"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label" for="ceaseLicence">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Cease my licence<a href="javascript:void(0);"
-                            class="btn-tooltip styleguide-tooltip"
-                            data-toggle="tooltip" data-html="true"
-                            title="" data-original-title='"Licensed Premises" means the premises specified in a licence as premises at which a licensable healthcare service may be provided. "Conveyance" means a Singapore registered vehicle that is used to provide a healthcare service in Singapore. "Non-premises based licensable healthcare service" means a licensable healthcare service that is provided outside of a licensed premises or a remote setting.'
-                            style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For service cessation and premises removal</span>
-                </label>
-            </div>
-            <%--
-                5
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="withdrawApplication"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label"
-                       for="withdrawApplication">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Withdraw my application<a href="javascript:void(0);"
-                          class="btn-tooltip styleguide-tooltip"
-                          data-toggle="tooltip" data-html="true"
-                          title="" data-original-title='An application that the Applicant intends to withdraw should be in a "non-approved" state and can be of the following application type: New / Renewal / Request for Change / Appeal / Cessation. Applicant selects the Application(s) from the Application inbox to proceed with the withdrawal request.'
-                          style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
-                    <span class="right-content">For withdrawing my application</span>
-                </label>
-            </div>
-            <%--
-                6
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input"
-                       id="resumeDraftApplication" type="radio"
-                       name="selfAssessmentType" aria-invalid="false">
-                <label class="form-check-label"
-                       for="resumeDraftApplication">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Resume my draft application</span>
-                    <span class="right-content">For resuming a draft application</span>
-                </label>
-            </div>
-            <%--
-                7
-            --%>
-            <div class="form-check progress-step-check"
-                 style="width: 930px">
-                <input class="form-check-input" id="submitDataMoh"
-                       type="radio" name="selfAssessmentType"
-                       aria-invalid="false">
-                <label class="form-check-label" for="submitDataMoh">
-                    <span class="check-circle"></span>
-                    <span class="left-content">Submit data to MOH</span>
-                    <span class="right-content">For submission of data to MOH (e.g. Lab Development Tests)</span>
-                </label>
-            </div>
+
             <%--
                 8
             --%>
@@ -126,8 +74,53 @@
                 <label class="form-check-label"
                        for="updateAdminPersonnel">
                     <span class="check-circle"></span>
-                    <span class="left-content">Update admin personnel</span>
-                    <span class="right-content">For licensee/authorised persons to add/remove admin personnel</span>
+                    <span class="left-content">Manage admin personnel</span>
+                    <span class="right-content">${self_ack005}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="submitDataMoh"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label" for="submitDataMoh">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Data Submission</span>
+                    <span class="right-content">${self_ack006}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="withdrawApplication"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label"
+                       for="withdrawApplication">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Withdraw my application<a href="javascript:void(0);"
+                                                                         class="btn-tooltip styleguide-tooltip"
+                                                                         data-toggle="tooltip" data-html="true"
+                                                                         title='${inbox_ack019}' data-original-title=''
+                                                                         style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack007}</span>
+                </label>
+            </div>
+
+            <div class="form-check progress-step-check"
+                 style="width: 930px">
+                <input class="form-check-input" id="ceaseLicence"
+                       type="radio" name="selfAssessmentType"
+                       aria-invalid="false">
+                <label class="form-check-label" for="ceaseLicence">
+                    <span class="check-circle"></span>
+                    <span class="left-content">Cease my licence<a href="javascript:void(0);"
+                                                                  class="btn-tooltip styleguide-tooltip"
+                                                                  data-toggle="tooltip" data-html="true"
+                                                                  title='${inbox_ack018}' data-original-title=''
+                                                                  style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
+                    <span class="right-content">${self_ack008}</span>
                 </label>
             </div>
         </div>

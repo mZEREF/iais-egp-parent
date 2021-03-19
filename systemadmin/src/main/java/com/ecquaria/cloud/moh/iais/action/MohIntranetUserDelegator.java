@@ -269,6 +269,7 @@ public class MohIntranetUserDelegator {
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
         List<String> existRoleIds = IaisCommonUtils.genNewArrayList();
         Map<String, String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> roleIdAndNameMap = IaisCommonUtils.genNewHashMap();
         List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
@@ -277,34 +278,123 @@ public class MohIntranetUserDelegator {
                 String assignRoleId = orgUserRoleDto.getId();
                 alreadyAssignRoleOptionFull.add(roleNameFull);
                 roleNameAndIdMap.put(roleNameFull, assignRoleId);
+                roleIdAndNameMap.put(assignRoleId, roleNameFull);
                 existRoleIds.add(roleId);
             }
         }
+
+
         List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
+        Map<String, String> groupIdAndName = IaisCommonUtils.genNewHashMap();
         List<SelectOption> insGroupOptions = IaisCommonUtils.genNewArrayList();
         List<SelectOption> psoGroupOptions = IaisCommonUtils.genNewArrayList();
         List<SelectOption> ao1GroupOptions = IaisCommonUtils.genNewArrayList();
         for (WorkingGroupDto workingGroupDto : workingGroups) {
             String groupId = workingGroupDto.getId();
+            String maskGroupId = MaskUtil.maskValue("groupId", groupId);
             String groupName = workingGroupDto.getGroupName();
-            roleNameGroupId.put(groupName, groupId);
-            if (groupName.contains("Inspection")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+            groupIdAndName.put(groupId, groupName);
+            roleNameGroupId.put(groupName, maskGroupId);
+            if (groupName.contains("Inspection -")) {
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 insGroupOptions.add(so);
             } else if (groupName.contains("Professional")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 psoGroupOptions.add(so);
             } else if (groupName.contains("Level 1")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 ao1GroupOptions.add(so);
             }
         }
+
+        //already assign role group
+        List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(userAccId);
+        List<SelectOption> insGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> psoGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> ao1GroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> insLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> psoLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> ao1LeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+
+        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId) {
+            String groupName = groupIdAndName.get(userGroupCorrelationDto.getGroupId());
+            String maskRoleId = "";
+            if (groupName.contains("Inspection -")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            insGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            insLeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                }
+            } else if (groupName.contains("Professional")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            psoGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            psoLeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                }
+            } else if (groupName.contains("Level 1")) {
+                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1)){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            ao1GroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                            maskRoleId=orgUserRoleDto.getId();
+                            SelectOption so = new SelectOption(maskRoleId, groupName);
+                            ao1LeaderGroupOptionsExist.add(so);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
         assignRoleOptionFull.removeAll(alreadyAssignRoleOptionFull);
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
         ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", roleNameAndIdMap);
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable) insGroupOptions);
+        ParamUtil.setSessionAttr(bpc.request, "insGroupOptionsExist", (Serializable) insGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "psoGroupOptionsExist", (Serializable) psoGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptionsExist", (Serializable) ao1GroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "insLeaderGroupOptionsExist", (Serializable) insLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "psoLeaderGroupOptionsExist", (Serializable) psoLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "ao1LeaderGroupOptionsExist", (Serializable) ao1LeaderGroupOptionsExist);
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
@@ -330,7 +420,7 @@ public class MohIntranetUserDelegator {
         Map<String, Integer> groupIds = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
-        List<String> assignRoles = IaisCommonUtils.genNewArrayList();
+        Set<String> assignRoles = IaisCommonUtils.genNewHashSet();
         String[] removeRoles = ParamUtil.getStrings(bpc.request, "removeRole");
         String userAccId = orgUserDto.getId();
         String[] assignRoleOthers = ParamUtil.getStrings(bpc.request, "assignRoleOther");
@@ -342,71 +432,89 @@ public class MohIntranetUserDelegator {
         String assignRolePsoLead = ParamUtil.getString(bpc.request, "assignRolePsoLead");
         //AO1
         if (!StringUtil.isEmpty(assignRoleAo1)) {
-            String ao1GroupSelect = ParamUtil.getString(bpc.request, "ao1GroupSelect");
-            if (!StringUtil.isEmpty(ao1GroupSelect)) {
-                String roleId = roleMap.get(assignRoleAo1);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(ao1GroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(ao1GroupSelect, 0);
+            String[] ao1GroupSelect = ParamUtil.getStrings(bpc.request, "ao1GroupSelect");
+            if (ao1GroupSelect != null) {
+                for (String ao1 : ao1GroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ao1);
+                    String roleId = roleMap.get(assignRoleAo1);
+                    assignRoles.add(roleId);
+                    Integer integer = groupIds.get(groupId);
+                    if (integer != null && integer == 1) {
+                        return;
+                    } else {
+                        groupIds.put(groupId, 0);
+                    }
                 }
             }
         }
         //AO1Leader
         if (!StringUtil.isEmpty(assignRoleAo1Lead)) {
-            String ao1GroupLeadSelect = ParamUtil.getString(bpc.request, "ao1GroupLeadSelect");
-            if (!StringUtil.isEmpty(ao1GroupLeadSelect)) {
-                String roleId = roleMap.get(assignRoleAo1Lead);
-                assignRoles.add(roleId);
-                groupIds.put(ao1GroupLeadSelect, 1);
+            String[] ao1GroupLeadSelect = ParamUtil.getStrings(bpc.request, "ao1GroupLeadSelect");
+            if (ao1GroupLeadSelect != null) {
+                for (String ao1Leader : ao1GroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ao1Leader);
+                    String roleId = roleMap.get(assignRoleAo1Lead);
+                    assignRoles.add(roleId);
+                    groupIds.put(groupId, 1);
+                }
             }
         }
         //ins
         if (!StringUtil.isEmpty(assignRoleIns)) {
-            String insGroupSelect = ParamUtil.getString(bpc.request, "insGroupSelect");
-            if (!StringUtil.isEmpty(insGroupSelect)) {
-                String roleId = roleMap.get(assignRoleIns);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(insGroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(insGroupSelect, 0);
+            String[] insGroupSelect = ParamUtil.getStrings(bpc.request, "insGroupSelect");
+            if (insGroupSelect != null) {
+                for (String ins : insGroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ins);
+                    String roleId = roleMap.get(assignRoleIns);
+                    assignRoles.add(roleId);
+                    Integer integer = groupIds.get(groupId);
+                    if (integer != null && integer == 1) {
+                        return;
+                    } else {
+                        groupIds.put(groupId, 0);
+                    }
                 }
             }
         }
         //insLead
         if (!StringUtil.isEmpty(assignRoleInsLead)) {
-            String insGroupLeadSelect = ParamUtil.getString(bpc.request, "insGroupLeadSelect");
-            if (!StringUtil.isEmpty(insGroupLeadSelect)) {
-                String roleId = roleMap.get(assignRoleInsLead);
-                assignRoles.add(roleId);
-                groupIds.put(insGroupLeadSelect, 1);
+            String[] insGroupLeadSelect = ParamUtil.getStrings(bpc.request, "insGroupLeadSelect");
+            if (insGroupLeadSelect != null) {
+                for (String insLeader : insGroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", insLeader);
+                    String roleId = roleMap.get(assignRoleInsLead);
+                    assignRoles.add(roleId);
+                    groupIds.put(groupId, 1);
+                }
             }
         }
         //pso
         if (!StringUtil.isEmpty(assignRolePso)) {
-            String psoGroupSelect = ParamUtil.getString(bpc.request, "psoGroupSelect");
-            if (!StringUtil.isEmpty(psoGroupSelect)) {
-                String roleId = roleMap.get(assignRolePso);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(psoGroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(psoGroupSelect, 0);
+            String[] psoGroupSelect = ParamUtil.getStrings(bpc.request, "psoGroupSelect");
+            if (psoGroupSelect != null) {
+                for (String pso : psoGroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", pso);
+                    String roleId = roleMap.get(assignRolePso);
+                    assignRoles.add(roleId);
+                    Integer integer = groupIds.get(groupId);
+                    if (integer != null && integer == 1) {
+                        return;
+                    } else {
+                        groupIds.put(groupId, 0);
+                    }
                 }
             }
         }
         //psoLead
         if (!StringUtil.isEmpty(assignRolePsoLead)) {
-            String psoGroupLeadSelect = ParamUtil.getString(bpc.request, "psoGroupLeadSelect");
-            if (!StringUtil.isEmpty(psoGroupLeadSelect)) {
-                String roleId = roleMap.get(assignRolePsoLead);
-                assignRoles.add(roleId);
-                groupIds.put(psoGroupLeadSelect, 1);
+            String[] psoGroupLeadSelect = ParamUtil.getStrings(bpc.request, "psoGroupLeadSelect");
+            if (psoGroupLeadSelect != null) {
+                for (String psoLeader : psoGroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", psoLeader);
+                    String roleId = roleMap.get(assignRolePsoLead);
+                    assignRoles.add(roleId);
+                    groupIds.put(groupId, 1);
+                }
             }
         }
         //others
@@ -416,7 +524,8 @@ public class MohIntranetUserDelegator {
                 assignRoles.add(roleId);
                 if (RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)) {
                     String groupName = "Level 2 Approval";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
                         Integer integer = groupIds.get(groupId);
                         if (integer != null && integer == 1) {
@@ -430,7 +539,8 @@ public class MohIntranetUserDelegator {
 
                 } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)) {
                     String groupName = "Level 3 Approval";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO3.equals(roleId)) {
                         Integer integer = groupIds.get(groupId);
                         if (integer != null && integer == 1) {
@@ -443,7 +553,8 @@ public class MohIntranetUserDelegator {
                     }
                 } else if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)) {
                     String groupName = "Admin Screening officer";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_ASO.equals(roleId)) {
                         Integer integer = groupIds.get(groupId);
                         if (integer != null && integer == 1) {
@@ -462,32 +573,32 @@ public class MohIntranetUserDelegator {
             List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<String> roleIds = intranetUserService.getRoleIdByUserId(userAccId);
             if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_PSO)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_PSO)) {
                     assignRoles.add(RoleConsts.USER_ROLE_PSO);
                 }
             }
             if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_ASO)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_ASO)) {
                     assignRoles.add(RoleConsts.USER_ROLE_ASO);
                 }
             }
             if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_AO1)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_AO1)) {
                     assignRoles.add(RoleConsts.USER_ROLE_AO1);
                 }
             }
             if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_AO2)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_AO2)) {
                     assignRoles.add(RoleConsts.USER_ROLE_AO2);
                 }
             }
             if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_AO3)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_AO3)) {
                     assignRoles.add(RoleConsts.USER_ROLE_AO3);
                 }
             }
             if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
-                if(!assignRoles.contains(RoleConsts.USER_ROLE_INSPECTIOR)){
+                if (!assignRoles.contains(RoleConsts.USER_ROLE_INSPECTIOR)) {
                     assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
                 }
             }
@@ -614,7 +725,7 @@ public class MohIntranetUserDelegator {
                 }
 
                 Boolean isSuccessEgp = intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
-                if(isSuccessEgp){
+                if (isSuccessEgp) {
                     intranetUserService.removeRole(orgUserRoleDtos);
                     //remove group
                     if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
@@ -1078,7 +1189,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setRemarks(remarks);
         Date today = new Date();
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-        if(startDate != null && startDate.after(today)){
+        if (startDate != null && startDate.after(today)) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
         }
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
@@ -1113,7 +1224,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
         orgUserDto.setStatus(status);
-        if(!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)){
+        if (!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
             orgUserDto.setAvailable(Boolean.FALSE);
         }
         orgUserDto.setLastName(lastName);
@@ -1226,7 +1337,7 @@ public class MohIntranetUserDelegator {
             //ele
             list = root.elements();
             if (list != null) {
-                Element elementCheck = (Element)list.get(0);
+                Element elementCheck = (Element) list.get(0);
                 elementCheck.element("displayName").getText();
             }
         } catch (Exception e) {
@@ -1327,9 +1438,9 @@ public class MohIntranetUserDelegator {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String xmlError = orgUserDto.getXmlError();
         if (!StringUtil.isEmpty(xmlError)) {
-            if("errorName".equals(xmlError)){
+            if ("errorName".equals(xmlError)) {
                 errors.add("The filename should not be more than 100 characters");
-            }else {
+            } else {
                 errors.add("Please upload correct format");
             }
             return errors;
@@ -1405,7 +1516,7 @@ public class MohIntranetUserDelegator {
         }
         String officeTelNo = orgUserDto.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
-            if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+            if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errors.add("Please key in a valid office number");
             }
         }

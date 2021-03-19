@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -63,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
@@ -170,7 +173,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName){
         try{
-            ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
+            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+            if(IaisCommonUtils.isEmpty(applicationDtos)){
+                applicationDtos = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo()).getEntity();
+                appSubmissionDto.setApplicationDtos(applicationDtos);
+            }
+            ApplicationDto applicationDto =  applicationDtos.get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
@@ -189,8 +197,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             String applicationNumber = stringBuilderAPPNum.toString();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationType", applicationType);
             subMap.put("ApplicationNumber", applicationNumber);
             subMap.put("temp", temp);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
@@ -282,6 +289,54 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos) {
         return licenceClient.setPremAdditionalInfo(menuLicenceDtos).getEntity();
+    }
+
+    @Override
+    public List<GiroAccountInfoDto> getGiroAccountByHciCodeAndOrgId(List<String> hciCode, String orgId) {
+        log.debug("AppSubmissionServiceImpl getGiroAccount [hciCode] hciCode is empty: {},[orgId] orgId:{}",IaisCommonUtils.isEmpty(hciCode) ,orgId);
+        return licenceClient.getGiroAccountByHciCodeAndOrgId(hciCode,orgId).getEntity();
+    }
+
+    @Override
+    public boolean checkIsGiroAcc(List<AppGrpPremisesDto> appGrpPremisesDtos, String orgId) {
+        boolean isGiroAcc = false;
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            List<String> hciCodeList = IaisCommonUtils.genNewArrayList();
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                String hciCode = appGrpPremisesDto.getHciCode();
+                if(!StringUtil.isEmpty(hciCode)){
+                    hciCodeList.add(hciCode);
+                }
+            }
+            log.debug(StringUtil.changeForLog("hciCodeList size:"+hciCodeList.size()));
+            if(hciCodeList.size() > 0 && !StringUtil.isEmpty(orgId)){
+                log.debug("checkIsGiroAcc [orgId] orgId is {}",orgId);
+                List<GiroAccountInfoDto> giroAccountInfoDtos = getGiroAccountByHciCodeAndOrgId(hciCodeList,orgId);
+                if(giroAccountInfoDtos != null){
+                    log.debug(StringUtil.changeForLog("giroAccountInfoDtos size:"+giroAccountInfoDtos.size()));
+                    if(giroAccountInfoDtos.size() > 1){
+                        String targetAcctNo = giroAccountInfoDtos.get(0).getAcctNo();
+                        log.debug("checkIsGiroAcc [targetAcctNo] targetAcctNo is {}",targetAcctNo);
+                        if(!StringUtil.isEmpty(targetAcctNo)){
+                            for(int i=1;i<giroAccountInfoDtos.size();i++){
+                                String acctNo = giroAccountInfoDtos.get(i).getAcctNo();
+                                log.debug("checkIsGiroAcc [acctNo] acctNo is {}",acctNo);
+                                if(!StringUtil.isEmpty(acctNo) && !targetAcctNo.equals(acctNo)){
+                                    break;
+                                }
+                                if(i == giroAccountInfoDtos.size()-1){
+                                    isGiroAcc = true;
+                                }
+                            }
+                        }
+                    }else if(giroAccountInfoDtos.size() == 1){
+                        isGiroAcc = true;
+                    }
+                }
+            }
+        }
+        log.debug("checkIsGiroAcc [isGiroAcc] isGiroAcc {}",isGiroAcc);
+        return isGiroAcc;
     }
 
     @Override
@@ -2311,7 +2366,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         oneErrorMap.put("designation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","designation","field"));
                     }
                     if (!StringUtil.isEmpty(idNo)) {
-                        if ("FIN".equals(idType)) {
+                        if (OrganizationConstants.ID_TYPE_FIN.equals(idType)) {
                             boolean b = SgNoValidator.validateFin(idNo);
                             if (!b) {
                                 oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
@@ -2320,7 +2375,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                             }
                         }
-                        if ("NRIC".equals(idType)) {
+                        if (OrganizationConstants.ID_TYPE_NRIC.equals(idType)) {
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if (!b1) {
                                 oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
@@ -2350,7 +2405,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         oneErrorMap.put("emailAddr" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","emailAddr","field"));
                     }
                     if (!StringUtil.isEmpty(officeTelNo)) {
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                             oneErrorMap.put("officeTelNo" + poIndex, "GENERAL_ERR0015");
                         }
                     } else {
@@ -2398,7 +2453,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if (StringUtil.isEmpty(officeTelNo)) {
                     oneErrorMap.put("deputyofficeTelNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyofficeTelNo","field"));
                 } else {
-                    if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                    if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                         oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "GENERAL_ERR0015");
                     }
                 }

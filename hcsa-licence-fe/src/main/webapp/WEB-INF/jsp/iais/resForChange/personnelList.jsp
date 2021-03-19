@@ -41,33 +41,33 @@
                                 </form>
                                 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
                                 <div class="table-responsive">
-                                    <div id="personPagDiv"></div>
-                                    <table class="table">
-                                        <thead style="align-content: center">
-                                        <tr>
-                                            <th style="width: 15%">Name</th>
-                                            <th style="width: 15%">Email</th>
-                                            <th style="width: 15%">Mobile</th>
-                                            <th style="width: 30%">Licence</th>
-                                            <th style="width: 25%">Roles</th>
-                                        </tr>
-                                        </thead>
-                                        <c:choose>
-                                            <c:when test="${noRecord == 'Y'}">
-                                                <tbody>
-                                                <td colspan="6">
-                                                    <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                                </td>
-                                                </tbody>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <tbody id="personBodyDiv"></tbody>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </table>
-                                </div>
+                                        <div id="personPagDiv"></div>
+                                        <table class="table">
+                                            <thead style="align-content: center">
+                                            <tr>
+                                                <th style="width: 15%">Name</th>
+                                                <th style="width: 15%">Email</th>
+                                                <th style="width: 15%">Mobile</th>
+                                                <th style="width: 30%">Licence</th>
+                                                <th style="width: 25%">Roles</th>
+                                            </tr>
+                                            </thead>
+                                            <c:choose>
+                                                <c:when test="${noRecord == 'Y'}">
+                                                    <tbody>
+                                                    <td colspan="6">
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    </td>
+                                                    </tbody>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <tbody id="personBodyDiv"></tbody>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </table>
+                                        <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
 
-                                <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                                </div>
 
                             </div>
                         </div>
@@ -86,11 +86,7 @@
     .col-md-4 {
         width: 23%;
     }
-    .table {
-        width: 88%;
-        max-width: 100%;
-        margin-bottom: 20px;
-    }
+
 </style>
 <script>
     function doPersonnel(obj) {

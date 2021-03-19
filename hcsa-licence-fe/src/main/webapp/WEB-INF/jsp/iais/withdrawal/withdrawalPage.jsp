@@ -278,7 +278,7 @@
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
                     '                                            <div class="withdraw-info">\n' +
-                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+'+'+appNo+')">'+appNo+'</a></p>\n' +
+                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+','+appNo+')">'+appNo+'</a></p>\n' +
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
                     '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +

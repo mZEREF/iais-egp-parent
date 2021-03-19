@@ -27,20 +27,20 @@
 <link href="<%=resourcePath%>/_statics/css/error-page.css" rel="stylesheet">
 <script type="text/javascript" src="<%=resourcePath%>/javascripts/egov/jquery-3.5.1.min.js"></script>
 
-<%
-  Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
-  String dateStr = Formatter.formatDateTime(new Date());
-  Integer status = (Integer) errors.get("status");
-  String error = (String) errors.get("error");
-  String path = (String) errors.get("path");
+  <%
+    Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
+    String dateStr = Formatter.formatDateTime(new Date());
+    Integer status = (Integer) errors.get("status");
+    String error = (String) errors.get("error");
+    String path = (String) errors.get("path");
 
-  String sURL = ServerConfig.getInstance().getSopSiteURL();
-  String sUserDomain = sop.iwe.SessionManager.getInstance(request)
-          .getCurrentUserDomain();
+    String sURL = ServerConfig.getInstance().getSopSiteURL();
+    String sUserDomain = sop.iwe.SessionManager.getInstance(request)
+            .getCurrentUserDomain();
 
-  pageContext.setAttribute("sURL", sURL);
-%>
-<meta http-equiv="refresh" content="0;url=${sURL}">
+    pageContext.setAttribute("sURL", sURL);
+  %>
+  <meta http-equiv="refresh" content="0;url=${sURL}">
 <!--
   <div>
     <div>

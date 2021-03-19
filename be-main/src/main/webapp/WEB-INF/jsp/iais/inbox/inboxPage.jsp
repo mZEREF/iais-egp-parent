@@ -358,7 +358,7 @@
 
                     html += '<tr style = "color : ' + color + ';">';
                     if (hastaskList == "true") {
-                        html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res[i].applicationNo+'" data-taskstatus = "'+res[i].status+'" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                     }
                     html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
@@ -449,9 +449,26 @@
 
     function approve() {
         if ($("input:checkbox:checked").length > 0) {
-            $('#action').val('approve');
-            showWaiting();
-            submit('approve');
+            var approveStatus = true;
+            var data ;
+            $("input:checkbox:checked").each(function () {
+                console.log($(this).attr('data-taskstatus'));
+                if ($(this).attr('data-taskstatus') == 'Pending Internal Clarification') {
+                    approveStatus = false;
+                    data = $(this).attr('data-appNo');
+                }
+            });
+
+            console.log(approveStatus);
+            if(!approveStatus){
+                $('#approveAo .modal-body span').html(data+ " You have no access to support.");
+                $('#approveAo').modal('show');
+            }else{
+                $('#action').val('approve');
+                showWaiting();
+                submit('approve');
+            }
+
         } else {
             $('#support').modal('show');
         }

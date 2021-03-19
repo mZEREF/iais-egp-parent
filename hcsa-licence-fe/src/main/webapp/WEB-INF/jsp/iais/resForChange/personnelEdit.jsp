@@ -35,7 +35,7 @@
                                 <br/>
                                 <div>
                                     <p style="font-size: 3rem"><c:out value="${onePersonnel.psnName}"/>,&nbsp;<c:out
-                                            value="${onePersonnel.idNo}"/>&nbsp;(<c:out value="${onePersonnel.idType}"/>)</p>
+                                            value="${onePersonnel.idNo}"/>&nbsp;(<iais:code code="${onePersonnel.idType}"/>)</p>
                                     <h4>Changes made will be applied to all licences associated with this personnel.
                                         Please note that payment is required for each affected licence.</h4>
                                 </div>
@@ -145,7 +145,8 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idTypeShow"
                                                          value="${personnelEditDto.idType}"
-                                                         options="IdTypeSelect" disabled="true"></iais:select>
+                                                         firstOption="Please Select"
+                                                         codeCategory="CATE_ID_ID_TYPE" disabled="true"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input cssClass="needDisableI" maxLength="66" needDisabled="true"
@@ -216,7 +217,8 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idType"
                                                          value="${personnelEditDto.idType}"
-                                                         options="IdTypeSelect" disabled="true"></iais:select>
+                                                         firstOption="Please Select"
+                                                         codeCategory="CATE_ID_ID_TYPE" disabled="true"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input cssClass="needDisableI" maxLength="66" needDisabled="true"
@@ -292,7 +294,8 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idType1"
                                                          value="${newPerson.idType}"
-                                                         options="IdTypeSelect"></iais:select>
+                                                         firstOption="Please Select"
+                                                         codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input maxLength="9" type="text"
@@ -354,7 +357,8 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select disabled="true" name="idType2"
                                                          value="${newPerson.idType}"
-                                                         options="IdTypeSelect"></iais:select>
+                                                         firstOption="Please Select"
+                                                         codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input cssClass="needDisableI" maxLength="9" type="text"

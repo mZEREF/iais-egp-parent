@@ -17,11 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.Ack2OrAck3.InputHeaderAck2
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -29,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -71,8 +69,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private FileRepoClient fileRepoClient;
     @Autowired
     private AppConfigClient appConfigClient;
-    @Autowired
-    private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
@@ -422,8 +418,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String xml = genXmlByGiroPaymentXmlDtos(grioXmlPaymentDto);
         String uploadGrioFileData = dbsFileDataByGiroXmlPaymentDto(grioXmlPaymentDto);
         String tag = genFileNameUploadSFTP();
-        String fileName = ApplicationConsts.GIRO_UPLOAD_FILE_PATH+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag;
-        if(genXmlFileToSftp(uploadGrioFileData,fileName, ConfigHelper.getString("giro.sftp.uploadfilefolder"))){
+        String path = ConfigHelper.getString("giro.sftp.uploadfilefolder",ApplicationConsts.GIRO_UPLOAD_FILE_PATH);
+        String fileName =  path+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag;
+        if(genXmlFileToSftp(uploadGrioFileData,fileName, path)){
             GiroPaymentXmlDto giroPaymentXmlDtoSend = new GiroPaymentXmlDto();
             giroPaymentXmlDtoSend.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             giroPaymentXmlDtoSend.setTag(tag);
@@ -480,8 +477,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InputTrailerDto INPUT_TRAILER = grioXmlPaymentDto.getINPUT_TRAILER();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(inputHeaderAck1Dto.toString()).append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK1";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK1";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private boolean genAck02File(GiroXmlPaymentDto grioXmlPaymentDto,String tag){
         String dateString =  Formatter.formatDateTime(new Date(),Formatter.DATE_FILE_NAME);
@@ -497,8 +495,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
         stringBuilder.append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK2";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK2";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private boolean genAck03File(GiroXmlPaymentDto grioXmlPaymentDto,String tag){
         String dateString =  Formatter.formatDateTime(new Date(),Formatter.DATE_FILE_NAME);
@@ -514,8 +513,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
         }
         stringBuilder.append(INPUT_TRAILER.toString());
-        String fileName = ApplicationConsts.GIRO_DOWN_FILE_PATH +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK3";
-        return genXmlFileToSftp(stringBuilder.toString(),fileName,ConfigHelper.getString("giro.sftp.downloadfilefolder"));
+        String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK3";
+        return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
     }
     private String genFileNameUploadSFTP(){
         StringBuilder stringBuilder = new StringBuilder();
@@ -697,20 +697,60 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if( applicationGroupDto == null){
             return "";
         }
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
-        if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
-            return orgGiroAccountInfoDto.getAcctNo();
-        }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+        String submitBy = applicationGroupDto.getSubmitBy();
+        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(submitBy).getEntity();
+        if(orgUserDto == null){
+            return "";
+        }
+        String accNo = getAccountNoByOrgIdAndAppGroupId(orgUserDto.getOrgId(),applicationGroupDto.getId());
+        if(!StringUtil.isEmpty(accNo)){
+            return accNo;
+        }else {
             return  ConfigHelper.getString("col.giro.test.account","");
         }
-        return "";
+    }
+
+    private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
+        if(StringUtil.isEmpty(orgId)){
+            return "";
+        }
+        List<ApplicationDto> applicationDtos = applicationFeClient.listApplicationByGroupId(appGroupId).getEntity();
+        String acc = "";
+        List<String> hciCodeList = IaisCommonUtils.genNewArrayList(applicationDtos.size());
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = applicationFeClient.getAppGrpPremisesByCorrId(appPremisesCorrelationDto.getId()).getEntity();
+            String hciCode = appGrpPremisesDto.getHciCode();
+            if(StringUtil.isEmpty(hciCode)){
+                return "";
+            }else {
+                hciCodeList.add(hciCode);
+            }
+        }
+
+        List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountByHciCodeAndOrgId( hciCodeList,orgId).getEntity();
+        if( !IaisCommonUtils.isEmpty(giroAccountInfoDtos)){
+            for(GiroAccountInfoDto giroAccountInfoDto : giroAccountInfoDtos){
+                if(StringUtil.isEmpty(giroAccountInfoDto.getAcctNo())){
+                    return "";
+                }
+               if(StringUtil.isEmpty(acc)){
+                       acc = giroAccountInfoDto.getAcctNo();
+               }else if( !StringUtil.isEmpty(acc) && !acc.equalsIgnoreCase(giroAccountInfoDto.getAcctNo())){
+                    return "";
+               }
+            }
+        }
+
+        return acc;
     }
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{
-            if( FileUtil.writeToFile(fileName,xmlData)){
-                SFTPUtil.upload(fileName,path);
-                return true;
+            if(!StringUtil.isEmpty(path)){
+                if( FileUtil.writeToFile(fileName,xmlData)){
+                    // SFTPUtil.upload(fileName,path);
+                    return true;
+                }
             }
              return false;
         }catch (Exception e){
@@ -729,21 +769,19 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         List<GiroPaymentXmlDto> giroPaymentXmlDtos =  appPaymentStatusClient.getGiroPaymentDtosByStatusAndXmlType(AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.GIRO_SEND_XML_SFTP).getEntity();
           if(IaisCommonUtils.isEmpty( giroPaymentXmlDtos)){
               log.info("getGiroXmlFromSftpAndSaveXml is null");
+              sysnSaveGroupToBe();
               return;
           }
           for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
               try{
                   String tag = giroPaymentXmlDto.getTag();
                   String fileName = tag;
-                  String downPath = ApplicationConsts.GIRO_DOWN_FILE_PATH+ConfigHelper.getString("giro.sftp.linux.seperator");
-                  String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder");
-                      List<String> remoteFileNames = SFTPUtil.getRemoteFileNames(fileName,downloadfilefolder);
+                  String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+                  String downPath = downloadfilefolder + ConfigHelper.getString("giro.sftp.linux.seperator");
+                      List<String> remoteFileNames = FileUtil.getRemoteFileNames(fileName,downloadfilefolder);
                       if(IaisCommonUtils.isEmpty(remoteFileNames)){
                           log.info(StringUtil.changeForLog("----- SFTP NO FIND FILE LIKE "+ fileName +"-----------"));
                       }else {
-                          for(String remoteFileName : remoteFileNames){
-                              SFTPUtil.download(downPath,remoteFileName,downloadfilefolder);
-                          }
                           boolean ack01Stfp = true;
                           boolean ack02Stfp = true;
 
@@ -806,6 +844,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                               rejectSaveAppGroupSendEmailStatus(DATAS);
                               saveGiroPaymentDtosByDatas(DATAS,GrioConsts.GIRO_PAY_STATUS_FAILED);
                           }
+                          FileUtil.deleteFilesByFileNames(remoteFileNames,downPath);
                   }
               }catch (Exception e){
                   log.error(e.getMessage(),e);

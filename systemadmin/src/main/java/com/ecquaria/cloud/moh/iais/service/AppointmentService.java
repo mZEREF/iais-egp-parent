@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.Date;
@@ -43,4 +44,5 @@ public interface AppointmentService {
 	SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam);
 
 
+	List<String> getLeadWorkGroupName(List<WorkingGroupQueryDto> workingGroupQueryList, List<String> leadGroupList);
 }

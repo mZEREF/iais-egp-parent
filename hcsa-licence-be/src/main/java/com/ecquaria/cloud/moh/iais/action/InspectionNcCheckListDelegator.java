@@ -197,6 +197,8 @@ public class InspectionNcCheckListDelegator {
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         //comparative data for sef and check list nc
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
+        //get RemarksAndStartTimeAndEndTimeForCheckList BY mobile api
+        fillupChklistService.setRemarksAndStartTimeAndEndTimeForCheckList(serListDto,commonDto,appPremCorrId);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));

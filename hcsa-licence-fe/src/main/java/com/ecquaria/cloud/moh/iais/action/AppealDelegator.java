@@ -235,6 +235,9 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("rejectEqDay");
         bpc.getSession().removeAttribute("periodEqDay");
         bpc.getSession().removeAttribute("selectOptionList");
+        bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile");
+        bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
+        bpc.getSession().removeAttribute("pageShowFiles");
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");
@@ -346,12 +349,11 @@ public class AppealDelegator {
 
     public static List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        idTypeSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
-        idTypeSelectList.add(idType2);
+
+        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+        idTypeSelectList.addAll(selectOptionList);
         return idTypeSelectList;
     }
 

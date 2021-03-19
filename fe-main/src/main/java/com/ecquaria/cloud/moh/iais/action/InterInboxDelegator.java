@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -55,15 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -72,6 +62,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -854,7 +852,7 @@ public class InterInboxDelegator {
 //                }else{
 //                    h.setCanInspection(Boolean.FALSE);
 //                }
-                if(h.getHasSubmitPrefDate() == null || 0 == h.getHasSubmitPrefDate()){
+                if(h.getHasSubmitPrefDate() == null || 0==h.getHasSubmitPrefDate()){
                     h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
@@ -1255,7 +1253,6 @@ public class InterInboxDelegator {
 
     public void doSelfAssMt(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-
         //selfDeclAction // selfDeclApplicationNumber // appGroupId
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
         String appGroupId = ParamUtil.getString(request, "action_grp_value");

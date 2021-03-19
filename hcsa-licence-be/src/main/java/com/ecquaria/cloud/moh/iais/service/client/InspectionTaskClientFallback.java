@@ -296,6 +296,14 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
     }
 
     @Override
+    public FeignResponseEntity<Void> selfAssMtPdfReport(String cid) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(String licenceId, String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

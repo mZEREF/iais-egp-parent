@@ -1148,7 +1148,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
         String todayDate = Formatter.formatDateTime(inspecDate, "dd/MM/yyyy");
         String todayTime = Formatter.formatDateTime(inspecDate, "HH:mm:ss");
-        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
+        AppGrpPremisesDto appGrpPremisesDto = getEmailAppGrpPremisesByCorrId(appPremCorrId);
         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
@@ -1172,9 +1172,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             html.append(' ');
             if(!StringUtil.isEmpty(hciName)){
                 html.append(hciName);
-                html.append(", ");
             }
             if(!StringUtil.isEmpty(hciCode)){
+                html.append(", ");
                 html.append(hciCode);
             }
             hciNameCode = html.toString();
@@ -1238,5 +1238,53 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationViewService.updateApplicaiton(applicationDto);
+    }
+
+    public AppGrpPremisesDto getEmailAppGrpPremisesByCorrId(String appCorrId) {
+        AppGrpPremisesDto appGrpPremisesDto = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+            appGrpPremisesDto.setHciName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciCode())) {
+            appGrpPremisesDto.setHciCode("");
+        }
+        setAddressByPremises(appGrpPremisesDto);
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
+        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            appGrpPremisesDto.setOffSiteBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setOffSiteStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setOffSiteBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setOffSiteFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
+        }
+        return appGrpPremisesDto;
+    }
+
+    private void setAddressByPremises(AppGrpPremisesDto appGrpPremisesDto) {
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())) {
+            appGrpPremisesDto.setBlkNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getStreetName())) {
+            appGrpPremisesDto.setStreetName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())) {
+            appGrpPremisesDto.setBuildingName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())) {
+            appGrpPremisesDto.setFloorNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())) {
+            appGrpPremisesDto.setUnitNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())) {
+            appGrpPremisesDto.setPostalCode("");
+        }
     }
 }

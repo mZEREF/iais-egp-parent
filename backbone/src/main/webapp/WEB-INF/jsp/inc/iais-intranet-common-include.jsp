@@ -55,4 +55,7 @@
             orientation:'bottom'
         });
     });
+    function popup(url){
+        window.open(url,"_blank");
+    }
 </script>

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
@@ -228,7 +230,7 @@ public class NewApplicationHelper {
                         String general_err0041=repLength("ID No.","9");
                         errMap.put("idNo" + i, general_err0041);
                     }
-                    if("FIN".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -242,7 +244,7 @@ public class NewApplicationHelper {
                             }
                         }
                     }
-                    if("NRIC".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -315,8 +317,8 @@ public class NewApplicationHelper {
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        SelectOption idType1 = new SelectOption(OrganizationConstants.ID_TYPE_NRIC, "NRIC");
+        SelectOption idType2 = new SelectOption(OrganizationConstants.ID_TYPE_FIN, "FIN");
         idTypeSelectList.add(idType2);
         idTypeSelectList.add(idType1);
         return idTypeSelectList;
@@ -447,7 +449,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("ID No.","9");
                             oneErrorMap.put("poNRICFIN" + poIndex, general_err0041);
                         }
-                        if("FIN".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
                                 oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
@@ -459,7 +461,7 @@ public class NewApplicationHelper {
                                 }
                             }
                         }
-                        if("NRIC".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
                                 oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
@@ -500,7 +502,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("officeTelNo" + poIndex, general_err0041);
                         }
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                             oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
@@ -566,7 +568,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("deputyofficeTelNo" + dpoIndex, general_err0041);
                         }
-                        if(!officeTelNo.matches("^[6][0-9]{7}$")){
+                        if(!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)){
                             oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                         }
                     }
@@ -577,7 +579,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("ID No.","9");
                             oneErrorMap.put("deputyIdNo" + dpoIndex, general_err0041);
                         }
-                        if("FIN".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
                                 oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
@@ -589,7 +591,7 @@ public class NewApplicationHelper {
                                 }
                             }
                         }
-                        if("NRIC".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
                                 oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
@@ -990,7 +992,7 @@ public class NewApplicationHelper {
                         String general_err0041=repLength("ID No.","9");
                         errMap.put("idNo" + i, general_err0041);
                     }
-                    if("FIN".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -1002,7 +1004,7 @@ public class NewApplicationHelper {
                             }
                         }
                     }
-                    if("NRIC".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -1223,7 +1225,7 @@ public class NewApplicationHelper {
             if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
                 continue;
             }
-            String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
+            String personMapKey = NewApplicationHelper.getPersonKey(psnDto.getIdType(),psnDto.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
             AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
@@ -1448,7 +1450,7 @@ public class NewApplicationHelper {
         //user account
         if(!IaisCommonUtils.isEmpty(feUserDtos)){
             for(FeUserDto feUserDto:feUserDtos){
-                String idType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                String idType = feUserDto.getIdType();
                 String idNo = feUserDto.getIdNumber();
                 if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)){
                     continue;
@@ -1676,7 +1678,7 @@ public class NewApplicationHelper {
         Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k,v)->{
             AppSvcPersonDto personDto = v.getPersonDto();
-            SelectOption sp = new SelectOption(k,personDto.getName()+", "+personDto.getIdNo()+" ("+personDto.getIdType()+")");
+            SelectOption sp = new SelectOption(k,personDto.getName()+", "+personDto.getIdNo()+" ("+MasterCodeUtil.getCodeDesc(personDto.getIdType())+")");
             personList.add(sp);
         });
         //sort
@@ -2566,13 +2568,13 @@ public class NewApplicationHelper {
             if(idNo.length() > 9){
                 result = false;
             }
-            if("FIN".equals(idType)){
+            if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
                 boolean b = SgNoValidator.validateFin(idNo);
                 if(!b){
                     result = false;
                 }
             }
-            if("NRIC".equals(idType)){
+            if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
                 boolean b1 = SgNoValidator.validateNric(idNo);
                 if(!b1){
                     result = false;

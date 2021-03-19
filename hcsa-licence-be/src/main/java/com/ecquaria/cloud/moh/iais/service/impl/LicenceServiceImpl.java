@@ -387,7 +387,8 @@ public class LicenceServiceImpl implements LicenceService {
         return resBuilder.toString();
     }
 
-    private void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+    @Override
+    public void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
         log.info(StringUtil.changeForLog("send uen email start"));
         for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
              ) {

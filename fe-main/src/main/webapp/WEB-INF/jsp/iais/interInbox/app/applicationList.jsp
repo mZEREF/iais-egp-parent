@@ -190,45 +190,19 @@
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST028'
-                                                          || app.status == 'APST003'
-                                                          || app.status == 'APST001'
-                                                          || app.status == 'APST002'
-                                                          || app.status == 'APST037'
-                                                          || app.status == 'APST029'
-                                                          || app.status == 'APST023'
-                                                          || app.status == 'APST024'
-                                                          || app.status == 'APST013'
-                                                          || app.status == 'APST014'
-                                                          || app.status == 'APST062'
-                                                          || app.status == 'APST012'
-                                                          || app.status == 'APST010'
-                                                          || app.status == 'APST027'
-                                                          || app.status == 'APST031'
-                                                          || app.status == 'APST067'
-                                                          || app.status == 'APST053'
-                                                          || app.status == 'APST054'
-                                                          || app.status == 'APST068'
-                                                          || app.status == 'APST063'
-                                                          || app.status == 'APST064'
-                                                          || app.status == 'APST065'
-                                                          || app.status == 'APST066'
-                                                          || app.status == 'APST077'
-                                                          || app.status == 'APST090'
-                                                          || app.status == 'APST091'
-                                                          || app.status == 'APST069'
-                                                          || app.status == 'APST071'
-                                                          || app.status == 'APST034'
-                                                          || app.status == 'APST019'
-                                                          || app.status == 'APST020'
-                                                          || app.status == 'APST022'
-                                                          || app.status == 'APST032'
-                                                          || app.status == 'APST048'
-                                                          || app.status == 'APST049'
-                                                          || app.status == 'APST039'
-                                                          || app.status == 'APST040'
-                                                          || app.status == 'APST011'
-                                                          || app.status == 'APST004'}">
+                                            <c:if test="${app.status == 'APST028' || app.status == 'APST003' || app.status == 'APST001'
+                                                       || app.status == 'APST002' || app.status == 'APST037' || app.status == 'APST029'
+                                                       || app.status == 'APST023' || app.status == 'APST024' || app.status == 'APST013'
+                                                       || app.status == 'APST014' || app.status == 'APST062' || app.status == 'APST012'
+                                                       || app.status == 'APST010' || app.status == 'APST027' || app.status == 'APST031'
+                                                       || app.status == 'APST067' || app.status == 'APST053' || app.status == 'APST054'
+                                                       || app.status == 'APST068' || app.status == 'APST063' || app.status == 'APST064'
+                                                       || app.status == 'APST065' || app.status == 'APST066' || app.status == 'APST077'
+                                                       || app.status == 'APST090' || app.status == 'APST091' || app.status == 'APST069'
+                                                       || app.status == 'APST071' || app.status == 'APST034' || app.status == 'APST019'
+                                                       || app.status == 'APST020' || app.status == 'APST022' || app.status == 'APST032'
+                                                       || app.status == 'APST048' || app.status == 'APST049' || app.status == 'APST039'
+                                                       || app.status == 'APST040' || app.status == 'APST011' || app.status == 'APST004'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
@@ -293,8 +267,9 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST002'
-                                                       || app.status == 'APST012' || app.status == 'APST038'
-                                                       || app.status == 'APST010' || app.status == 'APST011' || app.status == 'APST023' || app.status == 'APST027' || app.status == 'APST024'}">
+                                                       || app.status == 'APST012' || app.status == 'APST038' || app.status == 'APST010'
+                                                       || app.status == 'APST011' || app.status == 'APST023' || app.status == 'APST027'
+                                                       || app.status == 'APST024' || app.status == 'APST021' || app.status == 'APST033'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>

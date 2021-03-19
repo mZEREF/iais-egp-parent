@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationG
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -809,7 +810,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if(!StringUtil.isEmpty(eventRefNum)){
             EicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
             if(appEicRequestTrackingDto!=null){
-                 eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
+                eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
                 if(eventApplicationGroupDto!= null){
                     eicCallFeApplication(eventApplicationGroupDto);
                 }else{
@@ -823,6 +824,82 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         log.info(StringUtil.changeForLog("The updateFEApplicationStatus end ..."));
         return eventApplicationGroupDto;
+    }
+
+    //Send EN_RFC_005_CLARIFICATION
+    @Override
+    public void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception {
+        String licenseeName = null;
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        if (licenseeDto != null) {
+            licenseeName = licenseeDto.getName();
+        }
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getIntraServerName() + "/main-web";
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        emailMap.put("officer_name", "");
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        emailMap.put("TAT_time", StringUtil.viewHtml(Formatter.formatDateTime(new Date(), Formatter.DATE)));
+        StringBuilder stringBuffer = new StringBuilder();
+        if (applicationViewDto.getHciName() != null) {
+            stringBuffer.append("HCI Name : ").append(applicationViewDto.getHciName()).append("<br>");
+        }
+
+        if (applicationViewDto.getHciAddress() != null) {
+            stringBuffer.append("HCI Address : ").append(applicationViewDto.getHciAddress()).append("<br>");
+        }
+        if (licenseeName != null) {
+            stringBuffer.append("Licensee Name : ").append(licenseeName).append("<br>");
+        }
+        if (applicationViewDto.getSubmissionDate() != null) {
+            stringBuffer.append("Submission Date : ").append(Formatter.formatDate(Formatter.parseDate(applicationViewDto.getSubmissionDate()))).append("<br>");
+        }
+        if (internalRemarks != null) {
+            stringBuffer.append("Comment : ").append(StringUtil.viewHtml(internalRemarks)).append("<br>");
+        }
+        emailMap.put("details", stringBuffer.toString());
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
+        emailParam.setReqRefNum(applicationDto.getApplicationNo());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setRecipientType(recipientRole);
+        emailParam.setRecipientUserId(recipientUserId);
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION).getEntity();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        emailParam.setSubject(subject);
+        //email
+        notificationHelper.sendNotification(emailParam);
+        //msg
+//        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+//        List<String> svcCode=IaisCommonUtils.genNewArrayList();
+//        svcCode.add(svcDto.getSvcCode());
+//        emailParam.setSvcCodeList(svcCode);
+//        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
+//        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+//        emailParam.setRefId(applicationDto.getApplicationNo());
+//        notificationHelper.sendNotification(emailParam);
+        //sms
+        rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS).getEntity();
+        subject = null;
+        try {
+            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+        } catch (TemplateException e) {
+            log.info(e.getMessage(), e);
+        }
+        emailParam.setSubject(subject);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(emailParam);
     }
 
 

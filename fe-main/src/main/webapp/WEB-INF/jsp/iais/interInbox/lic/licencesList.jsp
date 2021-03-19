@@ -149,7 +149,7 @@
                                             </label>
                                         </div>
                                     </td>
-                                    <td hidden>
+                                    <td style="display: none;">
                                         <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>

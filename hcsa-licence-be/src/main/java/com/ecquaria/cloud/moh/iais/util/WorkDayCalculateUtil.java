@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.util;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -42,7 +43,7 @@ public class WorkDayCalculateUtil {
                 i--;
             }else {
                 for (Date holiday:holidays
-                ) {
+                     ) {
                     String holidayStr= Formatter.formatDateTime(holiday, Formatter.DATE);
                     String calendarStr= Formatter.formatDateTime(calendar.getTime(), Formatter.DATE);
                     if (holidayStr.equals(calendarStr)){
@@ -69,7 +70,7 @@ public class WorkDayCalculateUtil {
         if(nonWorkingDateListByWorkGroupId!=null){
             for (ApptNonWorkingDateDto nonWorkDto:nonWorkingDateListByWorkGroupId
             ) {
-                if(mapDays.get(nonWorkDto.getRecursivceDate())!=null){
+                if(mapDays.get(nonWorkDto.getRecursivceDate())!=null&&nonWorkDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
                     nonWkrDays.add(mapDays.get(nonWorkDto.getRecursivceDate()));
                 }
             }

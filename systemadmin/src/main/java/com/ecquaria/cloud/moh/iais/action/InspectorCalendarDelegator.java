@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
@@ -32,11 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -141,73 +140,39 @@ public class InspectorCalendarDelegator {
 		String userId = loginContext.getUserId();
 		String userName = loginContext.getUserName();
 		List<WorkingGroupQueryDto> workingGroupQueryList = getWorkingGroupList(request, userId);
-
-		Map<String, String> groupIdMap = IaisCommonUtils.genNewHashMap();
-		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
-		workingGroupQueryList.forEach(wkr -> {
-			String groupName = wkr.getGroupName();
-			groupIdMap.put(groupName, wkr.getId());
-			wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
-		});
-
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-		initCurrentGroupResult(request, workingGroupQueryList, searchParam, groupIdMap, userName);
-
-		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
-		if (!AppConsts.TRUE.equals(isNew)){
-			SearchResult<InspectorCalendarQueryDto> calendarSearchResult = appointmentService.queryInspectorCalendar(searchParam);
-			setYearDrop(request, calendarSearchResult);
-			ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
-		}
-
+		initCurrentGroupResult(request, workingGroupQueryList, searchParam, userName);
+		SearchResult<InspectorCalendarQueryDto> calendarSearchResult = appointmentService.queryInspectorCalendar(searchParam);
+		setYearDrop(request, calendarSearchResult);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.FALSE);
-		ParamUtil.setSessionAttr(request, INSPECTOR_CALENDAR_GROUP_ID_MAP, (Serializable) groupIdMap);
-		ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
 	}
 
-	private boolean isGroupLead(HttpServletRequest request, String groupId){
+	private void initCurrentGroupResult(HttpServletRequest request, List<WorkingGroupQueryDto> workingGroupQueryList, SearchParam searchParam,
+										String currentUserName){
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
 				AppConsts.SESSION_ATTR_LOGIN_USER);
+
 		List<String> leadGroupList = appointmentService.getInspectorGroupLeadByLoginUser(loginContext);
-		return leadGroupList.contains(groupId);
-	}
-
-	private void initCurrentGroupResult(HttpServletRequest request, List<WorkingGroupQueryDto> workingGroupQueryList, SearchParam searchParam,
-										Map<String, String> groupIdMap, String currentUserName){
-		String groupName = workingGroupQueryList.get(0).getGroupName();
-		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
-		String selectedGroup = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
-		String groupId;
-		boolean isGroupLead;
-		switch (isNew){
-			case AppConsts.TRUE:
-				groupId = groupIdMap.containsKey(groupName) ? groupIdMap.get(groupName) : "";
-				if (isGroupLead = isGroupLead(request, groupId)){
-					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
-					searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, groupName, true);
-				}else {
-					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
-				}
-
-				break;
-			default:
-				groupId = groupIdMap.containsKey(selectedGroup)
-						? groupIdMap.get(selectedGroup) : selectedGroup;
-				if (isGroupLead = isGroupLead(request, groupId)){
-					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
-				}else {
-					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
-				}
-		}
-
-		if (isGroupLead){
-			ParamUtil.setSessionAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
-			QueryHelp.setMainSql("systemAdmin", "queryCalendarByLead", searchParam);
+		if (IaisCommonUtils.isNotEmpty(leadGroupList)){
+			List<String> leadGroupName = appointmentService.getLeadWorkGroupName(workingGroupQueryList, leadGroupList);
+			if (IaisCommonUtils.isNotEmpty(leadGroupName)){
+				ParamUtil.setSessionAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
+			}
 		}else {
 			searchParam.addFilter(AppointmentConstants.USER_NAME_ATTR, currentUserName, true);
-			QueryHelp.setMainSql("systemAdmin", "queryCalendarByInspector", searchParam);
 		}
+
+		String sqlStr = SqlHelper.constructInCondition("T1.GROUP_SHORT_NAME", workingGroupQueryList.size());
+		searchParam.addParam("wrkGroupList", sqlStr);
+		int indx = 0;
+		for (WorkingGroupQueryDto i : workingGroupQueryList){
+			searchParam.addFilter("T1.GROUP_SHORT_NAME"+indx, i.getGroupName());
+			indx++;
+		}
+
+		QueryHelp.setMainSql("systemAdmin", "queryCurrentUserCalendar", searchParam);
 	}
 
 	private void setYearDrop(HttpServletRequest request, SearchResult<InspectorCalendarQueryDto> searchResult){
@@ -256,24 +221,13 @@ public class InspectorCalendarDelegator {
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_VALIDATION_ATTR, queryDto);
-		Map<String, String> groupIdMap = (Map<String, String>) ParamUtil.getSessionAttr(request, INSPECTOR_CALENDAR_GROUP_ID_MAP);
-		groupIdMap = Optional.ofNullable(groupIdMap).orElseGet(() -> new HashMap<>());
-
-		if(StringUtil.isNotEmpty(groupName)){
-			searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, groupName, true);
+		ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
+		if(validationResult != null && validationResult.isHasErrors()) {
+			Map<String, String> errorMap = validationResult.retrieveAll();
+			ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+			ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+			return;
 		}
-
-		boolean isGroupLead = isGroupLead(request, groupIdMap.get(groupName));
-		if (isGroupLead){
-			ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
-			if(validationResult != null && validationResult.isHasErrors()) {
-				Map<String, String> errorMap = validationResult.retrieveAll();
-				ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-				ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-				return;
-			}
-		}
-
 
 		if(StringUtil.isNotEmpty(userName)){
 			searchParam.addFilter(AppointmentConstants.USER_NAME_ATTR, userName, true);
@@ -282,8 +236,6 @@ public class InspectorCalendarDelegator {
 		if(StringUtil.isNotEmpty(yearVal)){
 			searchParam.addFilter(AppointmentConstants.YEAR_ATTR, yearVal, true);
 		}
-
-
 
 		if(StringUtil.isNotEmpty(blockDateStart)){
 			String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(blockDateStart), SystemAdminBaseConstants.DATE_FORMAT);

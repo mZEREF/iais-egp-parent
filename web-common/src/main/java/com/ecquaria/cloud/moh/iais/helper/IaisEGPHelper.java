@@ -68,6 +68,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 
@@ -810,9 +811,8 @@ public final class IaisEGPHelper extends EGPHelper {
         String checkboxName = ParamUtil.getString(request, "checkboxName");
 
         HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
-        if (set == null){
-            set = IaisCommonUtils.genNewHashSet();
-        }
+
+        Optional.ofNullable(set).orElseGet(() -> new HashSet<>());
 
         String unMaskVal = MaskUtil.unMaskValue(checkboxName, itemId);
         if ("checked".equals(action)){

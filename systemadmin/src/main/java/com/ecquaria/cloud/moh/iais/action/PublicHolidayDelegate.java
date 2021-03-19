@@ -415,6 +415,7 @@ public class PublicHolidayDelegate {
     public void searchPage(BaseProcessClass bpc){
         SearchParam holidaySearchParam = getSearchParam(bpc.request);
         CrudHelper.doPaging(holidaySearchParam,bpc.request);
+        setSearchParam(bpc.request,holidaySearchParam);
     }
 
 

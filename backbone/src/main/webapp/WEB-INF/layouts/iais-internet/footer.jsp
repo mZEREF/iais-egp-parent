@@ -8,15 +8,15 @@
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
                     <ul class="list-inline">
-                        <li><a href="<iais:code code='MRUS019'/>">HALP</a></li>
-                        <li><a href="<iais:code code='MRUS008'/>">Who we are</a></li>
-                        <li><a href="<iais:code code='MRUS009'/>">Privacy Statement</a></li>
-                        <li><a href="<iais:code code='MRUS010'/>">Terms Of Use</a></li>
-                        <li><a href="<iais:code code='MRUS011'/>">Rate This E-Service</a></li>
-                        <li><a href="<iais:code code='MRUS012'/>">Sitemap</a></li>
-                        <li><a href="<iais:code code='MRUS013'/>">Share your views @ Reach</a></li>
-                        <li><a href="<iais:code code='MRUS020'/>">Report vulnerability</a></li>
-                        <li><a href="<iais:code code='MRUS021'/>">Feedback</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS019"/>')">HALP</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS008"/>')">Who we are</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS012"/>')">Sitemap</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS013"/>')">Share your views @ Reach</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS020"/>')">Report vulnerability</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS021"/>')">Feedback</a></li>
                     </ul>
                 </div>
             </div>
@@ -28,3 +28,4 @@
         </div>
     </div>
 </footer>
+

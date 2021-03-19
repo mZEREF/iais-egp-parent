@@ -146,7 +146,7 @@
                                       <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                                         <tr>
                                           <td  class="col-md-4">Name of Licensee</td>
-                                          <td  class="col-md-4"> Name of HCI</td>
+                                          <td  class="col-md-4">HCI Name</td>
                                           <td  class="col-md-4">Service Name</td>
                                         </tr>
                                         <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
@@ -197,7 +197,7 @@
                                           <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
-                                              <td  class="col-md-4">Name of HCI</td>
+                                              <td  class="col-md-4">HCI Name</td>
                                               <td  class="col-md-4">Service Name</td>
                                             </tr>
                                             <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">

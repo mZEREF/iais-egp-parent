@@ -13,13 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -158,7 +152,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
@@ -229,34 +223,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public List<String> getActionBysByLicPremCorrId(String licPremCorrId) {
-        LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremCorrId).getEntity();
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-        List<String> actionBys=IaisCommonUtils.genNewArrayList();
-        for (LicAppCorrelationDto licApp:licAppCorrelationDtos
-        ) {
-            ApplicationDto applicationDto=applicationClient.getApplicationById(licApp.getApplicationId()).getEntity();
-            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
-            for(AppPremisesRoutingHistoryDto appHis:appPremisesRoutingHistoryDtos){
-                actionBys.add(appHis.getActionby());
-            }
-        }
-        return actionBys;
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "appLicenceForCommPoolQuery")
+    public SearchResult<ApplicationLicenceQueryDto> appLicenceDoForCommPoolQuery(SearchParam searchParam) {
+        return applicationClient.searchAppLic(searchParam).getEntity();
     }
 
-
-    @Override
-    @SearchTrack(catalog = "ReqForInfoQuery", key = "applicationQuery")
-    public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
-        return applicationClient.searchApp(searchParam).getEntity();
-    }
-
-    @Override
-    @SearchTrack(catalog = "ReqForInfoQuery", key = "licenceQuery")
-    public SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
-
-        return requestForInformationClient.searchRfiLicence(searchParam).getEntity();
-    }
 
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "appLicenceQuery")

@@ -5,12 +5,12 @@
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
                     <ul class="list-inline">
-                        <li><a href="<iais:code code='MRUS018'/>">HALP</a></li>
-                        <li><a href="<iais:code code='MRUS007'/>">Who we are</a></li>
-                        <li><a href="<iais:code code='MRUS014'/>">Privacy Statement</a></li>
-                        <li><a href="<iais:code code='MRUS015'/>">Terms Of Use</a></li>
-                        <li><a href="<iais:code code='MRUS016'/>">Rate This E-Service</a></li>
-                        <li><a href="<iais:code code='MRUS017'/>">Sitemap</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS018"/>')">HALP</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS007"/>')">Who we are</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS014"/>')">Privacy Statement</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS015"/>')">Terms Of Use</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS016"/>')">Rate This E-Service</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS017"/>')">Sitemap</a></li>
                     </ul>
                 </div>
             </div>

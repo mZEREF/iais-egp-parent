@@ -217,6 +217,7 @@
     });
 
     $('#BACK').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('paymentBack');
         $('#menuListForm').submit();
     });

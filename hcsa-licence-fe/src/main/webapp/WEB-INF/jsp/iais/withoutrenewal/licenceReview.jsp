@@ -245,6 +245,7 @@
     });
 
     $('#BACK').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });
@@ -263,16 +264,19 @@
     });
 
     $('#premisesEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('premises');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();
     });
     $('#docEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('doc');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();
     });
     $('#doSvcEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('service');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();

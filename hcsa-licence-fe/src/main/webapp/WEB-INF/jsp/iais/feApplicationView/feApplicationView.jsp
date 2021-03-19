@@ -18,9 +18,9 @@
         <div class="container">
             <div class="navigation-gp">
                 <c:if test="${!isPopApplicationView}">
-                    <div class="row">
-                        <%@ include file="../common/dashboardDropDown.jsp" %>
-                    </div>
+                <div class="row">
+                    <%@ include file="../common/dashboardDropDown.jsp" %>
+                </div>
                 </c:if>
                 <div class="row">
                     <div class="col-xs-12" style="padding-left: 95px;">
@@ -32,12 +32,12 @@
     </div>
 </c:if>
 
-<c:if test="${applicationDto.applicationType == 'APTY008'}">
-    <%@include file="../newApplication/cessationViewApp.jsp" %>
-</c:if>
-<c:if test="${applicationDto.applicationType != 'APTY008'}">
-    <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
-</c:if>
+    <c:if test="${applicationDto.applicationType == 'APTY008'}">
+        <%@include file="../newApplication/cessationViewApp.jsp" %>
+    </c:if>
+    <c:if test="${applicationDto.applicationType != 'APTY008'}">
+        <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
+    </c:if>
 
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

@@ -193,7 +193,7 @@
                 $(".filename").html("");
                 $("#mobile").val(data.mobile);
                 $("#email").val(data.email);
-
+                $("#error_file").hide();
             }
         })
 

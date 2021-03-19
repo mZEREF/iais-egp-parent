@@ -106,9 +106,7 @@
                       <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupLeadName}"/></label>
                     </div>
                     <div class="col-md-6">
-                      <c:forEach var="lead" items="${inspectionTaskPoolListDto.inspectorLeads}">
-                        <span style="font-size: 16px"><c:out value="${lead}"/></span>
-                      </c:forEach>
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.groupLeadersShow}"/></span>
                     </div>
                   </div>
                   <p></p>

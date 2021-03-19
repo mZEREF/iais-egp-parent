@@ -132,7 +132,7 @@
                                                                         <div class="col-sm-10">
                                                                             <label class="control-font-label">
                                                                                 <c:if test="${!empty currentCgo.name && !empty currentCgo.idNo && !empty currentCgo.idType}">
-                                                                                    ${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})
+                                                                                    ${currentCgo.name}, ${currentCgo.idNo} (<iais:code code="${currentCgo.idType}"/>)
                                                                                 </c:if>
                                                                             </label>
                                                                         </div>
@@ -141,7 +141,7 @@
                                                                                 <c:if test="${'true' == canEdit}">
                                                                                     <p>
                                                                                     <div class="text-right app-font-size-16">
-                                                                                        <a class="edit"><em
+                                                                                        <a class="edit cgoEdit"><em
                                                                                                 class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
                                                                                     </div>
                                                                                     </p>
@@ -279,7 +279,8 @@
                                                                                                  name="idType"
                                                                                                  needSort="false"
                                                                                                  value="${currentCgo.idType}"
-                                                                                                 options="IdTypeSelect"></iais:select>
+                                                                                                 firstOption="Please Select"
+                                                                                                 codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_idTyp${status.index}"></span>

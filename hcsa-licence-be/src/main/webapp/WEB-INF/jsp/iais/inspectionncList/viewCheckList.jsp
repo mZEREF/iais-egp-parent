@@ -52,7 +52,16 @@
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <p> <c:out value="${commonDto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/></p>
+                                            <p> <c:out value="${commonDto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/>
+                                             <c:if test="${not empty serListDto.fdtoList}">
+                                            <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
+                                                <c:if test="${not empty cdto.draftRemarkMaps[inspectorUserFinishChecklistId]}">
+                                                    <br>
+                                                    <c:out value="${cdto.draftRemarkMaps[inspectorUserFinishChecklistId]}"/>
+                                                </c:if>
+                                            </c:forEach>
+                                            </c:if>
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="table-gp">
@@ -89,7 +98,7 @@
 <%--                                                                        <div class="modal-title" style="font-size:2rem;"></div>--%>
 <%--                                                                    </div>--%>
                                                                     <div class="modal-body">
-                                                                        <div class="row">
+                                                                        <div class="row"  style="height:500px;overflow:auto;">
                                                                             <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span  style="font-size: 2rem">${item.incqDto.regClause}</span></div>
                                                                         </div>
                                                                     </div>
@@ -98,6 +107,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                         <td><span >${item.incqDto.checklistItem}</span></td>
                                                         <c:set value = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "ckkId"/>
                                                         <td class="text-center"><input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
@@ -171,7 +181,7 @@
 <%--                                                                              <div class="modal-title" style="font-size:2rem;"></div>--%>
 <%--                                                                          </div>--%>
                                                                           <div class="modal-body">
-                                                                              <div class="row">
+                                                                              <div class="row"  style="height:500px;overflow:auto;">
                                                                                   <div class="col-md-8 col-md-offset-2" style="width: 100%; margin: 0;white-space:pre-wrap;"><span style="font-size: 2rem">${item.incqDto.regClause}</span></div>
                                                                               </div>
                                                                           </div>

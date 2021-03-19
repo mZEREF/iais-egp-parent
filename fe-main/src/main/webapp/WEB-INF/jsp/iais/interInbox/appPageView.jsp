@@ -73,6 +73,7 @@
         $("#appStatusSelect option:first").prop("selected", 'selected').val("");
         $("#appServiceType option:first").prop("selected", 'selected').val("");
         $("#clearBody .current").text("All");
+        $(".error-msg").text("")
     }
 
     function jumpToPagechangePage() {
