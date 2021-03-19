@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
@@ -71,7 +72,7 @@ public class LicenseeCompanyDelegate {
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("refresh".equals(curdType)){
-            if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))) {
+            if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())) {
                 String organizationId = loginContext.getOrgId();
                 OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
                 orgUserManageService.refreshLicensee(organizationDto.getUenNo());
@@ -94,7 +95,7 @@ public class LicenseeCompanyDelegate {
         String type = ParamUtil.getString(bpc.request,"licenseView");
         if(type != null && !StringUtils.isEmpty(type) ){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,type);
-        }else if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
+        }else if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Company");
         }else{
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
