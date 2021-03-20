@@ -200,7 +200,7 @@ public class NewApplicationDelegator {
     @Autowired
     private CessationFeService cessationFeService;
     @Autowired
-    private RfiLoadingExc rfiLoadingExc;
+    private RfiLoadingCheckImplForRenew rfiLoadingCheckImplForRenew;
     @Autowired
     private LicenceClient licenceClient;
     @Autowired
@@ -1778,7 +1778,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
 
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-            rfiLoadingExc.beforeSubmitRfi(appSubmissionDto,appNo);
+            rfiLoadingCheckImplForRenew.beforeSubmitRfi(appSubmissionDto,appNo);
         }
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionDto.setRfiMsgId(msgId);
@@ -1788,7 +1788,9 @@ public class NewApplicationDelegator {
         //appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
             appSubmissionDto= appSubmissionService.submitRequestRfcRenewInformation(appSubmissionRequestInformationDto, bpc.process);
-          /*  appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();*/
+/*
+            appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();
+*/
         }else {
             appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         }
@@ -3822,6 +3824,7 @@ public class NewApplicationDelegator {
                     if (!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())) {
                         appGrpPremisesDto.setHciCode(premDto.getHciCode());
                         appGrpPremisesDto.setHciNameChanged(premDto.getHciNameChanged());
+                        appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());
                         break;
                     }
                 }
@@ -4373,7 +4376,7 @@ public class NewApplicationDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    rfiLoadingExc.checkPremiseInfo(appSubmissionDto,appNo);
+                    rfiLoadingCheckImplForRenew.checkPremiseInfo(appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
             }

@@ -22,12 +22,12 @@ import java.util.List;
 @Component
 public class RfiLoadingExc implements RfiLoadingCheck {
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    protected AppSubmissionService appSubmissionService;
     @Autowired
-    private ApplicationFeClient applicationFeClient;
+    protected ApplicationFeClient applicationFeClient;
 
     @Override
-    public void beforeSubmitRfi(AppSubmissionDto appSubmissionDto,String appNo) {
+    public void beforeSubmitRfi(AppSubmissionDto appSubmissionDto,String appNo) throws Exception {
         AppSubmissionDto submissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = submissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
