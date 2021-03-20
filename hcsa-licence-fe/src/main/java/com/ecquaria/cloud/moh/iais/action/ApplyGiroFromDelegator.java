@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -14,6 +15,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class ApplyGiroFromDelegator {
     public void start(BaseProcessClass bpc){
-        System.out.println("-");
+        ParamUtil.setRequestAttr(bpc.request,"DashboardTitle","Apply for GIRO");
     }
 }

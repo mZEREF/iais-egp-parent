@@ -617,7 +617,7 @@ public class TaskServiceImpl implements TaskService {
             log.debug(StringUtil.changeForLog("the do removeUnavailableUser orgUserDtos.size() -->:"+orgUserDtos.size()));
             for (OrgUserDto orgUserDto : orgUserDtos){
                 if(orgUserDto.getAvailable()){
-                    if(StringUtil.isEmpty(excpetUserId)||!excpetUserId.equals(orgUserDto.getUserId())){
+                    if(StringUtil.isEmpty(excpetUserId)||!excpetUserId.equals(orgUserDto.getId())){
                         result.add(orgUserDto);
                     }else{
                         log.debug(StringUtil.changeForLog("This user id is the excpetUserId -->:"+excpetUserId));

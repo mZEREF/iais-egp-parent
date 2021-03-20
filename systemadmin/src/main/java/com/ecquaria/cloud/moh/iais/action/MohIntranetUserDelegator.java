@@ -319,60 +319,62 @@ public class MohIntranetUserDelegator {
         for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId) {
             String groupName = groupIdAndName.get(userGroupCorrelationDto.getGroupId());
             String maskRoleId = "";
-            if (groupName.contains("Inspection -")) {
-                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            insGroupOptionsExist.add(so);
-                            break;
+            if(groupName!=null){
+                if (groupName.contains("Inspection -")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                insGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                insLeaderGroupOptionsExist.add(so);
+                                break;
+                            }
                         }
                     }
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            insLeaderGroupOptionsExist.add(so);
-                            break;
+                } else if (groupName.contains("Professional")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO)){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                psoGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                psoLeaderGroupOptionsExist.add(so);
+                                break;
+                            }
                         }
                     }
-                }
-            } else if (groupName.contains("Professional")) {
-                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO)){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            psoGroupOptionsExist.add(so);
-                            break;
+                } else if (groupName.contains("Level 1")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1)){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                ao1GroupOptionsExist.add(so);
+                                break;
+                            }
                         }
-                    }
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            psoLeaderGroupOptionsExist.add(so);
-                            break;
-                        }
-                    }
-                }
-            } else if (groupName.contains("Level 1")) {
-                if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1)){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            ao1GroupOptionsExist.add(so);
-                            break;
-                        }
-                    }
-                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                        if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
-                            maskRoleId=orgUserRoleDto.getId();
-                            SelectOption so = new SelectOption(maskRoleId, groupName);
-                            ao1LeaderGroupOptionsExist.add(so);
-                            break;
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                ao1LeaderGroupOptionsExist.add(so);
+                                break;
+                            }
                         }
                     }
                 }

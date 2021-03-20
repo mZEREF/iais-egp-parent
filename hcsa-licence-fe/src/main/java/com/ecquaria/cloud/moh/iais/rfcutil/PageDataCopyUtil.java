@@ -242,7 +242,11 @@ public class PageDataCopyUtil {
         }
         List<AppSvcDisciplineAllocationDto> list=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-
+            AppSvcDisciplineAllocationDto o=new AppSvcDisciplineAllocationDto();
+            o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
+            o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
+            o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
+            list.add(o);
         }
         return list;
     };

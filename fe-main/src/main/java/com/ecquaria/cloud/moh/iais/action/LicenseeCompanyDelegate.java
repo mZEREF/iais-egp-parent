@@ -4,6 +4,8 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
@@ -71,7 +73,7 @@ public class LicenseeCompanyDelegate {
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("refresh".equals(curdType)){
-            if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))) {
+            if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())) {
                 String organizationId = loginContext.getOrgId();
                 OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
                 orgUserManageService.refreshLicensee(organizationDto.getUenNo());
@@ -94,7 +96,7 @@ public class LicenseeCompanyDelegate {
         String type = ParamUtil.getString(bpc.request,"licenseView");
         if(type != null && !StringUtils.isEmpty(type) ){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,type);
-        }else if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
+        }else if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Company");
         }else{
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
@@ -107,6 +109,7 @@ public class LicenseeCompanyDelegate {
         List<LicenseeDto> licenseesDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
         LicenseeDto licenseeDto = licenseesDto.get(0);
         licenseeDto.setLicenseeType(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()));
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
         ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
@@ -119,6 +122,7 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
     }
 
@@ -164,6 +168,7 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        licenseeDto.setAddrType(AcraConsts.getAddressTypeD().get(licenseeDto.getLicenseeType()));
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
     }
 
