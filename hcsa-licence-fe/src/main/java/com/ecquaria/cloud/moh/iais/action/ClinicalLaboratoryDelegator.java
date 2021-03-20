@@ -2019,7 +2019,11 @@ public class ClinicalLaboratoryDelegator {
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         boolean needEdit = rfcOrRenew || isRfi;
         if (needEdit) {
-            size = cgoIndexNos.length;
+            if(cgoIndexNos == null){
+                size = 0;
+            }else{
+                size = cgoIndexNos.length;
+            }
         }
         String[] existingPsn = ParamUtil.getStrings(request, "existingPsn");
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
@@ -2252,7 +2256,11 @@ public class ClinicalLaboratoryDelegator {
                 length = assignSelect.length;
             }
             if (needEdit) {
-                length = poIndexNos.length;
+                if(poIndexNos != null){
+                    length = poIndexNos.length;
+                }else{
+                    length = 0;
+                }
             }
             for (int i = 0; i < length; i++) {
                 boolean chooseExisting = false;
@@ -2432,7 +2440,11 @@ public class ClinicalLaboratoryDelegator {
                 length = assignSelect.length;
             }
             if (needEdit) {
-                length = dpoIndexNos.length;
+                if(dpoIndexNos != null){
+                    length = dpoIndexNos.length;
+                }else{
+                    length = 0;
+                }
             }
             for (int i = 0; i < length; i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -2976,7 +2988,10 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
-        int length = assignSelect.length;
+        int length = 0;
+        if(assignSelect != null){
+            length = assignSelect.length;
+        }
         //new and not rfi
         for (int i = 0; i < length; i++) {
             AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
@@ -3315,11 +3330,12 @@ public class ClinicalLaboratoryDelegator {
                     List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                         for(AppSvcCgoDto psn:appSvcCgoDtos){
+                            String assignSel = psn.getAssignSelect();
                             if(!psn.isLicPerson()){
                                 boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
                                 if(partValidate){
                                     personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
-                                }else {
+                                }else if(!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)){
                                     psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
                                 }
                             }else{
@@ -3365,11 +3381,15 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void setPsnKeySet(AppSvcPrincipalOfficersDto psn,Set<String> personKeySet){
+        if(psn == null || IaisCommonUtils.isEmpty(personKeySet)){
+            return;
+        }
+        String assignSel = psn.getAssignSelect();
         if(!psn.isLicPerson()){
             boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
             if(partValidate){
                 personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
-            }else {
+            }else if(!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)){
                 psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
             }
         }else{
