@@ -84,9 +84,10 @@
                     <td class="first last" style="width: 100%;">
                         <div id="control--runtime--1" class="section control  container-s-1">
                             <div class="control-set-font control-font-header section-header"></div>
-                            <c:if test="${CgoMandatoryCount >0}">
+                            <c:set value="${GovernanceOfficersList}" var="cgoList"/>
+                            <c:set var="editControl" value="${(!empty cgoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:if test="${CgoMandatoryCount >0 && editControl}">
                                 <c:forEach begin="0" end="${CgoMandatoryCount-1}" step="1" varStatus="status">
-                                    <c:set value="${GovernanceOfficersList}" var="cgoList"/>
                                     <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                                     <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                                     <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
@@ -148,7 +149,7 @@
                                                                                 </c:if>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="<c:if test="${'-1' != currentCgo.assignSelect}"> hidden </c:if>">
+                                                                        <div class="<c:if test="${!empty currentCgo.assignSelect && '-1' != currentCgo.assignSelect}"> hidden </c:if>">
                                                                             <div class="col-sm-5 control-label formtext ">
                                                                                 <label class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                                                                 <span class="mandatory">*</span>
@@ -554,6 +555,7 @@
                                     </div>
                                 </c:forEach>
                             </c:if>
+                            <div class="cgo-content-point"></div>
                         </div>
                     </td>
                 </tr>
@@ -563,7 +565,14 @@
                             <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
                         </c:when>
                         <c:otherwise>
-                            <c:set var="cgoDtoLength" value="1"/>
+                            <c:choose>
+                                <c:when test="${AppSubmissionDto.needEditController}">
+                                    <c:set var="cgoDtoLength" value="0"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="cgoDtoLength" value="${HcsaSvcPersonnel.mandatoryCount}"/>
+                                </c:otherwise>
+                            </c:choose>
                         </c:otherwise>
                     </c:choose>
                     <c:set var="needAddPsn" value="true"/>
@@ -752,7 +761,7 @@
             success: function (data) {
                 console.log(data.res);
                 if ('success' == data.res) {
-                    $('.cgo-content:last').after(data.sucInfo);
+                    $('.cgo-content-point').before(data.sucInfo);
                     showSpecialty();
                     psnSelect();
                     removeCgo();
@@ -771,6 +780,9 @@
                     var psnLength = $('.assignContent').length - 1;
                     if (psnLength >= '${HcsaSvcPersonnel.maximumCount}') {
                         $('#addPsnDiv').addClass('hidden');
+                    }
+                    if(psnLength <= '${HcsaSvcPersonnel.mandatoryCount}'){
+                        $('.assignContent:last .removeBtn').remove();
                     }
                 } else {
                     $('.errorMsg').html(data.errInfo);
@@ -858,7 +870,7 @@
             $contentEle.find('input[type="text"]').css('color', '');
             //get data from page
             var cgoSelectVal = $contentEle.find('select[name="assignSelect"]').val();
-            if('-1' != cgoSelectVal){
+            if('-1' != cgoSelectVal && '' != cgoSelectVal){
                 $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             }
             $('#isEditHiddenVal').val('1');
