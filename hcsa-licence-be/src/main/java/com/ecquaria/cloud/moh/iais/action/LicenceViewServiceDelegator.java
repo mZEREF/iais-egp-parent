@@ -557,16 +557,18 @@ public class LicenceViewServiceDelegator {
             request.setAttribute("beEicGatewayClient","Not able to connect to HERIMS at this moment!");
         }
         HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
-        for(HfsmsDto hfsmsDto : hfsmsDtos){
-            String identificationNo = hfsmsDto.getIdentificationNo();
-            List<HfsmsDto> hfsmsDtoList = hashMap.get(identificationNo);
-            if(hfsmsDtoList==null){
-                hfsmsDtoList=new ArrayList<>();
-                hfsmsDtoList.add(hfsmsDto);
-                hashMap.put(identificationNo,hfsmsDtoList);
-            }else {
-                hfsmsDtoList.add(hfsmsDto);
-                hashMap.put(identificationNo,hfsmsDtoList);
+        if (!IaisCommonUtils.isEmpty(hfsmsDtos)) {
+            for(HfsmsDto hfsmsDto : hfsmsDtos){
+                String identificationNo = hfsmsDto.getIdentificationNo();
+                List<HfsmsDto> hfsmsDtoList = hashMap.get(identificationNo);
+                if(hfsmsDtoList==null){
+                    hfsmsDtoList=new ArrayList<>();
+                    hfsmsDtoList.add(hfsmsDto);
+                    hashMap.put(identificationNo,hfsmsDtoList);
+                }else {
+                    hfsmsDtoList.add(hfsmsDto);
+                    hashMap.put(identificationNo,hfsmsDtoList);
+                }
             }
         }
         HashMap<String,List<ComplaintDto>> listHashMap=IaisCommonUtils.genNewHashMap();
