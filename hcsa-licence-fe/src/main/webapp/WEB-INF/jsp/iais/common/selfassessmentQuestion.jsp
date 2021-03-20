@@ -15,38 +15,38 @@
         </div>
     </c:when>
     <c:otherwise>
-        <br><br><br>
-        <div class="row">
-            <div class="col-xs-12">
-                &nbsp;<span id="error_noFillUpItemError" name="iaisErrorMsg" class="error-msg"></span>
-                <br><br>
-                <div class="dashboard-gp">
-                    <c:forEach  var="declItem" items="${selfAssessmentDetail.selfAssessmentConfig}" varStatus="status">
-                        <c:choose>
-                            <c:when test="${declItem.common eq true}">
-                                <div class="dashboard-tile-item">
-                                    <div class="dashboard-tile" id="myBody">
-                                        <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
-                                            <p class="dashboard-txt">General Regulation</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="dashboard-tile-item">
-                                    <div class="dashboard-tile">
-                                        <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
-                                            <p class="dashboard-txt">${declItem.svcName}</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
+        <div class="container">
+            <br>
+            &nbsp;<span id="error_noFillUpItemError" name="iaisErrorMsg" class="error-msg"></span>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <c:forEach  var="selfAssessmentConfig" items="${selfAssessmentDetail.selfAssessmentConfig}" varStatus="status">
+                                <c:choose>
+                                    <c:when test="${selfAssessmentConfig.common}">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" id="headingPremise${status.index}" role="tab">
+                                                <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise${status.index}" aria-expanded="true"
+                                                                           aria-controls="collapsePremise" class="">General Regulation</a></h4>
+                                            </div>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" id="headingPremise${status.index}" role="tab">
+                                                <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise${status.index}" aria-expanded="true"
+                                                                           aria-controls="collapsePremise" class="">${selfAssessmentConfig.svcName}</a></h4>
+                                            </div>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                                <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
-        <br>
     </c:otherwise>
 </c:choose>

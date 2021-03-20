@@ -2339,8 +2339,10 @@ private CessationFeService cessationFeService;
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
                     appEditSelectDto1.setDocEdit(docIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
+                    String groupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                    appSubmissionDto1.setAppGrpNo(groupNo);
                     notAutoSaveAppsubmission.add(appSubmissionDto1);
-                    autoSaveAppsubmission.clear();
+                    autoSaveAppsubmission.remove(autoSaveAppsubmission.size() - 1);
                 }else {
                     notAutoSaveAppsubmission.add(personAppsubmit);
                 }
@@ -2841,7 +2843,8 @@ private CessationFeService cessationFeService;
         List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = oldAppSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         if(appSvcDisciplineAllocationDtoList!=null && oldAppSvcDisciplineAllocationDtoList!=null){
             if(appSvcDisciplineAllocationDtoList.size()==oldAppSvcDisciplineAllocationDtoList.size()){
-                if(!appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList)){
+                boolean b = EqRequestForChangeSubmitResultChange.eqAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList, oldAppSvcDisciplineAllocationDtoList);
+                if(b){
                  return true;
                 }
             }else if(appSvcDisciplineAllocationDtoList.size()<oldAppSvcDisciplineAllocationDtoList.size()){
@@ -3597,7 +3600,7 @@ private CessationFeService cessationFeService;
             for (int i = 0; i < length; i++) {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))) {
+                if (getHciName(appGrpPremisesDto,oldAppGrpPremisesDto)) {
                     return false;
                 }
             }
@@ -3622,16 +3625,31 @@ private CessationFeService cessationFeService;
         return true;
     }
 
-    private String getHciName(AppGrpPremisesDto appGrpPremisesDto) {
-        String   hciName = appGrpPremisesDto.getHciName();
+    private boolean getHciName(AppGrpPremisesDto appGrpPremisesDto,AppGrpPremisesDto oldAppGrpPremisesDto) {
+        String   hciName = "";
+        String  oldHciName="";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             hciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             hciName=appGrpPremisesDto.getOffSiteHciName();
         }
-        return hciName;
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getHciName();
+        } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getConveyanceHciName();
+            oldVehicleNo=oldAppGrpPremisesDto.getConveyanceVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName = oldAppGrpPremisesDto.getOffSiteHciName();
+        }
+        if(!hciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)){
+            return true;
+        }
+        return false;
     }
 
     private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
