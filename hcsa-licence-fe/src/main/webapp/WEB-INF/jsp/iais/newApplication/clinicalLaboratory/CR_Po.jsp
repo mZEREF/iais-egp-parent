@@ -769,18 +769,20 @@
                 unDisabledPartPage($poContentEle);
                 if(0 != init) {
                     fillPoData($poContentEle, data);
+                    $poContentEle.find('input[name="poLicPerson"]').val('0');
+                    $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                    $poContentEle.find('input[name="loadingType"]').val('');
                 }
-                $poContentEle.find('input[name="poLicPerson"]').val('0');
-                $poContentEle.find('input[name="poExistingPsn"]').val('0');
-                $poContentEle.find('input[name="loadingType"]').val('');
+
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillPoData($poContentEle, data);
+                    $poContentEle.find('input[name="poLicPerson"]').val('0');
+                    $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                    $poContentEle.find('input[name="loadingType"]').val('');
                 }
-                $poContentEle.find('input[name="poLicPerson"]').val('0');
-                $poContentEle.find('input[name="poExistingPsn"]').val('0');
-                $poContentEle.find('input[name="loadingType"]').val('');
+
             }else{
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -801,18 +803,20 @@
                 unDisabledPartPage($dpoContentEle);
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
+                    $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
+                    $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                    $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
                 }
-                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
-                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
-                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
+
             }else if('-1' == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
+                    $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
+                    $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                    $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
                 }
-                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
-                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
-                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
+
             }else{
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
                 if(init == 0){
