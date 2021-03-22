@@ -145,8 +145,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
                 giroAccountInfoViewDto.setHciCode(gai.getHciCode());
-                PremisesDto premisesDto = hcsaLicenceClient.getLatestVersionPremisesByHciCode(gai.getHciCode()).getEntity();
-                giroAccountInfoViewDto.setHciName(premisesDto.getHciName());
+                giroAccountInfoViewDto.setHciName(gai.getHciName());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
