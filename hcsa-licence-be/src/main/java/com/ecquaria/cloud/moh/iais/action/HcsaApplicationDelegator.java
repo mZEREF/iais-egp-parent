@@ -3097,7 +3097,7 @@ public class HcsaApplicationDelegator {
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             String codeDesc = "";
-            String recommendationOnlyShow = "";
+            String recommendationOnlyShow;
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             if (recomInNumber == null || recomInNumber == 0) {
                 recommendationOnlyShow = "Reject";
@@ -3123,7 +3123,7 @@ public class HcsaApplicationDelegator {
                 recomInDateOnlyShow = Formatter.formatDateTime(recomInDate, Formatter.DATE);
             }
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow", recomInDateOnlyShow);
-            if (RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther) {
+            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) || RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther) {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow", recommendationOnlyShow);
             }
         }
