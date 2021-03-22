@@ -1212,6 +1212,7 @@ public class LicenceApproveBatchjob {
         for (AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremisesEntityDtos) {
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
+            boolean isNewHciCode = false;
             //premises
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
@@ -1229,10 +1230,12 @@ public class LicenceApproveBatchjob {
                     hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
                 }
                 log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
+                isNewHciCode = true;
                 appGrpPremisesEntityDto.setHciCode(hciCode);
             }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesEntityDto, PremisesDto.class);
             premisesDto.setHciCode(hciCode);
+            premisesDto.setNewHciCode(isNewHciCode);
             premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
