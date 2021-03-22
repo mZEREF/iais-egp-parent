@@ -67,7 +67,7 @@
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Status</label>
                                 <div class="col-xs-9 col-md-5 control-label" >
-                                    <iais:select cssClass="nice-select nextStage" id="rfiStatus" name="status" options="salutationStatusList"  ></iais:select>
+                                    <iais:select cssClass="nice-select status" id="rfiStatus" name="status" options="salutationStatusList"  ></iais:select>
                                 </div>
                             </div>
                             <c:if test="${rfiMulNum>0}" >
