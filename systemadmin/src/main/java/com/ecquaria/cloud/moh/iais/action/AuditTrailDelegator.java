@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -32,20 +33,18 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
-import com.ecquaria.sz.commons.util.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -147,7 +146,7 @@ public class AuditTrailDelegator {
     private void parseToMap(Map<String, Object> param, String[] strings, int index){
         if (strings == null || strings.length == 0 || index > strings.length - 1) return;
         String s = strings[index];
-        Map<String, String> map = JsonUtil.fromJson(s, Map.class);
+        Map<String, String> map = JsonUtil.parseToObject(s, Map.class);
         param.putAll(map);
         parseToMap(param, strings, index + 1);
     }
@@ -171,7 +170,7 @@ public class AuditTrailDelegator {
             parseToMap(map, strings, 0);
             addAuditLogRevToList(list, map);
         }else{
-            Map<String, Object> map = JsonUtil.fromJson(detail, Map.class);
+            Map<String, Object> map = JsonUtil.parseToObject(detail, Map.class);
             addAuditLogRevToList(list, map);
         }
         return list;
