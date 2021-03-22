@@ -1100,6 +1100,10 @@ public class HcsaApplicationDelegator {
                         nextStageId = HcsaConsts.ROUTING_STAGE_AO3;
                         routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                     }
+                    //update inspection status
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(routeNextStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(routeNextStatus)){
+                        applicationService.updateInspectionStatusByAppNo(applicationDto.getId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
+                    }
                     routingTask(bpc, nextStageId, routeNextStatus, stageCode);
                 } else {
                     log.debug(StringUtil.changeForLog("RoutingStageDtoList is null"));

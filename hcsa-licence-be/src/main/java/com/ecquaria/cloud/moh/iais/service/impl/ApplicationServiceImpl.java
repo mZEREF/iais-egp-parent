@@ -1003,6 +1003,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
+    @Override
+    public void updateInspectionStatusByAppNo(String appId, String inspectionStatus) {
+        if(!StringUtil.isEmpty(appId)) {
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+            if(appPremisesCorrelationDto != null){
+                updateInspectionStatus(appPremisesCorrelationDto.getId(), inspectionStatus);
+            }
+        }
+    }
+
     private TaskDto completedTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());

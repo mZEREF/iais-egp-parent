@@ -75,4 +75,6 @@ public interface ApplicationService {
     void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception;
 
     void rollBackInspAo1InspLead(BaseProcessClass bpc, String roleId, String routeBackStatus, String wrkGpId, String userId) throws CloneNotSupportedException;
+
+    void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
 }
