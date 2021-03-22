@@ -194,6 +194,7 @@
         $("#phCode option:first").prop("selected", 'selected');
         $("#year option:first").prop("selected", 'selected');
         $(".searchdiv .current").text("Please Select");
+        $(".error-msg").text("");
 
         $.ajax({
             data: {remove: 1},
