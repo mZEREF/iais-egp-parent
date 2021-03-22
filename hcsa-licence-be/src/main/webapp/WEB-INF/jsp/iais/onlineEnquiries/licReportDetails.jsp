@@ -157,7 +157,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <c:if test="${ organizationLicDto.licenseeDto.licenseeType=='LICT001'}">
+                                            <c:if test="${ organizationLicDto.licenseeDto.licenseeType=='Company'}">
                                                 <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
                                                     <div class="panel panel-default">
                                                         <div class="panel-heading"><strong>Board Members</strong></div>
@@ -217,7 +217,7 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">ID Type</td>
-                                                                            <td>&nbsp;${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
+                                                                            <td>&nbsp;<iais:code code="${member.idType}"/><c:if test="${empty member.idType}">-</c:if></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">ID No</td>
@@ -265,7 +265,7 @@
                                                                 <tr>
                                                                     <td align="right">ID Type</td>
                                                                     <td>
-                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.idType}
+                                                                        &nbsp;<iais:code code="${organizationLicDto.licenseeIndividualDto.idType}"/>
                                                                         <c:if test="${empty organizationLicDto.licenseeIndividualDto.idType}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
@@ -366,7 +366,7 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">ID Type</td>
-                                                                        <td>&nbsp;${personnel.keyPersonnelDto.idType}
+                                                                        <td>&nbsp;<iais:code code="${personnel.keyPersonnelDto.idType}"/>
                                                                             <c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
                                                                     </tr>
                                                                     <tr>
@@ -429,16 +429,12 @@
                                                                         <td>&nbsp;${personnel.keyPersonnelDto.emailAddr}
                                                                             <c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
                                                                     </tr>
-                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">
-                                                                        <tr>
-                                                                            <td align="right">Preferred Mode of
-                                                                                Receiving MedAlert
-                                                                            </td>
-                                                                            <td>
-                                                                                &nbsp;${personnel.keyPersonnelExtDto.preferredMode}
-                                                                                <c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>
-                                                                        </tr>
-                                                                    </c:if>
+                                                                        <%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
+                                                                        <%--                                                                        <tr>--%>
+                                                                        <%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
+                                                                        <%--                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
+                                                                        <%--                                                                        </tr>--%>
+                                                                        <%--                                                                    </c:if>--%>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
