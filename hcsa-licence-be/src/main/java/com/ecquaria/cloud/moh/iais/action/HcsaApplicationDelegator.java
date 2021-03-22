@@ -2292,67 +2292,66 @@ public class HcsaApplicationDelegator {
                         if (orgUserDto != null) {
                             applicantName = orgUserDto.getDisplayName();
                         }
-                        String paymentMethod = applicationGroupDto.getPayMethod();
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
-                                || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())) {
-                            Double fee = 0.0;
-                            applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
-                            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-                            applicationDtoList.add(oldApplication);
-                            String entityType = "";
-                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                            if (licenseeDto != null) {
-                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                                if (licenseeEntityDto != null) {
-                                    entityType = licenseeEntityDto.getEntityType();
-                                }
-                            }
-                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                                isCharity = true;
-                            }
-                            for (ApplicationDto applicationDto1 : applicationDtoList) {
-                                applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                                applicationDto1.setIsCharity(isCharity);
-                            }
-                            List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
-                            applicationDtoList2.add(applicationDto);
-                            if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
-                                fee = applicationDtoList2.get(0).getReturnFee();
-                            }
-                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("Applicant", applicantName);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-                            msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("reqAppNo", applicationNo);
-                            msgInfoMap.put("S_LName", serviceName);
-                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                            msgInfoMap.put("ApplicationDate", applicationViewDto.getSubmissionDate().split(" ")[0]);
-                            if (StringUtil.isEmpty(paymentMethod) ||
-                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
-                                msgInfoMap.put("paymentType", "2");
-                                msgInfoMap.put("paymentMode", "");
-                                msgInfoMap.put("returnMount", 0.0);
-                            } else {
-                                msgInfoMap.put("returnMount", fee);
-                                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
-                                    msgInfoMap.put("paymentType", "0");
-                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
-                                } else {
-                                    msgInfoMap.put("paymentType", "1");
-                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
-                                }
-                            }
-                            msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
-                            msgInfoMap.put("systemLink", loginUrl);
-                            msgInfoMap.put("emailAddress", systemAddressOne);
-                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
-                            sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                            /**
-                             *  Send SMS when withdrawal Application Approve
-                             */
-                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
-                        } else if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
+//                        String paymentMethod = applicationGroupDto.getPayMethod();
+//                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+//                        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())
+//                                || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(withdrawApplicationDto.getStatus())) {
+//                            Double fee = 0.0;
+//                            applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
+//                            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+//                            applicationDtoList.add(oldApplication);
+//                            String entityType = "";
+//                            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+//                            if (licenseeDto != null) {
+//                                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+//                                if (licenseeEntityDto != null) {
+//                                    entityType = licenseeEntityDto.getEntityType();
+//                                }
+//                            }
+//                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+//                                isCharity = true;
+//                            }
+//                            for (ApplicationDto applicationDto1 : applicationDtoList) {
+//                                applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+//                                applicationDto1.setIsCharity(isCharity);
+//                            }
+//                            List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+//                            if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
+//                                fee = applicationDtoList2.get(0).getReturnFee();
+//                            }
+//                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+//                            msgInfoMap.put("Applicant", applicantName);
+//                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+//                            msgInfoMap.put("ApplicationNumber", applicationNo);
+//                            msgInfoMap.put("reqAppNo", applicationNo);
+//                            msgInfoMap.put("S_LName", serviceName);
+//                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+//                            msgInfoMap.put("ApplicationDate", applicationViewDto.getSubmissionDate().split(" ")[0]);
+//                            if (StringUtil.isEmpty(paymentMethod) ||
+//                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
+//                                msgInfoMap.put("paymentType", "2");
+//                                msgInfoMap.put("paymentMode", "");
+//                                msgInfoMap.put("returnMount", 0.0);
+//                            } else {
+//                                msgInfoMap.put("returnMount", fee);
+//                                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+//                                    msgInfoMap.put("paymentType", "0");
+//                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+//                                } else {
+//                                    msgInfoMap.put("paymentType", "1");
+//                                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
+//                                }
+//                            }
+//                            msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
+//                            msgInfoMap.put("systemLink", loginUrl);
+//                            msgInfoMap.put("emailAddress", systemAddressOne);
+//                            sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
+//                            sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+//                            /**
+//                             *  Send SMS when withdrawal Application Approve
+//                             */
+//                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
+                        if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
