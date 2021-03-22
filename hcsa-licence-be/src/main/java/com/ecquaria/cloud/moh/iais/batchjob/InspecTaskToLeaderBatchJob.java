@@ -191,15 +191,17 @@ public class InspecTaskToLeaderBatchJob {
                     continue;
                 }
                 if (!StringUtil.isEmpty(workGroupId)) {
+                    //get task application
+                    ApplicationDto taskApp = inspectionTaskClient.getApplicationByCorreId(appInspStatusDto.getAppPremCorreId()).getEntity();
                     //get task type
                     List<TaskDto> taskDtoList = organizationClient.getTaskByAppNoStatus(
-                            applicationDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();//NOSONAR
+                            taskApp.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();//NOSONAR
                     List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(taskDtoList)) {
                         if (!StringUtil.isEmpty(leads)) {
                             //get task score
                             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                            applicationDtos.add(applicationDto);
+                            applicationDtos.add(taskApp);
                             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                             TaskDto taskDto = taskDtoList.get(0);
