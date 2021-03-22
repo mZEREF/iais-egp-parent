@@ -372,7 +372,7 @@ public class LicenceViewServiceDelegator {
         try {
             contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
-            log.info(e.toString(),e);
+            log.error(e.toString(),e);
         }
         if(appGrpPremisesDtoList!=null){
             String licenseeId =applicationViewDto.getApplicationGroupDto().getLicenseeId();
