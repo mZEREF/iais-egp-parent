@@ -217,7 +217,7 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">ID Type</td>
-                                                                            <td>&nbsp;<iais:code code="${member.idType}"/><c:if test="${empty member.idType}">-</c:if></td>
+                                                                            <td>&nbsp;${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">ID No</td>
@@ -265,7 +265,7 @@
                                                                 <tr>
                                                                     <td align="right">ID Type</td>
                                                                     <td>
-                                                                        &nbsp;<iais:code code="${organizationLicDto.licenseeIndividualDto.idType}"/>
+                                                                        &nbsp;${organizationLicDto.licenseeIndividualDto.idType}
                                                                         <c:if test="${empty organizationLicDto.licenseeIndividualDto.idType}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
