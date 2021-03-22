@@ -286,32 +286,26 @@ public class GiroDeductionBeDelegator {
     public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws Exception{
         SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
         String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
-        Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
-            {
-                put("Dan Simmons", "Hyperion");
-                put("Douglas Adams", "The Hitchhiker's Guide to the Galaxy");
-            }
-        };
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
-        FileWriter out = new FileWriter("D://book_new.csv");
+        FileWriter out = new FileWriter("classpath:book_new.csv");
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
                 .withHeader(HEADERS))) {
-            AUTHOR_BOOK_MAP.forEach((author, title) -> {
+            rows.forEach(v->{
                 try {
-                    printer.printRecord(author, title);
+                    printer.printRecords(v.getHciName(),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    ,v.getAcctNo(),v.getPmtStatus(),v.getAmount());
                 } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
             });
         }
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        response.setContentType("application/x-octet-stream");
+        response.setContentType("application/octet-stream");
         response.addHeader("Content-Disposition", "attachment;filename=book_new.csv" );
-        response.addHeader("Content-Length", "100" );
-        File file=new File("D://book_new.csv");
+        File file=new File("classpath:book_new.csv");
         FileInputStream in = new FileInputStream(file.getPath());
         byte buffer[] = new byte[1024];
-        int len = 0;
+        int len ;
         while((len=in.read(buffer))>0){
             ops.write(buffer, 0, len);
         }

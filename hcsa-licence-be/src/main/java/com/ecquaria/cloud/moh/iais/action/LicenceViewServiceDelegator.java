@@ -372,7 +372,7 @@ public class LicenceViewServiceDelegator {
         try {
             contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
-            log.info(e.toString(),e);
+            log.error(e.toString(),e);
         }
         if(appGrpPremisesDtoList!=null){
             String licenseeId =applicationViewDto.getApplicationGroupDto().getLicenseeId();
@@ -759,21 +759,23 @@ public class LicenceViewServiceDelegator {
     private void formatDate(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<PublicHolidayDto> publicHolidayDtos)  {
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-            for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
-                Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
-                Time endTo = appPremPhOpenPeriodDto.getEndTo();
-                String phDate = appPremPhOpenPeriodDto.getPhDate();
-                if(phDate==null){
-                    continue;
-                }
-                appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
-                if (startFrom != null && endTo != null) {
-                    String string = startFrom.toString();
-                    String string1 = endTo.toString();
-                    appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
-                    appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
-                    appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
-                    appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+            if(appPremPhOpenPeriodList!=null){
+                for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
+                    Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
+                    Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                    String phDate = appPremPhOpenPeriodDto.getPhDate();
+                    if(phDate==null){
+                        continue;
+                    }
+                    appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
+                    if (startFrom != null && endTo != null) {
+                        String string = startFrom.toString();
+                        String string1 = endTo.toString();
+                        appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
+                        appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
+                        appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
+                        appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+                    }
                 }
             }
             Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
