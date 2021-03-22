@@ -14,7 +14,7 @@
   String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-  <form method="post" id="giroDeductionForm" action=<%=process.runtime.continueURL()%>>
+  <form method="post" id="giroDeductionForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="beGiroDeductionType" value="">
     <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
@@ -143,7 +143,8 @@
                   <iais:action style="text-align:right;">
                     <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
-                    <button name="" class="btn btn-primary" type="button" >Upload Status</button>
+                    <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
+                    <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>
@@ -161,7 +162,12 @@
         showWaiting();
         giroDeductionSubmit('retrigger');
     }
-
+    $('#uploadFile').click(function (){
+        $('#selectedFile').trigger('click');
+        $("[name='beGiroDeductionType']").val('uploadCsv');
+        var mainPoolForm = document.getElementById('giroDeductionForm');
+        mainPoolForm.submit();
+    });
     /*$('#download').click(function (){
         $("[name='beGiroDeductionType']").val('uploadCsv');
         var mainPoolForm = document.getElementById('giroDeductionForm');

@@ -45,10 +45,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -241,25 +243,10 @@ public class GiroDeductionBeDelegator {
     }
 
     public void uploadCsv(BaseProcessClass bpc) throws Exception{
-
+        bpc.request.getParameter("");
     }
     public void download(BaseProcessClass bpc) throws Exception {
-        String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
-        Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
-            {
-            }
-        };
-        FileWriter out = new FileWriter("D://book_new.csv");
-        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
-                .withHeader(HEADERS))) {
-            AUTHOR_BOOK_MAP.forEach((author, title) -> {
-                try {
-                    printer.printRecord(author, title);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+
     }
 
     /**
@@ -274,9 +261,9 @@ public class GiroDeductionBeDelegator {
         List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);
-        /*beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(appGroupList, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());*/
+       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);*/
+        beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(appGroupList, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }
@@ -287,12 +274,13 @@ public class GiroDeductionBeDelegator {
         SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
         String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
-        FileWriter out = new FileWriter("classpath:book_new.csv");
+        long l = System.currentTimeMillis();
+        FileWriter out = new FileWriter("classpath:"+l+".csv");
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
                 .withHeader(HEADERS))) {
             rows.forEach(v->{
                 try {
-                    printer.printRecords(v.getHciName(),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    printer.printRecord(v.getHciName(),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
                     ,v.getAcctNo(),v.getPmtStatus(),v.getAmount());
                 } catch (IOException e) {
 
@@ -300,9 +288,9 @@ public class GiroDeductionBeDelegator {
             });
         }
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        response.setContentType("application/octet-stream");
-        response.addHeader("Content-Disposition", "attachment;filename=book_new.csv" );
-        File file=new File("classpath:book_new.csv");
+        response.setContentType("application/x-octet-stream");
+        response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
+        File file=new File("classpath:"+l+".csv");
         FileInputStream in = new FileInputStream(file.getPath());
         byte buffer[] = new byte[1024];
         int len ;
@@ -312,6 +300,5 @@ public class GiroDeductionBeDelegator {
         in.close();
         ops.flush();
         ops.close();
-
     }
 }

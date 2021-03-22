@@ -7,6 +7,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @FeignClient(url = "http://192.168.7.85:8881",name = "iais-payment")
 public interface GiroDeductionClient {
-    @PostMapping(value = "iais-payment/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "iais-payment/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroDeductionDto>> updateDeductionDtoSearchResultUseGroups(@RequestBody List<String> groups);
 
 }

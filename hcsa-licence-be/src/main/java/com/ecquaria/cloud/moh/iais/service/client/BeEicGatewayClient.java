@@ -239,13 +239,13 @@ public class BeEicGatewayClient {
     public FeignResponseEntity<List> updateDeductionDtoSearchResultUseGroups(List<String> groups,
                                                                   String date, String authorization, String dateSec,
                                                                   String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/giro-result-status", HttpMethod.POST, groups,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/giro-result-status", HttpMethod.PUT, groups,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GiroDeductionDto.class);
     }
     public FeignResponseEntity<List> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos,
                                                                              String date, String authorization, String dateSec,
                                                                              String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.POST, applicationGroupDtos,
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.PUT, applicationGroupDtos,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationGroupDto.class);
     }
 }

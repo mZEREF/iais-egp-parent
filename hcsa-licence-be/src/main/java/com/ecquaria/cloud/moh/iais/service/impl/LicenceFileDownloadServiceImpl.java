@@ -569,7 +569,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
             List<ApplicationDto> entity = applicationClient.getApplicationDtoByAppIds(list).getEntity();
-            if(!entity.isEmpty()){
+            if(entity.isEmpty()){
                 processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
                 applicationClient.updateProcessFileTrack(processFileTrackDto);
                 return true;
