@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -30,13 +31,19 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -234,11 +241,12 @@ public class GiroDeductionBeDelegator {
     }
 
     public void uploadCsv(BaseProcessClass bpc) throws Exception{
-        String[] HEADERS = { "author", "title"};
+
+    }
+    public void download(BaseProcessClass bpc) throws Exception {
+        String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
         Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
             {
-                put("Dan Simmons", "Hyperion");
-                put("Douglas Adams", "The Hitchhiker's Guide to the Galaxy");
             }
         };
         FileWriter out = new FileWriter("D://book_new.csv");
@@ -252,9 +260,6 @@ public class GiroDeductionBeDelegator {
                 }
             });
         }
-    }
-    public void download(BaseProcessClass bpc){
-
     }
 
     /**
@@ -277,16 +282,17 @@ public class GiroDeductionBeDelegator {
     }
 
     @GetMapping(value = "/generatorFileCsv")
+    @ResponseBody
     public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        Object giroDedSearchResult = request.getSession().getAttribute("giroDedSearchResult");
-        Object giroDedSearchParam = request.getSession().getAttribute("giroDedSearchParam");
-        String[] HEADERS = { "author", "title"};
+        SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
+        String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
         Map<String, String> AUTHOR_BOOK_MAP = new HashMap() {
             {
                 put("Dan Simmons", "Hyperion");
                 put("Douglas Adams", "The Hitchhiker's Guide to the Galaxy");
             }
         };
+        List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         FileWriter out = new FileWriter("D://book_new.csv");
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
                 .withHeader(HEADERS))) {
@@ -298,5 +304,20 @@ public class GiroDeductionBeDelegator {
                 }
             });
         }
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        response.setContentType("application/x-octet-stream");
+        response.addHeader("Content-Disposition", "attachment;filename=book_new.csv" );
+        response.addHeader("Content-Length", "100" );
+        File file=new File("D://book_new.csv");
+        FileInputStream in = new FileInputStream(file.getPath());
+        byte buffer[] = new byte[1024];
+        int len = 0;
+        while((len=in.read(buffer))>0){
+            ops.write(buffer, 0, len);
+        }
+        in.close();
+        ops.flush();
+        ops.close();
+
     }
 }

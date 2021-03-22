@@ -183,11 +183,6 @@
             allNcItemCheck.checked = false;
         }
     }
-    $('#download').click(function (){
-        $("[name='beGiroDeductionType']").val('download');
-        var mainPoolForm = document.getElementById('giroDeductionForm');
-        mainPoolForm.submit();
-    });
     function giroDeductionCheckAll(){
         if ($('#allGiroDeductionCheck').is(':checked')) {
             $("input[name = 'giroDueCheck']").attr("checked","true");
