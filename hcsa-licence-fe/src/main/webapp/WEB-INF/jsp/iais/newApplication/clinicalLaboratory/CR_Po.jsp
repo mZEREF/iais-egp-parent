@@ -1231,7 +1231,7 @@
         var children = closest.children("div.dpo-content");
         if(children.length <= 0){
             $("select[name='deputyPrincipalOfficer']").next().find('.current').html('No');
-            $("select[name='deputyPrincipalOfficer']").val('No')
+            $("select[name='deputyPrincipalOfficer']").val('0');
             $("select[name='deputyPrincipalOfficer']").trigger("change");
             $("select[name='deputyPrincipalOfficer']").prop('disabled',false);
         }
