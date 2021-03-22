@@ -165,7 +165,7 @@ public class AuditTrailDelegator {
     private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
         ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
         if (detail.contains("[") && detail.contains("]") && detail.length() > 2){
-            detail = detail.replace("[", " ").replace("]", " ");
+            detail = detail.replace('[', ' ').replace(']', ' ');
             String[] strings = detail.split(",");
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             parseToMap(map, strings, 0);

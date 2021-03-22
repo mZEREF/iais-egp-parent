@@ -1946,7 +1946,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     info.setServiceName(info.getServiceName());
                 }
             }catch (Exception e){
-                info.setServiceName(info.getServiceName());
                 log.debug("ServiceName is null");
             }
             try {

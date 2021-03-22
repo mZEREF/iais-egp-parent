@@ -1043,7 +1043,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Map<String,String> getMaskHcsaServiceCategory(){
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = getHcsaServiceCategoryDto();
-        Map<String,String> hashMap=new HashMap<>();
+        Map<String,String> hashMap=IaisCommonUtils.genNewHashMap();
         for(HcsaServiceCategoryDto hcsaServiceCategoryDto : hcsaServiceCategoryDtos){
             hashMap.put(hcsaServiceCategoryDto.getName(),hcsaServiceCategoryDto.getId());
         }

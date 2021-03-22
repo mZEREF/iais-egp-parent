@@ -37,7 +37,7 @@ public class WriteMultipartFileAjaxController {
         if(blastManagementDto != null){
             long size = selectedFile.getSize()/1024;
             String fileName = selectedFile.getOriginalFilename();
-            if(fileName.indexOf("\\") > 0){
+            if(fileName.indexOf('\\') > 0){
                 fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
             }
             File toFile = FileUtils.multipartFileToFile(selectedFile);
@@ -93,19 +93,18 @@ public class WriteMultipartFileAjaxController {
         StringBuilder data = new StringBuilder();
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
-                StringBuilder box = new StringBuilder();
-                box.append("<p class='fileList'>")
-                        .append(temp.getDocName())
-                        .append("&emsp;<button name='fileDeleteButton' value='")
-                        .append(temp.getDocSize())
-                        .append("' ")
-                        .append("type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"writeMessageDeleteFile('")
-                        .append(temp.getId())
-                        .append("')\">Delete</button></p>")
-                        .append("<input hidden name='fileSize' value='")
-                        .append(temp.getDocSize())
-                        .append("'/>\n");
-                data.append(box.toString());
+                String box = "<p class='fileList'>" +
+                        temp.getDocName() +
+                        "&emsp;<button name='fileDeleteButton' value='" +
+                        temp.getDocSize() +
+                        "' " +
+                        "type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"writeMessageDeleteFile('" +
+                        temp.getId() +
+                        "')\">Delete</button></p>" +
+                        "<input hidden name='fileSize' value='" +
+                        temp.getDocSize() +
+                        "'/>\n";
+                data.append(box);
             }
         }
         return data.toString();
