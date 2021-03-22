@@ -103,7 +103,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", null);
         ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "isLeader", false);
+        ParamUtil.setSessionAttr(bpc.request, "isLeader", Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
     }
 
@@ -249,8 +249,8 @@ public class InspecReassignTaskDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "supervisorRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        loginContext.setCurRoleId(roleId);
         if (!StringUtil.isEmpty(roleId)) {
+            loginContext.setCurRoleId(roleId);
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }

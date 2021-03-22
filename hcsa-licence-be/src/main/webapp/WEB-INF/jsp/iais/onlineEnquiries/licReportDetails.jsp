@@ -157,7 +157,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <c:if test="${ organizationLicDto.licenseeDto.licenseeType=='LICT001'}">
+                                            <c:if test="${ organizationLicDto.licenseeDto.licenseeType=='Company'}">
                                                 <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
                                                     <div class="panel panel-default">
                                                         <div class="panel-heading"><strong>Board Members</strong></div>
