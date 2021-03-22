@@ -20,11 +20,13 @@
         guideSubmit("withdraw","main");
     });
 
-    $("#").click(function () {
+    $("#renewLicence1").click(function () {
         guideSubmit("renew","main");
     });
 
-    $("#resumeDraftApplication").attr('checked', 'true');
+    $(function () {
+        $("#resumeDraftApplication").attr('checked', 'true');
+    });
 
     function jumpToPagechangePage() {
         guideSubmit("resumePage","second");
