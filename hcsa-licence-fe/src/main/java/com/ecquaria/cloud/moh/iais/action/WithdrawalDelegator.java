@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.generic.I2F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -352,7 +351,10 @@ public class WithdrawalDelegator {
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
-                Map<String, String> errorMap = validationResult.retrieveAll();
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                if (validationResult.isHasErrors()){
+                    errorMap=validationResult.retrieveAll();
+                }
                 if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0) {
                     String originalFilename = commonsMultipartFile.getOriginalFilename();
                     fileValidation(originalFilename,validationResult,errorMap);

@@ -166,6 +166,16 @@
                                                                         <td>&nbsp;${person.idNo} (${person.idType})</td>
                                                                     </tr>
                                                                 </c:forEach>
+                                                                <c:if test="${empty appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
+                                                                    <tr>
+                                                                        <td align="right">MedAlert Contact Person</td>
+                                                                        <td>&nbsp;-</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="right">MedAlert Contact Person ID</td>
+                                                                        <td>&nbsp;-</td>
+                                                                    </tr>
+                                                                </c:if>
                                                                 <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person</td>

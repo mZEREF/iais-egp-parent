@@ -255,19 +255,19 @@ public class FeUserManagement {
                 feUserDto.setId(feUserDtoSession.getId());
                 feUserDto.setUserId(feUserDtoSession.getUserId());
                 feUserDto.setUenNo(feUserDtoSession.getUenNo());
-                feUserDto.setAvailable(true);
+                feUserDto.setAvailable(Boolean.TRUE);
                 feUserDto.setOrganization(feUserDtoSession.getOrganization());
                 feUserDto.setAccountActivateDatetime(feUserDtoSession.getAccountActivateDatetime());
                 userDto.setUserId(feUserDtoSession.getUserId());
                 userDto.setId(feUserDtoSession.getId());
-                userDto.setAvailable(true);
+                userDto.setAvailable(Boolean.TRUE);
                 userDto.setOrganization(feUserDtoSession.getOrganization());
                 userDto.setAccountActivateDatetime(feUserDtoSession.getAccountActivateDatetime());
             }else{
-                feUserDto.setAvailable(true);
+                feUserDto.setAvailable(Boolean.TRUE);
                 feUserDto.setIdentityNo(idNo);
                 feUserDto.setAccountActivateDatetime(new Date());
-                userDto.setAvailable(true);
+                userDto.setAvailable(Boolean.TRUE);
                 userDto.setIdentityNo(idNo);
                 userDto.setIdNumber(idNo);
                 userDto.setAccountActivateDatetime(new Date());

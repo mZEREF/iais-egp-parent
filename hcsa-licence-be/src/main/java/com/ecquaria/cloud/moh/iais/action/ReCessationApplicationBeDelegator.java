@@ -82,6 +82,8 @@ public class ReCessationApplicationBeDelegator {
     private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
     private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String ERROR = "GENERAL_ERR0006";
+    static String[] arrReason = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
+    static String[] arrPatients = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
 
     public void start(BaseProcessClass bpc) {
@@ -328,11 +330,12 @@ public class ReCessationApplicationBeDelegator {
             }
         }
         if ("no".equals(patRadio)) {
+            String errMsg=MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
             if (StringUtil.isEmpty(patNoRemarks)) {
-                errorMap.put(PATNOREMARKS, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+                errorMap.put(PATNOREMARKS, errMsg);
             }
             if (StringUtil.isEmpty(patNoConfirm)) {
-                errorMap.put("patNoConfirm", MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+                errorMap.put("patNoConfirm", errMsg);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTO, appCessLicDto);
@@ -340,14 +343,12 @@ public class ReCessationApplicationBeDelegator {
     }
 
     private List<SelectOption> getReasonOption() {
-        String[] arr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arrReason);
         return selectOptions;
     }
 
     private List<SelectOption> getPatientsOption() {
-        String[] arr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arrPatients);
         return selectOptions;
     }
 }

@@ -97,6 +97,7 @@ public class NewApplicationHelper {
                     /*   map.put("checkError","NEW_ERR0012");*/
                 }else {
                     boolean selectOtherScope = selectOtherScope(listDtos);
+                    String err006=MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field");
                     if(selectOtherScope){
                         boolean selectOtherChildrenScope = false;
                         //check children scope is selected
@@ -110,12 +111,12 @@ public class NewApplicationHelper {
                             }
                         }
                         if(!selectOtherChildrenScope){
-                            map.put("otherScopeError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
+                            map.put("otherScopeError"+premCount,err006);
                         }
                     }
                     for(int i=0;i<listDtos.size();i++){
                         if(NewApplicationConstant.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                            map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
+                            map.put("pleaseIndicateError"+premCount,err006);
                         }
 
                         String parentName = listDtos.get(i).getParentName();
@@ -2512,7 +2513,7 @@ public class NewApplicationHelper {
                 result.append("<label class=\"checkbox-custom check-primary\" style=\"margin-left: 2px\">")
                         .append("<input value=\"")
                         .append(sp.getValue())
-                        .append("\"");
+                        .append('\"');
                 for(Map.Entry<String, String> entry : pageAttr.entrySet()){
                     result.append(entry.getKey())
                             .append("=\"");
@@ -3086,14 +3087,15 @@ public class NewApplicationHelper {
                 }
                 boolean selectAllDay = list.get(i).isSelectAllDay();
                 boolean selectAllDay1 = list.get(j).isSelectAllDay();
+                String errMsg=MessageUtil.getMessageDesc("NEW_ERR0021");
                 if(selectAllDay ||selectAllDay1){
-                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
+                    errorMap.put(errorId+index+j,errMsg);
                     continue;
                 }
                 int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
                 int   time1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
                 if(time>=time1){
-                    errorMap.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
+                    errorMap.put(errorId+index+j,errMsg);
                 }
             }
         }

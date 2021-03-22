@@ -1,10 +1,19 @@
 package com.ecquaria.cloud.moh.iais.rfcutil;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +137,7 @@ public class PageDataCopyUtil {
             AppPremEventPeriodDto o=new AppPremEventPeriodDto();
             o.setEventName(appPremEventPeriodDto.getEventName());
             o.setEndDate(appPremEventPeriodDto.getEndDate());
-            o.setStartDate(o.getStartDate());
+            //o.setStartDate(o.getStartDate());
             appPremEventPeriodDtoList.add(o);
         }
         return appPremEventPeriodDtoList;
@@ -242,7 +251,11 @@ public class PageDataCopyUtil {
         }
         List<AppSvcDisciplineAllocationDto> list=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-
+            AppSvcDisciplineAllocationDto o=new AppSvcDisciplineAllocationDto();
+            o.setPremiseVal(appSvcDisciplineAllocationDto.getPremiseVal());
+            o.setChkLstConfId(appSvcDisciplineAllocationDto.getChkLstConfId());
+            o.setIdNo(appSvcDisciplineAllocationDto.getIdNo());
+            list.add(o);
         }
         return list;
     };

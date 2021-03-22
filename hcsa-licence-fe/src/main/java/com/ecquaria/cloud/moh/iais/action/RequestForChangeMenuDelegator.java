@@ -158,6 +158,7 @@ public class RequestForChangeMenuDelegator {
         bpc.getSession().removeAttribute("premiseDoSearch");
         bpc.getSession().removeAttribute("doSearch");
         bpc.getSession().removeAttribute("personnelListDtos");
+        bpc.getSession().removeAttribute("licenceDtoList");
     }
 
     /**
@@ -351,7 +352,11 @@ public class RequestForChangeMenuDelegator {
             for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList) {
                 String hciCode = appGrpPremisesDto1.getHciCode();
                 List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
-                appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
+                List<LicenceDto> licenceDtos = appGrpPremisesDto1.getLicenceDtos();
+                if(licenceDtos==null){
+                    appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
+                    bpc.request.getSession().setAttribute("licenceDtoList",licenceDtoList);
+                }
             }
         }
         if (appGrpPremisesDto != null || rfi != null) {
@@ -384,7 +389,9 @@ public class RequestForChangeMenuDelegator {
         if (appSubmissionDto1 != null) {
             oldAppSubmissionDto = appSubmissionDto1;
         }
-        if (premisesListQueryDto != null) {
+        //init to set this session , if have do not to check change premise hcicode
+        Object o = bpc.getSession().getAttribute("licenceDtoList");
+        if (premisesListQueryDto != null && o==null) {
             String hciCode = premisesListQueryDto.getHciCode();
             List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
             bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
@@ -1078,7 +1085,7 @@ public class RequestForChangeMenuDelegator {
                     idNos.add(idNo);
                     String name = dto.getName();
                     String idType = dto.getIdType();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + idType + ")");
+                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")");
                     selectOptions.add(s);
                 }
             }
@@ -1789,7 +1796,7 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+       /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
@@ -1930,17 +1937,25 @@ public class RequestForChangeMenuDelegator {
 
         String newHciName = "";
         String oldHciName = "";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            oldHciName = premisesListQueryDto.getVehicleNo();
+            oldHciName = premisesListQueryDto.getHciName();
+            oldVehicleNo=premisesListQueryDto.getVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName = premisesListQueryDto.getHciName();
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+            newHciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getOffSiteHciName();
         }
-        if (!oldHciName.equals(newHciName)) {
+        if (!newHciName.equals(oldHciName)||!newVehicleNo.equals(oldVehicleNo)) {
             return false;
         }
 

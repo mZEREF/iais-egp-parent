@@ -54,6 +54,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -62,14 +71,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -1280,7 +1281,7 @@ public class InterInboxDelegator {
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
-        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", false);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.FALSE);
         if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

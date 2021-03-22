@@ -130,6 +130,9 @@
         $('input[name="start_to_date"]').val("");
         $('input[name="expiry_start_date"]').val("");
         $('input[name="expiry_date"]').val("");
+        $("#error_to_date").hide();
+        $("#error_start_to_date").hide();
+        $("#error_expiry_date").hide();
     }
 
     function doLicInfo(licenceId) {

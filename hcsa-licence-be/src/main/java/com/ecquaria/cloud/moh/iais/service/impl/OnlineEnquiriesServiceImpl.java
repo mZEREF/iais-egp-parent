@@ -302,7 +302,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 }
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                 try {
-                    complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+                    if(appPremisesRecommendationDto!=null){
+                        complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+                    }
                     HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
                     hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
                     hcsaRiskScoreDto.setLicId(licenceId);
@@ -315,14 +317,16 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                     String riskLevel = entity.getRiskLevel();
                     complianceHistoryDto.setRiskTag(MasterCodeUtil.getCodeDesc(riskLevel));
-                }catch (NullPointerException e){
+                }catch (Exception e){
                     log.error(e.getMessage(), e);
                     complianceHistoryDto.setRiskTag("-");
                 }
                 AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 try {
-                    complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
-                    complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
+                    if(appPreRecommentdationDtoDate!=null){
+                        complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
+                        complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
+                    }
                     AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                     if(appPreRecommentdationDtoRep!=null){
                         complianceHistoryDtos.add(complianceHistoryDto);

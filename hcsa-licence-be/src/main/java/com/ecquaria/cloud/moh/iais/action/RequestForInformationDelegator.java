@@ -63,6 +63,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +107,7 @@ public class RequestForInformationDelegator {
         if(licenceIds.size()==0){
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries");
+                    .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
             IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
         }
         List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getPremisesByLicIds(licenceIds).getEntity();
@@ -158,7 +159,7 @@ public class RequestForInformationDelegator {
                 }
             }
         }
-
+        licPremisesReqForInfoDtoListSearch.sort(Comparator.comparing(LicPremisesReqForInfoDto::getRequestDate).reversed());
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoListSearch);
 
     }

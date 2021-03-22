@@ -45,6 +45,8 @@
                 <c:set var="pageLength" value="${mandatoryCount}"/>
             </c:otherwise>
         </c:choose>
+        <c:set var="editControl" value="${(!empty AppSvcMedAlertPsn && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+        <c:if test="${pageLength >0 && editControl}">
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
             <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[status.index]}"/>
             <div class="medAlertContent">
@@ -208,15 +210,34 @@
                 <br/>
             </div>
         </c:forEach>
+        </c:if>
         <c:if test="${requestInformationConfig==null}">
-            <c:choose>
+            <%--<c:choose>
                 <c:when test="${!empty AppSvcMedAlertPsn}">
                     <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
                 </c:when>
                 <c:otherwise>
-                    <c:set var="mapDtoLength" value="1"/>
+                    <c:set var="mapDtoLength" value="0"/>
+                </c:otherwise>
+            </c:choose>--%>
+
+            <c:choose>
+                <c:when test="${!empty AppSvcMedAlertPsn }">
+                    <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:choose>
+                        <c:when test="${AppSubmissionDto.needEditController}">
+                            <c:set var="mapDtoLength" value="0"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="mapDtoLength" value="${mapHcsaSvcPersonnel.mandatoryCount}"/>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
+
+
             <c:set var="needAddPsn" value="true"/>
             <c:choose>
                 <c:when test="${mapHcsaSvcPersonnel.status =='CMSTAT003'}">
@@ -393,6 +414,9 @@
                         if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
                             $('#addPsnDiv').addClass('hidden');
                         }
+                        if(psnLength <='${mapHcsaSvcPersonnel.mandatoryCount}'){
+                            $('.medAlertContent:last .mapDelBtn').remove();
+                        }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
                     }else{
@@ -421,7 +445,7 @@
         //get data from page
         $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         var mapSelectVal = $contentEle.find('select[name="assignSel"]').val();
-        if('-1' != mapSelectVal){
+        if('-1' != mapSelectVal && '' != mapSelectVal){
             $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         }
         $('#isEditHiddenVal').val('1');

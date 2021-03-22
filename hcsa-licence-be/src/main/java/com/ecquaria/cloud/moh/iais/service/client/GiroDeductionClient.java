@@ -15,11 +15,9 @@ import java.util.List;
  * @author Wenkang
  * @date 2021/3/15 15:31
  */
-@FeignClient(url = "http://192.168.7.85:8883",name = "hcsa-application")
+@FeignClient(url = "http://192.168.7.85:8881",name = "iais-payment")
 public interface GiroDeductionClient {
-    @PostMapping(value = "search-realut-giro",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<GiroDeductionDto>> giroDeductionDtoSearchResult(@RequestBody SearchParam searchParam);
-    @PostMapping(value = "/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "iais-payment/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroDeductionDto>> updateDeductionDtoSearchResultUseGroups(@RequestBody List<String> groups);
 
 }

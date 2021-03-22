@@ -341,13 +341,16 @@ public class InspectionServiceImpl implements InspectionService {
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
         //set leaders' name
-        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
-        Set<String> leadNameSet = new HashSet<>(leadName);
-        leadName = new ArrayList<>(leadNameSet);
-        inspectionTaskPoolListDto.setInspectorLeads(leadName);
-        String leadersStr = setLeadersStrShow(leadName);
-        inspectionTaskPoolListDto.setGroupLeadersShow(leadersStr);
+        List<String> leadName =IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(taskDto.getWkGrpId())){
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+            Set<String> leadNameSet = new HashSet<>(leadName);
+            leadName = new ArrayList<>(leadNameSet);
+            inspectionTaskPoolListDto.setInspectorLeads(leadName);
+            String leadersStr = setLeadersStrShow(leadName);
+            inspectionTaskPoolListDto.setGroupLeadersShow(leadersStr);
+        }
         //set task data
         inspectionTaskPoolListDto.setTaskId(taskId);
         inspectionTaskPoolListDto.setTaskDto(taskDto);

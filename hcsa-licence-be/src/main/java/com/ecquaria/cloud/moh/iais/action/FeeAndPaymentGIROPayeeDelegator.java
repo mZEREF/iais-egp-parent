@@ -100,6 +100,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
         orgPremParameter.setPageSize(pageSize);
+        orgPremParameter.setPageNo(1);
+        giroAccountParameter.setPageNo(1);
         giroAccountParameter.setPageSize(pageSize);
     }
     public void prePayeeResult(BaseProcessClass bpc) {
@@ -143,8 +145,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
                 giroAccountInfoViewDto.setHciCode(gai.getHciCode());
-                PremisesDto premisesDto = hcsaLicenceClient.getLatestVersionPremisesByHciCode(gai.getHciCode()).getEntity();
-                giroAccountInfoViewDto.setHciName(premisesDto.getHciName());
+                giroAccountInfoViewDto.setHciName(gai.getHciName());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
@@ -203,15 +204,22 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(uenNo!=null) {
             filter.put("uenNo", uenNo);
         }
+
         orgPremParameter.setFilters(filter);
         SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-        CrudHelper.doPaging(orgPremParam,bpc.request);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            orgPremParameter.setSortType(sortType);
-            orgPremParameter.setSortField(sortFieldName);
+        String actionType=ParamUtil.getString(request,"crud_action_type");
+        if("add".equals(actionType)){
+            orgPremParameter.setPageSize(pageSize);
             orgPremParameter.setPageNo(1);
+        }else {
+            CrudHelper.doPaging(orgPremParam,bpc.request);
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                orgPremParameter.setSortType(sortType);
+                orgPremParameter.setSortField(sortFieldName);
+                orgPremParameter.setPageNo(1);
+            }
         }
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);

@@ -131,6 +131,7 @@
     }
 
     function doClear() {
+        $("#selectSearchChkMsg").hide();
         $('input[name="searchNo"]').val("");
         $('input[type="radio"]').prop("checked", false);
     }

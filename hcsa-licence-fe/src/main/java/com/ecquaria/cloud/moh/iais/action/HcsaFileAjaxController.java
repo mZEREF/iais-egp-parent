@@ -96,7 +96,7 @@ public class HcsaFileAjaxController {
                 append( fileName.replace("pageContext.request.contextPath","/hcsa-licence-web")
                         .replace("replaceFileAppendIdDown",fileAppendId)
                         .replace("replaceFileIndexDown",String.valueOf(size)).replace("replaceCsrf",CSRF))
-                .append(" ").append(deleteButtonString.replace("replaceForDelete",fileAppendId).
+                .append(' ').append(deleteButtonString.replace("replaceForDelete",fileAppendId).
                                       replace("indexReplace",String.valueOf(size)))
                 .append( reUploadButtonString.replace("replaceForUploadForm",uploadFormId).
                         replace("replaceForUpload",fileAppendId).

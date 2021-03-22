@@ -9,7 +9,7 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="../common/dashboard.jsp" %>
+<%@include file="../common/dashboard.jsp"%>
 <form  method="post" id="mainForm"   action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 
@@ -18,37 +18,36 @@
         <div class="row">
             <div class="col-xs-12">
 
-                <div class="tab-gp steps-tab">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="previewTab" role="tabpanel">
-                            <div class="preview-gp">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h1>Apply for GIRO</h1>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            Click <a  onclick="showPopupWindow('https://www.moh.gov.sg/docs/librariesprovider5/licensing-terms-and-conditions/ib_giro_form.pdf')">here</a> to download the GIRO application form.
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            Click <a href="${pageContext.request.contextPath}/file-repo-Authorisation">here</a> to download the Authorisation Letter.
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            Click <a href="${pageContext.request.contextPath}/file-repo-DCA">here</a> to download the DCA form.
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="preview-gp">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Click <a  onclick="showPopupWindow('https://www.moh.gov.sg/docs/librariesprovider5/licensing-terms-and-conditions/ib_giro_form.pdf')">here</a> to download the GIRO application form.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Click <a href="#">here</a> to download the Authorisation Letter.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Click <a href="#">here</a> to download the DCA form.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                &nbsp;
                             </div>
                         </div>
                     </div>
@@ -58,8 +57,5 @@
         </div>
     </div>
 </form>
-<script>
 
-
-</script>
 

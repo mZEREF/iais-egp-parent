@@ -36,13 +36,14 @@
                   <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                       <p><div class="text-right app-font-size-16"><a class="back" id="RfcSkip">Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em></a></div></p>
                   </c:if>
-                  <c:if test="${!isClickEdit}">
+                  <c:if test="${'true' != isClickEdit}">
                     <c:set var="showPreview" value="true"/>
-                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                   </c:if>
                 </c:if>
               </div>
-              <c:if test="${PrincipalOfficersMandatory>0}">
+              <c:set var="editControlPo" value="${(!empty ReloadPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+              <c:if test="${PrincipalOfficersMandatory>0 && editControlPo}">
                 <c:set value="${poHcsaSvcPersonnelDto.mandatoryCount}" var="poMandatoryCount"/>
                 <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
                   <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
@@ -96,7 +97,7 @@
                       </div>
                     </div>
                     <div class="">
-                      <div class="row  <c:if test="${'true' == canEdit && '' != principalOfficer.assignSelect}">hidden</c:if>">
+                      <div class="row  <c:if test="${'true' == canEdit && !empty principalOfficer.assignSelect && '-1' != principalOfficer.assignSelect}">hidden</c:if>">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-4">
@@ -235,10 +236,26 @@
                 </c:forEach>
               </c:if>
               <c:if test="${requestInformationConfig==null}">
-                <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
-                <c:if test="${poDtoLength == '0'}">
+                <%--<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>--%>
+                <%--<c:if test="${poDtoLength == '0'}">
                   <c:set var="poDtoLength" value="1"/>
-                </c:if>
+                </c:if>--%>
+                <c:choose>
+                  <c:when test="${!empty ReloadPrincipalOfficers }">
+                    <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
+                  </c:when>
+                  <c:otherwise>
+                    <c:choose>
+                      <c:when test="${AppSubmissionDto.needEditController}">
+                        <c:set var="poDtoLength" value="0"/>
+                      </c:when>
+                      <c:otherwise>
+                        <c:set var="poDtoLength" value="${poHcsaSvcPersonnelDto.mandatoryCount}"/>
+                      </c:otherwise>
+                    </c:choose>
+                  </c:otherwise>
+                </c:choose>
+
                 <c:set var="needAddPsn" value="true"/>
                 <c:choose>
                   <c:when test="${poHcsaSvcPersonnelDto.status =='CMSTAT003'}">
@@ -273,7 +290,7 @@
                 </c:choose>
                 <c:if test="${!isClickEditDpo}">
                   <c:set var="showPreview" value="true"/>
-                  <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                  <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                   <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                     <c:choose>
                       <c:when test="${canEditDpoEdit}">
@@ -326,7 +343,8 @@
               <h2>Nominee</h2>
               <div class="dpo-content">
               </div>
-              <c:if test="${DeputyPrincipalOfficersMandatory>0}">
+              <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+              <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
                 <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
                 <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
                   <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
@@ -380,7 +398,7 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && '-1' != deputy.assignSelect}">hidden</c:if>">
+                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                             Assign a Nominee
@@ -510,10 +528,28 @@
               </c:if>
             </div>
             <c:if test="${requestInformationConfig==null}">
-              <c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>
-              <c:if test="${dpoDtoLength == '0'}">
+              <%--<c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>--%>
+              <%--<c:if test="${dpoDtoLength == '0'}">
                 <c:set var="dpoDtoLength" value="1"/>
-              </c:if>
+              </c:if>--%>
+
+              <c:choose>
+                <c:when test="${!empty ReloadDeputyPrincipalOfficers }">
+                  <c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>
+                </c:when>
+                <c:otherwise>
+                  <c:choose>
+                    <c:when test="${AppSubmissionDto.needEditController}">
+                      <c:set var="dpoDtoLength" value="0"/>
+                    </c:when>
+                    <c:otherwise>
+                      <c:set var="dpoDtoLength" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
+                    </c:otherwise>
+                  </c:choose>
+                </c:otherwise>
+              </c:choose>
+
+
               <c:set var="needAddPsn" value="true"/>
               <c:choose>
                 <c:when test="${dpoHcsaSvcPersonnelDto.status =='CMSTAT003'}">
@@ -733,18 +769,20 @@
                 unDisabledPartPage($poContentEle);
                 if(0 != init) {
                     fillPoData($poContentEle, data);
+                    $poContentEle.find('input[name="poLicPerson"]').val('0');
+                    $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                    $poContentEle.find('input[name="loadingType"]').val('');
                 }
-                $poContentEle.find('input[name="poLicPerson"]').val('0');
-                $poContentEle.find('input[name="poExistingPsn"]').val('0');
-                $poContentEle.find('input[name="loadingType"]').val('');
+
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillPoData($poContentEle, data);
+                    $poContentEle.find('input[name="poLicPerson"]').val('0');
+                    $poContentEle.find('input[name="poExistingPsn"]').val('0');
+                    $poContentEle.find('input[name="loadingType"]').val('');
                 }
-                $poContentEle.find('input[name="poLicPerson"]').val('0');
-                $poContentEle.find('input[name="poExistingPsn"]').val('0');
-                $poContentEle.find('input[name="loadingType"]').val('');
+
             }else{
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -765,18 +803,20 @@
                 unDisabledPartPage($dpoContentEle);
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
+                    $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
+                    $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                    $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
                 }
-                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
-                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
-                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
+
             }else if('-1' == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
+                    $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
+                    $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
+                    $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
                 }
-                $dpoContentEle.find('input[name="dpoLicPerson"]').val('0');
-                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
-                $dpoContentEle.find('input[name="dpoLoadingType"]').val('');
+
             }else{
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -842,6 +882,9 @@
                         if(psnLength >='${poHcsaSvcPersonnelDto.maximumCount}'){
                             $('#addPsnDiv-po').addClass('hidden');
                         }
+                        if(psnLength <= '${poHcsaSvcPersonnelDto.mandatoryCount}'){
+                            $('.po-content:last .removePoBtn').remove();
+                        }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
                         $('.po-content').each(function (k,v) {
@@ -894,6 +937,9 @@
                         if(psnLength >='${dpoHcsaSvcPersonnelDto.maximumCount}'){
                             $('#addPsnDiv-dpo').addClass('hidden');
                         }
+                        /*if(psnLength <= '${dpoHcsaSvcPersonnelDto.mandatoryCount}'){
+                            $('.dpo-content:last .removeDpoBtn').remove();
+                        }*/
                         //get data from page
                         $('#isEditDpoHiddenVal').val('1');
                         $('.dpo-content').each(function (k,v) {
@@ -925,7 +971,7 @@
             $contentEle.find('input[type="text"]').css('color','');
             //get data from page
             var poSelectVal = $contentEle.find('select[name="poSelect"]').val();
-            if('' != poSelectVal){
+            if('-1' != poSelectVal && '' != poSelectVal){
                 $contentEle.find('select[name="poSelect"] option[value="newOfficer"]').prop('selected',true);
             }
             $('#isEditHiddenVal').val('1');
@@ -945,7 +991,7 @@
             $contentEle.find('input[type="text"]').css('color','');
             //get data from page
             var deputyPoSelectVal = $contentEle.find('select[name="deputyPoSelect"]').val();
-            if('-1' != deputyPoSelectVal){
+            if('-1' != deputyPoSelectVal && '' != deputyPoSelectVal){
                 $contentEle.find('select[name="deputyPoSelect"] option[value="newOfficer"]').prop('selected',true);
             }
             $('#isEditDpoHiddenVal').val('1');
@@ -1189,8 +1235,9 @@
         var children = closest.children("div.dpo-content");
         if(children.length <= 0){
             $("select[name='deputyPrincipalOfficer']").next().find('.current').html('No');
-            $("select[name='deputyPrincipalOfficer']").val('No')
+            $("select[name='deputyPrincipalOfficer']").val('0');
             $("select[name='deputyPrincipalOfficer']").trigger("change");
+            $("select[name='deputyPrincipalOfficer']").prop('disabled',false);
         }
     }
     var setPoPsnDisabled = function ($cgoPsnEle,psnEditDto) {

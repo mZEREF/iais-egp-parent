@@ -812,7 +812,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
         HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
 
-        Optional.ofNullable(set).orElseGet(() -> new HashSet<>());
+        set = Optional.ofNullable(set).orElseGet(() -> new HashSet<>());
 
         String unMaskVal = MaskUtil.unMaskValue(checkboxName, itemId);
         if ("checked".equals(action)){

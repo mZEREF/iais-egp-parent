@@ -158,7 +158,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 try {
                     flag = egpUserClient.deleteUerRoleIds(userDomain, userId, roleId).getEntity();
                     if (!flag) {
-                        return false;
+                        return Boolean.FALSE;
                     }
                 } catch (Exception e) {
                     return Boolean.FALSE;

@@ -416,6 +416,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         filters.put("appGrpPmtStatus", status);
                     }else
                     if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
@@ -577,6 +580,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         filters.put("appGrpPmtStatus", status);
                     }else
                     if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                            &&!status.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                             &&!status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
@@ -730,6 +736,15 @@ public class OfficerOnlineEnquiriesDelegator {
             if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
                 appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
             }
+            if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE)) {
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+            }
+            if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST)) {
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+            }
+            if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)) {
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+            }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
                 StringBuilder sb=new StringBuilder();
@@ -862,6 +877,9 @@ public class OfficerOnlineEnquiriesDelegator {
         String appStatus=ParamUtil.getString(request, "application_status");
         if(!StringUtil.isEmpty(appStatus)
                 &&(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                ||appStatus.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                ||appStatus.equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                ||appStatus.equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                 ||appStatus.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)
                 ||appStatus.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
@@ -962,12 +980,14 @@ public class OfficerOnlineEnquiriesDelegator {
             for (String appId : appIds) {
                 String[] appIdSplit=appId.split("\\|");
                 String is = appIdSplit[1];
-                String isActive = appIdSplit[3];
-                if ("1".equals(is)&&"Active".equals(isActive)) {
-                    licIdsSet.add(appIdSplit[2]);
-                }
-                if ("Active".equals(isActive)) {
-                    licRfiIdsSet.add(appIdSplit[2]);
+                if(appIdSplit.length>2){
+                    String isActive = appIdSplit[3];
+                    if ("1".equals(is)&&"Active".equals(isActive)) {
+                        licIdsSet.add(appIdSplit[2]);
+                    }
+                    if ("Active".equals(isActive)) {
+                        licRfiIdsSet.add(appIdSplit[2]);
+                    }
                 }
             }
         }catch (Exception e){
@@ -1060,6 +1080,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
@@ -1196,48 +1219,59 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(parm!=null){
                     appParam.setPageNo(parm.getPageNo());
                     appParam.setPageSize(parm.getPageSize());
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                    }
-                    if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                        StringBuilder sb=new StringBuilder();
-                        Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                        if ("HIV".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
-                        } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
-                        } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
+                    if(parm.getFilters()!=null){
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
                         }
-                        appParam.addParam("appSubStatus_HIV", sb);
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                        }
+                        if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                            List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                            StringBuilder sb=new StringBuilder();
+                            Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                            if ("HIV".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            }
+                            appParam.addParam("appSubStatus_HIV", sb);
+                        }
                     }
                 }
                 if(licenseeIds.size()!=0){
@@ -1250,7 +1284,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     appParam.addParam("licenseeId",typeStr);
                 }
                 SearchResult<ApplicationLicenceQueryDto> appResult;
-                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
@@ -1326,6 +1360,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
@@ -1462,48 +1499,59 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(parm!=null){
                     appParam.setPageNo(parm.getPageNo());
                     appParam.setPageSize(parm.getPageSize());
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                    }
-                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                    }
-                    if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                        StringBuilder sb=new StringBuilder();
-                        Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                        if ("HIV".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
-                        } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
-                        } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                            sb.append('(');
-                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                                if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                                }
-                            }
-                            sb.append("'1' = '0')");
+                    if(parm.getFilters()!=null){
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
                         }
-                        appParam.addParam("appSubStatus_HIV", sb);
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                        }
+                        if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)) {
+                            appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                        }
+                        if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                            List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                            StringBuilder sb=new StringBuilder();
+                            Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                            if ("HIV".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            }
+                            appParam.addParam("appSubStatus_HIV", sb);
+                        }
                     }
                 }
                 if(licenseeIds.size()!=0){
@@ -1516,7 +1564,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     appParam.addParam("licenseeId",typeStr);
                 }
                 SearchResult<ApplicationLicenceQueryDto> appResult;
-                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
@@ -1632,6 +1680,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE))
+                            &&!parm.getFilters().get("appStatus").equals((ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING))
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)
                             &&!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)
@@ -1766,48 +1817,59 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter, true);
             if (appParam != null) {
                 appParam.setPageNo(0);
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                }
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                }
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                }
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                }
-                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                    List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                    StringBuilder sb=new StringBuilder();
-                    Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                    if ("HIV".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
+                if(parm!=null&&parm.getFilters()!=null){
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
                     }
-                    appParam.addParam("appSubStatus_HIV", sb);
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                    }
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                    }
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                    }
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                    }
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                    }
+                    if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)) {
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                    }
+                    if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                        StringBuilder sb=new StringBuilder();
+                        Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                        if ("HIV".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        }
+                        appParam.addParam("appSubStatus_HIV", sb);
+                    }
                 }
                 if(licenseeIds.size()!=0){
                     String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
@@ -1819,7 +1881,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     appParam.addParam("licenseeId",typeStr);
                 }
                 SearchResult<ApplicationLicenceQueryDto> appResult ;
-                if (parm!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
                 }else {
@@ -1884,7 +1946,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     info.setServiceName(info.getServiceName());
                 }
             }catch (Exception e){
-                info.setServiceName(info.getServiceName());
                 log.debug("ServiceName is null");
             }
             try {

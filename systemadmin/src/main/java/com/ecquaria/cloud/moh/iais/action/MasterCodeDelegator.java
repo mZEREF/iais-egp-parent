@@ -488,9 +488,9 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
+                String errSequenceMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Sequence","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getSequence())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Sequence","field");
-                    errItems.add(errMsg);
+                    errItems.add(errSequenceMsg);
                     result = true;
                 }else {
                     try{
@@ -504,36 +504,33 @@ public class MasterCodeDelegator {
                             Integer.parseInt(masterCodeToExcelDto.getSequence());
                         }
                     }catch (Exception e){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Sequence","field");
-                        errItems.add(errMsg);
+                        errItems.add(errSequenceMsg);
                         result = true;
                     }
 
 
                 }
+                String errStartDtMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective Start Date","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective Start Date","field");
-                    errItems.add(errMsg);
+                    errItems.add(errStartDtMsg);
                     result = true;
                 }else{
                     try{
                         codeEffFrom = masterCodeToExcelDto.getEffectiveFrom();
                     }catch (Exception e){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective Start Date","field");
-                        errItems.add(errMsg);
+                        errItems.add(errStartDtMsg);
                         result = true;
                     }
                 }
+                String errEndDtMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective End Date","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveTo())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective End Date","field");
-                    errItems.add(errMsg);
+                    errItems.add(errEndDtMsg);
                     result = true;
                 }else{
                     try{
                         codeEffTo = masterCodeToExcelDto.getEffectiveTo();
                     }catch (Exception e){
-                        String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective End Date","field");
-                        errItems.add(errMsg);
+                        errItems.add(errEndDtMsg);
                         result = true;
                     }
                 }
@@ -586,6 +583,8 @@ public class MasterCodeDelegator {
                         }
                     }
                 }
+                String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -594,16 +593,14 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(err0006Msg);
                         result = true;
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
                     String uploadVersion = masterCodeToExcelDto.getVersion();
                     if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(err0006Msg);
                         result = true;
                     }else {
                         if(uploadVersion.length() > 4){
@@ -1109,7 +1106,7 @@ public class MasterCodeDelegator {
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    int i =  (int)codeCategorySequenceInt;
                     masterCodeDto.setSequence(i);
                 }
 
@@ -1170,7 +1167,7 @@ public class MasterCodeDelegator {
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    int i =  new Double(codeCategorySequenceInt).intValue();
+                    int i =  (int)codeCategorySequenceInt;
                     masterCodeDto.setSequence(i);
                 }
 
