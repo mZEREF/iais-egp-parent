@@ -26,104 +26,104 @@
                 <div class="col-md-6">
                     <c:forEach items="${assignRoleOption}" var="role">
                         <c:choose>
-                            <c:when test="${role=='Approval Officer 1'}">
+                            <c:when test="${role.key=='AO1'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="ao1Check" onclick="checkRole()" type="checkbox"
-                                           name="assignRoleAo1" value="${role}">
+                                           name="assignRoleAo1" value="${role.value}">
                                     <label class="form-check-label" for="ao1Check"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="ao1" hidden>
                                     <c:forEach items="${ao1GroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Approval Officer 1 Leader'}">
+                            <c:when test="${role.key=='AO1_LEAD'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="ao1LeadCheck" onclick="checkRole()"
-                                           type="checkbox" name="assignRoleAo1Lead" value="${role}">
+                                           type="checkbox" name="assignRoleAo1Lead" value="${role.value}">
                                     <label class="form-check-label" for="ao1LeadCheck"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="ao1Lead" hidden>
                                     <c:forEach items="${ao1GroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Inspector'}">
+                            <c:when test="${role.key=='INSPECTOR'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="insCheck" onclick="checkRole()" type="checkbox"
-                                           name="assignRoleIns" value="${role}">
+                                           name="assignRoleIns" value="${role.value}">
                                     <label class="form-check-label" for="insCheck"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="ins" hidden>
                                         <%--                                    <iais:multipleSelect name="insGroupSelect" selectValue="" options="insGroupOptions"></iais:multipleSelect>--%>
                                     <c:forEach items="${insGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Inspector Leader'}">
+                            <c:when test="${role.key=='INSPECTOR_LEAD'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="insLeadCheck" onclick="checkRole()"
-                                           type="checkbox" name="assignRoleInsLead" value="${role}">
+                                           type="checkbox" name="assignRoleInsLead" value="${role.value}">
                                     <label class="form-check-label" for="insLeadCheck"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="insLead" hidden>
                                     <c:forEach items="${insGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="insGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="insGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Professional Screening Officer'}">
+                            <c:when test="${role.key=='PSO'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="psoCheck" onclick="checkRole()" type="checkbox"
-                                           name="assignRolePso" value="${role}">
+                                           name="assignRolePso" value="${role.value}">
                                     <label class="form-check-label" for="psoCheck"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="pso" hidden>
                                     <c:forEach items="${psoGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="psoGroupSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="psoGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Professional Screening Officer Leader'}">
+                            <c:when test="${role.key=='PSO_LEAD'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="psoLeadCheck" onclick="checkRole()"
-                                           type="checkbox" name="assignRolePsoLead" value="${role}">
+                                           type="checkbox" name="assignRolePsoLead" value="${role.value}">
                                     <label class="form-check-label" for="psoLeadCheck"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px">${role}</span>
+                                    <span style="font-size: 18px">${role.value}</span>
                                 </div>
                                 <br/>
                                 <div id="psoLead" hidden>
                                     <c:forEach items="${psoGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
+                                        <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
                                     </c:forEach>
                                 </div>
                             </c:when>
                             <c:otherwise>
                                 <div class="form-check">
                                     <input class="form-check-input" id="roleId" type="checkbox" name="assignRoleOther"
-                                           value="${role}">
+                                           value="${role.value}">
                                     <label class="form-check-label" for="roleId"><span
                                             class="check-square"></span></label>
-                                    <span style="font-size: 18px;font-weight: normal">${role}</span>
+                                    <span style="font-size: 18px;font-weight: normal">${role.value}</span>
                                 </div>
                                 <br/>
                             </c:otherwise>

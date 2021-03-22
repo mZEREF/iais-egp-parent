@@ -252,7 +252,7 @@ public class MohIntranetUserDelegator {
             }
         }
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
-        List<String> assignRoleOptionFull = IaisCommonUtils.genNewArrayList();
+        Map<String, String> assignRoleOptionFull = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleMap1 = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleNameGroupId = IaisCommonUtils.genNewHashMap();
@@ -260,7 +260,7 @@ public class MohIntranetUserDelegator {
             for (Role role : rolesByDomain) {
                 String roleName = role.getName();//APPROVE 1
                 String assignRoleId = role.getId();//AO1
-                assignRoleOptionFull.add(roleName);
+                assignRoleOptionFull.put(assignRoleId,roleName);
                 roleMap.put(roleName, assignRoleId);
                 roleMap1.put(assignRoleId, roleName);
             }
@@ -270,13 +270,13 @@ public class MohIntranetUserDelegator {
         List<String> existRoleIds = IaisCommonUtils.genNewArrayList();
         Map<String, String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleIdAndNameMap = IaisCommonUtils.genNewHashMap();
-        List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
+        Map<String, String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewHashMap();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleId = orgUserRoleDto.getRoleName();
                 String roleNameFull = roleMap1.get(roleId);
                 String assignRoleId = orgUserRoleDto.getId();
-                alreadyAssignRoleOptionFull.add(roleNameFull);
+                alreadyAssignRoleOptionFull.put(roleId,roleNameFull);
                 roleNameAndIdMap.put(roleNameFull, assignRoleId);
                 roleIdAndNameMap.put(assignRoleId, roleNameFull);
                 existRoleIds.add(roleId);
@@ -381,12 +381,11 @@ public class MohIntranetUserDelegator {
             }
         }
 
-
-
-
-
-        assignRoleOptionFull.removeAll(alreadyAssignRoleOptionFull);
-        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
+        for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
+             ) {
+            assignRoleOptionFull.remove(e.getKey());
+        }
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
         ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", roleNameAndIdMap);
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
@@ -409,7 +408,13 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         }
     }
-
+    private Map<String, String> sortByKey(Map<String, String> map) {
+        Map<String, String> result = new LinkedHashMap<>(map.size());
+        map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
     public void addRole(BaseProcessClass bpc) {
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
