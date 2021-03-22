@@ -41,7 +41,7 @@
                                     </c:forEach>
                                 </div>
                             </c:when>
-                            <c:when test="${role=='Approval Officer 1 Officer'}">
+                            <c:when test="${role=='Approval Officer 1 Leader'}">
                                 <div class="form-check">
                                     <input class="form-check-input" id="ao1LeadCheck" onclick="checkRole()"
                                            type="checkbox" name="assignRoleAo1Lead" value="${role}">
