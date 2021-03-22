@@ -43,7 +43,7 @@ public class WorkDayCalculateUtil {
                 i--;
             }else {
                 for (Date holiday:holidays
-                     ) {
+                ) {
                     String holidayStr= Formatter.formatDateTime(holiday, Formatter.DATE);
                     String calendarStr= Formatter.formatDateTime(calendar.getTime(), Formatter.DATE);
                     if (holidayStr.equals(calendarStr)){
@@ -70,7 +70,9 @@ public class WorkDayCalculateUtil {
         if(nonWorkingDateListByWorkGroupId!=null){
             for (ApptNonWorkingDateDto nonWorkDto:nonWorkingDateListByWorkGroupId
             ) {
-                if(mapDays.get(nonWorkDto.getRecursivceDate())!=null&&nonWorkDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                if(mapDays.get(nonWorkDto.getRecursivceDate())!=null
+                        &&nonWorkDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)
+                        &&nonWorkDto.isAm()&&nonWorkDto.isPm()){
                     nonWkrDays.add(mapDays.get(nonWorkDto.getRecursivceDate()));
                 }
             }
