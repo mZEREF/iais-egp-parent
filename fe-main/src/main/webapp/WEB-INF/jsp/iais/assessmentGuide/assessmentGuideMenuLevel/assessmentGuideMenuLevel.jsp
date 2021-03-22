@@ -27,10 +27,15 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="renewLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Renew my licence</span>
+                    <span class="left-content">Renew my licence <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                                   title='${self_ack014}'
+                                                                   style="position: absolute;left: 200px; top: 13px;z-index: 10"
+                                                                   data-original-title=""
+                    >i</a></span>
                     <span class="right-content">${self_ack002}</span>
                 </label>
             </div>
+
 
             <div class="form-check progress-step-check"
                  style="width: 930px">
