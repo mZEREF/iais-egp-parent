@@ -32,12 +32,12 @@
     </div>
 </c:if>
 
-    <c:if test="${applicationDto.applicationType == 'APTY008'}">
-        <%@include file="../newApplication/cessationViewApp.jsp" %>
-    </c:if>
-    <c:if test="${applicationDto.applicationType != 'APTY008'}">
-        <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
-    </c:if>
+<c:if test="${applicationDto.applicationType == 'APTY008'}">
+    <%@include file="../newApplication/cessationViewApp.jsp" %>
+</c:if>
+<c:if test="${applicationDto.applicationType != 'APTY008'}">
+    <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
+</c:if>
 
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>

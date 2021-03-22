@@ -33,6 +33,7 @@ public class MohFeApplicationViewDelegator {
         NewApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(NewApplicationDelegator.class);
         newApplicationDelegator.inboxToPreview(bpc);
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
+        ParamUtil.setSessionAttr(bpc.request, "cessationForm", "Application Details");
     }
 
     public void toAppealStep(BaseProcessClass bpc){
