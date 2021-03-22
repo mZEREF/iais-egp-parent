@@ -980,12 +980,14 @@ public class OfficerOnlineEnquiriesDelegator {
             for (String appId : appIds) {
                 String[] appIdSplit=appId.split("\\|");
                 String is = appIdSplit[1];
-                String isActive = appIdSplit[3];
-                if ("1".equals(is)&&"Active".equals(isActive)) {
-                    licIdsSet.add(appIdSplit[2]);
-                }
-                if ("Active".equals(isActive)) {
-                    licRfiIdsSet.add(appIdSplit[2]);
+                if(appIdSplit.length>2){
+                    String isActive = appIdSplit[3];
+                    if ("1".equals(is)&&"Active".equals(isActive)) {
+                        licIdsSet.add(appIdSplit[2]);
+                    }
+                    if ("Active".equals(isActive)) {
+                        licRfiIdsSet.add(appIdSplit[2]);
+                    }
                 }
             }
         }catch (Exception e){
