@@ -174,7 +174,7 @@
                                   <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Vehicle No
+                                        Vehicle No.
                                       </div>
                                       <div class="col-md-6">
                                         <div  class="col-md-6">

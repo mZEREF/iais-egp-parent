@@ -72,7 +72,7 @@
                                         <iais:row>
                                             <iais:field value="Status :"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                <iais:select id="rfiViewStatus" name="status"
+                                                <iais:select id="rfiViewStatus" cssClass="nice-select status" name="status"
                                                              options="salutationStatusList" value="${licPreReqForInfoDto.status}"></iais:select>
                                             </div>
                                         </iais:row>

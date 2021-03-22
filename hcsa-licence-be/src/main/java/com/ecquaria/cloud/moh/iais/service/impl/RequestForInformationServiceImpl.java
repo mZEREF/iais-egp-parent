@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -87,8 +86,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private EventBusHelper eventBusHelper;
     @Autowired
     HcsaChklClient hcsaChklClient;
-    @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     private LicEicClient licEicClient;
 

@@ -62,17 +62,17 @@
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
                     <c:choose>
-                    <c:when test="${isUpdate eq 'Y'}">
-                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'update')">Update</a></div>
-                </c:when>
-                <c:otherwise>
-                <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'create')">Create</a></div>
-            </c:otherwise>
-            </c:choose>
+                        <c:when test="${isUpdate eq 'Y'}">
+                             <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'update')">Update</a></div>
+                        </c:when>
+                        <c:otherwise>
+                            <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'create')">Create</a></div>
+                        </c:otherwise>
+                    </c:choose>
 
+            </div>
         </div>
-</div>
-</form>
+    </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

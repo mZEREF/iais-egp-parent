@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +39,14 @@ public class UserValidator implements CustomizeValidator {
                     b = SgNoValidator.validateNric(dto.getIdentityNo());
                 }
                 if (!b) {
-                    map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR014"));
+                    map.put("identityNo", MessageUtil.getMessageDesc("RFC_ERR0012"));
                 }
             }
 
+
+            if (StringUtil.isEmpty(dto.getOrgId())) {
+                map.put("organizationId", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
             if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
                 map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
@@ -60,16 +63,6 @@ public class UserValidator implements CustomizeValidator {
                 }
             }
 
-            if(dto.getId() == null && dto.getIdentityNo() != null){
-                String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
-                if(!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)){
-                    FeUserDto feUserDto = intranetUserService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
-                    if(feUserDto != null){
-                        map.put("idNo", MessageUtil.getMessageDesc("USER_ERR015"));
-                    }
-                }
-
-            }
         return map;
     }
 }

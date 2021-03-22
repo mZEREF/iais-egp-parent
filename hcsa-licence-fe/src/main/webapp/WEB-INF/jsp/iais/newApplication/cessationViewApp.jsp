@@ -56,7 +56,7 @@
                           </div>
                         </div>
                         <div class="form-group">
-                          <label class="col-xs-12 col-md-6 control-label">Cession
+                          <label class="col-xs-12 col-md-6 control-label">Cessation
                             Reasons </label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <iais:select disabled="true"

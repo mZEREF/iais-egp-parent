@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,4 +73,8 @@ public interface ApplicationService {
     EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);
 
     void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception;
+
+    void rollBackInspAo1InspLead(BaseProcessClass bpc, String roleId, String routeBackStatus, String wrkGpId, String userId) throws CloneNotSupportedException;
+
+    void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
 }

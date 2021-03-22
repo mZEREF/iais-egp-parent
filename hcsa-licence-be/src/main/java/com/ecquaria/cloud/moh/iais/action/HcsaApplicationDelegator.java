@@ -816,22 +816,24 @@ public class HcsaApplicationDelegator {
     public void routeBack(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeBack start ...."));
         String str = ParamUtil.getMaskedString(bpc.request, "rollBack");
+        log.info(StringUtil.changeForLog(str));
         String[] result = str.split(",");
-        String satageId = result[0];
+        String stageId = result[0];
         String wrkGpId = result[1];
         String userId = result[2];
         String roleId = result[3];
 
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String userRoleId = taskDto.getRoleId();
+        //else status
         String routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO;
-        String recipientRole = null;
+        //status by
         if (RoleConsts.USER_ROLE_AO1.equals(userRoleId) || RoleConsts.USER_ROLE_AO2.equals(userRoleId) || RoleConsts.USER_ROLE_AO3.equals(userRoleId)) {
-            if (HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)) {
+            if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO;
-            } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)) {
+            } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO;
-            } else if (HcsaConsts.ROUTING_STAGE_INS.equals(satageId)) {
+            } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR;
             }
         } else if (RoleConsts.USER_ROLE_PSO.equals(userRoleId)) {
@@ -840,37 +842,32 @@ public class HcsaApplicationDelegator {
             routeBackStatus = ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK;
         }
 
-        //ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK
-        if (HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)) {
+        //do roll back
+        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
             rollBack(bpc, HcsaConsts.ROUTING_STAGE_ASO, routeBackStatus, RoleConsts.USER_ROLE_ASO, wrkGpId, userId);
-            recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_ASO;
-        } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)) {
+        } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
             rollBack(bpc, HcsaConsts.ROUTING_STAGE_PSO, routeBackStatus, RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
-            recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_PSO;
-        } else if (HcsaConsts.ROUTING_STAGE_INS.equals(satageId)) {
+        } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
             if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
-                rollBack(bpc, HcsaConsts.ROUTING_STAGE_AO1, routeBackStatus, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
-                recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO1;
+                applicationService.rollBackInspAo1InspLead(bpc, roleId, routeBackStatus, wrkGpId, userId);
+            } else if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId)){
+                applicationService.rollBackInspAo1InspLead(bpc, roleId, routeBackStatus, wrkGpId, userId);
             } else {
                 rollBack(bpc, HcsaConsts.ROUTING_STAGE_INS, routeBackStatus, RoleConsts.USER_ROLE_INSPECTIOR, wrkGpId, userId);
-                recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_INSPECTOR;
             }
-        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)) {
+        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBack(bpc, HcsaConsts.ROUTING_STAGE_AO1, routeBackStatus, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
-            recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO1;
-        } else if (HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)) {
+        } else if (HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
             rollBack(bpc, HcsaConsts.ROUTING_STAGE_AO2, routeBackStatus, RoleConsts.USER_ROLE_AO2, wrkGpId, userId);
-            recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO2;
-        } else if (HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)) {
+        } else if (HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
             rollBack(bpc, HcsaConsts.ROUTING_STAGE_AO3, routeBackStatus, RoleConsts.USER_ROLE_AO3, wrkGpId, userId);
-            recipientRole = NotificationHelper.RECEIPT_ROLE_ASSIGNED_AO3;
         }
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         //send internal route back email
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try {
-            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, recipientRole,userId);
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, null, userId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -1102,6 +1099,10 @@ public class HcsaApplicationDelegator {
                     if (RoleConsts.USER_ROLE_AO3.equals(stageCode)) {
                         nextStageId = HcsaConsts.ROUTING_STAGE_AO3;
                         routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    }
+                    //update inspection status
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(routeNextStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(routeNextStatus)){
+                        applicationService.updateInspectionStatusByAppNo(applicationDto.getId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
                     }
                     routingTask(bpc, nextStageId, routeNextStatus, stageCode);
                 } else {
@@ -2277,7 +2278,7 @@ public class HcsaApplicationDelegator {
                         ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                         String applicationNo = oldApplication.getApplicationNo();
                         String applicationType1 = oldApplication.getApplicationType();
-                        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+//                        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
 //                            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -2397,7 +2398,7 @@ public class HcsaApplicationDelegator {
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos) {
         List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
         for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-        ) {
+                ) {
             ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
             ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
             if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
@@ -2406,9 +2407,9 @@ public class HcsaApplicationDelegator {
         }
         List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
         for (PaymentRequestDto refund : paymentRequestDtos
-        ) {
+                ) {
             for (AppReturnFeeDto appreturn : saveReturnFeeDtos
-            ) {
+                    ) {
                 if (appreturn.getApplicationNo().equals(refund.getReqRefNo())) {
                     appreturn.setStatus(refund.getStatus());
                 }
@@ -2770,7 +2771,7 @@ public class HcsaApplicationDelegator {
                     (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_PSO.equals(roleId))
-            ) {
+                    ) {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
             subStageId = HcsaConsts.ROUTING_STAGE_POT;
@@ -3100,7 +3101,7 @@ public class HcsaApplicationDelegator {
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             String codeDesc = "";
-            String recommendationOnlyShow = "";
+            String recommendationOnlyShow;
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             if (recomInNumber == null || recomInNumber == 0) {
                 recommendationOnlyShow = "Reject";
@@ -3126,7 +3127,7 @@ public class HcsaApplicationDelegator {
                 recomInDateOnlyShow = Formatter.formatDateTime(recomInDate, Formatter.DATE);
             }
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow", recomInDateOnlyShow);
-            if (RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther) {
+            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) || RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther) {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow", recommendationOnlyShow);
             }
         }

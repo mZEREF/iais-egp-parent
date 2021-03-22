@@ -85,7 +85,7 @@
                                     <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                     <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
                                     <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
-                                    <iais:sortableHeader needSort="true"  field="DESCRIPTION" value="Holiday Description"/>
+                                    <iais:sortableHeader needSort="true"  field="PH_CODE" value="Holiday Description"/>
                                     <iais:sortableHeader needSort="true" field="status" value="Status"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action"/>
                                 </tr>
@@ -194,6 +194,7 @@
         $("#phCode option:first").prop("selected", 'selected');
         $("#year option:first").prop("selected", 'selected');
         $(".searchdiv .current").text("Please Select");
+        $(".error-msg").text("");
 
         $.ajax({
             data: {remove: 1},

@@ -10,12 +10,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -26,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -41,7 +45,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -223,6 +230,63 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
 
         }
+    }
+
+    @Override
+    public boolean hasSampleChecklistItem(AdhocCheckListConifgDto adhocConfig) {
+        Set<String > hashSet = IaisCommonUtils.genNewHashSet();
+        List<AdhocChecklistItemDto> itemList = adhocConfig.getAllAdhocItem();
+        for (AdhocChecklistItemDto item : itemList){
+            String question = item.getQuestion();
+            if (!hashSet.add(question)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void removeAdhocItem(List<AdhocChecklistItemDto> itemList, int index) {
+        int i = 0;
+        for (AdhocChecklistItemDto item : itemList){
+            if (index == i){
+                itemList.remove(i);
+                break;
+            }
+
+            i++;
+        }
+    }
+
+    @Override
+    public void filterAdhocItem(SearchParam searchParam, AdhocCheckListConifgDto config) {
+        if (Optional.ofNullable(config).isPresent()){
+            List<AdhocChecklistItemDto> itemList = config.getAllAdhocItem();
+            log.debug("indicates that a record has been selected ");
+            if (IaisCommonUtils.isNotEmpty(itemList)){
+                itemList.removeIf(i -> StringUtil.isEmpty(i.getItemId()));
+                SqlHelper.builderNotInSql(searchParam, "item.id", "adhocItemId",
+                        itemList.stream().map(AdhocChecklistItemDto::getItemId).collect(Collectors.toList()));
+            }
+        }
+    }
+
+    @Override
+    public void addSelectedChecklistItemToAdhocConfig(List<ChecklistItemDto> itemList, AdhocCheckListConifgDto config) {
+        List<AdhocChecklistItemDto> allAdhocItem = config.getAllAdhocItem();
+        itemList.forEach(selectItem -> {
+            AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
+            String question = selectItem.getChecklistItem();
+            String answerType = selectItem.getAnswerType();
+            String riskLevel = selectItem.getRiskLevel();
+
+            adhocItem.setItemId(selectItem.getItemId());
+            adhocItem.setAnswerType(answerType);
+            adhocItem.setQuestion(question);
+            adhocItem.setRiskLvl(riskLevel);
+            adhocItem.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            allAdhocItem.add(adhocItem);
+        });
     }
 
     public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {

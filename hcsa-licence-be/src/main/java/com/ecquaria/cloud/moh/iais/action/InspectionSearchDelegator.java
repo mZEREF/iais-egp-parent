@@ -232,8 +232,8 @@ public class InspectionSearchDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "supervisorRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        loginContext.setCurRoleId(roleId);
         if(!StringUtil.isEmpty(roleId)){
+            loginContext.setCurRoleId(roleId);
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
@@ -435,6 +435,7 @@ public class InspectionSearchDelegator {
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremCorrId);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+                //set hours flag
                 inspectionTaskPoolListDto = setEditHoursFlagByAppAndUser(inspectionTaskPoolListDto, applicationDto);
             }
             if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){

@@ -36,6 +36,7 @@
                                     <iais:value width="11">
                                         <iais:select id="organizationId" name="organizationId" options="licenseeSelection"  cssClass="designationOption" firstOption="Please Select"
                                                      value="${inter_user_attr.orgId}"></iais:select>
+                                        <span class="error-msg" name="errorMsg" id="error_organizationId"></span>
                                     </iais:value>
                                 </c:when>
                                 <c:otherwise>

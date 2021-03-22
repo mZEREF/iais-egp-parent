@@ -96,7 +96,7 @@ public class HcsaFileAjaxController {
                 append( fileName.replace("pageContext.request.contextPath","/hcsa-licence-web")
                         .replace("replaceFileAppendIdDown",fileAppendId)
                         .replace("replaceFileIndexDown",String.valueOf(size)).replace("replaceCsrf",CSRF))
-                .append(" ").append(deleteButtonString.replace("replaceForDelete",fileAppendId).
+                .append(' ').append(deleteButtonString.replace("replaceForDelete",fileAppendId).
                                       replace("indexReplace",String.valueOf(size)))
                 .append( reUploadButtonString.replace("replaceForUploadForm",uploadFormId).
                         replace("replaceForUpload",fileAppendId).
@@ -154,7 +154,7 @@ public class HcsaFileAjaxController {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
 
         String fileAppendId =  ParamUtil.getString(request,"fileAppendIdDown");
-        String index = (String) ParamUtil.getSessionAttr(request,"fileIndexDown");
+        String index =  ParamUtil.getString(request,"fileIndexDown");
 
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
             Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);

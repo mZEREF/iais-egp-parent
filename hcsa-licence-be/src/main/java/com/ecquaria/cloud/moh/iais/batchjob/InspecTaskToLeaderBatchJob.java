@@ -122,7 +122,7 @@ public class InspecTaskToLeaderBatchJob {
                             report = report + 1;
                         }
                         continue;
-                        //in ASO/PSO
+                    //in ASO/PSO
                     } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
                         continue;
                     }
@@ -135,7 +135,7 @@ public class InspecTaskToLeaderBatchJob {
                         createTask(0, 1, allApp, fastInspectionList);
                         appInspectionStatusDtos.remove(i);
                         i--;
-                        //Other Application
+                    //Other Application
                     } else {
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
                             leadTask = leadTask + 1;
@@ -191,15 +191,17 @@ public class InspecTaskToLeaderBatchJob {
                     continue;
                 }
                 if (!StringUtil.isEmpty(workGroupId)) {
+                    //get task application
+                    ApplicationDto taskApp = inspectionTaskClient.getApplicationByCorreId(appInspStatusDto.getAppPremCorreId()).getEntity();
                     //get task type
                     List<TaskDto> taskDtoList = organizationClient.getTaskByAppNoStatus(
-                            applicationDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();//NOSONAR
+                            taskApp.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();//NOSONAR
                     List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(taskDtoList)) {
                         if (!StringUtil.isEmpty(leads)) {
                             //get task score
                             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                            applicationDtos.add(applicationDto);
+                            applicationDtos.add(taskApp);
                             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                             TaskDto taskDto = taskDtoList.get(0);

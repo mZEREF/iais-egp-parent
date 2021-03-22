@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
@@ -11,11 +13,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -225,5 +229,23 @@ public class BeEicGatewayClient {
                                                                String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/post-inspection", HttpMethod.POST, applicationListFileDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+    }
+    public FeignResponseEntity<SearchResult> giroDeductionDtoSearchResult(SearchParam searchParam,
+                                                                                            String date, String authorization, String dateSec,
+                                                                                            String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForSearchResult(gateWayUrl + "/v1/giro-payment-query", HttpMethod.POST, searchParam,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GiroDeductionDto.class);
+    }
+    public FeignResponseEntity<List> updateDeductionDtoSearchResultUseGroups(List<String> groups,
+                                                                  String date, String authorization, String dateSec,
+                                                                  String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/giro-result-status", HttpMethod.PUT, groups,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GiroDeductionDto.class);
+    }
+    public FeignResponseEntity<List> updateFeApplicationGroupStatus(List<ApplicationGroupDto> applicationGroupDtos,
+                                                                             String date, String authorization, String dateSec,
+                                                                             String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-grp-status", HttpMethod.PUT, applicationGroupDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationGroupDto.class);
     }
 }

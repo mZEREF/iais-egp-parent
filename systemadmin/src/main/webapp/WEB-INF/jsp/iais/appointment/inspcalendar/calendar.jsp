@@ -26,18 +26,18 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
-    <form class="form-horizontal">
-      <iais:section title="" id = "demoList">
-        <div class="clearRow">
+      <form class="form-horizontal">
+        <iais:section title="" id = "demoList">
+          <div class="clearRow">
 
-          <c:if test="${isGroupLead == 'Y'}">
-            <iais:row>
-              <iais:field value="Inspector ID:" required="true"/>
-              <iais:value width="18">
-                <input type="text" id="userName" name="userName" value="${param.userName}" maxlength="255" />
-                <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
-              </iais:value>
-            </iais:row>
+            <c:if test="${isGroupLead == 'Y'}">
+              <iais:row>
+                <iais:field value="Inspector ID:" required="true"/>
+                <iais:value width="18">
+                  <input type="text" id="userName" name="userName" value="${param.userName}" maxlength="255" />
+                  <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
+                </iais:value>
+              </iais:row>
 
             <iais:row>
               <iais:field value="Year:" required="true"/>
@@ -95,11 +95,11 @@
               </div>
             </iais:action>
 
-          </c:if>
-        </div>
-      </iais:section>
-    </form>
-    <br><br><br>
+            </c:if>
+          </div>
+        </iais:section>
+      </form>
+      <br><br><br>
 
 
     <div>
@@ -153,8 +153,8 @@
                             <td><iais:code code="${calendar.recurrence}"></iais:code></td>
                             <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="dd/MM/yyyy"/></td>
                             <td>
-                              <button type="button" onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" data-toggle= "modal" data-target= "#deleteNonDate" class="btn btn-default btn-sm" >Delete</button>
-                              <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                                <button type="button" onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" data-toggle= "modal" data-target= "#deleteNonDate" class="btn btn-default btn-sm" >Delete</button>
+                                <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
                         </c:forEach>
@@ -173,9 +173,9 @@
     </div>
 
 
-    <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
-    </div>
+      <div class="text-right text-center-mobile">
+        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
+      </div>
 
 
   </form>
@@ -184,38 +184,38 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
 
-  function doAdd() {
-    SOP.Crud.cfxSubmit("mainForm", "add");
-  }
+    function doAdd() {
+        SOP.Crud.cfxSubmit("mainForm", "add");
+    }
 
-  function doEdit(val) {
-    $('#nonAvailId').val(val);
-    SOP.Crud.cfxSubmit("mainForm", "edit", val);
-  }
+    function doEdit(val) {
+        $('#nonAvailId').val(val);
+        SOP.Crud.cfxSubmit("mainForm", "edit", val);
+    }
 
-  function doDelete(val) {
-    $('#nonAvailId').val(val);
-  }
+    function doDelete(val) {
+        $('#nonAvailId').val(val);
+    }
 
-  function deleteThisNonDate() {
-    var valueId = $('#nonAvailId').val();
-    SOP.Crud.cfxSubmit("mainForm", "delete", valueId);
-  }
+    function deleteThisNonDate() {
+        var valueId = $('#nonAvailId').val();
+        SOP.Crud.cfxSubmit("mainForm", "delete", valueId);
+    }
+    
+    function doClear() {
+      $("#userName").val("");
+      $("#userBlockDateStart").val("");
+      $("#userBlockDateEnd").val("");
+      $("#recurrenceEndDate").val("");
+      $("#userBlockDateDescription").val("");
 
-  function doClear() {
-    $("#userName").val("");
-    $("#userBlockDateStart").val("");
-    $("#userBlockDateEnd").val("");
-    $("#recurrenceEndDate").val("");
-    $("#userBlockDateDescription").val("");
+      $("#recurrence option[text = 'N/A']").val("selected", "selected");
+      $("#recurrence").val("N/A");
 
-    $("#recurrence option[text = 'N/A']").val("selected", "selected");
-    $("#recurrence").val("N/A");
+      $("#dropYearOpt option[text = 'Please Select']").val("selected", "selected");
+      $("#dropYearOpt").val("");
 
-    $("#dropYearOpt option[text = 'Please Select']").val("selected", "selected");
-    $("#dropYearOpt").val("");
-
-    $(".form-horizontal .clearRow .current").text("Please Select");
-  }
-
+      $(".form-horizontal .clearRow .current").text("Please Select");
+    }
+    
 </script>

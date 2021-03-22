@@ -372,7 +372,7 @@ public class LicenceViewServiceDelegator {
         try {
             contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
-            log.error(e.toString(),e);
+            log.error(e.getMessage(),e);
         }
         if(appGrpPremisesDtoList!=null){
             String licenseeId =applicationViewDto.getApplicationGroupDto().getLicenseeId();
@@ -572,22 +572,23 @@ public class LicenceViewServiceDelegator {
             }
         }
         HashMap<String,List<ComplaintDto>> listHashMap=IaisCommonUtils.genNewHashMap();
-        if(disciplinaryRecordResponseDtos!=null) {
-            for (DisciplinaryRecordResponseDto disciplinaryRecordResponseDto : disciplinaryRecordResponseDtos) {
-                if (disciplinaryRecordResponseDto.getComplaints() != null) {
+        if(disciplinaryRecordResponseDtos!=null){
+            for(DisciplinaryRecordResponseDto disciplinaryRecordResponseDto : disciplinaryRecordResponseDtos){
+                if(disciplinaryRecordResponseDto.getComplaints()!=null){
                     List<ComplaintDto> complaintDtos = listHashMap.get(disciplinaryRecordResponseDto.getRegno());
-                    if (complaintDtos == null) {
-                        complaintDtos = new ArrayList<>();
+                    if(complaintDtos==null){
+                        complaintDtos=new ArrayList<>();
                         List<ComplaintDto> complaintDtoList = addMoneySymbol(disciplinaryRecordResponseDto.getComplaints());
                         complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
-                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(), complaintDtos);
-                    } else {
+                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(),complaintDtos);
+                    }else {
                         complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
-                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(), complaintDtos);
+                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(),complaintDtos);
                     }
                 }
             }
         }
+
         request.getSession().setAttribute("listHashMap",(Serializable)listHashMap);
         request.getSession().setAttribute("hashMap",(Serializable)hashMap);
 

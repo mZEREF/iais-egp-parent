@@ -57,14 +57,13 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
     private NotificationHelper notificationHelper;
 
     @Override
-    public void sendMessageEmail(List<String> appGroupList) {
+    public  List<ApplicationGroupDto> sendMessageEmail(List<String> appGroupList) {
+        List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appGroupList)){
-            List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
             for(String appGroupNo : appGroupList){
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppGrpByNo(appGroupNo).getEntity();
                 //todo status before insp, after insp
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER);
-                applicationClient.updateApplication(applicationGroupDto);
                 applicationGroupDtos.add(applicationGroupDto);
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 String applicantId = applicationGroupDto.getSubmitBy();
@@ -85,10 +84,11 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 sendMessageByAppGroup(map, appTypeShow, applicationDtos, appGroupNo);
             }
             //todo eic update appGroup
-            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+
         } else {
             log.info("Giro Deduction appGroupList is null");
         }
+        return applicationGroupDtos;
     }
 
     private void sendMessageByAppGroup(Map<String, Object> map, String appTypeShow, List<ApplicationDto> applicationDtos, String appGroupNo) {

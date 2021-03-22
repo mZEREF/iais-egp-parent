@@ -983,7 +983,6 @@ public class WithOutRenewalDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
         List<AppSubmissionDto> appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
-        String totalStr = Formatter.formatterMoney(total);
         //do app submit
         String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
         appSubmissionDtos1.addAll(appSubmissionDtos);

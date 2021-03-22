@@ -14,7 +14,7 @@
   String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-  <form method="post" id="giroDeductionForm" action=<%=process.runtime.continueURL()%>>
+  <form method="post" id="giroDeductionForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="beGiroDeductionType" value="">
     <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
@@ -43,43 +43,43 @@
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
-                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['application_no']}" />
+                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Transaction ID"/>
                       <iais:value width="18">
-                        <input type="text" name="transactionId" value="${giroDedSearchParam.filters['application_no']}" />
+                        <input type="text" name="transactionId" value="${giroDedSearchParam.filters['invoiceNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
                       <iais:value width="18">
-                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['hci_code']}" />
+                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Reference No."/>
                       <iais:value width="18">
-                        <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['hci_name']}" />
+                        <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['refNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
                       <iais:value width="18">
-                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['hci_address']}" />
+                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Description"/>
                       <iais:value width="18">
-                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
+                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['desc']}"></c:out></textarea>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hci_address']}" />
+                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
@@ -93,12 +93,11 @@
                 </h3>
                 <div class="table-gp">
                   <table class="table application-group">
-                    <iais:pagination  param="GiroSearchParam" result="GiroSearchResult"/>
+                    <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">
                       <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
                                  onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
@@ -122,17 +121,19 @@
                         <c:forEach var="pool" items="${giroDedSearchResult.rows}" varStatus="status">
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}">
                             <td>
-                              <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
-                                     onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${proRec.appPremisesPreInspectionNcItemDto.id}"/>"/>
+                              <c:if test="${pool.pmtStatus=='FAIL'}">
+                                <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
+                                       onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
+                              </c:if>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
-                            <td><c:out value="${pool.submissionType}"/></td>
-                            <td><iais:code code="${pool.applicationType}"/></td>
-                            <td><c:out value="${pool.submissionType}"/></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
+                            <td>${pool.hciName}</td>
+                            <td><iais:code code="${pool.appGroupNo}"/></td>
+                            <td><c:out value="${pool.txnRefNo}"/></td>
+                            <td><iais:code code="${pool.invoiceNo}"/></td>
+                            <td><iais:code code="${pool.acctNo}"/></td>
+                            <td><iais:code code="${pool.pmtStatus}"/></td>
+                            <td><iais:code code="$${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -141,6 +142,9 @@
                   </table>
                   <iais:action style="text-align:right;">
                     <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
+                    <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
+                    <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
+                    <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
                 </div>
@@ -158,7 +162,17 @@
         showWaiting();
         giroDeductionSubmit('retrigger');
     }
-
+    $('#uploadFile').click(function (){
+        $('#selectedFile').trigger('click');
+        $("[name='beGiroDeductionType']").val('uploadCsv');
+        var mainPoolForm = document.getElementById('giroDeductionForm');
+        mainPoolForm.submit();
+    });
+    /*$('#download').click(function (){
+        $("[name='beGiroDeductionType']").val('uploadCsv');
+        var mainPoolForm = document.getElementById('giroDeductionForm');
+        mainPoolForm.submit();
+    });*/
     function doGiroDeductionCheck(){
         var flag = true;
         var allNcItemCheck = document.getElementById("allGiroDeductionCheck");
@@ -175,7 +189,6 @@
             allNcItemCheck.checked = false;
         }
     }
-
     function giroDeductionCheckAll(){
         if ($('#allGiroDeductionCheck').is(':checked')) {
             $("input[name = 'giroDueCheck']").attr("checked","true");
@@ -214,6 +227,11 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         inspectionCommonPoolSubmit('sort');
+    }
+    function inspectionCommonPoolSubmit(action){
+        $("[name='beGiroDeductionType']").val(action);
+        var mainPoolForm =$('#giroDeductionForm');
+        mainPoolForm.submit();
     }
 </script>
 

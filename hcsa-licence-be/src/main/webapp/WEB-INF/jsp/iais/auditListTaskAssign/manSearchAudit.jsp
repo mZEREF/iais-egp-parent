@@ -48,7 +48,7 @@
             <iais:row>
                 <iais:field value="Last Inspection done before(Start)"/>
                 <iais:value width="8">
-                    <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}"/>
+                    <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}" needErrorSpan="false"/>
                     <span id="error_inspectionStartDate" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -142,6 +142,7 @@
         clearSelectFiled('premType');
         clearSelectFiled('riskType');
         $("#clearFiterForSearch .current").text("Please Select");
+        $("#error_inspectionStartDate").html("");
     }
 
     function  clearSelectFiled(id) {

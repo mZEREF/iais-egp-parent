@@ -43,7 +43,7 @@ public class WorkDayCalculateUtil {
                 i--;
             }else {
                 for (Date holiday:holidays
-                ) {
+                     ) {
                     String holidayStr= Formatter.formatDateTime(holiday, Formatter.DATE);
                     String calendarStr= Formatter.formatDateTime(calendar.getTime(), Formatter.DATE);
                     if (holidayStr.equals(calendarStr)){

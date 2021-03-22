@@ -184,7 +184,7 @@
   <%--<c:if test="${ not empty selectDraftNo }">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
   </c:if>--%>
-
+  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList" >
   <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
@@ -232,9 +232,10 @@
             }
 
         });
-
-
         doEdit();
+        if($("#errorMapIs").val()=='error'){
+          $('#edit').trigger("click");
+        }
     });
 
     <!-- 108635 start-->

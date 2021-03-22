@@ -429,12 +429,12 @@
                                                                         <td>&nbsp;${personnel.keyPersonnelDto.emailAddr}
                                                                             <c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
                                                                     </tr>
-                                                                        <%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
-                                                                        <%--                                                                        <tr>--%>
-                                                                        <%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
-                                                                        <%--                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
-                                                                        <%--                                                                        </tr>--%>
-                                                                        <%--                                                                    </c:if>--%>
+<%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
+<%--                                                                        <tr>--%>
+<%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
+<%--                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
+<%--                                                                        </tr>--%>
+<%--                                                                    </c:if>--%>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
@@ -865,8 +865,8 @@
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                                                                          data-html="true"
-                                                                                                          data-original-title="${kpiInfo}">i</a></p>
+                                                                                                                                   data-html="true"
+                                                                                                                                   data-original-title="${kpiInfo}">i</a></p>
                                                                     </td>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;<c:out

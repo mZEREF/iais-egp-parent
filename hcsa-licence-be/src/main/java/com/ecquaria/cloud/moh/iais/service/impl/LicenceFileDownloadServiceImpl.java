@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -153,6 +154,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    HcsaApplicationDelegator newApplicationDelegator;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -349,8 +353,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
                             Long l = System.currentTimeMillis();
-                           fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
-
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+                            if(Boolean.TRUE.equals(aBoolean)){
+                                saveFileRepo( fileName,groupPath,submissionId,l);
+                            }
                            saveFileRepo( fileName,groupPath,submissionId,l);
 
                         }catch (Exception e){
@@ -519,6 +525,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(listApplicationDto);
         withdrow(requestForInfList);
         withdrow(cessionOrwith);
+        boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
+        if(b){
+           return Boolean.FALSE;
+        }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
@@ -559,7 +569,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
             List<ApplicationDto> entity = applicationClient.getApplicationDtoByAppIds(list).getEntity();
-            if(!entity.isEmpty()){
+            if(entity.isEmpty()){
                 processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
                 applicationClient.updateProcessFileTrack(processFileTrackDto);
                 return true;
@@ -870,8 +880,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             /**
              * Send Email
              */
-            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
             log.info("Send Withdraw 003 Email");
+            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
             if (applicationDtoList != null && applicationDtoList.size() > 0){
                 applicationDtoList.forEach(h -> {
                     if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(h.getApplicationType())
@@ -913,7 +923,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             msgInfoMap.put("S_LName", serviceName);
                             msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             try {
-                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
+                                newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
+                                newApplicationDelegator.sendInboxMessage(h,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
+                                newApplicationDelegator.sendSMS(h,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
                             } catch (IOException | TemplateException e) {
                                 log.error(e.getMessage(), e);
                             }
@@ -926,24 +938,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
     }
 
-    private void sendEmail(String templateId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
-        EmailParam emailParam = new EmailParam();
-        log.info("Send Withdraw 003 Email start send Email");
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(templateId).getEntity();
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-        map.put("ApplicationNumber", applicationDto.getApplicationNo());
-        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
-        emailParam.setTemplateContent(msgInfoMap);
-        emailParam.setTemplateId(templateId);
-        emailParam.setReqRefNum(applicationDto.getApplicationNo());
-        emailParam.setQueryCode(applicationDto.getApplicationNo());
-        emailParam.setRefId(applicationDto.getApplicationNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setSubject(subject);
-        notificationHelper.sendNotification(emailParam);
-        log.info("Send Withdraw 003 Email end send Email");
-    }
 
     private void  moveFile(File file){
         String name = file.getName();

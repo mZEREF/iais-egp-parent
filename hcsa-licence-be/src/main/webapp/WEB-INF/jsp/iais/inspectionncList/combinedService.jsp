@@ -14,7 +14,8 @@
                                                           <th width="30%">Item</th>
                                                           <th>Inspector</th>
                                                           <th>Yes/No/NA</th>
-                                                          <th>Remarks</th>
+                                                          <th>Findings/NCS</th>
+                                                          <th>Actions Required</th>
                                                           <th>Rectified</th>
                                                           <th>Deconflict</th>
                                                           <th></th>
@@ -32,6 +33,7 @@
                                                                   </c:if>
                                                                   <td>${answerForDifDto.submitName}</td>
                                                                   <td>${answerForDifDto.answer}</td>
+                                                                  <td>${answerForDifDto.ncs}</td>
                                                                   <td>${answerForDifDto.remark}</td>
                                                                   <td class="text-center">
                                                                       <c:if test="${'No'== answerForDifDto.answer}">
@@ -47,6 +49,8 @@
                                                                   <td> <c:if test="${answerForDifDtoStatus.index == 0}">
                                                                       <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
                                                                       <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                                      <span class="error-msg" id="<c:out value="${err}Remark"/>" name="iaisErrorMsg"></span>
+                                                                      <span class="error-msg" id="<c:out value="${err}FindNcs"/>" name="iaisErrorMsg"></span>
                                                                   </c:if></td>
                                                               </tr>
                                                           </c:forEach>
@@ -54,6 +58,7 @@
                                                           <tr id="${ckkId}serDiv${inspectorsParticipant.size()}"style="background-color:${ item.incqDto.sameAnswer ? 'white' : (empty item.incqDto.deconflict ? 'lightcoral': 'lightgreen')}">
                                                               <td>Self Assessment</td>
                                                               <td>${item.incqDto.selfAnswer}</td>
+                                                              <td></td>
                                                               <td></td>
                                                               <td></td>
                                                               <td></td>
@@ -80,7 +85,8 @@
                                                           <th  width="35%">Item</th>
                                                           <th>Inspector</th>
                                                           <th>Yes/No/NA</th>
-                                                          <th>Remarks</th>
+                                                          <th>Findings/NCS</th>
+                                                          <th>Actions Required</th>
                                                           <th>Rectified</th>
                                                           <th>Deconflict</th>
                                                           <th></th>
@@ -97,6 +103,7 @@
                                                               </c:if>
                                                               <td>${answerForDifDto.submitName}</td>
                                                               <td>${answerForDifDto.answer}</td>
+                                                              <td>${answerForDifDto.ncs}</td>
                                                               <td>${answerForDifDto.remark}</td>
                                                               <td class="text-center">
                                                                   <c:if test="${'No'== answerForDifDto.answer}">
@@ -114,6 +121,8 @@
                                                                   <c:if test="${answerForDifDtoStatus.index == 0}">
                                                                       <c:set value = "error_${item.id}adhoc" var = "err"/>
                                                                       <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                                      <span class="error-msg" id="<c:out value="${err}Remark"/>" name="iaisErrorMsg"></span>
+                                                                      <span class="error-msg" id="<c:out value="${err}FindNcs"/>" name="iaisErrorMsg"></span>
                                                                   </c:if>
                                                               </td>
                                                        </tr>

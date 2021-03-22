@@ -9,8 +9,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <webui:setLayout name="iais-intranet"/>
-
-<%@ page contentType="text/html; charset=UTF-8" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -141,6 +139,3 @@
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
-<script type="text/javascript">
-
-</script>

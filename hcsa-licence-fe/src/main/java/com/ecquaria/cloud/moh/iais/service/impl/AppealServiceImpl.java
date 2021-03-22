@@ -49,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFile;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -68,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -84,21 +82,15 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -780,7 +772,7 @@ public class AppealServiceImpl implements AppealService {
         String isDelete = request.getParameter("isDelete");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
-       /* Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+/*        Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
         List<PageShowFile> pageShowFiles=new ArrayList<>(5);
         if(fileMap!=null&&!fileMap.isEmpty()){
             fileMap.forEach((k,v)->{
@@ -793,6 +785,7 @@ public class AppealServiceImpl implements AppealService {
             });
         }
         req.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
+        String errLen=MessageUtil.getMessageDesc("GENERAL_ERR0022");
         if (file != null && file.getSize() > 0) {
             int configFileSize = systemParamConfig.getUploadFileLimit();
             String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
@@ -810,7 +803,7 @@ public class AppealServiceImpl implements AppealService {
                 map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
             }
             if(!fileNameLength){
-                map.put("file",MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                map.put("file",errLen);
             }
             AppPremisesSpecialDocDto specialDocDto=new AppPremisesSpecialDocDto();
             long size = file.getSize() / 1024;
@@ -840,7 +833,7 @@ public class AppealServiceImpl implements AppealService {
                     map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
                 }
                 if(filename.length()>100){
-                    map.put("file",MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                    map.put("file",errLen);
                 }
             }
 

@@ -74,6 +74,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             if(isError){
                                 isError = false;
                             }
+                        }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
+                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"comFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                            if(isError){
+                                isError = false;
+                            }
                         }
                     }
                 }
@@ -104,6 +109,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                         if(isError){
                             isError = false;
                         }
+                    } else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
+                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                        if(isError){
+                            isError = false;
+                        }
                     }
                 }
             }
@@ -128,6 +138,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
 
                         } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
                             errMap.put(temp.getId()+"adhocRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                            if(isError){
+                                isError = false;
+                            }
+                        } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
+                            errMap.put(temp.getId()+"adhocFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
                             if(isError){
                                 isError = false;
                             }

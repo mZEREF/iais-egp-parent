@@ -63,7 +63,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		return onlineApptClient.doQuery(searchParam).getEntity();
 	}
 
-	@Override
+    @Override
 	public Boolean createBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto) {
 		blackoutDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		return onlineApptClient.createBlackedOutCalendar(blackoutDateDto).getEntity();

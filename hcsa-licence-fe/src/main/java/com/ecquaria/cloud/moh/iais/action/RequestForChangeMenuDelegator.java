@@ -158,6 +158,7 @@ public class RequestForChangeMenuDelegator {
         bpc.getSession().removeAttribute("premiseDoSearch");
         bpc.getSession().removeAttribute("doSearch");
         bpc.getSession().removeAttribute("personnelListDtos");
+        bpc.getSession().removeAttribute("licenceDtoList");
     }
 
     /**
@@ -351,7 +352,11 @@ public class RequestForChangeMenuDelegator {
             for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList) {
                 String hciCode = appGrpPremisesDto1.getHciCode();
                 List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
-                appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
+                List<LicenceDto> licenceDtos = appGrpPremisesDto1.getLicenceDtos();
+                if(licenceDtos==null){
+                    appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
+                    bpc.request.getSession().setAttribute("licenceDtoList",licenceDtoList);
+                }
             }
         }
         if (appGrpPremisesDto != null || rfi != null) {
@@ -378,13 +383,15 @@ public class RequestForChangeMenuDelegator {
             }
         }
 
-        AppSubmissionDto oldAppSubmissionDto = new AppSubmissionDto();
+        AppSubmissionDto oldAppSubmissionDto ;
         oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         AppSubmissionDto appSubmissionDto1 = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         if (appSubmissionDto1 != null) {
             oldAppSubmissionDto = appSubmissionDto1;
         }
-        if (premisesListQueryDto != null) {
+        //init to set this session , if have do not to check change premise hcicode
+        Object o = bpc.getSession().getAttribute("licenceDtoList");
+        if (premisesListQueryDto != null && o==null) {
             String hciCode = premisesListQueryDto.getHciCode();
             List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
             bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
@@ -406,9 +413,9 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, "weeklyCount", systemParamConfig.getWeeklyCount());
         ParamUtil.setRequestAttr(bpc.request, "phCount", systemParamConfig.getPhCount());
         ParamUtil.setRequestAttr(bpc.request, "eventCount", systemParamConfig.getEventCount());
+        ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
         ParamUtil.setRequestAttr(bpc.request, "not_view", "notView");
-        ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
     }
 
     /**
@@ -536,6 +543,7 @@ public class RequestForChangeMenuDelegator {
             if (!StringUtil.isEmpty(hciNameUsed)) {
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
+            bpc.request.setAttribute("errormapIs", "error");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
@@ -1788,7 +1796,7 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+       /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");

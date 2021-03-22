@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.generic.I2F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -139,38 +138,40 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
         List<String[]> applicationTandS = new ArrayList<>(43);
-        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST007"});
+        applicationTandS.add(new String[]{"APTY002","APST028"});
         applicationTandS.add(new String[]{"APTY002","APST003"});
         applicationTandS.add(new String[]{"APTY002","APST004"});
-        applicationTandS.add(new String[]{"APTY002","APST007"});
-        applicationTandS.add(new String[]{"APTY002","APST011"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST029"});
+        applicationTandS.add(new String[]{"APTY002","APST023"});
+        applicationTandS.add(new String[]{"APTY002","APST024"});
         applicationTandS.add(new String[]{"APTY002","APST012"});
+        applicationTandS.add(new String[]{"APTY002","APST039"});
+        applicationTandS.add(new String[]{"APTY002","APST011"});
+        applicationTandS.add(new String[]{"APTY002","APST071"});
+        applicationTandS.add(new String[]{"APTY002","APST069"});
+        applicationTandS.add(new String[]{"APTY002","APST040"});
+        applicationTandS.add(new String[]{"APTY002","APST077"});
         applicationTandS.add(new String[]{"APTY002","APST019"});
+        applicationTandS.add(new String[]{"APTY002","APST031"});
         applicationTandS.add(new String[]{"APTY002","APST020"});
         applicationTandS.add(new String[]{"APTY002","APST021"});
-        applicationTandS.add(new String[]{"APTY002","APST023"});
         applicationTandS.add(new String[]{"APTY002","APST022"});
-        applicationTandS.add(new String[]{"APTY002","APST024"});
-        applicationTandS.add(new String[]{"APTY002","APST028"});
-        applicationTandS.add(new String[]{"APTY002","APST029"});
-        applicationTandS.add(new String[]{"APTY002","APST031"});
+        applicationTandS.add(new String[]{"APTY002","APST037"});
+        applicationTandS.add(new String[]{"APTY002","APST067"});
         applicationTandS.add(new String[]{"APTY002","APST032"});
         applicationTandS.add(new String[]{"APTY002","APST033"});
         applicationTandS.add(new String[]{"APTY002","APST034"});
-        applicationTandS.add(new String[]{"APTY002","APST037"});
-        applicationTandS.add(new String[]{"APTY002","APST039"});
-        applicationTandS.add(new String[]{"APTY002","APST040"});
-        applicationTandS.add(new String[]{"APTY002","APST049"});
-        applicationTandS.add(new String[]{"APTY002","APST067"});
-        applicationTandS.add(new String[]{"APTY002","APST069"});
-        applicationTandS.add(new String[]{"APTY002","APST071"});
-        applicationTandS.add(new String[]{"APTY002","APST077"});
         applicationTandS.add(new String[]{"APTY002","APST092"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST049"});
 
-        applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST007"});
         applicationTandS.add(new String[]{"APTY004","APST028"});
         applicationTandS.add(new String[]{"APTY004","APST003"});
+        applicationTandS.add(new String[]{"APTY004","APST004"});
         applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST029"});
         applicationTandS.add(new String[]{"APTY004","APST023"});
@@ -191,6 +192,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST033"});
         applicationTandS.add(new String[]{"APTY004","APST034"});
         applicationTandS.add(new String[]{"APTY004","APST092"});
+        applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST049"});
 
         applicationTandS.add(new String[]{"APTY005","APST007"});
@@ -204,6 +206,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST012"});
         applicationTandS.add(new String[]{"APTY005","APST039"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
+        applicationTandS.add(new String[]{"APTY005","APST004"});
         applicationTandS.add(new String[]{"APTY005","APST077"});
         applicationTandS.add(new String[]{"APTY005","APST019"});
         applicationTandS.add(new String[]{"APTY005","APST031"});
@@ -216,6 +219,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST033"});
         applicationTandS.add(new String[]{"APTY005","APST034"});
         applicationTandS.add(new String[]{"APTY005","APST092"});
+        applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST049"});
 
         applicationTandS.add(new String[]{"APTY001","APST007"});
@@ -225,6 +229,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST011"});
         applicationTandS.add(new String[]{"APTY001","APST023"});
         applicationTandS.add(new String[]{"APTY001","APST039"});
+        applicationTandS.add(new String[]{"APTY001","APST011"});
         applicationTandS.add(new String[]{"APTY001","APST004"});
         applicationTandS.add(new String[]{"APTY001","APST067"});
         applicationTandS.add(new String[]{"APTY001","APST032"});
@@ -346,7 +351,10 @@ public class WithdrawalDelegator {
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
-                Map<String, String> errorMap = validationResult.retrieveAll();
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                if (validationResult.isHasErrors()){
+                    errorMap=validationResult.retrieveAll();
+                }
                 if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0) {
                     String originalFilename = commonsMultipartFile.getOriginalFilename();
                     fileValidation(originalFilename,validationResult,errorMap);

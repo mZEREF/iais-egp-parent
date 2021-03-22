@@ -440,6 +440,8 @@ public class InspectionNcCheckListDelegator {
                     temp.setChkanswer(answer);
                 String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
                 String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
+                String ncs  = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comFindNcs");
+                temp.setNcs(ncs);
                 if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                     temp.setRectified(true);
                 }else{
@@ -504,6 +506,8 @@ public class InspectionNcCheckListDelegator {
             temp.setChkanswer(answer);
         String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
         String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
+        String ncs = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs");
+        temp.setNcs(ncs);
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
             temp.setRectified(true);
         }else{
@@ -520,6 +524,8 @@ public class InspectionNcCheckListDelegator {
                 String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
                 String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
                 String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
+                String ncs  = ParamUtil.getString(request,temp.getId()+"adhocFindNcs");
+                temp.setNcs(ncs);
                 temp.setAdAnswer(answer);
                 temp.setRemark(remark);
                 if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
@@ -676,6 +682,8 @@ public class InspectionNcCheckListDelegator {
                         String answer =  ParamUtil.getString(request,prefix +"comradIns" + index);
                         String remark = ParamUtil.getString(request,prefix +"comremarkIns" + index);
                         String raf =  ParamUtil.getString(request,prefix +"comrecIns" + index);
+                        String ncs  = ParamUtil.getString(request,prefix +"comFindNcsIns" + index);
+                        answerForDifDto.setNcs(ncs);
                         answerForDifDto.setAnswer(answer);
                         answerForDifDto.setRemark(remark);
                         if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
@@ -711,6 +719,8 @@ public class InspectionNcCheckListDelegator {
                             String answer =  ParamUtil.getString(request,prefix +"radIns" + index);
                             String remark = ParamUtil.getString(request,prefix +"remarkIns" + index);
                             String raf =  ParamUtil.getString(request,prefix +"recIns" + index);
+                            String ncs = ParamUtil.getString(request,prefix +"FindNcsIns" + index);
+                            answerForDifDto.setNcs(ncs);
                             answerForDifDto.setAnswer(answer);
                             answerForDifDto.setRemark(remark);
                             if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
@@ -744,6 +754,8 @@ public class InspectionNcCheckListDelegator {
                         String answer = ParamUtil.getString(request,temp.getId()+"adhocradIns"+index);
                         String remark = ParamUtil.getString(request,temp.getId()+"adhocremarkIns" + index);
                         String rec = ParamUtil.getString(request,temp.getId()+"adhocrecIns"+index);
+                        String ncs = ParamUtil.getString(request,temp.getId()+"adhocFindNcsIns" + index);
+                        answerForDifDto.setNcs(ncs);
                         answerForDifDto.setAnswer(answer);
                         answerForDifDto.setRemark(remark);
                         if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(rec)){

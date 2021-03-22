@@ -134,6 +134,7 @@
   <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
+  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 </form>
 
 
@@ -192,6 +193,9 @@
             disabeleForAllDay($allDayDiv);
         });
         init = 1;
+        if($("#errorMapIs").val()=='error'){
+            $('.premisesEdit').trigger('click');
+        }
     });
 
     function cancel(){

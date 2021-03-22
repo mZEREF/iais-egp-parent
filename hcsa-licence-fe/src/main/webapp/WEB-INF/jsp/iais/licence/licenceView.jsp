@@ -13,10 +13,9 @@
 </c:if>
 <c:if test="${appeal!='appeal'}">
   <webui:setLayout name="iais-internet"/>
-</c:if>
-<c:if test="${appeal!='appeal'}">
   <%@ include file="../common/dashboard.jsp" %>
 </c:if>
+
 
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>

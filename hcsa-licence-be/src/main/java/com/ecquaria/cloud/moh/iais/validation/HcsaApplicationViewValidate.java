@@ -231,11 +231,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
     private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
-        if(applicationViewDto != null){
-            if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
-                errMap.put("document","GENERAL_ERR0025");
+            if(applicationViewDto != null){
+                if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
+                    errMap.put("document","GENERAL_ERR0025");
+                }
             }
-        }
     }
 
     private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId, String taskKey){

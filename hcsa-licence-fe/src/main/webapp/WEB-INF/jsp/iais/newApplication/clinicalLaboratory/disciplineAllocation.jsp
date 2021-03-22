@@ -129,6 +129,7 @@
       </div>
     </div>
   </div>
+  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 
@@ -156,7 +157,9 @@
         doEdit();
 
         $('.premAddress').css('vertical-align','top');
-
+        if($("#errorMapIs").val()=='error'){
+            $('#edit').trigger('click');
+        }
 
     });
 

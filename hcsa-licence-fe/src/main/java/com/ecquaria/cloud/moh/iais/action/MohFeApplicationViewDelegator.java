@@ -32,13 +32,14 @@ public class MohFeApplicationViewDelegator {
     public void toApplicationStep(BaseProcessClass bpc) throws Exception {
         NewApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(NewApplicationDelegator.class);
         newApplicationDelegator.inboxToPreview(bpc);
-        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", true);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
+        ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
     }
 
     public void toAppealStep(BaseProcessClass bpc){
         AppealDelegator appealDelegator = SpringContextHelper.getContext().getBean(AppealDelegator.class);
         appealDelegator.inbox(bpc);
-        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", true);
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
     }
 
 }

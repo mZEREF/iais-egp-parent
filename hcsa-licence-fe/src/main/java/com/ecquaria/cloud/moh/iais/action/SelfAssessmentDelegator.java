@@ -213,7 +213,7 @@ public class SelfAssessmentDelegator {
             for (int i = 0; i < selfAssessmentList.size(); i++) {
                 SelfAssessment mt = selfAssessmentList.get(i);
                 if (mt.isCanEdit()){
-                    errorIndexStr.append(i + 1).append("/");
+                    errorIndexStr.append(i + 1).append('/');
                 }
             }
 

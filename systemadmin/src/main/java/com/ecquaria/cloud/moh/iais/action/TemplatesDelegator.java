@@ -377,11 +377,11 @@ public class TemplatesDelegator {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         switch (deliveyMode){
             case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
-                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
-                break;
+//                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+//                break;
             case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
-                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
-                break;
+//                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+//                break;
             case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
                 selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
                 break;

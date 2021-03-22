@@ -1447,6 +1447,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     answerForDifDto.setRemark(inspectionCheckListAnswerDto.getRemark());
                     answerForDifDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
                     answerForDifDto.setIsRec(inspectionCheckListAnswerDto.getIsRec());
+                    answerForDifDto.setNcs(inspectionCheckListAnswerDto.getNcs());
                     break;
                 }
             }
@@ -1519,6 +1520,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
+        inspectionCheckQuestionDto.setNcs(answerForDifDto.getNcs());
         return  inspectionCheckQuestionDto;
     }
 
@@ -1526,6 +1528,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         inspectionCheckQuestionDto.setRemark(inspectionCheckListAnswerDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(inspectionCheckListAnswerDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(inspectionCheckListAnswerDto.getIsRec()));
+        inspectionCheckQuestionDto.setNcs(inspectionCheckListAnswerDto.getNcs());
         return  inspectionCheckQuestionDto;
     }
     @Override
@@ -1608,6 +1611,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                         AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
                         answerForDifDto.setRemark(adhocAnswerDto.getRemark());
                         answerForDifDto.setAnswer(adhocAnswerDto.getAnswer());
+                        answerForDifDto.setNcs(adhocAnswerDto.getNcs());
                         answerForDifDto.setIsRec(adhocAnswerDto.getIsRec());
                     }
                     break;
@@ -1619,6 +1623,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adhocNcCheckItemDto.setRemark(adhocAnswerDto.getRemark());
         adhocNcCheckItemDto.setAdAnswer(adhocAnswerDto.getAnswer());
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
+        adhocNcCheckItemDto.setNcs(adhocAnswerDto.getNcs());
         return  adhocNcCheckItemDto;
     }
 
@@ -1626,6 +1631,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adhocNcCheckItemDto.setRemark(adhocAnswerDto.getRemark());
         adhocNcCheckItemDto.setAdAnswer(adhocAnswerDto.getAnswer());
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
+        adhocNcCheckItemDto.setNcs(adhocAnswerDto.getNcs());
         return  adhocNcCheckItemDto;
     }
 

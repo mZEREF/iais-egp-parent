@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -243,7 +245,38 @@ public class NewApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the add premises html end ...."));
         return sql;
     }
+    /**
+     * @param
+     * @description: ajax
+     * @author: junyu
+     */
+    @RequestMapping(value = "/file-repo-Authorisation", method = RequestMethod.GET)
+    public @ResponseBody
+    void fileAuthorisationDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo Authorisation start ...."));
 
+        File inputFile = ResourceUtils.getFile("classpath:docTemplate/Authorisation Letter.doc");
+
+        FileUtils.writeFileResponseContent(response,inputFile);
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
+    }
+
+    /**
+     * @param
+     * @description: ajax
+     * @author: junyu
+     */
+    @RequestMapping(value = "/file-repo-DCA", method = RequestMethod.GET)
+    public @ResponseBody
+    void fileDCADownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo Authorisation start ...."));
+
+        File inputFile = ResourceUtils.getFile("classpath:docTemplate/Annex 8-1-9 DCA.doc");
+
+        FileUtils.writeFileResponseContent(response,inputFile);
+
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
+    }
 
     /**
      * @param

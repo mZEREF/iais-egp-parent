@@ -111,7 +111,7 @@
             <div class="fileContent col-xs-5">
               ${upFile.originalFilename}
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile(event)">
-              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
 
             </div>
             <div class="col-xs-12 col-md-4" >
@@ -204,8 +204,7 @@
           $('#othersReason').attr("style","display: none");
       }
       if(  $("input[name='selectHciName']").prop("checked")){
-          $('#proposedHciName').attr("style","display: block");
-      }else {
+          $('#proposedHciName').attr("style","display: block");R      }else {
           $('#proposedHciName').attr("style","display: none");
       }
       if(  $('#isFile').val()!=''){
@@ -234,10 +233,14 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-             /* ajaxCallUpload('mainForm',"selectedFile");*/
+            /*  ajaxCallUpload('mainForm',"selectedFile");*/
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }
+     }
+
+     function doFileAddEvent() {
+         clearFlagValueFEFile();
      }
 
     function link(){
