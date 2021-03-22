@@ -84,6 +84,7 @@
         $("#msgType option:first").prop("selected", 'selected').val("Please Select");
         $("#deliveryMode option:first").prop("selected", 'selected').val("Please Select");
         $(".clearTep .current").text("Please Select");
+        $(".error-msg").text("");
     });
 
     var admdirector = $("#templateName").bsSuggest({

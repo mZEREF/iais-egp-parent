@@ -57,6 +57,7 @@
         $("[name='eed']").val("");
         $("#codeStatus option:first").prop("selected", 'selected').val("Please Select");
         $(".clearMC .current").text("Please Select");
+        $(".error-msg").text("");
     });
 
     $("#MCUploadFile").click(function () {
