@@ -80,7 +80,8 @@
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                     <th>Self-assessment Answer</th>
                                                     </c:if>
-                                                    <th>Remarks</th>
+                                                    <th>Findings/NCS</th>
+                                                    <th>Actions Required</th>
                                                     <th class="text-center">Rectified</th>
                                                     <th></th>
                                                 </tr>
@@ -118,6 +119,12 @@
                                                         <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                        <td>${item.incqDto.selfAnswer}</td>
                                                         </c:if>
+                                                        <td>
+                                                            <textarea cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcs" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
+                                                            <br/>
+                                                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}comFindNcs" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                        </td>
                                                         <td>
                                                             <textarea cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
                                                             <br/>
@@ -163,7 +170,8 @@
                                                           <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                               <th >Self-assessment Answer</th>
                                                           </c:if>
-                                                          <th>Remarks</th>
+                                                          <th>Findings/NCS</th>
+                                                          <th>Actions Required</th>
                                                           <th class="text-center">Rectified</th>
                                                           <th></th>
                                                       </tr>
@@ -202,6 +210,12 @@
                                                               <td>${item.incqDto.selfAnswer}</td>
                                                               </c:if>
                                                               <td>
+                                                                  <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>FindNcs" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
+                                                                  <br/>
+                                                                  <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}FindNcs" var = "err"/>
+                                                                  <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                              </td>
+                                                              <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
                                                                   <br/>
                                                                   <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}Remark" var = "err"/>
@@ -238,7 +252,8 @@
                                                           <th class="text-center">Yes</th>
                                                           <th class="text-center">No</th>
                                                           <th class="text-center">N/A</th>
-                                                          <th>Remarks</th>
+                                                          <th>Findings/NCS</th>
+                                                          <th>Actions Required</th>
                                                           <th class="text-center">Rectified</th>
                                                           <th></th>
                                                       </tr>
@@ -255,6 +270,12 @@
                                                                   <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No"/>
                                                               </td>
                                                               <td class="text-center"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"/></td>
+                                                              <td>
+                                                                  <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcs" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcs" id="" maxlength="500"><c:out value="${item.ncs}"/></textarea>
+                                                                  <br/>
+                                                                  <c:set value = "error_${item.id}adhocFindNcs" var = "err"/>
+                                                                  <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                              </td>
                                                               <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" id="" maxlength="500"><c:out value="${item.remark}"/></textarea>
                                                                   <br/>

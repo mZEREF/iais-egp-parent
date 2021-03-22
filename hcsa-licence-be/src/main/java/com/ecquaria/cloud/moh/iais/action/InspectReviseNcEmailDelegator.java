@@ -501,6 +501,8 @@ public class InspectReviseNcEmailDelegator {
                 temp.setChkanswer(answer);
                 String remark = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comremark");
                 String rectified = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrec");
+                String ncs  = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comFindNcs");
+                temp.setNcs(ncs);
                 temp.setRectified(!StringUtil.isEmpty(rectified) && "No".equals(answer));
                 temp.setRemark(remark);
             }
@@ -528,6 +530,8 @@ public class InspectReviseNcEmailDelegator {
                 String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
                 String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
                 String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
+                String ncs  = ParamUtil.getString(request,temp.getId()+"adhocFindNcs");
+                temp.setNcs(ncs);
                 temp.setAdAnswer(answer);
                 temp.setRemark(remark);
                 temp.setRectified("No".equals(answer)&&!StringUtil.isEmpty(rec));
@@ -942,6 +946,8 @@ public class InspectReviseNcEmailDelegator {
         temp.setChkanswer(answer);
         String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
         String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
+        String ncs = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs");
+        temp.setNcs(ncs);
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
             temp.setRectified(true);
         }else{
