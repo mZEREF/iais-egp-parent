@@ -163,7 +163,7 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Authorised Person ID</td>
-                                                                        <td>&nbsp;${person.idNo} (${person.idType})</td>
+                                                                        <td>&nbsp;${person.idNo} (<iais:code code="${person.idType}"/>)</td>
                                                                     </tr>
                                                                 </c:forEach>
                                                                 <c:if test="${empty appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
@@ -183,7 +183,7 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person ID</td>
-                                                                        <td> ${personMap.idNo} (${personMap.idType})</td>
+                                                                        <td> ${personMap.idNo} (<iais:code code="${personMap.idType}"/>)</td>
                                                                     </tr>
 
                                                                 </c:forEach>
