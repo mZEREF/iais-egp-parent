@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -33,9 +34,13 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -143,14 +148,6 @@ public class AuditTrailDelegator {
         return view;
     }
 
-    private void parseToMap(Map<String, Object> param, String[] strings, int index){
-        if (strings == null || strings.length == 0 || index > strings.length - 1) return;
-        String s = strings[index];
-        Map<String, String> map = JsonUtil.parseToObject(s, Map.class);
-        param.putAll(map);
-        parseToMap(param, strings, index + 1);
-    }
-
     private void addAuditLogRevToList(ArrayList<AuditLogRecView> list, Map<String, Object> map){
         for (Map.Entry<String, Object> ent : map.entrySet()) {
             AuditLogRecView arv = new AuditLogRecView();
@@ -163,15 +160,25 @@ public class AuditTrailDelegator {
 
     private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
         ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
-        if (detail.contains("[") && detail.contains("]") && detail.length() > 2){
-            detail = detail.replace('[', ' ').replace(']', ' ');
-            String[] strings = detail.split(",");
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            parseToMap(map, strings, 0);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode jn = mapper.readTree(detail);
+            Map<String, Object> map = null;
+            if (jn.isArray()) {
+                map = IaisCommonUtils.genNewHashMap(jn.size());
+                for (JsonNode js : jn) {
+                    Iterator<Map.Entry<String, JsonNode>> it = js.fields();
+                    while (it.hasNext()) {
+                        Map.Entry<String, JsonNode> ent = it.next();
+                        map.put(ent.getKey(), ent.getValue());
+                    }
+                }
+            } else {
+                map = JsonUtil.parseToObject(detail, Map.class);
+            }
             addAuditLogRevToList(list, map);
-        }else{
-            Map<String, Object> map = JsonUtil.parseToObject(detail, Map.class);
-            addAuditLogRevToList(list, map);
+        } catch (JsonProcessingException e) {
+            throw new IaisRuntimeException(e);
         }
         return list;
     }
