@@ -1292,7 +1292,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
         String otherinspectionofficer = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
         serListDto.setOtherinspectionofficer(otherinspectionofficer);
-        serListDto.setStartMin(startDate);
+        serListDto.setStartTime(startDate);
         serListDto.setEndTime(endDate);
        String [] startDateHHMM = getStringsByHHDD(startDate);
        if(startDateHHMM != null && startDateHHMM.length == 2){
