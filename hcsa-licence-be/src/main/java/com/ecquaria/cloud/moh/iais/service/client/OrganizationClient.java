@@ -99,7 +99,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-task/insert-inpor",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionTaskPoolListDto> filterInspectorOption(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 
-    @GetMapping(value = "/iais-workgroup/inspection-lead/{workGroupId}")
+    @GetMapping(value = "/iais-workgroup/group-lead/{workGroupId}")
     FeignResponseEntity<List<String>> getInspectionLead(@PathVariable(name = "workGroupId") String workGroupId);
 
     @GetMapping(value = "/iais-task/history-tasks/{refNo}",produces = MediaType.APPLICATION_JSON_VALUE,
