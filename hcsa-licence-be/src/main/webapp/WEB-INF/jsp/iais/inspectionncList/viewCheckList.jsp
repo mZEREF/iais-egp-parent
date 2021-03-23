@@ -80,7 +80,7 @@
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                     <th>Self-assessment Answer</th>
                                                     </c:if>
-                                                    <th>Findings/NCS</th>
+                                                    <th>Findings/NCs</th>
                                                     <th>Actions Required</th>
                                                     <th class="text-center">Rectified</th>
                                                     <th></th>
@@ -170,7 +170,7 @@
                                                           <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                                                               <th >Self-assessment Answer</th>
                                                           </c:if>
-                                                          <th>Findings/NCS</th>
+                                                          <th>Findings/NCs</th>
                                                           <th>Actions Required</th>
                                                           <th class="text-center">Rectified</th>
                                                           <th></th>
@@ -252,7 +252,7 @@
                                                           <th class="text-center">Yes</th>
                                                           <th class="text-center">No</th>
                                                           <th class="text-center">N/A</th>
-                                                          <th>Findings/NCS</th>
+                                                          <th>Findings/NCs</th>
                                                           <th>Actions Required</th>
                                                           <th class="text-center">Rectified</th>
                                                           <th></th>

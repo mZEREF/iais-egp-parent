@@ -271,7 +271,7 @@
                                             <th>SN</th>
                                             <th>Checklist Item</th>
                                             <th>Regulation Clause</th>
-                                            <th>Findings/NCS</th>
+                                            <th>Findings/NCs</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -344,7 +344,7 @@
                                     <tr>
                                         <th>SN</th>
                                         <th>Checklist Item</th>
-                                        <th>Findings/NCS</th>
+                                        <th>Findings/NCs</th>
                                         <th>Rectified?</th>
                                     </tr>
                                     </thead>
