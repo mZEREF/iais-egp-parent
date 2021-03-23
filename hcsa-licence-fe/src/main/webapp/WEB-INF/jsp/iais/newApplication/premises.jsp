@@ -251,6 +251,15 @@
               premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
               premContent.find('.addOperational').removeClass('hidden');
               premContent.find('.opDel').removeClass('hidden');
+              premContent.find('.EventStart').removeClass('disabled-placeHolder');
+              premContent.find('.EventEnd').removeClass('disabled-placeHolder');
+              premContent.find('.addWeeklyDiv').removeClass('hidden');
+              premContent.find('.addPhDiv').removeClass('hidden');
+              premContent.find('.addEventDiv').removeClass('hidden');
+              premContent.find('.weeklyDel').removeClass('hidden');
+              premContent.find('.pubHolidayDel').removeClass('hidden');
+              premContent.find('.eventDel').removeClass('hidden');
+
           }
         </c:if>
 
