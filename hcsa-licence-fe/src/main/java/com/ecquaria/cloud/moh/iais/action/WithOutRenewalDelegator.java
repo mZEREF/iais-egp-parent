@@ -175,6 +175,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, null);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"requestInformationConfig",null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
