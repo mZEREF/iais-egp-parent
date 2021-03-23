@@ -397,6 +397,7 @@
             }else if("offSite" == thisId){
                 prefixName = 'offSite';
             }
+            showWaiting();
             $.ajax({
                 'url':'${pageContext.request.contextPath}/retrieve-address',
                 'dataType':'json',
@@ -416,17 +417,18 @@
                         $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
 
                         $premContent.find('input[name="retrieveflag"]').val('0');
-                        return;
+                    }else{
+                        $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
+                        $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
+                        $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
+
+                        $premContent.find('.'+prefixName+'BlkNo').prop('readonly',true);
+                        $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
+                        $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
+
+                        $premContent.find('input[name="retrieveflag"]').val('1');
                     }
-                    $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
-                    $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
-                    $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
-
-                    $premContent.find('.'+prefixName+'BlkNo').prop('readonly',true);
-                    $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
-                    $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
-
-                    $premContent.find('input[name="retrieveflag"]').val('1');
+                    dismissWaiting();
                 },
                 'error':function () {
                     //$postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
@@ -441,6 +443,7 @@
                     $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
 
                     $premContent.find('input[name="retrieveflag"]').val('0');
+                    dismissWaiting();
                 }
             });
 
