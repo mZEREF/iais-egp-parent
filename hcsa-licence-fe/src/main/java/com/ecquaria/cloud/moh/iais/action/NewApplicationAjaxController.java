@@ -811,9 +811,10 @@ public class NewApplicationAjaxController {
                     String s = sb.toString();
                     qualification.clear();
                     qualification.add(s);
-                    log.debug(StringUtil.changeForLog("the prgNo is null ...."));
+                    log.debug(StringUtil.changeForLog("the prgNo end ...."));
                     return professionalResponseDto;
                 }catch (Throwable e){
+                    log.error(e.getMessage(), e);
                     return professionalResponseDto;
                 }
 
