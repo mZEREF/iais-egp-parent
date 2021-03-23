@@ -196,8 +196,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 } catch (NullPointerException e) {
                     log.error(e.getMessage(), e);
                 }
-
-
+            }
+            if (organizationLicDto.getLicenseeKeyApptPersonDtos() != null) {
                 for (LicenseeKeyApptPersonDto org : organizationLicDto.getLicenseeKeyApptPersonDtos()
                 ) {
                     try {
@@ -218,6 +218,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     }
                 }
             }
+
 
             ParamUtil.setSessionAttr(request, "organizationLicDto", organizationLicDto);
         }catch (Exception e){
