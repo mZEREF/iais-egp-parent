@@ -186,6 +186,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<OrgUserDto> getUsersByWorkGroupIdExceptLeader(String workGroupId, String status) {
+        return taskOrganizationClient.getUsersByWorkGroupNameExceptLeader(workGroupId,status).getEntity();
+    }
+
+    @Override
     public List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId) {
         return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
     }
@@ -412,7 +417,7 @@ public class TaskServiceImpl implements TaskService {
             return result;
         }
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup workGroupId is -->:"+workGroupId));
-        List<OrgUserDto> orgUserDtos = getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+        List<OrgUserDto> orgUserDtos = getUsersByWorkGroupIdExceptLeader(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
         orgUserDtos = removeUnavailableUser(orgUserDtos,excpetUserId);
         List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
         result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);

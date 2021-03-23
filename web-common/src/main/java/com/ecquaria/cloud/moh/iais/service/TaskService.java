@@ -36,6 +36,8 @@ public interface TaskService {
      //TaskDto routingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
+    List<OrgUserDto> getUsersByWorkGroupIdExceptLeader(String workGroupId, String status);
+
     //get Task Score
     List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId);
     TaskDto getLowestTaskScore(List<TaskDto> taskScoreDtos, List<OrgUserDto> users);
