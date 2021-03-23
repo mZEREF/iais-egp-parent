@@ -729,7 +729,7 @@ public class NewApplicationDelegator {
         if(loginContext != null){
             orgId = loginContext.getOrgId();
         }
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto.getAppGrpPremisesDtoList(),orgId);
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto,orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }

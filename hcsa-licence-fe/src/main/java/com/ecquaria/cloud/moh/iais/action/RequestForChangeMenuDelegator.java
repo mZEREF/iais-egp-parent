@@ -1302,7 +1302,7 @@ public class RequestForChangeMenuDelegator {
             orgId = loginContext.getOrgId();
         }
         AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto.getAppGrpPremisesDtoList(), orgId);
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
         ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
