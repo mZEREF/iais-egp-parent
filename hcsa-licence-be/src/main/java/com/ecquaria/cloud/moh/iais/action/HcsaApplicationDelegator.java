@@ -2136,6 +2136,10 @@ public class HcsaApplicationDelegator {
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, HcsaConsts.ROUTING_STAGE_PRE,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+                //set inspector leads
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)) {
+                    setInspLeadsInRecommendation(newTaskDto, newTaskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                }
             } else {
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
@@ -2230,11 +2234,6 @@ public class HcsaApplicationDelegator {
                     applicationClient.updateApplications(applicationGroupDtos);
                 }
             }
-        }
-
-        //set inspector leads
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)) {
-            setInspLeadsInRecommendation(taskDto, taskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
         }
 
         //save the broadcast
@@ -2523,7 +2522,7 @@ public class HcsaApplicationDelegator {
         if (appPremisesRecommendationDto == null) {
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             String workGroupName = workingGroupDto.getGroupName();
-            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
+            if (!StringUtil.isEmpty(workGroupName) && RoleConsts.USER_ROLE_INSPECTIOR.equals(taskDto.getRoleId())) {
                 List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
                 String nameStr = "";
                 for (String id : leadIds) {
