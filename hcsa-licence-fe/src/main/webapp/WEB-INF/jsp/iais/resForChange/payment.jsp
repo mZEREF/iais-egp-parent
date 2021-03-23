@@ -16,6 +16,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_additional" value=""/>
+    <input type="hidden" name="switch" value="">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
         <div class="navigation-gp">
@@ -115,6 +116,7 @@
 
     $('#BACK').click(function () {
         showWaiting();
+        $('input[name="switch"]').val('back');
         doSubmitForm('prePremisesEdit','','back');
     });
 
@@ -133,6 +135,7 @@
             $('#error_pay').html("The field is mandatory.");
             return;
         }*/
+        $('input[name="switch"]').val('next');
         doSubmitForm('jumpBank','', 'next');
     });
 

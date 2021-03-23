@@ -780,6 +780,20 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
+    public void paymentSwitch(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the paymentSwitch start ...."));
+        String switchVal = ParamUtil.getString(bpc.request,"switch");
+        if("back".equals(switchVal)){
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+            appSubmissionDto.setAppGrpNo(null);
+            appSubmissionDto.setId(null);
+            appSubmissionDto.setAppGrpId(null);
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
+        }
+
+        log.debug(StringUtil.changeForLog("the paymentSwitch end ...."));
+    }
+
     private boolean isEdit(PersonnelListDto newDto, PersonnelListDto oldDto, PersonnelListDto newPersonDto) {
         PersonnelListDto compareNewDto = new PersonnelListDto();
         String idNo = newDto.getIdNo();
