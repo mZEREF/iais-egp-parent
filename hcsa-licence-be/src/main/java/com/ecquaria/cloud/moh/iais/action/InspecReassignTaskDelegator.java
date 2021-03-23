@@ -169,6 +169,9 @@ public class InspecReassignTaskDelegator {
             String userId = distinguishLeaderByLogInfo(loginContext);
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("taskUserId", userId,true);
+                ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "memberId", null);
             }
             searchParam.addParam("reassignStatus", "reassignStatus");
             QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
