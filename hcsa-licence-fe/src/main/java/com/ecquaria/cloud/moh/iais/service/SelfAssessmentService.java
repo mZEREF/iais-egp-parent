@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -28,7 +27,4 @@ public interface SelfAssessmentService {
     void changePendingSelfAssMtStatus(String value, Boolean isGroupId);
 
     AppPremisesCorrelationDto getCorrelationByAppNo(String appNo);
-
-    void doAnswerAction(HttpServletRequest request, SelfAssessment detail, boolean isClear);
-
 }
