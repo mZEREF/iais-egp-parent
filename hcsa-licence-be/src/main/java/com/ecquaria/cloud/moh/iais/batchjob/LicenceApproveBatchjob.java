@@ -208,9 +208,7 @@ public class LicenceApproveBatchjob {
     private void generateUEN(ApplicationGroupDto applicationGroupDto) {
         log.info(StringUtil.changeForLog("The generateUen start ..."));
         try{
-            GenerateUENDto generateUENDto = new GenerateUENDto();
             IaisUENDto iaisUENDto = new IaisUENDto();
-            iaisUENDto.setGenerateUENDto(generateUENDto);
             iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             acraUenBeClient.generateUen(iaisUENDto);
         }catch (Throwable t){
