@@ -2525,16 +2525,14 @@ public class HcsaApplicationDelegator {
             String workGroupName = workingGroupDto.getGroupName();
             if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
                 List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
-                List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                 String nameStr = "";
                 for (String id : leadIds) {
-                    for (OrgUserDto oDto : orgUserDtos) {
-                        if (id.equals(oDto.getId())) {
-                            if (StringUtil.isEmpty(nameStr)) {
-                                nameStr = oDto.getDisplayName();
-                            } else {
-                                nameStr = nameStr + "," + oDto.getDisplayName();
-                            }
+                    OrgUserDto oDto = organizationClient.retrieveOrgUserAccountById(id).getEntity();
+                    if (id.equals(oDto.getId())) {
+                        if (StringUtil.isEmpty(nameStr)) {
+                            nameStr = oDto.getDisplayName();
+                        } else {
+                            nameStr = nameStr + "," + oDto.getDisplayName();
                         }
                     }
                 }
