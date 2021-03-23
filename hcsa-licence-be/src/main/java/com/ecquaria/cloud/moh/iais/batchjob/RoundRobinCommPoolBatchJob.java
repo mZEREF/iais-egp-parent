@@ -263,6 +263,7 @@ public class RoundRobinCommPoolBatchJob {
             String oldUserId = taskDto.getUserId();
             TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId,oldUserId);
             String userId = null;
+            boolean isSystemAdmin = false;
             if(taskScoreDto!= null){
                 userId = taskScoreDto.getUserId();
             }
@@ -272,16 +273,21 @@ public class RoundRobinCommPoolBatchJob {
                 List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                     userId = orgUserDtos.get(0).getId();
+                    isSystemAdmin = true;
                     log.info(StringUtil.changeForLog("The RoundRobinCommPoolBatchJob sendNoteToAdm "));
                     taskService.sendNoteToAdm(taskDto.getApplicationNo(),taskDto.getRefNo(),orgUserDtos.get(0));
                 }
             }
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob userId -- >:" +userId));
+            log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob isSystemAdmin -- >:" +isSystemAdmin));
             taskDto.setUserId(userId);
             taskDto.setDateAssigned(new Date());
             taskDto.setAuditTrailDto(auditTrailDto);
             List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
             taskDto.setId(null);
+            if(isSystemAdmin){
+                taskDto.setWkGrpId(null);
+            }
             taskDtos.add(taskDto);
             taskDtos = taskService.createTasks(taskDtos);
             //update the application.
@@ -294,7 +300,7 @@ public class RoundRobinCommPoolBatchJob {
                 processDec = InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN;
             }
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob processDec -- >:" + processDec));
-            createAppPremisesRoutingHistory(appNo, applicationViewDto.getApplicationDto().getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), null, taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(appNo, applicationViewDto.getApplicationDto().getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), null, workGroupId);
 
             if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)||TaskConsts.TASK_TYPE_MAIN_FLOW.equals(taskType)){
                 List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);

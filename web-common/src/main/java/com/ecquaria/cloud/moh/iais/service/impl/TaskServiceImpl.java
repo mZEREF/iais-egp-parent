@@ -128,6 +128,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("The getRoutingTask scheme is -->:"+scheme));
             String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String userId = null;
+            boolean isSystemAdmin = false;
             if(taskScoreDto != null){
                 userId = taskScoreDto.getUserId();
             }else{
@@ -151,12 +152,14 @@ public class TaskServiceImpl implements TaskService {
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                             userId = orgUserDtos.get(0).getId();
+                            isSystemAdmin = true;
                             log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
                             sendNoteToAdm(applicationDto.getApplicationNo(),correlationId,orgUserDtos.get(0));
                         }
                     }
                     break;
             }
+            log.info(StringUtil.changeForLog("The getRoutingTask isSystemAdmin is -->:"+isSystemAdmin));
             log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:"+taskType));
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
             log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
@@ -169,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
             }
              result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                     correlationId,workGroupId,
+                     correlationId,isSystemAdmin?null:workGroupId,
                     userId, assignDate,score,TaskUrl,roleId,
                      IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
@@ -226,6 +229,7 @@ public class TaskServiceImpl implements TaskService {
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 OrgUserDto orgUserDto = null;
+                boolean isSystemAdmin = false;
                 switch (scheme){
                     case TaskConsts.TASK_SCHEME_TYPE_COMMON :
                         userId = null;
@@ -243,10 +247,12 @@ public class TaskServiceImpl implements TaskService {
                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                                 orgUserDto = orgUserDtos.get(0);
                                 userId = orgUserDto.getId();
+                                isSystemAdmin = true;
                             }
                         }
                         break;
                 }
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison isSystemAdmin is -->:"+isSystemAdmin));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskType is -->:"+taskType));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison assignDate is -->:"+assignDate));
@@ -262,7 +268,7 @@ public class TaskServiceImpl implements TaskService {
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
                             TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                                    appPremisesCorrelationDto.getId(),workGroupId,
+                                    appPremisesCorrelationDto.getId(),isSystemAdmin?null:workGroupId,
                                     userId, assignDate,score,TaskUrl,roleId,
                                     auditTrailDto);
                             taskDtos.add(taskDto);
