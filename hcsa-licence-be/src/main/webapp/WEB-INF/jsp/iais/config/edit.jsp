@@ -115,7 +115,7 @@
             <select name="selectCategoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.name}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
             <span id="error_serviceCategory" class="error-msg" name="iaisErrorMsg"></span>
