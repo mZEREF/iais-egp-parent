@@ -250,7 +250,7 @@ public class RequestForChangeMenuDelegator {
             StringBuilder stringBuilder = new StringBuilder();
             List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode(), licenseeId);
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                stringBuilder.append(licenceDto.getSvcName()).append(',');
+                stringBuilder.append(licenceDto.getSvcName()).append(", ");
             }
             premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
