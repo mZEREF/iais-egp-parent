@@ -493,7 +493,6 @@
     }
 
     function changePatSelect() {
-        changePatientAjax();
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
