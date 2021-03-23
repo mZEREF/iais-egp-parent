@@ -169,6 +169,9 @@ public class InspecReassignTaskDelegator {
             String userId = distinguishLeaderByLogInfo(loginContext);
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("taskUserId", userId,true);
+                ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "memberId", null);
             }
             searchParam.addParam("reassignStatus", "reassignStatus");
             QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
@@ -340,14 +343,10 @@ public class InspecReassignTaskDelegator {
             return null;
         }
         String loginUserId = loginContext.getUserId();
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupLeadByUserId(loginContext.getUserId()).getEntity();
         Integer isLeadForGroup = 0;
-        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos) {
-            Integer isLead = userGroupCorrelationDto.getIsLeadForGroup();
-            if (1 == isLead) {
-                isLeadForGroup = isLead;
-                break;
-            }
+        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+            isLeadForGroup = 1;
         }
         String curRole = loginContext.getCurRoleId();
         if (1 == isLeadForGroup) {
