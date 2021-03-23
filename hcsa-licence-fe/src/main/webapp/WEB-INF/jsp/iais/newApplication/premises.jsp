@@ -224,38 +224,11 @@
             submit('premises','saveDraft',$('#selectDraftNo').val());
         });
 
-        <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
+        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
-            $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-            $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
-            $(this).find('.addOperational').addClass('hidden');
-            $(this).find('.opDel').addClass('hidden');
-            $(this).find('button.addPubHolDay').addClass('hidden');
-            $(this).find('.removePhBtn').addClass('hidden');
-        });
-        </c:if>
+            handlePage($(this));
 
-        <c:if test="${AppSubmissionDto.needEditController}">
-        readonlyPartPage($('div.premises-content'));
-        $('div.premises-content').each(function () {
-            $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-            $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
-            $(this).find('.addOperational').addClass('hidden');
-            $(this).find('.opDel').addClass('hidden');
-            $(this).find('button.addPubHolDay').addClass('hidden');
-            $(this).find('.removePhBtn').addClass('hidden');
-            $(this).find('.weeklyDel').addClass('hidden');
-            $(this).find('.pubHolidayDel').addClass('hidden');
-            $(this).find('.eventDel').addClass('hidden');
-            $(this).find('.addWeeklyDiv').addClass('hidden');
-            $(this).find('.addPhDiv').addClass('hidden');
-            $(this).find('.addEventDiv').addClass('hidden');
-            $(this).find('input.allDay').attr('disabled',true);
-            //for rfi
-            $(this).find('.date_picker').attr('disabled',true);
-            $(this).find('.date_picker').addClass('disabled-placeHolder');
-            $(this).find('a.retrieveAddr').addClass('hidden');
         });
         </c:if>
 
@@ -339,6 +312,25 @@
       $('#postalCodePop').modal('hide');
     }
 
+  var handlePage = function($Ele){
+      $Ele.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+      $Ele.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+      $Ele.find('.addOperational').addClass('hidden');
+      $Ele.find('.opDel').addClass('hidden');
+      $Ele.find('button.addPubHolDay').addClass('hidden');
+      $Ele.find('.removePhBtn').addClass('hidden');
+      $Ele.find('.weeklyDel').addClass('hidden');
+      $Ele.find('.pubHolidayDel').addClass('hidden');
+      $Ele.find('.eventDel').addClass('hidden');
+      $Ele.find('.addWeeklyDiv').addClass('hidden');
+      $Ele.find('.addPhDiv').addClass('hidden');
+      $Ele.find('.addEventDiv').addClass('hidden');
+      $Ele.find('input.allDay').attr('disabled',true);
+      //for rfi
+      $Ele.find('.date_picker').attr('disabled',true);
+      $Ele.find('.date_picker').addClass('disabled-placeHolder');
+      $Ele.find('a.retrieveAddr').addClass('hidden');
+  }
 </script>
 
 
