@@ -489,6 +489,10 @@ public class NewApplicationDelegator {
             String licenceNo = appSubmissionDto.getLicenceNo();
             for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
                 String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
+                String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
+                if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
+                    hciCode=oldHciCode;
+                }
                 List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
                 for (LicenceDto licenceDto : licenceDtoByHciCode) {
                     if (licenceDto.getLicenceNo().equals(licenceNo)) {
@@ -2053,6 +2057,7 @@ public class NewApplicationDelegator {
                 for (int i = 0; i < size; i++) {
                     //Get the selected license from page to save
                     //eq change premises hci code a-> b
+                    appGrpPremisesDtoList.get(i).setOldHciCode(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciCode());
                     boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppSubmissionDtoAppGrpPremisesDtoList.get(i));
                     if(eqHciNameChange){
                         appGrpPremisesDtoList.get(i).setHciNameChanged(0);

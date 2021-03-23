@@ -1702,7 +1702,7 @@ public class LicenceViewServiceDelegator {
         int oldSize = oldAppGrpPremisesDtoList.size();
         for (int i = 0; i <oldSize - size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i-1).getPremisesType());
+            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i).getPremisesType());
             appGrpPremisesDto.setPostalCode("");
             appGrpPremisesDto.setOffTelNo("");
             appGrpPremisesDto.setScdfRefNo("");
@@ -1729,7 +1729,7 @@ public class LicenceViewServiceDelegator {
             AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
             premisesOperationalUnitDto.setFloorNo("");
             premisesOperationalUnitDto.setUnitNo("");
-            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i-1).getPremType());
+            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i).getPremType());
             appPremisesOperationalUnitDto.add(premisesOperationalUnitDto);
         }
     }
