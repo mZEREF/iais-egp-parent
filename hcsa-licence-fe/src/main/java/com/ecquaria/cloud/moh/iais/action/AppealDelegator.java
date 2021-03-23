@@ -238,6 +238,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile");
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
         bpc.getSession().removeAttribute("pageShowFiles");
+        bpc.getSession().removeAttribute("isPopApplicationView");
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");

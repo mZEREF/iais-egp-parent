@@ -204,7 +204,7 @@
           $('#othersReason').attr("style","display: none");
       }
       if(  $("input[name='selectHciName']").prop("checked")){
-          $('#proposedHciName').attr("style","display: block");R      }else {
+          $('#proposedHciName').attr("style","display: block");  }else {
           $('#proposedHciName').attr("style","display: none");
       }
       if(  $('#isFile').val()!=''){
