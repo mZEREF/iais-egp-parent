@@ -600,8 +600,15 @@ public class WithOutRenewalDelegator {
         if(loginContext != null){
             orgId = loginContext.getOrgId();
         }
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(allPremiseList,orgId);
+        AppSubmissionDto targetSubmisnDto = new AppSubmissionDto();
+        targetSubmisnDto.setAppGrpPremisesDtoList(allPremiseList);
+        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(targetSubmisnDto,orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
+        if(isGiroAcc){
+            for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
+                appSubmissionDto.setGiroAcctNum(targetSubmisnDto.getGiroAcctNum());
+            }
+        }
       /*  String hasSubmit = (String) ParamUtil.getSessionAttr(bpc.request, "hasAppSubmit");
         if ("Y".equals(hasSubmit)) {
             return;

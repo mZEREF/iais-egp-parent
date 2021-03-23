@@ -111,5 +111,6 @@ public interface AppSubmissionService {
     ApplicationDto getAppById(String appId);
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
     List<GiroAccountInfoDto> getGiroAccountByHciCodeAndOrgId(List<String> hciCode,String orgId);
-    boolean checkIsGiroAcc(List<AppGrpPremisesDto> appGrpPremisesDtos,String orgId);
+    boolean checkIsGiroAcc(AppSubmissionDto appSubmissionDto,String orgId);
+
 }

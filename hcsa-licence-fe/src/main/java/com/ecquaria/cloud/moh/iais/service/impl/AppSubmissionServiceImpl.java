@@ -219,8 +219,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
                 paymentMethodName = "GIRO";
                 templateContent.put("usualDeduction","next 7 working days");
-                OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDto.getLicenseeId()).getEntity();
-                templateContent.put("accountNumber",entity.getAcctNo());
+                templateContent.put("accountNumber",appSubmissionDto.getGiroAcctNum());
                 //need change giro
             }else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                     || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
@@ -298,8 +297,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public boolean checkIsGiroAcc(List<AppGrpPremisesDto> appGrpPremisesDtos, String orgId) {
+    public boolean checkIsGiroAcc(AppSubmissionDto appSubmissionDto, String orgId) {
         boolean isGiroAcc = false;
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
             List<String> hciCodeList = IaisCommonUtils.genNewArrayList();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
@@ -332,6 +332,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }else if(giroAccountInfoDtos.size() == 1){
                         isGiroAcc = true;
                     }
+                }
+                if(isGiroAcc){
+                    appSubmissionDto.setGiroAcctNum(giroAccountInfoDtos.get(0).getAcctNo());
                 }
             }
         }
