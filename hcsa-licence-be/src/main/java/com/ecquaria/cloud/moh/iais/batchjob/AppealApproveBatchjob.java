@@ -239,23 +239,28 @@ public class AppealApproveBatchjob {
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         if(applicationDto!= null && appealDto != null){
             String appealReason = appealDto.getReason();
-            switch(appealReason){
-                case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
-                    applicationRejection(appealApplicaiton,rollBackApplication,
-                            appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
-                            appealApproveDto);
-                    break;
-                case ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE:
+            try {
+                switch(appealReason){
+                    case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
+                        applicationRejection(appealApplicaiton,rollBackApplication,
+                                appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
+                                appealApproveDto);
+                        break;
+                    case ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE:
 //                    applicationLateRenewFee(applicationDto);
-                    break;
-                case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
-                    applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
-                    break;
-                case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
-                    applicationChangeHciName(appealApplicaiton,appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto,appealApplicationGroupDtos);
-                    break;
-                default:break;
+                        break;
+                    case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
+                        applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
+                        break;
+                    case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
+                        applicationChangeHciName(appealApplicaiton,appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto,appealApplicationGroupDtos);
+                        break;
+                    default:break;
+                }
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
             }
+
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is end ..."));
     }
@@ -511,40 +516,44 @@ public class AppealApproveBatchjob {
             }catch (Exception e){
                 expiryDate = new Date();
             }
-            //get old recommendation
-            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
-            if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-                log.debug(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
-                for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
-                    String appId = licAppCorrelationDto.getApplicationId();
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-                    String appPremCorreId = appPremisesCorrelationDto.getId();
-                    AppPremisesRecommendationDto oldAppPremRecommDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                    if(oldAppPremRecommDto == null){
-                        continue;
+            try {
+                //get old recommendation
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDto.getId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                    log.debug(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + licenceDto.getId()));
+                    for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
+                        String appId = licAppCorrelationDto.getApplicationId();
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+                        String appPremCorreId = appPremisesCorrelationDto.getId();
+                        AppPremisesRecommendationDto oldAppPremRecommDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                        if(oldAppPremRecommDto == null){
+                            continue;
+                        }
+                        oldAppPremRecommDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                        fillUpCheckListGetAppClient.updateAppRecom(oldAppPremRecommDto);
+                        AppPremisesRecommendationDto newAppPremRecomDto = new AppPremisesRecommendationDto();
+                        int newVersion = oldAppPremRecommDto.getVersion() + 1;
+                        newAppPremRecomDto.setId(null);
+                        newAppPremRecomDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        newAppPremRecomDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+                        newAppPremRecomDto.setRecomInDate(appPremisesRecommendationDto.getRecomInDate());
+                        newAppPremRecomDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+                        newAppPremRecomDto.setAppPremCorreId(appPremCorreId);
+                        newAppPremRecomDto.setRecomType(appPremisesRecommendationDto.getRecomType());
+                        newAppPremRecomDto.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                        newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
+                        newAppPremRecomDto.setVersion(newVersion);
+                        fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
                     }
-                    oldAppPremRecommDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    fillUpCheckListGetAppClient.updateAppRecom(oldAppPremRecommDto);
-                    AppPremisesRecommendationDto newAppPremRecomDto = new AppPremisesRecommendationDto();
-                    int newVersion = oldAppPremRecommDto.getVersion() + 1;
-                    newAppPremRecomDto.setId(null);
-                    newAppPremRecomDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    newAppPremRecomDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                    newAppPremRecomDto.setRecomInDate(appPremisesRecommendationDto.getRecomInDate());
-                    newAppPremRecomDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
-                    newAppPremRecomDto.setAppPremCorreId(appPremCorreId);
-                    newAppPremRecomDto.setRecomType(appPremisesRecommendationDto.getRecomType());
-                    newAppPremRecomDto.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
-                    newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
-                    newAppPremRecomDto.setVersion(newVersion);
-                    fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
+                } else {
+                    log.debug(StringUtil.changeForLog(""));
                 }
-            } else {
-                log.debug(StringUtil.changeForLog(""));
+                appealLicenceDto.setExpiryDate(expiryDate);
+                appPremiseMiscDtoList.add(appPremiseMiscDto);
+                appealLicence.add(appealLicenceDto);
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
             }
-            appealLicenceDto.setExpiryDate(expiryDate);
-            appPremiseMiscDtoList.add(appPremiseMiscDto);
-            appealLicence.add(appealLicenceDto);
         } else {
             log.debug(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = "));
         }
