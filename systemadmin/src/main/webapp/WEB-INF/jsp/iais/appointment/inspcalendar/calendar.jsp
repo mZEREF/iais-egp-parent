@@ -216,6 +216,7 @@
       $("#dropYearOpt").val("");
 
       $(".form-horizontal .clearRow .current").text("Please Select");
+      $(".error-msg").text("");
     }
     
 </script>
