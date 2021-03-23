@@ -328,7 +328,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
                     }
                     AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                    if(appPreRecommentdationDtoRep!=null){
+                    if(appPreRecommentdationDtoRep!=null&&appPreRecommentdationDtoDate!=null){
                         complianceHistoryDtos.add(complianceHistoryDto);
                     }
                 }catch (Exception e){
@@ -787,12 +787,31 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 a.setScopeName(hcsaServiceSubTypeDto.getSubtypeName());
             }
         }
-//        try {
-//            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos=organizationClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId()).getEntity();
-//            ParamUtil.setRequestAttr(request,"licenseeKeyApptPersonDtos",licenseeKeyApptPersonDtos);
-//        }catch (Exception e){
-//            log.info(e.getMessage(),e);
-//        }
+        try {
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos=organizationClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId()).getEntity();
+            for (LicenseeKeyApptPersonDto org : licenseeKeyApptPersonDtos
+            ) {
+                try {
+                    org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
+
+                } catch (NullPointerException e) {
+                    log.error(e.getMessage(), e);
+                }
+                try {
+                    org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
+                } catch (NullPointerException e) {
+                    log.error(e.getMessage(), e);
+                }
+                try {
+                    org.setSalutation("-");
+                } catch (NullPointerException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            ParamUtil.setRequestAttr(request,"licenseeKeyApptPersonDtos",licenseeKeyApptPersonDtos);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         ParamUtil.setRequestAttr(request,"appSvcRelatedInfoDto",appSvcRelatedInfoDto);
         ParamUtil.setRequestAttr(request,"serviceStep",appSvcPremisesScopeDtos);
         // 		preAppInfo->OnStepProcess

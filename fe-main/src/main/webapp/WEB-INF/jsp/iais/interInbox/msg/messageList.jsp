@@ -49,7 +49,7 @@
                         </C:if>
                         <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="message_type_desc"
-                                             value="Message Type" isFE="true"/>
+                                             value="Type" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No." isFE="true"/>
                         <iais:sortableHeader needSort="true" field="service_codes" value="Service" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date" isFE="true"/>
@@ -60,7 +60,7 @@
                         <c:when test="${empty inboxResult.rows}">
                             <tr>
                                 <td colspan="6">
-                                    <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                    <iais:message key="GENERAL_ACK018" escape="true"/>
                                 </td>
                             </tr>
                         </c:when>

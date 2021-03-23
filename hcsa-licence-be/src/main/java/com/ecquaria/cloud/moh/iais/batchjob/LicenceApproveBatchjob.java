@@ -1423,6 +1423,7 @@ public class LicenceApproveBatchjob {
             keyPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             //: controller the Organization
             keyPersonnelDto.setOrganizationId(organizationId);
+            keyPersonnelDto.setAppPsnId(keyPersonnelDto.getId());
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
             //create AppGrpPersonnelExtDto
             String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
@@ -1570,6 +1571,7 @@ public class LicenceApproveBatchjob {
                 LicDocumentDto licDocumentDto = new LicDocumentDto();
                 licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
+                licDocumentDto.setAppPersonId(appSvcDocDto.getAppGrpPersonId());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {

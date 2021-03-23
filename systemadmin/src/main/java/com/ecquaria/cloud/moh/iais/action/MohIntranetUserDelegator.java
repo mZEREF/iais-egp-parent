@@ -579,24 +579,24 @@ public class MohIntranetUserDelegator {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<String> roleIds = intranetUserService.getRoleIdByUserId(userAccId);
-            if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_PSO);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_ASO);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO1);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO2);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO3);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
-            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_PSO);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_ASO);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO1);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO2);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO3);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
+//            }
             assignRoles.removeAll(roleIds);
             for (String roleId : assignRoles) {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();

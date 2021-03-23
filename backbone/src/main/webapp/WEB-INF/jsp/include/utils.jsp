@@ -83,6 +83,7 @@
         $(".form-horizontal .current").text("Please Select")
         $(".form-horizontal input").val("");
         $(".form-horizontal option:first").prop("selected", 'selected').val(null);
+        $(".error-msg").text("");
     })
 
     function jumpToPagechangePage(){

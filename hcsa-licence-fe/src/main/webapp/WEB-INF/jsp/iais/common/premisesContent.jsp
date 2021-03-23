@@ -31,14 +31,7 @@
         <c:set var="conv" value="CONVEYANCE" ></c:set>
         <c:set var="offSite" value="OFFSITE" ></c:set>
         <input type="hidden" name="chooseExistData" value="0"/>
-        <c:choose>
-            <c:when test="${'1' == premisesList}">
-                <input type="hidden" name="isPartEdit" value="1"/>
-            </c:when>
-            <c:otherwise>
-                <input type="hidden" name="isPartEdit" value="0"/>
-            </c:otherwise>
-        </c:choose>
+        <input type="hidden" name="isPartEdit" value="0"/>
         <input type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
         <!--for ph -->
         <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
