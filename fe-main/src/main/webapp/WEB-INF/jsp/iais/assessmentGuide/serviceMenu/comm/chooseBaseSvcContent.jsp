@@ -12,7 +12,7 @@
     <div class="col-xs-12 col-md-7">
         <div class="row">
             <div class="col-xs12 col-md-12" style="font-size: 16px;">
-                Below are your existing base service licences. Select an existing base service prescribed as underlying to the special licensable service if applicable. Else, please add a new base service accordingly.
+                An underlying service licence is required for your selected special licensable healthcare service. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
             </div>
         </div>
     </div>

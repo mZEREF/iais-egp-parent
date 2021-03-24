@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">Select an option:</p>
+    <p class="form-check-title">Please select an option:</p>
 
     <div class="form-check progress-step-check" style="width: 900px">
         <input class="form-check-input" id="amendLicence1_1"

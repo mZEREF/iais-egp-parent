@@ -18,4 +18,10 @@
                     file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
         </div>
     </div>
+    <div class="amendLicence5 hidden">
+        <div class="form-check-gp">
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence5.jsp" %>
+        </div>
+    </div>
 </div>

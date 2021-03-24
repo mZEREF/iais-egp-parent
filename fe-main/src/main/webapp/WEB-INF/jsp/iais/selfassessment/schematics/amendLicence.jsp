@@ -53,4 +53,14 @@
             <span class="right-content">${self_ack012}</span>
         </label>
     </div>
+    <div class="form-check progress-step-check" style="width: 900px">
+        <input class="form-check-input" id="amendLicence5"
+               type="radio" name="amendLicenceType"
+               aria-invalid="false">
+        <label class="form-check-label" for="amendLicence5">
+            <span class="check-circle"></span>
+            <span class="left-content">Amend Vehicles (EAS/MTS only)</span>
+            <span class="right-content">${self_ack013}</span>
+        </label>
+    </div>
 </div>
