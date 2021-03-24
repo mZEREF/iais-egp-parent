@@ -263,13 +263,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //create auditType data  and create grop info
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
         auditCombinationDto.setAuditTaskDataFillterDto(temp);
-        createAudit(temp,submitId,auditCombinationDto);
         //create grop info
         // createInspectionGroupInfo(temp,submitId);
-
         // create app
         List<String> licIds = new ArrayList<>(1);
         if( !StringUtil.isEmpty(temp.getLicId())){
+            createAudit(temp,submitId,auditCombinationDto);
             licIds.add(temp.getLicId());
             createAuditTaskApp(licIds,submitId,auditCombinationDto);
         }
@@ -308,6 +307,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 log.info("========create TaskCall is start.");
                 createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
                 sendEmailByCreateAuditTaskDataFillterDto( auditCombinationDto.getAuditTaskDataFillterDto(),auditCombinationDto.getEventRefNo());
+            }else {
+                log.info(StringUtil.changeForLog("---------- auditCombinationDto is null, eventRefNum : " + eventRefNum +"-----------------------------"));
             }
 
         }else {
@@ -661,12 +662,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         audinspDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
         auditCombinationDto.setLicPremisesAuditInspectorDto(audinspDto);
-        log.info("========================>>>>> create audit !!!!");
-        try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
     public void releaseTimeForInsUserCallBack(String eventRefNum,String submissionId)throws FeignException{
@@ -836,8 +831,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             setRiskToDto(entity);
         }
         auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
-        log.info("========================>>>>> creat application!!!!");
         try {
+            log.info("========================>>>>> create audit !!!!");
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
+            log.info("========================>>>>> creat application!!!!");
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
