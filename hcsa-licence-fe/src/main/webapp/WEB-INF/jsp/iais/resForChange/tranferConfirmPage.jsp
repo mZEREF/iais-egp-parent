@@ -73,14 +73,15 @@
               <p>
               <div class="file-upload-gp">
                 <div class="col-xs-12" >
-                <c:forEach items="${seesion_files_map_ajax_feselectedFile}" var="fileMap">
-                  <div id="${fileMap.key}">
-                     ${fileMap.value.fileName}
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFile.index});">
-                    Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFile.index},'mainForm');">
-                  ReUpload</button>
-                  </div>
-                </c:forEach>
+                  <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto">
+                    <div id="${pageShowFileDto.fileMapId}">
+                      <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                        Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+                      ReUpload</button>
+                    </div>
+
+                  </c:forEach>
                   <span  name="selectedFileShowId" id="selectedFileShowId">
                 </span>
                 </div>

@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -212,6 +213,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
         }
         ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", amendType);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedFile", null);
         log.debug(StringUtil.changeForLog("the do doChoose end ...."));
     }
 
@@ -334,10 +336,16 @@ public class RequestForChangeDelegator {
             String premisesIndexNo = appSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
             ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", premisesIndexNo);
         }
+
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+
+
         int maxFile = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "maxFile", maxFile);
+        ParamUtil.setRequestAttr(bpc.request, "pageShowFileDtos", pageShowFileDtos);
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
