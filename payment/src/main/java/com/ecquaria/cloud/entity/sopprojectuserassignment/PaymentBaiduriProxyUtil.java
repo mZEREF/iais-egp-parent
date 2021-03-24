@@ -2,6 +2,7 @@ package com.ecquaria.cloud.entity.sopprojectuserassignment;
 
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class PaymentBaiduriProxyUtil {
     private static PaymentBaiduriProxyUtil paymentBaiduriProxy;
     @Autowired
     PaymentClient paymentClient;
-
+    @Autowired
+    PaymentAppGrpClient paymentAppGrpClient;
     @Autowired
     StripeService stripeService;
     @Autowired
@@ -31,6 +33,7 @@ public class PaymentBaiduriProxyUtil {
         paymentBaiduriProxy.paymentClient=this.paymentClient;
         paymentBaiduriProxy.stripeService=this.stripeService;
         paymentBaiduriProxy.paymentService=this.paymentService;
+        paymentBaiduriProxy.paymentAppGrpClient=this.paymentAppGrpClient;
     }
 
     public static PaymentBaiduriProxyUtil getPaymentBaiduriProxy(){
@@ -47,6 +50,10 @@ public class PaymentBaiduriProxyUtil {
 
     public static PaymentService getPaymentService(){
         return paymentBaiduriProxy.paymentService;
+    }
+
+    public static PaymentAppGrpClient getPaymentAppGrpClient(){
+        return paymentBaiduriProxy.paymentAppGrpClient;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
@@ -41,10 +42,10 @@ public class PaymentCheckNotResultFromBankJob {
         for (PaymentRequestDto payReq:paymentRequestDtos
              ) {
             try {
-                if("stripe".equals(payReq.getPayMethod())&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
+                if(("stripe".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payReq.getPayMethod()))&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
                     stripeService.retrievePayment(payReq);
                 }else
-                if("eNets".equals(payReq.getPayMethod())&&payReq.getMerchantTxnRef()!=null){
+                if(("eNets".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payReq.getPayMethod()))&&payReq.getMerchantTxnRef()!=null){
                     paymentService.retrieveNetsPayment(payReq);
                 }else {
                     payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
