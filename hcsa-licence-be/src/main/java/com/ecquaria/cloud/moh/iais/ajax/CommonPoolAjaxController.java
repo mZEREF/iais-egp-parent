@@ -147,6 +147,7 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
+        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -189,6 +190,9 @@ public class CommonPoolAjaxController {
             }
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
+            }
+            if(!StringUtil.isEmpty(reassignFilterAppNo)){
+                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
@@ -272,6 +276,7 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
+        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -315,6 +320,9 @@ public class CommonPoolAjaxController {
             }
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
+            }
+            if(!StringUtil.isEmpty(reassignFilterAppNo)){
+                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
