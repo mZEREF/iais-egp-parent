@@ -44,13 +44,7 @@
                                                 <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-                                        <div class="mobile-side-nav-tab visible-xs visible-sm" ${isSingle == 'Y' ? 'hidden' : ''}>
-                                            <select id="serviceSelect">
-                                                <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
-                                                    <option value="serviceName${status.index}">${serviceName}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
+
                                         <%--main content--%>
 
                                         <div class="tab-gp steps-tab">
