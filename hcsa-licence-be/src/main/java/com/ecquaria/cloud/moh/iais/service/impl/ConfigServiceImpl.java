@@ -1045,7 +1045,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = getHcsaServiceCategoryDto();
         Map<String,String> hashMap=IaisCommonUtils.genNewHashMap();
         for(HcsaServiceCategoryDto hcsaServiceCategoryDto : hcsaServiceCategoryDtos){
-            hashMap.put(hcsaServiceCategoryDto.getName(),hcsaServiceCategoryDto.getId());
+            hashMap.put(hcsaServiceCategoryDto.getDesc(),hcsaServiceCategoryDto.getId());
         }
         return hashMap;
     }
