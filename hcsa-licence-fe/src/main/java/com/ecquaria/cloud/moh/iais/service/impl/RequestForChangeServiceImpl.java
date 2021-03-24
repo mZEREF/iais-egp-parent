@@ -1380,6 +1380,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
+                        appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }else {

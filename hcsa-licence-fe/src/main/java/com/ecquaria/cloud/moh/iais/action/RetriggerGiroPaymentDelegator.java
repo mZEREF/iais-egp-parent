@@ -276,6 +276,7 @@ public class RetriggerGiroPaymentDelegator {
                     appGrp = serviceConfigService.updateAppGrpPmtStatus(appGrp);
                     //eic
                     serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
+                    //todo:update giro table status
                 }else{
                     switch2 = "prepayment";
                     ParamUtil.setRequestAttr(bpc.request,"RetriggerGiro","test");

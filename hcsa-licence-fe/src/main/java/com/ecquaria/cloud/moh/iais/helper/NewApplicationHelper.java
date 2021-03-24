@@ -1792,7 +1792,7 @@ public class NewApplicationHelper {
                         String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
                         if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
                             appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -1809,7 +1809,7 @@ public class NewApplicationHelper {
                                 appSvcDocDto.setPremisesVal("");
                                 appSvcDocDto.setPremisesType("");
                             }
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -2243,22 +2243,22 @@ public class NewApplicationHelper {
         return url;
     }
 
-    public static AppGrpPrimaryDocDto getAppGrpprimaryDocDto(String docId,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+    public static List<AppGrpPrimaryDocDto> getAppGrpprimaryDocDto(String docId,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(docId)){
             for(AppGrpPrimaryDocDto docDto:appGrpPrimaryDocDtos){
                 if(docDto.getSvcComDocId().equals(docId)){
-                    appGrpPrimaryDocDto = docDto;
-                    break;
+                    appGrpPrimaryDocDtoList.add(docDto);
                 }
             }
         }
-        return appGrpPrimaryDocDto;
+        return appGrpPrimaryDocDtoList;
     }
 
     public static AppGrpPrimaryDocDto genEmptyPrimaryDocDto(String docConfigId){
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
         appGrpPrimaryDocDto.setSvcComDocId(docConfigId);
+        appGrpPrimaryDocDto.setSeqNum(-1);
         return appGrpPrimaryDocDto;
     }
 
