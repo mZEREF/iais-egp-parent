@@ -210,7 +210,7 @@ public class RetriggerGiroPaymentDelegator {
             String amount = String.valueOf(appSubmissionDto.getAmount());
             Map<String, String> fieldMap = new HashMap<String, String>();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
-            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, GatewayConstants.PYMT_DESCRIPTION_RETRIGGER_GIRO);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo()+"_"+System.currentTimeMillis());
             PmtReturnUrlDto pmtReturnUrlDto = new PmtReturnUrlDto();
             pmtReturnUrlDto.setCreditRetUrl(GatewayStripeConfig.retrigger_giro_paymeny_return_rul);
