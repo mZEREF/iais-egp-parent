@@ -3477,9 +3477,10 @@ public class HcsaApplicationDelegator {
                     ParamUtil.setSessionAttr(request, "IdTypeSelect", (Serializable) idTypeSelOp);
                 }
                 //file
-                AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if (appealSpecialDocDto != null) {
-                    ParamUtil.setSessionAttr(request, "feAppealSpecialDocDto", appealSpecialDocDto);
+                    request.getSession().setAttribute("feAppealSpecialDocDto", appealSpecialDocDto);
+
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();
                 String type = "";

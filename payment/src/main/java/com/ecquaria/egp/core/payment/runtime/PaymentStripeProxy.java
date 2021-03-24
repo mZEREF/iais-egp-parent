@@ -4,7 +4,9 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -154,7 +156,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
-			paymentRequestDto.setPayMethod("stripe");
+			paymentRequestDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -243,6 +245,18 @@ public class PaymentStripeProxy extends PaymentProxy {
 		paymentDto.setPmtStatus(status);
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+
+
+		String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
+		if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+		}
+		applicationGroupDto.setPmtRefNo(refNo);
+		applicationGroupDto.setPaymentDt(new Date());
+		applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+
+		PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
 
 		try {
 			//setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);

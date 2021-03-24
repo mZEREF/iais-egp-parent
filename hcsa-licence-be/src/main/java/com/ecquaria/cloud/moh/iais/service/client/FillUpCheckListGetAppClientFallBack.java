@@ -279,7 +279,7 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
     }
 
     @Override
-    public FeignResponseEntity<AppPremisesSpecialDocDto> getAppPremisesSpecialDocByPremId(String premId) {
+    public FeignResponseEntity<List<AppPremisesSpecialDocDto>> getAppPremisesSpecialDocByPremId(String premId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

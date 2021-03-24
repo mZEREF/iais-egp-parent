@@ -105,6 +105,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
         ParamUtil.setSessionAttr(bpc.request, "isLeader", Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
     }
 
     /**
@@ -317,6 +318,9 @@ public class InspecReassignTaskDelegator {
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if (!StringUtil.isEmpty(application_type)) {
             searchParam.addFilter("application_type", application_type, true);

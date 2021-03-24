@@ -4,6 +4,7 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
@@ -40,10 +41,10 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
             for (PaymentRequestDto payReq:paymentRequestDtos
             ) {
                 try {
-                    if("stripe".equals(payReq.getPayMethod())&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
+                    if(("stripe".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payReq.getPayMethod()))&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
                         stripeService.retrievePayment(payReq);
                     }else
-                    if("eNets".equals(payReq.getPayMethod())&&payReq.getMerchantTxnRef()!=null){
+                    if(("eNets".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payReq.getPayMethod()))&&payReq.getMerchantTxnRef()!=null){
                         paymentService.retrieveNetsPayment(payReq);
                     }else {
                         payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);

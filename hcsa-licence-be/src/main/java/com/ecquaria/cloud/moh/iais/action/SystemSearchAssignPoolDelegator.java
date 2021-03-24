@@ -98,6 +98,7 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "systemAssignMap", null);
         ParamUtil.setSessionAttr(bpc.request, "stageOption", null);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", null);
     }
 
     /**
@@ -223,6 +224,9 @@ public class SystemSearchAssignPoolDelegator {
             }
             if (!StringUtil.isEmpty(application_no)) {
                 searchParam.addFilter("application_no", application_no, true);
+                ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", application_no);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", null);
             }
             if (!StringUtil.isEmpty(application_type)) {
                 searchParam.addFilter("application_type", application_type, true);

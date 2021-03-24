@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -67,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -91,6 +93,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -177,42 +180,66 @@ public class AppealServiceImpl implements AppealService {
         String othersReason = request.getParameter("othersReason");
         String draftStatus = (String) request.getAttribute("draftStatus");
         AppealPageDto appealPageDto = reAppealPage(request);
-      /*  Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
-        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos =new ArrayList<>(5);
-        List<PageShowFile> pageShowFiles=new ArrayList<>(5);
+        Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList =new ArrayList<>(5);
+        List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
         List<File> files=new ArrayList<>(5);
         if(map!=null&&!map.isEmpty()){
             map.forEach((k,v)->{
-                long length = v.length();
-                if(length>0){
-                    Long size=length/1024;
-                    files.add(v);
-                    AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
-                    premisesSpecialDocDto.setDocName(v.getName());
-                    SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                    String fileMd5 = singeFileUtil.getFileMd5(v);
-                    premisesSpecialDocDto.setMd5Code(fileMd5);
-                    premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                    premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                    appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
-                    PageShowFile pageShowFile=new PageShowFile();
-                    pageShowFile.setFileName(v.getName());
-                    String e = k.substring(k.lastIndexOf("e") + 1);
-                    pageShowFile.setIndex(e);
-                    pageShowFile.setFileMapId("selectedFileDiv"+e);
-                    pageShowFiles.add(pageShowFile);
+                if(v!=null){
+                    long length = v.length();
+                    if(length>0){
+                        Long size=length/1024;
+                        files.add(v);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setDocName(v.getName());
+                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        premisesSpecialDocDto.setMd5Code(fileMd5);
+                        premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setFileName(v.getName());
+                        String e = k.substring(k.lastIndexOf("e") + 1);
+                        pageShowFileDto.setIndex(e);
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                        pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                        pageShowFileDto.setMd5Code(fileMd5);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                }else {
+                    if(pageShowFileHashMap!=null){
+                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(k);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                        premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                        premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
+                        premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                        premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                        premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
                 }
+
             });
         }
         List<String> list = comFileRepoClient.saveFileRepo(files);
         if(list!=null){
             for(int i=0;i<list.size();i++){
-                appPremisesSpecialDocDtos.get(i).setFileRepoId(list.get(i));
-                pageShowFiles.get(i).setFileUploadUrl(list.get(i));
+                for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                    String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                    if(fileRepoId==null){
+                        appPremisesSpecialDocDtoList.get(j).setFileRepoId(list.get(i));
+                        pageShowFileDtos.get(j).setFileUploadUrl(list.get(i));
+                    }
+                }
             }
         }
-        appealPageDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);*/
-     /*   req.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
+        appealPageDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
+        req.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
         CommonsMultipartFile selectedFile = (CommonsMultipartFile) request.getFile("selectedFile");
         if (selectedFile != null && selectedFile.getSize() > 0) {
             String filename = selectedFile.getOriginalFilename();
@@ -361,23 +388,29 @@ public class AppealServiceImpl implements AppealService {
                     request.getSession().setAttribute("fileReportIdForAppeal", appPremisesSpecialDocDto.getFileRepoId());
                     request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
                 }
-              /*  List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
-                List<PageShowFile> pageShowFiles=new ArrayList<>(5);
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
+                List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
                 Map<String,File> map=new HashMap<>();
+                Map<String, PageShowFileDto> pageShowFileHashMap=new HashMap<>();
                 if(appPremisesSpecialDocDtos!=null&&!appPremisesSpecialDocDtos.isEmpty()){
                     for(int i=0;i<appPremisesSpecialDocDtos.size();i++){
-                        PageShowFile pageShowFile=new PageShowFile();
-                        pageShowFile.setFileName(appPremisesSpecialDocDtos.get(i).getDocName());
-                        pageShowFile.setIndex(String.valueOf(i));
-                        pageShowFile.setFileMapId("selectedFileDiv"+i);
-                        pageShowFiles.add(pageShowFile);
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setFileName(appPremisesSpecialDocDtos.get(i).getDocName());
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                        pageShowFileDto.setSize(appPremisesSpecialDocDtos.get(i).getDocSize());
+                        pageShowFileDto.setMd5Code(appPremisesSpecialDocDtos.get(i).getMd5Code());
+                        pageShowFileDto.setFileUploadUrl(appPremisesSpecialDocDtos.get(i).getFileRepoId());
+                        pageShowFileDtos.add(pageShowFileDto);
                         map.put("selectedFile"+i,null);
+                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
                     }
+                    request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
                     request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
                     request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appPremisesSpecialDocDtos.size());
 
                 }
-                request.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
+                request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
                     List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
                     request.getSession().setAttribute("CgoMandatoryCount", appSvcCgoDto.size());
@@ -772,19 +805,26 @@ public class AppealServiceImpl implements AppealService {
         String isDelete = request.getParameter("isDelete");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
-/*        Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
-        List<PageShowFile> pageShowFiles=new ArrayList<>(5);
+        Map<String, File> fileMap = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+        List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
         if(fileMap!=null&&!fileMap.isEmpty()){
             fileMap.forEach((k,v)->{
-                validateFiles(v,map);
-                PageShowFile pageShowFile =new PageShowFile();
-                pageShowFile.setFileName(v.getName());
-                String selectedFileDiv = k.substring(v.getName().lastIndexOf("selectedFileDiv"));
-                pageShowFile.setFileMapId(k);
-                pageShowFiles.add(pageShowFile);
+                if(v!=null){
+                    PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                    pageShowFileDto.setFileName(v.getName());
+                    String e = k.substring(k.lastIndexOf("e") + 1);
+                    pageShowFileDto.setIndex(e);
+                    pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                    pageShowFileDtos.add(pageShowFileDto);
+                }else {
+                    if(pageShowFileHashMap!=null){
+                        pageShowFileDtos.add(pageShowFileHashMap.get(k));
+                    }
+                }
             });
         }
-        req.getSession().setAttribute("pageShowFiles",pageShowFiles);*/
+        req.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
         String errLen=MessageUtil.getMessageDesc("GENERAL_ERR0022");
         if (file != null && file.getSize() > 0) {
             int configFileSize = systemParamConfig.getUploadFileLimit();
@@ -1070,6 +1110,13 @@ public class AppealServiceImpl implements AppealService {
                         }
                     }
                 }
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealDto.getAppPremisesSpecialDocDtos();
+                if(appPremisesSpecialDocDtos!=null){
+                    Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+                    if(pageShowFileHashMap!=null){
+
+                    }
+                }
                 applicationDto.setVersion(entity1.getVersion() + 1);
                 //if not need new group
                 applicationGroupDto.setId(entity1.getAppGrpId());
@@ -1321,20 +1368,28 @@ public class AppealServiceImpl implements AppealService {
     private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto) {
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
-        AppliSpecialDocDto appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
+        List<AppliSpecialDocDto> appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
+        List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
+        Map<String,File> map=new HashMap<>();
+        Map<String, PageShowFileDto> pageShowFileHashMap=new HashMap<>();
         if (appliSpecialDocDto != null) {
-            AppPremisesSpecialDocDto appPremisesSpecialDocDto =new AppPremisesSpecialDocDto();
-            appPremisesSpecialDocDto.setDocSize(Integer.valueOf(appliSpecialDocDto.getDocSize()));
-            appPremisesSpecialDocDto.setFileRepoId(appliSpecialDocDto.getFileRepoId());
-            appPremisesSpecialDocDto.setMd5Code(appliSpecialDocDto.getMd5Code());
-            appPremisesSpecialDocDto.setDocName(appliSpecialDocDto.getDocName());
-            appPremisesSpecialDocDto.setVersion(appliSpecialDocDto.getVersion());
-            appPremisesSpecialDocDto.setSubmitBy(appliSpecialDocDto.getSubmitBy());
-            String docName = appliSpecialDocDto.getDocName();
-            request.getSession().setAttribute("filename", docName);
-            request.getSession().setAttribute("fileReportIdForAppeal", appliSpecialDocDto.getFileRepoId());
-            request.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
+            for(int i=0;i<appliSpecialDocDto.size();i++){
+                PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                pageShowFileDto.setFileName(appliSpecialDocDto.get(i).getDocName());
+                pageShowFileDto.setIndex(String.valueOf(i));
+                pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                pageShowFileDto.setSize(Integer.valueOf(appliSpecialDocDto.get(i).getDocSize()));
+                pageShowFileDto.setMd5Code(appliSpecialDocDto.get(i).getMd5Code());
+                pageShowFileDto.setFileUploadUrl(appliSpecialDocDto.get(i).getFileRepoId());
+                pageShowFileDtos.add(pageShowFileDto);
+                map.put("selectedFile"+i,null);
+                pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
+            }
+            request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
+            request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
+            request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appliSpecialDocDto.size());
         }
+        request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
         request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
         ApplicationDto entity = applicationFeClient.getApplicationByCorrId(appPremCorreId).getEntity();
         if (entity != null) {
@@ -1376,52 +1431,61 @@ public class AppealServiceImpl implements AppealService {
         LoginContext loginContext = (LoginContext) req.getSession().getAttribute("loginContext");
         AppealPageDto appealDto = new AppealPageDto();
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        AppPremisesSpecialDocDto sessionAppPremisesSpecialDoc = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
+
         String reasonSelect = request.getParameter("reasonSelect");
         String licenceYear = request.getParameter("licenceYear");
         String proposedHciName = request.getParameter("proposedHciName");
-        String isDelete = request.getParameter("isDelete");
+
         String remarks = request.getParameter("remarks");
         String othersReason = request.getParameter("othersReason");
         appealDto.setOtherReason(othersReason);
-        CommonsMultipartFile selectedFile = (CommonsMultipartFile) request.getFile("selectedFile");
-        if (selectedFile != null && selectedFile.getSize() > 0) {
-            try {
-                String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
-                Long size = selectedFile.getSize() / 1024;
-                String filename = selectedFile.getOriginalFilename();
-                String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
-                AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                appPremisesSpecialDocDto.setDocName(filename);
-                appPremisesSpecialDocDto.setMd5Code(s);
-                appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
-                appPremisesSpecialDocDto.setVersion(1);
-                if (loginContext != null) {
-                    appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                } else {
-                    appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+        Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos =new ArrayList<>(5);
+        List<File> files=new ArrayList<>(5);
+        if(map!=null&&!map.isEmpty()){
+            map.forEach((k,v)->{
+                if(v!=null){
+                    long length = v.length();
+                    if(length>0){
+                        Long size=length/1024;
+                        files.add(v);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setDocName(v.getName());
+                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        premisesSpecialDocDto.setMd5Code(fileMd5);
+                        premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                        appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
+                    }
+                }else {
+                    if(pageShowFileHashMap!=null){
+                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(k);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                        premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
+                        premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                        premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                        premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
+                    }
                 }
-                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        } else if (sessionAppPremisesSpecialDoc != null && Y.equals(isDelete)) {
-            AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-            appPremisesSpecialDocDto.setDocName(sessionAppPremisesSpecialDoc.getDocName());
-            appPremisesSpecialDocDto.setMd5Code(sessionAppPremisesSpecialDoc.getMd5Code());
-            appPremisesSpecialDocDto.setFileRepoId(sessionAppPremisesSpecialDoc.getFileRepoId());
-            if (loginContext != null) {
-                appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-            } else {
-                appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
-            }
-            appPremisesSpecialDocDto.setDocSize(sessionAppPremisesSpecialDoc.getDocSize());
-            if (sessionAppPremisesSpecialDoc.getFileRepoId() != null) {
-                appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+            });
+        }
+        List<String> list = comFileRepoClient.saveFileRepo(files);
+        if(list!=null){
+            for(int i=0;i<list.size();i++){
+                for(int j=0;j<appPremisesSpecialDocDtos.size();j++){
+                    String fileRepoId = appPremisesSpecialDocDtos.get(j).getFileRepoId();
+                    if(fileRepoId==null){
+                        appPremisesSpecialDocDtos.get(j).setFileRepoId(list.get(i));
+                    }
+                }
             }
         }
+        appealDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);
 
         appealDto.setRemarks(remarks);
         appealDto.setAppealReason(reasonSelect);

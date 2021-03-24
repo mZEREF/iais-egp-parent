@@ -1,6 +1,6 @@
 <div class="form-check-gp">
     <div class="row">
-        <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
+        <p class="form-check-title">Please select the personnel to amend his/her contact information</p>
     </div>
     <div class="row">
         <div class="col-xs-12 col-md-5">

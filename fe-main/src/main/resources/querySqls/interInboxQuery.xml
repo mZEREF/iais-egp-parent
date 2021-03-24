@@ -73,10 +73,11 @@
                 on app.APPLICATION_NO = app2.application_no and app.version = app2.version
                 union
                 select
-                    A.ID as id,A.DRAFT_NO AS application_no,1 as has_submit_pref_date,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
+                    A.ID as id,A.DRAFT_NO AS application_no,1 as has_submit_pref_date,A.app_grp_id,A.licensee_id,A.app_type,
+                    (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
                 from
                     app_grp_submission_draft AS A
-                where  A.status = 'CMSTAT001') AS B
+                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B
              WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
              AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
              AND B.STATUS != 'APST074'

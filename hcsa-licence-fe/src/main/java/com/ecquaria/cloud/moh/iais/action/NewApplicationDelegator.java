@@ -4614,7 +4614,7 @@ public class NewApplicationDelegator {
                         NewApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
                         //set dupForPrem info for not rfi rfc or renew
                         if(!isRfi &&(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))){
-                            if(!IaisCommonUtils.isEmpty(newGrpPrimaryDocList)){
+                            if(appGrpPremisesDtos != null && appGrpPremisesDtos.size()>0){
                                 String premTye = appGrpPremisesDtos.get(0).getPremisesType();
                                 String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
                                 for(AppSvcDocDto svcDocDto:appSvcDocDtos){

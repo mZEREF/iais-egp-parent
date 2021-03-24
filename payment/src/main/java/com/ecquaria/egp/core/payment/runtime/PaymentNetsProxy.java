@@ -4,7 +4,9 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -196,7 +198,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
-			paymentRequestDto.setPayMethod("eNets");
+			paymentRequestDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_NETS);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setMerchantTxnRef(merchantTxnRef);
@@ -236,6 +238,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 			refNo=refNo.substring(0,16)+refNo.substring(refNo.length()-4);
 		}
 		double amount = this.getPaymentData().getAmount();
+		String payMethod = this.getPaymentData().getPaymentDescription();
+
 		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
@@ -250,7 +254,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		try {
 			generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey);
 		} catch (Exception e) {
-			log.debug(e.getMessage(),e);
+			log.error(e.getMessage(),e);
 		}
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac received :" + header));
 		log.info(StringUtil.changeForLog("MERCHANT APP : in hmac generated :" + generatedHmac));
@@ -270,8 +274,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 			try {
 				eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
 			} catch (Exception e) {
-				log.info("eNets EIC failed!!!");
-				log.debug(e.getMessage(),e);
+				log.debug("eNets EIC failed!!!");
+				log.error(e.getMessage(),e);
 			}
 		}
 		if("0".equals(eNetsStatus)){
@@ -313,6 +317,16 @@ public class PaymentNetsProxy extends PaymentProxy {
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
+		String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
+		if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+		}
+		applicationGroupDto.setPmtRefNo(refNo);
+		applicationGroupDto.setPaymentDt(new Date());
+		applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_NETS);
+
+		PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
 		try {
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);

@@ -191,9 +191,9 @@ public class LicenceViewServiceDelegator {
                         withdrawnDto.setWithdrawnReason(premiseMiscDto.getReason());
                         withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
 //                        withdrawnDto.setAppPremisesSpecialDocDto();
-                        AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                        List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                         if(appealSpecialDocDto != null){
-                            ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",appealSpecialDocDto);
+                            bpc.request.getSession().setAttribute("appealSpecialDocDto",appealSpecialDocDto);
                         }
                         withdrawnDtoList.add(withdrawnDto);
                     });
