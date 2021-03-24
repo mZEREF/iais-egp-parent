@@ -241,6 +241,7 @@
                                         <th>SN</th>
                                         <th>Checklist Item</th>
                                         <th>Regulation Clause</th>
+                                        <th>Findings/NCs</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -255,6 +256,9 @@
                                             </td>
                                             <td>
                                                 <p><c:out value="${ncRegulations.regulation}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${ncRegulations.ncs}"></c:out></p>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -308,6 +312,7 @@
                                     <tr>
                                         <th>SN</th>
                                         <th>Checklist Item</th>
+                                        <th>Findings/NCs</th>
                                         <th>Rectified?</th>
                                     </tr>
                                     </thead>
@@ -320,6 +325,9 @@
                                             </td>
                                             <td>
                                                 <p><c:out value="${ncRectification.nc}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${ncRectification.ncs}"></c:out></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${ncRectification.rectified}"></c:out></p>
