@@ -45,7 +45,7 @@
                 </div>
             </c:forEach>
         </span>
-        <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}"></span>
+        <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}Error"></span>
         <br/>
         <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
         <br/>
