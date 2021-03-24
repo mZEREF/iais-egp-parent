@@ -288,35 +288,41 @@ public class InspRemindRecNcMesgBatchJob {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
+        String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
+        }
+        if(StringUtil.isEmpty(findNcs)){
+            findNcs = "";
         }
         if(!IaisCommonUtils.isEmpty(checklistConfigDtos)) {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
                 }
             }
         }
+        if( inspEmailFieldDto == null){
+            inspEmailFieldDto = new InspEmailFieldDto();
+        }
         //There are no matching items, search item from adhoc table
         String adhocItemId = itemId;
         AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
-        if(inspEmailFieldDto == null){
-            inspEmailFieldDto = new InspEmailFieldDto();
-        }
         if(adhocChecklistItemDto != null){
             String checkItemId = adhocChecklistItemDto.getItemId();
+            //CR Regulation change -> Question
+            //CR question change -> Findings/NCs
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setRegulation(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setQuestion(findNcs);
             } else {
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setRegulation(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setQuestion(findNcs);
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
@@ -325,7 +331,7 @@ public class InspRemindRecNcMesgBatchJob {
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark) {
+                                             String itemId, String beRemark, String findNcs) {
         if(inspEmailFieldDto == null){
             inspEmailFieldDto = new InspEmailFieldDto();
         }
@@ -335,8 +341,10 @@ public class InspRemindRecNcMesgBatchJob {
                 String category = getItemCategory(checklistConfigDto);
                 containFlag = true;
                 ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
-                inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
-                inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
+                //CR Regulation change -> Question
+                inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
+                //CR question change -> Findings/NCs
+                inspEmailFieldDto.setQuestion(findNcs);
                 inspEmailFieldDto.setBeNcRemark(beRemark);
                 inspEmailFieldDto.setServiceName(category);
             }
