@@ -63,4 +63,9 @@ public class INTERNET___MohSelfAssessmentSubmit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "viewSelfAssessment", this);
 	}
 
+
+	public void printChecklist_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "printChecklist", this);
+	}
+
 }

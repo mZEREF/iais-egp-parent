@@ -27,4 +27,5 @@ public interface SelfAssessmentService {
     void changePendingSelfAssMtStatus(String value, Boolean isGroupId);
 
     AppPremisesCorrelationDto getCorrelationByAppNo(String appNo);
+
 }
