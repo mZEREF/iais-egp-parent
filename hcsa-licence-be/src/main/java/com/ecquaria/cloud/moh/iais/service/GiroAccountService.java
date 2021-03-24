@@ -33,4 +33,6 @@ public interface GiroAccountService {
     void syncFeGiroAcctDto(List<GiroAccountInfoDto> giroAccountInfoDto);
 
     void updateGiroAccountInfoTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
+
+    void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto);
 }
