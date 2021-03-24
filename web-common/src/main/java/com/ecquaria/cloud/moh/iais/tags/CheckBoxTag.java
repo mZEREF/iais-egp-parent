@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 @Slf4j
@@ -213,7 +214,7 @@ public final class CheckBoxTag extends DivTagSupport {
                 //in <c:forEach> style
                 html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"')
                         .append("type=\"checkbox\"").append("value=").append('\"').append(MaskUtil.maskValue(name, value)).append('\"');
-                HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, forName);
+                LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, forName);
                 if (set != null && set.contains(value)){
                     html.append(" checked = \"checked\"");
                 }

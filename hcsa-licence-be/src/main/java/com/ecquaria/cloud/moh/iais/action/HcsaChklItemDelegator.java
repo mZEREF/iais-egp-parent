@@ -59,11 +59,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -310,7 +309,7 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         if(IaisCommonUtils.isEmpty(set)){
             ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -693,7 +692,7 @@ public class HcsaChklItemDelegator {
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         List<CheckItemQueryDto> export = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(set)){
             List<ChecklistItemDto> itemQueryList = hcsaChklService.listChklItemByItemId(new ArrayList<>(set));
@@ -757,7 +756,7 @@ public class HcsaChklItemDelegator {
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
 
-            HashSet<String> checked = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
             if (IaisCommonUtils.isEmpty(checked)) {
                 FileUtils.writeFileResponseProcessContent(request, inputFile);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
