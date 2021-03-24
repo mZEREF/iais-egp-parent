@@ -357,7 +357,7 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/appeal/app-special-doc-group-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByGroupId(@RequestParam("groupId") String groupId);
     @GetMapping(value = "/appeal/app-special-doc-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppliSpecialDocDto> getAppliSpecialDocDtoByCorrId(@RequestParam("corrId") String corrId);
+    FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByCorrId(@RequestParam("corrId") String corrId);
     @GetMapping(value = "/iais-submission/appSubmissionDto/{appGrpNo}",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppGrpNo(@PathVariable("appGrpNo") String appGrpNo);
     @PutMapping(path="/iais-application/app-grp-pmt-status", consumes = MediaType.APPLICATION_JSON_VALUE)

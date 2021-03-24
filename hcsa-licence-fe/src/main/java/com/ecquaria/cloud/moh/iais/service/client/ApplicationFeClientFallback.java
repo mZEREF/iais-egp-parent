@@ -880,7 +880,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppliSpecialDocDto> getAppliSpecialDocDtoByCorrId(String corrId) {
+    public FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByCorrId(String corrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
