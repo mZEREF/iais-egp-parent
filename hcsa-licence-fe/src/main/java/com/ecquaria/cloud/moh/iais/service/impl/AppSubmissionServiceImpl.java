@@ -1675,7 +1675,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
-        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,svcDocErrMap);
+        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,dto,svcDocErrMap);
         if(svcDocErrMap.size() > 0){
             sB.append(serviceId);
             errorMap.put("svcDoc", "error");

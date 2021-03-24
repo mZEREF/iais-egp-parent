@@ -284,11 +284,18 @@ public class InspectionSendRecJobHandler extends IJobHandler {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
+        String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
+        if(StringUtil.isEmpty(beRemark)){
+            beRemark = "";
+        }
+        if(StringUtil.isEmpty(findNcs)){
+            findNcs = "";
+        }
         if(!IaisCommonUtils.isEmpty(checklistConfigDtos)) {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
@@ -301,15 +308,17 @@ public class InspectionSendRecJobHandler extends IJobHandler {
         if(inspEmailFieldDto == null){
             inspEmailFieldDto = new InspEmailFieldDto();
         }
+        //CR Regulation change -> Question
+        //CR question change -> Findings/NCs
         if(adhocChecklistItemDto != null){
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setRegulation(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setQuestion(findNcs);
             } else {
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setRegulation(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setQuestion(findNcs);
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
@@ -318,7 +327,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark) {
+                                             String itemId, String beRemark, String findNcs) {
         boolean containFlag = false;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
             if(itemId.equals(checklistItemDto.getItemId())){
@@ -338,8 +347,10 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     inspEmailFieldDto = new InspEmailFieldDto();
 
                 }
-                inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
-                inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
+                //CR Regulation change -> Question
+                inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
+                //CR question change -> Findings/NCs
+                inspEmailFieldDto.setQuestion(findNcs);
                 inspEmailFieldDto.setBeNcRemark(beRemark);
                 inspEmailFieldDto.setServiceName(category);
             }

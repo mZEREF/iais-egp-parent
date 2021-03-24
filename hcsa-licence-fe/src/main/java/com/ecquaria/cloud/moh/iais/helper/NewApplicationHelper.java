@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -2298,12 +2299,16 @@ public class NewApplicationHelper {
         }
     }
 
-    public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<HcsaSvcDocConfigDto> premSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos, List<AppGrpPremisesDto> appGrpPremisesDtos,Map<String, String> errorMap) {
+    public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos, AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, String> errorMap) {
 
         String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
         if(!IaisCommonUtils.isEmpty(svcDocConfigDtos)){
+            int i = 0;
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
-                String errKey = hcsaSvcDocConfigDto.getId()+"selectedFile";
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                String configId = hcsaSvcDocConfigDto.getId();
+                String errKey = i+ "svcDoc"+ appSvcRelatedInfoDto.getServiceCode();
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
                 boolean mandatoryFlag;
                 if(isMandatory){
@@ -2312,53 +2317,57 @@ public class NewApplicationHelper {
                     mandatoryFlag = true;
                 }
                 if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-
-                } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                        String svcDocId = appSvcDocDto.getSvcDocId();
-                        if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
-                            mandatoryFlag = true;
-                            break;
+                    appSvcDocDtos = IaisCommonUtils.genNewArrayList();
+                }
+                if("0".equals(dupForPrem)){
+                    if(StringUtil.isEmpty(dupForPerson)){
+                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                            String svcDocId = appSvcDocDto.getSvcDocId();
+                            if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
+                                mandatoryFlag = true;
+                                break;
+                            }
+                        }
+                        if (!mandatoryFlag) {
+                            errorMap.put(errKey, err006);
+                        }
+                    }else{
+                        List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+                        for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                            String psnIndexNo = psnDto.getCgoIndexNo();
+                            AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
+                            if(appSvcDocDto == null){
+                                String specErrKey = errKey + psnIndexNo;
+                                errorMap.put(specErrKey, err006);
+                            }
                         }
                     }
-                }
-                if (!mandatoryFlag) {
-                    errorMap.put(errKey, err006);
-                }
-            }
-        }
-
-        if(!IaisCommonUtils.isEmpty(premSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                String premType = appGrpPremisesDto.getPremisesType();
-                for (HcsaSvcDocConfigDto premHcasDocConfig : premSvcDocConfigDtos) {
-                    String errKey = "prem" + premHcasDocConfig.getId()+ premIndexNo;
-                    Boolean isMandatory = premHcasDocConfig.getIsMandatory();
-                    boolean mandatoryFlag;
-                    if(isMandatory){
-                        mandatoryFlag = false;
-                    }else{
-                        mandatoryFlag = true;
-                    }
-                    if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-
-                    } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                            String docPremVal = appSvcDocDto.getPremisesVal();
-                            String docPremType = appSvcDocDto.getPremisesType();
-                            if (!StringUtil.isEmpty(docPremVal) && !StringUtil.isEmpty(docPremType)) {
-                                if (docPremVal.equals(premIndexNo) && docPremType.equals(premType)) {
-                                    mandatoryFlag = true;
-                                    break;
+                }else if("1".equals(dupForPrem)){
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                            if(StringUtil.isEmpty(dupForPerson)){
+                                AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,premIndexNo,appGrpPremisesDto.getPremisesType(),"");
+                                if(appSvcDocDto == null){
+                                    String specErrKey = errKey + premIndexNo;
+                                    errorMap.put(specErrKey, err006);
+                                }
+                            }else{
+                                List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+                                for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                                    String psnIndexNo = psnDto.getCgoIndexNo();
+                                    AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),psnIndexNo);
+                                    if(appSvcDocDto == null){
+                                        String specErrKey = errKey + premIndexNo + psnIndexNo;
+                                        errorMap.put(specErrKey, err006);
+                                    }
                                 }
                             }
                         }
                     }
-                    if (!mandatoryFlag) {
-                        errorMap.put(errKey, err006);
-                    }
                 }
+
+                i++;
             }
         }
     }
@@ -2584,6 +2593,49 @@ public class NewApplicationHelper {
 
         }
         return result;
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getPsnByDupForPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,String dupForPerson){
+        List<AppSvcPrincipalOfficersDto> psnDtoList = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> svcPsnDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        switch(dupForPerson){
+            case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                List<AppSvcCgoDto> cgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                psnDtoList = NewApplicationHelper.transferCgoToPsnDtoList(cgoDtos);
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_PO:
+                if(!IaisCommonUtils.isEmpty(svcPsnDtoList)){
+                    for(AppSvcPrincipalOfficersDto svcPsnDto:svcPsnDtoList){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(svcPsnDto.getPsnType())){
+                            psnDtoList.add(svcPsnDto);
+                        }
+                    }
+                }
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                if(!IaisCommonUtils.isEmpty(svcPsnDtoList)){
+                    for(AppSvcPrincipalOfficersDto svcPsnDto:svcPsnDtoList){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(svcPsnDto.getPsnType())){
+                            psnDtoList.add(svcPsnDto);
+                        }
+                    }
+                }
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                for(AppSvcPersonnelDto spDto:spDtos){
+                    AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                    psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
+                    psnDtoList.add(psnDto);
+                }
+                break;
+            default:
+                break;
+        }
+        return psnDtoList;
     }
 
     //=============================================================================
@@ -3168,5 +3220,35 @@ public class NewApplicationHelper {
             }
         }
         return flag;
+    }
+
+    private static AppSvcDocDto getSvcDtoByConfigIdAndPsnIndexNo(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndexNo,String premType,String psnIndexNo){
+        AppSvcDocDto appSvcDocDto = null;
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            for(AppSvcDocDto appSvcDocDto1:appSvcDocDtos){
+                String currConfigId = appSvcDocDto1.getSvcDocId();
+                String cuurPremIndex = appSvcDocDto1.getPremisesVal();
+                if(StringUtil.isEmpty(cuurPremIndex)){
+                    cuurPremIndex = "";
+                }
+                String currPsnIndex = appSvcDocDto1.getPsnIndexNo();
+                if(StringUtil.isEmpty(currPsnIndex)){
+                    currPsnIndex = "";
+                }
+                String currPremType = appSvcDocDto1.getPremisesType();
+                if(StringUtil.isEmpty(currPremType)){
+                    currPremType = "";
+                }
+                if(currConfigId.equals(configId)
+                        && cuurPremIndex.equals(premIndexNo)
+                        && currPsnIndex.equals(psnIndexNo)
+                        && currPremType.equals(premType)){
+                    appSvcDocDto = appSvcDocDto1;
+                    break;
+                }
+            }
+        }
+
+        return appSvcDocDto;
     }
 }
