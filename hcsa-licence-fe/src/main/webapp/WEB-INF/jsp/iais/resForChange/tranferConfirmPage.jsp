@@ -89,6 +89,7 @@
                 <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="clearFlagValueFEFile()">Upload</a>
               </div>
               <span name="iaisErrorMsg" class="error-msg" id="selectedFileErrorMsg"></span>
+              <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
               </p>
             </iais:value>
           </iais:row>

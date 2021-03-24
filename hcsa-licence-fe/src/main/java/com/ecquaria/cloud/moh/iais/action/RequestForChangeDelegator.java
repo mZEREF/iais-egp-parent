@@ -338,8 +338,7 @@ public class RequestForChangeDelegator {
         }
 
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
-        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-
+        List<PageShowFileDto> pageShowFileDtos = SingeFileUtil.getInstance().transForFileMapToPageShowFileDto(map);
 
         int maxFile = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
@@ -391,7 +390,7 @@ public class RequestForChangeDelegator {
 
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
-        if(map == null){
+        if(map == null || map.size()==0){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }else{
             log.info(StringUtil.changeForLog("The map size is -->:"+map.size()));
