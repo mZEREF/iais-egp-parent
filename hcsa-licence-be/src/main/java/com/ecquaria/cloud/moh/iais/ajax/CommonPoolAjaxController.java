@@ -215,6 +215,7 @@ public class CommonPoolAjaxController {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
         //get session data
         String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
+        String systemPoolFilterAppNo = (String) ParamUtil.getSessionAttr(request, "systemPoolFilterAppNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         if(!StringUtil.isEmpty(appGroupId)) {
@@ -251,6 +252,9 @@ public class CommonPoolAjaxController {
             }
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
+            }
+            if(!StringUtil.isEmpty(systemPoolFilterAppNo)){
+                searchParam.addFilter("systemPoolFilterAppNo", systemPoolFilterAppNo,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);

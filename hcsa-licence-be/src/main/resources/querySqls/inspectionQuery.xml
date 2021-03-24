@@ -213,6 +213,7 @@
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
             <#if userId??> and T1.USER_ID = :userId </#if>
+            <#if systemPoolFilterAppNo??> and charindex(:systemPoolFilterAppNo, T1.APPLICATION_NO) >0 </#if>
         ]]>
     </sql>
 
