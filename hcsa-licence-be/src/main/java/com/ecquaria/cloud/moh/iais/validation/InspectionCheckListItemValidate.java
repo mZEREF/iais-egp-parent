@@ -75,7 +75,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                 isError = false;
                             }
                         }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"comFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"comFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                             if(isError){
                                 isError = false;
                             }
@@ -110,7 +110,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             isError = false;
                         }
                     } else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                         if(isError){
                             isError = false;
                         }
@@ -142,7 +142,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                 isError = false;
                             }
                         } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
-                            errMap.put(temp.getId()+"adhocFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                            errMap.put(temp.getId()+"adhocFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                             if(isError){
                                 isError = false;
                             }

@@ -110,7 +110,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                         if(isError)
                             isError = false;
                     }else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                         if(isError)
                             isError = false;
                     }
@@ -153,7 +153,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                         if(isError)
                             isError = false;
                     }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                         if(isError)
                             isError = false;
                     }
@@ -178,7 +178,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                     if(isError)
                         isError = false;
                 }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Findings/NCS","field"));
+                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                     if(isError)
                         isError = false;
                 }

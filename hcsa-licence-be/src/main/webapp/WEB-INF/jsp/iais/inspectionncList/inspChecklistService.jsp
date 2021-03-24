@@ -15,7 +15,7 @@
                     <th class="text-center">Yes</th>
                     <th class="text-center">No</th>
                     <th class="text-center">N/A</th>
-                    <th>Findings/NCS</th>
+                    <th>Findings/NCs</th>
                     <th>Actions Required</th>
                     <th class="text-center">Rectified</th>
                 </tr>
@@ -84,7 +84,7 @@
                 <th class="text-center">Yes</th>
                 <th class="text-center">No</th>
                 <th class="text-center">N/A</th>
-                <th>Findings/NCS</th>
+                <th>Findings/NCs</th>
                 <th>Actions Required</th>
                 <th class="text-center">Rectified</th>
             </tr>

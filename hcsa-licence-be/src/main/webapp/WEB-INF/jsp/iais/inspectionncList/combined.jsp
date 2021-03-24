@@ -11,7 +11,7 @@
                                                     <th  width="30%">Item</th>
                                                     <th>Inspector</th>
                                                     <th>Yes/No/NA</th>
-                                                    <th>Findings/NCS</th>
+                                                    <th>Findings/NCs</th>
                                                     <th>Actions Required</th>
                                                     <th>Rectified</th>
                                                     <th>Deconflict</th>
