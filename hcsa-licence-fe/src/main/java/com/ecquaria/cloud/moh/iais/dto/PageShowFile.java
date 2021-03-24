@@ -15,5 +15,6 @@ public class PageShowFile implements Serializable {
     private String fileName;
     private String fileMapId;
     private String index;
-
+    private Integer size;
+    private String md5Code;
 }
