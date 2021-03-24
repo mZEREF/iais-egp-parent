@@ -136,6 +136,7 @@
                                     <p><a href="#"
                                           <c:if test="${app.status == 'APST008' || app.status =='APST060'}">class="appdraftNo"</c:if>
                                           <c:if test="${app.status != 'APST008'}">class="appNo"</c:if>>${app.applicationNo}</a>
+                                        <label><c:if test="${app.status != 'APST093'}"/>${app.applicationNo}</label>
                                     </p>
                                 </td>
                                 <td>
@@ -223,7 +224,7 @@
                                                     <option value="Continue">Continue</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST045' }">
+                                            <c:if test="${app.status == 'APST045' || app.status == 'APST093'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
@@ -285,7 +286,7 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST005'
-                                            || app.status == 'APST006' || app.status == 'APST045'
+                                            || app.status == 'APST006' || app.status == 'APST045' || app.status == 'APST093'
                                             || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
