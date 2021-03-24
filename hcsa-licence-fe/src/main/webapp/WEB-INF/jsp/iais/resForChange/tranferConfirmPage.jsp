@@ -72,25 +72,23 @@
             <iais:value width="10">
               <p>
               <div class="file-upload-gp">
-              <input class="hidden delFlag" type="hidden" name="commDelFlag" value="N"/>
-              <span>${appPremisesSpecialDocDto.docName}</span>
-              <c:choose>
-                <c:when test="${appPremisesSpecialDocDto.docName == '' || appPremisesSpecialDocDto.docName == null }">
-                              <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
-                              </span>
-                </c:when>
-                <c:otherwise>
-                              <span class="existFile delBtn">
-                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
-                              </span>
-                </c:otherwise>
-              </c:choose>
+                <div class="col-xs-12" >
+                <c:forEach items="${seesion_files_map_ajax_feselectedFile}" var="fileMap">
+                  <div id="${fileMap.key}">
+                     ${fileMap.value.fileName}
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFile.index});">
+                    Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFile.index},'mainForm');">
+                  ReUpload</button>
+                  </div>
+                </c:forEach>
+                  <span  name="selectedFileShowId" id="selectedFileShowId">
+                </span>
+                </div>
                 <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" onclick="fileClicked(event)" onchange="fileChangedTransfer(event)" style="display: none;" aria-label="selectedFile" >
-                <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+                <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="clearFlagValueFEFile()">Upload</a>
               </div>
+              <span name="iaisErrorMsg" class="error-msg" id="selectedFileErrorMsg"></span>
               </p>
-              <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
             </iais:value>
           </iais:row>
           <iais:row>
@@ -117,6 +115,7 @@
   </div>
   <br/>
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+  <%@ include file="../appeal/FeFileCallAjax.jsp" %>
 </form>
 
 
@@ -139,42 +138,10 @@
             css: {width: '25%', border: '1px solid #aaa'},
             overlayCSS: {opacity: 0.2}});
     }
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
-    }
-    function fileChangedTransfer(event) {
-        var fileElement = event.target;
-        if (fileElement.value == "") {
-            fileChanged(event);
-        }else{
-            fileSelectChange();
-        }
-    }
-    // $('.selectedFile').change(function () {
-    //     fileSelectChange();
-    // });
-    function fileSelectChange(){
-        var file = $('#selectedFile');
-        file.parent().children('span:eq(0)').html(getFileName(file.val()));
-        file.parent().children('span:eq(0)').next().removeClass("hidden");
-        file.parent().children('input delFlag').val('N');
-        var maxSize = $("#maxFile").val();
-        var error  = validateUploadSizeMaxOrEmpty(maxSize,'selectedFile');
-        if(error == "N"){
-            doDeleteFile();
-            $('#error_selectedFileError').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
-        }
-    }
-    function doDeleteFile() {
-        $('#selectedFile').val("");
-    }
-    $('.delBtn').click(function () {
-        $(this).parent().children('span:eq(0)').html('');
-        $(this).parent().children('span:eq(0)').next().addClass("hidden");
-        $(this).parent().children('input.selectedFile').val('');
-        $(this).parent().children('input.delFlag').val('Y');
 
-    });
+    function fileChangedTransfer(event) {
+        ajaxCallUpload('mainForm','selectedFile');
+    }
+
 
 </script>
