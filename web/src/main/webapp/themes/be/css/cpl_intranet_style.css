@@ -2153,8 +2153,8 @@ input[type=number]::-webkit-outer-spin-button {
   color: #6dc0f8;
 }
 .form-check .form-check-label .check-circle {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border: 1px solid #6c6c6c;
   display: inline-block;
   border-radius: 16px;
@@ -2174,14 +2174,14 @@ input[type=number]::-webkit-outer-spin-button {
 .form-check .form-check-label .check-circle:before {
   content: "";
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: transparent;
   top: 50%;
-  margin-top: -4px;
+  margin-top: -5px;
   left: 50%;
-  margin-left: -4px;
-  border-radius: 4px;
+  margin-left: -5px;
+  border-radius: 5px;
 }
 .form-check .form-check-label .check-square {
   width: 18px;
