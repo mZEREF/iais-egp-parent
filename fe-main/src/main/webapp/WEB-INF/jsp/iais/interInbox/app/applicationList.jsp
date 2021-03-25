@@ -152,7 +152,7 @@
                                     <p class="appStatus"><iais:code code="${app.status}"/></p>
                                 </td>
                                 <td>
-                                    <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                    <p class="visible-xs visible-sm table-row-title">Submission Date</p>
                                     <p style="width: 153px"><fmt:formatDate value="${app.createdAt}"
                                                                             pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
