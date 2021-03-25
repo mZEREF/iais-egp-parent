@@ -189,7 +189,7 @@ public class FeAdminManageDelegate {
             }else{
                 feUserDto.setUserId(idNo);
             }
-            feUserDto.setIdType(idType);
+            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setIdentityNo(idNo);
             feUserDto.setDisplayName(name);
             feUserDto.setSalutation(salutation);
