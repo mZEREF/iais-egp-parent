@@ -67,7 +67,8 @@
                             <th width="5%">Yes</th>
                             <th width="5%">No</th>
                             <th width="5%">N/A</th>
-                            <th width="15%">Remarks</th>
+                            <th>Findings/NCs</th>
+                            <th>Actions Required</th>
                             <th width="10%">Rectified</th>
                           </tr>
                           </thead>
@@ -83,6 +84,7 @@
                                 <input disabled name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"/>
                               </td>
                               <td><input disabled name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A"/></td>
+                              <td><span disabled name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comitemCheckboxFindNcs" type="text"><c:out value="${item.incqDto.ncs}"/></span></td>
                               <td><span disabled name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comitemCheckboxRemark" type="text"><c:out value="${item.incqDto.remark}"/></span></td>
                               <td>
                                 <div id="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
@@ -114,7 +116,8 @@
                               <th width="5%">Yes</th>
                               <th width="5%">No</th>
                               <th width="5%">N/A</th>
-                              <th width="15%">Remarks</th>
+                              <th>Findings/NCs</th>
+                              <th>Actions Required</th>
                               <th width="10%">Rectified</th>
                             </tr>
                             </thead>
@@ -130,6 +133,7 @@
                                   <input disabled name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"/>
                                 </td>
                                 <td><input disabled name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A"/></td>
+                                <td><span disabled name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>itemCheckboxFindNcs" type="text"><c:out value="${item.incqDto.ncs}"/></span></td>
                                 <td><span disabled name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>itemCheckboxRemark" type="text"><c:out value="${item.incqDto.remark}"/></span></td>
                                 <td>
                                   <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
@@ -159,7 +163,8 @@
                             <th width="5%">Yes</th>
                             <th width="5%">No</th>
                             <th width="5%">N/A</th>
-                            <th width="15%">Remarks</th>
+                            <th>Findings/NCs</th>
+                            <th>Actions Required</th>
                             <th width="10%">Rectified</th>
                           </tr>
                           </thead>
@@ -176,6 +181,7 @@
                               </td>
                               <td><input disabled name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"/></td>
                               <td><span disabled name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text"><c:out value="${item.remark}"/></span></td>
+                              <td><span disabled name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcs" type="text"><c:out value="${item.ncs}"/></span></td>
                               <td>
                                 <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
                                   <input disabled name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>

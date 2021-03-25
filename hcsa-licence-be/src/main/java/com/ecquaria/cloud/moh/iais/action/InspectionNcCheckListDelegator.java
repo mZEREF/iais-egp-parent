@@ -563,6 +563,8 @@ public class InspectionNcCheckListDelegator {
             ParamUtil.setSessionAttr(request,"errorTab",null);
             ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
         }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,null);
     }
 
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{
@@ -797,6 +799,11 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
         String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
         ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+        String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
+        if( !StringUtil.isEmpty(errTab)){
+            ParamUtil.setSessionAttr(request,"errorTab",null);
+            ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
+        }
         log.info("----------saveDraftChecklist end--------");
     }
 
