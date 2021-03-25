@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -359,6 +360,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId) {
         return applicationFeClient.getMaxVersionSvcDocList(appGrpId).getEntity();
+    }
+
+    @Override
+    public void updateDraftStatus(String draftNo, String status) {
+        log.debug(StringUtil.changeForLog("updateDraftStatus start ..."));
+        applicationFeClient.updateDraftStatus(draftNo,status);
+        log.debug(StringUtil.changeForLog("updateDraftStatus end ..."));
+    }
+
+    @Override
+    public List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId,String appType) {
+        return applicationFeClient.getDraftListBySvcCodeAndStatus(svcCodeList,licenseeId,status,appType).getEntity();
     }
 
     @Override

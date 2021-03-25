@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -116,4 +117,6 @@ public interface AppSubmissionService {
     List<String> saveFileList(List<File> fileList);
     List<AppGrpPrimaryDocDto> getMaxVersionPrimaryDocList(String appGrpId);
     List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId);
+    void updateDraftStatus(String draftNo,String status);
+    List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
 }

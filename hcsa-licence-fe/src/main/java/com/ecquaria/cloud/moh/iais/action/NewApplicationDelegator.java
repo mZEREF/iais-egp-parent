@@ -3056,8 +3056,7 @@ public class NewApplicationDelegator {
             pmtReturnUrlDto.setNetsRetUrl(GatewayConfig.return_url);
             pmtReturnUrlDto.setOtherRetUrl(GatewayConfig.return_url);
             try {
-                //todo:update draft status
-
+                appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                 String url = NewApplicationHelper.genBankUrl(bpc.request,payMethod,fieldMap,pmtReturnUrlDto);
                 bpc.response.sendRedirect(url);
                 //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);

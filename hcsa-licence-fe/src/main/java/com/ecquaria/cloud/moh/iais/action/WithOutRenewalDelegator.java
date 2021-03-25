@@ -1470,6 +1470,9 @@ public class WithOutRenewalDelegator {
                     default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);
 
                 }
+                if(appSubmissionDtos != null && appSubmissionDtos.size() == 1){
+                    appSubmissionService.updateDraftStatus(appSubmissionDtos.get(0).getDraftNo(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+                }
                 bpc.response.sendRedirect(html);
                 bpc.request.setAttribute("paymentAmount", totalAmount);
             } catch (Exception e) {

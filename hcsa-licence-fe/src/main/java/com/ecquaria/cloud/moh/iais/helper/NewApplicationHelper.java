@@ -2304,6 +2304,7 @@ public class NewApplicationHelper {
         String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
         if(!IaisCommonUtils.isEmpty(svcDocConfigDtos)){
             int i = 0;
+            String suffix = "Error";
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
                 String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
                 String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
@@ -2332,7 +2333,7 @@ public class NewApplicationHelper {
                             }
                         }
                         if (!mandatoryFlag) {
-                            errorMap.put(errKey, err006);
+                            errorMap.put(errKey+suffix, err006);
                         }
                     }else{
                         List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
@@ -2340,7 +2341,7 @@ public class NewApplicationHelper {
                             String psnIndexNo = psnDto.getCgoIndexNo();
                             AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
                             if(appSvcDocDto == null){
-                                String specErrKey = errKey + psnIndexNo;
+                                String specErrKey = errKey + psnIndexNo +suffix;
                                 errorMap.put(specErrKey, err006);
                             }
                         }
@@ -2352,7 +2353,7 @@ public class NewApplicationHelper {
                             if(StringUtil.isEmpty(dupForPerson)){
                                 AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,premIndexNo,appGrpPremisesDto.getPremisesType(),"");
                                 if(appSvcDocDto == null){
-                                    String specErrKey = errKey + premIndexNo;
+                                    String specErrKey = errKey + premIndexNo + suffix;
                                     errorMap.put(specErrKey, err006);
                                 }
                             }else{
@@ -2361,7 +2362,7 @@ public class NewApplicationHelper {
                                     String psnIndexNo = psnDto.getCgoIndexNo();
                                     AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),psnIndexNo);
                                     if(appSvcDocDto == null){
-                                        String specErrKey = errKey + premIndexNo + psnIndexNo;
+                                            String specErrKey = errKey + premIndexNo + psnIndexNo +suffix;
                                         errorMap.put(specErrKey, err006);
                                     }
                                 }
