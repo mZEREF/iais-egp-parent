@@ -14,6 +14,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.ChannelSftp;
 import lombok.extern.slf4j.Slf4j;
@@ -79,20 +80,39 @@ public class FileUtil {
 			}
 		}
 	}
+	public static boolean writeToFile(String path,String fileName,String data){
+		boolean result = false;
+		if (fileName == null || fileName.trim().length() == 0){
+			return result;
+		}
+		File f = MiscUtil.generateFile(path,fileName);
+		return writeToFileFileByData(f,data);
+	}
 
 	public static boolean writeToFile(String fileName, String data) {
 		boolean result = false;
 		if (fileName == null || fileName.trim().length() == 0){
 			return result;
 		}
-			
-		try {
+
+		/*try {
 			generateFolder(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))));
 		} catch (Exception e) {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
-		}
-		File f = new File(fileName);
+		}*/
+
+		String[] fileNames = fileName.split(ConfigHelper.getString("giro.sftp.linux.seperator"));
+		File f = MiscUtil.generateFile(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))),fileNames[fileNames.length-1]);
+		log.info(StringUtil.changeForLog("----- file :" +f.toPath() +" ----------"));
+		log.info(StringUtil.changeForLog("----- file.getAbsolutePath() :" +f.getAbsolutePath() +" ----------"));
+		log.info(StringUtil.changeForLog("----- file.getPath() :" +f.getPath() +" ----------"));
+	    return writeToFileFileByData(f,data);
+	}
+
+	public static boolean  writeToFileFileByData( File f,String data){
+		log.info("---------- writeToFileFileByData start ----------");
+		boolean result = false;
 		if (f.exists()){
 			return result;
 		}else if (f.isDirectory()){
@@ -106,7 +126,7 @@ public class FileUtil {
 					result = true;
 				}
 			} catch (Exception e) {
-				log.error(StringUtil.changeForLog("write file for " + fileName + " error!" + e.getMessage()));
+				log.error(StringUtil.changeForLog("write file for " + f.getName() + " error!" + e.getMessage()));
 				log.error(e.getMessage(), e);
 				result = false;
 			} finally {
@@ -115,14 +135,17 @@ public class FileUtil {
 				}
 			}
 		}
+		log.info("---------- writeToFileFileByData end ----------");
 		return result;
 	}
-
 	public static void generateFolder(String folderPath) {
 		File f = new File(folderPath);
 		if (!f.isFile() && !f.exists()) {
-			f.mkdirs();
-			log.info(StringUtil.changeForLog("create folder:" + folderPath));
+			 if(f.mkdirs()){
+				 log.info(StringUtil.changeForLog("create folder:" + folderPath));
+			 }else {
+				 log.info(StringUtil.changeForLog("create folder:" + folderPath + " have failed"));
+			 }
 		}
 	}
 
