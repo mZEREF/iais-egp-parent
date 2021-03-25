@@ -93,7 +93,7 @@
                                     </p>
                                 </td>
                                 <td>
-                                    <p class="visible-xs visible-sm table-row-title">Message Type</p>
+                                    <p class="visible-xs visible-sm table-row-title">Type</p>
                                     <p><iais:code code="${inboxQuery.messageType}"/></p>
                                 </td>
                                 <td>
