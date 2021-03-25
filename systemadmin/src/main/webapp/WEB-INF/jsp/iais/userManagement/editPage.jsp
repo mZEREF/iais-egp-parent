@@ -30,7 +30,7 @@
                         </div>
 
                         <iais:row>
-                            <iais:field value="Licensee Name" width="11" required="true"/>
+                            <iais:field value="UEN" width="11" required="true"/>
                             <c:choose>
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:value width="11">
