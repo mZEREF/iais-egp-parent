@@ -325,7 +325,7 @@
             select DISTINCT T3.ID AS id,
             T3.group_name as group_name,
             T3.group_domain AS group_domain,
-            t4.USER_ACCT_ID,
+            t4.USER_ACCT_ID AS user_id,
             T3.STATUS AS STATUS
             from
             user_group_correlation T1,
