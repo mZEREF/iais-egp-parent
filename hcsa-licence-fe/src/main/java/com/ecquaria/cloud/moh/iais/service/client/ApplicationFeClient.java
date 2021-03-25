@@ -320,7 +320,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
     @GetMapping(value = "/iais-application/application-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationByCorrId(@RequestParam("corrId")String corrId);
-    @GetMapping(value = "/all-appGrpDto-paying")
+    @GetMapping(value = "/iais-application/all-appGrpDto-paying")
     FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpDtoPaying();
     @DeleteMapping(value = "/iais-submission/draft-by-numbers",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteDraftNUmber(@RequestBody List<String> draftNumbers);
