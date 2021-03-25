@@ -43,11 +43,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -341,23 +341,23 @@ public class RegulationDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        HashSet<String> checked = (HashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
-        List<RegulationQueryDto> export = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isNotEmpty(checked)){
-            List<HcsaChklSvcRegulationDto> list = regulationService.listRegulationByIds(new ArrayList<>(checked));
-            for (HcsaChklSvcRegulationDto i : list){
-                RegulationQueryDto regulation = new RegulationQueryDto();
-                regulation.setId(i.getId());
-                regulation.setClause(i.getClause());
-                regulation.setClauseNo(i.getClauseNo());
-                regulation.setStatus(i.getStatus());
-                export.add(regulation);
-            }
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
+        SearchResult searchResult =  regulationService.searchRegulation(searchParam);
+        LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
+        List<RegulationQueryDto> list = null;
+        if (Optional.ofNullable(searchResult).isPresent()
+                && Optional.ofNullable(searchResult.getRows()).isPresent()
+                && Optional.ofNullable(checked).isPresent()){
+            list = searchResult.getRows();
+            list = list.stream().filter(i -> checked.contains(i.getId())).collect(Collectors.toList());
         }
 
         File file = null;
         try {
-            file = ExcelWriter.writerToExcel(export, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
+            file = ExcelWriter.writerToExcel(list, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
             FileUtils.writeFileResponseContent(response, file);
         } catch (Exception  e) {
             log.error("=======>fileHandler error >>>>>", e);

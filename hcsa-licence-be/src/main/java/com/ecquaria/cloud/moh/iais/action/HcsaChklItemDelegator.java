@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -59,14 +58,14 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -216,7 +215,7 @@ public class HcsaChklItemDelegator {
         try {
             doSubmitOrUpdate(request);
         }catch (IaisRuntimeException e){
-           log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -310,7 +309,7 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         if(IaisCommonUtils.isEmpty(set)){
             ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY, null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -342,11 +341,11 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-    * @description: get request chkl item dto
-    * @param: 
-    * @return: 
-    * @author: yichen 
-    */
+     * @description: get request chkl item dto
+     * @param:
+     * @return:
+     * @author: yichen
+     */
     private void requestChklItemDto(HttpServletRequest request, ChecklistItemDto item){
         item = Optional.ofNullable(item).orElseGet(() -> new ChecklistItemDto());
 
@@ -416,7 +415,7 @@ public class HcsaChklItemDelegator {
         }
     }
 
-     /**
+    /**
      * AutoStep: prepareItem
      * @param bpc
      * @throws IllegalAccessException
@@ -451,7 +450,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      * description: Verify that the added id already exists for the same section
      */
-        public void configToChecklist(BaseProcessClass bpc){
+    public void configToChecklist(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if (checked == null || checked.length == 0){
@@ -538,12 +537,12 @@ public class HcsaChklItemDelegator {
         List<ChecklistItemDto> itemList = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
         log.info("HcsaChklItemDelegator [prepareCloneItem] START itemList {}", JsonUtil.parseToJson(itemList));
         Optional.ofNullable(itemList)
-                 .orElseGet(() -> new ArrayList<>())
+                .orElseGet(() -> new ArrayList<>())
                 .forEach(it -> {
-            if (it.getItemId().equals(itemId)){
-                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, it);
-            }
-        });
+                    if (it.getItemId().equals(itemId)){
+                        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, it);
+                    }
+                });
     }
 
     /**
@@ -688,37 +687,33 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-    * @author: yichen 
-    */
+     * @author: yichen
+     */
     @GetMapping(value = "checklist-item-file")
-	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
-	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        List<CheckItemQueryDto> export = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isNotEmpty(set)){
-            List<ChecklistItemDto> itemQueryList = hcsaChklService.listChklItemByItemId(new ArrayList<>(set));
-            for (ChecklistItemDto i : itemQueryList){
-                CheckItemQueryDto itemQueryDto = new CheckItemQueryDto();
-                itemQueryDto.setItemId(i.getItemId());
-                itemQueryDto.setChecklistItem(i.getChecklistItem());
-                itemQueryDto.setRegulationClause(i.getRegulationClause());
-                itemQueryDto.setRegulationClauseNo(i.getRegulationClauseNo());
-                itemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(i.getAnswerType()));
-                String riskLvl = MasterCodeUtil.getCodeDesc(i.getRiskLevel());
-                itemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
-                itemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(i.getStatus()));
-                export.add(itemQueryDto);
-            }
+    public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+        SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        List<CheckItemQueryDto> list = null;
+        if (Optional.ofNullable(searchResult).isPresent()
+                && Optional.ofNullable(searchResult.getRows()).isPresent()
+                && Optional.ofNullable(set).isPresent()){
+            list = searchResult.getRows();
+            list = list.stream().filter(i -> set.contains(i.getItemId())).collect(Collectors.toList());
         }
 
         boolean blockExcel = false;
-        if (IaisCommonUtils.isNotEmpty(export)){
+        if (IaisCommonUtils.isNotEmpty(list)){
             blockExcel = true;
         }
 
         File file = null;
         try {
-            file = ExcelWriter.writerToExcel(export, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
+            file = ExcelWriter.writerToExcel(list, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
             FileUtils.writeFileResponseContent(response, file);
         } catch (Exception e) {
             log.error("=======>fileHandler error >>>>>", e);
@@ -757,7 +752,7 @@ public class HcsaChklItemDelegator {
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
 
-            HashSet<String> checked = (HashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
             if (IaisCommonUtils.isEmpty(checked)) {
                 FileUtils.writeFileResponseProcessContent(request, inputFile);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -787,7 +782,7 @@ public class HcsaChklItemDelegator {
             }
 
         } catch (Exception e) {
-           log.error("exportItemToConfigTemplate has error ", e);
+            log.error("exportItemToConfigTemplate has error ", e);
         }
 
     }
