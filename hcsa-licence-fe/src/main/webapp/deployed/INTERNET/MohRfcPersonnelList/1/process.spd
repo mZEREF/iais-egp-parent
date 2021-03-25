@@ -196,7 +196,7 @@
    <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;valid&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePayment" value="&quot;bank&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch2" x="780" y="180">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="psnSwitch" name="Switch2" x="780" y="180">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;back&quot;"/>
    <SwitchCase component="/Pages/WebPage/ack" value="&quot;next&quot;"/>
