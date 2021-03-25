@@ -10,8 +10,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +55,5 @@ public interface InboxService {
     void  deleteDraftByNo(String draftNo);
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
     public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
+    List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
 }
