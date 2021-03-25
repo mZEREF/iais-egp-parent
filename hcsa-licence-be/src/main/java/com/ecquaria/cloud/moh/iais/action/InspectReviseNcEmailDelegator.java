@@ -809,6 +809,8 @@ public class InspectReviseNcEmailDelegator {
             ParamUtil.setSessionAttr(request,"errorTab",null);
             ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
         }
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,null);
     }
 
     private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
