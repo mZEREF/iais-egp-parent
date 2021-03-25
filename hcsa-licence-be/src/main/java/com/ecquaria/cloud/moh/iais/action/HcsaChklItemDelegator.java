@@ -66,6 +66,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -691,33 +692,29 @@ public class HcsaChklItemDelegator {
     */
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
-	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+        SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
         LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        List<CheckItemQueryDto> export = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isNotEmpty(set)){
-            List<ChecklistItemDto> itemQueryList = hcsaChklService.listChklItemByItemId(new ArrayList<>(set));
-            for (ChecklistItemDto i : itemQueryList){
-                CheckItemQueryDto itemQueryDto = new CheckItemQueryDto();
-                itemQueryDto.setItemId(i.getItemId());
-                itemQueryDto.setChecklistItem(i.getChecklistItem());
-                itemQueryDto.setRegulationClause(i.getRegulationClause());
-                itemQueryDto.setRegulationClauseNo(i.getRegulationClauseNo());
-                itemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(i.getAnswerType()));
-                String riskLvl = MasterCodeUtil.getCodeDesc(i.getRiskLevel());
-                itemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
-                itemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(i.getStatus()));
-                export.add(itemQueryDto);
-            }
+        List<CheckItemQueryDto> list = null;
+        if (Optional.ofNullable(searchResult).isPresent()
+                && Optional.ofNullable(searchResult.getRows()).isPresent()
+                && Optional.ofNullable(set).isPresent()){
+            list = searchResult.getRows();
+            list = list.stream().filter(i -> set.contains(i.getItemId())).collect(Collectors.toList());
         }
 
         boolean blockExcel = false;
-        if (IaisCommonUtils.isNotEmpty(export)){
+        if (IaisCommonUtils.isNotEmpty(list)){
             blockExcel = true;
         }
 
         File file = null;
         try {
-            file = ExcelWriter.writerToExcel(export, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
+            file = ExcelWriter.writerToExcel(list, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
             FileUtils.writeFileResponseContent(response, file);
         } catch (Exception e) {
             log.error("=======>fileHandler error >>>>>", e);
