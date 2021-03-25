@@ -721,11 +721,11 @@ public class MohIntranetUserDelegator {
 
                 Boolean isSuccessEgp = intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
                 if (isSuccessEgp) {
-                    intranetUserService.removeRole(orgUserRoleDtos);
-                    //remove group
                     if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                         intranetUserService.addUserGroupId(userGroupCorrelationDtos);
                     }
+                    intranetUserService.removeRole(orgUserRoleDtos);
+                    //remove group
                 }
             }
         }
