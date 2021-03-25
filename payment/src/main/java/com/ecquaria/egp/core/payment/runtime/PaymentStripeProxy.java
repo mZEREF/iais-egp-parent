@@ -246,17 +246,24 @@ public class PaymentStripeProxy extends PaymentProxy {
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
-
-		String appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
-		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
-		if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
-			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+		String appGrpNo=refNo;
+		try {
+			appGrpNo=refNo.substring(0,'_');
+		}catch (Exception e){
+			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
 		}
-		applicationGroupDto.setPmtRefNo(refNo);
-		applicationGroupDto.setPaymentDt(new Date());
-		applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
 
-		PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
+		if(applicationGroupDto!=null){
+			if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+			}
+			applicationGroupDto.setPmtRefNo(refNo);
+			applicationGroupDto.setPaymentDt(new Date());
+			applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+
+			PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+		}
 
 		try {
 			//setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
