@@ -41,7 +41,8 @@ public class UserValidator implements CustomizeValidator {
         String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD);
                 if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
                 boolean b;
-                if(OrganizationConstants.ID_TYPE_FIN.equals(dto.getIdType())){
+                if(OrganizationConstants.ID_TYPE_FIN.equals(dto.getIdType())
+                        || "FIN".equalsIgnoreCase(dto.getIdType())){
                     b = SgNoValidator.validateFin(dto.getIdentityNo());
                 }else{
                     b = SgNoValidator.validateNric(dto.getIdentityNo());
