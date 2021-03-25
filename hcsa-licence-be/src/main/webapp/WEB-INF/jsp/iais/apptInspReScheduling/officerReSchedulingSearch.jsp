@@ -117,7 +117,7 @@
                                 </td>
                               </c:if>
                               <td>
-                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Reschedule</button>
+                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Re-schedule</button>
                               </td>
                             </tr>
                           </c:forEach>
