@@ -274,7 +274,7 @@ public class InspectionMergeSendNcEmailDelegator {
                         ) {
                             stringBuilder1.append("<tr><td>").append(++i);
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
-                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
