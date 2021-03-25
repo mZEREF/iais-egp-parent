@@ -509,6 +509,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
+                reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");

@@ -237,7 +237,7 @@ public class InspecEmailDelegator {
                 ) {
                     stringBuilder.append("<tr><td>").append(++i);
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
-                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
