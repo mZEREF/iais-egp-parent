@@ -21,7 +21,12 @@
         <div class="intranet-content">
           <div class="bg-title">
             <c:if test="${'APTY007' eq applicationDto.applicationType}">
-              <h2><iais:message key="LOLEV_ACK043" escape="true"></iais:message></h2>
+              <c:if test="${'reScheduleSuccess' eq reScheduleSuccess}">
+                <h2><iais:message key="LOLEV_ACK043" escape="true"></iais:message></h2>
+              </c:if>
+              <c:if test="${'reScheduleSuccess' ne reScheduleSuccess}">
+                <h2><iais:message key="LOLEV_ACK052" escape="true"></iais:message></h2>
+              </c:if>
             </c:if>
             <c:if test="${'APTY007' ne applicationDto.applicationType}">
               <h2><iais:message key="LOLEV_ACK044" escape="true"></iais:message></h2>

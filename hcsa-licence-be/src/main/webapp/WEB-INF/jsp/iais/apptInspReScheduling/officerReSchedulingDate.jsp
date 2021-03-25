@@ -20,6 +20,11 @@
 <%
   String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
+<style type="text/css">
+  ul li:before {
+    background-color: #333333;
+  }
+</style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="reSchOfficerDateForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -70,17 +75,41 @@
                         </tbody>
                       </table>
                     </div>
+                    <div id="apptThreeInspDate">
+                      <div class="row" id = "apptDateTitle">
+                        <div class="col-md-4">
+                          <label style="font-size: 16px">Available Appointment Date</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <ul>
+                          <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
+                            <li><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
+                          </c:forEach>
+                        </ul>
+                      </div>
+                    </div>
                     <iais:action >
                       <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Find new Date</button>
+                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateAgain()">Find new Date</button>
                       <span style="float:right">&nbsp;</span>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Confirm System-proposed Date</button>
+                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateConfirm()">Confirm System-proposed Date</button>
                     </iais:action>
                   </c:if>
+                  <%--
+                    No Date, No Inspector Show
+                  --%>
                   <c:if test="${'reSchOfficerDateShow' ne reSchOfficerDateShow}">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <iais:message key="OAPPT_ACK025" escape="true"></iais:message>
+                      </div>
+                    </div>
                     <iais:action >
                       <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateYes()">Yes</button>
+                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateYes()">Yes</button>
                     </iais:action>
                   </c:if>
                 </iais:section>
@@ -99,13 +128,13 @@
         officerReSchedulingDateSubmit('back');
     }
 
-    function apptInspectionDateYes() {
+    function officerReSchedulingDateYes() {
         showWaiting();
         $("[name='actionValue']").val('yes');
         officerReSchedulingDateSubmit('success');
     }
 
-    function officerReSchedulingDateSuccess() {
+    function officerReSchedulingDateConfirm() {
         showWaiting();
         $("[name='actionValue']").val('success');
         officerReSchedulingDateSubmit('success');
