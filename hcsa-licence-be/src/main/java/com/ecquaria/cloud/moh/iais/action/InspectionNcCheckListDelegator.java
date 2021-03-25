@@ -563,8 +563,6 @@ public class InspectionNcCheckListDelegator {
             ParamUtil.setSessionAttr(request,"errorTab",null);
             ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
         }
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,null);
     }
 
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{

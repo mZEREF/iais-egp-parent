@@ -22,19 +22,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InspectionCheckListItemValidate implements CustomizeValidator {
     private static final String ERR0010 = "GENERAL_ERR0006";
-    private static final String SUMBIT_CHECK_LIST = "sumbit_check_list_pend_ins";
+    private static final String SUBMIT_CHECK_LIST = "sumbit_check_list_pend_ins";
     private static final String MESSAGE_TAG_DRAFT = "Draft" ;
+    private static final String NEXT_ACTION = "next";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<OrgUserDto> orgUserDtoUsers = (List<OrgUserDto>) ParamUtil.getSessionAttr(request,"inspectorsParticipant");
-        if(!IaisCommonUtils.isEmpty(orgUserDtoUsers) && orgUserDtoUsers.size() > 1){
-            ParamUtil.setSessionAttr(request,SUMBIT_CHECK_LIST,IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        }
+        setSubmitCheckList(request);
         fillUpVad(request,errMap);
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
-        ParamUtil.setSessionAttr(request,SUMBIT_CHECK_LIST,null);
+        ParamUtil.setSessionAttr(request,SUBMIT_CHECK_LIST,null);
         return errMap;
+    }
+
+    private void setSubmitCheckList(HttpServletRequest request){
+        String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+        if(!NEXT_ACTION.equalsIgnoreCase(doSubmitAction)){
+            List<OrgUserDto> orgUserDtoUsers = (List<OrgUserDto>) ParamUtil.getSessionAttr(request,"inspectorsParticipant");
+            if(!IaisCommonUtils.isEmpty(orgUserDtoUsers) && orgUserDtoUsers.size() > 1){
+                ParamUtil.setSessionAttr(request,SUBMIT_CHECK_LIST,IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+            }
+        }
     }
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
@@ -140,7 +148,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     }
 
     private  String getErrorMessageDraftStringTag(HttpServletRequest request){
-        String submitUser = (String) ParamUtil.getSessionAttr(request,SUMBIT_CHECK_LIST);
+        String submitUser = (String) ParamUtil.getSessionAttr(request,SUBMIT_CHECK_LIST);
         if( !StringUtil.isEmpty(submitUser)){
             return submitUser+MESSAGE_TAG_DRAFT;
         }
@@ -148,7 +156,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     }
 
     private InspectionCheckQuestionDto getTempByMap(HttpServletRequest request,InspectionCheckQuestionDto temp){
-        String submitUser = (String) ParamUtil.getSessionAttr(request,SUMBIT_CHECK_LIST);
+        String submitUser = (String) ParamUtil.getSessionAttr(request,SUBMIT_CHECK_LIST);
         if( !StringUtil.isEmpty(submitUser)){
             Map<String, AnswerForDifDto> answerForDifDtoMaps = temp.getAnswerForDifDtoMaps();
             if(!IaisCommonUtils.isEmpty(answerForDifDtoMaps)){
@@ -173,7 +181,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                 boolean isError = true;
                 String draftTag =  getErrorMessageDraftStringTag(request);
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                 String submitUser = (String) ParamUtil.getSessionAttr(request,SUMBIT_CHECK_LIST);
+                 String submitUser = (String) ParamUtil.getSessionAttr(request,SUBMIT_CHECK_LIST);
                  if( !StringUtil.isEmpty(submitUser)){
                      Map<String, AnswerForDifDto> answerForDifDtoMaps = temp.getAnswerForDifDtoMaps();
                      if(!IaisCommonUtils.isEmpty(answerForDifDtoMaps)){
