@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">Please select the type of update:</p>
+    <p class="form-check-title">Please select an option:</p>
 
     <div class="form-check progress-step-check" style="width: 900px">
         <input class="form-check-input" id="amendLicence3_1"
@@ -7,7 +7,7 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence3_1">
             <span class="check-circle"></span>
-            <span class="left-content">Change in licensee</span>
+            <span class="left-content">Change of Licensee</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -16,7 +16,7 @@
                >
         <label class="form-check-label" for="amendLicence3_2">
             <span class="check-circle"></span>
-            <span class="left-content">Change in licensee's information</span>
+            <span class="left-content">Amend Licensee's information</span>
         </label>
     </div>
 </div>

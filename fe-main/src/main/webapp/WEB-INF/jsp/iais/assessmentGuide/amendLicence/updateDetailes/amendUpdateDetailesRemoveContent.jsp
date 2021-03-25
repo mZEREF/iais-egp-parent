@@ -1,6 +1,6 @@
 <div class="form-check-gp">
 
-    <p class="form-check-title">Select the licence where the subsumed service and/or service subcategory(ies) will cease to be provided:
+    <p class="form-check-title">Please select the licence to amend:
     </p>
     <iais:pagination  param="amendDetailsRemoveSearchParam" result="amendDetailsRemoveSearchResult"/>
 

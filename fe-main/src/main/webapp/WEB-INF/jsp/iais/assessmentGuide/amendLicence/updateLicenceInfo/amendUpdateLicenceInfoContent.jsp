@@ -1,7 +1,7 @@
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="form-check-gp">
 
-    <p class="form-check-title">You select one licence to change at a time:</p>
+    <p class="form-check-title">Please select the licence to amend:</p>
 
     <iais:pagination  param="amendUpdateLicenseeSearchParam" result="amendUpdateLicenseeSearchResult"/>
     <div class="table-gp">

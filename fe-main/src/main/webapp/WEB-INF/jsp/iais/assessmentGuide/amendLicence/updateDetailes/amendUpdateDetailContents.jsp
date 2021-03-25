@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">Select the licence where the subsumed service(s) and/or service subcategory(ies) will be provided:</p>
+    <p class="form-check-title">Please select the licence to amend:</p>
     <iais:pagination  param="amendDetailsSearchParam" result="amendDetailsSearchResult"/>
 
     <div class="table-gp">
