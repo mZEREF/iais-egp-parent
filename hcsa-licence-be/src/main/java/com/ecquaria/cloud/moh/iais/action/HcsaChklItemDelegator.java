@@ -256,6 +256,7 @@ public class HcsaChklItemDelegator {
      */
     private void doSubmitOrUpdate(HttpServletRequest request){
         ChecklistItemDto item = (ChecklistItemDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR);
+        item = Optional.ofNullable(item).orElseGet(() -> new ChecklistItemDto());
         requestChklItemDto(request, item);
         //Field calibration
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, item);
@@ -348,8 +349,6 @@ public class HcsaChklItemDelegator {
     * @author: yichen 
     */
     private void requestChklItemDto(HttpServletRequest request, ChecklistItemDto item){
-        item = Optional.ofNullable(item).orElseGet(() -> new ChecklistItemDto());
-
         String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_ID);
         String regulationId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String cklItemStr = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
