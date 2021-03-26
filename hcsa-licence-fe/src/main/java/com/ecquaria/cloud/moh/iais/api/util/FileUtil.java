@@ -101,7 +101,7 @@ public class FileUtil {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
 		}*/
-
+		log.info(StringUtil.changeForLog("----------- writeToFile fileName :"+ fileName +"-----------"));
 		String[] fileNames = fileName.split(ConfigHelper.getString("giro.sftp.linux.seperator"));
 		File f = MiscUtil.generateFile(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))),fileNames[fileNames.length-1]);
 		log.info(StringUtil.changeForLog("----- file :" +f.toPath() +" ----------"));
