@@ -65,7 +65,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -810,9 +810,9 @@ public final class IaisEGPHelper extends EGPHelper {
         String redisplayName = ParamUtil.getString(request, "forName");
         String checkboxName = ParamUtil.getString(request, "checkboxName");
 
-        HashSet<String> set = (HashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
 
-        set = Optional.ofNullable(set).orElseGet(() -> new HashSet<>());
+        set = Optional.ofNullable(set).orElseGet(() -> new LinkedHashSet<>());
 
         String unMaskVal = MaskUtil.unMaskValue(checkboxName, itemId);
         if ("checked".equals(action)){
