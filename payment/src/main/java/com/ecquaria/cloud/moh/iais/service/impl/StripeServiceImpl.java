@@ -144,13 +144,14 @@ public class StripeServiceImpl implements StripeService {
             }
             paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
-        paymentClient.saveHcsaPayment(paymentDto);
-        paymentClient.updatePaymentResquset(paymentRequestDto);
         applicationGroupDto.setPaymentDt(new Date());
         applicationGroupDto.setPmtRefNo(paymentDto.getReqRefNo());
         applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        paymentClient.saveHcsaPayment(paymentDto);
+        paymentClient.updatePaymentResquset(paymentRequestDto);
+
     }
 
     @Override
