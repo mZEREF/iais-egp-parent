@@ -372,6 +372,7 @@ public class HcsaApplicationDelegator {
 
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request, "dateTimeShow");
+            boolean saveRecommenFlag = true;
             if (StringUtil.isEmpty(recommendationStr)) {
                 //PSO route back to ASO,PSO clear recommendation or licence start date
                 if (ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status) && RoleConsts.USER_ROLE_PSO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(approveSelect)) {
@@ -424,6 +425,8 @@ public class HcsaApplicationDelegator {
                             String chrono = ParamUtil.getString(bpc.request, "chrono");
                             appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
                             appPremisesRecommendationDto.setChronoUnit(chrono);
+                        } else {
+                            saveRecommenFlag = false;
                         }
                     }
                     if (isAppealType) {
@@ -450,7 +453,9 @@ public class HcsaApplicationDelegator {
                     Date date = Formatter.parseDate(dateTimeShow);
                     appPremisesRecommendationDto.setRecomInDate(date);
                 }
-                insRepService.updateRecommendation(appPremisesRecommendationDto);
+                if(saveRecommenFlag) {
+                    insRepService.updateRecommendation(appPremisesRecommendationDto);
+                }
             }
             String verified = ParamUtil.getString(bpc.request, "verified");
             String rollBack = ParamUtil.getMaskedString(bpc.request, "rollBack");
