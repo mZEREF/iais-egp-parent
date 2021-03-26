@@ -106,6 +106,6 @@ public interface OrganizationMainClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-user-info/{userAccountString}")
     FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo (@PathVariable("userAccountString") String userAccountString);
 
-    @PostMapping(value = "/patch-user-group", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-workgroup/patch-user-group", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> patchWorkingGrpForRoles(@RequestBody String body);
 }
