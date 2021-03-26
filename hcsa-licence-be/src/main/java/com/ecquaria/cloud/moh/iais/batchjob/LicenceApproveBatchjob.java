@@ -193,7 +193,7 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
 
-                        generateUEN(applicationGroupDto);
+                        generateUEN(eventBusLicenceGroupDtos);
                         //send uen email
                         licenceService.sendUenEmail(eventBusLicenceGroupDtos);
                     }
@@ -205,16 +205,36 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
 
-    private void generateUEN(ApplicationGroupDto applicationGroupDto) {
+    private void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         log.info(StringUtil.changeForLog("The generateUen start ..."));
         try{
-            GenerateUENDto generateUENDto = new GenerateUENDto();
             IaisUENDto iaisUENDto = new IaisUENDto();
-            iaisUENDto.setGenerateUENDto(generateUENDto);
-            iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
+            if(IaisCommonUtils.isEmpty(licenceGroupDtos)){
+                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
+                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(IaisCommonUtils.isEmpty(superLicDtos)){
+                    SuperLicDto superLicDto = superLicDtos.get(0);
+                    LicenceDto licenceDto = superLicDto.getLicenceDto();
+                    String svcCode = licenceDto.getSvcCode();
+                    String licenseeId = licenceDto.getLicenseeId();
+                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
+                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
+                    iaisUENDto.setLicenseeId(licenseeId);
+                    iaisUENDto.setSvcCode(svcCode);
+                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
+                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
+                    iaisUENDto.setPremises(premisesDto);
+                }else{
+                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+            }
             acraUenBeClient.generateUen(iaisUENDto);
         }catch (Throwable t){
-           log.debug(StringUtil.changeForLog("The Error for Generate UEN -->:"+applicationGroupDto.getGroupNo()));
            log.error(StringUtil.changeForLog( t.getMessage()),t);
         }
         log.info(StringUtil.changeForLog("The generateUen end ..."));
@@ -1423,6 +1443,7 @@ public class LicenceApproveBatchjob {
             keyPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             //: controller the Organization
             keyPersonnelDto.setOrganizationId(organizationId);
+            keyPersonnelDto.setAppPsnId(keyPersonnelDto.getId());
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
             //create AppGrpPersonnelExtDto
             String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
@@ -1570,6 +1591,7 @@ public class LicenceApproveBatchjob {
                 LicDocumentDto licDocumentDto = new LicDocumentDto();
                 licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
+                licDocumentDto.setAppPersonId(appSvcDocDto.getAppGrpPersonId());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {

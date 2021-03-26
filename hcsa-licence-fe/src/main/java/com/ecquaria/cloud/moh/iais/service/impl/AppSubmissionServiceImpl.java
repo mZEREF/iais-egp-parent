@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -82,6 +83,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
@@ -100,6 +102,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -130,6 +133,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private EventBusHelper eventBusHelper;
     @Autowired
     private AppEicClient appEicClient;
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
 
     @Override
     public int hashCode() {
@@ -172,105 +177,107 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
     @Override
     public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName){
-        try{
-            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
-            if(IaisCommonUtils.isEmpty(applicationDtos)){
-                applicationDtos = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo()).getEntity();
-                appSubmissionDto.setApplicationDtos(applicationDtos);
-            }
-            ApplicationDto applicationDto =  applicationDtos.get(0);
-            String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-            int index = 0;
-            StringBuilder stringBuilderAPPNum = new StringBuilder();
-            String temp = "have";
-            if(appSubmissionDto.getApplicationDtos().size() == 1){
-                temp = "has";
-            }
-            for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
-                if(index == 0){
-                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
-                }else {
-                    stringBuilderAPPNum.append(" and ");
-                    stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
+        if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+            try{
+                List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+                if(IaisCommonUtils.isEmpty(applicationDtos)){
+                    applicationDtos = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo()).getEntity();
+                    appSubmissionDto.setApplicationDtos(applicationDtos);
                 }
-                index++;
-            }
-            String applicationNumber = stringBuilderAPPNum.toString();
-            Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            subMap.put("ApplicationType", applicationType);
-            subMap.put("ApplicationNumber", applicationNumber);
-            subMap.put("temp", temp);
-            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
-            String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS,subMap);
-            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG,subMap);
-            log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-            log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-            log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-            Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-            templateContent.put("ApplicantName", applicantName);
-            templateContent.put("ApplicationType",  applicationType);
-            templateContent.put("ApplicationNumber", applicationNumber);
-            templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-            templateContent.put("isSelfAssessment","No");
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            templateContent.put("systemLink", loginUrl);
-            String paymentMethodName = "noNeedPayment";
-            String payMethod = appSubmissionDto.getPaymentMethod();
-            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-                paymentMethodName = "GIRO";
-                templateContent.put("usualDeduction","next 7 working days");
-                templateContent.put("accountNumber",appSubmissionDto.getGiroAcctNum());
-                //need change giro
-            }else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-                paymentMethodName = "onlinePayment";
-            }
-            templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-            templateContent.put("paymentMethod", paymentMethodName);
-            templateContent.put("paymentAmount", appSubmissionDto.getAmountStr());
-            String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
-            templateContent.put("MOH_AGENCY_NAME",syName);
-            EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
-            emailParam.setTemplateContent(templateContent);
-            emailParam.setSubject(emailSubject);
-            emailParam.setQueryCode(applicationDto.getApplicationNo());
-            emailParam.setReqRefNum(applicationDto.getApplicationNo());
-            emailParam.setRefId(applicationDto.getApplicationNo());
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-            notificationHelper.sendNotification(emailParam);
-
-            EmailParam smsParam = new EmailParam();
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
-            smsParam.setSubject(smsSubject);
-            smsParam.setQueryCode(applicationDto.getApplicationNo());
-            smsParam.setReqRefNum(applicationDto.getApplicationNo());
-            smsParam.setRefId(applicationDto.getApplicationNo());
-            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-            notificationHelper.sendNotification(smsParam);
-
-            EmailParam msgParam = new EmailParam();
-            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
-            msgParam.setTemplateContent(templateContent);
-            msgParam.setSubject(messageSubject);
-            msgParam.setQueryCode(applicationDto.getApplicationNo());
-            msgParam.setReqRefNum(applicationDto.getApplicationNo());
-            msgParam.setRefId(applicationDto.getApplicationNo());
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
-                if( !svcCodeList.contains(appSvcRelatedInfoDto.getServiceCode())){
-                    svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+                ApplicationDto applicationDto =  applicationDtos.get(0);
+                String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
+                int index = 0;
+                StringBuilder stringBuilderAPPNum = new StringBuilder();
+                String temp = "have";
+                if(appSubmissionDto.getApplicationDtos().size() == 1){
+                    temp = "has";
                 }
+                for(ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()){
+                    if(index == 0){
+                        stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
+                    }else {
+                        stringBuilderAPPNum.append(" and ");
+                        stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
+                    }
+                    index++;
+                }
+                String applicationNumber = stringBuilderAPPNum.toString();
+                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                subMap.put("ApplicationType", applicationType);
+                subMap.put("ApplicationNumber", applicationNumber);
+                subMap.put("temp", temp);
+                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL,subMap);
+                String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS,subMap);
+                String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG,subMap);
+                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
+                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                templateContent.put("ApplicantName", applicantName);
+                templateContent.put("ApplicationType",  applicationType);
+                templateContent.put("ApplicationNumber", applicationNumber);
+                templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                templateContent.put("isSelfAssessment","No");
+                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                templateContent.put("systemLink", loginUrl);
+                String paymentMethodName = "noNeedPayment";
+                String payMethod = appSubmissionDto.getPaymentMethod();
+                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+                    paymentMethodName = "GIRO";
+                    templateContent.put("usualDeduction","next 7 working days");
+                    templateContent.put("accountNumber",appSubmissionDto.getGiroAcctNum());
+                    //need change giro
+                }else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                        || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                        || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+                    paymentMethodName = "onlinePayment";
+                }
+                templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+                templateContent.put("paymentMethod", paymentMethodName);
+                templateContent.put("paymentAmount", appSubmissionDto.getAmountStr());
+                String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
+                templateContent.put("MOH_AGENCY_NAME",syName);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
+                emailParam.setTemplateContent(templateContent);
+                emailParam.setSubject(emailSubject);
+                emailParam.setQueryCode(applicationDto.getApplicationNo());
+                emailParam.setReqRefNum(applicationDto.getApplicationNo());
+                emailParam.setRefId(applicationDto.getApplicationNo());
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                notificationHelper.sendNotification(emailParam);
+
+                EmailParam smsParam = new EmailParam();
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
+                smsParam.setSubject(smsSubject);
+                smsParam.setQueryCode(applicationDto.getApplicationNo());
+                smsParam.setReqRefNum(applicationDto.getApplicationNo());
+                smsParam.setRefId(applicationDto.getApplicationNo());
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(smsParam);
+
+                EmailParam msgParam = new EmailParam();
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
+                msgParam.setTemplateContent(templateContent);
+                msgParam.setSubject(messageSubject);
+                msgParam.setQueryCode(applicationDto.getApplicationNo());
+                msgParam.setReqRefNum(applicationDto.getApplicationNo());
+                msgParam.setRefId(applicationDto.getApplicationNo());
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                    if( !svcCodeList.contains(appSvcRelatedInfoDto.getServiceCode())){
+                        svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+                    }
+                }
+                msgParam.setSvcCodeList(svcCodeList);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                notificationHelper.sendNotification(msgParam);
+                log.info("end send email sms and msg");
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+                log.info("send app sumbit email fail");
             }
-            msgParam.setSvcCodeList(svcCodeList);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            notificationHelper.sendNotification(msgParam);
-            log.info("end send email sms and msg");
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            log.info("send app sumbit email fail");
         }
 
     }
@@ -340,6 +347,33 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         log.debug("checkIsGiroAcc [isGiroAcc] isGiroAcc {}",isGiroAcc);
         return isGiroAcc;
+    }
+
+    @Override
+    public List<String> saveFileList(List<File> fileList) {
+        return comFileRepoClient.saveFileRepo(fileList);
+    }
+
+    @Override
+    public List<AppGrpPrimaryDocDto> getMaxVersionPrimaryDocList(String appGrpId) {
+        return applicationFeClient.getMaxVersionPrimaryDocList(appGrpId).getEntity();
+    }
+
+    @Override
+    public List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId) {
+        return applicationFeClient.getMaxVersionSvcDocList(appGrpId).getEntity();
+    }
+
+    @Override
+    public void updateDraftStatus(String draftNo, String status) {
+        log.debug(StringUtil.changeForLog("updateDraftStatus start ..."));
+        applicationFeClient.updateDraftStatus(draftNo,status);
+        log.debug(StringUtil.changeForLog("updateDraftStatus end ..."));
+    }
+
+    @Override
+    public List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId,String appType) {
+        return applicationFeClient.getDraftListBySvcCodeAndStatus(svcCodeList,licenseeId,status,appType).getEntity();
     }
 
     @Override
@@ -1306,23 +1340,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId, String configDocId) {
-        return applicationFeClient.getMaxVersionPrimaryComDoc(appGrpId,configDocId).getEntity();
+    public AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId, String configDocId,String seqNum) {
+        return applicationFeClient.getMaxVersionPrimaryComDoc(appGrpId,configDocId,seqNum).getEntity();
     }
 
     @Override
-    public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId) {
-        return applicationFeClient.getMaxVersionSvcComDoc(appGrpId,configDocId).getEntity();
+    public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
+        return applicationFeClient.getMaxVersionSvcComDoc(appGrpId,configDocId,seqNum).getEntity();
     }
 
     @Override
-    public AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo) {
-        return applicationFeClient.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo).getEntity();
+    public AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
+        return applicationFeClient.getMaxVersionPrimarySpecDoc(appGrpId,configDocId,appNo,seqNum).getEntity();
     }
 
     @Override
-    public AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo) {
-        return applicationFeClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo).getEntity();
+    public AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
+        return applicationFeClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo,seqNum).getEntity();
     }
 
     @Override
@@ -1361,10 +1395,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         newGrpPrimaryDoc.setSvcComDocName(docConfig.getDocTitle());
                                         //newGrpPrimaryDoc.setDocConfigVersion(docConfig.getVersion());
                                         newGrpPrimaryDocList.add(newGrpPrimaryDoc);
-                                        break;
+                                        //break;
                                     }
                                 }
-                                break;
+                                //break;
                             }
                         }
                     }
@@ -1405,28 +1439,31 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));//NOSONAR
         //add empty doc
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+        List<HcsaSvcDocConfigDto> docConfigDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)){
+        if(!IaisCommonUtils.isEmpty(docConfigDtos)){
             log.debug(StringUtil.changeForLog("hcsaSvcDocDtos not empty ..."));
-            log.debug(StringUtil.changeForLog("hcsa svc doc config dto size:" +  hcsaSvcDocDtos.size()));
+            log.debug(StringUtil.changeForLog("hcsa svc doc config dto size:" +  docConfigDtos.size()));
             if(notEmptyDocList != null && notEmptyDocList.size() > 0){
                 List<HcsaSvcDocConfigDto> oldHcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(notEmptyDocList.get(0).getSvcComDocId());
                 log.debug(StringUtil.changeForLog("oldHcsaSvcDocDtos:" +  JsonUtil.parseToJson(oldHcsaSvcDocDtos)));
-                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:docConfigDtos){
                     String docTitle = hcsaSvcDocConfigDto.getDocTitle();
                     String dupPrem = hcsaSvcDocConfigDto.getDupForPrem();
                     int i = 0;
                     for(HcsaSvcDocConfigDto oldHcsaSvcDocDto:oldHcsaSvcDocDtos){
                         if(docTitle.equals(oldHcsaSvcDocDto.getDocTitle())){
-                            AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.getAppGrpprimaryDocDto(oldHcsaSvcDocDto.getId(),notEmptyDocList);
-                            if(appGrpPrimaryDocDto == null){
-                                appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
+                            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = NewApplicationHelper.getAppGrpprimaryDocDto(oldHcsaSvcDocDto.getId(),notEmptyDocList);
+                            if(IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
+                                AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
                                 handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
                             }else{
-                                appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
-                                handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+                                    appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
+                                    handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                }
                             }
+                            break;
                         }
                         if(i == oldHcsaSvcDocDtos.size()){
                             //add empty doc
@@ -1437,7 +1474,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                 }
             }else{
-                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:docConfigDtos){
                     AppGrpPrimaryDocDto appGrpPrimaryDocDto = NewApplicationHelper.genEmptyPrimaryDocDto(hcsaSvcDocConfigDto.getId());
                     newPrimaryDocList.add(appGrpPrimaryDocDto);
                 }
@@ -1500,7 +1537,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
-        documentValid(bpc.request, documentMap);
+        documentValid(bpc.request, documentMap,false);
         doCommomDocument(bpc.request, documentMap);
         NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),documentMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         if (!documentMap.isEmpty()) {
@@ -1653,7 +1690,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
-        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,svcDocErrMap);
+        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,dto,svcDocErrMap);
         if(svcDocErrMap.size() > 0){
             sB.append(serviceId);
             errorMap.put("svcDoc", "error");
@@ -1666,7 +1703,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap) {
+    public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setIsPassValidate) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -1707,7 +1744,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 errorMap.put(keyName, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType, "fileType"));
             }
             String errMsg = errorMap.get(keyName);
-            if (StringUtil.isEmpty(errMsg)) {
+            if (StringUtil.isEmpty(errMsg) && setIsPassValidate) {
                 appGrpPrimaryDocDto.setPassValidate(true);
             }
         }

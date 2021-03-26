@@ -67,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -627,15 +626,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     Map<Integer,String> map=new TreeMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(hciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index].toUpperCase());
+                                            map.put(hciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
                                         }
                                     }
                                   if(!map.isEmpty()){
-                                      AtomicInteger length=new AtomicInteger();
+                                      AtomicInteger length= new AtomicInteger();
                                       map.forEach((k,v)->{
                                           length.getAndIncrement();
                                           sb.append(v);
-                                          if(length.get()!=map.size()){
+                                          if(map.size()!= length.get()){
                                               sb.append(',');
                                           }
                                       });
@@ -904,8 +903,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     Map<Integer,String> map=new TreeMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (convHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(convHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index].toUpperCase());
-
+                                            map.put(convHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
                                         }
                                     }
                                     if(!map.isEmpty()){
@@ -916,7 +914,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             if(length.get()!=map.size()){
                                                 sb.append(',');
                                             }
-
                                         });
                                         errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                                     }
@@ -1169,7 +1166,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     Map<Integer,String> map=new TreeMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (offSiteHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(offSiteHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index].toUpperCase());
+                                            map.put(offSiteHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
+
                                         }
                                     }
                                     if(!map.isEmpty()){
@@ -1178,7 +1176,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             length.getAndIncrement();
                                             sb.append(v);
                                             if(length.get()!=map.size()){
-                                                sb. append(',');
+                                                sb.append(',');
                                             }
                                         });
                                         errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
@@ -1412,6 +1410,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
+                        appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }else {
@@ -1564,101 +1563,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return false;
     }
 
-    @Override
-    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos) {
-        try {
-            AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
-            String appGroupId = appSubmissionDto.getAppGrpId();
-            if(appSubmissionDtos.size()>=2){
-                double a = 0.0;
-                for (AppSubmissionDto appSubmDto : appSubmissionDtos) {
-                    a = a + appSubmDto.getAmount();
-                }
-                appSubmissionDto.setAmountStr(Formatter.formatterMoney(a));
-            }
-            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-
-            if(appSubmissionDto.getLicenceNo()==null){
-                LicenceDto licenceDto= licenceClient.getLicBylicId(appSubmissionDto.getLicenceId()).getEntity();
-                appSubmissionDto.setLicenceNo(licenceDto.getLicenceNo());
-                appSubmissionDto.setServiceName(licenceDto.getSvcName());
-            }
-            OrgUserDto orgUserDto = null;
-            ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(appGroupId).getEntity();
-            if (applicationGroupDto != null){
-
-               orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
-                if (orgUserDto != null){
-                    emailMap.put("ApplicantName", orgUserDto.getDisplayName());
-                }
-            }
-            if("$0.0".equals(appSubmissionDto.getAmountStr())){
-                emailMap.remove("GIRO_PAY");
-                emailMap.remove("Online_PAY");
-            }
-            emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
-            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-            emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-            emailMap.put("systemLink", loginUrl);
-            emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-            EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT);
-            emailParam.setTemplateContent(emailMap);
-            if(appSubmissionDto.getAppGrpId()==null){
-                emailParam.setQueryCode(appSubmissionDto.getLicenceNo());
-                emailParam.setReqRefNum(appSubmissionDto.getLicenceNo());
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                emailParam.setRefId(appSubmissionDto.getLicenceId());
-            }else {
-                emailParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-                emailParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
-                emailParam.setRefId(appSubmissionDto.getAppGrpId());
-            }
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            MsgTemplateDto rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT).getEntity();
-            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
-            map.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-            String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-            emailParam.setSubject(subject);
-            //email
-            notificationHelper.sendNotification(emailParam);
-            //msg
-            try {
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
-                String svcName=appSubmissionDto.getServiceName();
-                if(svcName==null){
-                    LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-                    svcName=licenceDto.getSvcName();
-                }
-                List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-                List<String> svcCode=IaisCommonUtils.genNewArrayList();
-                svcCode.add(svcDto.get(0).getSvcCode());
-                rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
-                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-                emailParam.setSubject(subject);
-                emailParam.setSvcCodeList(svcCode);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                emailParam.setRefId(appSubmissionDto.getLicenceId());
-                notificationHelper.sendNotification(emailParam);
-            }catch (Exception e){
-                log.info(e.getMessage(),e);
-            }
-            //sms
-            rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS).getEntity();
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-            emailParam.setSubject(subject);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-    }
     /*--------------------------------
     * appSubmissionDto application type must be determine
     * -------------------------------

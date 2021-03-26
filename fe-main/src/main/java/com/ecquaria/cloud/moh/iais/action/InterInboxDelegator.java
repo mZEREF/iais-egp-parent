@@ -633,6 +633,12 @@ public class InterInboxDelegator {
                     return;
                 }
             }
+            if(errorMap.isEmpty()){
+                List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+                if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
+                }
+            }
 
             if(errorMap.isEmpty()){
                 StringBuilder url = new StringBuilder();
@@ -705,6 +711,14 @@ public class InterInboxDelegator {
                     result = false;
                 }
             }
+            if(result && licIdValue.size()==1){
+                List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue.get(0),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+                if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
+                    result = false;
+                }
+            }
+
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

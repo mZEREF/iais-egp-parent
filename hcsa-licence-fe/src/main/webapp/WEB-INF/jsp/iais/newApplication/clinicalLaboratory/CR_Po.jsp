@@ -124,12 +124,12 @@
                               <label  class="control-label control-set-font control-font-label">Name</label>
                               <span class="mandatory">*</span>
                             </div>
-                            <div class="col-sm-4" id="salutation${suffix}">
+                            <div class="col-sm-4 col-md-4 col-xs-12" id="salutation${suffix}">
                               <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
                               <span class="error-msg" id="error_salutation${suffix}" name="iaisErrorMsg"></span>
                             </div>
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 col-md-4 col-xs-12">
                               <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                             </div>
@@ -144,13 +144,13 @@
                                 <span class="mandatory">*</span>
                               </label>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 col-md-4 col-xs-12">
                               <div class="" id="idType${suffix}">
                                 <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
                               </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 col-md-4 col-xs-12">
                               <input autocomplete="off" id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
                               <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
                               <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
@@ -420,11 +420,11 @@
                               <label  class="control-label control-set-font control-font-label">Name</label>
                               <span class="mandatory">*</span>
                             </div>
-                            <div class="col-sm-4 " id="deputySalutation${suffix}">
+                            <div class="col-sm-4 col-xs-4" id="deputySalutation${suffix}">
                               <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
                               <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 col-xs-4">
                               <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                               <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                             </div>
@@ -440,13 +440,13 @@
                               </label>
 
                             </div>
-                            <div class="col-sm-4" id="deputyIdType${suffix}">
+                            <div class="col-sm-4 col-xs-4" id="deputyIdType${suffix}">
                               <div class="">
                                 <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
                                 <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
                               </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 col-xs-4">
                               <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                               <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                             </div>

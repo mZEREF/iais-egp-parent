@@ -560,7 +560,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
         }
         List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
+        log.info("----start withdrowAppToBe-----");
         if(appPremiseMiscEntities!=null && !appPremiseMiscEntities.isEmpty()){
+            log.info("---- appPremiseMiscEntities is not null ----start withdrowAppToBe-----");
             List<String> list=new ArrayList<>(appPremiseMiscEntities.size());
             for(AppPremiseMiscDto appPremiseMiscDto : appPremiseMiscEntities){
                 String relateRecId = appPremiseMiscDto.getRelateRecId();
@@ -568,6 +570,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     list.add(relateRecId);
                 }
             }
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(list)));
             List<ApplicationDto> entity = applicationClient.getApplicationDtoByAppIds(list).getEntity();
             if(entity.isEmpty()){
                 processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
@@ -575,6 +578,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 return true;
             }
         }
+        log.info("---- end ----start withdrowAppToBe-----");
         return false;
     }
 

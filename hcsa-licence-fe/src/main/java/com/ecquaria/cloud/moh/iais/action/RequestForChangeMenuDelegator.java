@@ -250,7 +250,7 @@ public class RequestForChangeMenuDelegator {
             StringBuilder stringBuilder = new StringBuilder();
             List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode(), licenseeId);
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                stringBuilder.append(licenceDto.getSvcName()).append(',');
+                stringBuilder.append(licenceDto.getSvcName()).append(", ");
             }
             premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
@@ -1469,6 +1469,11 @@ public class RequestForChangeMenuDelegator {
                     log.info(e.getMessage(), e);
                 }
             } else {
+                if(!"cancelled".equals(result)){
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                }
                 switchValue = "loading";
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
             }

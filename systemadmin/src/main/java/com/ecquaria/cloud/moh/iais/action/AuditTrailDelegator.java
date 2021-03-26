@@ -87,22 +87,22 @@ public class AuditTrailDelegator {
     }
 
     /**
-     * @AutoStep: prepareSwitch
-     * @param:
-     * @return:
-     * @author: yichen
-     */
+    * @AutoStep: prepareSwitch
+    * @param:
+    * @return:
+    * @author: yichen
+    */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
         log.debug("The prepareSwitch end ...");
     }
 
     /**
-     * @AutoStep: prepareData
-     * @param: bpc
-     * @return:
-     * @author: yichen
-     */
+    * @AutoStep: prepareData
+    * @param: bpc
+    * @return:
+    * @author: yichen
+    */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         boolean isAdmin = AccessUtil.isAdministrator();
@@ -280,11 +280,11 @@ public class AuditTrailDelegator {
     }
 
     /**
-     * @AutoStep: doQuery
-     * @param:
-     * @return:
-     * @author: yichen
-     */
+    * @AutoStep: doQuery
+    * @param:
+    * @return:
+    * @author: yichen
+    */
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String curAct = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -306,9 +306,9 @@ public class AuditTrailDelegator {
             queryDto.setOperation(Integer.parseInt(operation));
         }
 
-        if(StringUtil.isNotEmpty(operationType)) {
-            queryDto.setDomain(Integer.valueOf(operationType));
-        }
+	    if(StringUtil.isNotEmpty(operationType)) {
+		    queryDto.setDomain(Integer.valueOf(operationType));
+	    }
 
         queryDto.setDateStart(startDate);
         queryDto.setDateEnd(endDate);

@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -215,7 +216,7 @@ public class HcsaChklItemDelegator {
         try {
             doSubmitOrUpdate(request);
         }catch (IaisRuntimeException e){
-            log.error(e.getMessage(), e);
+           log.error(e.getMessage(), e);
         }
     }
 
@@ -342,11 +343,11 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-     * @description: get request chkl item dto
-     * @param:
-     * @return:
-     * @author: yichen
-     */
+    * @description: get request chkl item dto
+    * @param: 
+    * @return: 
+    * @author: yichen 
+    */
     private void requestChklItemDto(HttpServletRequest request, ChecklistItemDto item){
         String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_ID);
         String regulationId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
@@ -414,7 +415,7 @@ public class HcsaChklItemDelegator {
         }
     }
 
-    /**
+     /**
      * AutoStep: prepareItem
      * @param bpc
      * @throws IllegalAccessException
@@ -449,7 +450,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      * description: Verify that the added id already exists for the same section
      */
-    public void configToChecklist(BaseProcessClass bpc){
+        public void configToChecklist(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if (checked == null || checked.length == 0){
@@ -536,12 +537,12 @@ public class HcsaChklItemDelegator {
         List<ChecklistItemDto> itemList = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
         log.info("HcsaChklItemDelegator [prepareCloneItem] START itemList {}", JsonUtil.parseToJson(itemList));
         Optional.ofNullable(itemList)
-                .orElseGet(() -> new ArrayList<>())
+                 .orElseGet(() -> new ArrayList<>())
                 .forEach(it -> {
-                    if (it.getItemId().equals(itemId)){
-                        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, it);
-                    }
-                });
+            if (it.getItemId().equals(itemId)){
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, it);
+            }
+        });
     }
 
     /**
@@ -686,10 +687,10 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-     * @author: yichen
-     */
+    * @author: yichen 
+    */
     @GetMapping(value = "checklist-item-file")
-    public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
+	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         searchParam.setPageNo(0);
         searchParam.setPageSize(Integer.MAX_VALUE);
@@ -781,7 +782,7 @@ public class HcsaChklItemDelegator {
             }
 
         } catch (Exception e) {
-            log.error("exportItemToConfigTemplate has error ", e);
+           log.error("exportItemToConfigTemplate has error ", e);
         }
 
     }

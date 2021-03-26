@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -43,10 +44,14 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.File;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -90,6 +95,7 @@ public class RequestForChangeDelegator {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+
     /**
      *
      * @param bpc
@@ -207,6 +213,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
         }
         ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", amendType);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+"selectedFile", null);
         log.debug(StringUtil.changeForLog("the do doChoose end ...."));
     }
 
@@ -329,10 +336,15 @@ public class RequestForChangeDelegator {
             String premisesIndexNo = appSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
             ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", premisesIndexNo);
         }
+
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        List<PageShowFileDto> pageShowFileDtos = SingeFileUtil.getInstance().transForFileMapToPageShowFileDto(map);
+
         int maxFile = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "maxFile", maxFile);
+        ParamUtil.setRequestAttr(bpc.request, "pageShowFileDtos", pageShowFileDtos);
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
@@ -363,65 +375,12 @@ public class RequestForChangeDelegator {
 
         String email = ParamUtil.getString(mulReq,"email");
         String reason = ParamUtil.getString(mulReq,"reason");
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = null;
-        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
-        if(file ==  null || file.getSize() == 0){
-          String commDelFlag = ParamUtil.getString(mulReq, "commDelFlag");
-          if("N".equals(commDelFlag)){
-              appPremisesSpecialDocDto = (AppPremisesSpecialDocDto)ParamUtil.getSessionAttr(bpc.request,"appPremisesSpecialDocDto");
-          }
-        }
+
         String[] confirms = ParamUtil.getStrings(mulReq, "confirm");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email);
         boolean isEmail = ValidationUtils.isEmail(email);
-        if(file != null && file.getSize() != 0){
-            int maxFile = systemParamConfig.getUploadFileLimit();
-            String fileType = systemParamConfig.getUploadFileType();
-            appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-            log.info(StringUtil.changeForLog("The maxFile is -->:"+maxFile));
-            log.info(StringUtil.changeForLog("The fileType is -->:"+fileType));
-            Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file,Arrays.asList(FileUtils.fileTypeToArray(fileType)),(maxFile * 1024 *1024L));
-           if(fileValidate != null && fileValidate.size() >0){
-               String errorMsg = "";
-               if(!fileValidate.get("fileType")){
-                   errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType");
-                   error.put("selectedFileError",errorMsg);
-               }
-               if(!fileValidate.get("fileNameLength")){
-                   errorMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
-                   error.put("selectedFileError",errorMsg);
-               }
-               if(!fileValidate.get("fileSize")){
-                   errorMsg = MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax");
-                   error.put("selectedFileError",errorMsg);
-               }
-
-               log.info(StringUtil.changeForLog("The errorMsg is -->:"+errorMsg));
-               if(!StringUtil.isEmpty(errorMsg)){
-                   appPremisesSpecialDocDto.setErrorMsg(errorMsg);
-               }
-               appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
-               //0066841
-               if(fileValidate.get("fileType") && fileValidate.get("fileSize")){
-                   String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                   log.info(StringUtil.changeForLog("The fileRepoGuid is -->:"+fileRepoGuid));
-                   Long size= file.getSize()/1024;
-                   AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-                   appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
-                   appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
-                   appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
-                   appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                   appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
-                   appPremisesSpecialDocDto.setSubmitDt(new Date());
-               }
-           }
-        }else if(appPremisesSpecialDocDto == null ){
-            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
-        }else if(StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
-            error.put("selectedFileError",appPremisesSpecialDocDto.getErrorMsg());
-        }
         if(!isEmail){
             error.put("emailError","GENERAL_ERR0014");
         }
@@ -429,6 +388,30 @@ public class RequestForChangeDelegator {
             error.put("confirmError","RFC_ERR004");
         }
 
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
+        if(map == null || map.size()==0){
+            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
+        }else{
+            log.info(StringUtil.changeForLog("The map size is -->:"+map.size()));
+            List<File> files = new ArrayList<File>(map.values());
+            List<String> fileIds = appSubmissionService.saveFileList(files);
+            for (int i = 0;i<files.size();i++){
+                File file = files.get(i);
+                String fileRepoGuid = fileIds.get(i);
+                AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                log.info(StringUtil.changeForLog("The fileRepoGuid is -->:"+fileRepoGuid));
+                Long size= file.length()/1024;
+                AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                appPremisesSpecialDocDto.setDocName(file.getName());
+                appPremisesSpecialDocDto.setMd5Code(SingeFileUtil.getInstance().getFileMd5(file));
+                appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
+                appPremisesSpecialDocDto.setSubmitDt(new Date());
+                appPremisesSpecialDocDtos.add(appPremisesSpecialDocDto);
+            }
+        }
         if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
@@ -489,9 +472,9 @@ public class RequestForChangeDelegator {
 
                     //file
                     List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
-                    if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
-                        log.info(StringUtil.changeForLog("the appPremisesSpecialDocDto is not null"));
-                        appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
+                    if(!IaisCommonUtils.isEmpty(appPremisesSpecialDocDtos)){
+                        log.info(StringUtil.changeForLog("the appPremisesSpecialDocDtos size is -->:" + appPremisesSpecialDocDtos.size()));
+                        appPremisesSpecialDocDtoList.addAll(appPremisesSpecialDocDtos);
                         appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
                     }
                     //save the email to the app_group_misc
@@ -527,7 +510,6 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
             ParamUtil.setRequestAttr(bpc.request,"email",email);
             ParamUtil.setRequestAttr(bpc.request,"reason",reason);
-            ParamUtil.setSessionAttr(bpc.request,"appPremisesSpecialDocDto",appPremisesSpecialDocDto);
             log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
             ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         }

@@ -299,7 +299,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
         boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues) || "decisionApproval".equals(appealRecommendationValues);
         boolean rfiProcessDecFlag = !ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage);
-        if(rfiProcessDecFlag && (("other".equals(recommendationStr) && !isAppealType) || (isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove))){
+        boolean rbProcessDecFlag = !ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage);
+        if(rfiProcessDecFlag && (("other".equals(recommendationStr) && !isAppealType) || (rbProcessDecFlag && isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove))){
             if(!isAppealType){
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
                 ParamUtil.setRequestAttr(request,"recommendationStr","other");

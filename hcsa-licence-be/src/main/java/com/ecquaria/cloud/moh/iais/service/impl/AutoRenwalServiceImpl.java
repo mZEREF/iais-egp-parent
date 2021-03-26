@@ -145,7 +145,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         mouth.put(S_30,"-2");
         entity.put("-1",licence);
         entity.put("-2",licence1);
-        sendEmail(entity,mouth);
+      /*  sendEmail(entity,mouth);*/
     }
 
     private  void clearDouble(Map<String, List<LicenceDto>> entity ,Map<String, List<LicenceDto>> entity1 ){

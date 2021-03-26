@@ -109,26 +109,22 @@
         <div class="document-upload-list" >
           <div class="file-upload-gp row" >
             <div class="fileContent col-xs-5">
-              ${upFile.originalFilename}
+
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile(event)">
               <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
 
             </div>
-            <div class="col-xs-12 col-md-4" >
-              <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
-              <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
-              <input type="text" value="${filename}" style="display: none" id="isFile">
-              <a class="btn btn-secondary btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">Delete</a>
-            </div>
           </div>
           <div class="col-xs-12" >
             <span  name="selectedFileShowId" id="selectedFileShowId">
-            <c:forEach items="${pageShowFiles}" var="pageShowFile">
-              <div id="${pageShowFile.fileMapId}">
-                 ${pageShowFile.fileName}
-              <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFile.index});">
-                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFile.index},'mainForm');">
+            <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
+              <div id="${pageShowFileDto.fileMapId}">
+                  <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                  <span class="error-msg" name="iaisErrorMsg" id="file${ind.index}"></span>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_${configIndex}error"></span>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
               ReUpload</button>
               </div>
 
@@ -204,7 +200,7 @@
           $('#othersReason').attr("style","display: none");
       }
       if(  $("input[name='selectHciName']").prop("checked")){
-          $('#proposedHciName').attr("style","display: block");R      }else {
+          $('#proposedHciName').attr("style","display: block");  }else {
           $('#proposedHciName').attr("style","display: none");
       }
       if(  $('#isFile').val()!=''){
@@ -233,7 +229,7 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-            /*  ajaxCallUpload('mainForm',"selectedFile");*/
+              ajaxCallUpload('mainForm',"selectedFile");
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }

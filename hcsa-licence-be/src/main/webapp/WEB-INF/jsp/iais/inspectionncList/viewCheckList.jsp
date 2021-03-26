@@ -20,6 +20,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="doSubmitAction" id="doSubmitAction" value="">
     <div class="main-content">
         <div class="">
             <div class="row">
@@ -302,14 +303,13 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div style="float:left">
-                                        <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
-                                    </div>
+                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                   <div style="float:right">
+                                       <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Next</button>
                                     <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
-                                        <div style="float:right">
                                             <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
-                                        </div>
                                     </c:if>
+                                   </div>
                                 </div>
                             </div>
                         </div>
@@ -323,6 +323,7 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
+        $("#doSubmitAction").val("next");
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function showCheckBox(str){

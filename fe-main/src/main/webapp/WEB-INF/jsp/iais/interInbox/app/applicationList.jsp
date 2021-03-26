@@ -133,10 +133,17 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                    <p><a href="#"
-                                          <c:if test="${app.status == 'APST008' || app.status =='APST060'}">class="appdraftNo"</c:if>
-                                          <c:if test="${app.status != 'APST008' && app.status != 'APST093'}">class="appNo"</c:if>>${app.applicationNo}</a>
-                                    <p><c:if test="${app.status == 'APST093'}">${app.applicationNo}</c:if></p>
+                                    <p>
+                                        <c:choose>
+                                        <c:when test="${app.status == 'APST093'}">
+                                                <p>${app.applicationNo}</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="#"
+                                               <c:if test="${app.status == 'APST008' || app.status =='APST060'}">class="appdraftNo"</c:if>
+                                               <c:if test="${app.status != 'APST008'}">class="appNo"</c:if>>${app.applicationNo}</a>
+                                        </c:otherwise>
+                                        </c:choose>
                                     </p>
                                 </td>
                                 <td>
@@ -152,7 +159,7 @@
                                     <p class="appStatus"><iais:code code="${app.status}"/></p>
                                 </td>
                                 <td>
-                                    <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                    <p class="visible-xs visible-sm table-row-title">Submission Date</p>
                                     <p style="width: 153px"><fmt:formatDate value="${app.createdAt}"
                                                                             pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
@@ -224,7 +231,7 @@
                                                     <option value="Continue">Continue</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST045' }">
+                                            <c:if test="${app.status == 'APST045' || app.status == 'APST093'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
@@ -286,7 +293,7 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST005'
-                                            || app.status == 'APST006' || app.status == 'APST045'
+                                            || app.status == 'APST006' || app.status == 'APST045' || app.status == 'APST093'
                                             || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>

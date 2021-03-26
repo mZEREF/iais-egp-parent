@@ -18,6 +18,7 @@
                     <th>Findings/NCs</th>
                     <th>Actions Required</th>
                     <th class="text-center">Rectified</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,15 +54,26 @@
                         <td class="text-center"><input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>radIns${inspectorsStatus.index}" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNaIns${inspectorsStatus.index}" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}" type="radio" <c:if test="${inspSerAnswer.answer  eq'N/A'}">checked</c:if> value='N/A'  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/></td>
                         <td>
                             <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>FindNcsIns${inspectorsStatus.index}" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxFindNcsIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspSerAnswer.ncs}"/></textarea>
+                            <br/>
+                            <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}DraftFindNcs" var = "err"/>
+                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td>
                             <textarea  ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>remarkIns${inspectorsStatus.index}" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspSerAnswer.remark}"/></textarea>
+                            <br/>
+                            <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}DraftRemark" var = "err"/>
+                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td class="text-center">
                             <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>ckIns${inspectorsStatus.index}"   <c:if test="${inspSerAnswer.answer  != 'No'}">hidden</c:if>>
                                 <input ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>recIns${inspectorsStatus.index}" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>recIns${inspectorsStatus.index}" type="checkbox" <c:if test="${inspSerAnswer.isRec == '1'}">checked</c:if> value="rec"/>
                             </div>
                         </td>
+                        <td>
+                            <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}${inspector.id}Draft" var = "err"/>
+                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                        </td>
+                    </tr>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -87,6 +99,7 @@
                 <th>Findings/NCs</th>
                 <th>Actions Required</th>
                 <th class="text-center">Rectified</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -104,14 +117,24 @@
                     <td class="text-center"><input name="<c:out value="${item.id}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'N/A'}">checked</c:if> value='N/A' ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/></td>
                     <td>
                         <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcsIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcsIns${inspectorsStatus.index}"  maxlength="500"><c:out value="${inspAhocAnswer.ncs}"/></textarea>
+                        <br/>
+                        <c:set value = "error_${item.id}${inspector.id}DraftadhocFindNcs" var = "err"/>
+                        <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td>
                         <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremarkIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxRemarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.remark}"/></textarea>
+                        <br/>
+                        <c:set value = "error_${item.id}${inspector.id}DraftadhocRemark" var = "err"/>
+                        <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td class="text-center">
                         <div id="<c:out value="${item.id}"/>ckIns${inspectorsStatus.index}"<c:if test="${inspAhocAnswer.answer != 'No'}">hidden</c:if>>
                             <input name="<c:out value="${item.id}"/>adhocrecIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocrecIns${inspectorsStatus.index}" type="checkbox" <c:if test="${inspAhocAnswer.isRec == '1'}">checked</c:if> value="rec" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/>
                         </div>
+                    </td>
+                    <td>
+                        <c:set value = "error_${item.id}${inspector.id}Draftadhoc" var = "err"/>
+                        <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                 </tr>
             </c:forEach>

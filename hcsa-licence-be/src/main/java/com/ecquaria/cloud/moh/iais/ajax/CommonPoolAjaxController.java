@@ -147,6 +147,7 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
+        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -190,6 +191,9 @@ public class CommonPoolAjaxController {
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
             }
+            if(!StringUtil.isEmpty(reassignFilterAppNo)){
+                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
+            }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
@@ -211,6 +215,7 @@ public class CommonPoolAjaxController {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
         //get session data
         String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
+        String systemPoolFilterAppNo = (String) ParamUtil.getSessionAttr(request, "systemPoolFilterAppNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         if(!StringUtil.isEmpty(appGroupId)) {
@@ -248,6 +253,9 @@ public class CommonPoolAjaxController {
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
             }
+            if(!StringUtil.isEmpty(systemPoolFilterAppNo)){
+                searchParam.addFilter("systemPoolFilterAppNo", systemPoolFilterAppNo,true);
+            }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);
             SearchResult<SuperPoolTaskQueryDto> searchResult = systemSearchAssignPoolService.getSystemPoolSecondByParam(searchParam);
@@ -272,6 +280,7 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
+        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -315,6 +324,9 @@ public class CommonPoolAjaxController {
             }
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
+            }
+            if(!StringUtil.isEmpty(reassignFilterAppNo)){
+                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);

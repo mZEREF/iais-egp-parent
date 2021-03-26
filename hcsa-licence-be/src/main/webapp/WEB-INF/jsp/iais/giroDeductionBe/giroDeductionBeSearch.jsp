@@ -143,7 +143,7 @@
                   <iais:action style="text-align:right;">
                     <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
-                    <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
+                    <input class="selectedFile"  id="selectedFile" name = "selectedFile" style="display: none"  type="file"  aria-label="selectedFile1" onclick="fileClicked(event)" onchange="javascript:doUserRecUploadConfirmFile(event)">
                     <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
                     <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
                   </iais:action>
@@ -156,17 +156,47 @@
     </div>
   </form>
 </div>
+<input type="hidden" id="reasult" value="${message}" >
+<iais:confirm msg="${message}" needCancel="false"  callBack="cancel()" popupOrder="deleteFile"></iais:confirm>
 <script type="text/javascript">
-
+    $(document).ready(function (){
+        if($('#reasult').val()!=''){
+            $('#deleteFile').modal("show");
+        }
+    });
+    function cancel() {
+        $('#deleteFile').modal("hide");
+    }
     function doGiroDeductionRetrigger() {
         showWaiting();
         giroDeductionSubmit('retrigger');
     }
+    function fileClicked(event) {
+        var fileElement = event.target;
+        if (fileElement.value != "") {
+            console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop())
+            clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+        }
+        //What ever else you want to do when File Chooser Clicked
+    }
+    function doUserRecUploadConfirmFile(event){
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            addEventListenersTo(clone[fileElement.id]) //If Needed Re-attach additional Event Listeners
+        }
+        if(  $('#selectedFile').val()!=''){
+        $("[name='beGiroDeductionType']").val('uploadCsv');
+        var mainPoolForm =$('#giroDeductionForm');
+        mainPoolForm.submit();
+        }
+    }
     $('#uploadFile').click(function (){
         $('#selectedFile').trigger('click');
-        $("[name='beGiroDeductionType']").val('uploadCsv');
-        var mainPoolForm = document.getElementById('giroDeductionForm');
-        mainPoolForm.submit();
+
+
     });
     /*$('#download').click(function (){
         $("[name='beGiroDeductionType']").val('uploadCsv');
@@ -209,7 +239,7 @@
 
     function giroDeductionSubmit(action){
         $("[name='beGiroDeductionType']").val(action);
-        var mainPoolForm = document.getElementById('giroDeductionForm');
+        var mainPoolForm = $('#giroDeductionForm');
         mainPoolForm.submit();
     }
 

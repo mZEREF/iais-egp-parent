@@ -22,4 +22,6 @@ public class GatewayConstants {
 	public static final String ACTION_KEY = "action";
 	public static final String ACTION_CHECK = "check_payment";
 	public static final String ACTION_UPDATE = "update_payment";
+
+	public static final String PYMT_DESCRIPTION_RETRIGGER_GIRO = "retriggerGiro";
 }

@@ -512,4 +512,8 @@ public class InboxServiceImpl implements InboxService {
         return feUserClient.getLicenseeById(licenseeId).getEntity();
     }
 
+    @Override
+    public List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId, String status) {
+        return appInboxClient.getDraftByLicAppIdAndStatus(licAppId,status).getEntity();
+    }
 }

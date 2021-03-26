@@ -325,13 +325,15 @@
             select DISTINCT T3.ID AS id,
             T3.group_name as group_name,
             T3.group_domain AS group_domain,
-            T2.USER_ID,
+            t4.USER_ACCT_ID AS user_id,
             T3.STATUS AS STATUS
             from
             user_group_correlation T1,
             user_account T2,
-            working_group T3
-            where T1.user_id = T2.ID
+            working_group T3,
+            user_role t4
+            where t1.user_role_id = t4.id
+            and t4.user_acct_id = t2.id
             and T2.USER_DOMAIN = 'intranet'
             and T3.id = T1.group_id
             and T3.id in('CA82D485-F90C-EA11-BE7D-000C29F371DC', '52FBF1AC-F90C-EA11-BE7D-000C29F371DC', '76E149C0-F90C-EA11-BE7D-000C29F371DC', '1B529DD0-F90C-EA11-BE7D-000C29F371DC')
@@ -342,18 +344,22 @@
 
     <sql key="getInspWorkingGroup">
         <![CDATA[
-            select DISTINCT T3.ID AS id,
-            T3.group_name as group_name,
-            T3.group_domain AS group_domain,
-            T2.USER_ID,
-            T3.STATUS AS STATUS
+            select distinct t3.id as id,
+            t3.group_name as group_name,
+            t3.group_domain as group_domain,
+            t2.user_id,
+            t3.status as status
             from
-            user_group_correlation T1,
-            user_account T2,
-            working_group T3
-            where T1.user_id = T2.ID
-            and T2.USER_DOMAIN = 'intranet'
-            and T3.id = T1.group_id and t3.group_domain = 'hcsa'
+            user_group_correlation t1,
+            user_account t2,
+            working_group t3,
+            user_role t4
+            where
+            t1.user_role_id = t4.id
+            and t4.user_acct_id = t2.id
+            and t2.user_domain = 'intranet'
+            and t3.group_domain = 'hcsa'
+            and t3.id = t1.group_id
             <#if userId??> AND T2.id = :userId </#if>
         ]]>
     </sql>

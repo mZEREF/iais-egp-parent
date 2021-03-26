@@ -4,7 +4,9 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -154,7 +156,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			paymentRequestDto.setReturnUrl(returnUrl);
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
-			paymentRequestDto.setPayMethod("stripe");
+			paymentRequestDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -227,7 +229,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		if(paymentIntent!=null){
 			switch (paymentIntent.getStatus()){
 				case "succeeded":status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;break;
-				case "requires_payment_method":status =PaymentTransactionEntity.TRANS_STATUS_FAILED;break;
+				case "requires_payment_method":status ="cancelled";break;
 				//case "requires_payment_method":status =paymentIntent.getStatus();break;
 				default:status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
@@ -244,8 +246,28 @@ public class PaymentStripeProxy extends PaymentProxy {
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
+		String appGrpNo=refNo;
+		try {
+			appGrpNo=refNo.substring(0,'_');
+		}catch (Exception e){
+			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
+		}
+
+		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
+		if(applicationGroupDto!=null){
+			if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+			}
+			applicationGroupDto.setPmtRefNo(refNo);
+			applicationGroupDto.setPaymentDt(new Date());
+			applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+
+			PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+		}
+
 		try {
 			//setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
+			log.debug(StringUtil.changeForLog("result="+status+"&reqRefNo="+refNo+"&txnRefNo="+transNo));
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;

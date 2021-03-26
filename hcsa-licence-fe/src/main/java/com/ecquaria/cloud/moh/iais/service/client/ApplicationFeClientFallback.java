@@ -841,22 +841,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId) {
+    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(String appGrpId, String configDocId,String seqNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
     @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo) {
+    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -864,7 +856,15 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo) {
+    public FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -880,7 +880,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppliSpecialDocDto> getAppliSpecialDocDtoByCorrId(String corrId) {
+    public FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByCorrId(String corrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -905,6 +905,38 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
 
     @Override
     public FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(String appNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxVersionPrimaryDocList(String appGrpId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppSvcDocDto>> getMaxVersionSvcDocList(String appGrpId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> updateDraftStatus(String draftNo, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String licenseeId, String status,String appType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

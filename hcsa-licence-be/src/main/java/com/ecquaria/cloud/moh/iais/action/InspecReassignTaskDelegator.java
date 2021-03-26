@@ -105,6 +105,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
         ParamUtil.setSessionAttr(bpc.request, "isLeader", Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
     }
 
     /**
@@ -317,6 +318,9 @@ public class InspecReassignTaskDelegator {
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if (!StringUtil.isEmpty(application_type)) {
             searchParam.addFilter("application_type", application_type, true);
@@ -343,14 +347,10 @@ public class InspecReassignTaskDelegator {
             return null;
         }
         String loginUserId = loginContext.getUserId();
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupLeadByUserId(loginContext.getUserId()).getEntity();
         Integer isLeadForGroup = 0;
-        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos) {
-            Integer isLead = userGroupCorrelationDto.getIsLeadForGroup();
-            if (1 == isLead) {
-                isLeadForGroup = isLead;
-                break;
-            }
+        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+            isLeadForGroup = 1;
         }
         String curRole = loginContext.getCurRoleId();
         if (1 == isLeadForGroup) {

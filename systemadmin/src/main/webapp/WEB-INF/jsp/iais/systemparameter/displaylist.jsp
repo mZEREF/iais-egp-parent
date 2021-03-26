@@ -184,6 +184,7 @@
         $(".form-horizontal option[text = 'Please Select']").val("selected", "selected");
         $(".form-horizontal").val("");
         $(".form-horizontal .current").text("Please Select");
+        $(".error-msg").text("");
     }
 
     function disable(id){

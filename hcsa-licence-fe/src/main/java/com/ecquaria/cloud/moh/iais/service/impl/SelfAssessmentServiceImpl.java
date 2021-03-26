@@ -499,37 +499,4 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     public AppPremisesCorrelationDto getCorrelationByAppNo(String appNo) {
         return applicationFeClient.getCorrelationByAppNo(appNo).getEntity();
     }
-
-    @Override
-    public void doAnswerAction(HttpServletRequest request, SelfAssessment detail, boolean isClear) {
-        if (detail == null) return;
-
-        log.info("doAnswerAction =====>>>>>>>>>self assessment {}, action {}", JsonUtil.parseToJson(detail), isClear);
-        //clear count
-        detail.setCompleteCount(0);
-        int answerSize = 0;
-        List<SelfAssessmentConfig> list = detail.getSelfAssessmentConfig();
-        for (SelfAssessmentConfig s : list) {
-            for (Map.Entry<String, List<PremCheckItem>> entry : s.getSqMap().entrySet()){
-                List<PremCheckItem> answerList = entry.getValue();
-                int size = 0;
-                for (PremCheckItem item : answerList) {
-                    if (isClear){
-                        item.setAnswer(null);
-                    }else {
-                        String answer = ParamUtil.getString(request, item.getAnswerKey());
-                        if (StringUtil.isNotEmpty(answer)) {
-                            item.setAnswer(answer);
-                            int complete = detail.getCompleteCount();
-                            detail.setCompleteCount(complete + 1);
-                        }
-                    }
-                    size++;
-                }
-                answerSize += size;
-            }
-        }
-        detail.setAnswerCount(answerSize);
-        log.info("doAnswerAction =====>>>>>>>>>Complete Count {}", detail.getCompleteCount());
-    }
 }

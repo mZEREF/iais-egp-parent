@@ -106,8 +106,11 @@
         <div class="document-upload-list">
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
-                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${feAppealSpecialDocDto.fileRepoId}"/>&fileRepoName=${feAppealSpecialDocDto.docName}"
-                   title="Download" class="downloadFile">${feAppealSpecialDocDto.getDocName()}</a>
+              <c:forEach items="${feAppealSpecialDocDto}" var="v">
+                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${v.fileRepoId}"/>&fileRepoName=${v.docName}"
+                   title="Download" class="downloadFile">${v.getDocName()}</a>
+              </c:forEach>
+
             </div>
           </div>
         </div>

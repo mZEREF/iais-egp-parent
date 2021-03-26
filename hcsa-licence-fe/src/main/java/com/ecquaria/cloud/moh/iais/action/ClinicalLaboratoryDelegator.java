@@ -49,7 +49,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +60,19 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -381,14 +390,8 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        if (appSvcPrincipalOfficersDtos != null && !appSvcPrincipalOfficersDtos.isEmpty()) {
-            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                }
-            }
+        if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
+            assignPoDpoDto(appSvcPrincipalOfficersDtos,principalOfficersDtos,deputyPrincipalOfficersDtos);
             if (principalOfficersDtos.size() > mandatory) {
                 mandatory = principalOfficersDtos.size();
             }
@@ -452,6 +455,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) serviceDocConfigDto);
             ParamUtil.setSessionAttr(bpc.request, "premServiceDocConfigDto", (Serializable) premServiceDocConfigDto);
         }
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) hcsaSvcDocDtos);
 
         Map<String, AppSvcDocDto> reloadSvcDo = IaisCommonUtils.genNewHashMap();
         if (appSvcRelatedInfoDto != null) {
@@ -469,6 +473,48 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC, (Serializable) reloadSvcDo);
+
+        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        Map<String, List<AppSvcDocDto>> reloadDocMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                String reloadDocMapKey;
+                String premVal = appSvcDocDto.getPremisesVal();
+                if(StringUtil.isEmpty(premVal)){
+                    reloadDocMapKey = appSvcDocDto.getSvcDocId();
+                }else{
+                    reloadDocMapKey = premVal + appSvcDocDto.getSvcDocId();
+                }
+                String psnIndexNo = appSvcDocDto.getPsnIndexNo();
+                if(!StringUtil.isEmpty(psnIndexNo)){
+                    reloadDocMapKey = reloadDocMapKey + psnIndexNo;
+                }
+
+                List<AppSvcDocDto> appSvcDocDtos1 = reloadDocMap.get(reloadDocMapKey);
+                if(IaisCommonUtils.isEmpty(appSvcDocDtos1)){
+                    appSvcDocDtos1 = IaisCommonUtils.genNewArrayList();
+                }
+                appSvcDocDtos1.add(appSvcDocDto);
+                reloadDocMap.put(reloadDocMapKey,appSvcDocDtos1);
+            }
+            //do sort
+
+            reloadDocMap.forEach((k,v)->{
+                Collections.sort(v,(s1, s2)->(
+                        s1.getSeqNum().compareTo(s2.getSeqNum())
+                ));
+            });
+        }
+        ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) reloadDocMap);
+        //set psn to attr
+        ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        assignPoDpoDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),principalOfficersDtos,deputyPrincipalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
+
 
         int sysFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setRequestAttr(bpc.request,"sysFileSize",sysFileSize);
@@ -697,9 +743,9 @@ public class ClinicalLaboratoryDelegator {
                 errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
 
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                    /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
-                    appSubmissionDto.setClickEditPage(clickEditPages);
+                    appSubmissionDto.setClickEditPage(clickEditPages);*/
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
@@ -1142,8 +1188,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
-        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
-        AppSvcDocDto appSvcDocDto = null;
+        List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -1185,12 +1231,12 @@ public class ClinicalLaboratoryDelegator {
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (isGetDataFromPage) {
             Map<String, AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
-            List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,"premServiceDocConfigDto");
             Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
-            CommonsMultipartFile file = null;
+            //CommonsMultipartFile file = null;
             AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppSvcDocDto> oldDocs = IaisCommonUtils.genNewArrayList();
@@ -1211,73 +1257,25 @@ public class ClinicalLaboratoryDelegator {
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
-            if (svcDocConfigDtos != null && !svcDocConfigDtos.isEmpty()) {
-                for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : svcDocConfigDtos) {
-                    String docConfigId = hcsaSvcDocConfigDto.getId();
-                    String delFlag = docConfigId + "flag";
-                    String delFlagValue = mulReq.getParameter(delFlag);
-                    String fileName = docConfigId + "selectedFile";
-                    file = (CommonsMultipartFile) mulReq.getFile(fileName);
-                    if (file != null && file.getSize() != 0) {
-                        if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                            file.getFileItem().setFieldName("selectedFile");
-                            appSvcDocDto = new AppSvcDocDto();
-                            appSvcDocDto.setSvcDocId(docConfigId);
-                            appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
-                            appSvcDocDto.setDocName(file.getOriginalFilename());
-                            long size = file.getSize() / 1024;
-                            appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                            String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
-                            appSvcDocDto.setMd5Code(md5Code);
-                            appSvcDocDto.setPremisesVal("");
-                            appSvcDocDto.setPremisesType("");
-                            appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo()));
-                            commonsMultipartFileMap.put(docConfigId, file);
-                            //wait api change to get fileRepoId
-                            appSvcDocDtoList.add(appSvcDocDto);
-                        }
-                    } else if ("N".equals(delFlagValue)) {
-                        AppSvcDocDto beforeDto = beforeReloadDocMap.get(docConfigId);
-                        if (beforeDto != null) {
-                            appSvcDocDtoList.add(beforeDto);
-                        }
-                    }
-
-                }
-            }
+            List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG);
+            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(!IaisCommonUtils.isEmpty(premServiceDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    for (HcsaSvcDocConfigDto premSvcDocConfig : premServiceDocConfigDtos) {
-                        String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                        String name = "prem" + premSvcDocConfig.getId() + premisesIndexNo;
-                        String delFlag = name + "flag";
-                        String delFlagValue = mulReq.getParameter(delFlag);
-                        file = (CommonsMultipartFile) mulReq.getFile(name);
-                        if (file != null && file.getSize() != 0) {
-                            file.getFileItem().setFieldName("selectedFile");
-                            appSvcDocDto = new AppSvcDocDto();
-                            appSvcDocDto.setSvcDocId(premSvcDocConfig.getId());
-                            appSvcDocDto.setUpFileName(premSvcDocConfig.getDocTitle());
-                            appSvcDocDto.setDocName(file.getOriginalFilename());
-                            long size = file.getSize() / 1024;
-                            appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                            String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
-                            appSvcDocDto.setMd5Code(md5Code);
-                            appSvcDocDto.setPremisesVal(appGrpPremisesDto.getPremisesIndexNo());
-                            appSvcDocDto.setPremisesType(appGrpPremisesDto.getPremisesType());
-                            appSvcDocDto.setVersion(getAppSvcDocVersion(premSvcDocConfig.getId(),oldDocs,isRfi,md5Code,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo()));
-                            commonsMultipartFileMap.put(premisesIndexNo+premSvcDocConfig.getId(), file);
-                            //wait api change to get fileRepoId
-                            appSvcDocDtoList.add(appSvcDocDto);
-
-
-                        }else if ("N".equals(delFlagValue)) {
-                            AppSvcDocDto beforeDto = beforeReloadDocMap.get(name);
-                            if (beforeDto != null) {
-                                appSvcDocDtoList.add(beforeDto);
-                            }
-                        }
+            //premIndexNo+configId+seqnum
+            Map<String,File> saveFileMap = IaisCommonUtils.genNewHashMap();
+            String appGrpId = oldSubmissionDto.getAppGrpId();
+            String appNo = oldSubmissionDto.getRfiAppNo();
+            for(int i =0;i<hcsaSvcDocConfigDtos.size();i++){
+                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaSvcDocConfigDtos.get(i);
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                if("0".equals(dupForPrem)){
+                    String docKey = i+"svcDoc"+currSvcCode;
+                    genSvcPersonDoc(hcsaSvcDocConfigDto,appSvcRelatedInfoDto,docKey,saveFileMap,appSvcDocDtos,newAppSvcDocDtoList,oldDocs,isRfi,appGrpId,appNo,"","",mulReq,bpc.request);
+                }else if("1".equals(dupForPrem)){
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        String docKey = i+"svcDoc" + currSvcCode + appGrpPremisesDto.getPremisesIndexNo();
+                        String premVal = appGrpPremisesDto.getPremisesIndexNo();
+                        String premType = appGrpPremisesDto.getPremisesType();
+                        genSvcPersonDoc(hcsaSvcDocConfigDto,appSvcRelatedInfoDto,docKey,saveFileMap,appSvcDocDtos,newAppSvcDocDtoList,oldDocs,isRfi,appGrpId,appNo,premVal,premType,mulReq,bpc.request);
                     }
                 }
             }
@@ -1285,51 +1283,17 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_values = mulReq.getParameter("nextStep");
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             if ("next".equals(crud_action_values)) {
-                appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,appSvcDocDtoList,appGrpPremisesDtos,errorMap);
-                if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
-                    for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
-                        String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
-                        CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                        if (appSvcDocDto1.isPassValidate() && commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
-                            String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                            appSvcDocDto1.setFileRepoId(fileRepoGuid);
-                        }
-                    }
-                }
+                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap, true);
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
+                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
             }else{
-                appSvcDocDtoList = doValidateSvcDocument(appSvcDocDtoList, errorMap);
-                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,premServiceDocConfigDtos,appSvcDocDtoList,appGrpPremisesDtos,errorMap);
-                if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(commonsMultipartFileMap)){
-                    for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
-                        String errName = "";
-                        String premType = appSvcDocDto1.getPremisesType();
-                        String premVal = appSvcDocDto1.getPremisesVal();
-                        String configId = appSvcDocDto1.getSvcDocId();
-                        if(StringUtil.isEmpty(premType) && StringUtil.isEmpty(premVal)){
-                            errName = configId;
-                        }else if(!StringUtil.isEmpty(premType) && !StringUtil.isEmpty(premVal)){
-                            errName = "prem" + configId + premVal;
-                        }
-                        String errMsg = errorMap.get(errName);
-                        if(StringUtil.isEmpty(errMsg)){
-                            String key =premVal + configId;
-                            CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                            if (appSvcDocDto1.isPassValidate() && commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
-                                String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                                appSvcDocDto1.setFileRepoId(fileRepoGuid);
-                            }
-                        }
-                    }
-                    //clear validete
-                    for(AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList){
-                        appSvcDocDto1.setPassValidate(false);
-                    }
-                }
+                newAppSvcDocDtoList = doValidateSvcDocument(newAppSvcDocDtoList, errorMap,true);
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,newAppSvcDocDtoList,appGrpPremisesDtos,appSvcRelatedInfoDto,errorMap);
+                saveSvcFileAndSetFileId(newAppSvcDocDtoList,saveFileMap);
                 errorMap = IaisCommonUtils.genNewHashMap();
             }
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
+
+            appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
@@ -2662,7 +2626,7 @@ public class ClinicalLaboratoryDelegator {
         }
     }
 
-    private List<AppSvcDocDto> doValidateSvcDocument(List<AppSvcDocDto> appSvcDocDtoList, Map<String, String> errorMap) {
+    private List<AppSvcDocDto> doValidateSvcDocument(List<AppSvcDocDto> appSvcDocDtoList, Map<String, String> errorMap,boolean setIsPassValidate) {
         if (!IaisCommonUtils.isEmpty(appSvcDocDtoList)) {
             for (AppSvcDocDto appSvcDocDto:appSvcDocDtoList) {
                 Integer docSize =appSvcDocDto.getDocSize();
@@ -2712,7 +2676,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 String errMsg = errorMap.get(id + "selectedFile");
                 String errMsg2 = errorMap.get(premKey);
-                if(StringUtil.isEmpty(errMsg) && StringUtil.isEmpty(errMsg2)){
+                if(StringUtil.isEmpty(errMsg) && StringUtil.isEmpty(errMsg2) && setIsPassValidate){
                     appSvcDocDto.setPassValidate(true);
                 }
             }
@@ -3269,7 +3233,7 @@ public class ClinicalLaboratoryDelegator {
         return stepName;
     }
 
-    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,String appNo){
+    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,String appNo,int seqNum,String dupForPrem,String dupForPerson){
         Integer version = 1;
         if(StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)){
             return version;
@@ -3279,43 +3243,51 @@ public class ClinicalLaboratoryDelegator {
             log.info(StringUtil.changeForLog("rfi appNo:"+appNo));
             for(AppSvcDocDto appSvcDocDto:oldDocs){
                 Integer oldVersion = appSvcDocDto.getVersion();
-                if(configDocId.equals(appSvcDocDto.getSvcDocId())){
+                if(configDocId.equals(appSvcDocDto.getSvcDocId()) && seqNum == appSvcDocDto.getSeqNum()){
                     canFound = true;
                     if(md5Code.equals(appSvcDocDto.getMd5Code())){
                         if(!StringUtil.isEmpty(oldVersion)){
                             version = oldVersion;
                         }
                     }else{
-                        version = getVersion(appGrpId,configDocId,appNo);
+                        version = getVersion(appGrpId,configDocId,appNo,String.valueOf(seqNum),dupForPrem,dupForPerson);
                     }
                     break;
                 }
             }
             if(!canFound){
                 //last doc is null
-                version = getVersion(appGrpId,configDocId,appNo);
+                version = getVersion(appGrpId,configDocId,appNo,String.valueOf(seqNum),dupForPrem,dupForPerson);
             }
         }
         return version;
     }
 
-    private Integer getVersion(String appGrpId,String configDocId,String appNo){
+    private Integer getVersion(String appGrpId,String configDocId,String appNo,String seqNum,String dupForPrem,String dupForPerson){
         Integer version = 1;
-        if(StringUtil.isEmpty(appNo)){
-            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId);
-            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                //judege dto is null
-                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                    version = maxVersionDocDto.getVersion() + 1;
+        if("0".equals(dupForPrem)){
+            if(StringUtil.isEmpty(dupForPerson)){
+                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId,seqNum);
+                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
                 }
+            }else if(ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)){
+
             }
-        }else{
-            AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo);
-            if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                //judege dto is null
-                if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                    version = maxVersionDocDto.getVersion() + 1;
+        }else if("1".equals(dupForPrem)){
+            if(StringUtil.isEmpty(dupForPerson)){
+                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo,seqNum);
+                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+                    //judege dto is null
+                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                        version = maxVersionDocDto.getVersion() + 1;
+                    }
                 }
+            }else if(ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)){
+
             }
         }
         return version;
@@ -3397,4 +3369,160 @@ public class ClinicalLaboratoryDelegator {
         }
 
     }
+
+    private  void genSvcDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto, Map<String,File> saveFileMap,
+                                  List<AppSvcDocDto> currSvcDocDtoList, List<AppSvcDocDto> newAppSvcDocDtos,List<AppSvcDocDto> oldDocs,String premVal,
+                                  String premType,String psnIndexNo,String dupForPrem,String dupForPerson,boolean isRfi,String appGrpId,String appNo){
+        if(fileMap != null){
+            fileMap.forEach((k,v)->{
+                int index = k.indexOf(docKey);
+                String seqNumStr = k.substring(index+docKey.length());
+                int seqNum = -1;
+                try{
+                    seqNum = Integer.parseInt(seqNumStr);
+                }catch (Exception e){
+                    log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
+                }
+                AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
+                if(v != null){
+                    appSvcDocDto.setSvcDocId(hcsaSvcDocConfigDto.getId());
+                    appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
+                    appSvcDocDto.setDocName(v.getName());
+                    long size = v.length() / 1024;
+                    appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                    String md5Code = SingeFileUtil.getInstance().getFileMd5(v);
+                    appSvcDocDto.setMd5Code(md5Code);
+                    //if  common ==> set null
+                    appSvcDocDto.setPremisesVal(premVal);
+                    appSvcDocDto.setPremisesType(premType);
+                    appSvcDocDto.setPsnIndexNo(psnIndexNo);
+                    appSvcDocDto.setSeqNum(seqNum);
+                    appSvcDocDto.setDupForPerson(dupForPerson);
+                    appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,appGrpId,appNo,seqNum,dupForPrem,dupForPerson));
+                    saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+psnIndexNo+seqNum,v);
+                }else{
+                    appSvcDocDto = getAppSvcDocByConfigIdAndSeqNum(currSvcDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType,psnIndexNo);
+                }
+                //the data is retrieved from the DTO a second time
+                fileMap.put(k,null);
+                if(appSvcDocDto != null){
+                    newAppSvcDocDtos.add(appSvcDocDto);
+                }
+            });
+        }
+    }
+
+    private static AppSvcDocDto getAppSvcDocByConfigIdAndSeqNum(List<AppSvcDocDto> appSvcDocDtos,String configId,int seqNum,String premVal,String premType,String psnIndexNo){
+        log.debug(StringUtil.changeForLog("getAppGrpPrimaryDocByConfigIdAndSeqNum start..."));
+        AppSvcDocDto appSvcDocDto= null;
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            log.debug("configId is {}", configId);
+            log.debug("seqNum is {}", seqNum);
+            log.debug("premIndex is {}", premVal);
+            log.debug("psnIndexNo is {}", psnIndexNo);
+            for(AppSvcDocDto appSvcDocDto1:appSvcDocDtos){
+                String currPremVal = "";
+                String currPremType = "";
+                String currPsnIndexNo = "";
+                if(!StringUtil.isEmpty(appSvcDocDto1.getPremisesVal())){
+                    currPremVal =appSvcDocDto1.getPremisesVal();
+                }
+                if(!StringUtil.isEmpty(appSvcDocDto1.getPremisesType())){
+                    currPremType = appSvcDocDto1.getPremisesType();
+                }
+                if(!StringUtil.isEmpty(appSvcDocDto1.getPsnIndexNo())){
+                    currPsnIndexNo = appSvcDocDto1.getPsnIndexNo();
+                }
+                if(configId.equals(appSvcDocDto1.getSvcDocId())
+                        && seqNum == appSvcDocDto1.getSeqNum()
+                        && premVal.equals(currPremVal)
+                        && premType.equals(currPremType)
+                        && psnIndexNo.equals(currPsnIndexNo)){
+                    try {
+                        appSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto1);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("copy appSvcDocDto error !!!"));
+                    }
+                    break;
+                }
+            }
+        }
+        return appSvcDocDto;
+    }
+
+    private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String,File> saveFileMap){
+        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
+        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+            if(appSvcDocDto.isPassValidate()){
+                String premIndexNo = "";
+                if(!StringUtil.isEmpty(appSvcDocDto.getPremisesVal())){
+                    premIndexNo = appSvcDocDto.getPremisesVal();
+                }
+                String psnIndexNo = "";
+                if(!StringUtil.isEmpty(appSvcDocDto.getPsnIndexNo())){
+                    psnIndexNo = appSvcDocDto.getPsnIndexNo();
+                }
+                String fileMapKey = premIndexNo + appSvcDocDto.getSvcDocId() + psnIndexNo + appSvcDocDto.getSeqNum();
+                File file = saveFileMap.get(fileMapKey);
+                if(file != null){
+                    passValidateFileMap.put(fileMapKey,file);
+                }
+            }
+        }
+        if(passValidateFileMap.size() > 0){
+            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
+            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
+            int i = 0;
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                String premIndexNo = "";
+                if(!StringUtil.isEmpty(appSvcDocDto.getPremisesVal())){
+                    premIndexNo = appSvcDocDto.getPremisesVal();
+                }
+                String psnIndexNo = "";
+                if(!StringUtil.isEmpty(appSvcDocDto.getPsnIndexNo())){
+                    psnIndexNo = appSvcDocDto.getPsnIndexNo();
+                }
+                String saveFileMapKey = premIndexNo + appSvcDocDto.getSvcDocId()+ psnIndexNo + appSvcDocDto.getSeqNum();
+                File file = saveFileMap.get(saveFileMapKey);
+                if(file != null){
+                    appSvcDocDto.setFileRepoId(fileRepoIdList.get(i));
+                    i++;
+                }
+            }
+        }
+    }
+
+    private void genSvcPersonDoc(HcsaSvcDocConfigDto hcsaSvcDocConfigDto,AppSvcRelatedInfoDto appSvcRelatedInfoDto,String docKey,Map<String,File> saveFileMap,
+                                    List<AppSvcDocDto> currSvcDocDtoList, List<AppSvcDocDto> newAppSvcDocDtos,List<AppSvcDocDto> oldDocs,
+                                    boolean isRfi,String appGrpId,String appNo,String premVal,String premType,MultipartHttpServletRequest mulReq,HttpServletRequest request){
+
+        if(StringUtil.isEmpty(hcsaSvcDocConfigDto.getDupForPerson())){
+            Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
+            genSvcDoc(fileMap,docKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,"",hcsaSvcDocConfigDto.getDupForPrem(),"",isRfi,appGrpId,appNo);
+            ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey, (Serializable) fileMap);
+        }else{
+            //genDupForPersonDoc(hcsaSvcDocConfigDto,appSvcRelatedInfoDto,docKey,saveFileMap,appSvcDocDtos,newAppSvcDocDtoList,oldDocs,isRfi,appGrpId,appNo,mulReq,bpc.request);
+            List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,hcsaSvcDocConfigDto.getDupForPerson());
+            for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                String psnIndexNo = psnDto.getCgoIndexNo();
+                String psnDocKey = docKey + psnIndexNo;
+                Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocKey);
+                genSvcDoc(fileMap,psnDocKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,psnIndexNo,hcsaSvcDocConfigDto.getDupForPrem(),hcsaSvcDocConfigDto.getDupForPerson(),isRfi,appGrpId,appNo);
+                ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocKey, (Serializable) fileMap);
+            }
+        }
+    }
+
+    private void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos,List<AppSvcPrincipalOfficersDto> principalOfficersDtos,List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }
+            }
+        }
+    }
+
 }

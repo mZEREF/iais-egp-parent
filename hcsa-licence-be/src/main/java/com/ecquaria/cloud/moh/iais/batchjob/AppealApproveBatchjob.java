@@ -238,8 +238,8 @@ public class AppealApproveBatchjob {
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         if(applicationDto!= null && appealDto != null){
+            String appealReason = appealDto.getReason();
             try {
-                String appealReason = appealDto.getReason();
                 switch(appealReason){
                     case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
                         applicationRejection(appealApplicaiton,rollBackApplication,
@@ -548,13 +548,12 @@ public class AppealApproveBatchjob {
                 } else {
                     log.debug(StringUtil.changeForLog(""));
                 }
+                appealLicenceDto.setExpiryDate(expiryDate);
+                appPremiseMiscDtoList.add(appPremiseMiscDto);
+                appealLicence.add(appealLicenceDto);
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
             }
-
-            appealLicenceDto.setExpiryDate(expiryDate);
-            appPremiseMiscDtoList.add(appPremiseMiscDto);
-            appealLicence.add(appealLicenceDto);
         } else {
             log.debug(StringUtil.changeForLog("licAppCorrelationDtos is null=======> Licence Id = "));
         }

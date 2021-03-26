@@ -210,12 +210,13 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     @Override
     public SystemAssignTaskDto setWorkGroupAndOfficer(GroupRoleFieldDto groupRoleFieldDto, SystemAssignTaskDto systemAssignTaskDto) {
         String curStage = groupRoleFieldDto.getCurStage();
+        TaskDto taskDto = systemAssignTaskDto.getTaskDto();
         Map<String, HcsaSvcRoutingStageDto> stageMap = groupRoleFieldDto.getStageMap();
         HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = stageMap.get(curStage);
         String stage = hcsaSvcRoutingStageDto.getId();
         //get work group
         List<String> workGroupIds = hcsaConfigClient.getWorkGroupIdsByStageId(stage).getEntity();
-        if(!IaisCommonUtils.isEmpty(workGroupIds)){
+        if(!IaisCommonUtils.isEmpty(workGroupIds) && taskDto != null){
             Map<String, String> workGroupIdMap = IaisCommonUtils.genNewHashMap();
             Map<String, Map<String, String>> groupCheckUserIdMap = IaisCommonUtils.genNewHashMap();
             Map<String, List<SelectOption>> inspectorByGroup = IaisCommonUtils.genNewHashMap();
@@ -227,7 +228,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
                 SelectOption workGroupOption = new SelectOption(workGroupNo + "", workingGroupDto.getGroupName());
                 workGroupOptions.add(workGroupOption);
                 workGroupIdMap.put(workGroupNo + "", workGroupId);
-                List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                List<OrgUserDto> orgUserDtoList = organizationClient.activeUsersByWorkGroupAndRole(workGroupId, taskDto.getRoleId()).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
                     Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
                     List<SelectOption> officerOption = IaisCommonUtils.genNewArrayList();

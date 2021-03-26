@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -136,7 +137,7 @@
                 <div class="col-xs-11 col-md-11">
 
                     <c:if test="${requestInformationConfig == null}">
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right"  id="Dashboard" >Go to <br>Dashboard</a>
                         <%--<a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for <br>Another Licence</a>--%>
                         <%--<a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>--%>
                     </c:if>
@@ -160,7 +161,10 @@
     //     var mainForm = document.getElementById("mainForm");
     //     mainForm.submit();
     // });
-
+    $('#Dashboard').click(function (){
+        showWaiting();
+        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request)%>";
+    });
     $("#print-ack").click(function () {
         window.print();
     })

@@ -95,6 +95,14 @@ public class OrganizationClientFallback implements OrganizationClient {
     }
 
     @Override
+    public FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupLeadByUserId(String userId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<TaskDto>> getTasksByUserId(String userId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -263,6 +271,14 @@ public class OrganizationClientFallback implements OrganizationClient {
 
     @Override
     public FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup( String uerDomain) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(String workGroupId, String roleId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

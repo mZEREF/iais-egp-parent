@@ -7,6 +7,13 @@
         </c:if>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <c:if test="${!empty chooseBaseErr2}">
+            <span class="error-msg">${chooseBaseErr2}</span>
+        </c:if>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-xs-12 col-md-7">

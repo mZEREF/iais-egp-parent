@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
@@ -24,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
 
 /**
  * @author weilu
@@ -78,23 +81,36 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-            }else if( "1".equals(status)){
+            }else {
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
-            paymentClient.saveHcsaPayment(paymentDto);
         }else{
-            if( "0".equals(status)){
+            paymentDto = new PaymentDto();
+            paymentDto.setAmount(paymentRequestDto.getAmount());
+            paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
+            paymentDto.setTxnRefNo("TRANS");
+            paymentDto.setInvoiceNo("1234567");
+
+            if("0".equals(status)){
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
             }else {
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
+            paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
+        applicationGroupDto.setPaymentDt(new Date());
+        applicationGroupDto.setPmtRefNo(paymentDto.getReqRefNo());
+        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+        applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        paymentClient.saveHcsaPayment(paymentDto);
         paymentClient.updatePaymentResquset(paymentRequestDto);
-        paymentAppGrpClient.doUpDate(applicationGroupDto);
     }
 
     /**

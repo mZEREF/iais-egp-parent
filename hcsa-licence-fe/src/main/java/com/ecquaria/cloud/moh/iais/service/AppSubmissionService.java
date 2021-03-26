@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -31,6 +32,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -89,17 +91,17 @@ public interface AppSubmissionService {
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
     AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
     void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName);
-    AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId,String configDocId);
-    AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId);
-    AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId,String configDocId,String appNo);
-    AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo);
+    AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId,String configDocId,String seqNum);
+    AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum);
+    AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId,String configDocId,String appNo,String seqNum);
+    AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo,String seqNum);
     AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo);
     List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException;
     List<AppGrpPrimaryDocDto> handlerPrimaryDoc(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos);
     Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc);
     Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request);
     Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto, int uploadFileLimit, String sysFileType,List<AppGrpPremisesDto> appGrpPremisesDtos);
-    List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap);
+    List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setIsPassValidate);
     Map<String,String> doPreviewSubmitValidate(Map<String,String> previewAndSubmitMap,AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc);
     boolean isGiroAccount(String licenseeId);
     void removePreviousPremTypeInfo(AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException;
@@ -112,5 +114,9 @@ public interface AppSubmissionService {
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
     List<GiroAccountInfoDto> getGiroAccountByHciCodeAndOrgId(List<String> hciCode,String orgId);
     boolean checkIsGiroAcc(AppSubmissionDto appSubmissionDto,String orgId);
-
+    List<String> saveFileList(List<File> fileList);
+    List<AppGrpPrimaryDocDto> getMaxVersionPrimaryDocList(String appGrpId);
+    List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId);
+    void updateDraftStatus(String draftNo,String status);
+    List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
 }

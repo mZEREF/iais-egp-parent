@@ -57,9 +57,9 @@
                         }else {
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
-                        $("#"+fileAppendId+"ErrorMsg").html("");
+                        $("#error_"+fileAppendId+"Error").html("");
                     }else {
-                        $("#"+fileAppendId+"ErrorMsg").html(data.description);
+                        $("#error_"+fileAppendId+"Error").html(data.description);
                     }
                 }
             },

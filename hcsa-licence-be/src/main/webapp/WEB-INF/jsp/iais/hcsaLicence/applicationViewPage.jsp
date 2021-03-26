@@ -652,6 +652,7 @@
 
     function check(){
         var selectValue = $("[name='nextStage']").val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -661,7 +662,8 @@
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
             let recommenVal = $('#recommendation').val();
-            if('other' == recommenVal){
+            let appealRecommenVal = $('#appealRecommendationValues').val();
+            if('other' == recommenVal || ('appealApprove' == appealRecommenVal && isChangePeriodAppealType == 'true')){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             } else {
                 $('#recommendationOtherDropdown').addClass('hidden');
@@ -729,6 +731,7 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -740,7 +743,8 @@
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
             let recommenVal = $('#recommendation').val();
-            if('other' == recommenVal){
+            let appealRecommenVal = $('#appealRecommendationValues').val();
+            if('other' == recommenVal || ('appealApprove' == appealRecommenVal && isChangePeriodAppealType == 'true')){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             } else {
                 $('#recommendationOtherDropdown').addClass('hidden');

@@ -112,6 +112,7 @@
                         <c:otherwise>
                             <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
                                        varStatus="status">
+                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                                 <tr>
                                     <td width="30%">
                                         <p>
@@ -150,6 +151,7 @@
                                         </c:if>
                                     </td>
                                 </tr>
+                                </c:if>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>

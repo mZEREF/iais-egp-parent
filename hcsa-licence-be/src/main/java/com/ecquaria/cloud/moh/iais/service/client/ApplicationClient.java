@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.eLIS.ApplicationElisToHalpDto;
+import com.ecquaria.cloud.moh.iais.common.dto.eLIS.HciElisToHalpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -47,8 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,6 +60,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationClient
@@ -145,6 +148,10 @@ public interface ApplicationClient {
     FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchApp(@RequestBody SearchParam searchParam);
     @PostMapping (path = "/iais-application-be/app-lic-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ApplicationLicenceQueryDto>> searchAppLic(@RequestBody SearchParam searchParam);
+    @PostMapping (path = "/iais-application-be/app-lic-elis-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<ApplicationElisToHalpDto>> searchApplicationElis(@RequestBody SearchParam searchParam);
+    @PostMapping (path = "/iais-application-be/app-hci-elis-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<HciElisToHalpDto>> searchHciElis(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-application/files-rec-inspec", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -406,4 +413,6 @@ public interface ApplicationClient {
     FeignResponseEntity<List<DisciplinaryRecordResponseDto>> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
     @PostMapping(value = "/iais-application-be/applications-appids",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByAppIds(@RequestBody List<String> appIds);
+    @GetMapping(value = "/iais-application-be/return-rfi-reminder-applications",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getRfiReminder();
 }

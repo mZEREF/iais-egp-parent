@@ -534,13 +534,13 @@
                         <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
                             <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
 
-                            <c:if test="${!stat.first}">
+                            <%--<c:if test="${!stat.first}">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
                                     </div>
                                 </div>
-                            </c:if>
+                            </c:if>--%>
 
 
                             <div class="row">
@@ -639,12 +639,14 @@
                         </c:choose>
                         <c:forEach begin="0" end="${phSize}" step="1" varStatus="stat">
                             <c:set var="phDto" value="${appGrpPremDto.phDtoList[stat.index]}"/>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
+                            <c:if test="${stat.first}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
+                                    </div>
                                 </div>
-                            </div>
+                            </c:if>
+
 
 
                             <div class="row">
@@ -744,13 +746,13 @@
                         </c:choose>
                         <c:forEach begin="0" end="${eventSize}" step="1" varStatus="stat">
                             <c:set var="eventDto" value="${appGrpPremDto.eventDtoList[stat.index]}"/>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
+                            <c:if test="${stat.first}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
+                                    </div>
                                 </div>
-                            </div>
-
+                            </c:if>
 
                             <div class="row">
                                 <div class="col-md-6">

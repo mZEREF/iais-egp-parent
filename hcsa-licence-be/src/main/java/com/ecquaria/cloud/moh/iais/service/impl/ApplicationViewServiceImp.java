@@ -307,7 +307,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     applicationViewDto.setIdTypeSelect(idTypeSelOp);
                 }
                 //file
-                AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
                     applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
                 }
