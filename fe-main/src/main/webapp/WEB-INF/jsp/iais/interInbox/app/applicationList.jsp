@@ -136,7 +136,7 @@
                                     <p><a href="#"
                                           <c:if test="${app.status == 'APST008' || app.status =='APST060'}">class="appdraftNo"</c:if>
                                           <c:if test="${app.status != 'APST008' && app.status != 'APST093'}">class="appNo"</c:if>>${app.applicationNo}</a>
-                                        <p><c:if test="${app.status == 'APST093'}"/>${app.applicationNo}</p>
+                                    <p><c:if test="${app.status == 'APST093'}">${app.applicationNo}</c:if></p>
                                     </p>
                                 </td>
                                 <td>
