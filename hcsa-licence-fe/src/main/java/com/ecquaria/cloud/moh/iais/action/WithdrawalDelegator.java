@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -28,7 +29,9 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Hc
@@ -67,6 +68,9 @@ public class WithdrawalDelegator {
     @Autowired
     private LicFeInboxClient licFeInboxClient;
 
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
+
     private LoginContext loginContext = null;
 
     private String wdIsValid = IaisEGPConstant.YES;
@@ -81,6 +85,10 @@ public class WithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
+        ParamUtil.setSessionAttr(bpc.request, "pageShowFiles", null);
+        ParamUtil.setSessionAttr(bpc.request, "pageShowFileHashMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
@@ -105,9 +113,29 @@ public class WithdrawalDelegator {
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawnDto.getPrevAppNo());
-            AppPremisesSpecialDocDto viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+            List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+            List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+            Map<String,File> map= IaisCommonUtils.genNewHashMap();
+            Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
             if (viewDoc != null){
-                ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",viewDoc.getDocName());
+                if(viewDoc!=null&&!viewDoc.isEmpty()){
+                    for(int i=0;i<viewDoc.size();i++){
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                        pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
+                        pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
+                        pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
+                        pageShowFileDtos.add(pageShowFileDto);
+                        map.put("selectedFile"+i,null);
+                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
+                    }
+                    bpc.request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
+                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
+                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",viewDoc.size());
+                }
+                bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
             }
 
             ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
@@ -331,7 +359,11 @@ public class WithdrawalDelegator {
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
-                CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+                Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("pageShowFileHashMap");
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
+                List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
+                List<File> files= IaisCommonUtils.genNewArrayList();
                 if(!StringUtil.isEmpty(appId)){
                     withdrawnDto.setApplicationId(appId);
                 }
@@ -348,29 +380,65 @@ public class WithdrawalDelegator {
                 if (validationResult.isHasErrors()){
                     errorMap=validationResult.retrieveAll();
                 }
-                if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0) {
-                    String originalFilename = commonsMultipartFile.getOriginalFilename();
-                    fileValidation(originalFilename,validationResult,errorMap);
-                    String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                    AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                    appPremisesSpecialDocDto.setSubmitDt(new Date());
-                    appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                    appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
-                    appPremisesSpecialDocDto.setDocSize((int) commonsMultipartFile.getSize() / 1024);
-                    appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
-                    withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-                    withdrawnDto.setFileRepoId(fileRepoId);
-                    ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
-                }else{
-                    if (withdrawnDto.getAppPremisesSpecialDocDto() != null){
-                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = withdrawnDto.getAppPremisesSpecialDocDto();
-                        String originalFilename = appPremisesSpecialDocDto.getDocName();
-                        fileValidation(originalFilename,validationResult,errorMap);
-                        ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",appPremisesSpecialDocDto.getDocName());
-                    }else{
-                        withdrawnDto.setAppPremisesSpecialDocDto(null);
+
+                if(map!=null&&!map.isEmpty()){
+                    map.forEach((str,file)->{
+                        if(file!=null){
+                            long length = file.length();
+                            if(length>0){
+                                Long size=length/1024;
+                                files.add(file);
+                                AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                                SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                                premisesSpecialDocDto.setDocName(file.getName());
+                                String fileMd5 = singeFileUtil.getFileMd5(file);
+                                premisesSpecialDocDto.setMd5Code(fileMd5);
+                                premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                                premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                                appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                                PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                                pageShowFileDto.setFileName(file.getName());
+                                String e = str.substring(str.lastIndexOf("e") + 1);
+                                pageShowFileDto.setIndex(e);
+                                pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                                pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                                pageShowFileDto.setMd5Code(fileMd5);
+                                pageShowFileDtos.add(pageShowFileDto);
+                            }
+                        }else {
+                            if(pageShowFileHashMap!=null){
+                                PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
+                                AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                                premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                                premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                                premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
+                                premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                                premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                                premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                                appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                                pageShowFileDtos.add(pageShowFileDto);
+                            }
+                        }
+
+                    });
+                }
+
+                List<String> list = comFileRepoClient.saveFileRepo(files);
+                if(list!=null){
+                    for(int index=0;index<list.size();index++){
+                        for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                            String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                            if(fileRepoId==null){
+                                pageShowFileDtos.get(j).setFileUploadUrl(list.get(index));
+                                appPremisesSpecialDocDtoList.get(j).setFileRepoId(list.get(index));
+                            }
+                        }
                     }
                 }
+
+                withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
+                mulReq.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+
                 if(validationResult != null && validationResult.isHasErrors()){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

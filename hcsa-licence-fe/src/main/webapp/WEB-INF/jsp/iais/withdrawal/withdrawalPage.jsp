@@ -27,7 +27,10 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p><a class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a></p>
+                                                    <p><a class="appNo"
+                                                          onclick="toApplicationView('<iais:mask name="appNo"
+                                                                                                 value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a>
+                                                    </p>
                                                 </div>
                                                 <div class="withdraw-delete">
 
@@ -43,7 +46,8 @@
                                                         <p><a class="appNo">${wdList.applicationNo}</a></p>
                                                     </div>
                                                     <div class="withdraw-delete">
-                                                        <p ><a onclick="deleteWithdraw(this)"><em class="fa fa-trash-o"></em>Delete</a></p>
+                                                        <p><a onclick="deleteWithdraw(this)"><em
+                                                                class="fa fa-trash-o"></em>Delete</a></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -53,8 +57,10 @@
                                 <c:if test="${isDoView != 'Y'}">
                                     <div class="col-lg-4 col-xs-12">
                                         <div class="withdraw-addmore gradient-light-grey">
-                                            <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
-                                                    class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
+                                            <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4>
+                                                <em
+                                                        class="fa fa-plus-circle"></em> Add more applications</h4>
+                                            </a> <%--NOSONAR--%>
                                         </div>
                                     </div>
                                 </c:if>
@@ -66,7 +72,9 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
+                                        <div class="modal-title" style="font-size: 2rem;">Select application for
+                                            withdrawal
+                                        </div>
                                     </div>
                                     <div id="withdrawPagDiv"></div>
                                     <table class="table">
@@ -84,7 +92,8 @@
                             </div>
                         </div>
                         <div class="center-content">
-                            <h3>Reason for Withdrawal  <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if> </h3>
+                            <h3>Reason for Withdrawal <c:if test="${isDoView != 'Y'}"> <span
+                                    style="color: #ff0000"> *</span> </c:if></h3>
                             <div class="row">
                                 <div class="col-md-7">
                                     <c:choose>
@@ -92,13 +101,13 @@
                                             <iais:select name="withdrawalReason" id="withdrawalReason"
                                                          options="withdrawalReasonList"
                                                          onchange="withdrawalReasons(this.value);"
-                                                         value="${withdrawDtoView.withdrawnReason}"  disabled="true" />
+                                                         value="${withdrawDtoView.withdrawnReason}" disabled="true"/>
                                         </c:when>
                                         <c:otherwise>
                                             <iais:select name="withdrawalReason" id="withdrawalReason"
                                                          options="withdrawalReasonList"
                                                          onchange="withdrawalReasons(this.value);"
-                                                         value="${withdrawDtoView.withdrawnReason}"  />
+                                                         value="${withdrawDtoView.withdrawnReason}"/>
                                         </c:otherwise>
                                     </c:choose>
                                     <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
@@ -109,7 +118,9 @@
                              <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-4" style="font-size:2rem">Remarks <c:if test="${isDoView != 'Y'}"> <span style="color: #ff0000"> *</span> </c:if></label>
+                                    <label class="col-md-4" style="font-size:2rem">Remarks <c:if
+                                            test="${isDoView != 'Y'}"> <span
+                                            style="color: #ff0000"> *</span> </c:if></label>
                                 </div>
                             </div>
                             <div class="row">
@@ -118,7 +129,8 @@
                                         <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="500" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>   >${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                      maxlength="500" <c:if
+                                                    test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>   >${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
@@ -133,37 +145,68 @@
                                         <c:choose>
                                             <c:when test="${isDoView != 'Y'}">
                                                 <div class="file-upload-gp">
-                                                    <input id="selectedFile" name="selectedFile" class="selectedFile commDoc"
+                                                        <span name="selectedFileShowId" id="selectedFileShowId">
+                                                        <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                                   varStatus="ind">
+                                                          <div id="${pageShowFileDto.fileMapId}">
+                                                              <span name="fileName"
+                                                                    style="font-size: 14px;color: #2199E8;text-align: center">
+                                                              <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                                 title="Download"
+                                                                 class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                              <span class="error-msg" name="iaisErrorMsg"
+                                                                    id="file${ind.index}"></span>
+                                                              <span class="error-msg" name="iaisErrorMsg"
+                                                                    id="error_${configIndex}error"></span>
+                                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                                    onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                                                            Delete</button>  <button type="button"
+                                                                                     class="btn btn-secondary btn-sm"
+                                                                                     onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+                                                          ReUpload</button>
+                                                          </div>
+                                                        </c:forEach>
+                                                        </span>
+                                                    <input id="selectedFile" name="selectedFile"
+                                                           class="selectedFile commDoc"
                                                            type="file" style="display: none;"
                                                            aria-label="selectedFile1"
                                                            onclick="fileClicked(event)"
-                                                           onchange="fileChanged(event)"/><a class="btn btn-file-upload btn-secondary"
-                                                                                             href="javascript:void(0);">Upload</a>
-
-                                                    <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
-                                                         hidden="hidden">
-                                                        <strong id="fileName">${file_upload_withdraw}</strong>
-                                                        <span class="delBtn">&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onclick="deleteWdFile()">Delete</button></span>
-                                                    </div>
+                                                           onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                        class="btn btn-file-upload btn-secondary"
+                                                        onclick="doFileAddEvent()">Upload</a>
                                                 </div>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="fileRpId" value="${withdrawDtoView.appPremisesSpecialDocDto.fileRepoId}"></c:set>
-                                                <c:set var="fileDocName" value="${withdrawDtoView.appPremisesSpecialDocDto.docName}"></c:set>
-
-                                                <%--NewApplicationAjaxController method - > file-repo--%>
-                                                <a class="" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${fileRpId}&fileRo${fileRpId}=<iais:mask name="fileRo${fileRpId}"
-                                            value="${fileRpId}"/>&fileRepoName=${fileDocName}"  >${fileDocName}</a>
+                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                           varStatus="ind">
+                                                  <div id="${pageShowFileDto.fileMapId}">
+                                                      <span name="fileName"
+                                                            style="font-size: 14px;color: #2199E8;text-align: center">
+                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                         title="Download"
+                                                         class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="file${ind.index}"></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="error_${configIndex}error"></span>
+                                                  </div>
+                                                </c:forEach>
+                                                </span>
                                             </c:otherwise>
                                         </c:choose>
-                                        <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+                                        <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"
+                                              style="color: #D22727; font-size: 1.6rem"></span>
                                         <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
                             <c:if test="${isDoView == 'Y'}">
                                 <div class="components">
-                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
+                                    <a style="float:left;padding-top: 1.1%;" class="back"
+                                       href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                            class="fa fa-angle-left"></em> Back</a>
                                 </div>
                             </c:if>
                         </div>
@@ -171,7 +214,8 @@
                     <c:if test="${isDoView != 'Y'}">
                         <div class="center-content">
                             <div class="components">
-                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
+                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
+                                   href="javascript:void(0);">Submit</a>
                                 <span style="float:right">&nbsp;</span>
                                 <a class="btn btn-secondary" style="float:right"
                                    href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
@@ -181,7 +225,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+        <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel"
+             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <%--                    <div class="modal-header">--%>
@@ -198,8 +243,9 @@
                 </div>
             </div>
         </div>
+        <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+        <%@ include file="../appeal/FeFileCallAjax.jsp" %>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
     $(function () {
@@ -210,10 +256,15 @@
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
-        if('${appIsWithdrawal}'){
+        if ('${appIsWithdrawal}') {
             $('#isAppealModal').modal('show');
         }
 
+        var evenMoreListeners = true;
+        if (evenMoreListeners) {
+            var allFleChoosers = $("input[type='file']");
+            addEventListenersTo(allFleChoosers);
+        }
     });
 
     function withdrawalReasons(obj) {
@@ -230,36 +281,59 @@
         $("#mainForm").submit();
     }
 
+    function doFileAddEvent() {
+        clearFlagValueFEFile();
+    }
 
+    function doUserRecUploadConfirmFile(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            if (debug) {
+                console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
+            }
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) {
+                addEventListenersTo(clone[fileElement.id])
+            }//If Needed Re-attach additional Event Listeners
+        }
+        var file = $('#selectedFile').val();
+        file = file.split("\\");
+        $("span[name='fileName']").html(file[file.length - 1]);
 
-    $("#selectedFile").change(function () {
+        if (file != '') {
+            $('#delete').attr("style", "display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }
+        uploadFileValidate();
+
+    }
+
+    function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+        var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
-        }else{
+        } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of ' + configFileSize + 'M.');
             $("#fileName").html("");
         }
-    });
+    }
 
     function deleteWdFile() {
-        // document.getElementById("withdrawFile").files[0] = null;
         let wdfile = $("#selectedFile");
         wdfile.val("");
         $("#delFile").attr("hidden", "hidden");
     }
 
-    // $(".delete-withdraw").click(function () {
-    //     console.log("delete withdraw app");
-    //     $(this).parent().parent().parent().parent().remove();
-    // });
-    function deleteWithdraw(it){
+    function deleteWithdraw(it) {
         console.log("delete withdraw app");
         $(it).parent().parent().parent().parent().parent().remove();
     }
@@ -268,18 +342,18 @@
         $("input[name='checkboxSample']:checked").each(function () {
             let appNoList = [];
             let withdrawContent$ = $(".withdraw-content-box");
-            withdrawContent$.find(".withdraw-info p").each(function (){
+            withdrawContent$.find(".withdraw-info p").each(function () {
                 appNoList.push($(this).text())
             });
             let appNo = $(this).parent().parent().parent().find(".withdraw-info").find("p").eq(0).text();
-            let appmask = "'"+$(this).parent().parent().parent().find(".withdraw-info").find("p").eq(1).text()+"'";
-            if ($.inArray(appNo,appNoList) == -1){
+            let appmask = "'" + $(this).parent().parent().parent().find(".withdraw-info").find("p").eq(1).text() + "'";
+            if ($.inArray(appNo, appNoList) == -1) {
                 let appStrNo = "'" + appNo + "'";
                 withdrawContent$.last().parent().append('<div class="withdraw-content-box">\n' +
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
                     '                                            <div class="withdraw-info">\n' +
-                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+','+appStrNo+')">'+appNo+'</a></p>\n' +
+                    '                                                <p><a class="appNo" onclick="toApplicationView(' + appmask + ',' + appStrNo + ')">' + appNo + '</a></p>\n' +
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
                     '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
@@ -296,27 +370,36 @@
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
-        withdrawContent$.find(".withdraw-info p").each(function (){
+        withdrawContent$.find(".withdraw-info p").each(function () {
             appNoList = appNoList + $(this).text() + "#";
         });
         $("[name='withdraw_app_list']").val(appNoList);
-
+        uploadFileValidate();
         submit("withdrawalStep");
     }
 
-    function toApplicationView(appMaskNo,appNo){
+    function addEventListenersTo(fileChooser) {
+        fileChooser.change(function (event) {
+            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
+            /*  a();*/
+            ajaxCallUpload('mainForm', "selectedFile");
+        });
+    }
+
+    function toApplicationView(appMaskNo, appNo) {
         // let appNo = $(this).closest("p").find(".appNo").html();
         let url = "";
         console.log(appMaskNo);
-        var appNoStr = appNo.substr(0,2);
+        var appNoStr = appNo.substr(0, 2);
         console.log(appNoStr);
-        if('AA' == appNoStr){
-            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appMaskNo+"&app_type=ar";
-        }else{
-            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appMaskNo+"&app_type=an";
+        if ('AA' == appNoStr) {
+            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=ar";
+        } else {
+            url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo=' + appMaskNo + "&app_type=an";
         }
         showPopupWindow(url);
     }
+
     <%--$(".appNo").click(function () {--%>
     <%--let appNo = $(this).closest("p").find(".appNo").html();--%>
     <%--let appmask = $(this).parent().parent().find(".appmask").html();--%>

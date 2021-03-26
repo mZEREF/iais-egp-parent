@@ -217,7 +217,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
-                        premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         pageShowFileDtos.add(pageShowFileDto);
