@@ -281,6 +281,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 		if("0".equals(eNetsStatus)){
 			status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 		}
+		if("9".equals(eNetsStatus)){
+			status = "cancelled";
+		}
 
 //		try {
 //			JSONObject jsonObject = JSONObject.fromObject(txnRes);
