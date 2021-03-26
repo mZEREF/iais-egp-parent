@@ -8,7 +8,7 @@
     String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
     if ("Y".equals(googleSearch)) {
 %>
-<script async src="https://cse.google.com/cse.js?cx=0355cb1eb6afd55ca"></script>
+<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>
 <%
     }
 %>

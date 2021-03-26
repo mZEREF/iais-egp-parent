@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<roles>
+    <role>
+        <id>ORG_ADMIN</id>
+        <name>Organization Admin</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>ORG_USER</id>
+        <name>Organization User</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+</roles>

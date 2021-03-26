@@ -35,7 +35,7 @@
     </c:if>
 </div>
 <div class="col-xs-12">
-    <div class="col-xs-3">
+    <div class="col-xs-12">
         <c:choose>
             <c:when test="${'APTY004' == AppSubmissionDto.appType}">
                 <span name="iaisErrorMsg" id="error_payMethod" class="error-msg"></span>

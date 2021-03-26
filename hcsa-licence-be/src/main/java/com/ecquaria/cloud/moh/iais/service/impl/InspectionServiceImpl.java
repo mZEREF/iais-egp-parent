@@ -226,8 +226,8 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setRoles(roleList);
         inspectionTaskPoolListDto.setLoginContextId(loginContext.getUserId());
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
-        List<OrgUserDto> orgUserDtoList = organizationClient.activeUsersByWorkGroupAndRole(inspectionTaskPoolListDto.getWorkGroupId(), loginContext.getCurRoleId()).getEntity();
         TaskDto taskDto = organizationClient.getTaskById(taskId).getEntity();
+        List<OrgUserDto> orgUserDtoList = organizationClient.activeUsersByWorkGroupAndRole(inspectionTaskPoolListDto.getWorkGroupId(), taskDto.getRoleId()).getEntity();
         String userId = taskDto.getUserId();
         for(OrgUserDto oDto:orgUserDtoList){
             if(!(oDto.getId().equals(userId))){

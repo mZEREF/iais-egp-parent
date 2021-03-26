@@ -215,7 +215,7 @@ function checkUse() {
             }else{
                 if ($("input:checkbox:checked").length > 0) {
                     $('#deleteSupport').modal('show');
-                    alert(1)
+                    //alert(1)
                 } else {
                     $('#support').find("span").eq(0).html("Please select record for deletion.");
                     $('#support').modal('show');

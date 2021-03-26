@@ -102,6 +102,7 @@ public class MassEmailDelegator {
              ) {
             item.setRole(roleName(item.getRole()));
         }
+        setSearchparam(bpc,searchParam);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
     }

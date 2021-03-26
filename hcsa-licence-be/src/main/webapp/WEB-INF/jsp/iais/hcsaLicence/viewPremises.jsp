@@ -431,15 +431,15 @@
                                       <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="newVal" attr="${weeklyDto.selectValList}">
-                                             <c:forEach items="${weeklyDto.selectValList}" var="selectVal">
-                                               <iais:code code="${selectVal}"/>
+                                             <c:forEach items="${weeklyDto.selectValList}" var="selectVal" varStatus="in">
+                                               <iais:code code="${selectVal}"/><c:if test="${!in.last}">,</c:if>
                                              </c:forEach>
                                           </span>
                                         </div>
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
-                                            <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList">
-                                              <iais:code code="${oldSelectValList}"/>
+                                            <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList" varStatus="in">
+                                              <iais:code code="${oldSelectValList}"/><c:if test="${!in.last}">,</c:if>
                                             </c:forEach>
                                           </span>
                                         </div>
@@ -527,15 +527,15 @@
                                       <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="newVal" attr="${op.selectValList}">
-                                               <c:forEach items="${op.selectValList}" var="phDto">
-                                                 <iais:code code="${phDto}"></iais:code>
+                                               <c:forEach items="${op.selectValList}" var="phDto" varStatus="in">
+                                                 <iais:code code="${phDto}"></iais:code><c:if test="${!in.last}">,</c:if>
                                                </c:forEach>
                                           </span>
                                         </div>
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
-                                              <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList">
-                                                <iais:code code="${oldPhDtoList}"/>
+                                              <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList" varStatus="in">
+                                                <iais:code code="${oldPhDtoList}"/><c:if test="${!in.last}">,</c:if>
                                               </c:forEach>
                                           </span>
                                         </div>
@@ -544,12 +544,22 @@
                                         <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${op.startFrom}">
-                                              <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                              <c:if test="${op.selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!op.selectAllDay}">
+                                                <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                              </c:if>
                                             </span>
                                           </div>
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
+                                              </c:if>
                                             </span>
                                           </div>
 
@@ -558,12 +568,23 @@
                                         <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${op.endTo}">
+                                              <c:if test="${op.selectAllDay}">
+
+                                              </c:if>
+                                               <c:if test="${!op.selectAllDay}">
                                                  <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                               </c:if>
+
                                             </span>
                                           </div>
                                           <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
+                                              </c:if>
                                             </span>
                                           </div>
                                         </div>
@@ -604,11 +625,11 @@
                                     <div class="row">
                                       <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
-                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
+                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}<c:if test="${!eventSta.last}">,</c:if></span>
                                         </div>
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}<c:if test="${!eventSta.last}">,</c:if>
                                           </span>
                                         </div>
 
