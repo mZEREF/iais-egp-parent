@@ -120,12 +120,12 @@
                                     <label  class="control-label control-set-font control-font-label">Name</label>
                                     <span class="mandatory">*</span>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3 col-xs-3">
                                     <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${medAlertPsn.salutation}" firstOption="Please Select"></iais:select>
                                     <span class="error-msg" id="error_salutation${status.index}" name="iaisErrorMsg"></span>
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 col-xs-4">
                                     <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                                     <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
@@ -140,13 +140,13 @@
                                         <span class="mandatory">*</span>
                                     </label>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3 col-xs-3">
                                     <div class="">
                                         <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 col-xs-4">
                                     <iais:input cssClass="idNoVal" maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
                                     <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
                                 </div>
