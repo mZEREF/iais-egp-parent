@@ -743,9 +743,9 @@ public class ClinicalLaboratoryDelegator {
                 errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
 
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                    /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
-                    appSubmissionDto.setClickEditPage(clickEditPages);
+                    appSubmissionDto.setClickEditPage(clickEditPages);*/
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
