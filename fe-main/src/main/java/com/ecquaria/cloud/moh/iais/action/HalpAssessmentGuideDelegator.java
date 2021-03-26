@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -439,6 +440,23 @@ public class HalpAssessmentGuideDelegator {
             }
         }
 
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(StringUtil.isEmpty(erroMsg)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = assessmentGuideService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr2",MessageUtil.getMessageDesc("NEW_ERR0023"));
+            }
+        }
+
         if(StringUtil.isEmpty(erroMsg)){
             //choose existing
             if(chooseExist){
@@ -485,11 +503,11 @@ public class HalpAssessmentGuideDelegator {
                     if(chooseExist){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else if(!chooseExist){
-                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                        /*LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
                         String licenseeId = "";
                         if(loginContext!=null){
                             licenseeId = loginContext.getLicenseeId();
-                        }
+                        }*/
                         //new
                         //judge whether had existing licence
                         List<String> chkBase = IaisCommonUtils.genNewArrayList();
@@ -952,6 +970,33 @@ public class HalpAssessmentGuideDelegator {
             }
 
         }
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(!currentPage.equals(nextstep)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:baseSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            for(HcsaServiceDto hcsaServiceDto:speSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = assessmentGuideService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                nextstep = currentPage;
+                err = MessageUtil.getMessageDesc("NEW_ERR0023");
+                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                //set audit
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put(ERROR_ATTR_LIST,err);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            }
+        }
+
 //        appSelectSvcDto.setBaseSvcIds(basecheckedlist);
 //        appSelectSvcDto.setSpecifiedSvcIds(sepcifiedcheckedlist);
         appSelectSvcDto.setBaseSvcDtoList(baseSvcSort);
@@ -962,11 +1007,8 @@ public class HalpAssessmentGuideDelegator {
         //control switch
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(!currentPage.equals(nextstep)){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
-            if(loginContext!=null){
-                newLicensee =  assessmentGuideService.isNewLicensee(loginContext.getLicenseeId());
-            }
+            newLicensee =  assessmentGuideService.isNewLicensee(licenseeId);
             appSelectSvcDto.setNewLicensee(newLicensee);
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
