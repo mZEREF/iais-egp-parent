@@ -44,14 +44,17 @@ public class ClientCheckNotResultPaymentJob {
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {
-                PaymentRequestDto paymentRequestDto= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
-                PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-                if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
-                    appGrp.setPmtRefNo(paymentDto.getReqRefNo());
-                    appGrp.setPaymentDt(paymentDto.getTxnDt());
-                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    appGrp.setPayMethod(paymentRequestDto.getPayMethod());
-                    serviceConfigService.updatePaymentStatus(appGrp);
+                List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                ) {
+                    PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
+                    if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
+                        appGrp.setPmtRefNo(paymentDto.getReqRefNo());
+                        appGrp.setPaymentDt(paymentDto.getTxnDt());
+                        appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                        appGrp.setPayMethod(paymentRequestDto.getPayMethod());
+                        serviceConfigService.updatePaymentStatus(appGrp);
+                    }
                 }
             }catch (Exception e){
                 log.info(e.getMessage(),e);

@@ -43,6 +43,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -262,7 +264,7 @@ public class ClientReschedulingDelegator {
         ParamUtil.setSessionAttr(bpc.request,"appIds",keyIds);
     }
 
-    public void preCommPool(BaseProcessClass bpc)  {
+    public void preCommPool(BaseProcessClass bpc) throws ParseException {
         String [] keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -279,10 +281,7 @@ public class ClientReschedulingDelegator {
         for (String key: keyIds
              ) {
             ApptViewDto apptViewDto=apptViewDtos.get(key);
-            String reason=ParamUtil.getString(bpc.request,"reason"+key);
-            apptViewDto.setReason(reason);
             apptViewDtos1.add(apptViewDto);
-
             try {
                 sendReschedulingSuccessEmail(apptViewDto);
             } catch (Exception e) {
@@ -351,18 +350,42 @@ public class ClientReschedulingDelegator {
         notificationHelper.sendNotification(emailParam);
     }
 
-    public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) {
+    public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) throws ParseException {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(httpServletRequest,"apptViewDtosMap");
 
         for (String id:apptIds
              ) {
+
             String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
+
+            String appId=apptViewDtos.get(id).getAppId();
             if("".equals(reason)||reason==null){
-                String appId=apptViewDtos.get(id).getAppId();
                 errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Request","field"));
             }
+            Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
+            Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
+            apptViewDtos.get(id).setReason(reason);
+            apptViewDtos.get(id).setSpecificStartDate(inspStDate);
+            apptViewDtos.get(id).setSpecificEndDate(inspEndDate);
+            apptViewDtos.get(id).setInspNewDate(inspEndDate);
+
+            String inspStartDate = Formatter.formatDateTime(inspStDate, SystemAdminBaseConstants.DATE_FORMAT);
+            String inspToDate = Formatter.formatDateTime(inspEndDate, SystemAdminBaseConstants.DATE_FORMAT);
+            String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
+            if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
+                if( inspStartDate.compareTo(inspToDate)>0){
+                    errMap.put("newDate" + appId,"Start date must be earlier than end date");
+                }
+                if(inspStartDate.compareTo(nowDate)<0){
+                    errMap.put("newDate" + appId,"Inspection date must be future");
+                }
+            }else {
+                errMap.put("newDate" + appId,MessageUtil.replaceMessage("GENERAL_ERR0006", "New Date","field"));
+            }
+
         }
+        ParamUtil.setSessionAttr(httpServletRequest, "apptViewDtosMap", (Serializable) apptViewDtos);
 
         return errMap;
     }
