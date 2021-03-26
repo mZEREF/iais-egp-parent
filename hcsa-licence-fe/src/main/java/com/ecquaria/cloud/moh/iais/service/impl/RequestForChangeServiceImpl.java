@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
@@ -629,8 +630,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                   if(!map.isEmpty()){
+                                      AtomicInteger length= new AtomicInteger();
                                       map.forEach((k,v)->{
-                                          sb.append(v).append(' ');
+                                          length.getAndIncrement();
+                                          sb.append(v);
+                                          if(map.size()!= length.get()){
+                                              sb.append(',');
+                                          }
                                       });
                                       errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                                   }
@@ -901,8 +907,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if(!map.isEmpty()){
+                                        AtomicInteger length=new AtomicInteger();
                                         map.forEach((k,v)->{
-                                            sb.append(v).append(' ');
+                                            length.getAndIncrement();
+                                            sb.append(v);
+                                            if(length.get()!=map.size()){
+                                                sb.append(',');
+                                            }
                                         });
                                         errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                                     }
@@ -1160,8 +1171,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if(!map.isEmpty()){
+                                        AtomicInteger length=new AtomicInteger();
                                         map.forEach((k,v)->{
-                                            sb.append(v).append(' ');
+                                            length.getAndIncrement();
+                                            sb.append(v);
+                                            if(length.get()!=map.size()){
+                                                sb.append(',');
+                                            }
                                         });
                                         errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
 

@@ -91,6 +91,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
+import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
 import com.ecquaria.cloud.moh.iais.rfi.impl.RfiLoadingCheckImplForRenew;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -212,7 +213,8 @@ public class NewApplicationDelegator {
     private CessationClient cessationClient;
     @Autowired
     private WithOutRenewalService withOutRenewalService;
-
+    @Autowired
+    private RfiLoadingExc  rfiLoadingExc;
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
@@ -1685,6 +1687,8 @@ public class NewApplicationDelegator {
 
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
             rfiLoadingCheckImplForRenew.beforeSubmitRfi(appSubmissionDto,appNo);
+        }else {
+            /*rfiLoadingExc.beforeSubmitRfi(appSubmissionDto,appNo);*/
         }
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionDto.setRfiMsgId(msgId);
@@ -4286,6 +4290,8 @@ public class NewApplicationDelegator {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     rfiLoadingCheckImplForRenew.checkPremiseInfo(appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                }else {
+                  /*  rfiLoadingExc.checkPremiseInfo(appSubmissionDto,appNo);*/
                 }
             }
             InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
