@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="eLIS Query">
+    <sql key = "searchForApplicationElis" remarks="search by Application eLIS View">
+        <![CDATA[
+            SELECT distinct appCorrId, ACK_NUM, APP_STATUS,
+             APP_TYPE, HCI_CD, HCI_NAME, HCI_CREATED_DT,
+              HCI_TYPE, UEN_NO, LIC_NO, LIC_TYPE, LIC_START_DT,
+               LIC_END_DT, LIC_CEASE_DT, LICENSEE_TYPE, LICENSEE_NAME,
+                COMPANY_NAME, BLOCK, STREET_NAME, FLOOR_NO,
+                 UNIT, BUILDING_NAME, POSTAL_CODE
+            FROM hcsala.dbo.appToElisDate;
+
+
+        ]]>
+    </sql>
+
+    <sql key = "searchForHciElis" remarks="search by HCI eLIS View">
+        <![CDATA[
+            SELECT distinct appLicCorrId, REC_STATUS, REC_LAST_UPDATED_DT,
+             HCI_CD, HCI_NAME, HCI_TYPE, HCI_CREATED_DT,
+              TELEPHONE, PAYMT_MODE, BLOCK, STREET_NAME,
+               FLOOR_NO, UNIT, BUILDING_NAME, POSTAL_CODE,
+                ADDRESS_TYPE, LIC_NO, LIC_TYPE, LIC_START_DT,
+                 LIC_END_DT, LIC_CEASE_DT, LIC_PERIOD, LIC_PERIOD_COND,
+                  LICENSEE_TYPE, SPC_CARE_SVCS, UEN_NO, LICENSEE_ID_NO,
+                   LICENSEE_ID_TYP, LICENSEE_TITLE, LICENSEE_NAME,
+                    LICENSEE_MOBILE, LICENSEE_EMAIL, LICENSEE_BLOCK,
+                     LICENSEE_STREET_NAME, LICENSEE_LEVEL, LICENSEE_UNIT,
+                      LICENSEE_BUILDING_NAME, LICENSEE_POSTAL_CODE,
+                       LICENSEE_ADDRESS_TYPE, MEDALERT_ID_NO, MEDALERT_ID_TYP,
+                        MEDALERT_NAME, MEDALERT_MOBILE, MEDALERT_EMAIL
+            FROM hciToElisDate;
+
+        ]]>
+    </sql>
+
+
+</sqls>
