@@ -659,6 +659,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         map.put("ApplicationDate",Formatter.formatDateTime(now, Formatter.DATE));
         map.put("Remarks",remarks);
         map.put("systemLink",url);
+        map.put("COMMENTS",externalRemarks);
         map.put("TATtime",tatTimeStr);
         map.put("email",systemParamConfig.getSystemAddressOne());
         map.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
