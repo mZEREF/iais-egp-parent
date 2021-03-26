@@ -27,14 +27,9 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p><a class="appNo"
-                                                          onclick="toApplicationView('<iais:mask name="appNo"
-                                                                                                 value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a>
-                                                    </p>
+                                                    <p><a class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a></p>
                                                 </div>
-                                                <div class="withdraw-delete">
-
-                                                </div>
+                                                <div class="withdraw-delete"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -130,7 +125,7 @@
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
                                                       maxlength="500" <c:if
-                                                    test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>   >${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                    test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
@@ -308,7 +303,6 @@
             $('#error_file').html("");
         }
         uploadFileValidate();
-
     }
 
     function uploadFileValidate() {
@@ -353,7 +347,7 @@
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
                     '                                            <div class="withdraw-info">\n' +
-                    '                                                <p><a class="appNo" onclick="toApplicationView(' + appmask + ',' + appStrNo + ')">' + appNo + '</a></p>\n' +
+                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+','+appStrNo+')">'+ appNo+'</a></p>\n'+
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
                     '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
@@ -367,14 +361,15 @@
     });
 
     function doSubmit() {
+        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
         withdrawContent$.find(".withdraw-info p").each(function () {
-            appNoList = appNoList + $(this).text() + "#";
+            alert($(this).text());
+            appNoList = appNoList+$(this).find('a').text()+"#";
         });
         $("[name='withdraw_app_list']").val(appNoList);
-        uploadFileValidate();
         submit("withdrawalStep");
     }
 
