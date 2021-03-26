@@ -482,6 +482,9 @@ public class WithOutRenewalDelegator {
             }
         }
         String result = ParamUtil.getMaskedString(bpc.request, "result");
+        if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
+            appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+        }
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
@@ -494,7 +497,6 @@ public class WithOutRenewalDelegator {
                 String pmtMethod = "";
                 if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
                     pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
-                    appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 }
                 //update status
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
@@ -515,6 +517,11 @@ public class WithOutRenewalDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
             } else {
+                if(!"cancelled".equals(result)){
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                }
                 //jump page to payment
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             }

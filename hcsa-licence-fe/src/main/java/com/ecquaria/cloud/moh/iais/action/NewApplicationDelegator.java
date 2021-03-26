@@ -1146,6 +1146,7 @@ public class NewApplicationDelegator {
         }
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
+        appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
@@ -1163,7 +1164,7 @@ public class NewApplicationDelegator {
                 } catch (Exception e) {
                     log.info(e.getMessage(), e);
                 }
-                appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         Double amount = appSubmissionDto1.getAmount();
@@ -1219,9 +1220,22 @@ public class NewApplicationDelegator {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
             }else{
+                if(!"cancelled".equals(result)){
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                    NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+
+                }
+                //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 switch2 = "loading";
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
             }
+        }else{
+            log.debug(StringUtil.changeForLog("result is empty"));
+            //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+            switch2 = "loading";
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
         }
 
         if ("ack".equals(switch2)) {
