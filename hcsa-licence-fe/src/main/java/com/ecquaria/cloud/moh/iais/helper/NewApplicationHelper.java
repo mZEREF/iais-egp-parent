@@ -2311,6 +2311,7 @@ public class NewApplicationHelper {
                 String configId = hcsaSvcDocConfigDto.getId();
                 String errKey = i+ "svcDoc"+ appSvcRelatedInfoDto.getServiceCode();
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
+                i++;
                 if(!isMandatory){
                     continue;
                 }
@@ -2371,7 +2372,6 @@ public class NewApplicationHelper {
                     }
                 }
 
-                i++;
             }
         }
     }

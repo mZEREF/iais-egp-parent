@@ -996,66 +996,40 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
-        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
-        if(!IaisCommonUtils.isEmpty(commonHcsaSvcDocConfigList)){
-            for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
-                String name = "common" + comm.getId();
-
-                Boolean isMandatory = comm.getIsMandatory();
-                if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
-                    errorMap.put(name, err006);
-                } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
-                    Boolean flag = Boolean.FALSE;
-                    for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                        if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
-                            continue;
-                        }
-                        String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                        if (comm.getId().equals(svcComDocId)) {
-                            flag = Boolean.TRUE;
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        errorMap.put(name, err006);
-                    }
-                }
-            }
-        }
-
-
-        List<HcsaSvcDocConfigDto> premHcasDocConfigs = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(request, PREMHCSASVCDOCCONFIGDTO);
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (!IaisCommonUtils.isEmpty(premHcasDocConfigs) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                String premType = appGrpPremisesDto.getPremisesType();
-                for (HcsaSvcDocConfigDto premHcasDocConfig : premHcasDocConfigs) {
-                    String errName = "prem" + premHcasDocConfig.getId() + premIndexNo;
-                    Boolean isMandatory = premHcasDocConfig.getIsMandatory();
-                    boolean isEmpty = false;
-                    if (isMandatory && IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)) {
-                        isEmpty = true;
-                    } else if (isMandatory && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)) {
-                        isEmpty = true;
-                        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
-                            String docPremName = appGrpPrimaryDocDto.getPremisessName();
-                            String docPremType = appGrpPrimaryDocDto.getPremisessType();
-                            if (!StringUtil.isEmpty(docPremName) && !StringUtil.isEmpty(docPremType)) {
-                                if (docPremName.equals(premIndexNo) && docPremType.equals(premType)) {
-                                    isEmpty = false;
-                                    break;
-                                }
-                            }
-                        }
+        if(!IaisCommonUtils.isEmpty(commonHcsaSvcDocConfigList) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            int i = 0;
+            String suffix = "Error";
+            for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
+                String errKey = i+"primaryDoc";
+                Boolean isMandatory = comm.getIsMandatory();
+                String dupForPrem = comm.getDupForPrem();
+                String configId = comm.getId();
+                i++;
+                if(!isMandatory){
+                    continue;
+                }
+                if(IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
+                    appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
+                }
+                if("0".equals(dupForPrem)){
+                    AppGrpPrimaryDocDto appGrpPrimaryDocDto =getAppGrpPrimaryDocByConfigIdAndPremIndex(appGrpPrimaryDocDtoList,configId,"");
+                    if(appGrpPrimaryDocDto == null){
+                        errorMap.put(errKey+suffix, err006);
                     }
-                    if (isEmpty) {
-                        errorMap.put(errName, err006);
+                }else if("1".equals(dupForPrem)){
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        String premIndex = appGrpPremisesDto.getPremisesIndexNo();
+                        String currErrKey = errKey + premIndex +suffix;
+                        AppGrpPrimaryDocDto appGrpPrimaryDocDto =getAppGrpPrimaryDocByConfigIdAndPremIndex(appGrpPrimaryDocDtoList,configId,premIndex);
+                        if(appGrpPrimaryDocDto == null){
+                            errorMap.put(currErrKey, err006);
+                        }
                     }
                 }
             }
         }
-
     }
 
     /**
@@ -5260,6 +5234,22 @@ public class NewApplicationDelegator {
         return result;
     }
 
+    private AppGrpPrimaryDocDto getAppGrpPrimaryDocByConfigIdAndPremIndex(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String config,String premIndex){
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto1:appGrpPrimaryDocDtos){
+                String currPremVal = appGrpPrimaryDocDto1.getPremisessName();
+                if(StringUtil.isEmpty(currPremVal)){
+                    currPremVal = "";
+                }
+                if(config.equals(appGrpPrimaryDocDto1.getSvcComDocId()) && premIndex.equals(currPremVal)){
+                    appGrpPrimaryDocDto = appGrpPrimaryDocDto1;
+                    break;
+                }
+            }
+        }
+        return appGrpPrimaryDocDto;
+    }
 }
 
 
