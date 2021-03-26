@@ -1163,6 +1163,7 @@ public class NewApplicationDelegator {
                 } catch (Exception e) {
                     log.info(e.getMessage(), e);
                 }
+                appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         Double amount = appSubmissionDto1.getAmount();

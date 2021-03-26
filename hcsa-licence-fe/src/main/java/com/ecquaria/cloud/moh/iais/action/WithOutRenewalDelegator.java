@@ -494,6 +494,7 @@ public class WithOutRenewalDelegator {
                 String pmtMethod = "";
                 if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
                     pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
+                    appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 }
                 //update status
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
