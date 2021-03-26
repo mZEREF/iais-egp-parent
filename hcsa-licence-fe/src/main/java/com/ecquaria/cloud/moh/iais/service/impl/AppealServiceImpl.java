@@ -380,6 +380,7 @@ public class AppealServiceImpl implements AppealService {
                 appPremiseMiscDto.setReason(appealReason);
                 appPremiseMiscDto.setRemarks(remarks);
                 appPremiseMiscDto.setOtherReason(appealPageDto.getOtherReason());
+                appPremiseMiscDto.setNewHciName(appealPageDto.getNewHciName());
                 String appealFor = appealPageDto.getAppealFor();
                 AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealPageDto.getAppPremisesSpecialDocDto();
                 String type = appealPageDto.getType();

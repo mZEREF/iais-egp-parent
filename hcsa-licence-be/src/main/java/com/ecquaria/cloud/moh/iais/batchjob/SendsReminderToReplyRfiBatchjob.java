@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -228,5 +230,47 @@ public class SendsReminderToReplyRfiBatchjob {
     }
     private void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
+    }
+    private void sendEmail(ApplicationDto applicationDto) throws Exception{
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDate());
+        String appGrpId = applicationDto.getAppGrpId();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
+        String applicantName=licenseeDto.getName();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+
+
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("email", systemParamConfig.getSystemAddressOne());
+        emailMap.put("ApplicationDate", Formatter.formatDate(applicationDto.getModifiedAt()));
+        emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationDto.getAppGrpId());
+        emailParam.setReqRefNum(applicationDto.getAppGrpId());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+        emailParam.setRefId(applicationDto.getId());
+        emailParam.setSubject(subject);
+        //email
+        notificationHelper.sendNotification(emailParam);
+
+    }
+
+    private List<ApplicationDto> getInfo(){
+       return applicationClient.getRfiReminder().getEntity();
     }
 }

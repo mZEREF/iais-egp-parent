@@ -413,4 +413,6 @@ public interface ApplicationClient {
     FeignResponseEntity<List<DisciplinaryRecordResponseDto>> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
     @PostMapping(value = "/iais-application-be/applications-appids",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByAppIds(@RequestBody List<String> appIds);
+    @GetMapping(value = "/iais-application-be/return-rfi-reminder-applications",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getRfiReminder();
 }
