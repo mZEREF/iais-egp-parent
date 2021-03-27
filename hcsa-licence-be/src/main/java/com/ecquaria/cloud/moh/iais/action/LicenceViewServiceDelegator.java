@@ -1799,8 +1799,7 @@ public class LicenceViewServiceDelegator {
                 copyAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
-                primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
-                primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
+
                 copyOldAppGrpPrimaryDocDtos.add(primaryDocDto);
             }
         }

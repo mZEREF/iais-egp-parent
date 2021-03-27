@@ -2226,10 +2226,18 @@ public class NewApplicationDelegator {
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
                     appEditSelectDto1.setDocEdit(docIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = personAppsubmit.getAppSvcRelatedInfoDtoList();
+                    AppSvcRelatedInfoDto copy=(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList1.get(0));
+                    List<AppSvcRelatedInfoDto> list=new ArrayList<>(1);
+                    list.add(copy);
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
                 } else if(!autoSaveAppsubmission.isEmpty()){
                     AppSubmissionDto appSubmissionDto1 =autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
-                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = personAppsubmit.getAppSvcRelatedInfoDtoList();
+                    AppSvcRelatedInfoDto copy=(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList1.get(0));
+                    List<AppSvcRelatedInfoDto> list=new ArrayList<>(1);
+                    list.add(copy);
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(list);
                     appSubmissionDto1.setAutoRfc(false);
                     AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
@@ -2245,7 +2253,11 @@ public class NewApplicationDelegator {
             } else {
                 if (!autoSaveAppsubmission.isEmpty()) {
                     AppSubmissionDto appSubmissionDto1 = autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
-                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = personAppsubmit.getAppSvcRelatedInfoDtoList();
+                    AppSvcRelatedInfoDto copy=(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList1.get(0));
+                    List<AppSvcRelatedInfoDto> list=new ArrayList<>(1);
+                    list.add(copy);
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(list);
                 } else if(!notAutoSaveAppsubmission.isEmpty()){
                     AppSubmissionDto appSubmissionDto1 = notAutoSaveAppsubmission.get(notAutoSaveAppsubmission.size() - 1);
                     AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
@@ -2258,7 +2270,11 @@ public class NewApplicationDelegator {
                     for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto1.getAppGrpPremisesDtoList()){
                         appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                     }
-                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = personAppsubmit.getAppSvcRelatedInfoDtoList();
+                    AppSvcRelatedInfoDto copy=(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList1.get(0));
+                    List<AppSvcRelatedInfoDto> list=new ArrayList<>(1);
+                    list.add(copy);
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(list);
 
                 }else {
                     autoSaveAppsubmission.add(personAppsubmit);
@@ -2683,7 +2699,11 @@ public class NewApplicationDelegator {
     private AppSubmissionDto getPersonAppsubmit(AppSubmissionDto oldAppSubmissionDto, AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) throws Exception {
         AppSubmissionDto changePerson = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
         boolean b = changePersonAuto(oldAppSubmissionDto, appSubmissionDto);
-        changePerson.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        AppSvcRelatedInfoDto copyAppSvcRelatedInfoDtoList =(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList.get(0));
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=new ArrayList<>();
+        appSvcRelatedInfoDtos.add(copyAppSvcRelatedInfoDtoList);
+        changePerson.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         changePerson.setAutoRfc(!b);
         String changePersonDraftNo = changePerson.getDraftNo();
         if (StringUtil.isEmpty(changePersonDraftNo)) {
