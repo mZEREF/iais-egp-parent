@@ -419,15 +419,19 @@ public class HcsaApplicationDelegator {
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 }
                 if ("other".equals(recommendationStr)) {
-                    if ((isAppealType && isChangePeriodAppealType) || !isAppealType) {
-                        String number = ParamUtil.getString(bpc.request, "number");
-                        if (!StringUtil.isEmpty(number)) {
-                            String chrono = ParamUtil.getString(bpc.request, "chrono");
-                            appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
-                            appPremisesRecommendationDto.setChronoUnit(chrono);
-                        } else {
-                            saveRecommenFlag = false;
+                    if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(approveSelect)) {
+                        if ((isAppealType && isChangePeriodAppealType) || !isAppealType) {
+                            String number = ParamUtil.getString(bpc.request, "number");
+                            if (!StringUtil.isEmpty(number)) {
+                                String chrono = ParamUtil.getString(bpc.request, "chrono");
+                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                                appPremisesRecommendationDto.setChronoUnit(chrono);
+                            } else {
+                                saveRecommenFlag = false;
+                            }
                         }
+                    } else {
+                        saveRecommenFlag = false;
                     }
                     if (isAppealType) {
 //                        appPremisesRecommendationDto.setRecomDecision("approve");
