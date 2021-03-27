@@ -370,19 +370,19 @@ public class ClientReschedulingDelegator {
             apptViewDtos.get(id).setSpecificEndDate(inspEndDate);
             apptViewDtos.get(id).setInspNewDate(inspEndDate);
 
-            String inspStartDate = Formatter.formatDateTime(inspStDate, SystemAdminBaseConstants.DATE_FORMAT);
-            String inspToDate = Formatter.formatDateTime(inspEndDate, SystemAdminBaseConstants.DATE_FORMAT);
-            String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
-            if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
-                if( inspStartDate.compareTo(inspToDate)>0){
-                    errMap.put("newDate" + appId,"Start date must be earlier than end date");
-                }
-                if(inspStartDate.compareTo(nowDate)<0){
-                    errMap.put("newDate" + appId,"Inspection date must be future");
-                }
-            }else {
-                errMap.put("newDate" + appId,MessageUtil.replaceMessage("GENERAL_ERR0006", "New Date","field"));
-            }
+//            String inspStartDate = Formatter.formatDateTime(inspStDate, SystemAdminBaseConstants.DATE_FORMAT);
+//            String inspToDate = Formatter.formatDateTime(inspEndDate, SystemAdminBaseConstants.DATE_FORMAT);
+//            String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
+//            if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
+//                if( inspStartDate.compareTo(inspToDate)>0){
+//                    errMap.put("newDate" + appId,"Start date must be earlier than end date");
+//                }
+//                if(inspStartDate.compareTo(nowDate)<0){
+//                    errMap.put("newDate" + appId,"Inspection date must be future");
+//                }
+//            }else {
+//                errMap.put("newDate" + appId,MessageUtil.replaceMessage("GENERAL_ERR0006", "New Date","field"));
+//            }
 
         }
         ParamUtil.setSessionAttr(httpServletRequest, "apptViewDtosMap", (Serializable) apptViewDtos);
