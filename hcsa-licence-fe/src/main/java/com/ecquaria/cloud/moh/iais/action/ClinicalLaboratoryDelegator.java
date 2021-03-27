@@ -2115,8 +2115,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setSelectDropDown(true);
                 if(!StringUtil.isEmpty(cgoIndexNo)){
                     appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
-                }
-                if (StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())) {
+                }else if (StringUtil.isEmpty(appSvcCgoDto.getCgoIndexNo())) {
                     appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
                 }
                 //

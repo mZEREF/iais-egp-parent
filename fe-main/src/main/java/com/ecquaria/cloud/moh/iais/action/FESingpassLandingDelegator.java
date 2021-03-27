@@ -203,24 +203,9 @@ public class FESingpassLandingDelegator {
     public void initSingpassInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] START ...."));
         HttpServletRequest request = bpc.request;
-        String name = ParamUtil.getString(request, UserConstants.NAME);
-        String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
-        String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
-        String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
-        String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
-        String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
-        String email = ParamUtil.getString(request, UserConstants.EMAIL);
-
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
-        if (userSession != null){
-            userSession.setDisplayName(name);
-            userSession.setDesignation(designation);
-            userSession.setSalutation(salutation);
-            userSession.setIdentityNo(idNo);
-            userSession.setMobileNo(mobileNo);
-            userSession.setOfficeTelNo(officeNo);
-            userSession.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
-            userSession.setEmail(email);
+        if (Optional.ofNullable(userSession).isPresent()){
+            FeLoginHelper.writeUserField(request, userSession);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
             if (validationResult.isHasErrors()) {
@@ -238,14 +223,9 @@ public class FESingpassLandingDelegator {
                 orgn.setLicenseeDto(liceInfo);
 
                 FeUserDto createdUser = orgUserManageService.createSingpassAccount(orgn);
-                User user = new User();
-                user.setDisplayName(createdUser.getDisplayName());
-                user.setUserDomain(createdUser.getUserDomain());
-                user.setId(createdUser.getUserId());
-
                 //create egp user
                 orgUserManageService.createClientUser(createdUser);
-                FeLoginHelper.initUserInfo(request, user);
+                FeLoginHelper.initUserInfo(request, createdUser);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
 
@@ -261,12 +241,7 @@ public class FESingpassLandingDelegator {
         log.info(StringUtil.changeForLog("SingPass Login service [initLoginInfo] START ...."));
         //if lack of user information here, sop api (/api/v1/users/userdomain_and_userid/cs_hcsa/privilegenos) will throw exception
         if (userSession != null){
-            User user = new User();
-            user.setDisplayName(userSession.getDisplayName());
-            user.setUserDomain(userSession.getUserDomain());
-            user.setId(userSession.getUserId());
-            user.setIdentityNo(userSession.getIdentityNo());
-            FeLoginHelper.initUserInfo(request, user);
+            FeLoginHelper.initUserInfo(request, userSession);
         }
         log.info(StringUtil.changeForLog("SingPass Login service [initLoginInfo] END ...." + JsonUtil.parseToJson(userSession)));
     }

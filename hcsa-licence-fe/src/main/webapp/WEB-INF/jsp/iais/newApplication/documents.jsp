@@ -197,6 +197,7 @@
             $('input[name="uploadKey"]').val(index);
             $('input[type="file"]').click();
             clearFlagValueFEFile();
+            $('#selectedFile').val('');
         });
     });
 

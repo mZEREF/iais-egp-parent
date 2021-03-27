@@ -366,7 +366,6 @@
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
         withdrawContent$.find(".withdraw-info p").each(function () {
-            alert($(this).text());
             appNoList = appNoList+$(this).find('a').text()+"#";
         });
         $("[name='withdraw_app_list']").val(appNoList);

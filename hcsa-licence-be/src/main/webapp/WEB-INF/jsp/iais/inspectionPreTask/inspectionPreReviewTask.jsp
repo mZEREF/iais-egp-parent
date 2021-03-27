@@ -125,7 +125,7 @@
                                           <td>
                                             <c:if test="${!empty inspHistory.inspLeads}">
                                               <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
-                                                <c:out value="${inspLead}"/>
+                                                <c:out value="${inspLead}"/><br>
                                               </c:forEach>
                                             </c:if>
                                             <c:if test="${empty inspHistory.inspLeads}">

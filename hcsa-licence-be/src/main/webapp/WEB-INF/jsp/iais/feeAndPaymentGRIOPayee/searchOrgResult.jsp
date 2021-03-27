@@ -155,6 +155,8 @@
                                             </div>
                                             <div class="row">&nbsp;</div>
                                             <iais:action style="text-align:right;">
+                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+
                                                 <button type="button" class="btn btn-primary SelectBtn"
                                                         disabled
                                                         onclick="javascript:doSelect();">Select
@@ -173,6 +175,11 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function doBack(){
+        showWaiting();
+        $("[name='crud_action_type']").val("back");
+        $("#mainForm").submit();
+    }
     function controlCease() {
         var checkOne = false;
         var checkBox = $("input[name='opIds']");

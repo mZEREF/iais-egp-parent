@@ -146,7 +146,9 @@
                                 </iais:section>
 
                                 <iais:action style="text-align:right;">
-                                    <button class="btn btn-primary" type="button"  onclick="$('#mainForm').submit();">Preview and Submit</button>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+
+                                    <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Preview and Submit</button>
                                 </iais:action>
                             </div>
                         </div>
@@ -158,6 +160,19 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
+
+    function doBack(){
+        showWaiting();
+        $("[name='crud_action_type']").val("back");
+        $("#mainForm").submit();
+    }
+
+    function doSubmit(){
+        showWaiting();
+        $("[name='crud_action_type']").val("next");
+        $("#mainForm").submit();
+    }
+
     $('#selectFile').change(function (event) {
         var maxFileSize = $('#configFileSize').val();
         console.log('maxFileSize : '+maxFileSize);

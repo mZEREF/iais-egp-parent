@@ -20,7 +20,7 @@
                         <em class="fa fa-bars"></em>
                     </button>
                     <a href="<%=intranetWebSite%>"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64"></a>
-                        <a href="<%=intranetInbox%>"><p class="logo-txt">Healthcare Application and Licensing Portal</p></a>
+                        <a href="<%=intranetInbox%>"><p class="logo-img"><img src="<%=webrooth%>img/HALP-log.png" alt="HALP" width="235" height="64"></p></a>
 
                 </div>
             </div>
