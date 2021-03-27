@@ -276,7 +276,7 @@
                                                                                                              value="${selectAppealRecommendationValue}"></iais:select>
                                                                                             </c:when>
                                                                                             <c:otherwise>
-                                                                                                <p>${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
+                                                                                                <p id = "appealRecommenValueShow">${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
                                                                                             </c:otherwise>
                                                                                         </c:choose>
                                                                                     </iais:value>
@@ -653,6 +653,7 @@
     function check(){
         var selectValue = $("[name='nextStage']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        var appealRecommenValueShow = $('#appealRecommenValueShow').text();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -663,7 +664,7 @@
             $('#normalRecommendationDiv').removeClass('hidden');
             let recommenVal = $('#recommendation').val();
             let appealRecommenVal = $('#appealRecommendationValues').val();
-            if('other' == recommenVal || ('appealApprove' == appealRecommenVal && isChangePeriodAppealType == 'true')){
+            if('other' == recommenVal || (('appealApprove' == appealRecommenVal || 'Approve' == appealRecommenValueShow) && isChangePeriodAppealType == 'true')){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             } else {
                 $('#recommendationOtherDropdown').addClass('hidden');
@@ -732,6 +733,7 @@
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        var appealRecommenValueShow = $('#appealRecommenValueShow').text();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -744,7 +746,7 @@
             $('#normalRecommendationDiv').removeClass('hidden');
             let recommenVal = $('#recommendation').val();
             let appealRecommenVal = $('#appealRecommendationValues').val();
-            if('other' == recommenVal || ('appealApprove' == appealRecommenVal && isChangePeriodAppealType == 'true')){
+            if('other' == recommenVal || (('appealApprove' == appealRecommenVal || 'Approve' == appealRecommenValueShow) && isChangePeriodAppealType == 'true')){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             } else {
                 $('#recommendationOtherDropdown').addClass('hidden');
