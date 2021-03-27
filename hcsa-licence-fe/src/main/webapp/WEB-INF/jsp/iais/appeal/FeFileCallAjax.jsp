@@ -1,12 +1,12 @@
 <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
-  String limit = ConfigHelper.getInt("iais.system.upload.file.type", 10);
+  String limit = String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10));
 %>
 
 <input type="hidden" name="uploadFormId" id="uploadFormId" value="">
 <input type="hidden" name="fileAppendId" id="fileAppendId" value="">
 <input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">
-<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="<%=limit%>>">
+<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="<%=limit%>">
 
 <script type="text/javascript">
     function deleteFileFeAjax(id,fileIndex) {
@@ -44,7 +44,8 @@
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,fileAppendId);
+        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,'selectedFile');
+        //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
         } else if (rslt == 'E') {
@@ -77,7 +78,7 @@
                 }
             },
             error: function (msg) {
-                alert("error");
+                //alert("error");
             }
           });
         }
@@ -99,6 +100,8 @@
             return "E";
         }
         var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        //alert('fileSize:'+fileSize);
+        //alert('maxSize:'+maxSize);
         fileSize = parseInt(fileSize);
         if(fileSize>= maxSize){
             return "N";
