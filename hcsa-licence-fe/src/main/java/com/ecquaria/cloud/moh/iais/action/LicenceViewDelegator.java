@@ -80,7 +80,7 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Licence Details");
         String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
         if(StringUtil.isEmpty(licencId)){
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
@@ -173,6 +173,7 @@ public class LicenceViewDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }
         }
 
