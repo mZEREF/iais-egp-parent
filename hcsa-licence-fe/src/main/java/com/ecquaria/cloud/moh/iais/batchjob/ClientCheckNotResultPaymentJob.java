@@ -45,7 +45,7 @@ public class ClientCheckNotResultPaymentJob {
                 ) {
             try {
                 List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
-                appGrp.setPmtStatus(null);
+                appGrp.setPmtStatus(ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                 if(paymentRequestDtos!=null){
                     for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
                     ) {
