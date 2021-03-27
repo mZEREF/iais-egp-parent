@@ -1231,10 +1231,7 @@ public class InterInboxDelegator {
             log.info(StringUtil.changeForLog("delete draft start ..."));
             inboxService.deleteDraftByNo(draft);
 
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-            auditTrailDto.setApplicationNum(draft);
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
-            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+
 
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
