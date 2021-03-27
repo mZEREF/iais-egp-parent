@@ -52,23 +52,24 @@ public class AppReturnFeeRefundJobHandler extends IJobHandler {
     }
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
-        List<AppReturnFeeDto> saveReturnFeeDtosStripe= IaisCommonUtils.genNewArrayList();
-        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-        ) {
-            ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                saveReturnFeeDtosStripe.add(appreturn);
-            }
-        }
-        List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
-        for (PaymentRequestDto refund:paymentRequestDtos
-        ) {
+        if(saveReturnFeeDtos!=null&&!saveReturnFeeDtos.isEmpty()){
+            List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
-                if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
-                    appreturn.setTriggerCount(appreturn.getTriggerCount()+1);
-                    appreturn.setStatus(refund.getStatus());
+                ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+                ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                    saveReturnFeeDtosStripe.add(appreturn);
+                }
+            }
+            List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+            for (PaymentRequestDto refund : paymentRequestDtos
+            ) {
+                for (AppReturnFeeDto appreturn : saveReturnFeeDtos
+                ) {
+                    if (appreturn.getApplicationNo().equals(refund.getReqRefNo())) {
+                        appreturn.setStatus(refund.getStatus());
+                    }
                 }
             }
         }

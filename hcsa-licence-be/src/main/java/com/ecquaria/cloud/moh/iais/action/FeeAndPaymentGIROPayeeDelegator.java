@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -37,7 +38,9 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -120,10 +123,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
         CrudHelper.doPaging(giroAccountParam,bpc.request);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
+        String actionType=ParamUtil.getString(request,"crud_action_type");
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             giroAccountParameter.setSortType(sortType);
             giroAccountParameter.setSortField(sortFieldName);
             giroAccountParameter.setPageNo(1);
+        }
+        if("back".equals(actionType)){
+            giroAccountParam= (SearchParam) ParamUtil.getSessionAttr(request,"searchGiroAccountParam");
         }
         QueryHelp.setMainSql("giroPayee","searchByGiroAcctInfo",giroAccountParam);
         SearchResult<GiroAccountInfoQueryDto> giroAccountResult = giroAccountService.searchGiroInfoByParam(giroAccountParam);
@@ -148,7 +155,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
             }
             searchGiroDtoResult.setRows(giroAccountInfoViewDtos);
-            ParamUtil.setRequestAttr(request,"searchGiroAccountParam",giroAccountParam);
+            ParamUtil.setSessionAttr(request,"searchGiroAccountParam",giroAccountParam);
             ParamUtil.setRequestAttr(request,"searchGiroDtoResult",searchGiroDtoResult);
 
         }
@@ -207,7 +214,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         String actionType=ParamUtil.getString(request,"crud_action_type");
-        if("add".equals(actionType)){
+        if("back".equals(actionType)){
+            orgPremParam= (SearchParam) ParamUtil.getSessionAttr(request,"orgPremParam");
+        }else if("add".equals(actionType)){
             orgPremParameter.setPageSize(pageSize);
             orgPremParameter.setPageNo(1);
         }else {
@@ -220,11 +229,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
         SearchResult<OrganizationPremisesViewQueryDto> orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
-        ParamUtil.setRequestAttr(request,"orgPremParam",orgPremParam);
+        ParamUtil.setSessionAttr(request,"orgPremParam",orgPremParam);
         ParamUtil.setRequestAttr(request,"orgPremResult",orgPremResult);
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",new BlastManagementDto());
     }
     public void reSearchOrg(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String actionType=ParamUtil.getString(request,"crud_action_type");
+        ParamUtil.setRequestAttr(request,"crud_action_type",actionType);
 
     }
     public void doSelect(BaseProcessClass bpc) {
@@ -253,6 +265,19 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void doBack(BaseProcessClass bpc) {
 
+    }
+    public void doSwich(BaseProcessClass bpc){
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+    }
+
+    public void backPayee(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String actionType=ParamUtil.getString(request,"crud_action_type");
+        ParamUtil.setRequestAttr(request,"crud_action_type",actionType);
     }
     public void refill(BaseProcessClass bpc) {
 

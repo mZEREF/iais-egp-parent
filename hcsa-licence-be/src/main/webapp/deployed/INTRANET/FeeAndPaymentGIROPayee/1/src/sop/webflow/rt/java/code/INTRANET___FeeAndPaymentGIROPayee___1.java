@@ -81,4 +81,16 @@ public class INTRANET___FeeAndPaymentGIROPayee___1 extends BaseProcessClass {
 		// 		doSubmit->OnStepProcess
 	}
 
+	public void backPayee_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "backPayee", this); 
+
+	// 		backPayee->OnStepProcess
+	}
+
+	public void doSwich_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSwich", this); 
+
+	// 		doSwich->OnStepProcess
+	}
+
 }
