@@ -2113,6 +2113,9 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setAssignSelect(assignSelect[i]);
                 appSvcCgoDto.setLicPerson(true);
                 appSvcCgoDto.setSelectDropDown(true);
+                if(!StringUtil.isEmpty(cgoIndexNo)){
+                    appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
+                }
                 if (StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())) {
                     appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
                 }
@@ -2326,6 +2329,10 @@ public class ClinicalLaboratoryDelegator {
                     }
                     if(appPsnEditDto.isEmailAddr()){
                         emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
+                    }
+                    String poIndexNo = poIndexNos[i];
+                    if(!StringUtil.isEmpty(poIndexNo)){
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(poIndexNo);
                     }
                     if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
                         appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
@@ -3048,6 +3055,10 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (appPsnEditDto.isEmailAddr()) {
                     emailAddress = NewApplicationHelper.setPsnValue(emailAddress, i, appSvcPrincipalOfficersDto, "emailAddr");
+                }
+                String mapIndexNo = mapIndexNos[i];
+                if(!StringUtil.isEmpty(mapIndexNo)){
+                    appSvcPrincipalOfficersDto.setCgoIndexNo(mapIndexNo);
                 }
                 if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
                     appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
