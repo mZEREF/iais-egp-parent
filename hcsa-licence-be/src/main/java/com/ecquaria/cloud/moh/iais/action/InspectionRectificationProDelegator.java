@@ -56,6 +56,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -429,18 +430,39 @@ public class InspectionRectificationProDelegator {
         }
         //get inspector lead
         List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+        String inspectorLeadShow = getInspectorLeadShowByList(inspectorLeads);
         //get inspectors
         InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
         //get nc count
         int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
 
         inspectionReportDto.setInspectors(inspectorUser.getInspectors());
+        inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
         inspectionReportDto.setInspectorLeads(inspectorLeads);
         inspectionReportDto.setNcCount(ncCount);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", fileRepoDto);
+    }
+
+    private String getInspectorLeadShowByList(List<String> inspectorLeads) {
+        StringBuilder leadStrBu = new StringBuilder();
+        if(!IaisCommonUtils.isEmpty(inspectorLeads)) {//NOSONAR
+            Collections.sort(inspectorLeads);
+            for (String strLeadName : inspectorLeads) {
+                if (StringUtil.isEmpty(leadStrBu.toString())) {
+                    leadStrBu.append(strLeadName);
+                } else {
+                    leadStrBu.append(',');
+                    leadStrBu.append(' ');
+                    leadStrBu.append(strLeadName);
+                }
+            }
+        } else {
+            leadStrBu.append('-');
+        }
+        return leadStrBu.toString();
     }
 
     /**

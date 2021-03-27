@@ -76,6 +76,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -803,11 +804,24 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 if(!StringUtil.isEmpty(nameStr)) {
                     List<String> leadNameList = IaisCommonUtils.genNewArrayList();
                     String[] leadNameStr = nameStr.split(",");
+                    StringBuilder leadStrBu = new StringBuilder();
                     for(int i = 0; i < leadNameStr.length; i++){
                         String leadName = leadNameStr[i].trim();
                         leadNameList.add(leadName);
+
+                    }
+                    Collections.sort(leadNameList);
+                    for(String strLeadName : leadNameList){//NOSONAR
+                        if(StringUtil.isEmpty(leadStrBu.toString())) {
+                            leadStrBu.append(strLeadName);
+                        } else {
+                            leadStrBu.append(',');
+                            leadStrBu.append(' ');
+                            leadStrBu.append(strLeadName);
+                        }
                     }
                     inspectionHistoryShowDto.setInspLeads(leadNameList);
+                    inspectionHistoryShowDto.setInspLeaderStr(leadStrBu.toString());
                 }
             }
         }

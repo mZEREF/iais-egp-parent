@@ -124,9 +124,7 @@
                                           <td><iais:code code="${inspHistory.complianceRisk}"/></td>
                                           <td>
                                             <c:if test="${!empty inspHistory.inspLeads}">
-                                              <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
-                                                <c:out value="${inspLead}"/>
-                                              </c:forEach>
+                                              <c:out value="${inspHistory.inspLeaderStr}"/>
                                             </c:if>
                                             <c:if test="${empty inspHistory.inspLeads}">
                                               <c:out value="-"/>
