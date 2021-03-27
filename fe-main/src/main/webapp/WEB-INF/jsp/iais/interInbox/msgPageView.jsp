@@ -114,7 +114,11 @@
     });
 
     $('#confirmArchive').click(function () {
-        submit('msgDoArchive');
+        $('#doArchiveModal').modal('hide');
+        setTimeout(function (){
+            submit('msgDoArchive');
+        }, 1000);
+
     });
 
     function toMsgPage() {
