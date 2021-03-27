@@ -165,8 +165,9 @@ public class FECorppassLandingDelegator {
     public void validateKeyAppointment(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
-        boolean isKeyAppointment = orgUserManageService.isKeyAppointment(userSession.getUenNo()).booleanValue();
-        if (isKeyAppointment){
+        boolean isKeyPerson = orgUserManageService.isKeyAppointment(userSession.getUenNo());
+        if (isKeyPerson){
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
         }else {
             ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "N");
@@ -192,12 +193,7 @@ public class FECorppassLandingDelegator {
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
             //normal user also can login  (2020/12)
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "Y");
-            User user = new User();
-            user.setDisplayName(userSession.getDisplayName());
-            user.setUserDomain(userSession.getUserDomain());
-            user.setId(userSession.getUserId());
-            user.setIdentityNo(userSession.getIdentityNo());
-            FeLoginHelper.initUserInfo(bpc.request, user);
+            FeLoginHelper.initUserInfo(bpc.request, userSession);
             //issue 68766
             orgUserManageService.setPermitLoginStatusInUenTrack(uen, identityNo, false);
         }else {
@@ -217,28 +213,10 @@ public class FECorppassLandingDelegator {
      */
     public void initCorppassUserInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         HttpServletRequest request = bpc.request;
-        HttpServletResponse response = bpc.response;
-
         log.info("initCorppassUserInfo===========>>>Start");
-        String name = ParamUtil.getString(request, UserConstants.NAME);
-        String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
-        String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
-        String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
-        //String idType = ParamUtil.getString(request, UserConstants.ID_TYPE);
-        String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
-        String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
-        String email = ParamUtil.getString(request, UserConstants.EMAIL);
-
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
-        if (userSession != null){
-            userSession.setDisplayName(name);
-            userSession.setDesignation(designation);
-            userSession.setSalutation(salutation);
-            userSession.setIdentityNo(idNo);
-            userSession.setMobileNo(mobileNo);
-            userSession.setOfficeTelNo(officeNo);
-            userSession.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
-            userSession.setEmail(email);
+        if (Optional.ofNullable(userSession).isPresent()){
+            FeLoginHelper.writeUserField(request, userSession);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
@@ -255,16 +233,10 @@ public class FECorppassLandingDelegator {
                 orgn.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgn.setFeUserDto(userSession);
 
-                FeUserDto postUpdate = orgUserManageService.createCorpPassUser(orgn);
-                User user = new User();
-                user.setDisplayName(postUpdate.getDisplayName());
-                user.setUserDomain(postUpdate.getUserDomain());
-                user.setId(postUpdate.getUserId());
-
+                FeUserDto createdUser = orgUserManageService.createCorpPassUser(orgn);
                 //create egp user
-                orgUserManageService.createClientUser(postUpdate);
-                FeLoginHelper.initUserInfo(request, user);
-
+                orgUserManageService.createClientUser(createdUser);
+                FeLoginHelper.initUserInfo(request, createdUser);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
         }
@@ -285,6 +257,9 @@ public class FECorppassLandingDelegator {
         if (declarationCheckbox != null && declarationCheckbox.length > 0){
             String val = declarationCheckbox[0];
             if ("Y".equals(val)){
+                FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+                userSession.setDeclareKeyPerson(true);
+                ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
                 ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_DECLARE, "Y");
             }else {
                 ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_DECLARE, "N");
