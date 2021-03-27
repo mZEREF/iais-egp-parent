@@ -2338,12 +2338,14 @@ public class NewApplicationHelper {
                         }
                     }else{
                         List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
-                        for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
-                            String psnIndexNo = psnDto.getCgoIndexNo();
-                            AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
-                            if(appSvcDocDto == null){
-                                String specErrKey = errKey + psnIndexNo +suffix;
-                                errorMap.put(specErrKey, err006);
+                        if(!IaisCommonUtils.isEmpty(psnDtoList)){
+                            for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                                String psnIndexNo = psnDto.getCgoIndexNo();
+                                AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
+                                if(appSvcDocDto == null){
+                                    String specErrKey = errKey + psnIndexNo +suffix;
+                                    errorMap.put(specErrKey, err006);
+                                }
                             }
                         }
                     }
