@@ -425,6 +425,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
 
         eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        try {
+            for (GiroAccountInfoDto giro:giroAccountInfoDtoList1
+            ) {
+                giroAccountService.sendEmailForGiroAccountAndSMSAndMessage(giro);
+            }
+        }catch (Exception e){
+            log.debug("send Email failed");
+        }
+
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
     }
 
