@@ -15,7 +15,13 @@
                         <div class="col-xs-12"></div>
                     </c:when>
                     <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
-                        <div class="col-xs-12"><h1>${DashboardTitle}</h1></div>
+                        <div class="tab-gp steps-tab">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="previewTab" role="tabpanel">
+                                    <h1 class="font-weight 0">${DashboardTitle}</h1>
+                                </div>
+                            </div>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <c:choose>

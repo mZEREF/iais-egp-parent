@@ -7,7 +7,6 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -18,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,17 +47,19 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             ) {
                 try {
                     List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
-                    for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
-                         ) {
-                        PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
-                        if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
-                            appGrp.setPmtRefNo(paymentDto.getReqRefNo());
-                            appGrp.setPaymentDt(paymentDto.getTxnDt());
-                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                            appGrp.setPayMethod(paymentRequestDto.getPayMethod());
-                            serviceConfigService.updatePaymentStatus(appGrp);
+                    appGrp.setPmtStatus(null);
+                    if(paymentRequestDtos!=null){
+                        for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                        ) {
+                            if("success".equals(paymentRequestDto.getStatus())){
+                                appGrp.setPmtRefNo(paymentRequestDto.getReqRefNo());
+                                appGrp.setPaymentDt(new Date());
+                                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                                appGrp.setPayMethod(paymentRequestDto.getPayMethod());
+                            }
                         }
                     }
+                    serviceConfigService.updatePaymentStatus(appGrp);
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
                 }
