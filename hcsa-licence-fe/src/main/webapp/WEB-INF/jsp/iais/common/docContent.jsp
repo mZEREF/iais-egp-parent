@@ -1,6 +1,6 @@
 <div class="document-upload-list">
     <h3>
-        <c:if test="${'1' == config.dupForPrem}">premises${premStat.index+1}:&nbsp;</c:if>
+        <c:if test="${'1' == config.dupForPrem}">premises&nbsp;${premStat.index+1}:&nbsp;</c:if>
         <c:if test="${'svcDoc' == docType}">
             <c:choose>
                 <c:when test="${'1' == config.dupForPerson}">
