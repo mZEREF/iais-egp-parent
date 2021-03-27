@@ -2629,12 +2629,12 @@ public class NewApplicationHelper {
                 psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                /*List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
                 for(AppSvcPersonnelDto spDto:spDtos){
                     AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
                     psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
                     psnDtoList.add(psnDto);
-                }
+                }*/
                 break;
             default:
                 break;
