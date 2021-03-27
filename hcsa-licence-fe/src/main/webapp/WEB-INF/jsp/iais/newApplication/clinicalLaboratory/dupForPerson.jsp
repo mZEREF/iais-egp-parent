@@ -5,11 +5,11 @@
     </c:when>
     <c:when test="${'2' == config.dupForPerson}">
         <!--PO -->
-        <c:set var="psnList" value="${PrincipalOfficersAssignSelect}"/>
+        <c:set var="psnList" value="${ReloadPrincipalOfficers}"/>
     </c:when>
     <c:when test="${'4' == config.dupForPerson}">
         <!--DPO -->
-        <c:set var="psnList" value="${DeputyPrincipalOfficersAssignSelect}"/>
+        <c:set var="psnList" value="${ReloadDeputyPrincipalOfficers}"/>
     </c:when>
     <c:when test="${'8' == config.dupForPerson}">
         <!--MAP -->
