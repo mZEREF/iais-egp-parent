@@ -2628,7 +2628,9 @@ public class NewApplicationHelper {
                 }
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList())){
+                    psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                }
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                 /*List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
