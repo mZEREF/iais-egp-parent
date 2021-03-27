@@ -153,15 +153,17 @@
                                         <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>
-                                        <c:if test="${licenceQuery.status == 'LICEST001'}">
-                                            <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
-                                            <input type="hidden" name="licenId${status.index}"
-                                                   value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                        </c:if>
-                                        <c:if test="${licenceQuery.status != 'LICEST001'}">
-                                            <p href="#">${licenceQuery.licenceNo}</p>
-                                            <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${licenceQuery.status == 'LICEST001' || licenceQuery.status == 'LICEST007'}">
+                                                <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                                <input type="hidden" name="licenId${status.index}"
+                                                       value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p href="#">${licenceQuery.licenceNo}</p>
+                                                <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
