@@ -1,22 +1,22 @@
 <div class="document-upload-list">
     <h3>
-        <c:if test="${'1' == config.dupForPrem}">premises${premStat.index+1}:&nbsp;</c:if>
+        <c:if test="${'1' == config.dupForPrem}">premises ${premStat.index+1}:&nbsp;</c:if>
         <c:if test="${'svcDoc' == docType}">
             <c:choose>
                 <c:when test="${'1' == config.dupForPerson}">
-                    CGO${psnStat.index+1}:&nbsp;
+                    Clinical Governance Officer&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'2' == config.dupForPerson}">
-                    PO${psnStat.index+1}:&nbsp;
+                    Principal Officer&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'4' == config.dupForPerson}">
-                    DPO${psnStat.index+1}:&nbsp;
+                    Nominee&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'8' == config.dupForPerson}">
-                    MAP${psnStat.index+1}:&nbsp;
+                    MedAlert Person&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'16' == config.dupForPerson}">
-                    SVCPSN${psnStat.index+1}:&nbsp;
+                    Service Personnel&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
             </c:choose>
         </c:if>
