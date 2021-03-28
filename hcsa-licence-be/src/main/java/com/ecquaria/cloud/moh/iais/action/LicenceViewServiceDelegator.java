@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -59,6 +60,8 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
+
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -192,9 +195,28 @@ public class LicenceViewServiceDelegator {
                         withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
 //                        withdrawnDto.setAppPremisesSpecialDocDto();
                         List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
-                        if(appealSpecialDocDto != null){
-                            bpc.request.getSession().setAttribute("appealSpecialDocDto",appealSpecialDocDto);
-                        }
+                        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+                        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+                        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+                                if(appealSpecialDocDto!=null&&!appealSpecialDocDto.isEmpty()){
+                                    for(int i=0;i<appealSpecialDocDto.size();i++){
+                                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                                        pageShowFileDto.setFileUploadUrl(appealSpecialDocDto.get(i).getFileRepoId());
+                                        pageShowFileDto.setFileName(appealSpecialDocDto.get(i).getDocName());
+                                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                                        pageShowFileDto.setSize(appealSpecialDocDto.get(i).getDocSize());
+                                        pageShowFileDto.setMd5Code(appealSpecialDocDto.get(i).getMd5Code());
+                                        pageShowFileDto.setIndex(String.valueOf(i));
+                                        pageShowFileDtos.add(pageShowFileDto);
+                                        map.put("selectedFile"+i,null);
+                                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
+                                    }
+                                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
+                                    bpc.request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
+                                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appealSpecialDocDto.size());
+                                }
+                                bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+//                            bpc.request.getSession().setAttribute("appealSpecialDocDto",appealSpecialDocDto);
                         withdrawnDtoList.add(withdrawnDto);
                     });
                 }
@@ -1702,7 +1724,7 @@ public class LicenceViewServiceDelegator {
         int oldSize = oldAppGrpPremisesDtoList.size();
         for (int i = 0; i <oldSize - size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i).getPremisesType());
+            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i-1).getPremisesType());
             appGrpPremisesDto.setPostalCode("");
             appGrpPremisesDto.setOffTelNo("");
             appGrpPremisesDto.setScdfRefNo("");
@@ -1729,7 +1751,7 @@ public class LicenceViewServiceDelegator {
             AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
             premisesOperationalUnitDto.setFloorNo("");
             premisesOperationalUnitDto.setUnitNo("");
-            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i).getPremType());
+            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i-1).getPremType());
             appPremisesOperationalUnitDto.add(premisesOperationalUnitDto);
         }
     }
