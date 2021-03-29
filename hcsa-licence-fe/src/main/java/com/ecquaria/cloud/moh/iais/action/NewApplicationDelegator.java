@@ -2727,6 +2727,7 @@ public class NewApplicationDelegator {
         changePerson.setAppEditSelectDto(appSubmissionDto.getAppEditSelectDto());
         changePerson.setChangeSelectDto(appSubmissionDto.getChangeSelectDto());
         changePerson.setGetAppInfoFromDto(true);
+        requestForChangeService.premisesDocToSvcDoc(changePerson);
         return changePerson;
     }
 
