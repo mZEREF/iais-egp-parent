@@ -704,6 +704,11 @@ public class HcsaChklItemDelegator {
                 && Optional.ofNullable(set).isPresent()){
             list = searchResult.getRows();
             list = list.stream().filter(i -> set.contains(i.getItemId())).collect(Collectors.toList());
+
+            for (CheckItemQueryDto i : list){
+                i.setAnswerType(MasterCodeUtil.getCodeDesc(i.getAnswerType()));
+                i.setRiskLevel(MasterCodeUtil.getCodeDesc(i.getRiskLevel()));
+            }
         }
 
         boolean blockExcel = false;
