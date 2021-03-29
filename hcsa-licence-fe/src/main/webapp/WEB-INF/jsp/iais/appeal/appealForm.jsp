@@ -115,6 +115,7 @@
 
             </div>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_selectedFileError"></span>
           <div class="col-xs-12" >
             <span  name="selectedFileShowId" id="selectedFileShowId">
             <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
@@ -122,7 +123,7 @@
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a></span>
                   <span class="error-msg" name="iaisErrorMsg" id="error_file${ind.index}"></span>
-                  <span class="error-msg" name="iaisErrorMsg" id="error_${configIndex}error"></span>
+
                 <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
                 Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
               ReUpload</button>
