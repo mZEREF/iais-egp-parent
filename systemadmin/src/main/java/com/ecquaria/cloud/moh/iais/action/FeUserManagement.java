@@ -10,11 +10,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -69,22 +69,22 @@ public class FeUserManagement {
     }
 
     private void organizationSelection(BaseProcessClass bpc, String orgId){
-        List<LicenseeDto> licenseeDtos = intranetUserService.findLicenseesFe();
+        List<OrganizationDto> organList = intranetUserService.getUenList();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(orgId)){
-            for (LicenseeDto item :licenseeDtos
+            for (OrganizationDto i :organList
             ) {
-                if(item.getOrganizationId().equals(orgId)){
-                    ParamUtil.setRequestAttr(bpc.request,"licenseeName",item.getName());
+                if(i.getId().equals(orgId)){
+                    ParamUtil.setRequestAttr(bpc.request,"uenNo",  i.getUenNo());
                     ParamUtil.setRequestAttr(bpc.request,"organizationId",orgId);
                 }
             }
         }else{
-            for (LicenseeDto item :licenseeDtos
+            for (OrganizationDto i :organList
             ) {
-                selectOptions.add(new SelectOption(item.getOrganizationId(),item.getName()));
+                selectOptions.add(new SelectOption(i.getId(), i.getUenNo()));
             }
-            ParamUtil.setRequestAttr(bpc.request,"licenseeSelection",selectOptions);
+            ParamUtil.setRequestAttr(bpc.request,"uenSelection", selectOptions);
         }
 
     }
@@ -93,7 +93,7 @@ public class FeUserManagement {
         SearchParam searchParam = getSearchParam(bpc.request,false);
         String idNo = ParamUtil.getRequestString(bpc.request,"idNo");
         String designation = ParamUtil.getRequestString(bpc.request,"designation");
-        String licenseeName = ParamUtil.getRequestString(bpc.request,"licenseeName");
+        String uenNo = ParamUtil.getRequestString(bpc.request,"uenNo");
         String fieldName = ParamUtil.getRequestString(bpc.request,"fieldName");
         String sortType = ParamUtil.getRequestString(bpc.request,"sortType");
 
@@ -118,16 +118,17 @@ public class FeUserManagement {
             searchParam.removeParam("designation");
         }
 
-        if(!StringUtil.isEmpty(licenseeName)){
-            searchParam.addFilter("licenseeName",'%' + licenseeName + '%',true);
+        if(!StringUtil.isEmpty(uenNo)){
+            searchParam.addFilter("uenNo", uenNo, true);
+            //searchParam.addFilter("licenseeName",'%' + licenseeName + '%',true);
         }else{
-            searchParam.removeFilter("licenseeName");
-            searchParam.removeParam("licenseeName");
+            searchParam.removeFilter("uenNo");
+            searchParam.removeParam("uenNo");
         }
         ParamUtil.setSessionAttr(bpc.request,"feUserSearchParam",searchParam);
         ParamUtil.setRequestAttr(bpc.request,"idNo",idNo);
         ParamUtil.setRequestAttr(bpc.request,"designation",designation);
-        ParamUtil.setRequestAttr(bpc.request,"licenseeName",licenseeName);
+        ParamUtil.setRequestAttr(bpc.request,"uenNo",uenNo);
     }
 
     public void delete(BaseProcessClass bpc){
@@ -137,7 +138,7 @@ public class FeUserManagement {
             if (!StringUtil.isEmpty(item)){
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                orgUserDto.setIdNumber(orgUserDto.getIdentityNo());
+                orgUserDto.setIdentityNo(orgUserDto.getIdNumber());
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
