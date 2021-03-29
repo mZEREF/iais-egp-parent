@@ -1715,11 +1715,11 @@ public class AppealServiceImpl implements AppealService {
         int configFileSize = systemParamConfig.getUploadFileLimit();
         String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
         List<String> fileTypes = Arrays.asList(configFileType.split(","));
-        if(pageShowFileDto.getSize()>configFileSize){
+        if(pageShowFileDto.getSize()/1024>configFileSize){
             map.put("file"+i, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(configFileSize),"sizeMax"));
         }
         String substring = pageShowFileDto.getFileName().substring(pageShowFileDto.getFileName().lastIndexOf('.') + 1);
-        if(!fileTypes.contains(substring)){
+        if(!fileTypes.contains(substring.toUpperCase())){
             map.put("file"+i,MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
         }
         if(pageShowFileDto.getFileName().length()>100){
