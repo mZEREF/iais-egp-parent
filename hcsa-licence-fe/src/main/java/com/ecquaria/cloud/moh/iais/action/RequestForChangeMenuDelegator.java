@@ -1431,13 +1431,13 @@ public class RequestForChangeMenuDelegator {
     public void doPayment(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
         String switchValue = "loading";
-        String pmtStatus = ParamUtil.getString(bpc.request, "result");
+        /*String pmtStatus = ParamUtil.getString(bpc.request, "result");
         if (StringUtil.isEmpty(pmtStatus)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
-        }
+        }*/
         String result = ParamUtil.getMaskedString(bpc.request, "result");
-
+        //result="failed";
         if (!StringUtil.isEmpty(result)) {
             log.debug(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
@@ -1479,6 +1479,9 @@ public class RequestForChangeMenuDelegator {
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);
+        }else{
+            switchValue = "loading";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
         }
         String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
         String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
