@@ -51,7 +51,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">UEN</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="licenseeName" maxlength="500" id="licenseeName" value="${licenseeName}"/>
+                                    <input type="text" name="uenNo" maxlength="500" id="licenseeName" value="${uenNo}"/>
                                 </div>
                             </div>
                         </div>

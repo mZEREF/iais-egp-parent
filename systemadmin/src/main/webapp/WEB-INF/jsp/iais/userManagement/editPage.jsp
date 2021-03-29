@@ -34,14 +34,14 @@
                             <c:choose>
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:value width="11">
-                                        <iais:select id="organizationId" name="organizationId" options="licenseeSelection"  cssClass="designationOption" firstOption="Please Select"
+                                        <iais:select id="organizationId" name="organizationId" options="uenSelection"  cssClass="designationOption" firstOption="Please Select"
                                                      value="${inter_user_attr.orgId}"></iais:select>
                                         <span class="error-msg" name="errorMsg" id="error_organizationId"></span>
                                     </iais:value>
                                 </c:when>
                                 <c:otherwise>
                                     <iais:value width="11">
-                                        <input name="licenseeName" id="licenseeName" type="text" value="${licenseeName}" readonly/>
+                                        <input name="uenNo" id="uenNo" type="text" value="${uenNo}" readonly/>
                                         <input name="organizationId" id="organizationId" type="text" value="${organizationId}" hidden/>
                                     </iais:value>
                                 </c:otherwise>

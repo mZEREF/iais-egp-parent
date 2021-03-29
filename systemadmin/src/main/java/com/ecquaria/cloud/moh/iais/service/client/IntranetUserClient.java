@@ -44,6 +44,9 @@ public interface IntranetUserClient {
     @GetMapping(value = "/iais-orguser-be/users-account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> findIntranetUserById(@PathVariable("id")String id);
 
+    @GetMapping(value = "/iais-orguser-be//organization/uen-list",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrganizationDto>> getUenList();
+
     @GetMapping(value = "/iais-orguser-be/findLicenseesFe",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> findLicenseesFe();
 
