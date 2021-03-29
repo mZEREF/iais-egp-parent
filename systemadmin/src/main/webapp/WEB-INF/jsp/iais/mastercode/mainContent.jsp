@@ -96,7 +96,18 @@
                                                     <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 </c:if>
                                                 <c:if test="${masterCodeResult.isCentrallyManage == 1}">
-                                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">Inactive</button>
+                                                    <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
+                                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">
+                                                        <c:choose>
+                                                            <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">
+                                                                Delete
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Deactive
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+                                                    </button>
                                                 </c:if>
                                             </td>
                                         </tr>
