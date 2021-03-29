@@ -131,7 +131,8 @@
                                                     <div id="uploadFileBox" class="file-upload-gp">
                                                         <c:forEach var="attachmentDto" items="${giroAcctFileDto.attachmentDtos}"
                                                                    varStatus="status">
-                                                            <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                            <p class="fileList">
+                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${attachmentDto.id}"/>&fileRepoName=${attachmentDto.docName}">${attachmentDto.docName}</a>                                                                &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                                         </c:forEach>
                                                     </div>
                                                     <a class="btn btn-file-upload btn-secondary" href="#">Upload</a><br>
