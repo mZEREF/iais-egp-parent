@@ -373,8 +373,10 @@ public class FeeAndPaymentGIROPayeeDelegator {
                             String fileRepoGuid = serviceConfigService.saveFiles(file);
                             doc.setFileRepoId(fileRepoGuid);
                             fileBit.setId(fileRepoGuid);
+                            docs.add(doc);
+                        }else {
+                            blastManagementDto.getAttachmentDtos().remove(fileBit);
                         }
-                        docs.add(doc);
 
                     } catch (Exception e) {
                         log.error(e.getMessage());
@@ -386,6 +388,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             }
         }
+        ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
 
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
