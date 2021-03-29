@@ -160,6 +160,7 @@ public class HalpAssessmentGuideDelegator {
         String inbox_ack020 = MessageUtil.getMessageDesc("INBOX_ACK020");
         String inbox_ack021 = MessageUtil.getMessageDesc("INBOX_ACK021");
         String inbox_ack022 = MessageUtil.getMessageDesc("INBOX_ACK022");
+        String inbox_ack023 = MessageUtil.getMessageDesc("INBOX_ACK023");
         String self_ack001 = MessageUtil.getMessageDesc("SELF_ACK001");
         String self_ack002 = MessageUtil.getMessageDesc("SELF_ACK002");
         String self_ack003 = MessageUtil.getMessageDesc("SELF_ACK003");
@@ -183,6 +184,7 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request,"inbox_ack020",inbox_ack020);
         ParamUtil.setSessionAttr(bpc.request,"inbox_ack021",inbox_ack021);
         ParamUtil.setSessionAttr(bpc.request,"inbox_ack022",inbox_ack022);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack023",inbox_ack023);
         ParamUtil.setSessionAttr(bpc.request,"self_ack001",self_ack001);
         ParamUtil.setSessionAttr(bpc.request,"self_ack002",self_ack002);
         ParamUtil.setSessionAttr(bpc.request,"self_ack003",self_ack003);

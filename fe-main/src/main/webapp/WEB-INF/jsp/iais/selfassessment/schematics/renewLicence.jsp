@@ -1,10 +1,6 @@
 <div class="form-check-gp">
-    <p class="form-check-title">Do you wish to make any update to the existing licence(s) before renewing?<a
-            class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
-            data-toggle="tooltip" data-html="true"
-            title='${SELF_ACK015}' data-original-title=''
-            style="position: absolute;left: 832px; top: 2px;z-index: 10">i</a>
-    </p>
+    <p class="form-check-title">Do you wish to make any update to the existing licence(s) before renewing?</p>
+    <p style="width: 59%;">Note: If you wish to amend your existing licence during renewal, please note that the change(s) will only take effect in the renewed licence, i.e. after renewal. If the amendment is to be effected before the licence renewal, please submit a Request for Change application first.</p>
     <div class="form-check progress-step-check" >
         <input class="form-check-input" id="renewLicence1"
                type="radio" name="renewType"
