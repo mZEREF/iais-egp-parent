@@ -90,8 +90,8 @@
                                                 <tbody>
                                                 <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="two">
                                                     <tr>
-                                                        <td class="row_no"><span>${(two.index + 1) }</span></td>
-                                                        <td> <a data-toggle="modal" data-target="#DeleteTemplateModal${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></td>
+                                                        <td class="row_no"> <div class="form-check"><span>${(two.index + 1) }</span></div></td>
+                                                        <td> <div class="form-check"><a data-toggle="modal" data-target="#DeleteTemplateModal${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div></td>
                                                         <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                                             <div class="modal-dialog modal-lg" role="document">
                                                                 <div class="modal-content">
@@ -110,15 +110,32 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <td><span >${item.incqDto.checklistItem}</span></td>
+                                                        <td><div class="form-check"><span >${item.incqDto.checklistItem}</span></div></td>
                                                         <c:set value = "${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "ckkId"/>
-                                                        <td class="text-center"><input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                        <td class="text-center">
-                                                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"  />
+                                                        <td class="text-left">
+                                                            <div class="form-check">
+                                                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes"  class="form-check-input"/>
+                                                                <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxYes"><span class="check-circle"></span></label>
+                                                            </div>
                                                         </td>
-                                                        <td class="text-center"><input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                        <td class="text-left">
+                                                            <div class="form-check">
+                                                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" class="form-check-input" />
+                                                                <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNo"><span class="check-circle"></span></label>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <div class="form-check">
+                                                            <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" class="form-check-input"/>
+                                                                <label class="form-check-label" for="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNa"><span class="check-circle"></span></label>
+                                                            </div>
+                                                        </td>
                                                         <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
-                                                       <td>${item.incqDto.selfAnswer}</td>
+                                                       <td>
+                                                           <div class="form-check">
+                                                               ${item.incqDto.selfAnswer}
+                                                       </div>
+                                                       </td>
                                                         </c:if>
                                                         <td>
                                                             <textarea cols="35" rows="4" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcs" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
@@ -134,7 +151,9 @@
                                                         </td>
                                                         <td class="text-center">
                                                             <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                                                                <div class="form-check">
                                                                 <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
+                                                                </div>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -180,8 +199,8 @@
                                                       <tbody>
                                                       <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
                                                           <tr>
-                                                              <td class="row_no"><span>${(status.index + 1) }</span></td>
-                                                              <td><a data-toggle="modal" data-target="#DeleteTemplateModalSer${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a> </td>
+                                                              <td class="row_no">    <div class="form-check"><span>${(status.index + 1) }</span></div></td>
+                                                              <td><div class="form-check"><a data-toggle="modal" data-target="#DeleteTemplateModalSer${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div> </td>
                                                               <div class="modal fade" id="DeleteTemplateModalSer${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                                                   <div class="modal-dialog modal-lg" role="document">
                                                                     <div class="modal-content">
@@ -200,15 +219,32 @@
                                                                       </div>
                                                                   </div>
                                                               </div>
-                                                              <td><span>${item.incqDto.checklistItem}</span></td>
+                                                              <td><div class="form-check"><span>${item.incqDto.checklistItem}</span></div></td>
                                                               <c:set value = "${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "ckkId"/>
-                                                              <td class="text-center"><input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                              <td class="text-center">
-                                                                  <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"  />
+                                                              <td class="text-right">
+                                                                  <div class="form-check">
+                                                                  <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input" />
+                                                                      <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes"><span class="check-circle"></span></label>
+                                                                  </div>
                                                               </td>
-                                                              <td class="text-center"><input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A"  /></td>
+                                                              <td class="text-right">
+                                                                  <div class="form-check">
+                                                                  <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" class="form-check-input" />
+                                                                      <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"><span class="check-circle"></span></label>
+                                                                  </div>
+                                                              </td>
+                                                              <td class="text-right">
+                                                                  <div class="form-check">
+                                                                  <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" class="form-check-input" />
+                                                                      <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa"><span class="check-circle"></span></label>
+                                                                  </div>
+                                                              </td>
                                                               <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
-                                                              <td>${item.incqDto.selfAnswer}</td>
+                                                              <td>
+                                                                  <div class="form-check">
+                                                                      ${item.incqDto.selfAnswer}
+                                                                 </div>
+                                                              </td>
                                                               </c:if>
                                                               <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>FindNcs" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
@@ -224,7 +260,9 @@
                                                               </td>
                                                               <td class="text-center">
                                                                   <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                                                                      <div class="form-check">
                                                                       <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
+                                                                      </div>
                                                                   </div>
                                                               </td>
                                                               <td>
@@ -263,14 +301,26 @@
 
                                                       <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
                                                           <tr>
-                                                              <td class="row_no">${(status.index + 1) }</td>
-                                                              <td><c:out value="${item.question}"/></td>
+                                                              <td class="row_no">   <div class="form-check">${(status.index + 1) }</div></td>
+                                                              <td> <div class="form-check"><c:out value="${item.question}"/></div></td>
                                                               <c:set value = "${item.id}" var = "ckkId"/>
-                                                               <td class="text-center"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes"/></td>
-                                                              <td class="text-center">
-                                                                  <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No"/>
+                                                               <td class="text-right">
+                                                                   <div class="form-check"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input"/>
+                                                                   <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxYes"><span class="check-circle"></span></label>
+                                                                   </div>
+                                                               </td>
+                                                              <td class="text-right">
+                                                                  <div class="form-check">
+                                                                  <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" class="form-check-input"/>
+                                                                      <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNo"><span class="check-circle"></span></label>
+                                                                  </div>
                                                               </td>
-                                                              <td class="text-center"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"/></td>
+                                                              <td class="text-right">
+                                                                  <div class="form-check">
+                                                                  <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"  class="form-check-input"/>
+                                                                      <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNa"><span class="check-circle"></span></label>
+                                                                 </div>
+                                                              </td>
                                                               <td>
                                                                   <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcs" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcs" id="" maxlength="500"><c:out value="${item.ncs}"/></textarea>
                                                                   <br/>
@@ -285,8 +335,11 @@
                                                               </td>
                                                               <td class="text-center">
                                                                   <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
+                                                                      <div class="form-check">
                                                                       <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
+                                                                      </div>
                                                                   </div>
+
                                                               </td>
                                                               <td>
                                                                   <c:set value = "error_${item.id}adhoc" var = "err"/>
@@ -303,7 +356,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                    <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
                                    <div style="float:right">
                                        <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Next</button>
                                     <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
@@ -323,7 +376,13 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
         $("#doSubmitAction").val("next");
+        SOP.Crud.cfxSubmit("mainForm", "back");
+    }
+    function doBackToMain(){
+        showWaiting();
+        $("#doSubmitAction").val("");
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function showCheckBox(str){

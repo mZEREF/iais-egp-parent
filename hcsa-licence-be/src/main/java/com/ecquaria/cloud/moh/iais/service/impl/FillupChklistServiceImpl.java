@@ -1641,24 +1641,29 @@ public class FillupChklistServiceImpl implements FillupChklistService {
          AnswerForDifDto answerForDifDto = adhocAnswerForDifDtos.get(0);
             Boolean recSame = Boolean.TRUE;
             Boolean answerSame = Boolean.TRUE;
-            Boolean reamrkSame = Boolean.TRUE;
+            Boolean remarkSame = Boolean.TRUE;
+            Boolean ncsSame = Boolean.TRUE;
            for(AnswerForDifDto answerForDifDtoCopy :  answerForDifDtoCopys){
-               Boolean isSameSubmit = isSameByStrins(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
-                if( answerSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer())){
+               Boolean isSameSubmit = isSameByStrings(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
+                if(StringUtil.isEmpty( answerForDifDtoCopy.getAnswer()) || (answerSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer(),answerForDifDto.getAnswer()))){
                     answerSame = Boolean.FALSE;
                 }
-               if( recSame && !isSameSubmit &&  !isSameByStrins( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
+               if( recSame && !isSameSubmit &&  !isSameByStrings( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
                    recSame = Boolean.FALSE;
                }
-               if( reamrkSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark())){
-                   reamrkSame = Boolean.FALSE;
+               if( remarkSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark(),answerForDifDto.getAnswer())){
+                   remarkSame = Boolean.FALSE;
+               }
+               if(  ncsSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getNcs(),answerForDifDto.getNcs(),answerForDifDto.getAnswer())){
+                   ncsSame = Boolean.FALSE;
                }
            }
 
-           if(answerSame && recSame && reamrkSame){
-               answerForSame.setIsRec( answerForDifDto.getIsRec());
+           if(answerSame && recSame && remarkSame && ncsSame){
+               answerForSame.setIsRec(answerForDifDto.getIsRec());
                answerForSame.setAnswer( answerForDifDto.getAnswer());
                answerForSame.setRemark(answerForDifDto.getRemark());
+               answerForSame.setNcs(answerForDifDto.getNcs());
                answerForSame.setSameAnswer(true);
            }else {
                answerForSame.setIsRec( null);
@@ -1669,8 +1674,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
         return answerForSame;
     }
-
-    private Boolean isSameByStrins(String s1,String s2){
+    private Boolean isSameByStrings(String s1,String s2,String answer){
+        if(!"Yes".equalsIgnoreCase(answer)){
+            if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
+                return Boolean.FALSE;
+            }
+        }
+        return isSameByStrings(s1, s2);
+    }
+    private Boolean isSameByStrings(String s1,String s2){
         if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
             return Boolean.TRUE;
         }
@@ -1697,6 +1709,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             answerForDifDtoCopy .setAnswer( answerForDifDto.getAnswer());
             answerForDifDtoCopy .setIsRec( answerForDifDto.getIsRec());
             answerForDifDtoCopy .setSubmitName( answerForDifDto.getSubmitName());
+            answerForDifDtoCopy.setNcs(answerForDifDto.getNcs());
             answerForDifDtoCopys.add(answerForDifDtoCopy);
         }
         return answerForDifDtoCopys;

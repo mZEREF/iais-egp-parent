@@ -545,6 +545,8 @@ public class InspectionNcCheckListDelegator {
         saveCheckListAllSession(request);
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
+        String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
+        if(InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)){
         Map errMap =  inspectionCheckListItemValidate.validate(request);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
@@ -562,6 +564,12 @@ public class InspectionNcCheckListDelegator {
         if( !StringUtil.isEmpty(errTab)){
             ParamUtil.setSessionAttr(request,"errorTab",null);
             ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
+        }
+        }else {
+            serListDto.setCheckListTab("chkList");
+            setRate(request);
+            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
 

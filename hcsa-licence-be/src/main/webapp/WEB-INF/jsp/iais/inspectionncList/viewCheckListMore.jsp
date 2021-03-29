@@ -70,7 +70,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                    <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
                                     <div style="float:right">
                                         <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Next</button>
                                     <c:if test="${(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status) && nowTabIn == inspectorUserFinishChecklistId}">
@@ -90,7 +90,13 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
         $("#doSubmitAction").val("next");
+        SOP.Crud.cfxSubmit("mainForm", "back");
+    }
+    function doBackToMain(){
+        showWaiting();
+        $("#doSubmitAction").val("");
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function showCheckBox(str,indexIns){
