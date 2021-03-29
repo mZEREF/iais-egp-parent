@@ -124,8 +124,7 @@
                                         <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="500" <c:if
-                                                    test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                      maxlength="500" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
@@ -193,7 +192,7 @@
                                         </c:choose>
                                         <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"
                                               style="color: #D22727; font-size: 1.6rem"></span>
-                                        <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                        <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
@@ -224,7 +223,7 @@
              style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <%--                    <div class="modal-header">--%>
+                    <%--                    div class="modal-header">--%>
                     <%--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
                     <%--                    </div>--%>
                     <div class="modal-body" style="text-align: center;">
@@ -307,6 +306,7 @@
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
+        console.log(configFileSize)
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
