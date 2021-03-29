@@ -347,7 +347,7 @@ public class RegulationDelegator {
         QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
         LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
-        List<RegulationQueryDto> list = null;
+        List<RegulationQueryDto> list = IaisCommonUtils.genNewArrayList();
         if (Optional.ofNullable(searchResult).isPresent()
                 && Optional.ofNullable(searchResult.getRows()).isPresent()
                 && Optional.ofNullable(checked).isPresent()){
