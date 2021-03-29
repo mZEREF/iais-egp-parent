@@ -146,7 +146,7 @@
                                                                     <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>
                                                                 </tr>
 
-                                                                <c:if test="${empty licenseeKeyApptPersonDtos}">
+                                                                <c:if test="${empty authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
                                                                         <td>&nbsp;-</td>
@@ -156,7 +156,7 @@
                                                                         <td>&nbsp;-</td>
                                                                     </tr>
                                                                 </c:if>
-                                                                <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">
+                                                                <c:forEach var="person" items="${authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
                                                                         <td>&nbsp;${person.name}</td>
