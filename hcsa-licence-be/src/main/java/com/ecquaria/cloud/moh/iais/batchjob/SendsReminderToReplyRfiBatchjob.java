@@ -103,7 +103,7 @@ public class SendsReminderToReplyRfiBatchjob {
         logAbout("sendMsg");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
 
-       /* for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
+        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
         ) {
             if(rfi.getReminder()<3){
                 Calendar cal1 = Calendar.getInstance();
@@ -124,7 +124,7 @@ public class SendsReminderToReplyRfiBatchjob {
                     }
                 }
             }
-        }*/
+        }
         try {
             getInfo();
         }catch (Exception e){
@@ -349,11 +349,11 @@ public class SendsReminderToReplyRfiBatchjob {
             ApplicationDto applicationDto = iterator.next();
             Date modifiedAt = applicationDto.getModifiedAt();
             calendar.setTime(modifiedAt);
-            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt("1"));
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax1Day));
             Date firstTime = calendar.getTime();
-            calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt("2"));
+            calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMax2Day));
             Date secondTime = calendar.getTime();
-            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt("3"));
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax3Day));
             Date thirdTime = calendar.getTime();
             if(date.after(firstTime)&&date.before(secondTime)){
                 boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax1Day));

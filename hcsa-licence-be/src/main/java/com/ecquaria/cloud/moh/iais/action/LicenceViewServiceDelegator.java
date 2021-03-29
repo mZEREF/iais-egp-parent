@@ -1246,6 +1246,7 @@ public class LicenceViewServiceDelegator {
 
     private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) throws Exception{
        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+        dealWithMultipleDoc(appSubmissionDto);
         if (oldAppSubmissionDto == null) {
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
             if(appSvcRelatedInfoDto!=null){
@@ -1302,7 +1303,13 @@ public class LicenceViewServiceDelegator {
         }
         removePriDocFileIdIsNull(oldAppGrpPrimaryDocDtos);
         removePriDocFileIdIsNull(appGrpPrimaryDocDtos);
-        copyPremiseDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
+        Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
+        Map<String, List<AppGrpPrimaryDocDto>> oldMultipleGrpPrimaryDoc= oldAppSubmissionDto.getMultipleGrpPrimaryDoc();
+        dealMapPrimaryDoc(multipleGrpPrimaryDoc,oldMultipleGrpPrimaryDoc);
+        multipleGrpPrimaryDoc.forEach((k,v)->{
+            List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
+            copyPremiseDoc(v,grpPrimaryDocDtos);
+        });
 
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
@@ -1453,6 +1460,80 @@ public class LicenceViewServiceDelegator {
         if(oldAppSvcLaboratoryDisciplinesDtoList != null && oldAppSvcLaboratoryDisciplinesDtoList.get(0) != null) {
             deleteGroup(oldAppSvcDisciplineAllocationDtoList,oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal());
             creatAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList, oldAppSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(), oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(),map);
+        }
+    }
+    private void dealMapPrimaryDoc( Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc, Map<String, List<AppGrpPrimaryDocDto>> oldMultipleGrpPrimaryDoc){
+        Set<String> strings = multipleGrpPrimaryDoc.keySet();
+        Set<String> oldSet = oldMultipleGrpPrimaryDoc.keySet();
+        Set<String> difference = difference(strings, oldSet);
+        for(String v: difference){
+            List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(v);
+            if(grpPrimaryDocDtos==null){
+                multipleGrpPrimaryDoc.put(v,new ArrayList<>());
+            }
+            List<AppGrpPrimaryDocDto> oldGrpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(v);
+            if(oldGrpPrimaryDocDtos==null){
+                oldMultipleGrpPrimaryDoc.put(v,new ArrayList<>());
+            }
+        }
+    }
+    private <T> Set difference(Set<T> set,Set<T> oldSet){
+        Set<T> s=new HashSet<>();
+        s.addAll(set);
+        s.addAll(oldSet);
+        return s;
+    }
+
+    private  void dealWithMultipleDoc(AppSubmissionDto appSubmissionDto){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
+        if(multipleGrpPrimaryDoc==null){
+            multipleGrpPrimaryDoc=new HashMap<>();
+        }
+        dealWithGrpPrimaryDoc(appGrpPrimaryDocDtos,multipleGrpPrimaryDoc);
+        appSubmissionDto.setMultipleGrpPrimaryDoc(multipleGrpPrimaryDoc);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
+        if(multipleSvcDoc==null){
+            multipleSvcDoc=new HashMap<>();
+        }
+        dealWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
+        appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+        if(appSubmissionDto.getOldAppSubmissionDto()!=null){
+            dealWithMultipleDoc(appSubmissionDto.getOldAppSubmissionDto());
+        }
+    }
+    private void dealWithGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ,Map<String, List<AppGrpPrimaryDocDto>>multipleGrpPrimaryDoc){
+        if(appGrpPrimaryDocDtos==null){
+            return;
+        }
+        for(AppGrpPrimaryDocDto v : appGrpPrimaryDocDtos){
+            List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(v.getSvcComDocName());
+            if(grpPrimaryDocDtos==null){
+                grpPrimaryDocDtos=new ArrayList<>();
+                grpPrimaryDocDtos.add(v);
+                multipleGrpPrimaryDoc.put(v.getSvcComDocName(),grpPrimaryDocDtos);
+            }else {
+                grpPrimaryDocDtos.add(v);
+            }
+        }
+
+    }
+
+    private void dealWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+        if(appSvcDocDtoLit==null){
+            return;
+        }
+        for(AppSvcDocDto v : appSvcDocDtoLit){
+            List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(v.getDocName());
+            if(appSvcDocDtos==null){
+                appSvcDocDtos=new ArrayList<>();
+                appSvcDocDtos.add(v);
+                multipleSvcDoc.put(v.getDocName(),appSvcDocDtos);
+            }else {
+                appSvcDocDtos.add(v);
+            }
         }
     }
 

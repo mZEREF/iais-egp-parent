@@ -635,7 +635,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                           length.getAndIncrement();
                                           sb.append(v);
                                           if(map.size()!= length.get()){
-                                              sb.append(',');
+                                              sb.append(',').append(' ');
                                           }
                                       });
                                       errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
@@ -912,7 +912,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             length.getAndIncrement();
                                             sb.append(v);
                                             if(length.get()!=map.size()){
-                                                sb.append(',');
+                                                sb.append(',').append(' ');
                                             }
                                         });
                                         errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
@@ -1176,7 +1176,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             length.getAndIncrement();
                                             sb.append(v);
                                             if(length.get()!=map.size()){
-                                                sb.append(',');
+                                                sb.append(',').append(' ');
                                             }
                                         });
                                         errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
