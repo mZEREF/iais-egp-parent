@@ -24,7 +24,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     private static final String ERR0010 = "GENERAL_ERR0006";
     private static final String SUBMIT_CHECK_LIST = "sumbit_check_list_pend_ins";
     private static final String MESSAGE_TAG_DRAFT = "Draft" ;
-    private static final String NEXT_ACTION = "next";
+    public static final String NEXT_ACTION = "next";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
