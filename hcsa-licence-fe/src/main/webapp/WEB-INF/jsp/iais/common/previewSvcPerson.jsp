@@ -82,7 +82,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiology Professional</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT001"/></p>
                     </td>
                   </tr>
                   <tr>
@@ -124,7 +124,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Medical Physicist</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT002"/></p>
                     </td>
                   </tr>
                   <tr>
@@ -158,7 +158,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiation Safety Officer</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT003"/></p>
                     </td>
                   </tr>
                   <tr>
@@ -176,7 +176,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Registered Nurse</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT004"/></p>
                     </td>
                   </tr>
                   <tr>
