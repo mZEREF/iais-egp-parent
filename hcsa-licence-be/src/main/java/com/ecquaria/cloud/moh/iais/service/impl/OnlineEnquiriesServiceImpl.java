@@ -804,27 +804,28 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
         }
         try {
-            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos=organizationClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId()).getEntity();
-            for (LicenseeKeyApptPersonDto org : licenseeKeyApptPersonDtos
+            List<OrgUserDto> authorisedUsers = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+
+            for (OrgUserDto org : authorisedUsers
             ) {
                 try {
-                    org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
+                    org.setDesignation(MasterCodeUtil.getCodeDesc(org.getDesignation()));
 
                 } catch (NullPointerException e) {
                     log.error(e.getMessage(), e);
                 }
                 try {
-                    org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
+                    org.setIdType(MasterCodeUtil.getCodeDesc(org.getIdType()));
                 } catch (NullPointerException e) {
                     log.error(e.getMessage(), e);
                 }
                 try {
-                    org.setSalutation("-");
+                    org.setSalutation(MasterCodeUtil.getCodeDesc(org.getSalutation()));
                 } catch (NullPointerException e) {
                     log.error(e.getMessage(), e);
                 }
             }
-            ParamUtil.setRequestAttr(request,"licenseeKeyApptPersonDtos",licenseeKeyApptPersonDtos);
+            ParamUtil.setRequestAttr(request,"authorisedUsers",authorisedUsers);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
