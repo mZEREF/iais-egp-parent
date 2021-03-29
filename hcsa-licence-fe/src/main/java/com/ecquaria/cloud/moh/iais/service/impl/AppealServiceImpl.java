@@ -1615,7 +1615,7 @@ public class AppealServiceImpl implements AppealService {
         MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_GENERIC_MSG).getEntity();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         subMap.put("ApplicationType", appType);
-        subMap.put("ApplicationNumber", appNo+"-01");
+        subMap.put("ApplicationNumber", appNo);
         String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
         String smsSubject = MsgUtil.getTemplateMessageByContent(smsTemplateDto.getTemplateName(),subMap);
         String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),subMap);
