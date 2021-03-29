@@ -485,6 +485,7 @@ public class WithOutRenewalDelegator {
         if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
             appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
         }
+        //result = "failed";
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
@@ -527,6 +528,8 @@ public class WithOutRenewalDelegator {
             }
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
         }
         if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {//NOSONAR
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
