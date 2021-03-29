@@ -720,6 +720,10 @@ public class MasterCodeDelegator {
         logAboutStart("doDelete");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date);
+        String dateReplace = dateStr.replace(" "," at ");
+        String ackMsg = "";
         if ("doDelete".equals(type)) {
             String masterCodeId = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
@@ -738,6 +742,7 @@ public class MasterCodeDelegator {
                     masterCodeDto.setUpdateAt(new Date());
                     syncMasterCodeList.add(masterCodeDto);
                     masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                    ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
                 } else {
                     masterCodeService.deleteMasterCodeById(masterCodeId);
                     List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
@@ -745,14 +750,11 @@ public class MasterCodeDelegator {
                     masterCodeDto.setNeedDelete(true);
                     syncMasterCodeList.add(masterCodeDto);
                     masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                    ackMsg = MessageUtil.replaceMessage("ACKMCM005",dateReplace,"Date");
                 }
                 MasterCodeUtil.refreshCache();
             }
         }
-        Date date = new Date();
-        String dateStr = Formatter.formatDateTime(date);
-        String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"DELETE_ACKMSG",ackMsg);
     }
 
