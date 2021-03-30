@@ -331,8 +331,10 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             if(workGroupIdMap != null){
                 String workGroupId = workGroupIdMap.get(checkGroup);
                 createTask.setWkGrpId(workGroupId);
-                //set inspector leads
-                setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(applicationDto.getStatus()) && !StringUtil.isEmpty(workGroupId)) {
+                    //set inspector leads
+                    setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
+                }
             }
             Map<String, String> groupUserMap = groupCheckUserIdMap.get(checkGroup);
             if(groupUserMap != null){
