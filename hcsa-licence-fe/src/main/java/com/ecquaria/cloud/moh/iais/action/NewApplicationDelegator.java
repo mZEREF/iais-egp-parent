@@ -273,6 +273,8 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
+        ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
+        ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -662,6 +664,21 @@ public class NewApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request, GROUPLICENCECONFIG, "test");
             }
         }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,PRIMARY_DOC_CONFIG);
+        if(IaisCommonUtils.isEmpty(primaryDocConfig)){
+            if(isRfi && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+            }else{
+                primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+            }
+            ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
+        }
+
+        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appGrpPrimaryDocDtos);
+        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request,"isCharity",NewApplicationHelper.isCharity(bpc.request));
 

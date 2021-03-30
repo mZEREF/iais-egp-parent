@@ -23,7 +23,7 @@
                     </div>
                     <div class="pop-up">
                         <div class="pop-up-body">
-                            <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                            <%--<c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                 <c:if test="${!empty appGrpPrimaryDocDto.docName && !empty appGrpPrimaryDocDto.fileRepoId}">
                                 <div class="content-body fileUploadContainer">
                                     <div class="field col-sm-4 control-label formtext"><label>  ${appGrpPrimaryDocDto.svcComDocName}</label></div>
@@ -44,6 +44,23 @@
                                     </div>
                                 </div>
                                 </c:if>
+                            </c:forEach>--%>
+
+                            <c:set var="reloadMap" value="${AppSubmissionDto.multipleGrpPrimaryDoc}"/>
+                            <c:forEach var="config" items="${primaryDocConfig}" varStatus="configStat">
+                                <c:choose>
+                                    <c:when test="${'0' == config.dupForPrem}">
+                                        <c:set var="fileList" value="${reloadMap[config.id]}"/>
+                                        <%@include file="previewPrimaryContent.jsp"%>
+                                    </c:when>
+                                    <c:when test="${'1' == config.dupForPrem}">
+                                        <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStat">
+                                            <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
+                                            <c:set var="fileList" value="${reloadMap[mapKey]}"/>
+                                            <%@include file="previewPrimaryContent.jsp"%>
+                                        </c:forEach>
+                                    </c:when>
+                                </c:choose>
                             </c:forEach>
                         </div>
                     </div>
