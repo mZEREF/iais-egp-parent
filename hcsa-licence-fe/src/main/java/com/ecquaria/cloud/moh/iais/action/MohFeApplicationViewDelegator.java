@@ -12,7 +12,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class MohFeApplicationViewDelegator {
 
-    private LoginContext loginContext = null;
+   // private LoginContext loginContext = null;
 
     public void feApplicationViewStart(BaseProcessClass bpc){
 //        loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
