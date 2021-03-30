@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -25,11 +26,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -41,18 +44,21 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -81,6 +87,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     private ApplicationClient applicationClient;
 
     @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
+
+    @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
@@ -97,9 +106,6 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Value("${iais.email.sender}")
     private String mailSender;
-
-    @Autowired
-    private EmailClient emailClient;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -430,6 +436,155 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             }
         }*/
         return appointmentDto;
+    }
+
+    @Override
+    public List<ApptAppInfoShowDto> getReScheduleNewDateInfo(ReschedulingOfficerDto reschedulingOfficerDto) {
+        List<ApptAppInfoShowDto> apptAppInfoShowDtos = IaisCommonUtils.genNewArrayList();
+        String applicationNo = reschedulingOfficerDto.getAssignNo();
+        if(!StringUtil.isEmpty(applicationNo)){
+            AppointmentDto appointmentDto = new AppointmentDto();
+            ApplicationDto applicationDto = getApplicationByAppNo(applicationNo);
+            Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+            //service's licence end date Map
+            Map<String, Date> svcIdLicDtMap = null;
+            //get start date and end date by renewal flag
+            boolean renewalDateFlag = false;
+            //get start date and end date by premises
+            if(applicationDto != null) {
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                //get Applicant set start date and end date from appGroup
+                appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+                    renewalDateFlag = true;
+                    svcIdLicDtMap = IaisCommonUtils.genNewHashMap();
+                }
+            }
+
+            //get start date and end date by Service and appShow info
+            if(samePremisesAppMap != null) {
+                List<String> appNoList = samePremisesAppMap.get(applicationNo);
+                //set application no list
+                appointmentDto.setAppNoList(appNoList);
+                if(!IaisCommonUtils.isEmpty(appNoList)){//NOSONAR
+                    List<String> serviceIds = IaisCommonUtils.genNewArrayList();
+                    for(String appNo : appNoList) {
+                        ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+                        ApplicationDto appInfoDto = getApplicationByAppNo(appNo);
+                        //set application data
+                        apptAppInfoShowDto.setApplicationNo(appNo);
+                        apptAppInfoShowDto.setStatus(appInfoDto.getStatus());
+                        if(appInfoDto != null){
+                            serviceIds.add(appInfoDto.getServiceId());
+                            if(renewalDateFlag) {
+                                //set service's licence end date
+                                svcIdLicDtMap = setSvcIdLicDtMapByApp(appInfoDto, svcIdLicDtMap);
+                            }
+                        }
+                        apptAppInfoShowDtos.add(apptAppInfoShowDto);
+                    }
+                    appointmentDto.setSvcIdLicDtMap(svcIdLicDtMap);
+                    appointmentDto.setServiceIds(serviceIds);
+                }
+            }
+            //set system key
+            appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            //get Start date and End date when group no date
+            if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+                appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
+            }
+            boolean dateFlag = getStartEndDateFlag(appointmentDto);
+            if(dateFlag) {
+                //set app data to show ,and set userId correlation app No. to save
+                apptAppInfoShowDtos = setInfoByDateAndUserIdToSave(apptAppInfoShowDtos, appointmentDto, reschedulingOfficerDto);
+            }
+        }
+        return apptAppInfoShowDtos;
+    }
+
+    private List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos, AppointmentDto appointmentDto,
+                                                                  ReschedulingOfficerDto reschedulingOfficerDto) {
+        try {
+            FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.reScheduleNewDate(appointmentDto);
+            Map<String, Collection<String>> headers = result.getHeaders();
+            //Has it been blown up
+            if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
+                List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {
+                    for (ApptRequestDto apptRequestDto : apptRequestDtos) {
+
+                    }
+                } else {
+                    reschedulingOfficerDto.setNewInspDates(null);
+                }
+            } else {
+                reschedulingOfficerDto.setNewInspDates(null);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return apptAppInfoShowDtos;
+    }
+
+    private boolean getStartEndDateFlag(AppointmentDto appointmentDto) {
+        Date today = new Date();
+        String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+        String startDateStr = appointmentDto.getStartDate();
+        String endDateStr = appointmentDto.getEndDate();
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            today = Formatter.parseDateTime(todayStr, AppConsts.DEFAULT_DATE_FORMAT);
+            if(!StringUtil.isEmpty(startDateStr)) {
+                startDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            }
+            if(!StringUtil.isEmpty(endDateStr)) {
+                endDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            }
+        } catch (ParseException e) {
+            log.info("Appt Date Error!!!!!");
+            log.error(e.getMessage(), e);
+        }
+        if(endDate != null){
+            if(endDate.before(today)){
+                return false;
+            } else {
+                if(startDate == null){
+                    return false;
+                } else {
+                    if(startDate.before(today)){
+                        startDate = new Date();
+                        appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    }
+                }
+            }
+        } else {
+            if(startDate == null){
+                return false;
+            } else {
+                if(startDate.before(today)){
+                    startDate = new Date();
+                    appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                }
+            }
+        }
+        return true;
+    }
+
+    private Map<String, Date> setSvcIdLicDtMapByApp(ApplicationDto appInfoDto, Map<String, Date> svcIdLicDtMap) {
+        if(svcIdLicDtMap == null) {
+            svcIdLicDtMap = IaisCommonUtils.genNewHashMap();
+        }
+        if(appInfoDto != null) {
+            String orgLicId = appInfoDto.getOriginLicenceId();
+            if(!StringUtil.isEmpty(orgLicId)) {
+                LicenceDto licDto = hcsaLicenceClient.getLicDtoById(orgLicId).getEntity();
+                if(licDto != null && licDto.getExpiryDate() != null){
+                    svcIdLicDtMap.put(appInfoDto.getServiceId(), licDto.getExpiryDate());
+                }
+            }
+        }
+        return svcIdLicDtMap;
     }
 
     private void createOrUpdateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String appPremCorrId, Date saveDate) {

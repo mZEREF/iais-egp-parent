@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -123,4 +124,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: subtractEndHourByApptDto
       */
     AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/29
+      * @Param: reschedulingOfficerDto
+      * @return: List<ApptAppInfoShowDto>
+      * @Descripation: getReScheduleNewDateInfo
+      */
+    List<ApptAppInfoShowDto> getReScheduleNewDateInfo(ReschedulingOfficerDto reschedulingOfficerDto);
 }
