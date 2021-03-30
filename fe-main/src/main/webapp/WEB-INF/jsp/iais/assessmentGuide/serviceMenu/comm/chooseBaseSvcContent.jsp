@@ -19,7 +19,7 @@
     <div class="col-xs-12 col-md-7">
         <div class="row">
             <div class="col-xs12 col-md-12" style="font-size: 16px;">
-                An underlying service licence is required for your selected special licensable healthcare service. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
+                The following are your existing underlying service licences. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
             </div>
         </div>
     </div>

@@ -27,14 +27,15 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="renewLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Renew my licence <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                                                   title='${self_ack014}'
-                                                                   style="position: absolute;left: 200px; top: 13px;z-index: 10"
-                                                                   data-original-title=""
-                    >i</a></span>
+                    <span class="left-content">Renew my licence </span>
                     <span class="right-content">${self_ack002}</span>
                 </label>
             </div>
+            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+               title='${self_ack014}'
+               style="position: absolute;left: 303px; top: 116px;z-index: 10"
+               data-original-title=""
+            >i</a>
 
 
             <div class="form-check progress-step-check"
@@ -59,14 +60,14 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="amendLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Amend my licence
-                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
-                            data-toggle="tooltip" data-html="true"
-                            title='${inbox_ack017}' data-original-title=''
-                            style="position: absolute;left: 200px; top: 66px;z-index: 10">i</a></span>
+                    <span class="left-content">Amend my licence</span>
                     <span class="right-content">${self_ack004}</span>
                 </label>
             </div>
+            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
+               data-toggle="tooltip" data-html="true"
+               title='${inbox_ack017}' data-original-title=''
+               style="position: absolute;left: 306px; top: 299px;z-index: 10">i</a>
 
             <%--
                 8
@@ -83,6 +84,10 @@
                     <span class="right-content">${self_ack005}</span>
                 </label>
             </div>
+            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
+               data-toggle="tooltip" data-html="true"
+               title='${inbox_ack023}' data-original-title=''
+               style="position: absolute;left: 363px; top: 425px;z-index: 10">i</a>
 
             <div class="form-check progress-step-check"
                  style="width: 930px">
@@ -104,14 +109,15 @@
                 <label class="form-check-label"
                        for="withdrawApplication">
                     <span class="check-circle"></span>
-                    <span class="left-content">Withdraw my application<a href="javascript:void(0);"
-                                                                         class="btn-tooltip styleguide-tooltip"
-                                                                         data-toggle="tooltip" data-html="true"
-                                                                         title='${inbox_ack019}' data-original-title=''
-                                                                         style="position: absolute;left: 242px; top: 12px;z-index: 10">i</a></span>
+                    <span class="left-content">Withdraw my application</span>
                     <span class="right-content">${self_ack007}</span>
                 </label>
             </div>
+            <a href="javascript:void(0);"
+               class="btn-tooltip styleguide-tooltip"
+               data-toggle="tooltip" data-html="true"
+               title='${inbox_ack019}' data-original-title=''
+               style="position: absolute;left: 350px; top: 560px;z-index: 10">i</a>
 
             <div class="form-check progress-step-check"
                  style="width: 930px">
@@ -120,14 +126,15 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="ceaseLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Cease my licence<a href="javascript:void(0);"
-                                                                  class="btn-tooltip styleguide-tooltip"
-                                                                  data-toggle="tooltip" data-html="true"
-                                                                  title='${inbox_ack018}' data-original-title=''
-                                                                  style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
+                    <span class="left-content">Cease my licence</span>
                     <span class="right-content">${self_ack008}</span>
                 </label>
             </div>
+            <a href="javascript:void(0);"
+               class="btn-tooltip styleguide-tooltip"
+               data-toggle="tooltip" data-html="true"
+               title='${inbox_ack018}' data-original-title=''
+               style="position: absolute;left: 298px; top: 623px;z-index: 10">i</a>
         </div>
     </div>
 </div>
