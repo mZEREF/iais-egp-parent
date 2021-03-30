@@ -132,10 +132,7 @@ public class HcsaFileAjaxController {
         //name
         String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
         if(fileName.length() > 100){
-            Map arguments = IaisCommonUtils.genNewHashMap();
-            arguments.put("field","Document");
-            arguments.put("maxlength","100");
-            return  MessageUtil.getMessageDesc("GENERAL_ERR0041",arguments);
+            return  MessageUtil.getMessageDesc("GENERAL_ERR0022");
         }
         return "";
     }
