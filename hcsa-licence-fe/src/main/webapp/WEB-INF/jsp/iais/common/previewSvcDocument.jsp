@@ -47,7 +47,6 @@
                                             <c:when test="${empty config.dupForPerson}">
                                                 <c:set var="fileList" value="${reloadMap[config.id]}"/>
                                                 <%@include file="previewSvcDocContent.jsp"%>
-                                                <br/>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:set var="premIndexNo" value=""/>
@@ -63,7 +62,6 @@
                                                     <c:set var="mapKey" value="${premIndexNo}${config.id}"/>
                                                     <c:set var="fileList" value="${reloadMap[mapKey]}"/>
                                                     <%@include file="previewSvcDocContent.jsp"%>
-                                                    <br/>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <%@include file="previewDupForPerson.jsp"%>

@@ -34,5 +34,4 @@
     <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.cgoIndexNo}"/>
     <c:set var="fileList" value="${reloadMap[mapKey]}"/>
     <%@include file="previewSvcDocContent.jsp"%>
-    <br/>
 </c:forEach>
