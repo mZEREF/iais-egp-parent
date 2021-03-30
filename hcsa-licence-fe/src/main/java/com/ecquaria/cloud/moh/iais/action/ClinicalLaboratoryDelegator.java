@@ -391,7 +391,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-            assignPoDpoDto(appSvcPrincipalOfficersDtos,principalOfficersDtos,deputyPrincipalOfficersDtos);
+            NewApplicationHelper.assignPoDpoDto(appSvcPrincipalOfficersDtos,principalOfficersDtos,deputyPrincipalOfficersDtos);
             if (principalOfficersDtos.size() > mandatory) {
                 mandatory = principalOfficersDtos.size();
             }
@@ -506,14 +506,8 @@ public class ClinicalLaboratoryDelegator {
             });
         }
         ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) reloadDocMap);
-        //set psn to attr
-        ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcRelatedInfoDto.getAppSvcCgoDtoList());
-        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        assignPoDpoDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),principalOfficersDtos,deputyPrincipalOfficersDtos);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
-        ParamUtil.setRequestAttr(bpc.request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
+        //set dupForPsn attr
+        NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
 
 
         int sysFileSize = systemParamConfig.getUploadFileLimit();
@@ -655,6 +649,17 @@ public class ClinicalLaboratoryDelegator {
                         break;
                 }
             }
+            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            List<AppGrpPremisesDto> appGrpPremisesDtos= appSubmissionDto.getAppGrpPremisesDtoList();
+            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+            //set dupForPsn attr
+            NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
+            //svc doc add align for dup for prem
+            NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
+            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+            //set svc doc title
+            Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
+            appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
@@ -3519,17 +3524,4 @@ public class ClinicalLaboratoryDelegator {
             }
         }
     }
-
-    private void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos,List<AppSvcPrincipalOfficersDto> principalOfficersDtos,List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){
-        if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
-            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                }
-            }
-        }
-    }
-
 }
