@@ -1571,6 +1571,11 @@ public class NewApplicationDelegator {
                             break;
                         }
                     }
+                    NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,newPremisesDtos);
+                    //set primary doc title
+                    Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,newPremisesDtos,appGrpPrimaryDocDtos);
+                    appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
                     NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
