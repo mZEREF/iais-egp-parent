@@ -103,10 +103,9 @@
                                                                 Delete
                                                             </c:when>
                                                             <c:otherwise>
-                                                                Deactive
+                                                                Deactivate
                                                             </c:otherwise>
                                                         </c:choose>
-
                                                     </button>
                                                 </c:if>
                                             </td>
@@ -115,13 +114,13 @@
                                         <div class="modal fade" id="deleteModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
-<%--                                                    <div class="modal-header">--%>
-<%--                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                                                        <div class="modal-title" id="deleteModalLabel" style="font-size: 2rem;">Confirmation Box</div>--%>
-<%--                                                    </div>--%>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the Delete ?</span></div>
+                                                            <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
+                                                            <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the <c:choose>
+                                                                    <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">Delete</c:when>
+                                                                    <c:otherwise>Deactivate </c:otherwise>
+                                                                </c:choose> ?</span></div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

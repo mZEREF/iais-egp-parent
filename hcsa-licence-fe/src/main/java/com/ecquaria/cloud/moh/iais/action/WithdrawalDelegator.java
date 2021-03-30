@@ -380,9 +380,8 @@ public class WithdrawalDelegator {
                 if (validationResult.isHasErrors()){
                     errorMap=validationResult.retrieveAll();
                 }
-
                 if(map!=null&&!map.isEmpty()){
-                    map.forEach((str,file)->{
+                    map.forEach((str, file)->{
                         if(file!=null){
                             long length = file.length();
                             if(length>0){
@@ -478,16 +477,5 @@ public class WithdrawalDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
         ParamUtil.setRequestAttr(bpc.request, "addWithdrawnDtoList",addWithdrawnDtoList);
         return withdrawnDtoList;
-    }
-
-    private void fileValidation(String originalFilename,ValidationResult validationResult,Map<String, String> errorMap){
-//        String[] split = originalFilename.split("\\.");
-        if (!StringUtil.isEmpty(originalFilename)) {
-            if (originalFilename.length() > 100) {
-                validationResult.setHasErrors(true);
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
-                errorMap.put("withdrawalFile", errMsg);
-            }
-        }
     }
 }

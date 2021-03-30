@@ -124,8 +124,7 @@
                                         <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
-                                                      maxlength="500" <c:if
-                                                    test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
+                                                      maxlength="500" <c:if test="${isDoView eq 'Y'}"> readonly="readonly"</c:if>>${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
@@ -193,7 +192,7 @@
                                         </c:choose>
                                         <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"
                                               style="color: #D22727; font-size: 1.6rem"></span>
-                                        <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                        <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>

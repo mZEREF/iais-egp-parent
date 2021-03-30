@@ -115,17 +115,39 @@
                                         <div class="document-upload-list">
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
-                                                <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
-                                                       aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
-                                                                                    href="javascript:void(0);">Upload</a>
-                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;" <c:if test="${empty rfiWithdrawDto.appPremisesSpecialDocDto.docName}">hidden</c:if>>
-                                                    <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                            class="fa fa-times"></em></button>
-                                                </div>
+                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                           varStatus="ind">
+                                                  <div id="${pageShowFileDto.fileMapId}">
+                                                      <span name="fileName"
+                                                            style="font-size: 14px;color: #2199E8;text-align: center">
+                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                         title="Download"
+                                                         class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="file${ind.index}"></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="error_${configIndex}error"></span>
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                                                    Delete</button>  <button type="button"
+                                                                             class="btn btn-secondary btn-sm"
+                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+                                                  ReUpload</button>
+                                                  </div>
+                                                </c:forEach>
+                                                </span>
+                                                <input id="selectedFile" name="selectedFile"
+                                                       class="selectedFile commDoc"
+                                                       type="file" style="display: none;"
+                                                       aria-label="selectedFile1"
+                                                       onclick="fileClicked(event)"
+                                                       onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                    class="btn btn-file-upload btn-secondary"
+                                                    onclick="doFileAddEvent()">Upload</a>
                                             </div>
                                             <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                                            <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
 
