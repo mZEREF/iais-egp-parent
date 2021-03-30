@@ -37,4 +37,8 @@ public interface InsepctionNcCheckListService {
 
     void saveRimRiskCountByLicenseeId(String licenseeId,boolean isAdd);
     void saveDraftChecklist(InspectionFillCheckListDto infillDto,AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId);
+
+    void saveBeforeSubmitCheckList(InspectionFillCheckListDto infillDto,AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId);
+    void saveOtherDataForPengingIns(InspectionFDtosDto serListDto,String appPremId);
+    void saveBeforeFinishCheckListRec(String appPremId);
 }

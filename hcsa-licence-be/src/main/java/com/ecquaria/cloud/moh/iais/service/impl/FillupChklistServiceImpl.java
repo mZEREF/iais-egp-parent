@@ -2061,4 +2061,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
     }
+
+    @Override
+    public boolean isBeforeFinishCheckList(String refNo) {
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE).getEntity();
+        if(appPreRecommentdationDto != null){
+            return true;
+        }
+        return false;
+    }
 }

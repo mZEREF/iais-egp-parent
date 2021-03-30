@@ -75,6 +75,7 @@ public class InspectionNcCheckListDelegator {
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
     private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
+    private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -92,6 +93,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(request,INSPECTION_USERS,null);
         ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH,null);
+        ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.NO);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
@@ -149,28 +151,30 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,TASKDTOLIST ,(Serializable) taskDtos);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST,appViewDto.getApplicationDto().getApplicationNo());
-        //draft start
-
-        //draft end
+        boolean beforeFinishList =  fillupChklistService.isBeforeFinishCheckList(appPremCorrId);
         InspectionFillCheckListDto commonDto = null;
-        List<InspectionFillCheckListDto>   cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
-        List<InspectionFillCheckListDto>   commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+        List<InspectionFillCheckListDto>   cDtoList ;
+        List<InspectionFillCheckListDto>   commonList;
+        AdCheckListShowDto adchklDto;
+        if( beforeFinishList){
+              cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+              commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+              adchklDto =  insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
+        }else {
+            cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
+            commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+            adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
+            if(adchklDto==null){
+                adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
+            }
+        }
             if(commonList!=null&&!commonList.isEmpty()){
                 commonDto = commonList.get(0);
             }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
-        if(adchklDto==null){
-            adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
-        }
         List<OrgUserDto> orgUserDtoUsers = fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos);
-        ParamUtil.setSessionAttr(request,INSPECTION_USERS,(Serializable) orgUserDtoUsers);
-        ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         // get ah draft
         adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtoUsers);
-        ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
-        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
-        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         //get  commonDto draft
         fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(commonDto,orgUserDtoUsers);
         // change common data;
@@ -200,6 +204,14 @@ public class InspectionNcCheckListDelegator {
         //get RemarksAndStartTimeAndEndTimeForCheckList BY mobile api
         fillupChklistService.setRemarksAndStartTimeAndEndTimeForCheckList(serListDto,commonDto,appPremCorrId);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,INSPECTION_USERS,(Serializable) orgUserDtoUsers);
+        ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        if(beforeFinishList){
+            ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.YES);
+        }
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
         ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
@@ -274,7 +286,12 @@ public class InspectionNcCheckListDelegator {
                     ParamUtil.setRequestAttr(request,"errerMessageForNoTaskForUpdate","LOLEV_ACK034");
                 }
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
-                insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
+                String beforeFinishYes = (String) ParamUtil.getSessionAttr(request,BEFORE_FINISH_CHECK_LIST);
+                if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
+                    insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
+                }else {
+                    insepctionNcCheckListService.saveOtherDataForPengingIns(serListDto,taskDto.getRefNo());
+                }
                 ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
                 insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
                 AdCheckListShowDto showPageDto = new AdCheckListShowDto();
@@ -542,36 +559,63 @@ public class InspectionNcCheckListDelegator {
     public void doCheckList(BaseProcessClass bpc){
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
-        saveCheckListAllSession(request);
+        String beforeFinishYes = (String) ParamUtil.getSessionAttr(request,BEFORE_FINISH_CHECK_LIST);
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
-        InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
-        if(InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)){
-        Map errMap =  inspectionCheckListItemValidate.validate(request);
-        if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            serListDto.setCheckListTab("chkList");
-            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-            setRate(request);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-        }else {
-            serListDto.setCheckListTab("chkList");
-            setRate(request);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        }
+        if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
+        saveCheckListAllSession(request);
+        InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
+        if(InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)) {
+            Map errMap = inspectionCheckListItemValidate.validate(request);
+            if (!errMap.isEmpty()) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                serListDto.setCheckListTab("chkList");
+                ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
+                setRate(request);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            } else {
+                serListDto.setCheckListTab("chkList");
+                setRate(request);
+                saveCheckListBefore(request);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            }
 
-        String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
-        if( !StringUtil.isEmpty(errTab)){
-            ParamUtil.setSessionAttr(request,"errorTab",null);
-            ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
+            String errTab = (String) ParamUtil.getSessionAttr(request, "errorTab");
+            if (!StringUtil.isEmpty(errTab)) {
+                ParamUtil.setSessionAttr(request, "errorTab", null);
+                ParamUtil.setRequestAttr(request, "nowComTabIn", errTab);
+            }
+         }
         }
-        }else {
+        if(!InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)){
             serListDto.setCheckListTab("chkList");
-            setRate(request);
+            if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
+                setRate(request);
+            }
             ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
+
+    private void saveCheckListBefore(HttpServletRequest request){
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,TASKDTO);
+        String taskId = taskDto.getId();
+        TaskDto searchTask = taskService.getTaskById(taskId);
+        if(TaskConsts.TASK_STATUS_COMPLETED.equals(searchTask.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(searchTask.getTaskStatus()) || searchTask.getUpdateCount() ==1){
+            log.info(StringUtil.changeForLog("----saveCheckListBefore taskId : " + taskId + " ,the associated data has been submitted -------"));
+            return;
+        }
+        InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
+        log.info(" ----------- saveCheckListBefore start ------------");
+        insepctionNcCheckListService.saveBeforeSubmitCheckList(commonDto,showDto,serListDto,taskDto.getRefNo());
+        insepctionNcCheckListService.saveBeforeFinishCheckListRec(taskDto.getRefNo());
+        ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.YES);
+        log.info(" ----------- saveCheckListBefore end ------------");
+
+    }
+
 
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{
         log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
@@ -791,7 +835,7 @@ public class InspectionNcCheckListDelegator {
             return;
         }
         saveCheckListAllSession(request);
-        InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
+       /*  InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
         Map<String, String> errMap = inspectionCheckListItemValidate.validate(request);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
@@ -800,16 +844,20 @@ public class InspectionNcCheckListDelegator {
             InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
             AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
             insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
-        }
+        }*/
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
+        InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
+        insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
         String nowTabIn = ParamUtil.getString(request,"nowTabIn");
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
         String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
         ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
-        String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
+       /* String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
         if( !StringUtil.isEmpty(errTab)){
             ParamUtil.setSessionAttr(request,"errorTab",null);
             ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
-        }
+        }*/
         log.info("----------saveDraftChecklist end--------");
     }
 

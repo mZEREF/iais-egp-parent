@@ -71,7 +71,9 @@
                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/inspectiondetail.jsp"%>
                                     <div class="row" align="right">
                                         <input type="hidden" name="viewchk" id = "viewchk">
-                                        <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
+                                        <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
+                                            <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
+                                        </c:if>
                                         <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                             View CheckList
                                         </button>
