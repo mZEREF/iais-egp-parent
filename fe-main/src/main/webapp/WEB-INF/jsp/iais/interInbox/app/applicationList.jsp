@@ -192,9 +192,9 @@
                                                     <c:if test="${app.canInspection}">
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.canRecall}">
-                                                        <option value="Recall">Recall</option>
-                                                    </c:if>
+                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                    <%--</c:if>--%>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -262,9 +262,9 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.canRecall}">
-                                                        <option value="Recall">Recall</option>
-                                                    </c:if>
+                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                    <%--</c:if>--%>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -286,9 +286,9 @@
                                             <c:if test="${app.status == 'APST007'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
-                                                    <c:if test="${app.canRecall}">
-                                                        <option value="Recall">Recall</option>
-                                                    </c:if>
+                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                    <%--</c:if>--%>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -318,9 +318,9 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.canRecall}">
-                                                        <option value="Recall">Recall</option>
-                                                    </c:if>
+                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                    <%--</c:if>--%>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -339,9 +339,9 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.canRecall}">
-                                                        <option value="Recall">Recall</option>
-                                                    </c:if>
+                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                    <%--</c:if>--%>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
