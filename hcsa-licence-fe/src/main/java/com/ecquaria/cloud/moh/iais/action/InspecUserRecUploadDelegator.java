@@ -244,9 +244,7 @@ public class InspecUserRecUploadDelegator {
     }
 
     private InspecUserRecUploadDto setRemarksMsgByRequest(InspecUserRecUploadDto inspecUserRecUploadDto, String remarksError) {
-        if(!StringUtil.isEmpty(inspecUserRecUploadDto.getRemarksMsg())) {
-            inspecUserRecUploadDto.setRemarksMsg(inspecUserRecUploadDto.getRemarksMsg());
-        } else {
+        if(StringUtil.isEmpty(inspecUserRecUploadDto.getRemarksMsg())) {
             inspecUserRecUploadDto.setRemarksMsg(remarksError);
         }
         return inspecUserRecUploadDto;
