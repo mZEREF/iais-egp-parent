@@ -92,7 +92,7 @@ public class BlastManagementDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_BLAST_NOTIFICATIONS, AuditTrailConsts.FUNCTION_BLAST_MANAGEMENT);
 
         SearchParam searchParam = getSearchParam(bpc.request,true);
-        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "blastSearchParam", searchParam);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
     }
@@ -140,12 +140,12 @@ public class BlastManagementDelegator {
         getDistribution(bpc,(String)searchParam.getFilters().get("mode"));
         setModeSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
-        ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
+        ParamUtil.setSessionAttr(bpc.request,"blastSearchParam",searchParam);
 
     }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
-        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastmanagementSearchParam");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastSearchParam");
         if(neednew){
             searchParamGroup = new SearchParam(BlastManagementListDto.class.getName());
             searchParamGroup.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -288,7 +288,7 @@ public class BlastManagementDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"distributionList",distribution);
         }
-        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "blastSearchParam", searchParam);
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
