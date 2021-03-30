@@ -235,6 +235,8 @@ public class WithOutRenewalDelegator {
         List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
@@ -279,17 +281,10 @@ public class WithOutRenewalDelegator {
                 //set doc info
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                 boolean isRfi = false;
                 //rfc/renew for primary doc
                 List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(ApplicationConsts.APPLICATION_TYPE_RENEWAL,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
                 appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
-                //add align for dup for prem doc
-                NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
-                //set primary doc title
-                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
-                appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
 
                 if (!StringUtil.isEmpty(svcId)) {
                     List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
@@ -564,6 +559,21 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> oldSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "oldSubmissionDtos");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> newAppSubmissionDtos = renewDto.getAppSubmissionDtos();
+        if(!IaisCommonUtils.isEmpty(newAppSubmissionDtos)){
+            List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG);
+            for(AppSubmissionDto appSubmissionDto:newAppSubmissionDtos){
+
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                //add align for dup for prem doc
+                NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                //set primary doc title
+                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+                appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+
+
+            }
+        }
         if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldSubmissionDtos.get(0).getAppGrpPremisesDtoList();
