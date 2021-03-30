@@ -157,7 +157,7 @@ public class HcsaFileAjaxController {
     }
 
     @RequestMapping(value = "/download-session-file", method = RequestMethod.GET)
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("download-session-file start ...."));
 
         String fileAppendId =  ParamUtil.getString(request,"fileAppendIdDown");
@@ -182,15 +182,14 @@ public class HcsaFileAjaxController {
                         OutputStream ops = null;
                         try {
                             ops = new BufferedOutputStream(response.getOutputStream());
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
-                        }
-                        try {
                             ops.write(fileData);
-                            ops.close();
                             ops.flush();
                         } catch (IOException e) {
                             log.error(e.getMessage(),e);
+                        }finally {
+                            if(ops!=null){
+                                ops.close();
+                            }
                         }
                     }
                     return;
