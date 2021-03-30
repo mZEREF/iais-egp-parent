@@ -2149,7 +2149,7 @@ public class HcsaApplicationDelegator {
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
                 //set inspector leads
-                if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)) {
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus) && !StringUtil.isEmpty(newTaskDto.getWkGrpId())) {
                     setInspLeadsInRecommendation(newTaskDto, newTaskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 }
             } else {
