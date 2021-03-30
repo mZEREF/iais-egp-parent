@@ -178,16 +178,6 @@
                             </c:choose>
                             <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
                                 <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
-
-                                <c:if test="${!stat.first}">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
-                                        </div>
-                                    </div>
-                                </c:if>
-
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology">
@@ -320,14 +310,14 @@
                                     </div>
                                 </div>
                             </c:forEach>
-                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
                                 </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
@@ -483,15 +473,6 @@
                             <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
                                 <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
 
-                                <c:if test="${!stat.first}">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
-                                        </div>
-                                    </div>
-                                </c:if>
-
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology">
@@ -624,14 +605,14 @@
                                     </div>
                                 </div>
                             </c:forEach>
-                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
                                 </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
@@ -778,16 +759,6 @@
                             </c:choose>
                             <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
                                 <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
-
-                                <c:if test="${!stat.first}">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
-                                        </div>
-                                    </div>
-                                </c:if>
-
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology">
@@ -920,14 +891,14 @@
                                     </div>
                                 </div>
                             </c:forEach>
-                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
                                 </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
