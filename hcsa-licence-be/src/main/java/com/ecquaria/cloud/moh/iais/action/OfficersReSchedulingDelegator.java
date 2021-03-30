@@ -302,7 +302,7 @@ public class OfficersReSchedulingDelegator {
             officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
             ParamUtil.setRequestAttr(bpc.request, "reScheduleSuccess", "reScheduleSuccess");
         } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
-            
+            officersReSchedulingService.changeInspectorAndDate(reschedulingOfficerDto, apptReSchAppInfoShowDtos);
         } else if (InspectionConstants.SWITCH_ACTION_AGAIN.equals(actionValue)) {
 
         } else {
@@ -497,7 +497,6 @@ public class OfficersReSchedulingDelegator {
         reschedulingOfficerDto.setCurUserId(loginContext.getUserId());
         String applicationNo = reschedulingOfficerDto.getAssignNo();
         ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
-        officersReSchedulingService.reScheduleRoutingAudit(reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
     }

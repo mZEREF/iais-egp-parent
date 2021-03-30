@@ -151,4 +151,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: sendEmailToApplicant
       */
     void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: reschedulingOfficerDto, apptReSchAppInfoShowDtos
+      * @return: void
+      * @Descripation: changeInspectorAndDate
+      */
+    void changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
 }

@@ -605,6 +605,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         }
     }
 
+    @Override
+    public void changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+
+    }
+
     private Date getOldInspectionStartDate(ApplicationDto applicationDto) {
         Date inspDate = new Date();
         if(applicationDto != null){
