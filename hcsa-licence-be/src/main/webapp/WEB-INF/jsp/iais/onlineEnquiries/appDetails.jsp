@@ -156,14 +156,14 @@
                                                                         <td>&nbsp;-</td>
                                                                     </tr>
                                                                 </c:if>
-                                                                <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">
+                                                                <c:forEach var="person" items="${authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
                                                                         <td>&nbsp;${person.displayName}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Authorised Person ID</td>
-                                                                        <td>&nbsp;${person.idNo} (<iais:code code="${person.idType}"/>)</td>
+                                                                        <td>&nbsp;${person.identityNo} (<iais:code code="${person.idType}"/>)</td>
                                                                     </tr>
                                                                 </c:forEach>
                                                                 <c:if test="${empty appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
