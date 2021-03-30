@@ -159,7 +159,7 @@
                                                                 <c:forEach var="person" items="${authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
-                                                                        <td>&nbsp;${person.name}</td>
+                                                                        <td>&nbsp;${person.displayName}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Authorised Person ID</td>
