@@ -40,6 +40,11 @@
             <span class="right-content">${self_ack011}</span>
         </label>
     </div>
+    <a
+        class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
+        data-toggle="tooltip" data-html="true"
+        title='${inbox_ack024}' data-original-title=''
+        style="position: absolute;left: 393px; top: 201px;z-index: 10">i</a>
     <div class="form-check progress-step-check" style="width: 900px">
         <input class="form-check-input" id="amendLicence4"
                type="radio" name="amendLicenceType"
