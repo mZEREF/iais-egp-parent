@@ -146,15 +146,14 @@ public class WriteMultipartFileAjaxController {
                         OutputStream ops = null;
                         try {
                             ops = new BufferedOutputStream(response.getOutputStream());
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
-                        }
-                        try {
                             ops.write(fileData);
-                            ops.close();
                             ops.flush();
                         } catch (IOException e) {
                             log.error(e.getMessage(),e);
+                        }finally {
+                            if(ops != null){
+                                ops.close();
+                            }
                         }
                     }
                     return;
