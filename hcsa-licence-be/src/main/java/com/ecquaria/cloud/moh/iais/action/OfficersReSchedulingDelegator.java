@@ -302,7 +302,8 @@ public class OfficersReSchedulingDelegator {
             officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
             ParamUtil.setRequestAttr(bpc.request, "reScheduleSuccess", "reScheduleSuccess");
         } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
-            officersReSchedulingService.changeInspectorAndDate(reschedulingOfficerDto, apptReSchAppInfoShowDtos);
+            String appStatusFlag = officersReSchedulingService.changeInspectorAndDate(reschedulingOfficerDto, apptReSchAppInfoShowDtos);
+            ParamUtil.setRequestAttr(bpc.request, "appStatusFlag", appStatusFlag);
         } else if (InspectionConstants.SWITCH_ACTION_AGAIN.equals(actionValue)) {
 
         } else {

@@ -159,5 +159,5 @@ public interface OfficersReSchedulingService {
       * @return: void
       * @Descripation: changeInspectorAndDate
       */
-    void changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+    String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
 }

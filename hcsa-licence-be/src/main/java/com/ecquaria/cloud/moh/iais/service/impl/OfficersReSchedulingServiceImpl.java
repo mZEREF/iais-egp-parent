@@ -606,8 +606,23 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public void changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+    public String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+        boolean appStatusFlag = getAppStatusNotInRfi(reschedulingOfficerDto);
+        if(appStatusFlag) {
+            return AppConsts.SUCCESS;
+        } else {
+            return AppConsts.FAIL;
+        }
+    }
 
+    private boolean getAppStatusNotInRfi(ReschedulingOfficerDto reschedulingOfficerDto) {
+        if(reschedulingOfficerDto != null) {
+            Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+            if (samePremisesAppMap != null && !StringUtil.isEmpty(reschedulingOfficerDto.getAssignNo())) {
+                List<String> appNoList = samePremisesAppMap.get(reschedulingOfficerDto.getAssignNo());
+            }
+        }
+        return true;
     }
 
     private Date getOldInspectionStartDate(ApplicationDto applicationDto) {
@@ -633,6 +648,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             List<ApptUserCalendarDto> userClandars = apptReDto.getUserClandars();
             //set user with App No.
             if(!IaisCommonUtils.isEmpty(userClandars)){//NOSONAR
+                Date inspDate = userClandars.get(0).getStartSlot().get(0);
                 Map<String, List<String>> appNoUserLoginId = getAppNoUserLoginIdByUserClandars(userClandars);
                 if(appNoUserLoginId != null) {
                     for (ApptAppInfoShowDto apptAppInfoShowDto : apptAppInfoShowDtos) {
@@ -644,6 +660,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                             Collections.sort(userLoginIds);
                             //set user
                             apptAppInfoShowDto = setUserIdByLoginIds(apptAppInfoShowDto, userLoginIds);
+                            apptAppInfoShowDto.setInspDate(inspDate);
                         }
                     }
                 }
