@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -487,8 +488,6 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     appointmentDto.setServiceIds(serviceIds);
                 }
             }
-            //set system key
-            appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
             //get Start date and End date when group no date
             if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
                 appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
@@ -510,10 +509,15 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             //Has it been blown up
             if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
                 List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {
+                if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {//NOSONAR
                     for (ApptRequestDto apptRequestDto : apptRequestDtos) {
-
+                        //set new inspection date string to show
+                        reschedulingOfficerDto = getShowDateTimeStringList(apptRequestDto, reschedulingOfficerDto);
                     }
+                    //There's only one piece of data now
+                    ApptRequestDto apptReDto = apptRequestDtos.get(0);
+                    //set user with appNo
+                    apptAppInfoShowDtos = setUserWithAppNo(apptReDto, apptAppInfoShowDtos);
                 } else {
                     reschedulingOfficerDto.setNewInspDates(null);
                 }
@@ -524,6 +528,117 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             log.error(e.getMessage(), e);
         }
         return apptAppInfoShowDtos;
+    }
+
+    private List<ApptAppInfoShowDto> setUserWithAppNo(ApptRequestDto apptReDto, List<ApptAppInfoShowDto> apptAppInfoShowDtos) {
+        if(apptReDto != null && !IaisCommonUtils.isEmpty(apptAppInfoShowDtos)) {//NOSONAR
+            List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
+            String apptRefNo = apptReDto.getApptRefNo();
+            apptRefNos.add(apptRefNo);
+            List<ApptUserCalendarDto> userClandars = apptReDto.getUserClandars();
+            //set user with App No.
+            if(!IaisCommonUtils.isEmpty(userClandars)){//NOSONAR
+                Map<String, List<String>> appNoUserLoginId = getAppNoUserLoginIdByUserClandars(userClandars);
+                if(appNoUserLoginId != null) {
+                    for (ApptAppInfoShowDto apptAppInfoShowDto : apptAppInfoShowDtos) {
+                        if(apptAppInfoShowDto != null) {
+                            //set appointment ref NO.
+                            apptAppInfoShowDto.setApptRefNo(apptRefNos);
+                            List<String> userLoginIds = appNoUserLoginId.get(apptAppInfoShowDto.getApplicationNo());
+                            //sort for show
+                            Collections.sort(userLoginIds);
+                            //set user
+                            apptAppInfoShowDto = setUserIdByLoginIds(apptAppInfoShowDto, userLoginIds);
+                        }
+                    }
+                }
+            }
+        }
+        return apptAppInfoShowDtos;
+    }
+
+    private ApptAppInfoShowDto setUserIdByLoginIds(ApptAppInfoShowDto apptAppInfoShowDto, List<String> userLoginIds) {
+        if(!IaisCommonUtils.isEmpty(userLoginIds)) {//NOSONAR
+            List<String> userIdList = IaisCommonUtils.genNewArrayList();
+            List<String> userNameList = IaisCommonUtils.genNewArrayList();
+            for(String userLoginId : userLoginIds) {
+                if(!StringUtil.isEmpty(userLoginId)) {
+                    OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(userLoginId).getEntity();
+                    if(orgUserDto != null) {
+                        userIdList.add(orgUserDto.getId());
+                        userNameList.add(orgUserDto.getDisplayName());
+                    }
+                }
+            }
+            apptAppInfoShowDto.setUserDisName(userNameList);
+            apptAppInfoShowDto.setUserIdList(userIdList);
+        }
+        return apptAppInfoShowDto;
+    }
+
+    private Map<String, List<String>> getAppNoUserLoginIdByUserClandars(List<ApptUserCalendarDto> userClandars) {
+        Map<String, List<String>> appNoUserLoginId = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(userClandars)) {//NOSONAR
+            for (ApptUserCalendarDto apptUserCalendarDto : userClandars) {
+                if(apptUserCalendarDto != null) {
+                    String appNo = apptUserCalendarDto.getAppNo();
+                    if(!StringUtil.isEmpty(appNo)) {//NOSONAR
+                        if(appNoUserLoginId.containsKey(appNo)) {
+                            List<String> userLoginId = appNoUserLoginId.get(appNo);
+                            if(!IaisCommonUtils.isEmpty(userLoginId)) {//NOSONAR
+                                userLoginId.add(apptUserCalendarDto.getLoginUserId());
+                                appNoUserLoginId.put(appNo, userLoginId);
+                            }
+                        } else {
+                            List<String> userLoginId = IaisCommonUtils.genNewArrayList();
+                            userLoginId.add(apptUserCalendarDto.getLoginUserId());
+                            appNoUserLoginId.put(appNo, userLoginId);
+                        }
+                    }
+                }
+            }
+        }
+        return appNoUserLoginId;
+    }
+
+    private ReschedulingOfficerDto getShowDateTimeStringList(ApptRequestDto apptRequestDto, ReschedulingOfficerDto reschedulingOfficerDto) {
+        if(reschedulingOfficerDto != null){
+            List<String> newInspDates;
+            if(IaisCommonUtils.isEmpty(reschedulingOfficerDto.getNewInspDates())){//NOSONAR
+                newInspDates = IaisCommonUtils.genNewArrayList();
+            } else {
+                newInspDates = reschedulingOfficerDto.getNewInspDates();
+            }
+            if(apptRequestDto != null) {
+                List<ApptUserCalendarDto> userClandars = apptRequestDto.getUserClandars();
+                if(!IaisCommonUtils.isEmpty(userClandars)) {//NOSONAR
+                    int endTimeSize = userClandars.get(0).getEndSlot().size();
+                    String inspStartDate = apptDateToStringShow(userClandars.get(0).getStartSlot().get(0));
+                    String inspEndDate = apptDateToStringShow(userClandars.get(0).getEndSlot().get(endTimeSize - 1));
+                    String inspectionDate = inspStartDate + " - " + inspEndDate;
+                    newInspDates.add(inspectionDate);
+                }
+            }
+            reschedulingOfficerDto.setNewInspDates(newInspDates);
+        }
+        return reschedulingOfficerDto;
+    }
+
+    private String apptDateToStringShow(Date date) {
+        String specificDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int minutes = cal.get(Calendar.MINUTE);
+        if(minutes > 0){
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+        }
+        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
+        String hoursShow = "";
+        if(curHour24 < 10){
+            hoursShow = "0";
+        }
+        specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
+        return specificDate;
     }
 
     private boolean getStartEndDateFlag(AppointmentDto appointmentDto) {
