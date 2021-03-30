@@ -176,11 +176,11 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
             List<String> mobile = IaisCommonUtils.genNewArrayList();
 
-            for (OrgUserDto user:orgUserDtoList
-                 ) {
-                receiptEmail.add(user.getEmail());
-                mobile.add(user.getMobileNo());
-
+            if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
+                for (OrgUserDto user:orgUserDtoList) {
+                    receiptEmail.add(user.getEmail());
+                    mobile.add(user.getMobileNo());
+                }
             }
             emailDto.setReceipts(receiptEmail);
             emailDto.setContent(emailContent);
