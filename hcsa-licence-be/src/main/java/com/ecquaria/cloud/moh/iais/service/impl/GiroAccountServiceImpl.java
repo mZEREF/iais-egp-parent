@@ -176,11 +176,11 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
             List<String> mobile = IaisCommonUtils.genNewArrayList();
 
-            if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
-                for (OrgUserDto user:orgUserDtoList) {
-                    receiptEmail.add(user.getEmail());
-                    mobile.add(user.getMobileNo());
-                }
+            for (OrgUserDto user:orgUserDtoList
+                 ) {
+                receiptEmail.add(user.getEmail());
+                mobile.add(user.getMobileNo());
+
             }
             emailDto.setReceipts(receiptEmail);
             emailDto.setContent(emailContent);
@@ -243,7 +243,9 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
             if(emailTemplateDto != null){
                 try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    }
                     //replace num
                     mesContext = MessageTemplateUtil.replaceNum(mesContext);
                 }catch (Exception e){
