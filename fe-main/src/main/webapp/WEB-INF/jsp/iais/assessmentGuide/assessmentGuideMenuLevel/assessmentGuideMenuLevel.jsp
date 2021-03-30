@@ -67,7 +67,7 @@
             <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                data-toggle="tooltip" data-html="true"
                title='${inbox_ack017}' data-original-title=''
-               style="position: absolute;left: 306px; top: 294px;z-index: 10">i</a>
+               style="position: absolute;left: 306px; top: 299px;z-index: 10">i</a>
 
             <%--
                 8
@@ -87,7 +87,7 @@
             <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
                data-toggle="tooltip" data-html="true"
                title='${inbox_ack023}' data-original-title=''
-               style="position: absolute;left: 351px; top: 427px;z-index: 10">i</a>
+               style="position: absolute;left: 363px; top: 425px;z-index: 10">i</a>
 
             <div class="form-check progress-step-check"
                  style="width: 930px">
@@ -117,7 +117,7 @@
                class="btn-tooltip styleguide-tooltip"
                data-toggle="tooltip" data-html="true"
                title='${inbox_ack019}' data-original-title=''
-               style="position: absolute;left: 350px; top: 561px;z-index: 10">i</a>
+               style="position: absolute;left: 350px; top: 560px;z-index: 10">i</a>
 
             <div class="form-check progress-step-check"
                  style="width: 930px">
@@ -134,7 +134,7 @@
                class="btn-tooltip styleguide-tooltip"
                data-toggle="tooltip" data-html="true"
                title='${inbox_ack018}' data-original-title=''
-               style="position: absolute;left: 298px; top: 642px;z-index: 10">i</a>
+               style="position: absolute;left: 298px; top: 623px;z-index: 10">i</a>
         </div>
     </div>
 </div>
