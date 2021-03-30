@@ -1900,62 +1900,57 @@
           <div class="row">
             <div class="col-xs-12">
               <table class="col-xs-12">
-                <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
+                <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
+                  <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                   <tr>
                     <td>
-                      <div class="field col-sm-12 control-label formtext"><label>${svcDoc.upFileName}</label></div>
+                      <div class="field col-sm-12 control-label formtext"><label>${svcDoc.key}</label></div>
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-                      <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
-                                                                                       style="display:none">png</span><span
-                            class="fileMandatory" style="display:none">Yes</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                        <%-- <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRoId${currentSvcCode}${status.index}&fileRo${status.index}=<iais:mask name="svcFileRoId${currentSvcCode}${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>--%>
+                  <c:forEach items="${svcDoc.value}" var="sinage" varStatus="inx">
 
-                      <div class="col-xs-6">
-                        <c:if test="${svcDoc.docSize!=null}">
-                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.docName}">
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                      value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download"
-                                       class="downloadFile">${svcDoc.docName}</a> <c:out value="(${svcDoc.docSize})KB"/>
+                    <tr>
+                      <td>
+                        <div class="col-xs-6">
+                          <c:if test="${sinage.docSize!=null}">
+                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
+                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
+                                      value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download"
+                                       class="downloadFile">${sinage.docName}</a> <c:out value="(${sinage.docSize})KB"/>
                                    </span>
-                        </c:if>
-                        <c:if test="${svcDoc.docSize==null}">
-                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.docName}">
+                          </c:if>
+                          <c:if test="${sinage.docSize==null}">
+                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
 
                               </span>
-                        </c:if>
-                      </div>
-                      <div class="col-xs-6">
+                          </c:if>
+                        </div>
+                        <div class="col-xs-6">
 
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize!=null}">
+                          <c:if test="${oldSvcDoc[inx.index].docSize!=null}">
                                   <span class="oldVal "
-                                        attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                        attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
                                         style="display: none">
-                                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"  value="${oldSvcDoc[inx.index].fileRepoId}"/>&fileRepoName=${oldSvcDoc[inx.index].docName}"
                                      title="Download" class="downloadFile">
-                                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
+                                      ${oldSvcDoc[inx.index].docName}
                                   </a>
-                                  <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/>
+                                  <c:out value="(${oldSvcDoc[inx.index].docSize})KB"/>
                                 </span>
-                        </c:if>
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize==null}">
+                          </c:if>
+                          <c:if test="${oldSvcDoc[inx.index].docSize==null}">
                                 <span class="oldVal "
-                                      attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                      attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
                                       style="display: none">
 
                                 </span>
-                        </c:if>
+                          </c:if>
 
-                      </div>
+                        </div>
+                      </td>
+                    </tr>
 
-                    </td>
-                  </tr>
+                  </c:forEach>
                 </c:forEach>
               </table>
             </div>

@@ -1565,6 +1565,7 @@ public class LicenceApproveBatchjob {
                         LicDocumentDto licDocumentDto = new LicDocumentDto();
                         licDocumentDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                         licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_PARIMARY));
+                        licDocumentDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                         //set the old premises Id ,get the releation when the save.
                         if (StringUtil.isEmpty(appGrpPrimaryDocDto.getAppGrpPremId())) {
                             licDocumentDto.setLicPremId(premisesDto.getId());
@@ -1592,6 +1593,7 @@ public class LicenceApproveBatchjob {
                 licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
                 licDocumentDto.setAppPersonId(appSvcDocDto.getAppGrpPersonId());
+                licDocumentDto.setSeqNum(appSvcDocDto.getSeqNum());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {

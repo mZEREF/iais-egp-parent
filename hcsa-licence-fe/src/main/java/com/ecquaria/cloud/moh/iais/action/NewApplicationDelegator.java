@@ -2134,7 +2134,12 @@ public class NewApplicationDelegator {
                             if (0.0 == amount) {
                                 appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-
+                                   /* if(isAutoRfc){
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                                    }else {
+                                        appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                                    }
+*/
                             } else {
                                 appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                             }
@@ -2253,12 +2258,10 @@ public class NewApplicationDelegator {
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
                     appEditSelectDto1.setDocEdit(docIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
-
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
                 } else if(!autoSaveAppsubmission.isEmpty()){
                     AppSubmissionDto appSubmissionDto1 =autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
-
-                    appSubmissionDto1.setAppSvcRelatedInfoDtoList( personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
                     appSubmissionDto1.setAutoRfc(false);
                     AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
                     appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
@@ -2274,8 +2277,7 @@ public class NewApplicationDelegator {
             } else {
                 if (!autoSaveAppsubmission.isEmpty()) {
                     AppSubmissionDto appSubmissionDto1 = autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
-
-                    appSubmissionDto1.setAppSvcRelatedInfoDtoList( personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
                 } else if(!notAutoSaveAppsubmission.isEmpty()){
                     AppSubmissionDto appSubmissionDto1 = notAutoSaveAppsubmission.get(notAutoSaveAppsubmission.size() - 1);
                     AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
@@ -2288,7 +2290,6 @@ public class NewApplicationDelegator {
                     for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto1.getAppGrpPremisesDtoList()){
                         appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                     }
-
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
 
                 }else {
@@ -2714,11 +2715,7 @@ public class NewApplicationDelegator {
     private AppSubmissionDto getPersonAppsubmit(AppSubmissionDto oldAppSubmissionDto, AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) throws Exception {
         AppSubmissionDto changePerson = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
         boolean b = changePersonAuto(oldAppSubmissionDto, appSubmissionDto);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        AppSvcRelatedInfoDto copyAppSvcRelatedInfoDtoList =(AppSvcRelatedInfoDto)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList.get(0));
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=new ArrayList<>();
-        appSvcRelatedInfoDtos.add(copyAppSvcRelatedInfoDtoList);
-        changePerson.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        changePerson.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
         changePerson.setAutoRfc(!b);
         String changePersonDraftNo = changePerson.getDraftNo();
         if (StringUtil.isEmpty(changePersonDraftNo)) {
