@@ -89,6 +89,7 @@
                                                                                     <c:set var="ReloadPrincipalOfficers" value="${ReloadPrincipalOfficersList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}"></c:set>
+                                                                                    <c:set var="svcDocConfig" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0).svcDocConfig}"/>
                                                                                     <%@include file="../common/previewSvcInfo.jsp"%>
                                                                                 </div>
                                                                             </div>

@@ -108,7 +108,7 @@ public class RetriggerGiroPaymentDelegator {
         }
         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, null, primaryDocConfig, null);
         //add align for dup for prem doc
-        NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+        NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
         //set primary doc title
         Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
         appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
@@ -154,6 +154,16 @@ public class RetriggerGiroPaymentDelegator {
                         }
                     }
                 }
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
+                //set dupForPsn attr
+                NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
+                //svc doc add align for dup for prem
+                NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
+                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                //set svc doc title
+                Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
+                appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+
             }
             List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
             ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);

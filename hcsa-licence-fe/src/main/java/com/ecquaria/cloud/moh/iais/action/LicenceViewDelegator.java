@@ -129,14 +129,24 @@ public class LicenceViewDelegator {
                             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                         }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+                        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //add align for dup for prem doc
-                        NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                        //primary doc add align for dup for prem
+                        NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
                         //set primary doc title
                         Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
                         appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+                        //set dupForPsn attr
+                        NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
+                        //svc doc add align for dup for prem
+                        NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
+                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //set svc doc title
+                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
+                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+
                         //set service scope info
                         List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                         List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();

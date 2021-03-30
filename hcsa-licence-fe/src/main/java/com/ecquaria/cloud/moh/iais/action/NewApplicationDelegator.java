@@ -4641,13 +4641,13 @@ public class NewApplicationDelegator {
                             }
                         }
                         //handle dupForPerson svc doc
-                        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                        /*if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
                             for(AppSvcDocDto svcDocDto:appSvcDocDtos){
                                 HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
 
 
                             }
-                        }
+                        }*/
                     }
                     //set AppSvcLaboratoryDisciplinesDto
                     if (!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)) {
