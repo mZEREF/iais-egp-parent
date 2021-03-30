@@ -243,15 +243,9 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
             if(emailTemplateDto != null){
                 try {
-                    if(!IaisCommonUtils.isEmpty(subMap)){
-                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
-                        //replace num
-                        mesContext = MessageTemplateUtil.replaceNum(mesContext);
-                    }else{
-                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
-                        //replace num
-                        mesContext = MessageTemplateUtil.replaceNum(mesContext);
-                    }
+                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    //replace num
+                    mesContext = MessageTemplateUtil.replaceNum(mesContext);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
