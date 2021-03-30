@@ -92,7 +92,7 @@ public class BlastManagementDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_BLAST_NOTIFICATIONS, AuditTrailConsts.FUNCTION_BLAST_MANAGEMENT);
 
         SearchParam searchParam = getSearchParam(bpc.request,true);
-        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "blastSearchParam", searchParam);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
     }
@@ -118,7 +118,7 @@ public class BlastManagementDelegator {
             userNameList.put(item.getId(),item.getDisplayName());
         }
         for (BlastManagementListDto item:searchResult.getRows()
-             ) {
+        ) {
             if(item.getSchedule() != null){
                 item.setSchedule(getDate(item.getSchedule()));
             }
@@ -140,12 +140,12 @@ public class BlastManagementDelegator {
         getDistribution(bpc,(String)searchParam.getFilters().get("mode"));
         setModeSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
-        ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
+        ParamUtil.setSessionAttr(bpc.request,"blastSearchParam",searchParam);
 
     }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
-        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastmanagementSearchParam");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastSearchParam");
         if(neednew){
             searchParamGroup = new SearchParam(BlastManagementListDto.class.getName());
             searchParamGroup.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -215,7 +215,7 @@ public class BlastManagementDelegator {
         if(checkboxlist != null && checkboxlist.length > 0){
             List<String> list = IaisCommonUtils.genNewArrayList();
             for (String item:checkboxlist
-                 ) {
+            ) {
                 if(!StringUtil.isEmpty(item)){
                     list.add(item);
                 }
@@ -288,7 +288,7 @@ public class BlastManagementDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"distributionList",distribution);
         }
-        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "blastSearchParam", searchParam);
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
@@ -423,7 +423,7 @@ public class BlastManagementDelegator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
             for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
-                 ) {
+            ) {
                 if(item.getDocName().length() > 100){
                     errMap.put("fileUploadError", "GENERAL_ERR0022");
                     break;
@@ -436,7 +436,7 @@ public class BlastManagementDelegator {
         if(StringUtil.isEmpty(subject)){
             errMap.put("subject",MessageUtil.replaceMessage("GENERAL_ERR0006","Subject","field"));
         }
-         if(errMap.size() > 0){
+        if(errMap.size() > 0){
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
@@ -528,13 +528,13 @@ public class BlastManagementDelegator {
             List<String> ids = IaisCommonUtils.genNewArrayList();
 
             for (BlastManagementListDto item:blastManagementListDtos
-                 ) {
+            ) {
                 ids.add(item.getCreateBy());
             }
             Map<String, String> userNameList = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
             for (OrgUserDto item:actionByRealNameList
-                 ) {
+            ) {
                 userNameList.put(item.getId(),item.getDisplayName());
             }
             for (BlastManagementListDto item:blastManagementListDtos
@@ -606,7 +606,7 @@ public class BlastManagementDelegator {
             if("SMS".equals(mode)){
                 List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
                 for (EmailAuditTrailDto item:searchResult.getRows()
-                     ) {
+                ) {
                     EmailAuditTrailSMSDto emailAuditTrailSMSDto = new EmailAuditTrailSMSDto();
                     emailAuditTrailSMSDto.setRecipient(item.getRecipient());
                     emailAuditTrailSMSDto.setSubject(item.getSubject());
