@@ -749,7 +749,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         map.put("systemLink", url);
         map.put("address", address);
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_MSG);
         emailParam.setTemplateContent(map);
         emailParam.setMaskParams(maskParams);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);

@@ -133,4 +133,22 @@ public interface OfficersReSchedulingService {
       * @Descripation: getReScheduleNewDateInfo
       */
     List<ApptAppInfoShowDto> getReScheduleNewDateInfo(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: apptAppInfoShowDtos, reschedulingOfficerDto
+      * @return: List<ApptAppInfoShowDto>
+      * @Descripation: setInfoByDateAndUserIdToSave
+      */
+    List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: reschedulingOfficerDto
+      * @return: void
+      * @Descripation: sendEmailToApplicant
+      */
+    void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto);
 }

@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -21,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -36,15 +40,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -104,6 +112,15 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private AppointmentClient appointmentClient;
+
+    @Autowired
+    private CessationClient cessationClient;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -494,40 +511,113 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             }
             boolean dateFlag = getStartEndDateFlag(appointmentDto);
             if(dateFlag) {
+                reschedulingOfficerDto.setAppointmentDto(appointmentDto);
                 //set app data to show ,and set userId correlation app No. to save
-                apptAppInfoShowDtos = setInfoByDateAndUserIdToSave(apptAppInfoShowDtos, appointmentDto, reschedulingOfficerDto);
+                apptAppInfoShowDtos = setInfoByDateAndUserIdToSave(apptAppInfoShowDtos, reschedulingOfficerDto);
             }
         }
         return apptAppInfoShowDtos;
     }
 
-    private List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos, AppointmentDto appointmentDto,
+    @Override
+    public List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos,
                                                                   ReschedulingOfficerDto reschedulingOfficerDto) {
         try {
-            FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.reScheduleNewDate(appointmentDto);
-            Map<String, Collection<String>> headers = result.getHeaders();
-            //Has it been blown up
-            if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {//NOSONAR
-                    for (ApptRequestDto apptRequestDto : apptRequestDtos) {
-                        //set new inspection date string to show
-                        reschedulingOfficerDto = getShowDateTimeStringList(apptRequestDto, reschedulingOfficerDto);
+            AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
+            if (appointmentDto != null) {
+                FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.reScheduleNewDate(appointmentDto);
+                Map<String, Collection<String>> headers = result.getHeaders();
+                //Has it been blown up
+                if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
+                    List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                    if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {//NOSONAR
+                        for (ApptRequestDto apptRequestDto : apptRequestDtos) {
+                            //set new inspection date string to show
+                            reschedulingOfficerDto = getShowDateTimeStringList(apptRequestDto, reschedulingOfficerDto);
+                        }
+                        //There's only one piece of data now
+                        ApptRequestDto apptReDto = apptRequestDtos.get(0);
+                        //set user with appNo
+                        apptAppInfoShowDtos = setUserWithAppNo(apptReDto, apptAppInfoShowDtos);
+                    } else {
+                        reschedulingOfficerDto.setNewInspDates(null);
                     }
-                    //There's only one piece of data now
-                    ApptRequestDto apptReDto = apptRequestDtos.get(0);
-                    //set user with appNo
-                    apptAppInfoShowDtos = setUserWithAppNo(apptReDto, apptAppInfoShowDtos);
                 } else {
                     reschedulingOfficerDto.setNewInspDates(null);
                 }
-            } else {
-                reschedulingOfficerDto.setNewInspDates(null);
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        } catch(Exception e){
+                log.error(e.getMessage(), e);
+            }
         return apptAppInfoShowDtos;
+    }
+
+    @Override
+    public void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto) {
+        String appNo = reschedulingOfficerDto.getAssignNo();
+        if(!StringUtil.isEmpty(appNo)){
+            //get Official Email Address
+            String address1 = systemParamConfig.getSystemAddressOne();
+            ApplicationDto applicationDto = getApplicationByAppNo(appNo);
+            //get old inspection start date
+            Date inspDate = getOldInspectionStartDate(applicationDto);
+            String dateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
+            String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
+            //url
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+            if(applicationDto != null) {
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                String applicantId = applicationGroupDto.getSubmitBy();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                String applicantName = orgUserDto.getDisplayName();
+                AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
+                Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("applicant", applicantName);
+                String hciName = appGrpPremisesDto.getHciName();
+                if(!StringUtil.isEmpty(hciName)){
+                    map.put("hciName", hciName);
+                }
+                map.put("date", dateStr);
+                map.put("dateTime", dateTime);
+                map.put("systemLink", loginUrl);
+                map.put("address", address1);
+                try{
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(appNo);
+                    emailParam.setReqRefNum(appNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(appNo);
+                    notificationHelper.sendNotification(emailParam);
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_SMS);
+                    smsParam.setSubject("MOH HALP - Rescheduling of inspection date");
+                    smsParam.setQueryCode(appNo);
+                    smsParam.setReqRefNum(appNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(appNo);
+                    notificationHelper.sendNotification(smsParam);
+                } catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    private Date getOldInspectionStartDate(ApplicationDto applicationDto) {
+        Date inspDate = new Date();
+        if(applicationDto != null){
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+            if(appPremisesCorrelationDto != null){
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
+                        (appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                if(appPremisesRecommendationDto != null && appPremisesRecommendationDto.getRecomInDate() != null){
+                    inspDate = appPremisesRecommendationDto.getRecomInDate();
+                }
+            }
+        }
+        return inspDate;
     }
 
     private List<ApptAppInfoShowDto> setUserWithAppNo(ApptRequestDto apptReDto, List<ApptAppInfoShowDto> apptAppInfoShowDtos) {

@@ -295,7 +295,21 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedInspDo(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedInspDo start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        if(InspectionConstants.SWITCH_ACTION_YES.equals(actionValue)) {
+            officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
+            ParamUtil.setRequestAttr(bpc.request, "reScheduleSuccess", "reScheduleSuccess");
+        } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
+            
+        } else if (InspectionConstants.SWITCH_ACTION_AGAIN.equals(actionValue)) {
 
+        } else {
+            apptReSchAppInfoShowDtos = null;
+        }
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+        ParamUtil.setSessionAttr(bpc.request, "apptReSchAppInfoShowDtos", (Serializable) apptReSchAppInfoShowDtos);
     }
 
     /**
@@ -306,7 +320,11 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedInspAgain(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedInspAgain start ...."));
-
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
+        apptReSchAppInfoShowDtos = officersReSchedulingService.setInfoByDateAndUserIdToSave(apptReSchAppInfoShowDtos, reschedulingOfficerDto);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+        ParamUtil.setSessionAttr(bpc.request, "apptReSchAppInfoShowDtos", (Serializable) apptReSchAppInfoShowDtos);
     }
 
     /**
