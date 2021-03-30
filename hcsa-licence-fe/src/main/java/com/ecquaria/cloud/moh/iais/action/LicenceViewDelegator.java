@@ -68,6 +68,7 @@ public class LicenceViewDelegator {
         String appeal = bpc.request.getParameter("appeal");
         bpc.request.setAttribute("appeal",appeal);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
     }
@@ -98,7 +99,8 @@ public class LicenceViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
                         NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
@@ -124,11 +126,17 @@ public class LicenceViewDelegator {
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
                             primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+                            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                         }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //add align for dup for prem doc
+                        NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                        //set primary doc title
+                        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+                        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
                         //set service scope info
                         List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                         List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();

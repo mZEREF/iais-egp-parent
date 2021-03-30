@@ -67,6 +67,7 @@ public class RetriggerGiroPaymentDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the doStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
 
@@ -103,8 +104,14 @@ public class RetriggerGiroPaymentDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
             primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
         }
         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, null, primaryDocConfig, null);
+        //add align for dup for prem doc
+        NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+        //set primary doc title
+        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             //set svc info
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){

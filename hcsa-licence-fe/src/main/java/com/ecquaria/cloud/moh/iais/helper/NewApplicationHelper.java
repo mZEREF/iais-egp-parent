@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -39,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -2644,6 +2644,72 @@ public class NewApplicationHelper {
         return psnDtoList;
     }
 
+
+    public static Map<String,List<AppGrpPrimaryDocDto>> genPrimaryDocReloadMap (List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        Map<String,List<AppGrpPrimaryDocDto>> reloadMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos) {
+                String configId = hcsaSvcDocConfigDto.getId();
+                String configTitle = hcsaSvcDocConfigDto.getDocTitle();
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                if("0".equals(dupForPrem)){
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,"");
+                    setPrimaryDocDisplayTitle(appGrpPrimaryDocDtos1,configTitle);
+                    reloadMap.put(configId,appGrpPrimaryDocDtos1);
+                }else if("1".equals(dupForPrem)){
+                    int premCount = 1;
+                    String premTitleTemplate = "Premises ${premCount}: ${configTitle}";
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo());
+                        String displayTitle = premTitleTemplate.replace("${premCount}",String.valueOf(premCount)).replace("${configTitle}",configTitle);
+                        setPrimaryDocDisplayTitle(appGrpPrimaryDocDtos1,displayTitle);
+                        reloadMap.put(appGrpPremisesDto.getPremisesIndexNo()+configId,appGrpPrimaryDocDtos1);
+                        premCount++;
+                    }
+                }
+            }
+        }
+        return reloadMap;
+    }
+
+    public static void setSvcDocTitle(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && appSvcRelatedInfoDto != null && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos) {
+                String configId = hcsaSvcDocConfigDto.getId();
+                String configTitle = hcsaSvcDocConfigDto.getDocTitle();
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                if("0".equals(dupForPrem)){
+                    setSvcDocDisplayTitle(dupForPrem,0,"",dupForPrem,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto);
+                }else if("1".equals(dupForPrem)){
+                    int premCount = 1;
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        setSvcDocDisplayTitle(dupForPrem,premCount,appGrpPremisesDto.getPremisesIndexNo(),dupForPrem,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto);
+                        premCount++;
+                    }
+                }
+            }
+        }
+    }
+    //for single premises
+    public static void addAlignForPrimaryDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos){
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(HcsaSvcDocConfigDto config:hcsaSvcDocConfigDtos){
+                if("1".equals(config.getDupForPrem())){
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = NewApplicationHelper.getAppGrpprimaryDocDto(config.getId(),appGrpPrimaryDocDtos);
+                    if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList) && appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
+                        String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                        String premType = appGrpPremisesDtos.get(0).getPremisesType();
+                        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+                            appGrpPrimaryDocDto.setPremisessName(premIndex);
+                            appGrpPrimaryDocDto.setPremisessType(premType);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     //=============================================================================
     //private method
     //=============================================================================
@@ -3256,5 +3322,124 @@ public class NewApplicationHelper {
         }
 
         return appSvcDocDto;
+    }
+
+    private static List<AppGrpPrimaryDocDto> getAppGrpPrimaryDocDtoByConfigId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String configId,String premIndex){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !StringUtil.isEmpty(configId)){
+            if(StringUtil.isEmpty(premIndex)){
+                premIndex = "";
+            }
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                String currPremIndex = appGrpPrimaryDocDto.getPremisessName();
+                if(StringUtil.isEmpty(currPremIndex)){
+                    currPremIndex ="";
+                }
+                if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getFileRepoId()) && configId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && premIndex.equals(currPremIndex)){
+                    appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                }
+            }
+        }
+        return appGrpPrimaryDocDtoList;
+    }
+
+    private static void setPrimaryDocDisplayTitle(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String displayTitle){
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !StringUtil.isEmpty(displayTitle)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                appGrpPrimaryDocDto.setDisplayTitle(displayTitle);
+            }
+        }
+    }
+
+    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndex,String psnIndex){
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)){
+            if(StringUtil.isEmpty(premIndex)){
+                premIndex = "";
+            }
+            if(StringUtil.isEmpty(psnIndex)){
+                psnIndex = "";
+            }
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                if(configId.equals(appSvcDocDto.getSvcDocId()) && premIndex.equals(appSvcDocDto.getPremisesVal()) && psnIndex.equals(appSvcDocDto.getPsnIndexNo())){
+                    appSvcDocDtoList.add(appSvcDocDto);
+                }
+            }
+        }
+        return appSvcDocDtoList;
+    }
+
+    private static void setSvcDocDisplayTitle(List<AppSvcDocDto> appSvcDocDtos,String displayTitle){
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(displayTitle)){
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                appSvcDocDto.setDisplayTitle(displayTitle);
+            }
+        }
+    }
+
+    private static String getDupForPersonName(String dupForPerson){
+        String psnName = "";
+        switch(dupForPerson){
+            case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                psnName = "Clinical Governance Officer";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_PO:
+                psnName = "Principal Officer";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                psnName = "Nominee";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                psnName = "MedAlert Person";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                psnName = "Service Personnel";
+                break;
+            default:
+                break;
+        }
+        return psnName;
+    }
+
+    private static void setSvcDocDisplayTitle(String dupForPrem,int premCount,String premIndex,String dupForPerson,
+                                              String configId,String configTitle,List<AppSvcDocDto> appSvcDocDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        String titleTemplate = "${prem}${psn}"+configTitle;
+        if("1".equals(dupForPrem)){
+            titleTemplate = titleTemplate.replace("${prem}","premises "+premCount+": ");
+        }else{
+            titleTemplate = titleTemplate.replace("${prem}","");
+        }
+
+        if(StringUtil.isEmpty(dupForPerson)){
+            List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,"");
+            setSvcDocDisplayTitle(appSvcDocDtoList,titleTemplate);
+        }else{
+            String psnName = getDupForPersonName(dupForPerson);
+            List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+            int psnCount = 1;
+            for(AppSvcPrincipalOfficersDto psn:psnList){
+                String displayTitle = titleTemplate = titleTemplate.replace("${psn}",psnName+" "+psnCount+": ");
+                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psn.getCgoIndexNo());
+                setSvcDocDisplayTitle(appSvcDocDtoList,displayTitle);
+                psnCount++;
+            }
+        }
+
+    }
+
+
+
+
+    private static int getManDatoryCountByPsnType(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, String psnType){
+        int mandatoryCount = 0;
+        if(!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtos)){
+            for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtos){
+                if(hcsaSvcPersonnelDto.getPsnType().equals(psnType)){
+                    mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                    break;
+                }
+            }
+        }
+        return  mandatoryCount;
     }
 }

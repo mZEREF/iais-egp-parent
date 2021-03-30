@@ -167,6 +167,7 @@ public class WithOutRenewalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, "totalStr", null);
         ParamUtil.setSessionAttr(bpc.request, "totalAmount", null);
         ParamUtil.setSessionAttr(bpc.request, "userAgreement", null);
@@ -279,10 +280,17 @@ public class WithOutRenewalDelegator {
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                 List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                 boolean isRfi = false;
                 //rfc/renew for primary doc
                 List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(ApplicationConsts.APPLICATION_TYPE_RENEWAL,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
                 appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocList);
+                //add align for dup for prem doc
+                NewApplicationHelper.addAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                //set primary doc title
+                Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+                appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+
                 if (!StringUtil.isEmpty(svcId)) {
                     List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                     List<String> svcDocConfigIdList = IaisCommonUtils.genNewArrayList();
