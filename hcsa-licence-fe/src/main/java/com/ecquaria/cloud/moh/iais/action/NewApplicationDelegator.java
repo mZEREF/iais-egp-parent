@@ -1566,11 +1566,25 @@ public class NewApplicationDelegator {
                             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                             NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                            ParamUtil.setSessionAttr(request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
+                            //set dupForPsn attr
+                            NewApplicationHelper.setDupForPersonAttr(request,appSvcRelatedInfoDto);
+                            //svc doc add align for dup for prem
+                            NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,newPremisesDtos);
+                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                            //set svc doc title
+                            Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,newPremisesDtos,appSvcRelatedInfoDto);
+                            appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                             newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                             break;
                         }
                     }
+                    NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,newPremisesDtos);
+                    //set primary doc title
+                    Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,newPremisesDtos,appGrpPrimaryDocDtos);
+                    appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
                     NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
