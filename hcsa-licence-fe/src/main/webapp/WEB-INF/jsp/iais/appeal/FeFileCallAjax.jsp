@@ -106,6 +106,8 @@
         //alert('maxSize:'+maxSize);
         fileSize = parseInt(fileSize);
         if(fileSize>= maxSize){
+            $(fileId).after( $( fileId).clone().val(""));
+            $(fileId).remove();
             return "N";
         }
         return "Y";
