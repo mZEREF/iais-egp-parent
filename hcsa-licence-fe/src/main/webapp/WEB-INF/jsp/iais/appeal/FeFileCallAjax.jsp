@@ -48,8 +48,10 @@
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            clearFlagValueFEFile();
         } else if (rslt == 'E') {
           $("#error_"+fileAppendId+"Error").html('This field is mandatory.');
+            clearFlagValueFEFile();
         } else {
           $.ajax({
             type:"post",
