@@ -412,7 +412,6 @@ public class WithdrawalDelegator {
                                 premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
                                 premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                                 premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
-                                premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                                 appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                                 pageShowFileDtos.add(pageShowFileDto);
@@ -424,12 +423,16 @@ public class WithdrawalDelegator {
 
                 List<String> list = comFileRepoClient.saveFileRepo(files);
                 if(list!=null){
-                    for(int index=0;index<list.size();index++){
-                        for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
-                            String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
-                            if(fileRepoId==null){
-                                pageShowFileDtos.get(j).setFileUploadUrl(list.get(index));
-                                appPremisesSpecialDocDtoList.get(j).setFileRepoId(list.get(index));
+                    ListIterator<String> iterator = list.listIterator();
+
+                    for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                        String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                        if(fileRepoId==null){
+                            if(iterator.hasNext()){
+                                String next = iterator.next();
+                                pageShowFileDtos.get(j).setFileUploadUrl(next);
+                                appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
+                                iterator.remove();
                             }
                         }
                     }
