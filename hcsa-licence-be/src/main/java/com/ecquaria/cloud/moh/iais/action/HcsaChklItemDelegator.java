@@ -698,7 +698,7 @@ public class HcsaChklItemDelegator {
         SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
         LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-        List<CheckItemQueryDto> list = null;
+        List<CheckItemQueryDto> list = IaisCommonUtils.genNewArrayList();
         if (Optional.ofNullable(searchResult).isPresent()
                 && Optional.ofNullable(searchResult.getRows()).isPresent()
                 && Optional.ofNullable(set).isPresent()){
