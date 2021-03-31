@@ -3,10 +3,14 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -15,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -33,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +46,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -74,6 +83,8 @@ public class SendsReminderToReplyRfiBatchjob {
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     ApplicationClient applicationClient;
+    @Autowired
+    private SystemBeLicClient systemBeLicClient;
     @Value("${iais.system.rfc.sms.reminder.day}")
     String reminderMax1Day;
     @Value("${iais.system.rfc.sms.sec.reminder.day}")
@@ -113,6 +124,11 @@ public class SendsReminderToReplyRfiBatchjob {
                     }
                 }
             }
+        }
+        try {
+            getInfo();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
 
     }
@@ -165,7 +181,7 @@ public class SendsReminderToReplyRfiBatchjob {
             emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
 
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
@@ -231,7 +247,7 @@ public class SendsReminderToReplyRfiBatchjob {
     private void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
     }
-    private void sendEmail(ApplicationDto applicationDto) throws Exception{
+    private void sendEmail(ApplicationDto applicationDto,String time) throws Exception{
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
@@ -242,11 +258,9 @@ public class SendsReminderToReplyRfiBatchjob {
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
         String applicantName=licenseeDto.getName();
-        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
-
-
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
@@ -262,15 +276,140 @@ public class SendsReminderToReplyRfiBatchjob {
         emailParam.setTemplateContent(emailMap);
         emailParam.setQueryCode(applicationDto.getAppGrpId());
         emailParam.setReqRefNum(applicationDto.getAppGrpId());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-        emailParam.setRefId(applicationDto.getId());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setSubject(subject);
         //email
         notificationHelper.sendNotification(emailParam);
+        saveMailJob(applicationDto.getId(),"sendRfi"+time);
+        //sms
+        rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+        subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        emailParam.setSubject(subject);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(emailParam);
+        rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+        subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        emailParam.setSubject(subject);
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCode=IaisCommonUtils.genNewArrayList();
+        svcCode.add(svcDto.getSvcCode());
+        String url="";
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+            List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(appPremisesCorrelationDto.getId()).getEntity();
+            if(entity!=null){
+                for(AppPremiseMiscDto appPremiseMiscDto : entity){
+                    String relateRecId = appPremiseMiscDto.getRelateRecId();
+                    if(ApplicationConsts.APPEAL_TYPE_APPLICAITON.equals(appPremiseMiscDto.getAppealType())){
+                        url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + relateRecId + "&type=application";
+                    }else {
+                        url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + relateRecId + "&type=licence" ;
+                    }
+                    mapPrem.put("appealingFor",relateRecId);
+                }
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+            url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+            mapPrem.put("appNo",applicationDto.getApplicationNo());
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
+            url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+            mapPrem.put("appNo",applicationDto.getApplicationNo());
+        }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType())){
+            mapPrem.put("rfiWithdrawAppNo", applicationDto.getApplicationNo());
+            url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication?rfiWithdrawAppNo=" + applicationDto.getApplicationNo();
+        }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+            String appGrpPremId = "";
+            if (appPremisesCorrelationDto != null) {
+                appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
+                mapPrem.put("premiseId", appGrpPremId);
+            }
+            mapPrem.put("appId", applicationDto.getId());
+            url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + applicationDto.getId() + "&premiseId=" + appGrpPremId;
+        }
+        emailMap.put("systemLink", url);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        emailParam.setMaskParams(mapPrem);
+        emailParam.setSvcCodeList(svcCode);
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        notificationHelper.sendNotification(emailParam);
+    }
+
+    private void getInfo() throws Exception{
+        List<ApplicationDto> applicationDtos = applicationClient.getRfiReminder().getEntity();
+        Date date=new Date();
+        Calendar calendar=Calendar.getInstance();
+
+        ListIterator<ApplicationDto> iterator = applicationDtos.listIterator();
+        while (iterator.hasNext()){
+            ApplicationDto applicationDto = iterator.next();
+            Date modifiedAt = applicationDto.getModifiedAt();
+            calendar.setTime(modifiedAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax1Day));
+            Date firstTime = calendar.getTime();
+            calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMax2Day));
+            Date secondTime = calendar.getTime();
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax3Day));
+            Date thirdTime = calendar.getTime();
+            if(date.after(firstTime)&&date.before(secondTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax1Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax1Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }else if(date.after(secondTime)&&date.before(thirdTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax2Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax2Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }else if(date.after(thirdTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax3Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax3Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }
+        }
 
     }
 
-    private List<ApplicationDto> getInfo(){
-       return applicationClient.getRfiReminder().getEntity();
+    private boolean checkEmailIsSend(String applicationId,String magKey){
+        try {
+            JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(applicationId, magKey).getEntity();
+            if(auto_renew==null){
+                return true;
+            }else {
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew)+"auto_renew"));
+                return false;
+            }
+
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+            log.info(StringUtil.changeForLog("-----have error---"));
+            return false;
+        }
+    }
+    private void saveMailJob(String applicationId,String magKey){
+        JobRemindMsgTrackingDto jobRemindMsgTrackingDto=new JobRemindMsgTrackingDto();
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        jobRemindMsgTrackingDto.setMsgKey(magKey);
+        jobRemindMsgTrackingDto.setRefNo(applicationId);
+        List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos=new ArrayList<>(1);
+        jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
+        systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos).getEntity();
     }
 }
