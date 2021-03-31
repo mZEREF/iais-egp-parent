@@ -30,7 +30,7 @@
         <iais:value width="18">
             <div class="form-horizontal">
                 <iais:select id="role" name="role" options="roleOption" firstOption="Please Select"
-                             value="${role}"></iais:select></div>
+                             value="${role}" needSort="true"></iais:select></div>
         </iais:value>
     </iais:row>
 <%--    <iais:row>--%>
