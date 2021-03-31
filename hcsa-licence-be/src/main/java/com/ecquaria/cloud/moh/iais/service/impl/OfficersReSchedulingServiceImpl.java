@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -19,11 +20,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -37,21 +38,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -122,8 +129,24 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Autowired
     private NotificationHelper notificationHelper;
 
-    @Value("${iais.email.sender}")
-    private String mailSender;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Autowired
+    private AppEicClient appEicClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -322,17 +345,6 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             reschedulingOfficerDto.setTaskDtos(taskDtoList);
             reschedulingOfficerDto.setAuditTrailDto(auditTrailDto);
             inspectionTaskClient.reScheduleSaveRouteData(reschedulingOfficerDto);
-            try {
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent("Please contact the respective MOH officer to reschedule your appointment.");
-                emailDto.setSubject("MOH IAIS - Moh Officer Rescheduling");
-                emailDto.setSender(mailSender);
-                emailDto.setClientQueryCode(appDto.getId());
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                //emailClient.sendNotification(emailDto);
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
-            }
         }
     }
 
@@ -607,12 +619,163 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+        //check app status
         boolean appStatusFlag = getAppStatusNotInRfi(reschedulingOfficerDto);
+        //get auditTrailDto
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         if(appStatusFlag) {
+            if(!IaisCommonUtils.isEmpty(apptReSchAppInfoShowDtos) && reschedulingOfficerDto != null) {
+                //get new apptRefNo and cancel old
+                ApptCalendarStatusDto apptCalendarStatusDto = updateApptRefNoForCalendar(reschedulingOfficerDto, apptReSchAppInfoShowDtos);
+                //update any data
+                List<AppPremisesInspecApptDto> appPremInspecApptUpdateDtos = IaisCommonUtils.genNewArrayList();
+                List<AppPremisesInspecApptDto> appPremInspecApptCreateDtos = IaisCommonUtils.genNewArrayList();
+                for (ApptAppInfoShowDto apptAppInfoShowDto : apptReSchAppInfoShowDtos) {
+                    if(apptAppInfoShowDto != null) {
+                        String appNo = apptAppInfoShowDto.getApplicationNo();
+                        ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                        //update and create apptRefNo;
+                        List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                        updateAndCreateApptRefNo(appPremisesInspecApptDtos, appPremInspecApptUpdateDtos, appPremInspecApptCreateDtos, apptAppInfoShowDto,
+                                auditTrailDto, reschedulingOfficerDto.getAppointmentDto());
+                        //cancel the original inspector and create new
+                        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(appNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        updateAppNoCorrelationInspectors(appPremInspCorrelationDtoList, apptAppInfoShowDto, appNo, auditTrailDto);
+                        //update task
+                        List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+                        updateUserForTask(taskDtos, apptAppInfoShowDto);
+                        //update recommendation inspection date
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                        createOrUpdateRecommendation(appPremisesRecommendationDto, appPremisesCorrelationDto.getId(), apptAppInfoShowDto.getInspDate());
+                    }
+                }
+                //save new apptRefNo and cancel old
+                cancelOrConfirmApptDate(apptCalendarStatusDto);
+                //synchronization FE apptRefNo
+                createFeAppPremisesInspecApptDto(appPremInspecApptUpdateDtos);
+                createFeAppPremisesInspecApptDto(appPremInspecApptCreateDtos);
+            }
             return AppConsts.SUCCESS;
         } else {
             return AppConsts.FAIL;
         }
+    }
+
+    private void updateUserForTask(List<TaskDto> taskDtos, ApptAppInfoShowDto apptAppInfoShowDto) {
+        if(!IaisCommonUtils.isEmpty(taskDtos) && apptAppInfoShowDto != null) {
+            List<String> userIdList = apptAppInfoShowDto.getUserIdList();
+            if(!IaisCommonUtils.isEmpty(userIdList)) {
+                log.info(StringUtil.changeForLog("Rescheduling tasks size ====" + taskDtos.size()));
+                log.info(StringUtil.changeForLog("Rescheduling users size ====" + userIdList.size()));
+                for (int i = 0; i < taskDtos.size(); i++) {
+                    if(taskDtos.get(i) != null) {
+                        taskDtos.get(i).setUserId(userIdList.get(i));
+                        taskService.updateTask(taskDtos.get(i));
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateAppNoCorrelationInspectors(List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList, ApptAppInfoShowDto apptAppInfoShowDto,
+                                                  String appNo, AuditTrailDto auditTrailDto) {
+        if(!IaisCommonUtils.isEmpty(appPremInspCorrelationDtoList) && apptAppInfoShowDto != null) {
+            for(AppPremInspCorrelationDto appPremInspCorrelationDto : appPremInspCorrelationDtoList) {
+                appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
+                inspectionTaskClient.updateAppPremInspCorrelationDto(appPremInspCorrelationDto);
+            }
+            //user uuid
+            List<String> userIds = apptAppInfoShowDto.getUserIdList();
+            if(!IaisCommonUtils.isEmpty(userIds)) {
+                List<AppPremInspCorrelationDto> appPremInspCorrCreateDtos = IaisCommonUtils.genNewArrayList();
+                for (String userId : userIds) {
+                    //create appInspCorrelation and task
+                    AppPremInspCorrelationDto appPremInspCorrCreateDto = new AppPremInspCorrelationDto();
+                    appPremInspCorrCreateDto.setApplicationNo(appNo);
+                    appPremInspCorrCreateDto.setId(null);
+                    appPremInspCorrCreateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appPremInspCorrCreateDto.setUserId(userId);
+                    appPremInspCorrCreateDto.setAuditTrailDto(auditTrailDto);
+                    appPremInspCorrCreateDtos.add(appPremInspCorrCreateDto);
+                }
+                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
+            }
+        }
+    }
+
+    private void updateAndCreateApptRefNo(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos, List<AppPremisesInspecApptDto> appPremInspecApptUpdateDtos,
+                                          List<AppPremisesInspecApptDto> appPremInspecApptCreateDtos, ApptAppInfoShowDto apptAppInfoShowDto, AuditTrailDto auditTrailDto,
+                                          AppointmentDto appointmentDto) {
+        if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
+            List<String> apptRefNos = apptAppInfoShowDto.getApptRefNo();
+            if(!IaisCommonUtils.isEmpty(apptRefNos)) {
+                String apptRefNo = apptRefNos.get(0);
+                for (AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {//NOSONAR
+                    //old
+                    appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    appPremisesInspecApptDto.setAuditTrailDto(auditTrailDto);
+                    //update
+                    appPremisesInspecApptDto = applicationClient.updateAppPremisesInspecApptDto(appPremisesInspecApptDto).getEntity();
+                    //new
+                    AppPremisesInspecApptDto createAppPremInspDto = new AppPremisesInspecApptDto();
+                    createAppPremInspDto.setAppCorrId(appPremisesInspecApptDto.getAppCorrId());
+                    createAppPremInspDto.setApptRefNo(apptRefNo);
+                    createAppPremInspDto.setSpecificInspDate(null);
+                    createAppPremInspDto.setId(null);
+                    createAppPremInspDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    createAppPremInspDto.setReschedulingCount(appPremisesInspecApptDto.getReschedulingCount());
+                    if(appointmentDto != null) {
+                        if (appointmentDto.getStartDate() != null) {
+                            try {
+                                createAppPremInspDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                            } catch (ParseException e) {
+                                log.error(e.getMessage(), e);
+                            }
+                        }
+                        if (appointmentDto.getEndDate() != null) {
+                            try {
+                                createAppPremInspDto.setEndDate(Formatter.parseDateTime(appointmentDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                            } catch (ParseException e) {
+                                log.error(e.getMessage(), e);
+                            }
+                        }
+                    }
+                    createAppPremInspDto.setAuditTrailDto(auditTrailDto);
+                    //add
+                    appPremInspecApptUpdateDtos.add(appPremisesInspecApptDto);
+                    appPremInspecApptCreateDtos.add(createAppPremInspDto);
+                }
+                applicationClient.createAppPremisesInspecApptDto(appPremInspecApptCreateDtos).getEntity();
+            }
+        }
+    }
+
+    private ApptCalendarStatusDto updateApptRefNoForCalendar(ReschedulingOfficerDto reschedulingOfficerDto,
+                                                             List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        if(reschedulingOfficerDto != null) {
+            //confirm apptRefNo
+            ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);//NOSONAR
+            if(apptAppInfoShowDto != null) {
+                apptCalendarStatusDto.setConfirmRefNums(apptAppInfoShowDto.getApptRefNo());
+            }
+            //cancel apptRefNo
+            String appNo = reschedulingOfficerDto.getAssignNo();
+            ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
+            List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+            for (AppPremisesInspecApptDto inspecApptDto : appPremisesInspecApptDtos) {
+                if(inspecApptDto != null) {
+                    cancelRefNo.add(inspecApptDto.getApptRefNo());
+                }
+            }
+            apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+            apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        }
+        return apptCalendarStatusDto;
     }
 
     private boolean getAppStatusNotInRfi(ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -620,6 +783,20 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
             if (samePremisesAppMap != null && !StringUtil.isEmpty(reschedulingOfficerDto.getAssignNo())) {
                 List<String> appNoList = samePremisesAppMap.get(reschedulingOfficerDto.getAssignNo());
+                if(!IaisCommonUtils.isEmpty(appNoList)) {//NOSONAR
+                    for(String appNo : appNoList) {
+                        if(!StringUtil.isEmpty(appNo)) {
+                            ApplicationDto applicationDto = getApplicationByAppNo(appNo);
+                            if(applicationDto != null) {
+                                String appStatus = applicationDto.getStatus();
+                                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appStatus) ||
+                                        ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(appStatus)) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return true;
@@ -648,7 +825,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             List<ApptUserCalendarDto> userClandars = apptReDto.getUserClandars();
             //set user with App No.
             if(!IaisCommonUtils.isEmpty(userClandars)){//NOSONAR
-                Date inspDate = userClandars.get(0).getStartSlot().get(0);
+                Date inspDate = userClandars.get(0).getStartSlot().get(0);//NOSONAR
                 Map<String, List<String>> appNoUserLoginId = getAppNoUserLoginIdByUserClandars(userClandars);
                 if(appNoUserLoginId != null) {
                     for (ApptAppInfoShowDto apptAppInfoShowDto : apptAppInfoShowDtos) {
@@ -682,6 +859,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     }
                 }
             }
+            Set<String> userNameSet = new HashSet<>(userNameList);
+            Set<String> userIdSet = new HashSet<>(userIdList);
+            userNameList = new ArrayList<>(userNameSet);
+            userIdList = new ArrayList<>(userIdSet);
+            Collections.sort(userNameList);
+            Collections.sort(userIdList);
             apptAppInfoShowDto.setUserDisName(userNameList);
             apptAppInfoShowDto.setUserIdList(userIdList);
         }
@@ -1218,5 +1401,26 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             }
         }
         return appNos;
+    }
+
+    private void createFeAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList) {
+        ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+        apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        //save eic record
+        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "createFeAppPremisesInspecApptDto",
+                "hcsa-licence-web-intranet", AppPremisesInspecApptDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
+        String eicRefNo = eicRequestTrackingDto.getRefNo();
+        beEicGatewayClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        //get eic record
+        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+        //update eic record status
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+        eicRequestTrackingDtos.add(eicRequestTrackingDto);
+        appEicClient.updateStatus(eicRequestTrackingDtos);
     }
 }
