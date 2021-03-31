@@ -103,10 +103,19 @@
                   --%>
                   <c:if test="${empty reschedulingOfficerDto.newInspDates}">
                     <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-md-6" style="font-size: 16px">
                         <iais:message key="OAPPT_ACK025" escape="true"></iais:message>
                       </div>
                     </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <iais:action >
                       <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateYes()">Yes</button>
