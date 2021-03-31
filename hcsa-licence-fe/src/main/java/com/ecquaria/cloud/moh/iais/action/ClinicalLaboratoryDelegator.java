@@ -652,6 +652,7 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             List<AppGrpPremisesDto> appGrpPremisesDtos= appSubmissionDto.getAppGrpPremisesDtoList();
             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
             //set dupForPsn attr
             NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
             //svc doc add align for dup for prem
