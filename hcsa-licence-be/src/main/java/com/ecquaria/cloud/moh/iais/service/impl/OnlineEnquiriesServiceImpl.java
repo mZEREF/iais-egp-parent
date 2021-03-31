@@ -380,7 +380,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        //AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
@@ -540,27 +540,44 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectionReportDto.setNcRectification(null);
             inspectionReportDto.setStatus("Full Compliance");
         }
+        AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
 
         //best practice remarks
-        String bestPractice = "-";
-        String remarks = "-";
-        if(ncRecommendationDto==null){
+        StringBuilder bestPractice = new StringBuilder("-");
+        StringBuilder remarks = new StringBuilder("-");
+        if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(ncRecommendationDto!=null) {
-            Date recomInDate = ncRecommendationDto.getRecomInDate();
+        }else {
+            Date recomInDate = NcRecommendationDto.getRecomInDate();
             if(recomInDate==null){
                 inspectionReportDto.setMarkedForAudit("No");
             }else {
                 inspectionReportDto.setMarkedForAudit("Yes");
                 inspectionReportDto.setTcuDate(recomInDate);
             }
-            String ncBestPractice = ncRecommendationDto.getBestPractice();
-            String ncRemarks = ncRecommendationDto.getRemarks();
+            String ncBestPractice = NcRecommendationDto.getBestPractice();
+            String ncRemarks = NcRecommendationDto.getRemarks();
+            String[] observations=new String[]{};
+            if(ncRemarks!=null){
+                observations=ncRemarks.split("\n");
+            }
+            String[] recommendations=new String[]{};
+            if(ncBestPractice!=null){
+                recommendations=ncBestPractice.split("\n");
+            }
             if(!StringUtil.isEmpty(ncBestPractice)){
-                bestPractice = ncBestPractice ;
+                bestPractice = new StringBuilder();
+                for (String bp:recommendations
+                ) {
+                    bestPractice.append(bp).append("<br>");
+                }
             }
             if(!StringUtil.isEmpty(ncRemarks)){
-                remarks = ncRemarks ;
+                remarks =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    remarks.append(rk).append("<br>");
+                }
             }
         }
         inspectionReportDto.setRectifiedWithinKPI("Yes");
@@ -631,8 +648,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setInspectionDate(inspectionDate);
         inspectionReportDto.setInspectionStartTime(inspectionStartTime);
         inspectionReportDto.setInspectionEndTime(inspectionEndTime);
-        inspectionReportDto.setBestPractice(bestPractice);
-        inspectionReportDto.setTaskRemarks(remarks);
+        inspectionReportDto.setBestPractice(bestPractice.toString());
+        inspectionReportDto.setTaskRemarks(remarks.toString());
         inspectionReportDto.setCurrentStatus(status);
         return inspectionReportDto;
     }

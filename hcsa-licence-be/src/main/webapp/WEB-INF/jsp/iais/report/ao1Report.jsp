@@ -222,7 +222,7 @@
                             <p>Remarks</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${insRepDto.taskRemarks}"/></p>
+                            <p>${insRepDto.taskRemarks}</p>
                         </td>
                         <td class="col-xs-4">
                     </tr>
@@ -242,7 +242,7 @@
                             <p>Recommended Best Practices</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${insRepDto.bestPractice}"/></p>
+                            <p>${insRepDto.bestPractice}</p>
                         </td>
                         <td class="col-xs-4">
                     </tr>
@@ -375,8 +375,8 @@
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
-                                                                                 data-html="true"
-                                                                                 data-original-title="${kpiInfo}">i</a></p>
+                                                        data-html="true"
+                                                        data-original-title="${kpiInfo}">i</a></p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>
