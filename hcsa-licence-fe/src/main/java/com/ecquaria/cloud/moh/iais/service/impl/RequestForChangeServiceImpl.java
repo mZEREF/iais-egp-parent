@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -647,8 +648,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 //licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                                 log.debug(StringUtil.changeForLog("can not found licenseeId"));
                             }
-                            List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId,ApplicationConsts.PREMISES_TYPE_ON_SITE).getEntity();
+                            /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId,ApplicationConsts.PREMISES_TYPE_ON_SITE).getEntity();
                             if (!entity.isEmpty()) {
+                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
+                            }*/
+                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(hciName,ApplicationConsts.PREMISES_TYPE_ON_SITE,licenseeId).getEntity();
+                            if(!IaisCommonUtils.isEmpty(premisesDtos)){
                                 errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                             }
                         }
@@ -919,8 +924,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 }
 
-                                List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(convHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
+                                /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(convHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
                                 if (!entity.isEmpty()) {
+                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
+                                }*/
+                                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(convHciName,ApplicationConsts.PREMISES_TYPE_CONVEYANCE,licenseeId).getEntity();
+                                if(!IaisCommonUtils.isEmpty(premisesDtos)){
                                     errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                                 }
                             }
@@ -1188,8 +1197,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                                     }
                                 }
-                                List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(offSiteHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_OFF_SITE).getEntity();
+                                /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(offSiteHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_OFF_SITE).getEntity();
                                 if (!entity.isEmpty()) {
+                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
+                                }*/
+                                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(offSiteHciName,ApplicationConsts.PREMISES_TYPE_OFF_SITE,licenseeId).getEntity();
+                                if(!IaisCommonUtils.isEmpty(premisesDtos)){
                                     errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                                 }
                             }
