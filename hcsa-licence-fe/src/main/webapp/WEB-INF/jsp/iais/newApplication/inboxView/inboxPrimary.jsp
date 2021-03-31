@@ -11,23 +11,22 @@
                     </div>
                     <div class="pop-up">
                         <div class="pop-up-body">
-                            <c:forEach var="appGrpPrimaryDoc" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
-                                <c:if test="${!empty appGrpPrimaryDoc.docName && !empty appGrpPrimaryDoc.fileRepoId}">
-                                <div class="content-body fileUploadContainer">
-                                    <div class="field col-sm-4 control-label formtext"><label>${appGrpPrimaryDoc.svcComDocName}</label></div>
-                                    <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
-                                    <div class="control col-sm-5">
-                                        <div class="fileList">
-                                            <span class="filename server-site">
-                                                <a class="test-btn" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDoc.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDoc.docName}" title="Download" class="downloadFile">
-                                                    ${appGrpPrimaryDoc.docName}
-                                                </a>
-                                                (${appGrpPrimaryDoc.docSize} KB)
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                </c:if>
+
+                            <c:set var="reloadMap" value="${AppSubmissionDto.multipleGrpPrimaryDoc}"/>
+                            <c:forEach var="config" items="${primaryDocConfig}" varStatus="configStat">
+                                <c:choose>
+                                    <c:when test="${'0' == config.dupForPrem}">
+                                        <c:set var="fileList" value="${reloadMap[config.id]}"/>
+                                        <%@include file="../../common/previewPrimaryContent.jsp"%>
+                                    </c:when>
+                                    <c:when test="${'1' == config.dupForPrem}">
+                                        <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStat">
+                                            <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
+                                            <c:set var="fileList" value="${reloadMap[mapKey]}"/>
+                                            <%@include file="../../common/previewPrimaryContent.jsp"%>
+                                        </c:forEach>
+                                    </c:when>
+                                </c:choose>
                             </c:forEach>
                         </div>
                     </div>
