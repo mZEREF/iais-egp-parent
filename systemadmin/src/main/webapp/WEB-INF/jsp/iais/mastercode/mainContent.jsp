@@ -119,7 +119,7 @@
                                                             <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
                                                             <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the <c:choose>
                                                                     <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">Delete</c:when>
-                                                                    <c:otherwise>Deactivate </c:otherwise>
+                                                                    <c:otherwise>Deactivate</c:otherwise>
                                                                 </c:choose> ?</span></div>
                                                         </div>
                                                     </div>
