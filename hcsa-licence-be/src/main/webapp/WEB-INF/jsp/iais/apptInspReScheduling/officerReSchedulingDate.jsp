@@ -37,7 +37,7 @@
             <div class="intranet-content">
               <iais:body >
                 <iais:section title="" id = "reSchOfficerDate">
-                  <c:if test="${'reSchOfficerDateShow' eq reSchOfficerDateShow}">
+                  <c:if test="${not empty reschedulingOfficerDto.newInspDates}">
                     <div class="table-gp">
                       <table class="apptApp table">
                         <thead>
@@ -49,7 +49,7 @@
                         </thead>
                         <tbody>
                         <c:choose>
-                          <c:when test="${empty apptInspectionDateDto.applicationInfoShow}">
+                          <c:when test="${empty apptReSchAppInfoShowDtos}">
                             <tr>
                               <td colspan="7">
                                 <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -57,7 +57,7 @@
                             </tr>
                           </c:when>
                           <c:otherwise>
-                            <c:forEach var="appInfoShow" items="${apptInspectionDateDto.applicationInfoShow}">
+                            <c:forEach var="appInfoShow" items="${apptReSchAppInfoShowDtos}">
                               <tr>
                                 <td><c:out value="${appInfoShow.applicationNo}"/></td>
                                 <td><iais:code code="${appInfoShow.status}"/></td>
@@ -85,7 +85,7 @@
                     <div class="row">
                       <div class="col-md-6">
                         <ul>
-                          <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
+                          <c:forEach var="insepctionDate" items="${reschedulingOfficerDto.newInspDates}">
                             <li><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
                           </c:forEach>
                         </ul>
@@ -101,12 +101,21 @@
                   <%--
                     No Date, No Inspector Show
                   --%>
-                  <c:if test="${'reSchOfficerDateShow' ne reSchOfficerDateShow}">
+                  <c:if test="${empty reschedulingOfficerDto.newInspDates}">
                     <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-md-6" style="font-size: 16px">
                         <iais:message key="OAPPT_ACK025" escape="true"></iais:message>
                       </div>
                     </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <iais:action >
                       <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateYes()">Yes</button>
