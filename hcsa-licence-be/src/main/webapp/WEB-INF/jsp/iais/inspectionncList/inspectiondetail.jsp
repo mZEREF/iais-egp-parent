@@ -123,13 +123,14 @@
             <div class="col-xs-8 col-sm-6 col-md-5" >
                   <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
                       <p>
-                      <span > &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
+                          <c:if test="${ not empty  serListDto.appPremisesSpecialDocDto.fileRepoId}">
+                      <span ><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
+                          </c:if>
                       </p>
                   </c:if>
                 <div class="file-upload-gp" <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"> hidden</c:if>>
-                    <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"
-                    ><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                    <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
+                    <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                    <span id="licFileName"> <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
                     <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
                                 &nbsp;&nbsp;<button type="button" class="btn btn-secondary-del btn-sm" onclick="javascript:doDeleteFile()">
                                                  Delete</button>
@@ -286,10 +287,11 @@
                     $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
                 }else {
                     $("#licFileNameDe").attr("hidden",false);
-                    $("#licFileName").html( fileName);
                     $('#litterFile').val(fileName);
                     $('#litterFileId').val("");
                     $('#error_litterFile_Show').html("");
+                    doSubmitUploadFile();
+                    $("#licFileName").html( fileName);
                 }
             }else {
                 $('#error_litterFile_Show').html("");
@@ -311,6 +313,16 @@
         $("#selectedFileView").val('');
     }
 
+    function doSubmitUploadFile(){
+        $("#viewchk").val("uploadFileLetter");
+        showWaiting();
+        if(${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER}){
+            SOP.Crud.cfxSubmit("mainForm", "next");
+        }else {
+            $("#saveflag").val("save");
+            SOP.Crud.cfxSubmit("mainForm", "save");
+        }
+    }
 
     //only for doc change
     $('#documentsli').click(function(){

@@ -40,5 +40,5 @@ public interface InsepctionNcCheckListService {
 
     void saveBeforeSubmitCheckList(InspectionFillCheckListDto infillDto,AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId);
     void saveOtherDataForPengingIns(InspectionFDtosDto serListDto,String appPremId);
-    void saveBeforeFinishCheckListRec(String appPremId);
+    void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks);
 }

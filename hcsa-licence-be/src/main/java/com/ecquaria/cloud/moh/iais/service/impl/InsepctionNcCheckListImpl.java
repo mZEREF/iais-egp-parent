@@ -1154,7 +1154,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void saveBeforeFinishCheckListRec(String appPremId) {
+    public void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks) {
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE).getEntity();
         if( appPreRecommentdationDto != null){
             log.info(StringUtil.changeForLog("-------------saveBeforeFinishCheckListRec appPremId : " + appPremId +" have exist ------------"));
@@ -1163,7 +1163,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             appPreRecommentdationDto.setVersion(1);
             appPreRecommentdationDto.setId(null);
             appPreRecommentdationDto.setAppPremCorreId(appPremId);
-            appPreRecommentdationDto.setRemarks("saveBeforeFinishCheckListRec");
+            appPreRecommentdationDto.setRemarks(mobileRemarks);
             appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE);
             appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

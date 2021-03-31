@@ -363,25 +363,32 @@ public class InspectReviseNcEmailDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }
-        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASK_DTO);
-        InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
-        AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
-        List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
-        InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
-        Map<String, String> errMap = inspectionCheckListValidation.validate(request);
-        ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) ncDtoList);
-        if(!errMap.isEmpty()){
+        String viewChkFlag = ParamUtil.getString(request,"viewchk");
+        if("uploadFileLetter".equalsIgnoreCase(viewChkFlag)){
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-        }else{
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
-            ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
-            insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
+        }else {
+            TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASK_DTO);
+            InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
+            AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
+            ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+            ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+            ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+            List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
+            InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
+            Map<String, String> errMap = inspectionCheckListValidation.validate(request);
+            ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) ncDtoList);
+            if(!errMap.isEmpty()){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            }else{
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+                ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
+                insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
+            }
         }
 
     }
@@ -926,9 +933,10 @@ public class InspectReviseNcEmailDelegator {
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{
         log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        HttpServletRequest request  = bpc.request;
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE+"Step2", crudActionType);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setSessionAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE+"Step2", crudActionType);
         getOtherInfo(mulReq);
     }
 

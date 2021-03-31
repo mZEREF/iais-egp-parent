@@ -90,7 +90,7 @@ public interface FillupChklistService {
 
     void setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(AdhocNcCheckItemDto  adhocNcCheckItemDto, List<AnswerForDifDto> answerForDifDtos,String deconflict);
 
-    void setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto,InspectionFillCheckListDto commonDto,String refNo);
+    String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto,InspectionFillCheckListDto commonDto,String refNo);
 
     boolean isBeforeFinishCheckList(String refNo);
 }

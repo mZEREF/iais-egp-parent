@@ -5,11 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
@@ -76,6 +78,7 @@ public class InspectionNcCheckListDelegator {
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
     private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
     private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
+    private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -94,6 +97,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,INSPECTION_USERS,null);
         ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH,null);
         ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.NO);
+        ParamUtil.setSessionAttr(request, MOBILE_REMARK_GROUP,null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
@@ -201,8 +205,23 @@ public class InspectionNcCheckListDelegator {
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         //comparative data for sef and check list nc
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
+        boolean remarksIsNull = StringUtil.isEmpty(serListDto.getTcuRemark());
         //get RemarksAndStartTimeAndEndTimeForCheckList BY mobile api
         fillupChklistService.setRemarksAndStartTimeAndEndTimeForCheckList(serListDto,commonDto,appPremCorrId);
+        if(remarksIsNull){
+            if(!beforeFinishList){
+                String remarks = serListDto.getTcuRemark();
+                if(!StringUtil.isEmpty(remarks)){
+                    ParamUtil.setSessionAttr(request, MOBILE_REMARK_GROUP,remarks);
+                }
+            }else {
+                AppPremisesRecommendationDto appPremisesRecommendationDto =  insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE);
+                if(appPremisesRecommendationDto != null){
+                    ParamUtil.setSessionAttr(request, MOBILE_REMARK_GROUP,appPremisesRecommendationDto.getRemarks());
+                    serListDto.setTcuRemark(appPremisesRecommendationDto.getRemarks());
+                }
+            }
+        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
@@ -244,19 +263,15 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         InspectionFDtosDto serListDto;
         String viewChkFlag = ParamUtil.getString(mulReq,"viewchk");
-  /*      CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
-        CheckListFileDto fileDto = new CheckListFileDto();
-        fileDto.setFileName(file.getOriginalFilename());;
-        ParamUtil.setSessionAttr(mulReq,CHECKLISTFILEDTO,fileDto);*/
-
         if(!StringUtil.isEmpty(viewChkFlag)){
-            /*serListDto = getDataFromPage(request);
-            InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-            AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-            serListDto.setCheckListTab("chkList");
-            ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
-            ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);*/
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            if(viewChkFlag.equalsIgnoreCase("uploadFileLetter")){
+                serListDto = getOtherInfo(mulReq);
+                serListDto.setCheckListTab("chkList");
+                ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            }else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            }
         }else if("listAhoc".equalsIgnoreCase(crudActionType)){
             serListDto = getOtherInfo(mulReq);
             serListDto.setCheckListTab("chkList");
@@ -610,7 +625,7 @@ public class InspectionNcCheckListDelegator {
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
         log.info(" ----------- saveCheckListBefore start ------------");
         insepctionNcCheckListService.saveBeforeSubmitCheckList(commonDto,showDto,serListDto,taskDto.getRefNo());
-        insepctionNcCheckListService.saveBeforeFinishCheckListRec(taskDto.getRefNo());
+        insepctionNcCheckListService.saveBeforeFinishCheckListRec(taskDto.getRefNo(),(String)ParamUtil.getSessionAttr(request, MOBILE_REMARK_GROUP));
         ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.YES);
         log.info(" ----------- saveCheckListBefore end ------------");
 
