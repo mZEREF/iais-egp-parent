@@ -687,24 +687,36 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-    * @author: yichen 
-    */
+     * @author: yichen
+     */
     @GetMapping(value = "checklist-item-file")
-	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
-        SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
+    public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
+
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
         LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
         List<CheckItemQueryDto> list = IaisCommonUtils.genNewArrayList();
-        if (Optional.ofNullable(searchResult).isPresent()
-                && Optional.ofNullable(searchResult.getRows()).isPresent()
-                && Optional.ofNullable(set).isPresent()){
-            list = searchResult.getRows();
-            list = list.stream().filter(i -> set.contains(i.getItemId())).collect(Collectors.toList());
+        if (Optional.ofNullable(set).isPresent()){
+            SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            String idStr = SqlHelper.constructInCondition("item.id", set.size());
+            searchParam.addParam("adhocItemId", idStr);
+            int indx = 0;
+            for (String checked : set){
+                searchParam.addFilter("item.id"+indx, checked);
+                indx++;
+            }
+
+            QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+            SearchResult<CheckItemQueryDto> searchResult = hcsaChklService.listChklItem(searchParam);
+
+            if (Optional.ofNullable(searchResult).isPresent() && Optional.ofNullable(searchResult.getRows()).isPresent()){
+                list = searchResult.getRows();
+            }
         }
+
+
 
         boolean blockExcel = false;
         if (IaisCommonUtils.isNotEmpty(list)){
