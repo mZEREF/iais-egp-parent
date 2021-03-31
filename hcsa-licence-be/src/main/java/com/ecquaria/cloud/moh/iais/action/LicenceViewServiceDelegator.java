@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -390,9 +391,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
+        contrastNewAndOld(appSubmissionDto,bpc.request);
         try {
-            contrastNewAndOld(appSubmissionDto,bpc.request);
+
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -1490,31 +1491,209 @@ public class LicenceViewServiceDelegator {
             return;
         }
         for(AppGrpPrimaryDocDto v : appGrpPrimaryDocDtos){
-            List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(v.getSvcComDocName());
-            if(grpPrimaryDocDtos==null){
-                grpPrimaryDocDtos=new ArrayList<>();
-                grpPrimaryDocDtos.add(v);
-                multipleGrpPrimaryDoc.put(v.getSvcComDocName(),grpPrimaryDocDtos);
-            }else {
-                grpPrimaryDocDtos.add(v);
+            String svcDocId = v.getSvcDocId();
+            HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+            String dupForPrem = entity.getDupForPrem();
+            if("1".equals(dupForPrem)){
+                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get("Presmises 1: "+v.getSvcComDocName());
+                if(grpPrimaryDocDtos==null){
+                    grpPrimaryDocDtos=new ArrayList<>();
+                    grpPrimaryDocDtos.add(v);
+                    multipleGrpPrimaryDoc.put("Presmises 1: "+v.getSvcComDocName(),grpPrimaryDocDtos);
+                }else {
+                    grpPrimaryDocDtos.add(v);
+                }
+            }else if("0".equals(dupForPrem)){
+                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(v.getSvcComDocName());
+                if(grpPrimaryDocDtos==null){
+                    grpPrimaryDocDtos=new ArrayList<>();
+                    grpPrimaryDocDtos.add(v);
+                    multipleGrpPrimaryDoc.put(v.getSvcComDocName(),grpPrimaryDocDtos);
+                }else {
+                    grpPrimaryDocDtos.add(v);
+                }
             }
+
         }
 
     }
 
-    private void dealWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+    private void dealWithSvcDoc( List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
         if(appSvcDocDtoLit==null){
             return;
         }
-        for(AppSvcDocDto v : appSvcDocDtoLit){
-            List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(v.getUpFileName());
-            if(appSvcDocDtos==null){
-                appSvcDocDtos=new ArrayList<>();
-                appSvcDocDtos.add(v);
-                multipleSvcDoc.put(v.getUpFileName(),appSvcDocDtos);
-            }else {
-                appSvcDocDtos.add(v);
+        Map<String,Integer> map=new HashMap<>();
+        AtomicInteger i=new AtomicInteger(1);
+        appSvcDocDtoLit.forEach((v)->{
+            String vDupForPerson = v.getAppGrpPersonId();
+            if(vDupForPerson!=null){
+                Integer integer = map.get(vDupForPerson);
+                if(integer==null){
+                    map.put(vDupForPerson,i.get());
+                    i.getAndIncrement();
+                }else {
+                    map.put(vDupForPerson,1);
+                }
             }
+        });
+        for(AppSvcDocDto v : appSvcDocDtoLit){
+            String svcDocId = v.getSvcDocId();
+            HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+            String dupForPrem = entity.getDupForPrem();
+            String dupForPerson = entity.getDupForPerson();
+            if("0".equals(dupForPrem)&&dupForPerson==null){
+                List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(v.getUpFileName());
+                if(appSvcDocDtos==null){
+                    appSvcDocDtos=new ArrayList<>();
+                    appSvcDocDtos.add(v);
+                    multipleSvcDoc.put(v.getUpFileName(),appSvcDocDtos);
+                }else {
+                    appSvcDocDtos.add(v);
+                }
+            }else if("0".equals(dupForPrem)&&dupForPerson!=null){
+                String vDupForPerson = v.getAppGrpPersonId();
+                if("1".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("CGO"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("CGO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("2".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("PO"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("PO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("4".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("DPO"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("DPO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("8".equals(dupForPerson)){
+
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("MAP"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("MAP"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("16".equals(dupForPerson)){
+
+                }
+
+            }else if("1".equals(dupForPrem)&&dupForPerson!=null){
+
+                String vDupForPerson = v.getAppGrpPersonId();
+                if("1".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Clinical Governance Officers"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Clinical Governance Officers"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("2".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Principal Officers"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Principal Officers"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("4".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Nominee"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Nominee"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("8".equals(dupForPerson)){
+
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:MedAlert Person"+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:MedAlert Person"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("16".equals(dupForPerson)){
+
+                }
+
+            }else if("1".equals(dupForPrem)&&dupForPerson==null){
+                if("1".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Clinical Governance Officers"+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Clinical Governance Officers"+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("2".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Principal Officers"+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Principal Officers"+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("4".equals(dupForPerson)){
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Nominee"+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:Nominee"+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("8".equals(dupForPerson)){
+
+                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:MedAlert Person"+v.getUpFileName());
+                    if(appSvcDocDtos==null){
+                        appSvcDocDtos=new ArrayList<>();
+                        appSvcDocDtos.add(v);
+                        multipleSvcDoc.put("Premises 1:"+v.getUpFileName(),appSvcDocDtos);
+                    }else {
+                        appSvcDocDtos.add(v);
+                    }
+                }else if("16".equals(dupForPerson)){
+
+                }
+            }
+        }
+    }
+    private List<? extends Serializable> dupPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,String dupForPerson){
+        switch (dupForPerson){
+            case "1":
+                return appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            case "2":
+                return appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();//PO
+            case "4":
+                return appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();//DPO
+            case "8":
+               return appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+            case "16":
+                return appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+            default: return null;
         }
     }
 
