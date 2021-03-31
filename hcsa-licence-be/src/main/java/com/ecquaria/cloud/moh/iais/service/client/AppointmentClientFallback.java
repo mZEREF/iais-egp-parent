@@ -150,13 +150,4 @@ public class AppointmentClientFallback implements AppointmentClient{
         entity.setHeaders(headers);
         return entity;
     }
-
-    @Override
-    public FeignResponseEntity<List<ApptRequestDto>> reScheduleNewDate(AppointmentDto appointmentDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("fusing", "fusing");
-        entity.setHeaders(headers);
-        return entity;
-    }
 }
