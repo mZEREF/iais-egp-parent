@@ -3108,6 +3108,13 @@ public class NewApplicationDelegator {
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
             serviceConfigService.updatePaymentStatus(appGrp);
+            List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrp.getGroupNo()).getEntity();
+            if (entity!=null && !entity.isEmpty()) {
+                for(ApplicationDto applicationDto : entity){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                }
+                applicationFeClient.saveApplicationDtos(entity);
+            }
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             //todo change
