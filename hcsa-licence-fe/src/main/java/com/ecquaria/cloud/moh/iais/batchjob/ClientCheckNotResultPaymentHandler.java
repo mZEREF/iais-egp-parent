@@ -47,7 +47,6 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             ) {
                 try {
                     List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
-                    appGrp.setPmtStatus(ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                     if(paymentRequestDtos!=null){
                         for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
                         ) {
