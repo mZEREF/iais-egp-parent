@@ -28,7 +28,9 @@
                             </div>
                             <div class="document-content ">
                                 <input type="hidden" name="uploadKey" value=""/>
-                                <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
+                                <div id="selectFileDiv">
+                                    <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
+                                </div>
                                 <div class="document-info-list">
                                     <ul>
                                         <li>
@@ -195,9 +197,10 @@
         $('.file-upload').click(function () {
             var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
             $('input[name="uploadKey"]').val(index);
-            $('input[type="file"]').click();
             clearFlagValueFEFile();
-            $('#selectedFile').val('');
+            //68932
+            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('input[type="file"]').click();
         });
     });
 
