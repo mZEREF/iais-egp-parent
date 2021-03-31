@@ -20,9 +20,11 @@
 </div>
 <div class="col-xs-12">
     <div class="col-xs-3">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" width="66" height="35" alt="GIRO">
+        <%--<img src="/hcsa-licence-web/img/Mastercard.svg" width="66" height="25" alt="GIRO">--%>
+        <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="GIRO">
         &nbsp;
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="66" height="35" alt="GIRO">
+        <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
+        <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="GIRO">
     </div>
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
