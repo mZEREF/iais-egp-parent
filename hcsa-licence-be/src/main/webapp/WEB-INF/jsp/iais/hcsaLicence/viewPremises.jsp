@@ -625,11 +625,11 @@
                                     <div class="row">
                                       <div class="col-md-6">
                                         <div class="col-md-6" style="padding: 0px">
-                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}<c:if test="${!eventSta.last}">,</c:if></span>
+                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
                                         </div>
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}<c:if test="${!eventSta.last}">,</c:if>
+                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
                                           </span>
                                         </div>
 

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -281,6 +282,15 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
+
+    private void dealWithDoc(ApplicationViewDto applicationViewDto){
+        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
+        if(appSupDocDtoList!=null){
+           for(AppSupDocDto v : appSupDocDtoList){
+
+           }
+        }
+    }
     /**
      * StartStep: chooseStage
      *

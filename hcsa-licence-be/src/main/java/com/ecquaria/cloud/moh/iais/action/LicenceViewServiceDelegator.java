@@ -1542,158 +1542,80 @@ public class LicenceViewServiceDelegator {
             String dupForPrem = entity.getDupForPrem();
             String dupForPerson = entity.getDupForPerson();
             if("0".equals(dupForPrem)&&dupForPerson==null){
-                List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(v.getUpFileName());
-                if(appSvcDocDtos==null){
-                    appSvcDocDtos=new ArrayList<>();
-                    appSvcDocDtos.add(v);
-                    multipleSvcDoc.put(v.getUpFileName(),appSvcDocDtos);
-                }else {
-                    appSvcDocDtos.add(v);
-                }
+
+                docDealWith(multipleSvcDoc,v,v.getUpFileName());
             }else if("0".equals(dupForPrem)&&dupForPerson!=null){
                 String vDupForPerson = v.getAppGrpPersonId();
                 if("1".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("CGO"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("CGO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Clinical Governance Officer "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("2".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("PO"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("PO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Principal Officer(s) "+map.get(vDupForPerson)+": "+v.getUpFileName());
                 }else if("4".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("DPO"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("DPO"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Nominee "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("8".equals(dupForPerson)){
 
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("MAP"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("MAP"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+                    docDealWith(multipleSvcDoc,v,"MedAlert Person "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("16".equals(dupForPerson)){
 
+                    docDealWith(multipleSvcDoc,v,"Service Personnel "+map.get(vDupForPerson)+": "+v.getUpFileName());
                 }
 
             }else if("1".equals(dupForPrem)&&dupForPerson!=null){
 
                 String vDupForPerson = v.getAppGrpPersonId();
                 if("1".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Clinical Governance Officers"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Clinical Governance Officers"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Premises 1:Clinical Governance Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("2".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Principal Officers"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Principal Officers"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Premises 1:Principal Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("4".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Nominee"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Nominee"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Premises 1:Nominee "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("8".equals(dupForPerson)){
 
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:MedAlert Person"+map.get(vDupForPerson)+": "+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:MedAlert Person"+map.get(vDupForPerson)+": "+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Premises 1:MedAlert Person "+map.get(vDupForPerson)+": "+v.getUpFileName());
+
                 }else if("16".equals(dupForPerson)){
 
+                    docDealWith(multipleSvcDoc,v,"Premises 1:Service Personnel "+map.get(vDupForPerson)+": "+v.getUpFileName());
                 }
 
             }else if("1".equals(dupForPrem)&&dupForPerson==null){
                 if("1".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Clinical Governance Officers"+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Clinical Governance Officers"+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
                 }else if("2".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Principal Officers"+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Principal Officers"+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+
+                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
                 }else if("4".equals(dupForPerson)){
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:Nominee"+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:Nominee"+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
                 }else if("8".equals(dupForPerson)){
 
-                    List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get("Premises 1:MedAlert Person"+v.getUpFileName());
-                    if(appSvcDocDtos==null){
-                        appSvcDocDtos=new ArrayList<>();
-                        appSvcDocDtos.add(v);
-                        multipleSvcDoc.put("Premises 1:"+v.getUpFileName(),appSvcDocDtos);
-                    }else {
-                        appSvcDocDtos.add(v);
-                    }
+                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
                 }else if("16".equals(dupForPerson)){
-
+                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
                 }
             }
         }
     }
-    private List<? extends Serializable> dupPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,String dupForPerson){
-        switch (dupForPerson){
-            case "1":
-                return appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            case "2":
-                return appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();//PO
-            case "4":
-                return appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();//DPO
-            case "8":
-               return appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-            case "16":
-                return appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-            default: return null;
+    private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){
+        List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(key);
+        if(appSvcDocDtos==null){
+            appSvcDocDtos=new ArrayList<>();
+            appSvcDocDtos.add(v);
+            multipleSvcDoc.put(key,appSvcDocDtos);
+        }else {
+            appSvcDocDtos.add(v);
         }
     }
 
