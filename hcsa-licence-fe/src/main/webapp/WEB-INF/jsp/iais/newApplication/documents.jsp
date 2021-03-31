@@ -69,7 +69,7 @@
                                                     <c:when test="${canEdit}">
                                                         <p>
                                                         <div class="text-right app-font-size-16">
-                                                            <a id="edit" class="svcDocEdit">
+                                                            <a id="edit" class="primaryDocEdit">
                                                                 <em class="fa fa-pencil-square-o"></em>
                                                                 <span>&nbsp;</span>Edit
                                                             </a>
