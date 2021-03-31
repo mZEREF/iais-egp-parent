@@ -265,25 +265,41 @@ public class InsRepServiceImpl implements InsRepService {
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
         //best practice remarks
-        String bestPractice = "-";
-        String remarks = "-";
-        if (NcRecommendationDto == null) {
+        StringBuilder bestPractice = new StringBuilder("-");
+        StringBuilder remarks = new StringBuilder("-");
+        if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        } else if (NcRecommendationDto != null) {
+        }else  {
             Date recomInDate = NcRecommendationDto.getRecomInDate();
-            if (recomInDate == null) {
+            if(recomInDate==null){
                 inspectionReportDto.setMarkedForAudit("No");
-            } else {
+            }else {
                 inspectionReportDto.setMarkedForAudit("Yes");
                 inspectionReportDto.setTcuDate(recomInDate);
             }
             String ncBestPractice = NcRecommendationDto.getBestPractice();
             String ncRemarks = NcRecommendationDto.getRemarks();
-            if (!StringUtil.isEmpty(ncBestPractice)) {
-                bestPractice = ncBestPractice;
+            String[] observations=new String[]{};
+            if(ncRemarks!=null){
+                observations=ncRemarks.split("\n");
             }
-            if (!StringUtil.isEmpty(ncRemarks)) {
-                remarks = ncRemarks;
+            String[] recommendations=new String[]{};
+            if(ncBestPractice!=null){
+                recommendations=ncBestPractice.split("\n");
+            }
+            if(!StringUtil.isEmpty(ncBestPractice)){
+                bestPractice = new StringBuilder();
+                for (String bp:recommendations
+                ) {
+                    bestPractice.append(bp).append("<br>");
+                }
+            }
+            if(!StringUtil.isEmpty(ncRemarks)){
+                remarks =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    remarks.append(rk).append("<br>");
+                }
             }
         }
         inspectionReportDto.setRectifiedWithinKPI("Yes");
@@ -360,8 +376,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setInspectionDate(inspectionDate);
         inspectionReportDto.setInspectionStartTime(inspectionStartTime);
         inspectionReportDto.setInspectionEndTime(inspectionEndTime);
-        inspectionReportDto.setBestPractice(bestPractice);
-        inspectionReportDto.setTaskRemarks(remarks);
+        inspectionReportDto.setBestPractice(bestPractice.toString());
+        inspectionReportDto.setTaskRemarks(remarks.toString());
         inspectionReportDto.setCurrentStatus(status);
         try {
             if(status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)){
