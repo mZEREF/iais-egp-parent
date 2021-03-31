@@ -123,6 +123,7 @@ public class FileUtil {
 				if (f.createNewFile()) {
 					pw = new PrintWriter(f);
 					pw.write(data);
+					pw.flush();
 					result = true;
 				}
 			} catch (Exception e) {

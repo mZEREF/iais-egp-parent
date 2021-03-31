@@ -50,6 +50,7 @@
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                     <h3>General</h3>
+                                    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label" >Remarks</label>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
@@ -65,6 +66,7 @@
                                             </p>
                                         </div>
                                     </div>
+                                    </c:if>
                                     <div class="table-gp">
                                         <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
                                             <br/>
@@ -357,12 +359,14 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+                                  <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
                                    <div style="float:right">
-                                       <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Next</button>
                                     <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
-                                            <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
+                                        <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+                                        <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
                                     </c:if>
                                    </div>
+                                  </c:if>
                                 </div>
                             </div>
                         </div>
@@ -415,14 +419,21 @@
 
     $(document).ready(function (){
         readOnlyAllForCheckList('${applicationViewDto.applicationDto.status}');
+        var beforeFinishCheck = ${(inspectionNcCheckListDelegator_before_finish_check_list == null || inspectionNcCheckListDelegator_before_finish_check_list == "0") ? '0' : '1'};
+        if( beforeFinishCheck == '1'){
+            readOnlyAllForCheckListOnly();
+        }
     });
 
    function readOnlyAllForCheckList(status) {
-    if(status == 'APST032'){
-        $("#checkLsitItemArea textarea").attr('readonly','readonly');
-        $("#checkLsitItemArea textarea").attr('Enabled',false);
-        $("#checkLsitItemArea input[type='checkbox']").attr("disabled",true);
-        $("#checkLsitItemArea  input[type='radio']").attr("disabled",true)
-    }
+       if (status == 'APST032') {
+           readOnlyAllForCheckListOnly();
+       }
    }
+    function readOnlyAllForCheckListOnly() {
+               $("#checkLsitItemArea textarea").attr('readonly','readonly');
+               $("#checkLsitItemArea textarea").attr('Enabled',false);
+               $("#checkLsitItemArea input[type='checkbox']").attr("disabled",true);
+               $("#checkLsitItemArea  input[type='radio']").attr("disabled",true);
+     }
 </script>

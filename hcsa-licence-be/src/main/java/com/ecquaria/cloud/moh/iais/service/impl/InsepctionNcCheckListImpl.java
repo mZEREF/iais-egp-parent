@@ -280,16 +280,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Override
     public AppPremisesPreInspectChklDto getAppPremChklDtoByTaskId(String taskId, String configId) {
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+             log.info("-----------getAppPremChklDtoByTaskId TASKID is null -------------------------- ");
+             return null;
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = null;
         if (taskDto != null) {
             appPremCorrId = taskDto.getRefNo();
         }
-        Map<String, Object> appCklMap = IaisCommonUtils.genNewHashMap();
-        appCklMap.put("appPremId", appPremCorrId);
-        appCklMap.put("configId", configId);
         AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
         return appPremisesPreInspectChklDto;
     }
@@ -304,39 +302,16 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public AppPremisesRecommendationDto getAppRecomDtoByAppCorrId(String appCorrId, String recomType) {
-        Map<String, Object> paramMap = IaisCommonUtils.genNewHashMap();
-        paramMap.put("appCorrId", appCorrId);
-        paramMap.put("recomType", recomType);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();
         return appPremisesRecommendationDto;
     }
 
     @Override
     public void submit(InspectionFillCheckListDto commDto,AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId) {
-        if(commDto!=null){
-            saveInspectionCheckListDto(commDto,appPremId);
-        }
-        saveSerListDto(serListDto,appPremId);
-        saveAdhocDto(showDto,appPremId);
-        //saveInspectionDate(serListDto,appPremId);
-        saveStartTime(serListDto,appPremId);
-        saveEndTime(serListDto,appPremId);
-        saveOtherInspection(serListDto,appPremId);
-        saveRecommend(serListDto,appPremId);
-        saveLitterFile(serListDto);
-        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
-                fillcheckDtoList.add(temp);
-            }
-        }
-        if(commDto!=null&&commDto.getCheckList()!=null&&!commDto.getCheckList().isEmpty()){
-            fillcheckDtoList.add(commDto);
-        }
-        if(!fillcheckDtoList.isEmpty() || !IaisCommonUtils.isEmpty(showDto.getAdItemList()))
-        {
-            saveNcItem(fillcheckDtoList,appPremId,showDto);
-        }
+        //save other data
+        saveOtherDataForPengingIns(serListDto,appPremId);
+        //save checklist data
+        saveBeforeSubmitCheckList(commDto, showDto, serListDto, appPremId);
     }
 
     public void saveLitterFile(InspectionFDtosDto serListDto){
@@ -1143,5 +1118,57 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         checkListDraftAllDto.setRefNo(appPremId);
         checkListDraftAllDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         fillUpCheckListGetAppClient.saveDraftAnswerForCheckList(checkListDraftAllDto);
+    }
+
+    @Override
+    public void saveBeforeSubmitCheckList(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto, String appPremId) {
+        if(commDto!=null){
+            saveInspectionCheckListDto(commDto,appPremId);
+        }
+        saveSerListDto(serListDto,appPremId);
+        saveAdhocDto(showDto,appPremId);
+        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
+            for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
+                fillcheckDtoList.add(temp);
+            }
+        }
+        if(commDto!=null&&commDto.getCheckList()!=null&&!commDto.getCheckList().isEmpty()){
+            fillcheckDtoList.add(commDto);
+        }
+        if(!fillcheckDtoList.isEmpty() || !IaisCommonUtils.isEmpty(showDto.getAdItemList()))
+        {
+            saveNcItem(fillcheckDtoList,appPremId,showDto);
+        }
+    }
+
+
+    @Override
+    public void saveOtherDataForPengingIns(InspectionFDtosDto serListDto, String appPremId) {
+        //saveInspectionDate(serListDto,appPremId);
+        saveStartTime(serListDto,appPremId);
+        saveEndTime(serListDto,appPremId);
+        saveOtherInspection(serListDto,appPremId);
+        saveRecommend(serListDto,appPremId);
+        saveLitterFile(serListDto);
+    }
+
+    @Override
+    public void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks) {
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE).getEntity();
+        if( appPreRecommentdationDto != null){
+            log.info(StringUtil.changeForLog("-------------saveBeforeFinishCheckListRec appPremId : " + appPremId +" have exist ------------"));
+        }else {
+            appPreRecommentdationDto = new AppPremisesRecommendationDto();
+            appPreRecommentdationDto.setVersion(1);
+            appPreRecommentdationDto.setId(null);
+            appPreRecommentdationDto.setAppPremCorreId(appPremId);
+            appPreRecommentdationDto.setRemarks(mobileRemarks);
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE);
+            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        }
+
     }
 }

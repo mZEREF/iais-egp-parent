@@ -99,6 +99,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                 }
                             }
                         }
+                    }else if(StringUtil.isEmpty(temp.getChkanswer())){
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+draftTag+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                        if(isError){
+                            isError = false;
+                        }
                     }
                 }
                 if( !isError){
@@ -139,6 +144,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                 isError = false;
                             }
                         }
+                    }
+                }else if(StringUtil.isEmpty(temp.getChkanswer())){
+                    errMap.put(fDto.getSubName() + temp.getSectionNameShow() + temp.getItemId()+draftTag, MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "field"));
+                    if (isError){
+                        isError = false;
                     }
                 }
             }
@@ -216,6 +226,11 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                                     isError = false;
                                 }
                             }
+                        }
+                    }else if(StringUtil.isEmpty(temp.getAdAnswer())){
+                        errMap.put(temp.getId()+draftTag+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                        if(isError){
+                            isError = false;
                         }
                     }
                 }

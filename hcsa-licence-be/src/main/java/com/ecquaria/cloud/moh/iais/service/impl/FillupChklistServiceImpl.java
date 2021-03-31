@@ -1978,11 +1978,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto, String refNo) {
+    public String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto, String refNo) {
         log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile ------------------");
          setRemark(serListDto,commonDto);
          setStartTimeAndEndTime(serListDto,refNo);
-        log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile  end------------------");
+         log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile  end------------------");
+         return  serListDto.getTcuRemark();
     }
 
     private void setRemark(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto){
@@ -2060,5 +2061,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isBeforeFinishCheckList(String refNo) {
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE).getEntity();
+        if(appPreRecommentdationDto != null){
+            return true;
+        }
+        return false;
     }
 }
