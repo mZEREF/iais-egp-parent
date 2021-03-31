@@ -306,7 +306,7 @@ public class OfficersReSchedulingDelegator {
             ParamUtil.setRequestAttr(bpc.request, "appStatusFlag", appStatusFlag);
             ParamUtil.setRequestAttr(bpc.request, "reScheduleSuccess", "reScheduleSuccess");
         } else if (InspectionConstants.SWITCH_ACTION_AGAIN.equals(actionValue)) {
-
+            reschedulingOfficerDto.setNewInspDates(null);
         } else {
             apptReSchAppInfoShowDtos = null;
         }

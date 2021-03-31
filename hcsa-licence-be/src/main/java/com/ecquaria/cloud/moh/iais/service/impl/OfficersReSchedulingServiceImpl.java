@@ -639,6 +639,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
                         updateAndCreateApptRefNo(appPremisesInspecApptDtos, appPremInspecApptUpdateDtos, appPremInspecApptCreateDtos, apptAppInfoShowDto,
                                 auditTrailDto, reschedulingOfficerDto.getAppointmentDto());
+                        //synchronization update FE apptRefNo
+                        createFeAppPremisesInspecApptDto(appPremInspecApptUpdateDtos);
                         //cancel the original inspector and create new
                         List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(appNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                         updateAppNoCorrelationInspectors(appPremInspCorrelationDtoList, apptAppInfoShowDto, appNo, auditTrailDto);
@@ -652,9 +654,6 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
                 //save new apptRefNo and cancel old
                 cancelOrConfirmApptDate(apptCalendarStatusDto);
-                //synchronization FE apptRefNo
-                createFeAppPremisesInspecApptDto(appPremInspecApptUpdateDtos);
-                createFeAppPremisesInspecApptDto(appPremInspecApptCreateDtos);
             }
             return AppConsts.SUCCESS;
         } else {
@@ -700,7 +699,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     appPremInspCorrCreateDto.setAuditTrailDto(auditTrailDto);
                     appPremInspCorrCreateDtos.add(appPremInspCorrCreateDto);
                 }
-                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
+                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrCreateDtos);
             }
         }
     }
@@ -747,7 +746,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     appPremInspecApptUpdateDtos.add(appPremisesInspecApptDto);
                     appPremInspecApptCreateDtos.add(createAppPremInspDto);
                 }
-                applicationClient.createAppPremisesInspecApptDto(appPremInspecApptCreateDtos).getEntity();
+                appPremInspecApptCreateDtos = applicationClient.createAppPremisesInspecApptDto(appPremInspecApptCreateDtos).getEntity();
+                //synchronization update FE apptRefNo
+                createFeAppPremisesInspecApptDto(appPremInspecApptCreateDtos);
             }
         }
     }
