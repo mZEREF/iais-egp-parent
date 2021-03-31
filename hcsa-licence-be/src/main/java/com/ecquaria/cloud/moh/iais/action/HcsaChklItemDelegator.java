@@ -713,6 +713,10 @@ public class HcsaChklItemDelegator {
 
             if (Optional.ofNullable(searchResult).isPresent() && Optional.ofNullable(searchResult.getRows()).isPresent()){
                 list = searchResult.getRows();
+                for (CheckItemQueryDto i : list){
+                    i.setAnswerType(MasterCodeUtil.getCodeDesc(i.getAnswerType()));
+                    i.setRiskLevel(MasterCodeUtil.getCodeDesc(i.getRiskLevel()));
+                }
             }
         }
 
