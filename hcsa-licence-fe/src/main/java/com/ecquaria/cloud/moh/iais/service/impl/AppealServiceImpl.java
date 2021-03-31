@@ -88,14 +88,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wenkang
@@ -227,12 +220,15 @@ public class AppealServiceImpl implements AppealService {
         }
         List<String> list = comFileRepoClient.saveFileRepo(files);
         if(list!=null){
-            for(int i=0;i<list.size();i++){
-                for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
-                    String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
-                    if(fileRepoId==null){
-                        appPremisesSpecialDocDtoList.get(j).setFileRepoId(list.get(i));
-                        pageShowFileDtos.get(j).setFileUploadUrl(list.get(i));
+            ListIterator<String> iterator = list.listIterator();
+            for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                if(fileRepoId==null){
+                    if(iterator.hasNext()){
+                        String next = iterator.next();
+                        pageShowFileDtos.get(j).setFileUploadUrl(next);
+                        appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
+                        iterator.remove();
                     }
                 }
             }
@@ -1508,18 +1504,24 @@ public class AppealServiceImpl implements AppealService {
 
             });
         }
+
         List<String> list = comFileRepoClient.saveFileRepo(files);
-        if(list!=null){
-            for(int i=0;i<list.size();i++){
-                for(int j=0;j<appPremisesSpecialDocDtos.size();j++){
-                    String fileRepoId = appPremisesSpecialDocDtos.get(j).getFileRepoId();
-                    if(fileRepoId==null){
-                        appPremisesSpecialDocDtos.get(j).setFileRepoId(list.get(i));
+        if(list!=null) {
+            ListIterator<String> iterator = list.listIterator();
+
+            for (int j = 0; j < appPremisesSpecialDocDtos.size(); j++) {
+                String fileRepoId = appPremisesSpecialDocDtos.get(j).getFileRepoId();
+                if (fileRepoId == null) {
+                    if (iterator.hasNext()) {
+                        String next = iterator.next();
+                        appPremisesSpecialDocDtos.get(j).setFileRepoId(next);
+                        iterator.remove();
                     }
                 }
             }
         }
-        appealDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);
+
+            appealDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtos);
 
         appealDto.setRemarks(remarks);
         appealDto.setAppealReason(reasonSelect);
