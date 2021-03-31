@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -173,4 +174,8 @@ public interface InspectionTaskClient {
 
     @PostMapping(value = "/iais-self-assessment-be/self-assessment/report-by-correlation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> selfAssMtPdfReport(@RequestParam(value = "correlationId") String cid);
+
+    @PostMapping(value = "/iais-inspection/re-schedule-date/both-fe-be", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptRequestDto>> reScheduleNewDate(@RequestBody AppointmentDto appointmentDto);
 }

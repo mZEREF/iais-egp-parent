@@ -24,6 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author ShiCheng_Xu
+ */
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentClientFallback.class)
 public interface AppointmentClient {
@@ -76,5 +79,4 @@ public interface AppointmentClient {
 
     @PutMapping(value = "/iais-appointment/appt-calendar-refno-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatus(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
-
 }
