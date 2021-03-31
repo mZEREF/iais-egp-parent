@@ -2907,6 +2907,8 @@ public class NewApplicationDelegator {
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         log.info(StringUtil.changeForLog("the appGroupNo is -->:" + appGroupNo));
         appSubmissionDto.setAppGrpNo(appGroupNo);
+        //clear appGrpId
+        appSubmissionDto.setAppGrpId(null);
         //get Amount
         FeeDto feeDto = appSubmissionService.getNewAppAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
