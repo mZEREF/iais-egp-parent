@@ -537,7 +537,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         try {
             AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
             if (appointmentDto != null) {
-                FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.reScheduleNewDate(appointmentDto);
+                FeignResponseEntity<List<ApptRequestDto>> result = inspectionTaskClient.reScheduleNewDate(appointmentDto);
                 Map<String, Collection<String>> headers = result.getHeaders();
                 //Has it been blown up
                 if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
