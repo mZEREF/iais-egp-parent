@@ -137,7 +137,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public void initPropertyKeyOffset() {
-        if(IaisCommonUtils.isEmpty(propertiesBitIndex)){
+        if (IaisCommonUtils.isEmpty(propertiesBitIndex)){
             Long index = 0L;
             Class clz = SystemParamConfig.class;
             Field[] fields = clz.getDeclaredFields();
@@ -148,7 +148,9 @@ public class SystemParameterServiceImpl implements SystemParameterService {
                     if (StringUtil.isNotEmpty(propertyKey)){
                         propertyKey = propertyKey.replace("${", "").replace("}", "");
                         log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
-                        propertiesBitIndex.put(propertyKey, index++);
+                        synchronized (this){
+                            propertiesBitIndex.put(propertyKey, index++);
+                        }
                     }
                 }
             }
@@ -161,8 +163,14 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             throw new NullPointerException();
         }
 
-        long offset = propertiesBitIndex.get(propertyKey);
-        return redisCacheHelper.getBitValue(SYSTEM_PARAM_EDIT_OFFSET, offset);
+        try {
+            long offset = propertiesBitIndex.get(propertyKey);
+            return redisCacheHelper.getBitValue(SYSTEM_PARAM_EDIT_OFFSET, offset);
+        }catch (NullPointerException e){
+            log.error("don't have init this properties..");
+            log.error(e.getMessage(), e);
+        }
+        return false;
     }
 
     @Override
@@ -171,8 +179,13 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             throw new NullPointerException();
         }
 
-        long offset = propertiesBitIndex.get(propertyKey);
-        //cache 5 minute
-        redisCacheHelper.setBit(SYSTEM_PARAM_EDIT_OFFSET, offset, flag, 300L);
+        try {
+            long offset = propertiesBitIndex.get(propertyKey);
+            //cache 5 minute
+            redisCacheHelper.setBit(SYSTEM_PARAM_EDIT_OFFSET, offset, flag, 300L);
+        }catch (NullPointerException e){
+            log.error("don't have init this properties..");
+            log.error(e.getMessage(), e);
+        }
     }
 }
