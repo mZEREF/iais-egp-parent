@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
@@ -341,18 +342,28 @@ public class RegulationDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-        QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
-        SearchResult searchResult =  regulationService.searchRegulation(searchParam);
-        LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
+
         List<RegulationQueryDto> list = IaisCommonUtils.genNewArrayList();
-        if (Optional.ofNullable(searchResult).isPresent()
-                && Optional.ofNullable(searchResult.getRows()).isPresent()
-                && Optional.ofNullable(checked).isPresent()){
-            list = searchResult.getRows();
-            list = list.stream().filter(i -> checked.contains(i.getId())).collect(Collectors.toList());
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
+        if (Optional.ofNullable(set).isPresent()){
+            SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+
+            String idStr = SqlHelper.constructInCondition("ID", set.size());
+            searchParam.addParam("regulationId", idStr);
+            int indx = 0;
+            for (String checked : set){
+                searchParam.addFilter("ID"+indx, checked);
+                indx++;
+            }
+
+            QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
+            SearchResult searchResult =  regulationService.searchRegulation(searchParam);
+
+            if (Optional.ofNullable(searchResult).isPresent() && Optional.ofNullable(searchResult.getRows()).isPresent()){
+                list = searchResult.getRows();
+            }
         }
 
         File file = null;

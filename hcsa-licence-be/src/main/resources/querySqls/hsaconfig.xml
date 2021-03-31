@@ -56,6 +56,7 @@
                 <#if id??> and id = :id</#if>
                 <#if clauseNo??> and charindex(:clauseNo, CLAUSE_NO) > 0  </#if>
                 <#if clause??> and charindex(:clause, CLAUSE) > 0</#if>
+                <#if regulationId??> and ${regulationId} </#if>
         ]]>
 
     </sql>
