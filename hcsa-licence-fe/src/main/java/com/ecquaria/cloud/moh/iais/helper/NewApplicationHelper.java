@@ -2683,7 +2683,7 @@ public class NewApplicationHelper {
                 String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
                 String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
                 if("0".equals(dupForPrem)){
-                    setSvcDocDisplayTitle(dupForPrem,0,"",dupForPrem,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto,reloadMap);
+                    setSvcDocDisplayTitle(dupForPrem,0,"",dupForPerson,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto,reloadMap);
                 }else if("1".equals(dupForPrem)){
                     int premCount = 1;
                     for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
