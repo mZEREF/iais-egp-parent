@@ -10,6 +10,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<%@include file="../common/dashboard.jsp"%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
@@ -29,6 +30,8 @@
                                 <td class="sorting"><strong>Service(s)</strong></td>
                                 <td class="sorting"><strong>Date and Time of Inspection</strong></td>
                                 <td class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></td>
+                                <td class="sorting" style="width:23%"><strong>New Date Range </strong><strong style="color:#ff0000;">*</strong></td>
+                                <td class="sorting"><strong>New Date </strong></td>
                             </tr>
                             <tbody>
                             <c:choose>
@@ -52,9 +55,23 @@
                                             <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
                                             <td style="float:left;">
                                                 <textarea  name="reason${pool.viewCorrId}" maxlength="500" rows="10" style=" font-weight:normal;"
-                                                          cols="50" ></textarea><br>
+                                                           cols="50" >${pool.reason}</textarea><br>
                                                 <span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
                                             </td>
+                                            <td >
+                                                From :<iais:datePicker  id = "newStartDate${pool.viewCorrId}" name = "newStartDate${pool.viewCorrId}" dateVal="${pool.specificStartDate}"/>
+                                                <br>
+                                                To :<iais:datePicker id = "newEndDate${pool.viewCorrId}" name = "newEndDate${pool.viewCorrId}" dateVal="${pool.specificEndDate}"/>
+                                                <br>
+                                                <span style="float:left;" id="error_newDate${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
+
+                                            </td>
+                                            <td>
+                                                <fmt:formatDate value="${pool.inspNewDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" />
+                                                <input type="hidden" name="newDate${pool.viewCorrId}" id="newDate${pool.viewCorrId}" value="${pool.inspNewDate}"/>
+                                                <span style="float:left;" id="error_inspDate${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
+                                            </td>
+
                                         </tr>
 
                                         <br>
