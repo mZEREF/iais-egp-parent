@@ -251,7 +251,7 @@
             $("#fileName").html(fileName.substring(pos + 1));
         } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of ' + configFileSize + 'M.');
+            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
             $("#fileName").html("");
         }
     }

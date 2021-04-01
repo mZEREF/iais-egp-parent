@@ -309,7 +309,7 @@ function uploadFileValidate(){
   } else if(error =="N"){
     clearFileFunction();
     flag = false;
-    $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+    $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
     $('#error_file').html("");
   }
   return flag;

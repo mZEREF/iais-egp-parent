@@ -25,6 +25,7 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -131,7 +132,7 @@
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
         console.log(error)
         if (error == "N"){
-            $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_fileUploadError').html($("#fileMaxLengthMessage").val());
             $("#selectFile").val('');
             $(".filename").html("");
         }else if(error == "Y"){
@@ -139,7 +140,7 @@
                 callAjaxUploadFile();
                 $('#error_fileUploadError').html('');
             }else{
-                $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+                $('#error_fileUploadError').html($("#fileMaxLengthMessage").val());
                 $("#selectFile").val('');
             }
         }

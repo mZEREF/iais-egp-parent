@@ -157,6 +157,7 @@
                 </div>
                 <p></p>
                 <div class="text-right"><span class="error-msg" name="iaisErrorMsg" id="error_userUploadFile"></span></div>
+                <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
             </iais:action>
         </div>
     </div>
@@ -175,7 +176,7 @@
         const userFileSize = $("#userFileSize").val();
         const error = validateUploadSizeMaxOrEmpty(userFileSize, "userRoleUpload");
         if (error == "N"){
-            $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
+            $('#error_userUploadFile').html($("#fileMaxLengthMessage").val());
             dismissWaiting();
         } else {
             const file = $("#userRoleUpload").val();

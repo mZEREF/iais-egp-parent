@@ -26,6 +26,7 @@
       <input type="hidden" id="maxFileSize" name="maxFileSize" value="${inspSetMaskValueDto.sqlFileSize}">
       <input type="hidden" id="fileId" name="fileId" value="">
       <input type="hidden" id="remarksError" name="remarksError" value="">
+      <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
       <div class="main-content">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
@@ -157,7 +158,7 @@
         var maxFileSize = $("#maxFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, "recFileUpload");
         if (error == "N"){
-            $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'MB.');
+            $('#error_recFile').html($("#fileMaxLengthMessage").val());
             dismissWaiting();
         } else {
             let remarksError = $("#error_remarks").text();
