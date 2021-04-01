@@ -115,6 +115,7 @@
 
             </div>
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_selectedFileError"></span>
           <div class="col-xs-12" >
             <span  name="selectedFileShowId" id="selectedFileShowId">
             <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
