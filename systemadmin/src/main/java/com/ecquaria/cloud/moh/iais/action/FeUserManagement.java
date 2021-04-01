@@ -137,13 +137,13 @@ public class FeUserManagement {
              ) {
             if (!StringUtil.isEmpty(item)){
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
-                orgUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                orgUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                 orgUserDto.setIdentityNo(orgUserDto.getIdNumber());
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
                     FeUserDto feUserDto = intranetUserService.getFeUserAccountByNricAndType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
-                    feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    feUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                     eicGatewayClient.syncFeUser(feUserDto);
                     intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
                 }catch (Exception e){
@@ -298,6 +298,14 @@ public class FeUserManagement {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                 }
             }else{
+                if (intranetUserService.accountAlreadyExist(feUserDto)){
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put("identityNo", "USER_ERR002");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
+                    return;
+                }
+
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
@@ -325,7 +333,7 @@ public class FeUserManagement {
                 try {
                     eicGatewayClient.syncFeUser(feUserDto);
                 }catch (Exception e){
-
+                    log.error(e.getMessage(), e);
                 }
 
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");

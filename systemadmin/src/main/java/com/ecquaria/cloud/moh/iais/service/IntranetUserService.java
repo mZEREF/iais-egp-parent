@@ -39,6 +39,8 @@ public interface IntranetUserService {
     OrgUserDto findIntranetUserByUserId(String userId);
     Boolean UserIsExist(String userId);
 
+    boolean accountAlreadyExist(FeUserDto user);
+
     ClientUser saveEgpUser(ClientUser clientUser);
     ClientUser updateEgpUser(ClientUser clientUser);
     Boolean deleteEgpUser(String userDomian,String userId);
