@@ -60,4 +60,10 @@ public class INTERNET___FE_Corppass_Landing___1 extends BaseProcessClass {
 	public void validatePwd_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "validatePwd", this);
 	}
+
+
+
+	public void receiveEntityFormEDH_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "receiveEntityFormEDH", this);
+	}
 }

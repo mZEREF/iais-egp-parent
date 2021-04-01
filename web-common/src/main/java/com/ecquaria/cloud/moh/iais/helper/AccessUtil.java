@@ -127,7 +127,7 @@ public class AccessUtil {
                     OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
                     if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
                         log.info("=====>>>>> createLicenseeByUenFromAcra corppass");
-                        lc.createLicenseeByUenFromAcra(organ.getUenNo());
+                        lc.getEntityByUEN(organ.getUenNo());
                     }else {
                         lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
                     }
