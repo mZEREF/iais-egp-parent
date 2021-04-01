@@ -60,7 +60,7 @@
     });
 
     $("#renewLicence1").click(function () {
-        forwordMain("renewLicUpdate");
+        forwordMain("renewLic");
     });
 
     $("#renewLicence2").click(function () {
