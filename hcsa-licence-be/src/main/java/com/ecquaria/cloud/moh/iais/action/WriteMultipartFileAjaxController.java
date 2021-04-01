@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -7,7 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +29,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,34 +42,78 @@ import java.util.UUID;
 @Slf4j
 public class WriteMultipartFileAjaxController {
 
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     //upload file
     @RequestMapping(value = "/uploadGiroFromFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     public @ResponseBody String uploadInternalFile(HttpServletRequest request,@RequestParam("selectFile") MultipartFile selectedFile) throws Exception {
         String data = "";
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null){
-            long size = selectedFile.getSize()/1024;
-            String fileName = selectedFile.getOriginalFilename();
-            if(fileName.indexOf('\\') > 0){
-                fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
+
+            GiroAccountFormDocDto doc =new GiroAccountFormDocDto();
+            long size = selectedFile.getSize() / 1024;
+            doc.setDocName(selectedFile.getOriginalFilename());
+            doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+            doc.setPassDocValidate(true);
+            List<String> fileTypes = Arrays.asList("DOC,DOCX,PDF,JPG,PNG,GIF,TIFF".split(","));
+            Long fileSize=(systemParamConfig.getUploadFileLimit() * 1024 *1024L);
+            String errUploadFile="";
+            if((doc.getDocSize()!=null)){
+                Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+                if (doc.getDocSize() != null) {
+                    String filename = doc.getDocName();
+                    String fileType = filename.substring(filename.lastIndexOf(46) + 1);
+                    String s = fileType.toUpperCase();
+                    if (!fileTypes.contains(s)) {
+                        map.put("fileType", Boolean.FALSE);
+                    } else {
+                        map.put("fileType", Boolean.TRUE);
+                    }
+
+                    if (size > fileSize) {
+                        map.put("fileSize", Boolean.FALSE);
+                    } else {
+                        map.put("fileSize", Boolean.TRUE);
+                    }
+                    //size
+                    if(!map.get("fileSize")){
+                        doc.setPassDocValidate(false);
+                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax");
+                    }
+                    //type
+                    if(!map.get("fileType")){
+                        doc.setPassDocValidate(false);
+                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType");
+                    }
+                    if(filename.length()>100){
+                        doc.setPassDocValidate(false);
+                        errUploadFile=MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                    }
+                }
             }
-            File toFile = FileUtils.multipartFileToFile(selectedFile);
-            byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
-            AttachmentDto attachmentDto = new AttachmentDto();
-            attachmentDto.setData(fileToByteArray);
-            attachmentDto.setDocName(fileName);
-            attachmentDto.setDocSize(Long.toString(size));
-            attachmentDto.setId(UUID.randomUUID().toString());
-            if(IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())){
-                List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
-                attachmentDtos.add(attachmentDto);
-                blastManagementDto.setAttachmentDtos(attachmentDtos);
-            }else{
-                blastManagementDto.getAttachmentDtos().add(attachmentDto);
+            if(doc.isPassDocValidate()){
+                String fileName = selectedFile.getOriginalFilename();
+                if(fileName.indexOf('\\') > 0){
+                    fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
+                }
+                File toFile = FileUtils.multipartFileToFile(selectedFile);
+                byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
+                AttachmentDto attachmentDto = new AttachmentDto();
+                attachmentDto.setData(fileToByteArray);
+                attachmentDto.setDocName(fileName);
+                attachmentDto.setDocSize(Long.toString(size));
+                attachmentDto.setId(UUID.randomUUID().toString());
+                if(IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())){
+                    List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+                    attachmentDtos.add(attachmentDto);
+                    blastManagementDto.setAttachmentDtos(attachmentDtos);
+                }else{
+                    blastManagementDto.getAttachmentDtos().add(attachmentDto);
+                }
+                ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
             }
-            ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
-            data = setHtmlValue(request,blastManagementDto.getAttachmentDtos());
+            data = setHtmlValue(request,blastManagementDto.getAttachmentDtos(),errUploadFile);
         }
         return data;
     }
@@ -78,7 +128,7 @@ public class WriteMultipartFileAjaxController {
             List<AttachmentDto> deletedFileList = getDeletedFileList(blastManagementDto.getAttachmentDtos(), deleteWriteMessageFileId);
             blastManagementDto.setAttachmentDtos(deletedFileList);
             ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
-            data = setHtmlValue(request,deletedFileList);
+            data = setHtmlValue(request,deletedFileList,"");
 
         }
         return data;
@@ -97,12 +147,17 @@ public class WriteMultipartFileAjaxController {
         return result;
     }
 
-    private String setHtmlValue(HttpServletRequest request,List<AttachmentDto> attachmentDtoList){
+    private String setHtmlValue(HttpServletRequest request,List<AttachmentDto> attachmentDtoList,String errUploadFile){
         StringBuilder data = new StringBuilder();
         int i=0;
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
             for(AttachmentDto temp : attachmentDtoList){
                 String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+                if(CSRF!=null){
+                    ParamUtil.setSessionAttr(request,"replaceCsrf",CSRF);
+                }else {
+                    CSRF= (String) ParamUtil.getSessionAttr(request,"replaceCsrf");
+                }
                 String urls="/hcsa-licence-web/download-giro-file?filerepo=fileRo"+i+"&OWASP_CSRFTOKEN=replaceCsrf"+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+temp.getDocName();
                 String box = "<p class='fileList'>" +
                         "<a href=\""+urls.replace("replaceCsrf",CSRF)+"\">"+temp.getDocName()+"</a>" +
@@ -118,6 +173,10 @@ public class WriteMultipartFileAjaxController {
                 data.append(box);
                 i++;
             }
+        }
+        if(!"".equals(errUploadFile)){
+            data.append("<br>").append("<span name=\"iaisErrorMsg\" class=\"error-msg\"\n" +
+                    "id=\"uploadFile\">").append(errUploadFile).append("</span>");
         }
         return data.toString();
     }
@@ -146,15 +205,14 @@ public class WriteMultipartFileAjaxController {
                         OutputStream ops = null;
                         try {
                             ops = new BufferedOutputStream(response.getOutputStream());
-                        } catch (IOException e) {
-                            log.error(e.getMessage(),e);
-                        }
-                        try {
                             ops.write(fileData);
-                            ops.close();
                             ops.flush();
                         } catch (IOException e) {
                             log.error(e.getMessage(),e);
+                        }finally {
+                            if(ops != null){
+                                ops.close();
+                            }
                         }
                     }
                     return;

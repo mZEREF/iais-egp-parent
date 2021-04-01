@@ -51,6 +51,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +140,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             searchGiroDtoResult.setRowCount(giroAccountResult.getRowCount());
             List<GiroAccountInfoViewDto> giroAccountInfoViewDtos=IaisCommonUtils.genNewArrayList();
             for (GiroAccountInfoQueryDto gai:
-            giroAccountResult.getRows()) {
+                    giroAccountResult.getRows()) {
                 GiroAccountInfoViewDto giroAccountInfoViewDto=new GiroAccountInfoViewDto();
                 List<GiroAccountFormDocDto> giroAccountFormDocDtoList=giroAccountService.findGiroAccountFormDocDtoListByAcctId(gai.getId());
                 giroAccountInfoViewDto.setAcctName(gai.getAcctName());
@@ -166,7 +167,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
-             ) {
+        ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             giroAccountInfoDto.setEventRefNo(refNo);
@@ -257,7 +258,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+            orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
@@ -325,9 +326,10 @@ public class FeeAndPaymentGIROPayeeDelegator {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null){
             if(!IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
-                for (AttachmentDto fileBit:blastManagementDto.getAttachmentDtos()
-                ) {
+                Iterator<AttachmentDto> it = blastManagementDto.getAttachmentDtos().iterator();
+                while (it.hasNext()){
                     try {
+                        AttachmentDto fileBit=it.next();
                         MultipartFile file = toMultipartFile(fileBit.getDocName(),fileBit.getDocName(), fileBit.getData());
                         GiroAccountFormDocDto doc =new GiroAccountFormDocDto();
                         long size = file.getSize() / 1024;
@@ -375,7 +377,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                             fileBit.setId(fileRepoGuid);
                             docs.add(doc);
                         }else {
-                            blastManagementDto.getAttachmentDtos().remove(fileBit);
+                            it.remove();
                         }
 
                     } catch (Exception e) {
