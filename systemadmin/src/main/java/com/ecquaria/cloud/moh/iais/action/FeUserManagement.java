@@ -298,12 +298,14 @@ public class FeUserManagement {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                 }
             }else{
-                if (intranetUserService.accountAlreadyExist(feUserDto)){
-                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("identityNo", "USER_ERR002");
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
-                    return;
+                if("Edit".equals(title)){
+                    if (intranetUserService.accountAlreadyExist(feUserDto)){
+                        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                        errorMap.put("identityNo", "USER_ERR002");
+                        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
+                        return;
+                    }
                 }
 
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
