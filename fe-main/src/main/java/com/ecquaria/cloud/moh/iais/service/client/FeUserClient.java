@@ -4,7 +4,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -18,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,8 +66,8 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-licensee/licensee-by-id/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
-    @GetMapping(path = "/iais-internet-user/check-uen-issue-date/")
-    FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
+    @GetMapping(path = "/iais-internet-user/validate-singpass")
+    FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
 
     @GetMapping(path = "/iais-licensee/getLicenseeNoUen",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> getLicenseeNoUen();

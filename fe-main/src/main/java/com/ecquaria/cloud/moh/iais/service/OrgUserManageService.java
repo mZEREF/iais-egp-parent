@@ -53,7 +53,7 @@ public interface OrgUserManageService {
 
     List<LicenseeKeyApptPersonDto> getPersonById(String id);
 
-    Boolean checkIssueUen(String idNo, String idType);
+    Boolean validateSingpassAccount(String idNo, String idType);
 
     List<LicenseeDto> getLicenseeNoUen();
 
