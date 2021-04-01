@@ -28,11 +28,9 @@ import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
 
@@ -155,6 +153,17 @@ public class FECorppassLandingDelegator {
         ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "N");
     }
 
+
+    /**
+     * StartStep: receiveEntityFormEDH
+     *
+     * @param bpc
+     * @throws
+     */
+    public void receiveEntityFormEDH(BaseProcessClass bpc){
+        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
+        orgUserManageService.writeInfoFromEDH(userSession);
+    }
 
     /**
      * StartStep: validateKeyAppointment

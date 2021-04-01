@@ -30,12 +30,15 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,7 @@ import sop.rbac.user.UserIdentifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -57,6 +61,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private UserClient userClient;
+
+    @Autowired
+    private LicenseeClient licenseeClient;
 
     @Autowired
     private FEMainRbacClient feMainRbacClient;
@@ -472,4 +479,28 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
     }
 
+    @Override
+    public void writeInfoFromEDH(FeUserDto user) {
+        String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+        if (StringUtil.isNotEmpty(entityJson)){
+            JSONObject object = new JSONObject(entityJson);
+            JSONArray jsonArray = object.getJSONArray("licences");
+            if (Optional.ofNullable(jsonArray).isPresent()){
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject acraLicensee = jsonObject.getJSONObject("licensee");
+                        String nric = acraLicensee.getJSONObject("id-no").getString("value");
+                        if (user.getIdentityNo().equals(nric)){
+                            log.info("writeInfoFromEDH START................. {}", nric);
+                            String licenseeName = acraLicensee.getJSONObject("name").getString("value");
+                            user.setDisplayName(licenseeName);
+                        }
+                    }catch (Exception e){
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+    }
 }
