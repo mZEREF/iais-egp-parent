@@ -18,6 +18,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
 
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 2%">
@@ -238,7 +239,7 @@
         } else if(error =="N"){
             clearFileFunction();
             flag = false;
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
             $('#error_file').html("");
         }
         return flag;

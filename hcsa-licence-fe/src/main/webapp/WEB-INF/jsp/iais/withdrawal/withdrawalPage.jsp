@@ -15,6 +15,7 @@
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="navigation-gp">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -315,7 +316,7 @@
             $("#fileName").html(fileName.substring(pos + 1));
         } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of ' + configFileSize + 'M.');
+            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
             $("#fileName").html("");
         }
     }

@@ -21,6 +21,7 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -205,7 +206,7 @@
         console.log(error)
         if (error == "N"){
             $("#selectedFile").val('');
-            $('#error_file').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_file').html($("#fileMaxLengthMessage").val());
         }else{
             var files = event.target.files;
             $(".filename").html("");

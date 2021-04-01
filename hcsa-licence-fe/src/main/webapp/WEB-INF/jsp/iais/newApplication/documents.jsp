@@ -178,7 +178,7 @@
             var maxFileSize = $('#sysFileSize').val();
             var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
             if (error == "N") {
-                $(this).closest('.file-upload-gp').find('.error-msg').html('The file has exceeded the maximum upload size of ' + maxFileSize + 'M.');
+                $(this).closest('.file-upload-gp').find('.error-msg').html($("#fileMaxLengthMessage").val());
                 $(this).closest('.file-upload-gp').find('span.delBtn').trigger('click');
                 dismissWaiting();
             } else {

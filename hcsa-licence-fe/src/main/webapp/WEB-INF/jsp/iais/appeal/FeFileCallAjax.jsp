@@ -1,13 +1,9 @@
 <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
-<%
-  String limit = String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10));
-%>
-
 <input type="hidden" name="uploadFormId" id="uploadFormId" value="">
 <input type="hidden" name="fileAppendId" id="fileAppendId" value="">
 <input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">
-<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="<%=limit%>">
-
+<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
+<input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
 <script type="text/javascript">
     function deleteFileFeAjax(id,fileIndex) {
         callAjaxDeleteFile(id,fileIndex);
@@ -47,7 +43,7 @@
         var rslt = validateFileSizeMaxOrEmpty(maxFileSize,'selectedFile');
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
-          $("#error_"+fileAppendId+"Error").html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+          $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
             clearFlagValueFEFile();
         } else if (rslt == 'E') {
           $("#error_"+fileAppendId+"Error").html('This field is mandatory.');

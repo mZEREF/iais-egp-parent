@@ -30,6 +30,7 @@
         <input type="hidden" id="maskUserId" name="maskUserId" value="">
         <input type="hidden" id="importUserSelect" name="importUserSelect" value="">
         <input type="hidden" id="userFileSize" name="userFileSize" value="${userFileSize}">
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -149,7 +150,7 @@
         const userFileSize = $("#userFileSize").val();
         const error = validateUploadSizeMaxOrEmpty(userFileSize, "inputFile");
         if (error == "N"){
-            $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
+            $('#error_userUploadFile').html($("#fileMaxLengthMessage").val());
             dismissWaiting();
         } else {
             var fileName =  getFileName($("#inputFile").val());

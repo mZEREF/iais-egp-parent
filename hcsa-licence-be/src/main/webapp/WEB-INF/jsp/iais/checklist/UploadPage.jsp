@@ -39,7 +39,7 @@
 </style>
 <div class="main-content">
   <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <br>
 
@@ -120,7 +120,7 @@
         let maxFileSize = 100;
         let error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         if (error == "N"){
-          $(this).closest('.document-upload-list').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+          $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxLengthMessage").val());
           $(".fileNameDisplay").text("");
           $(this).val(null);
         }else{

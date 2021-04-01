@@ -299,7 +299,7 @@
         }else {
             if(error == "N"){
                 doDeleteFile();
-                $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+                $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             }
         }
     }

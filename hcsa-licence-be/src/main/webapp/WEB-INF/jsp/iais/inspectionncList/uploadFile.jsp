@@ -4,6 +4,7 @@
     <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${applicationViewDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${applicationViewDto.systemFileType}">
     <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -192,7 +193,7 @@
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
              fileSize = parseInt(fileSize);
             if(fileSize>= maxSize){
-                $('#selectedFileShow').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+                $('#selectedFileShow').html($("#fileMaxMBMessage").val());
                 $('#uploadFileButton').attr("disabled", false);
                 return false;
             }
