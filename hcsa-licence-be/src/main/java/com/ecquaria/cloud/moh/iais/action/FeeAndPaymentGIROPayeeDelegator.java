@@ -51,6 +51,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -325,9 +326,10 @@ public class FeeAndPaymentGIROPayeeDelegator {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null){
             if(!IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
-                for (AttachmentDto fileBit:blastManagementDto.getAttachmentDtos()
-                ) {
+                Iterator<AttachmentDto> it = blastManagementDto.getAttachmentDtos().iterator();
+                while (it.hasNext()){
                     try {
+                        AttachmentDto fileBit=it.next();
                         MultipartFile file = toMultipartFile(fileBit.getDocName(),fileBit.getDocName(), fileBit.getData());
                         GiroAccountFormDocDto doc =new GiroAccountFormDocDto();
                         long size = file.getSize() / 1024;
@@ -375,7 +377,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                             fileBit.setId(fileRepoGuid);
                             docs.add(doc);
                         }else {
-                            blastManagementDto.getAttachmentDtos().remove(fileBit);
+                            it.remove();
                         }
 
                     } catch (Exception e) {
