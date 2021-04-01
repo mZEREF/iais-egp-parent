@@ -51,6 +51,11 @@ import java.util.Map;
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class,
         fallback = HcsaLicenceClientFallback.class)
 public interface HcsaLicenceClient {
+
+    @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
+
+    
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@RequestParam("hciCode") String hciCode,@RequestParam("serviceCode") String serviceCode);
 

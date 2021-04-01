@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -22,13 +24,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroAccountBeClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -40,6 +44,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * GiroAccountServiceImpl
@@ -72,13 +77,15 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
+    private ApplicationClient applicationClient;
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
     private EmailSmsClient emailSmsClient;
     @Autowired
     private EmailHistoryCommonClient emailHistoryCommonClient;
+    @Autowired
+    HcsaLicenceClient hcsaLicenceClient;
     @Override
     public SearchResult<GiroAccountInfoQueryDto> searchGiroInfoByParam(SearchParam searchParam) {
         return giroAccountBeClient.searchGiroInfoByParam(searchParam).getEntity();
@@ -143,6 +150,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     public void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto) {
         try{
             List<LicenseeDto> licenseeDtos=organizationClient.getLicenseeByOrgId(giroAccountInfoDto.getOrganizationId()).getEntity();
+            List<LicenceDto> licenceDtos=hcsaLicenceClient.getLicenceDtoByHciCode(giroAccountInfoDto.getHciCode(),licenseeDtos.get(0).getId()).getEntity();
             String applicationNumber = giroAccountInfoDto.getHciCode();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
             subMap.put("ApplicationType", "HCI");
@@ -156,6 +164,15 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(giroAccountInfoDto.getOrganizationId()).getEntity();
             String applicantName=licenseeDtos.get(0).getName();
+            List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
+            if(applicationGroupDtos!=null){
+                for (OrgUserDto user:orgUserDtoList
+                ) {
+                    if (applicationGroupDtos.get(0).getSubmitBy().equals(user.getId())){
+                        applicantName=user.getDisplayName();
+                    }
+                }
+            }
             if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
                 applicantName=orgUserDtoList.get(0).getDisplayName();
             }
@@ -205,9 +222,16 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             msgParam.setReqRefNum(licenseeDtos.get(0).getId());
             msgParam.setRefId(licenseeDtos.get(0).getId());
 //
+            Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
+            for (LicenceDto lic:licenceDtos
+                 ) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
+                if(hcsaServiceDto!=null){
+                    svcCodeSet.add(hcsaServiceDto.getSvcCode());
+                }
+            }
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-            List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigClient.getActiveServices().getEntity();
-            svcCodeList.add(hcsaServiceDtoList.get(0).getSvcCode());
+            svcCodeList.addAll(svcCodeSet);
             msgParam.setSvcCodeList(svcCodeList);
             msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             notificationHelper.sendNotification(msgParam);
