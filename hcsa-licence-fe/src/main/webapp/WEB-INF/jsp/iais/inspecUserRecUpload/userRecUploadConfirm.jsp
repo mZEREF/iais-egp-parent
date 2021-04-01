@@ -157,7 +157,7 @@
         var maxFileSize = $("#maxFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, "recFileUpload");
         if (error == "N"){
-            $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'MB.');
             dismissWaiting();
         } else {
             let remarksError = $("#error_remarks").text();
