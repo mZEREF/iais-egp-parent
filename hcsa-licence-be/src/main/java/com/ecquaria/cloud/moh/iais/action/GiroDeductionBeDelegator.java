@@ -146,11 +146,33 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
-        HttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         //init loading request ==null
-        if(request==null){
-            request=bpc.request;
+        String param = (String)bpc.request.getAttribute("param");
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);;
+        if("Y".equals(param)){
+            searchParam=(SearchParam)bpc.request.getAttribute("searchParam");
         }
+        QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        SearchResult<GiroDeductionDto> body = beEicGatewayClient.giroDeductionDtoSearchResult(searchParam, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
+        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
+
+    }
+
+    /**
+     * StartStep: beGiroDeductionStep
+     *
+     * @param bpc
+     * @throws
+     */
+    public void beGiroDeductionStep(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the beGiroDeductionStep start ...."));
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String beGiroDeductionType =request.getParameter("beGiroDeductionType");
+        bpc.request.setAttribute("beGiroDeductionType",beGiroDeductionType);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
         String transactionId = request.getParameter("transactionId");
         String bankAccountNo = request.getParameter("bankAccountNo");
@@ -180,27 +202,8 @@ public class GiroDeductionBeDelegator {
         if(!StringUtil.isEmpty(transactionId)){
             searchParam.addFilter("invoiceNo",transactionId,true);
         }
-        QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        SearchResult<GiroDeductionDto> body = beEicGatewayClient.giroDeductionDtoSearchResult(searchParam, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
-        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
-        ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
-
-    }
-
-    /**
-     * StartStep: beGiroDeductionStep
-     *
-     * @param bpc
-     * @throws
-     */
-    public void beGiroDeductionStep(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("the beGiroDeductionStep start ...."));
-        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String beGiroDeductionType =request.getParameter("beGiroDeductionType");
-        bpc.request.setAttribute("beGiroDeductionType",beGiroDeductionType);
+        bpc.request.setAttribute("searchParam",searchParam);
+        bpc.request.setAttribute("param","Y");
     }
 
     /**
@@ -348,7 +351,7 @@ public class GiroDeductionBeDelegator {
 
     @GetMapping(value = "/generatorFileCsv")
     @ResponseBody
-    public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
         String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
@@ -365,19 +368,22 @@ public class GiroDeductionBeDelegator {
                 }
             });
         }
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/x-octet-stream");
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
-        FileInputStream in = new FileInputStream(file.getPath());
-        byte buffer[] = new byte[1024];
-        int len ;
-        while((len=in.read(buffer))>0){
-            ops.write(buffer, 0, len);
+        try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+              FileInputStream in = new FileInputStream(file.getPath())){
+            byte buffer[] = new byte[1024];
+            int len ;
+            while((len=in.read(buffer))>0){
+                ops.write(buffer, 0, len);
+            }
+            ops.flush();
+        }catch (Exception e){
+
         }
-        in.close();
-        ops.flush();
-        ops.close();
+
+
     }
 
     private void updateDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> giroDeductionDtoList){
