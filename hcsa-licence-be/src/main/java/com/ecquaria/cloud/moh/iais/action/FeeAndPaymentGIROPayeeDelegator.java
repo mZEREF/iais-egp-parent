@@ -127,7 +127,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             giroAccountParameter.setSortType(sortType);
             giroAccountParameter.setSortField(sortFieldName);
-            giroAccountParameter.setPageNo(1);
+            //giroAccountParameter.setPageNo(1);
         }
         if("back".equals(actionType)){
             giroAccountParam= (SearchParam) ParamUtil.getSessionAttr(request,"searchGiroAccountParam");
@@ -224,7 +224,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
                 orgPremParameter.setSortType(sortType);
                 orgPremParameter.setSortField(sortFieldName);
-                orgPremParameter.setPageNo(1);
+                //orgPremParameter.setPageNo(1);
             }
         }
         QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);

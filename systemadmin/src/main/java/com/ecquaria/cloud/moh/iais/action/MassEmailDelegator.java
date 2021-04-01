@@ -183,8 +183,8 @@ public class MassEmailDelegator {
         String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
-        searchParam.setPageNo(1);
-        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+//        searchParam.setPageNo(1);
+//        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
         if(!StringUtil.isEmpty(fieldName) && !StringUtil.isEmpty(sortType)){
             searchParam.setSort(fieldName, sortType);
         }else{
