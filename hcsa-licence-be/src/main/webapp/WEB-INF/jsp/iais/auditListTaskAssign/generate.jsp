@@ -134,12 +134,12 @@
     }
 
     function doClear() {
-        $("#svcNameClear label input[type='checkbox']").removeAttr('checked');
+        $("#svcNameClear label input[type='checkbox']").prop('checked',false);
         $("#postcode").val("");
         $("#inspectionStartDate").val("");
         $("#inspectionEndDate").val("");
         clearSelectFiled('complianceLastResult');
-        $("#hclSCodeClear label input[type='checkbox']").removeAttr('checked');
+        $("#hclSCodeClear label input[type='checkbox']").prop('checked',false);
         clearSelectFiled('hclCode');
         clearSelectFiled('premType');
         clearSelectFiled('riskType');
