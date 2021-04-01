@@ -170,7 +170,7 @@
                FROM user_account acc
                JOIN organization org ON acc.ORGANIZATION_ID = org.ID
                JOIN user_role role ON acc.ID = role.USER_ACCT_ID
-                where role.STATUS = 'CMSTAT001'
+                where role.STATUS = 'CMSTAT001' and acc.STATUS != 'CMSTAT002'
                 <#if orgid??>AND org.ID = :orgid</#if>
                 <#if roleid??>AND role.ROLE_ID = :roleid</#if>
 
