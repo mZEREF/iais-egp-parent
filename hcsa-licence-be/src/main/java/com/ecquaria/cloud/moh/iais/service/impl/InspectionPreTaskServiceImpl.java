@@ -404,6 +404,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if(!StringUtil.isEmpty(appRfiDecision)) {
                 map.put("Remarks", remarks);
             }
+            if(!StringUtil.isEmpty(preInspecComments)) {
+                map.put("COMMENTS",preInspecComments);
+            }
             map.put("systemLink", url);
             map.put("TATtime", tatTimeStr);
             map.put("email", systemParamConfig.getSystemAddressOne());

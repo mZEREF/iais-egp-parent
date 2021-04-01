@@ -318,6 +318,7 @@ public class InspectionPreDelegator {
             inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
+            inspectionPreTaskDto.setPreInspecComments(preInspecComments);
         } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
             if(!StringUtil.isEmpty(checkRbStage)){
                 String userId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbStage);
