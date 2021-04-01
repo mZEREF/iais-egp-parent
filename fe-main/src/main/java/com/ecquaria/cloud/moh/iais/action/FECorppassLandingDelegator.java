@@ -276,7 +276,17 @@ public class FECorppassLandingDelegator {
      */
     public void ban(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+    }
 
-
+    /**
+     * StartStep: receiveEntityFormEDH
+     *
+     * @param bpc
+     * @throws
+     */
+    public void receiveEntityFormEDH(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        orgUserManageService.receiveEntityFormEDH(userSession);
     }
 }
