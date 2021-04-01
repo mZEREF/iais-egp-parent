@@ -1067,7 +1067,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto viewAppSubmissionDto(String licenceId) {
 
-        return null;
+        return  licenceClient.viewAppSubmissionDto(licenceId).getEntity();
     }
 
     @Value("${iais.hmac.keyId}")
