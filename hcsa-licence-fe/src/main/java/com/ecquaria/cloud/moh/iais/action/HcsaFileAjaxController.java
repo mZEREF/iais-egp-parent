@@ -112,6 +112,7 @@ public class HcsaFileAjaxController {
         if(selectedFile.isEmpty()){
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
         }
+        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
         int maxSize = systemParamConfig.getUploadFileLimit();
         String fileTypesString = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
         List<String> fileTypes = Arrays.asList(fileTypesString.split(","));
@@ -126,6 +127,12 @@ public class HcsaFileAjaxController {
         if(!fileType){
             String type = FileUtils.getFileTypeMessage(fileTypesString);
             return MessageUtil.replaceMessage("GENERAL_ERR0018",type,"fileType");
+        }
+
+        //name
+        String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
+        if(fileName.length() > 100){
+            return  MessageUtil.getMessageDesc("GENERAL_ERR0022");
         }
         return "";
     }
@@ -166,7 +173,7 @@ public class HcsaFileAjaxController {
                     byte[] fileData = FileUtils.readFileToByteArray(file);
                     if(fileData != null){
                         try {
-                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString())+"\"");
+                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  file.getName()+"\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
