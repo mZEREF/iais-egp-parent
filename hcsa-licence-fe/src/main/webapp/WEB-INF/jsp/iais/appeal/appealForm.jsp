@@ -110,7 +110,7 @@
           <div class="file-upload-gp row" >
             <div class="fileContent col-xs-5">
 
-              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile(event)">
+              <input class="selectedFile"  id="selectedFile" name = "selectedFile"    type="file" style="display: none;" aria-label="selectedFile1">
               <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
 
             </div>
