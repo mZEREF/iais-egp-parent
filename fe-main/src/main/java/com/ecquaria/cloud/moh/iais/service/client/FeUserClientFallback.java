@@ -153,7 +153,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(String idNo, String idType) {
+    public FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(String idNo, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

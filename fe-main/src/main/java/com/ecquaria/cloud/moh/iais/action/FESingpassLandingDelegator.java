@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,7 +131,7 @@ public class FESingpassLandingDelegator {
         userSession.setScp(scp);
         userSession.setIdentityNo(identityNo);
         userSession.setIdType(idType);
-        if (orgUserManageService.checkIssueUen(identityNo, idType)){
+        if (orgUserManageService.validateSingpassAccount(identityNo, idType)){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.YES);
             AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);

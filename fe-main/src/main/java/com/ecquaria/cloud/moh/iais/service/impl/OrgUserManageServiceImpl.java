@@ -459,9 +459,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public Boolean checkIssueUen(String idNo, String idType) {
+    public Boolean validateSingpassAccount(String idNo, String idType) {
         log.info(StringUtil.changeForLog("SingPass Login service [checkIssueUen] ...ID " + idNo + " ID Type..." + idType));
-        return feUserClient.checkIssueUen(idNo, idType).getEntity().isHasError();
+        return feUserClient.validateSingpassAccount(idNo, idType).getEntity().isHasError();
     }
 
     @Override
