@@ -41,7 +41,12 @@ public interface LicenseeClient {
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(@PathVariable(name = "id") String id);
 
     @PutMapping(path = "/iais-acraUen-fe/entity/{uen}")
-    FeignResponseEntity<GenerateUENDto> createLicenseeByUenFromAcra(@PathVariable("uen") String uen);
+    FeignResponseEntity<GenerateUENDto> getEntityByUEN(@PathVariable("uen") String uen);
+
+    @GetMapping(path = "/iais-acraUen-fe/entity-info/{uen}")
+    FeignResponseEntity<String> getEntityInfoByUEN(@PathVariable("uen") String uen);
+
+
 
     @PostMapping(value = "/imaginary/licensee/")
     FeignResponseEntity<Void> imaginaryLicenseeByOrgId(@RequestParam(value = "orgnId") String orgnId);

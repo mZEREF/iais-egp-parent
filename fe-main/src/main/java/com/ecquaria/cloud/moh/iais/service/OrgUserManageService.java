@@ -66,4 +66,6 @@ public interface OrgUserManageService {
     Boolean isKeyAppointment(String uen);
 
     void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit);
+
+    void receiveEntityFormEDH(FeUserDto user);
 }
