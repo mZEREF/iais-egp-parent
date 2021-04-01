@@ -1538,11 +1538,14 @@ public class LicenceViewServiceDelegator {
         });
         for(AppSvcDocDto v : appSvcDocDtoLit){
             String svcDocId = v.getSvcDocId();
+            String upFileName = v.getUpFileName();
             HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
             String dupForPrem = entity.getDupForPrem();
+            if(upFileName==null){
+                v.setUpFileName(entity.getDocTitle());
+            }
             String dupForPerson = entity.getDupForPerson();
             if("0".equals(dupForPrem)&&dupForPerson==null){
-
                 docDealWith(multipleSvcDoc,v,v.getUpFileName());
             }else if("0".equals(dupForPrem)&&dupForPerson!=null){
                 String vDupForPerson = v.getAppGrpPersonId();
@@ -1592,19 +1595,7 @@ public class LicenceViewServiceDelegator {
                 }
 
             }else if("1".equals(dupForPrem)&&dupForPerson==null){
-                if("1".equals(dupForPerson)){
-                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
-                }else if("2".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
-                }else if("4".equals(dupForPerson)){
-                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
-                }else if("8".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
-                }else if("16".equals(dupForPerson)){
-                    docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
-                }
+                docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
             }
         }
     }
