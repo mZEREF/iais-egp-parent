@@ -30,8 +30,8 @@
                                 <td class="sorting"><strong>Service(s)</strong></td>
                                 <td class="sorting"><strong>Date and Time of Inspection</strong></td>
                                 <td class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></td>
-                                <td class="sorting" style="width:23%"><strong>New Date Range </strong><strong style="color:#ff0000;">*</strong></td>
-                                <td class="sorting"><strong>New Date </strong></td>
+                                <td class="sorting" style="width:16%"><strong>New Date Range </strong><strong style="color:#ff0000;">*</strong></td>
+                                <td class="sorting" style="width:14%"><strong>New Preferred Date Range </strong><strong style="color:#ff0000;">*</strong></td>
                             </tr>
                             <tbody>
                             <c:choose>

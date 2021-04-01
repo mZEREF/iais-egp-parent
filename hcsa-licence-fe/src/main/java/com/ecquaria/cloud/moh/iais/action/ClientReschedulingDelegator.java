@@ -377,13 +377,16 @@ public class ClientReschedulingDelegator {
             Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
             apptViewDtos.get(id).setReason(reason);
 
-
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(inspStDate);
+            cal.add(Calendar.DAY_OF_MONTH, 3);
             String inspStartDate = Formatter.formatDateTime(inspStDate, SystemAdminBaseConstants.DATE_FORMAT);
+            String inspStartDate_3 = Formatter.formatDateTime(cal.getTime(), SystemAdminBaseConstants.DATE_FORMAT);
             String inspToDate = Formatter.formatDateTime(inspEndDate, SystemAdminBaseConstants.DATE_FORMAT);
             String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
             if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
-                if( inspStartDate.compareTo(inspToDate)>0){
-                    errMap.put("newDate" + appId,"Start date must be earlier than end date");
+                if( inspStartDate_3.compareTo(inspToDate)>0){
+                    errMap.put("newDate" + appId,"Start date must be 3 days before the end date");
                 }
                 if(inspStartDate.compareTo(nowDate)<0){
                     errMap.put("newDate" + appId,"Inspection date must be future");
@@ -433,13 +436,13 @@ public class ClientReschedulingDelegator {
                         }else {
                             apptViewDtos.get(id).setInspNewDate(null);
                             apptViewDtos.get(id).setUserIds(null);
-                            errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),"No record found.");
+                            errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),MessageUtil.getMessageDesc("OAPPT_ERR012"));
 
                         }
                     }else {
                         apptViewDtos.get(id).setInspNewDate(null);
                         apptViewDtos.get(id).setUserIds(null);
-                        errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),"No record found.");
+                        errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),MessageUtil.getMessageDesc("OAPPT_ERR012"));
 
                     }
                 }
