@@ -68,7 +68,8 @@ public class RegulationDelegator {
             .clz(RegulationQueryDto.class)
             .searchAttr(HcsaRegulationConstants.PARAM_SEARCH)
             .resultAttr(HcsaRegulationConstants.PARAM_RESULT)
-            .sortField("id").build();
+            .sortFieldToMap("status", SearchParam.ASCENDING)
+            .sortFieldToMap("id", SearchParam.ASCENDING).build();
 
     private static final String REGULATION_CHECK_BOX_REDISPLAY = "regulation_item_CheckboxReDisplay";
 
