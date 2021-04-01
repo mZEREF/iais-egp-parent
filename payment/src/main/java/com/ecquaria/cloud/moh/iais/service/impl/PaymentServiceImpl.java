@@ -66,7 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
         msg.setMerchantTxnRef(paymentRequestDto.getMerchantTxnRef());
         msg.setNetsMidIndicator("U");
         soapiTxnQueryReq.setMsg(msg);
-        String status=sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+        SoapiS2SResponse soapiS2SResponse =sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
 
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
@@ -77,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
-            if( "0".equals(status)){
+            if( "0".equals(soapiS2SResponse.getMsg().getNetsTxnStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
@@ -93,7 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentDto.setTxnRefNo("TRANS");
             paymentDto.setInvoiceNo("1234567");
 
-            if("0".equals(status)){
+            if("0".equals(soapiS2SResponse.getMsg().getNetsTxnStatus())){
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
      *
      */
     @Override
-    public String sendTxnQueryReqToGW( String secretKey,
+    public SoapiS2SResponse sendTxnQueryReqToGW( String secretKey,
                                     String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
         String strGWPostURL= gateWayUrl+"/v1/enets/GW2/TxnQuery";
         ObjectMapper mapper = new ObjectMapper();
@@ -152,12 +152,12 @@ public class PaymentServiceImpl implements PaymentService {
 //parse json response
             SoapiS2SResponse soapi2Res = mapper.readValue(stringBody,
                     SoapiS2SResponse.class);
-            return soapi2Res.getMsg().getNetsTxnStatus();
+            return soapi2Res;
 //handle business logic based on response codes
         }
         else{
             log.error("signature not matched.");
-            return "1";
+            return null;
 //handle exception flow
         }
     }

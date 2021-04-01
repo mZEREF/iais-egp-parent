@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.impl.SoapiS2S;
+import com.ecquaria.cloud.moh.iais.service.impl.SoapiS2SResponse;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
@@ -119,7 +120,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 					soapiTxnQueryReq.setMsg(msg);
 					String eNetsStatus= "1";
 					try {
-						eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+						SoapiS2SResponse soapiS2SResponse = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+						eNetsStatus=soapiS2SResponse.getMsg().getNetsTxnStatus();
 					} catch (Exception e) {
 						log.debug(e.getMessage(),e);
 					}
@@ -269,13 +271,30 @@ public class PaymentNetsProxy extends PaymentProxy {
 		soapiTxnQueryReq.setMsg(msg);
 		JSONObject jsonObject = JSONObject.fromObject(txnRes);
 		Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
-		String eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
+		String eNetsStatus="1";
+		String stageRespCode="";
+		String errMsg="";
 		if(!header.equals(generatedHmac)){
 			try {
-				eNetsStatus = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+				SoapiS2SResponse soapiS2SResponse = PaymentBaiduriProxyUtil.getPaymentService().sendTxnQueryReqToGW(secretKey,keyId,soapiTxnQueryReq);
+				if(soapiS2SResponse!=null){
+					eNetsStatus=soapiS2SResponse.getMsg().getNetsTxnStatus();
+					stageRespCode=soapiS2SResponse.getMsg().getStageRespCode();
+				}
 			} catch (Exception e) {
 				log.debug("eNets EIC failed!!!");
 				log.error(e.getMessage(),e);
+				if(txnResObj!=null&&txnResObj.getMsg()!=null){
+					eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
+					stageRespCode=txnResObj.getMsg().getStageRespCode();
+					errMsg=txnResObj.getMsg().getNetsTxnMsg();
+				}
+			}
+		}else {
+			if(txnResObj!=null&&txnResObj.getMsg()!=null){
+				eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
+				stageRespCode=txnResObj.getMsg().getStageRespCode();
+				errMsg=txnResObj.getMsg().getNetsTxnMsg();
 			}
 		}
 		if("0".equals(eNetsStatus)){
@@ -343,6 +362,14 @@ public class PaymentNetsProxy extends PaymentProxy {
 			log.info(StringUtil.changeForLog("result="+status+"&reqRefNo="+refNo+"&txnRefNo="+transNo));
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
+			if(!"0".equals(eNetsStatus)){
+				if("3099-01002".equals(stageRespCode)||"3099-09999".equals(stageRespCode)){
+					results=results+"&stageRespCode="+MaskUtil.maskValue("stageRespCode","draft");
+				}
+				results=results+"&errorMsg="+MaskUtil.maskValue("errorMsg",errMsg);
+
+
+			}
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;
 
 
