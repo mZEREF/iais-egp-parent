@@ -78,7 +78,8 @@ public class HcsaChklItemDelegator {
             .clz(CheckItemQueryDto.class)
             .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
             .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
-            .sortField("status").sortType(SearchParam.ASCENDING).build();
+            .sortFieldToMap("status", SearchParam.ASCENDING)
+            .sortFieldToMap("item.id", SearchParam.ASCENDING).build();
 
     @Autowired
     public HcsaChklItemDelegator(HcsaChklService hcsaChklService){
