@@ -298,7 +298,7 @@
                   <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
                   <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
                   <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
-                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                 <%-- <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>--%>
                   <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
                 </select>
               </div>
@@ -1066,7 +1066,7 @@
                     "                   <option value=\"PO\">Principal Officer (PO)?</option>\n" +
                     "                   <option value=\"DPO\">Nominee?</option>\n" +
                     "                   <option value=\"CGO\">Clinical Governance Officer (CGO)?</option>\n" +
-                    "                   <option value=\"SVCPSN\">Service Personnel ?</option>\n" +
+
                     "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +
                     "                 </select>\n" +
                     "  <div class=\"nice-select\" tabindex=\"0\">\n"+
@@ -1076,7 +1076,6 @@
                     "     <li data-value=\"PO\" class=\"option\">Principal Officer (PO)</li>\n"+
                     "     <li data-value=\"DPO\" class=\"option\">Nominee</li>\n"+
                      "    <li data-value=\"CGO\" class=\"option\">Clinical Governance Officer (CGO)</li>\n"+
-                    "     <li data-value=\"SVCPSN\" class=\"option\">Service Personnel</li>\n"+
                     "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+
                     "   </ul>\n"+
                     "  </div>\n"+
