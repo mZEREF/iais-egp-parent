@@ -117,6 +117,13 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public boolean accountAlreadyExist(FeUserDto user) {
+        String orgId = user.getOrgId();
+        FeUserDto exist = getFeUserAccountByNricAndType(user.getIdentityNo(), user.getIdType());
+        return exist != null && exist.getOrgId().equals(orgId);
+    }
+
+    @Override
     public ClientUser saveEgpUser(ClientUser clientUser) {
         return egpUserClient.createClientUser(clientUser).getEntity();
     }

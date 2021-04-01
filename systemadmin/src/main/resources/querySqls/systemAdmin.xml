@@ -580,7 +580,7 @@
 			left join (SELECT MIN(ROLE_ID) as ROLE_ID,USER_ACCT_ID as USER_ACCT_ID from user_role GROUP BY USER_ACCT_ID) T3 on T1.id = T3.USER_ACCT_ID
 			left join licensee T4 on T4.ORGANIZATION_ID = T1.ORGANIZATION_ID
 			left join organization T5 on T4.ORGANIZATION_ID = T5.ID
-			WHERE T1.user_domain = 'internet'
+			WHERE T1.user_domain = 'internet' and T1.STATUS != 'CMSTAT002'
 			<#if licenseeName??> and T4.NAME like :licenseeName</#if>
 			<#if uenNo??> and T5.UEN_NO = :uenNo</#if>
 			<#if designation??> and T1.DESIGNATION = :designation</#if>
