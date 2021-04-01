@@ -298,7 +298,7 @@ public class FeUserManagement {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                 }
             }else{
-                if("Edit".equals(title)){
+                if("Create".equalsIgnoreCase(title)){
                     if (intranetUserService.accountAlreadyExist(feUserDto)){
                         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                         errorMap.put("identityNo", "USER_ERR002");
