@@ -167,8 +167,9 @@
             </div>
             </c:otherwise>
         </c:choose>
+        <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+        <%@ include file="../appeal/FeFileCallAjax.jsp" %>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
     $(function () {
@@ -178,6 +179,12 @@
         }
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
+        }
+
+        var evenMoreListeners = true;
+        if (evenMoreListeners) {
+            var allFleChoosers = $("input[type='file']");
+            addEventListenersTo(allFleChoosers);
         }
     });
 
@@ -195,22 +202,64 @@
         $("#mainForm").submit();
     }
 
+    function doFileAddEvent() {
+        clearFlagValueFEFile();
+    }
 
-    $("#selectedFile").change(function () {
+    function doUserRecUploadConfirmFile(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            if (debug) {
+                console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
+            }
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) {
+                addEventListenersTo(clone[fileElement.id])
+            }//If Needed Re-attach additional Event Listeners
+        }
+        var file = $('#selectedFile').val();
+        file = file.split("\\");
+        $("span[name='fileName']").html(file[file.length - 1]);
+
+        if (file != '') {
+            $('#delete').attr("style", "display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }
+        uploadFileValidate();
+    }
+
+    function addEventListenersTo(fileChooser) {
+        fileChooser.change(function (event) {
+            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
+            /*  a();*/
+            ajaxCallUpload('mainForm', "selectedFile");
+        });
+    }
+
+    function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+        console.log(configFileSize)
+        var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
-        }else{
+        } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of ' + configFileSize + 'M.');
             $("#fileName").html("");
         }
-    });
+    }
+
+    function deleteWithdraw(it) {
+        console.log("delete withdraw app");
+        $(it).parent().parent().parent().parent().parent().remove();
+    }
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;
@@ -255,6 +304,7 @@
     });
 
     function doSubmit() {
+        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
