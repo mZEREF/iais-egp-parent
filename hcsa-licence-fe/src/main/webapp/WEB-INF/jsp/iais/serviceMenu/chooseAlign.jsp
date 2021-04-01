@@ -15,7 +15,14 @@
     <input type="hidden" name="draftNo"/>
     <input type="hidden" name="crud_action_value">
     <div class="container">
-        <div class="navigation-gp">
+        <div class="row">
+            <div class="col-xs-3">
+            </div>
+            <div class="col-xs-8">
+                <div class="dashboard-page-title">
+                    <h1>New Licence Application</h1>
+                </div>
+            </div>
         </div>
         <div class="component-gp">
             <br>
