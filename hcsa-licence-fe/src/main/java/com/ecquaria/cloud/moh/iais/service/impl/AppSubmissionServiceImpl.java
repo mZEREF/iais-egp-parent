@@ -1039,6 +1039,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public AppSubmissionDto viewAppSubmissionDto(String licenceId) {
+
+        return  licenceClient.viewAppSubmissionDto(licenceId).getEntity();
+    }
+
+    @Override
     public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
         return appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
     }

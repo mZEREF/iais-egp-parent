@@ -6,9 +6,11 @@
 <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
         <div class="navigation-gp">
-            <div class="row">
-                <%@ include file="./dashboardDropDown.jsp" %>
-            </div>
+            <c:if test="${appeal!='appeal'}">
+                <div class="row">
+                    <%@ include file="./dashboardDropDown.jsp" %>
+                </div>
+            </c:if>
             <div class="row">
                 <c:choose>
                     <c:when test="${'empty' == DashboardTitle }">
