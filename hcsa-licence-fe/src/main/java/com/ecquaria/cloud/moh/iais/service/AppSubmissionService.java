@@ -67,6 +67,7 @@ public interface AppSubmissionService {
      AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
      AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
      MsgTemplateDto getMsgTemplateById(String id);
+    AppSubmissionDto viewAppSubmissionDto(String licenceId);
      void feSendEmail(EmailDto emailDto);
      ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
      void updateApplicationsStatus(String appGroupId,String stuts);

@@ -87,7 +87,7 @@ public class LicenceViewDelegator {
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
         }
         if(!StringUtil.isEmpty(licencId)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licencId);
+            AppSubmissionDto appSubmissionDto = appSubmissionService.viewAppSubmissionDto(licencId);
             if(appSubmissionDto != null){
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());

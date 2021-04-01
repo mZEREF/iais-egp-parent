@@ -1064,6 +1064,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return msgTemplateDto;
     }
 
+    @Override
+    public AppSubmissionDto viewAppSubmissionDto(String licenceId) {
+
+        return null;
+    }
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
