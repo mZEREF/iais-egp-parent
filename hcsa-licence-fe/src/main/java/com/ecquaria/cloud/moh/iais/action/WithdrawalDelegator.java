@@ -40,6 +40,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -113,31 +114,7 @@ public class WithdrawalDelegator {
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawnDto.getPrevAppNo());
-            List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
-            List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-            Map<String,File> map= IaisCommonUtils.genNewHashMap();
-            Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-            if (viewDoc != null){
-                if(viewDoc!=null&&!viewDoc.isEmpty()){
-                    for(int i=0;i<viewDoc.size();i++){
-                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
-                        pageShowFileDto.setIndex(String.valueOf(i));
-                        pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
-                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
-                        pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
-                        pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
-                        pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
-                        pageShowFileDtos.add(pageShowFileDto);
-                        map.put("selectedFile"+i,null);
-                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
-                    }
-                    bpc.request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
-                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
-                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",viewDoc.size());
-                }
-                bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-            }
-
+            getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
             return;
@@ -146,12 +123,40 @@ public class WithdrawalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
+            getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
         }else{
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
+        }
+    }
+
+    private void getFileInfo(WithdrawnDto withdrawnDto, HttpServletRequest request){
+        List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+        if (viewDoc != null) {
+            if (viewDoc != null && !viewDoc.isEmpty()) {
+                for (int i = 0; i < viewDoc.size(); i++) {
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    pageShowFileDto.setIndex(String.valueOf(i));
+                    pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
+                    pageShowFileDto.setFileMapId("selectedFileDiv" + i);
+                    pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
+                    pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
+                    pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
+                    pageShowFileDtos.add(pageShowFileDto);
+                    map.put("selectedFile" + i, null);
+                    pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
+                }
+                request.getSession().setAttribute("pageShowFileHashMap", pageShowFileHashMap);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
+            }
+            request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
         }
     }
 
