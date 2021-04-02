@@ -2761,7 +2761,7 @@ public class ClinicalLaboratoryDelegator {
         String[] qualifications = ParamUtil.getStrings(request, "qualification");
         String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
         String[] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
-        String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
+        //String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
         if (personnelSels != null && personnelSels.length > 0) {
             for (int i = 0; i < personnelSels.length; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
@@ -2828,12 +2828,12 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPersonnelDto.setQualification(qualification);
                 appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
                 appSvcPersonnelDto.setProfRegNo(professionalRegnNo);
-                String cgoIndexNo = cgoIndexNos[i];
+                /*String cgoIndexNo = cgoIndexNos[i];
                 if(!StringUtil.isEmpty(cgoIndexNo)){
                     appSvcPersonnelDto.setCgoIndexNo(cgoIndexNo);
                 }else{
                     appSvcPersonnelDto.setCgoIndexNo(UUID.randomUUID().toString());
-                }
+                }*/
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);
             }
         }
