@@ -141,8 +141,7 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)"
-                                                       onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                       onclick="fileClicked(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
