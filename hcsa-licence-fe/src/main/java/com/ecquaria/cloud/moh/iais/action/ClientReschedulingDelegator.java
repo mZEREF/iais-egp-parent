@@ -386,7 +386,7 @@ public class ClientReschedulingDelegator {
             String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
             if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
                 if( inspStartDate_3.compareTo(inspToDate)>0){
-                    errMap.put("newDate" + appId,"Please enter a date range of at least 3 days.");
+                    errMap.put("newDate" + appId,MessageUtil.getMessageDesc("OAPPT_ERR013"));
                 }
                 if(inspStartDate.compareTo(nowDate)<0){
                     errMap.put("newDate" + appId,"Inspection date must be future");
