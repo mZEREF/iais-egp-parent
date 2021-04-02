@@ -1414,7 +1414,7 @@ public class HcsaApplicationDelegator {
                     sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
 */
                     String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + appealingFor + "&type=" + appealType;
-                    applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url);
+                    applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
                 }
             } else if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
@@ -1426,12 +1426,12 @@ public class HcsaApplicationDelegator {
                 maskParams.put("appId", appId);
 //                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
                 String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
-                applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url);
+                applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
             } else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("rfiWithdrawAppNo", applicationNo);
                 String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication?rfiWithdrawAppNo=" + applicationNo;
-                applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url);
+                applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, loginContext, externalRemarks);
         } catch (Exception e) {

@@ -57,7 +57,7 @@ public interface ApplicationService {
       * @Descripation: Hcsa Application Request Information And Send Email
       */
     void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
-    void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto, HashMap<String, String> maskParams,String linkURL) throws Exception;
+    void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto, HashMap<String, String> maskParams,String linkURL,String externalRemarks) throws Exception;
     ApplicationDto getApplicationBytaskId(String ref);
 
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId,String status);

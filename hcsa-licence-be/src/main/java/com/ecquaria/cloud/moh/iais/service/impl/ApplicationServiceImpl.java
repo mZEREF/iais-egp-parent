@@ -524,7 +524,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,HashMap<String, String> maskParams,String linkURL)throws Exception{
+    public void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto,HashMap<String, String> maskParams,String linkURL,String externalRemarks)throws Exception{
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI).getEntity();
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         String applicationNo = applicationDto.getApplicationNo();
@@ -546,6 +546,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
         map.put("ApplicationDate",Formatter.formatDateTime( new Date(), Formatter.DATE));
         map.put("Remarks","");
+        map.put("COMMENTS",externalRemarks);
         map.put("systemLink",linkURL);
         map.put("TATtime",tatTimeStr);
         map.put("email",systemParamConfig.getSystemAddressOne());
