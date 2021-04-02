@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import java.util.Collection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -25,6 +27,7 @@ public class SelectTag extends DivTagSupport {
     private String filterValue;
     private String onchange;
     private String value;
+    private Collection<String> multiValues;
     private String otherOption;
     private String otherOptionValue = "00";
     private String hidden;
@@ -58,6 +61,7 @@ public class SelectTag extends DivTagSupport {
         setNeedMask(false);
         setNeedSort(false);
         setMultiSelect(false);
+        setMultiValues(null);
     }
 
     public void setHidden(String hidden) {
@@ -159,7 +163,11 @@ public class SelectTag extends DivTagSupport {
             for (SelectOption option : sos) {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
                 String txt = StringUtil.escapeHtml(option.getText());
-                String selected = option.getValue().equals(value) ? " selected" : "";
+                boolean multiChoose = false;
+                if (!IaisCommonUtils.isEmpty(multiValues)) {
+                    multiChoose = multiValues.contains(option.getValue());
+                }
+                String selected = option.getValue().equals(value) || multiChoose ? " selected" : "";
                 html.append("<option value=\"").append(val).append('\"').append(selected).append('>').append(txt).append(ENDOPTION);
             }
         }
@@ -249,5 +257,9 @@ public class SelectTag extends DivTagSupport {
 
     public void setMultiSelect(boolean multiSelect) {
         this.multiSelect = multiSelect;
+    }
+
+    public void setMultiValues(Collection<String> multiValues) {
+        this.multiValues = multiValues;
     }
 }
