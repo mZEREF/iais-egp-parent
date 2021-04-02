@@ -299,6 +299,7 @@ public class OfficersReSchedulingDelegator {
         List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(InspectionConstants.SWITCH_ACTION_YES.equals(actionValue)) {
+            //send email, sms, message
             officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
             ParamUtil.setRequestAttr(bpc.request, "reScheduleFail", "reScheduleSuccess");
         } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
