@@ -4866,22 +4866,24 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                for(int i =0;i<svcDocConfigList.size();i++){
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto = svcDocConfigList.get(i);
-                    String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
-                    String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
-                    String docMapKey;
-                    if("0".equals(dupForPrem)){
-                        docMapKey = hcsaSvcDocConfigDto.getId() + svcCode;
-                        List<AppSvcDocDto> appSvcDocDtosList = svcDocMap.get(docMapKey);
-                        String docSessionKey = i + "svcDoc" + svcCode;
-                        setSvcDocSession(appSvcDocDtosList,docSessionKey,bpc.request,maxVersionSvcDocList,dupForPerson,psnIndexList);
-                    }else if("1".equals(dupForPrem)){
-                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                            docMapKey = hcsaSvcDocConfigDto.getId()+ appGrpPremisesDto.getPremisesIndexNo() + svcCode;
+                if(!IaisCommonUtils.isEmpty(svcDocConfigList)){
+                    for(int i =0;i<svcDocConfigList.size();i++){
+                        HcsaSvcDocConfigDto hcsaSvcDocConfigDto = svcDocConfigList.get(i);
+                        String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                        String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                        String docMapKey;
+                        if("0".equals(dupForPrem)){
+                            docMapKey = hcsaSvcDocConfigDto.getId() + svcCode;
                             List<AppSvcDocDto> appSvcDocDtosList = svcDocMap.get(docMapKey);
-                            String docSessionKey = i + "svcDoc" + svcCode + appGrpPremisesDto.getPremisesIndexNo();
+                            String docSessionKey = i + "svcDoc" + svcCode;
                             setSvcDocSession(appSvcDocDtosList,docSessionKey,bpc.request,maxVersionSvcDocList,dupForPerson,psnIndexList);
+                        }else if("1".equals(dupForPrem)){
+                            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                                docMapKey = hcsaSvcDocConfigDto.getId()+ appGrpPremisesDto.getPremisesIndexNo() + svcCode;
+                                List<AppSvcDocDto> appSvcDocDtosList = svcDocMap.get(docMapKey);
+                                String docSessionKey = i + "svcDoc" + svcCode + appGrpPremisesDto.getPremisesIndexNo();
+                                setSvcDocSession(appSvcDocDtosList,docSessionKey,bpc.request,maxVersionSvcDocList,dupForPerson,psnIndexList);
+                            }
                         }
                     }
                 }
