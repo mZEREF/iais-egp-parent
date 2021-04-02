@@ -9,7 +9,9 @@ $(document).ready(function() {
 
     $('[data-toggle="tooltip"]').tooltip();
     $('select').each(function () {
-        if(!$(this).prop('multiple')){
+        if($(this).prop('multiple')){
+            $(this).multiSelect();
+        }else{
             $(this).niceSelect();
         }
     });
