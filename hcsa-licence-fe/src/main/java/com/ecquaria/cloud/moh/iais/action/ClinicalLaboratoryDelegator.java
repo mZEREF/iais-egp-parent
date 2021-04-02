@@ -662,7 +662,9 @@ public class ClinicalLaboratoryDelegator {
             Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
             if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 reloadSvcDocMap.forEach((k,v)->{
-                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                    if(v != null && v.size() > 1){
+                        Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                    }
                 });
             }
             appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
@@ -2759,6 +2761,7 @@ public class ClinicalLaboratoryDelegator {
         String[] qualifications = ParamUtil.getStrings(request, "qualification");
         String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
         String[] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
+        String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
         if (personnelSels != null && personnelSels.length > 0) {
             for (int i = 0; i < personnelSels.length; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
@@ -2825,6 +2828,12 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPersonnelDto.setQualification(qualification);
                 appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
                 appSvcPersonnelDto.setProfRegNo(professionalRegnNo);
+                String cgoIndexNo = cgoIndexNos[i];
+                if(!StringUtil.isEmpty(cgoIndexNo)){
+                    appSvcPersonnelDto.setCgoIndexNo(cgoIndexNo);
+                }else{
+                    appSvcPersonnelDto.setCgoIndexNo(UUID.randomUUID().toString());
+                }
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);
             }
         }
