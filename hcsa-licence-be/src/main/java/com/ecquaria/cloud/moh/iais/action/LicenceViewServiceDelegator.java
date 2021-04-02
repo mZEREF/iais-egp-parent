@@ -68,6 +68,8 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1270,7 +1272,11 @@ public class LicenceViewServiceDelegator {
                     request.setAttribute("PO_SIZE",i_PO.size());
                     request.setAttribute("DPO_SIZE",j_DPO.size());
                 }
+                Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
+                sortSvcDoc(multipleSvcDoc);
             }
+            Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
+            sortPremiseDoc(multipleGrpPrimaryDoc);
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1306,6 +1312,8 @@ public class LicenceViewServiceDelegator {
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         Map<String, List<AppGrpPrimaryDocDto>> oldMultipleGrpPrimaryDoc= oldAppSubmissionDto.getMultipleGrpPrimaryDoc();
         dealMapPrimaryDoc(multipleGrpPrimaryDoc,oldMultipleGrpPrimaryDoc);
+        sortPremiseDoc(multipleGrpPrimaryDoc);
+        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         multipleGrpPrimaryDoc.forEach((k,v)->{
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
@@ -1320,6 +1328,8 @@ public class LicenceViewServiceDelegator {
 
       /*  copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);*/
         dealMapSvcDoc(multipleSvcDoc,oldMultipleSvcDoc);
+        sortSvcDoc(multipleSvcDoc);
+        sortSvcDoc(oldMultipleSvcDoc);
         multipleSvcDoc.forEach((k,v)->{
             List<AppSvcDocDto> appSvcDocDtos = oldMultipleSvcDoc.get(k);
             copyServiceDoc(v,appSvcDocDtos);
@@ -1573,9 +1583,7 @@ public class LicenceViewServiceDelegator {
 
                 String vDupForPerson = v.getAppGrpPersonId();
                 if("1".equals(dupForPerson)){
-
                     docDealWith(multipleSvcDoc,v,"Premises 1:Clinical Governance Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
                 }else if("2".equals(dupForPerson)){
 
                     docDealWith(multipleSvcDoc,v,"Premises 1:Principal Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
@@ -2577,5 +2585,22 @@ public class LicenceViewServiceDelegator {
         appSvcCgoDto.setIdType("");
         appSvcCgoDto.setSpeciality("");
         return appSvcCgoDto;
+    }
+
+    private void sortPremiseDoc( Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc){
+        if(multipleGrpPrimaryDoc!=null){
+            multipleGrpPrimaryDoc.forEach((k,v)->{
+                if(v!=null){
+                    Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
+                }
+            });
+        }
+    }
+    private void sortSvcDoc(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+        if(multipleSvcDoc!=null){
+            multipleSvcDoc.forEach((k,v)->{
+                Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
+            });
+        }
     }
 }

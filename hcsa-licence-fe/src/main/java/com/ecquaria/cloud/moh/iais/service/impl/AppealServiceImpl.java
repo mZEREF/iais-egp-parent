@@ -1318,18 +1318,18 @@ public class AppealServiceImpl implements AppealService {
                         appPremisesSpecialDocDto.setVersion(appliSpecialDocDto1.getVersion());
                     }
                 }
-                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealDto.getAppPremisesSpecialDocDtos();
-                if(appPremisesSpecialDocDtos!=null){
-                    Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
-                    for(AppPremisesSpecialDocDto v : appPremisesSpecialDocDtos){
-                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(v.getIndex());
-                        if(pageShowFileDto!=null){
-                            boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
-                            if(equals){
-                                v.setVersion(v.getVersion());
-                            }else {
-                                v.setVersion(v.getVersion()+1);
-                            }
+            }
+            List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealDto.getAppPremisesSpecialDocDtos();
+            if(appPremisesSpecialDocDtos!=null){
+                Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+                for(AppPremisesSpecialDocDto v : appPremisesSpecialDocDtos){
+                    PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(v.getIndex());
+                    if(pageShowFileDto!=null){
+                        boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
+                        if(equals){
+                            v.setVersion(v.getVersion());
+                        }else {
+                            v.setVersion(v.getVersion()+1);
                         }
                     }
                 }

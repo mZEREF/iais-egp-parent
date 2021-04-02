@@ -4,13 +4,12 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
-<webui:setLayout name="iais-blank"/>
+<webui:setLayout name="iais-internet"/>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-
 <%@include file="../appeal/dashboard.jsp" %>
 <div class="container">
     <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
@@ -18,6 +17,7 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
 
         <div class="form-group">
             <div class="col-xs-12 col-md-10" style="margin-left: 2%">
@@ -26,7 +26,10 @@
 
             <div  class="col-xs-12 col-md-10">
                 <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-                    <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+                    <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+                    <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
+                    <input type="hidden" value="${id}" id="licenceId">
+                    <input type="hidden" value="${type}" id="parametertype">
                     <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
                 </div>
             </div>
@@ -77,7 +80,8 @@
         </div>
         <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
             <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
-            <%@include file="../appeal/cgoView.jsp"%>
+            <%@include file="cgoView.jsp"%>
+
         </div>
         <div class="col-xs-12 col-md-10" style="margin-left: 2%">
 
@@ -109,10 +113,15 @@
                                 <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
                                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                                 <div class="col-xs-12 col-md-4" style="margin-left: 1%" >
+                                    <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
+                                        <div id="${pageShowFileDto.fileMapId}">
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
-                                    <input type="text" disabled value="Y" style="display: none" name="isDelete" id="isDelete">
-                                    <input type="text" disabled value="${filename}" style="display: none" id="isFile">
+                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_file${ind.index}"></span>
+
+                                        </div>
+
+                                    </c:forEach>
                                 </div>
                             </div>
                         </div>
@@ -120,13 +129,11 @@
                 </div>
             </div>
         </div>
-        <c:if test="${!isPopApplicationView}">
-            <div>
-                <div class="row">
-                    <a class="back" id="Back" href="javascript:void(0);" style="float:left;margin-left: 4%"><em class="fa fa-angle-left"></em> Back</a>
-                </div>
+        <div>
+            <div class="row">
+                <a class="back" id="Back" href="javascript:void(0);" style="float:left;margin-left: 4%"><em class="fa fa-angle-left"></em> Back</a>
             </div>
-        </c:if>
+        </div>
         <input type="hidden"  id="saveDraftSuccess" name="saveDraftSuccess" value="${saveDraftSuccess}">
         <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
             <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
@@ -142,5 +149,198 @@
 </style>
 <script  type="text/javascript">
 
-</body>
-</html>
+    $(document).ready(function () {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
+        var reason= $('#reasonSelect option:selected').val();
+        if("MS003"==reason){
+            $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
+
+        }else  {
+            $('#cgo').attr("style" ,"display: none");
+
+        }
+        if("MS008"==reason){
+            $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
+
+        }else {
+            $('#selectHciNameAppeal').attr("style","display: none");
+        }
+        if("MS004"==reason){
+            $('#licenceYear').attr("style","display: block;margin-top: 20px");
+        }else {
+            $('#licenceYear').attr("style","display: none");
+        }
+        if("MS007"==reason){
+            $('#othersReason').attr("style","display: block");
+        }else {
+            $('#othersReason').attr("style","display: none");
+        }
+        if(  $("input[name='selectHciName']").prop("checked")){
+            $('#proposedHciName').attr("style","display: block");
+        }else {
+            $('#proposedHciName').attr("style","display: none");
+        }
+        if(  $('#isFile').val()!=''){
+            $('#delete').attr("style","display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+        }
+
+
+    });
+    function link(){
+        var type = $('#parametertype').val();
+        if(type=='application'){
+            var v= $('.appMaskNo').html();
+            showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo="+v);
+        }else {
+            if (type == "licence") {
+                showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohLicenceView?licenceId=" + $('#licenceId').val() + "&appeal=appeal");
+            }
+        }
+    }
+    $('#Back').click(function (){
+        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
+
+    });
+    $('#submit').click(function () {
+        uploadFileValidate();
+        var error = $('#error_litterFile_Show').html();
+        if(error == undefined || error == ""){
+            SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
+        }
+    });
+
+    function doUserRecUploadConfirmFile() {
+        var file = $('#selectedFile').val();
+        file= file.split("\\");
+        $("span[name='fileName']").html(file[file.length-1]);
+
+        if(file!=''){
+            $('#delete').attr("style","display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }
+        uploadFileValidate();
+    }
+
+
+    function uploadFileValidate(){
+        var configFileSize = $("#configFileSize").val();
+        var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+        var flag = true;
+        if( error =="Y"){
+            $('#delete').attr("style","display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }else if(error == "E"){
+            deleteFileFunction();
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        } else if(error =="N"){
+            clearFileFunction();
+            flag = false;
+            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+            $('#error_file').html("");
+        }
+        return flag;
+    }
+
+    $('#delete').click(function () {
+        deleteFileFunction();
+    });
+
+    function deleteFileFunction(){
+        $('.selectedFile').val('');
+        $('#delete').attr("style","display: none");
+        $("span[name='fileName']").html('');
+        $('#isDelete').val('N');
+        $('#error_litterFile_Show').html("");
+        $('#error_file').html("");
+    }
+
+    function clearFileFunction(){
+        $('.selectedFile').val('');
+        $('#delete').attr("style","display: none");
+        $("span[name='fileName']").html('');
+        $('#isDelete').val('N');
+    }
+
+    $('#save').click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "save","save","");
+    });
+
+    $('#reasonSelect').change(function () {
+
+        var reason= $('#reasonSelect option:selected').val();
+        if("MS003"==reason){
+            $('#cgo').attr("style" ,"display: block");
+
+        }else  {
+            $('#cgo').attr("style" ,"display: none");
+
+        }
+        if("MS008"==reason){
+            $('#selectHciNameAppeal').attr("style","display: block");
+
+        }else {
+            $('#selectHciNameAppeal').attr("style","display: none");
+        }
+        if("MS004"==reason){
+            $('#licenceYear').attr("style","display: block");
+        }else {
+            $('#licenceYear').attr("style","display: none");
+        }
+        if("MS007"==reason){
+            $('#othersReason').attr("style","display: block");
+        }else {
+            $('#othersReason').attr("style","display: none");
+        }
+
+    });
+
+
+    function isCheck(obj) {
+
+        if($(obj).prop("checked")){
+            $('#proposedHciName').attr("style","display: block");
+        }else {
+            $('#proposedHciName').attr("style","display: none");
+        }
+
+    }
+
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
+    };
+
+    function deletes() {
+
+        $('#control--runtime--1').attr("hidden");
+
+    }
+    $('#cancel').click(function () {
+
+        SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+
+    });
+
+
+    function cancelSaveDraft() {
+
+    }
+    function cancel() {
+        $('#saveDraft').modal('hide');
+    }
+
+    function jumpPage() {
+        SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+    }
+</script>
+
+</>
+

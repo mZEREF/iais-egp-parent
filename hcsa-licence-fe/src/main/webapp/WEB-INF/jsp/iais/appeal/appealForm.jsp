@@ -109,10 +109,8 @@
         <div class="document-upload-list" >
           <div class="file-upload-gp row" >
             <div class="fileContent col-xs-5">
-
-              <input class="selectedFile"  id="selectedFile" name = "selectedFile"    type="file" style="display: none;" aria-label="selectedFile1" >
+              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  onchange="javascript:doUserRecUploadConfirmFile(event)" type="file" style="display: none;" aria-label="selectedFile1" >
               <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
-
             </div>
           </div>
           <span class="error-msg" name="iaisErrorMsg" id="error_selectedFileError"></span>
@@ -230,7 +228,7 @@ $('#submit').click(function () {
       fileChooser.change(function (event) {
           console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
     /*  a();*/
-              ajaxCallUpload('mainForm',"selectedFile");
+
          });
          fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
        }
@@ -278,17 +276,8 @@ $('#submit').click(function () {
       $(fileElement).remove(); //'Removing Original'
       if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
     }
-    var file = $('#selectedFile').val();
-    file= file.split("\\");
-    $("span[name='fileName']").html(file[file.length-1]);
 
-    if(file!=''){
-      $('#delete').attr("style","display: inline-block;margin-left: 20px");
-      $('#isDelete').val('Y');
-      $('#error_litterFile_Show').html("");
-      $('#error_file').html("");
-    }
-    uploadFileValidate();
+      ajaxCallUpload('mainForm',"selectedFile");
 
   }
 
