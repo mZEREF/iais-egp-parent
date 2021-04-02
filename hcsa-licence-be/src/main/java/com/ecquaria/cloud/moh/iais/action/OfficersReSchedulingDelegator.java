@@ -299,6 +299,7 @@ public class OfficersReSchedulingDelegator {
         List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(InspectionConstants.SWITCH_ACTION_YES.equals(actionValue)) {
+            //send email, sms, message
             officersReSchedulingService.sendEmailToApplicant(reschedulingOfficerDto);
             ParamUtil.setRequestAttr(bpc.request, "reScheduleFail", "reScheduleSuccess");
         } else if (InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
@@ -395,7 +396,7 @@ public class OfficersReSchedulingDelegator {
                 Map<String, String> errMap = null;
                 if(startDate != null && endDate != null && endDate.before(startDate)){
                     errMap = IaisCommonUtils.genNewHashMap();
-                    errMap.put("specificDate", "UC_INSP_ERR0007");
+                    errMap.put("specificDate", "OAPPT_ERR014");
                 } else {
                     AppointmentDto appointmentDto = officersReSchedulingService.getInspDateValidateData(reschedulingOfficerDto);
                     if (startDate != null) {
@@ -408,7 +409,7 @@ public class OfficersReSchedulingDelegator {
                         appointmentClient.validateUserCalendar(appointmentDto).getStatusCode();
                     } catch (Exception e) {
                         errMap = IaisCommonUtils.genNewHashMap();
-                        errMap.put("specificDate", "UC_INSP_ERR0007");
+                        errMap.put("specificDate", "OAPPT_ERR014");
                     }
                     reschedulingOfficerDto.setAppointmentDto(appointmentDto);
                 }
