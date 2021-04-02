@@ -98,14 +98,7 @@ import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -139,6 +132,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * egator
@@ -219,6 +213,9 @@ public class NewApplicationDelegator {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+
+    @Autowired
+    private AppConfigClient appconfigclient;
     @Autowired
     private FeMessageClient feMessageClient;
     @Autowired
@@ -1509,7 +1506,6 @@ public class NewApplicationDelegator {
                     /**
                      * preview
                      */
-                    premiseView(appSubmissionDto,applicationDto,bpc.request);
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                         svcRelatedInfoView(appSubmissionDto,bpc.request);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
@@ -1519,6 +1515,7 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
+                premiseView(appSubmissionDto,applicationDto,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
