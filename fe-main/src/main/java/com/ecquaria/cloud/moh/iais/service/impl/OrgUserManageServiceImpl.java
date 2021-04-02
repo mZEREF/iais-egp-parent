@@ -404,8 +404,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setOrgType(organizationById.getOrgType());
         organizationDto.setStatus(organizationById.getStatus());
         organizationDto.setUenNo(organizationById.getUenNo());
+        if (amendLicensee){
+            organizationById.setLicenseeDto(licenseeDto);
+        }
         organizationDto.setId(organizationById.getId());
-        organizationDto.setLicenseeDto(licenseeDto);
         updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee

@@ -134,7 +134,14 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><iais:code code="${item.isActive}"></iais:code></p>
+                                                <p><c:choose>
+                                                    <c:when test="${item.isActive eq 'CMSTAT001'}">
+                                                <p>Yes</p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <p>No</p>
+                                                </c:otherwise>
+                                                </c:choose></p>
                                             </td>
                                             <td>
                                                 <p><a onclick="edit('${userIndex}')">Edit</a></p>
