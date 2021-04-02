@@ -8,7 +8,11 @@ $(document).ready(function() {
     }
 
     $('[data-toggle="tooltip"]').tooltip();
-    $('select').niceSelect();
+    $('select').each(function () {
+        if(!$(this).prop('multiple')){
+            $(this).niceSelect();
+        }
+    });
     setTimeout(function() {}, 500);
 
   //  $('.nice-select ul').mCustomScrollbar();
