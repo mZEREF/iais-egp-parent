@@ -394,15 +394,16 @@ public class WithdrawalDelegator {
                                 files.add(file);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                                 SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                                String e = str.substring(str.lastIndexOf("e") + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
                                 String fileMd5 = singeFileUtil.getFileMd5(file);
                                 premisesSpecialDocDto.setMd5Code(fileMd5);
+                                premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                                 premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                                 appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                                 PageShowFileDto pageShowFileDto =new PageShowFileDto();
                                 pageShowFileDto.setFileName(file.getName());
-                                String e = str.substring(str.lastIndexOf("e") + 1);
                                 pageShowFileDto.setIndex(e);
                                 pageShowFileDto.setFileMapId("selectedFileDiv"+e);
                                 pageShowFileDto.setSize(Integer.valueOf(size.toString()));
@@ -412,9 +413,11 @@ public class WithdrawalDelegator {
                         }else {
                             if(pageShowFileHashMap!=null){
                                 PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
+                                String e = str.substring(str.lastIndexOf("e") + 1);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
                                 premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                                 premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                                premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                                 premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
