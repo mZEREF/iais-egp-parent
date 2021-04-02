@@ -301,7 +301,7 @@ public class FeUserManagement {
                 if("Create".equalsIgnoreCase(title)){
                     if (intranetUserService.accountAlreadyExist(feUserDto)){
                         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                        errorMap.put("identityNo", "USER_ERR002");
+                        errorMap.put("identityNo", "USER_ERR015");
                         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                         return;

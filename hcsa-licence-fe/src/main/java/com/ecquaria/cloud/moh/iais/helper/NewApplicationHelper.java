@@ -1811,6 +1811,10 @@ public class NewApplicationHelper {
                                 appSvcDocDto.setPremisesVal("");
                                 appSvcDocDto.setPremisesType("");
                             }
+                            String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                            if(!StringUtil.isEmpty(dupForPerson)){
+                                appSvcDocDto.setDupForPerson(dupForPerson);
+                            }
                             //break;
                         }
                     }

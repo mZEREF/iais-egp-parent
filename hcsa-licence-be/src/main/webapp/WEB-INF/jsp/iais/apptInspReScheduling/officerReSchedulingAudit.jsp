@@ -78,7 +78,7 @@
                       <label style="font-size: 16px"> </label>
                     </div>
                     <div class="col-md-6">
-                      <div class="col-xs-12 col-md-5">
+                      <div class="col-xs-12 col-md-7">
                         <span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
                       </div>
                     </div>
