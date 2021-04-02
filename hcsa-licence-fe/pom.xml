@@ -91,6 +91,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>girofiles</directory>
+                            <targetPath>WEB-INF/classes/docTemplate</targetPath>
+                        </resource>
+                    </webResources>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -106,5 +114,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
