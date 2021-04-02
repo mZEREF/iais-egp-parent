@@ -660,13 +660,13 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
             //set svc doc title
             Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            /*if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 reloadSvcDocMap.forEach((k,v)->{
                     if(v != null && v.size() > 1){
                         Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
                     }
                 });
-            }
+            }*/
             appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);

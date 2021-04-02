@@ -2674,6 +2674,15 @@ public class NewApplicationHelper {
                 }
             }
         }
+        //do sort
+        if(!IaisCommonUtils.isEmpty(reloadMap)){
+            reloadMap.forEach((k,v)->{
+                if(v != null && v.size() > 1){
+                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                }
+            });
+        }
+
         return reloadMap;
     }
 
@@ -2696,6 +2705,14 @@ public class NewApplicationHelper {
                     }
                 }
             }
+        }
+        //do sort
+        if(!IaisCommonUtils.isEmpty(reloadMap)){
+            reloadMap.forEach((k,v)->{
+                if(v != null && v.size() > 1){
+                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                }
+            });
         }
         return reloadMap;
     }
