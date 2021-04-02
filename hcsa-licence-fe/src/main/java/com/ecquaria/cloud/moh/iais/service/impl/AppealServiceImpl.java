@@ -1123,6 +1123,7 @@ public class AppealServiceImpl implements AppealService {
                             boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
                             if(equals){
                                 v.setVersion(v.getVersion());
+                                v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                             }else {
                                 v.setVersion(v.getVersion()+1);
                             }
@@ -1328,6 +1329,7 @@ public class AppealServiceImpl implements AppealService {
                         boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
                         if(equals){
                             v.setVersion(v.getVersion());
+                            v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         }else {
                             v.setVersion(v.getVersion()+1);
                         }
