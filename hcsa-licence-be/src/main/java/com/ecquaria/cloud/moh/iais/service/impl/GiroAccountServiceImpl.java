@@ -180,9 +180,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
                     }
                 }
             }
-            if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
-                applicantName=orgUserDtoList.get(0).getDisplayName();
-            }
+
             templateContent.put("ApplicantName", applicantName);
             templateContent.put("ApplicationType",  "HCI");
             templateContent.put("ApplicationNumber", applicationNumber);
