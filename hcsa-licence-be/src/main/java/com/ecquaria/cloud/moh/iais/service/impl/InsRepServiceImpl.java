@@ -936,10 +936,20 @@ public class InsRepServiceImpl implements InsRepService {
                 completedTask(taskDto, applicationNo);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+                List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                applicationDtos.add(applicationDto);
+                List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
+                hcsaSvcStageWorkingGroupDtos =taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                if( !IaisCommonUtils.isEmpty(hcsaSvcStageWorkingGroupDtos)){
+                    taskDto.setWkGrpId(hcsaSvcStageWorkingGroupDtos.get(0).getGroupId());
+                }
                 List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
                 taskService.createTasks(taskDtos);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+                if( !StringUtil.isEmpty(taskDto.getWkGrpId())){
+                    groupId2 = taskDto.getWkGrpId();
+                }
                 createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
                 createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
             }
