@@ -68,6 +68,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1270,7 +1271,11 @@ public class LicenceViewServiceDelegator {
                     request.setAttribute("PO_SIZE",i_PO.size());
                     request.setAttribute("DPO_SIZE",j_DPO.size());
                 }
+                Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
+                sortSvcDoc(multipleSvcDoc);
             }
+            Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
+            sortPremiseDoc(multipleGrpPrimaryDoc);
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1310,7 +1315,8 @@ public class LicenceViewServiceDelegator {
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
         });
-
+        sortPremiseDoc(multipleGrpPrimaryDoc);
+        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -1324,6 +1330,8 @@ public class LicenceViewServiceDelegator {
             List<AppSvcDocDto> appSvcDocDtos = oldMultipleSvcDoc.get(k);
             copyServiceDoc(v,appSvcDocDtos);
         });
+        sortSvcDoc(multipleSvcDoc);
+        sortSvcDoc(oldMultipleSvcDoc);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {
@@ -2577,5 +2585,21 @@ public class LicenceViewServiceDelegator {
         appSvcCgoDto.setIdType("");
         appSvcCgoDto.setSpeciality("");
         return appSvcCgoDto;
+    }
+    private void sortPremiseDoc( Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc){
+        if(multipleGrpPrimaryDoc!=null){
+            multipleGrpPrimaryDoc.forEach((k,v)->{
+                if(v!=null){
+                    Collections.sort(v,(s1, s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
+                }
+            });
+        }
+    }
+    private void sortSvcDoc(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+        if(multipleSvcDoc!=null){
+            multipleSvcDoc.forEach((k,v)->{
+                Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
+            });
+        }
     }
 }
