@@ -133,7 +133,8 @@
                                                         <c:forEach var="attachmentDto" items="${giroAcctFileDto.attachmentDtos}"
                                                                    varStatus="status">
                                                             <p class="fileList">
-                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${attachmentDto.id}"/>&fileRepoName=${attachmentDto.docName}">${attachmentDto.docName}</a>                                                                &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${attachmentDto.id}"/>&fileRepoName=${attachmentDto.docName}">${attachmentDto.docName}</a>
+                                                                &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                                         </c:forEach>
                                                     </div>
                                                     <a class="btn btn-file-upload btn-secondary" href="#">Upload</a><br>
@@ -181,7 +182,7 @@
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
         console.log(error)
         if (error == "N"){
-            $('#error_UploadFile').html($("#fileMaxLengthMessage").val());
+            $('#error_UploadFile').html($("#fileMaxMBMessage").val());
             $("#selectFile").val('');
             $(".filename").html("");
         }else if(error == "Y"){
@@ -189,7 +190,7 @@
                 callAjaxUploadFile();
                 $('#error_UploadFile').html('');
             }else{
-                $('#error_UploadFile').html($("#fileMaxLengthMessage").val());
+                $('#error_UploadFile').html($("#fileMaxMBMessage").val());
                 $("#selectFile").val('');
             }
         }
