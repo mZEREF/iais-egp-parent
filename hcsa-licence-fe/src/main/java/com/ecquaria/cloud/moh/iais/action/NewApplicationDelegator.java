@@ -1509,7 +1509,6 @@ public class NewApplicationDelegator {
                     /**
                      * preview
                      */
-                    premiseView(appSubmissionDto,applicationDto,bpc.request);
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                         svcRelatedInfoView(appSubmissionDto,bpc.request);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
@@ -1519,6 +1518,7 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
+                premiseView(appSubmissionDto,applicationDto,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
