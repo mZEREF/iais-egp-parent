@@ -1311,12 +1311,12 @@ public class LicenceViewServiceDelegator {
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         Map<String, List<AppGrpPrimaryDocDto>> oldMultipleGrpPrimaryDoc= oldAppSubmissionDto.getMultipleGrpPrimaryDoc();
         dealMapPrimaryDoc(multipleGrpPrimaryDoc,oldMultipleGrpPrimaryDoc);
+        sortPremiseDoc(multipleGrpPrimaryDoc);
+        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         multipleGrpPrimaryDoc.forEach((k,v)->{
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
         });
-        sortPremiseDoc(multipleGrpPrimaryDoc);
-        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -1326,12 +1326,12 @@ public class LicenceViewServiceDelegator {
 
         /*  copyServiceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);*/
         dealMapSvcDoc(multipleSvcDoc,oldMultipleSvcDoc);
+        sortSvcDoc(multipleSvcDoc);
+        sortSvcDoc(oldMultipleSvcDoc);
         multipleSvcDoc.forEach((k,v)->{
             List<AppSvcDocDto> appSvcDocDtos = oldMultipleSvcDoc.get(k);
             copyServiceDoc(v,appSvcDocDtos);
         });
-        sortSvcDoc(multipleSvcDoc);
-        sortSvcDoc(oldMultipleSvcDoc);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {
