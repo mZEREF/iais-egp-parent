@@ -396,7 +396,7 @@ public class OfficersReSchedulingDelegator {
                 Map<String, String> errMap = null;
                 if(startDate != null && endDate != null && endDate.before(startDate)){
                     errMap = IaisCommonUtils.genNewHashMap();
-                    errMap.put("specificDate", "UC_INSP_ERR0007");
+                    errMap.put("specificDate", "OAPPT_ERR014");
                 } else {
                     AppointmentDto appointmentDto = officersReSchedulingService.getInspDateValidateData(reschedulingOfficerDto);
                     if (startDate != null) {
@@ -409,7 +409,7 @@ public class OfficersReSchedulingDelegator {
                         appointmentClient.validateUserCalendar(appointmentDto).getStatusCode();
                     } catch (Exception e) {
                         errMap = IaisCommonUtils.genNewHashMap();
-                        errMap.put("specificDate", "UC_INSP_ERR0007");
+                        errMap.put("specificDate", "OAPPT_ERR014");
                     }
                     reschedulingOfficerDto.setAppointmentDto(appointmentDto);
                 }
