@@ -27,6 +27,9 @@
         <jacoco.out.ut.file>jacoco-ut.exec</jacoco.out.ut.file>
         <sonar.jacoco.reportPaths>${project.build.directory}/${jacoco.out.ut.file}</sonar.jacoco.reportPaths>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
 
     <modules>
