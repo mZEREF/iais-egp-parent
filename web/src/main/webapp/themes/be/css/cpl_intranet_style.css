@@ -678,7 +678,7 @@ header .container .sg-gov-logo a img {
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
   color: #80ce22;
-  background: #00486B;
+  background: transparent !important;
 }
 
 
@@ -3681,6 +3681,16 @@ span.error-msg {
 .table-gp .table-footnote p.count {
   color: #888888;
   margin-bottom: 0;
+}
+.column-sort {
+  float: left;
+  display: block;
+  margin: 0 8px 9px 0;
+  width: 14px;
+  position: absolute;
+}
+.table-gp table.table > thead > tr > th.sorting p {
+  padding-left: 15px
 }
 @media only screen and (max-width : 767px) {
   .table-gp .nav {
