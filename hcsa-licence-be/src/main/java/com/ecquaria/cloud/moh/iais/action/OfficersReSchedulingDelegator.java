@@ -481,7 +481,10 @@ public class OfficersReSchedulingDelegator {
         reschedulingOfficerDto.setCurUserId(loginContext.getUserId());
         String applicationNo = reschedulingOfficerDto.getAssignNo();
         ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
-        officersReSchedulingService.reScheduleRoutingAudit(reschedulingOfficerDto);
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
+            officersReSchedulingService.reScheduleRoutingAudit(reschedulingOfficerDto);
+        }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
     }

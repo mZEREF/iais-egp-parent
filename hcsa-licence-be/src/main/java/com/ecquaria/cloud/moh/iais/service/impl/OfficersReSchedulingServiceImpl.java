@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -593,6 +594,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 map.put("dateTime", dateTime);
                 map.put("systemLink", loginUrl);
                 map.put("address", address1);
+                //msg service code
+                Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+                List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+                if(samePremisesAppMap != null) {
+                    serviceCodes = msgSvcCodeByAppNos(appNo, samePremisesAppMap, serviceCodes);
+                }
                 try{
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
@@ -610,11 +617,38 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     smsParam.setRefId(appNo);
                     notificationHelper.sendNotification(smsParam);
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_MSG);
+                    msgParam.setTemplateContent(map);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    msgParam.setQueryCode(appNo);
+                    msgParam.setReqRefNum(appNo);
+                    msgParam.setRefId(appNo);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    notificationHelper.sendNotification(msgParam);
                 } catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
             }
         }
+    }
+
+    private List<String> msgSvcCodeByAppNos(String appNo, Map<String, List<String>> samePremisesAppMap, List<String> serviceCodes) {
+        List<String> appNoList = samePremisesAppMap.get(appNo);
+        for(String applicationNo : appNoList){
+            if(!StringUtil.isEmpty(applicationNo)) {
+                ApplicationDto applicationDto = getApplicationByAppNo(applicationNo);
+                String serviceId = applicationDto.getServiceId();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                if(hcsaServiceDto != null) {
+                    String serviceCode = hcsaServiceDto.getSvcCode();
+                    if (!StringUtil.isEmpty(serviceCode)) {
+                        serviceCodes.add(serviceCode);
+                    }
+                }
+            }
+        }
+        return serviceCodes;
     }
 
     @Override
