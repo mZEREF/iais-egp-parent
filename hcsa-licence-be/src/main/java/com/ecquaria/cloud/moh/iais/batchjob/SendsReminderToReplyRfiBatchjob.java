@@ -329,6 +329,7 @@ public class SendsReminderToReplyRfiBatchjob {
             mapPrem.put("appId", applicationDto.getId());
             url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + applicationDto.getId() + "&premiseId=" + appGrpPremId;
         }
+        url="#";
         emailMap.put("systemLink", url);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
         emailParam.setTemplateContent(emailMap);
