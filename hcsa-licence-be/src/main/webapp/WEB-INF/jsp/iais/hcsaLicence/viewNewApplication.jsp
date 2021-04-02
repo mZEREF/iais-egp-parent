@@ -3,18 +3,18 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <style>
-  body {
-    font-size: 14px;
-    padding: 2%;
-  }
+    body {
+        font-size: 14px;
+        padding: 2%;
+    }
 
-  * {
-    word-wrap: break-word
-  }
+    * {
+        word-wrap: break-word
+    }
 
-  p {
-    margin: 0 0 0px;
-  }
+    p {
+        margin: 0 0 0px;
+    }
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">
@@ -87,93 +87,93 @@
       <label style="font-size: 2.2rem">${stepNameMap['SVST002']}</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p><strong class="col-xs-6">Clinical Governance Officer <c:if
-                test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:</strong><span
-                class="col-xs-4 col-md-4"></span>
-        </p>
-        <div class="form-check-gp">
-          <div class="row">
-            <div class="col-xs-12">
-              <table class="col-xs-12">
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
-                  </td>
-                  <td>
+          <p><strong class="col-xs-6">Clinical Governance Officer <c:if
+                  test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:</strong><span
+                  class="col-xs-4 col-md-4"></span>
+          </p>
+          <div class="form-check-gp">
+            <div class="row">
+              <div class="col-xs-12">
+                <table class="col-xs-12">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
+                    </td>
+                    <td>
 
                       <div class="col-xs-6 col-md-6">
-                      <span class="newVal " attr="${cgo.salutation}"><iais:code code="${cgo.salutation}"/></span>
-                    </div>
+                        <span class="newVal " attr="${cgo.salutation}"><iais:code code="${cgo.salutation}"/></span>
+                      </div>
                       <div class="col-xs-6 col-md-6">
                       <span class=" oldVal"
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].salutation}"
                             style="display: none"><iais:code
                               code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].salutation}"/></span>
 
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/></span>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/></span>
 
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}</span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
-                      Type
-                    </p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6">
-                      <span class="newVal " attr="<iais:code code="${cgo.idType}"/>"><iais:code code="${cgo.idType}"/></span>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
+                        Type
+                      </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="<iais:code code="${cgo.idType}"/>"><iais:code code="${cgo.idType}"/></span>
 
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                       <span class=" oldVal"
                             attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"/>"
                             style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"/></span>
 
-                    </div>
-                    </p>
-                  </td>
-                </tr>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
-                  </td>
-                  <td>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
+                    </td>
+                    <td>
                       <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${cgo.idNo}">
                          <c:out value="${cgo.idNo}"/>
                          <c:if test="${empty hashMap[cgo.idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
+                           <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                         </c:if>
                           <c:if test="${not empty hashMap[cgo.idNo]}">
                             <img src="/hcsa-licence-web/img/2020109171436.png" width="25"
-                               onclick="showThisTableNewService(this)" height="25" alt="NETS">
+                                 onclick="showThisTableNewService(this)" height="25" alt="NETS">
                           </c:if>
                       </span>
                       </div>
 
-                    <div class="col-xs-6 img-show">
+                      <div class="col-xs-6 img-show">
                       <span class="oldVal"
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"
                             style="display: none">
@@ -186,143 +186,143 @@
                                 width="25" height="25" alt="NETS">
                          </c:if>
                       </span>
-                    </div>
-
-                    <c:if test="${not empty hashMap[cgo.idNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach items="${hashMap[cgo.idNo]}" var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-                            <tr></tr>
-
-                          </table>
-                        </div>
                       </div>
-                    </c:if>
-                    <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}"
-                                    var="map">
+
+                      <c:if test="${not empty hashMap[cgo.idNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
                               </tr>
-                            </c:forEach>
-                          </table>
+                              <c:forEach items="${hashMap[cgo.idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
                         </div>
+                      </c:if>
+                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach
+                                      items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}"
+                                      var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation
+                      </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6 col-md-6">
+                        <span class="newVal " attr="${cgo.designation}"><iais:code code="${cgo.designation}"/></span>
+
                       </div>
-                    </c:if>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation
-                    </p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6 col-md-6">
-                      <span class="newVal " attr="${cgo.designation}"><iais:code code="${cgo.designation}"/></span>
-
-                    </div>
-                    <div class="col-xs-6 col-md-6">
+                      <div class="col-xs-6 col-md-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}"
                             style="display: none"><iais:code
                               code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}"/></span>
-                    </div>
-                    </p>
-                  </td>
-                </tr>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
-                      Type</p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
+                        Type</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.professionType}"><iais:code
                               code="${cgo.professionType}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal"
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}"
                             style="display: none"><iais:code
                               code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}"/></span>
-                    </div>
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
-                      Regn. No.</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6 img-show">
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
+                        Regn. No.</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6 img-show">
                       <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/>
                         <c:if test="${empty listHashMap[cgo.profRegNo]}">
                           <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
@@ -332,8 +332,8 @@
                                width="25" height="25" alt="NETS">
                         </c:if>
                       </span>
-                    </div>
-                    <div class="col-xs-6 img-show">
+                      </div>
+                      <div class="col-xs-6 img-show">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"
                             style="display: none">
@@ -347,103 +347,103 @@
                                onclick="showThisTableOldService(this)" height="25" alt="NETS">
                         </c:if>
                       </span>
-                    </div>
-                    <c:if test="${not empty listHashMap[cgo.profRegNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            PRS</label><span style="position: absolute;right: 0px;color: black"
-                                             onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Professional Regn. No.</td>
-                              <td>Complaints</td>
-                              <td>Final Outcome</td>
-                              <td>Fine Amounts</td>
-                              <td>Restrictive Practice Start Date</td>
-                              <td>Restrictive Practice End Date</td>
-                              <td>Suspension Start Date</td>
-                              <td>Suspension End Date</td>
-                              <td>Other disciplinary action Start Date</td>
-                              <td>Other Disciplinary action End Date</td>
-                            </tr>
-                            <c:forEach items="${listHashMap[cgo.profRegNo]}" var="list">
-                              <tr>
-                                <td>${cgo.profRegNo}</td>
-                                <td style="text-align: left">
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
-                                </td>
-                                <td>${list.finaloutcome}</td>
-                                <td>${list.fineamount}</td>
-                                <td>${list.restrictstartdate}</td>
-                                <td>${list.restrictenddate}</td>
-                                <td>${list.suspendstartdate}</td>
-                                <td>${list.suspendenddate}</td>
-                                <td>${list.otherstartdate}</td>
-                                <td>${list.otherenddate}</td>
-                              </tr>
-                            </c:forEach>
-                          </table>
-                        </div>
                       </div>
-                    </c:if>
-                    <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            PRS</label><span style="position: absolute;right: 0px;color: black"
-                                             onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Professional Regn. No.</td>
-                              <td width="10%">Complaints</td>
-                              <td>Final Outcome</td>
-                              <td>Fine Amounts</td>
-                              <td>Restrictive Practice Start Date</td>
-                              <td>Restrictive Practice End Date</td>
-                              <td>Suspension Start Date</td>
-                              <td>Suspension End Date</td>
-                              <td>Other disciplinary action Start Date</td>
-                              <td>Other Disciplinary action End Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}"
-                                    var="list">
+                      <c:if test="${not empty listHashMap[cgo.profRegNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              PRS</label><span style="position: absolute;right: 0px;color: black"
+                                               onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
-                                <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}</td>
-                                <td style="text-align: left">
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                </td>
-                                <td>${list.finaloutcome}</td>
-                                <td>${list.fineamount}</td>
-                                <td>${list.restrictstartdate}</td>
-                                <td>${list.restrictenddate}</td>
-                                <td>${list.suspendstartdate}</td>
-                                <td>${list.suspendenddate}</td>
-                                <td>${list.otherstartdate}</td>
-                                <td>${list.otherenddate}</td>
+                                <td>Professional Regn. No.</td>
+                                <td>Complaints</td>
+                                <td>Final Outcome</td>
+                                <td>Fine Amounts</td>
+                                <td>Restrictive Practice Start Date</td>
+                                <td>Restrictive Practice End Date</td>
+                                <td>Suspension Start Date</td>
+                                <td>Suspension End Date</td>
+                                <td>Other disciplinary action Start Date</td>
+                                <td>Other Disciplinary action End Date</td>
                               </tr>
-                            </c:forEach>
-                          </table>
+                              <c:forEach items="${listHashMap[cgo.profRegNo]}" var="list">
+                                <tr>
+                                  <td>${cgo.profRegNo}</td>
+                                  <td style="text-align: left">
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
+                                  </td>
+                                  <td>${list.finaloutcome}</td>
+                                  <td>${list.fineamount}</td>
+                                  <td>${list.restrictstartdate}</td>
+                                  <td>${list.restrictenddate}</td>
+                                  <td>${list.suspendstartdate}</td>
+                                  <td>${list.suspendenddate}</td>
+                                  <td>${list.otherstartdate}</td>
+                                  <td>${list.otherenddate}</td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
                         </div>
-                      </div>
-                    </c:if>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty
-                    </p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6">
+                      </c:if>
+                      <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              PRS</label><span style="position: absolute;right: 0px;color: black"
+                                               onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Professional Regn. No.</td>
+                                <td width="10%">Complaints</td>
+                                <td>Final Outcome</td>
+                                <td>Fine Amounts</td>
+                                <td>Restrictive Practice Start Date</td>
+                                <td>Restrictive Practice End Date</td>
+                                <td>Suspension Start Date</td>
+                                <td>Suspension End Date</td>
+                                <td>Other disciplinary action Start Date</td>
+                                <td>Other Disciplinary action End Date</td>
+                              </tr>
+                              <c:forEach
+                                      items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}"
+                                      var="list">
+                                <tr>
+                                  <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}</td>
+                                  <td style="text-align: left">
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
+                                  </td>
+                                  <td>${list.finaloutcome}</td>
+                                  <td>${list.fineamount}</td>
+                                  <td>${list.restrictstartdate}</td>
+                                  <td>${list.restrictenddate}</td>
+                                  <td>${list.suspendstartdate}</td>
+                                  <td>${list.suspendenddate}</td>
+                                  <td>${list.otherstartdate}</td>
+                                  <td>${list.otherenddate}</td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty
+                      </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.speciality}">
                         <c:choose>
                           <c:when test="${'other' == cgo.speciality}">
@@ -454,154 +454,154 @@
                           </c:otherwise>
                         </c:choose>
                         </span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"
                             style="display: none">
                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/>
                       </span>
-                    </div>
-                    </p>
-                  </td>
-                </tr>
-                
-                <c:choose>
-                  <c:when test="${'other' == cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
+
+                  <c:choose>
+                    <c:when test="${'other' == cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                        </td>
+                        <td>
+                          <div class="col-xs-6">
                         <span class="newVal " attr="${cgo.specialityOther}"><c:out
                                 value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
+                          </div>
+                          <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
                           <span class="oldVal " style="display: none"
                                 attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
                                   value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            </div>
+                          </c:if>
+                          <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
+                              <span class="oldVal" attr="" style="display: none"></span>
+                            </div>
+                          </c:if>
+                        </td>
+                      </tr>
+                    </c:when>
+                    <c:when test="${'other' != cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                        </td>
+                        <td>
                           <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                  <c:when test="${'other' != cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
                         <span class="newVal " attr="${cgo.specialityOther}"><c:out
                                 value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
+                          </div>
+                          <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
                           <span class="oldVal " style="display: none"
                                 attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
                                   value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            </div>
+                          </c:if>
+                          <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
+                              <span class="oldVal" attr="" style="display: none"></span>
+                            </div>
+                          </c:if>
+                        </td>
+                      </tr>
+                    </c:when>
+                    <c:when test="${'other' == cgo.speciality && 'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                      <tr>
+                        <td class="col-xs-6">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                        </td>
+                        <td>
                           <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                  <c:when test="${'other' == cgo.speciality && 'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
                         <span class="newVal " attr="${cgo.specialityOther}"><c:out
                                 value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
+                          </div>
+                          <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
                           <span class="oldVal " style="display: none"
                                 attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
                                   value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                </c:choose>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspecialty
-                      or relevant qualification</p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.subSpeciality}"><c:out value="${cgo.subSpeciality}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                            </div>
+                          </c:if>
+                          <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                            <div class="col-xs-6">
+                              <span class="oldVal" attr="" style="display: none"></span>
+                            </div>
+                          </c:if>
+                        </td>
+                      </tr>
+                    </c:when>
+                  </c:choose>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspecialty
+                        or relevant qualification</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${cgo.subSpeciality}"><c:out value="${cgo.subSpeciality}"/></span>
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}</span>
-                    </div>
-                    </p>
-                  </td>
-                </tr>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
-                      No.</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.mobileNo}"><c:out value="${cgo.mobileNo}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
+                        No.</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${cgo.mobileNo}"><c:out value="${cgo.mobileNo}"/></span>
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}</span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email
-                      Address</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.emailAddr}"><c:out value="${cgo.emailAddr}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email
+                        Address</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${cgo.emailAddr}"><c:out value="${cgo.emailAddr}"/></span>
+                      </div>
+                      <div class="col-xs-6">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].emailAddr}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].emailAddr}</span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
-              </table>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-      </c:forEach>
+        </c:forEach>
       </div>
     </div>
   </c:if>
@@ -1406,11 +1406,11 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                     </td>
                     <td>
-                        <span class="check-square"></span>
-                        <div class="col-xs-6">
-                          <span class="newVal " attr="${po.salutation}"><iais:code code="${po.salutation}"/></span>
-                        </div>
-                        <div class="col-xs-6">
+                      <span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.salutation}"><iais:code code="${po.salutation}"/></span>
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}"
                               style="display: none"><iais:code
@@ -1658,79 +1658,79 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
     <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${stepNameMap['SVST007']}</label>
-    <div class="amend-preview-info">
-      <div class="form-check-gp">
-        <div class="row">
-          <div class="col-xs-12">
-            <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson"
-                       varStatus="status">
-              <p><strong class="col-xs-6">MedAlert Person <c:if
-                      test="${fn:length(currentPreviewSvcInfo.appSvcMedAlertPersonList)>1}">${status.index+1}</c:if>:</strong>
-              </p>
-              <span class="col-xs-6"></span>
-              <table class="col-xs-12">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST007']}</label>
+      <div class="amend-preview-info">
+        <div class="form-check-gp">
+          <div class="row">
+            <div class="col-xs-12">
+              <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson"
+                         varStatus="status">
+                <p><strong class="col-xs-6">MedAlert Person <c:if
+                        test="${fn:length(currentPreviewSvcInfo.appSvcMedAlertPersonList)>1}">${status.index+1}</c:if>:</strong>
+                </p>
+                <span class="col-xs-6"></span>
+                <table class="col-xs-12">
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
-                    </p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                      </p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.salutation}"><iais:code
                                 code="${appSvcMedAlertPerson.salutation}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"
                               style="display: none"><iais:code
                                 code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                    </p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                      </p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.name}"><c:out
                                 value="${appSvcMedAlertPerson.name}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}"
                               style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}</span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
-                      Type</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
+                        Type</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
                         <span class="newVal " attr="<iais:code code="${appSvcMedAlertPerson.idType}"/>"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
 
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/>"
                               style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/></span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6 img-show">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
-                      No.</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6 img-show">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6 img-show">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
+                        No.</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out
                                 value="${appSvcMedAlertPerson.idNo}"/>
                           <c:if test="${empty hashMap[appSvcMedAlertPerson.idNo]}">
@@ -1741,8 +1741,8 @@
                                  width="25" height="25" alt="NETS">
                           </c:if>
                         </span>
-                    </div>
-                    <div class="col-xs-6 img-show">
+                      </div>
+                      <div class="col-xs-6 img-show">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"
                               style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
@@ -1754,142 +1754,142 @@
                                   width="25" height="25" alt="NETS">
                            </c:if>
                         </span>
-                    </div>
-                    <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach items="${hashMap[appSvcMedAlertPerson.idNo]}" var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-
-                          </table>
-                        </div>
                       </div>
-                    </c:if>
-                    <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}"
-                                    var="map">
+                      <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
                               </tr>
-                            </c:forEach>
+                              <c:forEach items="${hashMap[appSvcMedAlertPerson.idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
 
-                          </table>
+                            </table>
+                          </div>
                         </div>
-                      </div>
-                    </c:if>
+                      </c:if>
+                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach
+                                      items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}"
+                                      var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
 
-                  </td>
-                </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
 
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
-                      No.</p>
-                  </td>
-                  <td>
-                    <div class="col-xs-6">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
+                        No.</p>
+                    </td>
+                    <td>
+                      <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.mobileNo}"><c:out
                                 value="${appSvcMedAlertPerson.mobileNo}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}"
                               style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}</span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
-                <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email
-                      Address</p>
-                  </td>
-                  <td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email
+                        Address</p>
+                    </td>
+                    <td>
 
-                    <div class="col-xs-6">
+                      <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.emailAddr}"><c:out
                                 value="${appSvcMedAlertPerson.emailAddr}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6">
                         <span class="oldVal "
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"
                               style="display: none"><c:out
                                 value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></span>
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
-              </table>
-            </c:forEach>
+                    </td>
+                  </tr>
+                </table>
+              </c:forEach>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
     <div class="amended-service-info-gp">
@@ -1900,62 +1900,57 @@
           <div class="row">
             <div class="col-xs-12">
               <table class="col-xs-12">
-                <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
+                <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
+                  <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                   <tr>
                     <td>
-                      <div class="field col-sm-12 control-label formtext"><label>${svcDoc.upFileName}</label></div>
+                      <div class="field col-sm-12 control-label formtext"><label>${svcDoc.key}</label></div>
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-                      <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
-                                                                                       style="display:none">png</span><span
-                            class="fileMandatory" style="display:none">Yes</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                        <%-- <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRoId${currentSvcCode}${status.index}&fileRo${status.index}=<iais:mask name="svcFileRoId${currentSvcCode}${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>--%>
+                  <c:forEach items="${svcDoc.value}" var="sinage" varStatus="inx">
 
-                      <div class="col-xs-6">
-                        <c:if test="${svcDoc.docSize!=null}">
-                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.docName}">
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                      value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download"
-                                       class="downloadFile">${svcDoc.docName}</a> <c:out value="(${svcDoc.docSize})KB"/>
+                    <tr>
+                      <td>
+                        <div class="col-xs-6">
+                          <c:if test="${sinage.docSize!=null}">
+                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
+                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
+                                      value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download"
+                                       class="downloadFile">${sinage.docName}</a> <c:out value="(${sinage.docSize})KB"/>
                                    </span>
-                        </c:if>
-                        <c:if test="${svcDoc.docSize==null}">
-                              <span class="newVal " attr="${svcDoc.md5Code}${svcDoc.docName}">
+                          </c:if>
+                          <c:if test="${sinage.docSize==null}">
+                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
 
                               </span>
-                        </c:if>
-                      </div>
-                      <div class="col-xs-6">
+                          </c:if>
+                        </div>
+                        <div class="col-xs-6">
 
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize!=null}">
+                          <c:if test="${oldSvcDoc[inx.index].docSize!=null}">
                                   <span class="oldVal "
-                                        attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                        attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
                                         style="display: none">
-                                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"  value="${oldSvcDoc[inx.index].fileRepoId}"/>&fileRepoName=${oldSvcDoc[inx.index].docName}"
                                      title="Download" class="downloadFile">
-                                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
+                                      ${oldSvcDoc[inx.index].docName}
                                   </a>
-                                  <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/>
+                                  <c:out value="(${oldSvcDoc[inx.index].docSize})KB"/>
                                 </span>
-                        </c:if>
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize==null}">
+                          </c:if>
+                          <c:if test="${oldSvcDoc[inx.index].docSize==null}">
                                 <span class="oldVal "
-                                      attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].md5Code}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"
+                                      attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
                                       style="display: none">
 
                                 </span>
-                        </c:if>
+                          </c:if>
 
-                      </div>
+                        </div>
+                      </td>
+                    </tr>
 
-                    </td>
-                  </tr>
+                  </c:forEach>
                 </c:forEach>
               </table>
             </div>

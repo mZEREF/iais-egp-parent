@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,11 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
@@ -66,6 +71,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     LicenceService licenceService;
+    @Autowired
+    private LicenceViewService licenceViewService;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -97,7 +104,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-     
+
         return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
 
 
@@ -120,7 +127,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     public String getWrkGrpName(String id) {
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         if(workingGroupDto == null){
-           return null;
+            return null;
         }
         return workingGroupDto.getGroupName();
     }
@@ -156,11 +163,58 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        Map<String,Integer> map=new HashMap<>();
+        Map<String,Integer> map1=new HashMap<>();
+        if(applicationDto!=null){
+            AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
+            List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            AtomicInteger i=new AtomicInteger(1);
+            if(appSvcDocDtoLit!=null){
+                appSvcDocDtoLit.forEach((v)->{
+                    String appGrpPersonId = v.getAppGrpPersonId();
+                    if(appGrpPersonId!=null){
+                        Integer integer = map.get(appGrpPersonId);
+                        if(integer==null){
+                            map.put(appGrpPersonId,i.get());
+                            i.getAndIncrement();
+                        }else {
+                            map.put(appGrpPersonId,1);
+                        }
+                        map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
+                    }
+                });
+            }
+        }
+
         List<AppSupDocDto> appSupDocDtos = applicationViewDto.getAppSupDocDtoList();
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                    if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
+                        switch (docTitleList.get(j).getDupForPerson()){
+                            case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle()) ;break;
+                            case "2" :   appSupDocDtos.get(i).setFile("Principal Officers "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "4" :   appSupDocDtos.get(i).setFile("Nominee "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "8" :   appSupDocDtos.get(i).setFile("MedAlert Person "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                        }
+                    }else if("1".equals(equals(docTitleList.get(j).getDupForPrem()))&&docTitleList.get(j).getDupForPerson()!=null){
+                        switch (docTitleList.get(j).getDupForPerson()){
+                            case "1" :   appSupDocDtos.get(i).setFile("Premises 1: Clinical Governance Officer "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "2" :   appSupDocDtos.get(i).setFile(" Premises 1: Principal Officers "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "4" :   appSupDocDtos.get(i).setFile("Premises 1: Nominee "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "8" :   appSupDocDtos.get(i).setFile("Premises 1: MedAlert Person "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+map1.get(appSupDocDtos.get(i).getFile())+": "+docTitleList.get(j).getDocTitle());break;
+                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                        }
+                    }else if("1".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()==null){
+                        appSupDocDtos.get(i).setFile("Premises 1 :"+docTitleList.get(j).getDocTitle());
+                    }else {
+                        appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                    }
                 }
             }
             for (int j = 0; j <userNameList.size() ; j++) {
@@ -403,13 +457,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                             applicationDto.setNeedNewLicNo(true);
-                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                                 applicationDtoMain.setNeedNewLicNo(true);
-                             }
-                         }
+                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                        applicationDto.setNeedNewLicNo(true);
+                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                            applicationDtoMain.setNeedNewLicNo(true);
+                        }
                     }
+                }
                 applicationClient.clearHclcodeByAppIds(appovedNum);
             }
         }

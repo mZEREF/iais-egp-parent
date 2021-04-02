@@ -10,6 +10,7 @@
 %>
 <c:if test="${appeal=='appeal'}">
   <webui:setLayout name="iais-blank"/>
+  <%@ include file="../common/dashboard.jsp" %>
 </c:if>
 <c:if test="${appeal!='appeal'}">
   <webui:setLayout name="iais-internet"/>

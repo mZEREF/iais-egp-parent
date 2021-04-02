@@ -1169,6 +1169,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(hcsaSvcSubtypeOrSubsumedDtos!=null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
             }
+            List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            if(appSvcDocDtoLit!=null){
+                appSvcDocDtoLit.forEach((v)->{
+                    if(v.getSvcDocId()!=null){
+                        HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(v.getSvcDocId()).getEntity();
+                        String dupForPerson = entity.getDupForPerson();
+                        v.setDupForPerson(dupForPerson);
+                    }
+                });
+            }
         }
         requestForChangeService.svcDocToPresmise(appSubmissionDto);
         appSubmissionDto.setAppGrpNo(grpNo);
