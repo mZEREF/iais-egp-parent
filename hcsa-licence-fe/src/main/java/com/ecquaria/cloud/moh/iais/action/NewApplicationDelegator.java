@@ -5100,7 +5100,11 @@ public class NewApplicationDelegator {
                     version = maxVersionDocDto.getVersion() + 1;
                 }
             }else{
-                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo,String.valueOf(seqNum));
+                AppSvcDocDto searchDto = new AppSvcDocDto();
+                searchDto.setAppGrpId(appGrpId);
+                searchDto.setSvcDocId(configDocId);
+                searchDto.setSeqNum(seqNum);
+                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(searchDto,appNo);
                 if(!StringUtil.isEmpty(maxVersionDocDto.getVersion()) && !StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
                     version = maxVersionDocDto.getVersion() + 1;
                 }

@@ -37,6 +37,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -864,7 +866,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
+    public FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

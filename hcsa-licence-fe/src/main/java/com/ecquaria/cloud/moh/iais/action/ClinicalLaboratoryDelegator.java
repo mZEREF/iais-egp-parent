@@ -3263,7 +3263,7 @@ public class ClinicalLaboratoryDelegator {
         return stepName;
     }
 
-    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,String appNo,int seqNum,String dupForPrem,String dupForPerson){
+    private Integer getAppSvcDocVersion(String configDocId, List<AppSvcDocDto> oldDocs, boolean isRfi, String md5Code, String appGrpId,String appNo,int seqNum,String dupForPrem,String dupForPerson,String psnId){
         Integer version = 1;
         if(StringUtil.isEmpty(configDocId) || IaisCommonUtils.isEmpty(oldDocs) || StringUtil.isEmpty(md5Code)){
             return version;
@@ -3280,45 +3280,29 @@ public class ClinicalLaboratoryDelegator {
                             version = oldVersion;
                         }
                     }else{
-                        version = getVersion(appGrpId,configDocId,appNo,String.valueOf(seqNum),dupForPrem,dupForPerson);
+                        version = getVersion(appGrpId,configDocId,appNo,seqNum,dupForPrem,dupForPerson,psnId);
                     }
                     break;
                 }
             }
             if(!canFound){
                 //last doc is null
-                version = getVersion(appGrpId,configDocId,appNo,String.valueOf(seqNum),dupForPrem,dupForPerson);
+                version = getVersion(appGrpId,configDocId,appNo,seqNum,dupForPrem,dupForPerson,psnId);
             }
         }
         return version;
     }
 
-    private Integer getVersion(String appGrpId,String configDocId,String appNo,String seqNum,String dupForPrem,String dupForPerson){
+    private Integer getVersion(String appGrpId,String configDocId,String appNo,Integer seqNum,String dupForPrem,String dupForPerson,String psnId){
         Integer version = 1;
+        AppSvcDocDto searchDto = new AppSvcDocDto();
+        searchDto.setAppGrpId(appGrpId);
+        searchDto.setSvcDocId(configDocId);
+        searchDto.setSeqNum(seqNum);
         if("0".equals(dupForPrem)){
-            if(StringUtil.isEmpty(dupForPerson)){
-                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcComDoc(appGrpId,configDocId,seqNum);
-                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                    //judege dto is null
-                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                        version = maxVersionDocDto.getVersion() + 1;
-                    }
-                }
-            }else if(ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)){
-
-            }
+            version = getMaxVersion(dupForPerson,searchDto,appNo,psnId,version);
         }else if("1".equals(dupForPrem)){
-            if(StringUtil.isEmpty(dupForPerson)){
-                AppSvcDocDto maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo,seqNum);
-                if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
-                    //judege dto is null
-                    if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
-                        version = maxVersionDocDto.getVersion() + 1;
-                    }
-                }
-            }else if(ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)){
-
-            }
+            version = getMaxVersion(dupForPerson,searchDto,appNo,psnId,version);
         }
         return version;
     }
@@ -3402,7 +3386,7 @@ public class ClinicalLaboratoryDelegator {
 
     private  void genSvcDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto, Map<String,File> saveFileMap,
                                   List<AppSvcDocDto> currSvcDocDtoList, List<AppSvcDocDto> newAppSvcDocDtos,List<AppSvcDocDto> oldDocs,String premVal,
-                                  String premType,String psnIndexNo,String dupForPrem,String dupForPerson,boolean isRfi,String appGrpId,String appNo){
+                                  String premType,String psnIndexNo,String dupForPrem,String dupForPerson,boolean isRfi,String appGrpId,String appNo,String psnId){
         if(fileMap != null){
             fileMap.forEach((k,v)->{
                 int index = k.indexOf(docKey);
@@ -3428,7 +3412,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcDocDto.setPsnIndexNo(psnIndexNo);
                     appSvcDocDto.setSeqNum(seqNum);
                     appSvcDocDto.setDupForPerson(dupForPerson);
-                    appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,appGrpId,appNo,seqNum,dupForPrem,dupForPerson));
+                    appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,appGrpId,appNo,seqNum,dupForPrem,dupForPerson,psnId));
                     saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+psnIndexNo+seqNum,v);
                 }else{
                     appSvcDocDto = getAppSvcDocByConfigIdAndSeqNum(currSvcDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType,psnIndexNo);
@@ -3528,7 +3512,7 @@ public class ClinicalLaboratoryDelegator {
 
         if(StringUtil.isEmpty(hcsaSvcDocConfigDto.getDupForPerson())){
             Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
-            genSvcDoc(fileMap,docKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,"",hcsaSvcDocConfigDto.getDupForPrem(),"",isRfi,appGrpId,appNo);
+            genSvcDoc(fileMap,docKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,"",hcsaSvcDocConfigDto.getDupForPrem(),"",isRfi,appGrpId,appNo,"");
             ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey, (Serializable) fileMap);
         }else{
             //genDupForPersonDoc(hcsaSvcDocConfigDto,appSvcRelatedInfoDto,docKey,saveFileMap,appSvcDocDtos,newAppSvcDocDtoList,oldDocs,isRfi,appGrpId,appNo,mulReq,bpc.request);
@@ -3537,9 +3521,29 @@ public class ClinicalLaboratoryDelegator {
                 String psnIndexNo = psnDto.getCgoIndexNo();
                 String psnDocKey = docKey + psnIndexNo;
                 Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocKey);
-                genSvcDoc(fileMap,psnDocKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,psnIndexNo,hcsaSvcDocConfigDto.getDupForPrem(),hcsaSvcDocConfigDto.getDupForPerson(),isRfi,appGrpId,appNo);
+                genSvcDoc(fileMap,psnDocKey,hcsaSvcDocConfigDto,saveFileMap,currSvcDocDtoList,newAppSvcDocDtos,oldDocs,premVal,premType,psnIndexNo,hcsaSvcDocConfigDto.getDupForPrem(),hcsaSvcDocConfigDto.getDupForPerson(),isRfi,appGrpId,appNo,psnDto.getCurPersonelId());
                 ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocKey, (Serializable) fileMap);
             }
         }
+    }
+
+    private Integer getMaxVersion(String dupForPerson,AppSvcDocDto searchDto,String appNo,String psnId,Integer version){
+        AppSvcDocDto maxVersionDocDto;
+        if(StringUtil.isEmpty(dupForPerson)){
+            maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(searchDto,appNo);
+        }else if(ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)){
+            searchDto.setAppSvcPersonId(psnId);
+            maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(searchDto,appNo);
+        }else{
+            searchDto.setAppGrpPersonId(psnId);
+            maxVersionDocDto = appSubmissionService.getMaxVersionSvcSpecDoc(searchDto,appNo);
+        }
+        if(!StringUtil.isEmpty(maxVersionDocDto.getVersion())){
+            //judege dto is null
+            if(!StringUtil.isEmpty(maxVersionDocDto.getFileRepoId())){
+                version = maxVersionDocDto.getVersion() + 1;
+            }
+        }
+        return version;
     }
 }
