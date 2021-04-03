@@ -352,8 +352,8 @@ public interface ApplicationFeClient {
 
     @GetMapping(value = "/iais-application/max-version-primary-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo,@RequestParam(name = "seqNum")String seqNum);
-    @GetMapping(value = "/iais-application/max-version-svc-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo,@RequestParam(name = "seqNum")String seqNum);
+    @PostMapping(value = "/iais-application/max-version-svc-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestBody AppSvcDocDto appSvcDocDto,@RequestParam(name = "appNo")String appNo);
     @GetMapping(value = "/appeal/app-special-doc-group-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByGroupId(@RequestParam("groupId") String groupId);
     @GetMapping(value = "/appeal/app-special-doc-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)

@@ -95,7 +95,7 @@ public interface AppSubmissionService {
     AppGrpPrimaryDocDto getMaxVersionPrimaryComDoc(String appGrpId,String configDocId,String seqNum);
     AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum);
     AppGrpPrimaryDocDto getMaxVersionPrimarySpecDoc(String appGrpId,String configDocId,String appNo,String seqNum);
-    AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId,String appNo,String seqNum);
+    AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
     AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo);
     List<AppGrpPrimaryDocDto> syncPrimaryDoc(String appType,Boolean isRfi,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig) throws CloneNotSupportedException;
     List<AppGrpPrimaryDocDto> handlerPrimaryDoc(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos);

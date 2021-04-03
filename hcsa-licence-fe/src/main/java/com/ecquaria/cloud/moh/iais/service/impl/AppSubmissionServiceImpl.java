@@ -1371,8 +1371,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppSvcDocDto getMaxVersionSvcSpecDoc(String appGrpId, String configDocId, String appNo,String seqNum) {
-        return applicationFeClient.getMaxVersionSvcSpecDoc(appGrpId,configDocId,appNo,seqNum).getEntity();
+    public AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo) {
+        return applicationFeClient.getMaxVersionSvcSpecDoc(appSvcDocDto,appNo).getEntity();
     }
 
     @Override
