@@ -1539,9 +1539,9 @@ public class LicenceViewServiceDelegator {
                 if(integer==null){
                     map.put(vDupForPerson,i.get());
                     i.getAndIncrement();
-                }else {
+                }/*else {
                     map.put(vDupForPerson,1);
-                }
+                }*/
             }
         });
         for(AppSvcDocDto v : appSvcDocDtoLit){
