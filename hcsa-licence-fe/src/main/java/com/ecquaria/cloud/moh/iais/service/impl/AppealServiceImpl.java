@@ -192,7 +192,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setFileName(v.getName());
                         String e = k.substring(k.lastIndexOf("e") + 1);
@@ -200,6 +199,8 @@ public class AppealServiceImpl implements AppealService {
                         pageShowFileDto.setFileMapId("selectedFileDiv"+e);
                         pageShowFileDto.setSize(Integer.valueOf(size.toString()));
                         pageShowFileDto.setMd5Code(fileMd5);
+                        premisesSpecialDocDto.setIndex(k);
+                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         pageShowFileDtos.add(pageShowFileDto);
                     }
                 }else {
@@ -211,6 +212,7 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        premisesSpecialDocDto.setIndex(k.substring(k.lastIndexOf("e") + 1));
                         appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         pageShowFileDtos.add(pageShowFileDto);
                     }
@@ -388,7 +390,7 @@ public class AppealServiceImpl implements AppealService {
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
                 List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
                 Map<String,File> map=new HashMap<>();
-                Map<String, PageShowFileDto> pageShowFileHashMap=new HashMap<>();
+                Map<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
                 int indexMax = -1;
                 if(appPremisesSpecialDocDtos!=null&&!appPremisesSpecialDocDtos.isEmpty()){
                     for(int i=0;i<appPremisesSpecialDocDtos.size();i++){
@@ -1334,7 +1336,7 @@ public class AppealServiceImpl implements AppealService {
             if(appPremisesSpecialDocDtos!=null){
                 Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
                 for(AppPremisesSpecialDocDto v : appPremisesSpecialDocDtos){
-                    PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(v.getIndex());
+                    PageShowFileDto pageShowFileDto = pageShowFileHashMap.get("selectedFile"+v.getIndex());
                     if(pageShowFileDto!=null){
                         boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
                         if(equals){
@@ -1411,7 +1413,7 @@ public class AppealServiceImpl implements AppealService {
         List<AppliSpecialDocDto> appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
         List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
         Map<String,File> map=new HashMap<>();
-        Map<String, PageShowFileDto> pageShowFileHashMap=new HashMap<>();
+        Map<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
         if (appliSpecialDocDto != null) {
             int indexMax = -1;
             for(int i=0;i<appliSpecialDocDto.size();i++){
@@ -1426,14 +1428,14 @@ public class AppealServiceImpl implements AppealService {
                 }
                 PageShowFileDto pageShowFileDto =new PageShowFileDto();
                 pageShowFileDto.setFileName(appliSpecialDocDtoOne.getDocName());
-                pageShowFileDto.setIndex(String.valueOf(i));
-                pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                pageShowFileDto.setIndex(String.valueOf(index));
+                pageShowFileDto.setFileMapId("selectedFileDiv"+index);
                 pageShowFileDto.setSize(Integer.valueOf(appliSpecialDocDtoOne.getDocSize()));
                 pageShowFileDto.setMd5Code(appliSpecialDocDtoOne.getMd5Code());
                 pageShowFileDto.setFileUploadUrl(appliSpecialDocDtoOne.getFileRepoId());
                 pageShowFileDtos.add(pageShowFileDto);
-                map.put("selectedFile"+i,null);
-                pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
+                map.put("selectedFile"+index,null);
+                pageShowFileHashMap.put("selectedFile"+index, pageShowFileDto);
             }
             request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
             request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
