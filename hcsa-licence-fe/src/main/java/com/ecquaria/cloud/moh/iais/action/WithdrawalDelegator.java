@@ -138,26 +138,35 @@ public class WithdrawalDelegator {
         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
         Map<String,File> map= IaisCommonUtils.genNewHashMap();
         Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-        if (viewDoc != null) {
             if (viewDoc != null && !viewDoc.isEmpty()) {
                 for (int i = 0; i < viewDoc.size(); i++) {
                     PageShowFileDto pageShowFileDto = new PageShowFileDto();
-                    pageShowFileDto.setIndex(String.valueOf(i));
+                    String index = viewDoc.get(i).getIndex();
+                    if (StringUtil.isEmpty(index)){
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + i);
+                    }else{
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + index);
+                        pageShowFileDto.setIndex(index);
+                    }
                     pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
-                    pageShowFileDto.setFileMapId("selectedFileDiv" + i);
                     pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
                     pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
                     pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
                     pageShowFileDtos.add(pageShowFileDto);
-                    map.put("selectedFile" + i, null);
-                    pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
+                    if (StringUtil.isEmpty(index)){
+                        map.put("selectedFile" + i, null);
+                        pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
+                    }else{
+                        map.put("selectedFile" + index, null);
+                        pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
+                    }
                 }
                 request.getSession().setAttribute("pageShowFileHashMap", pageShowFileHashMap);
                 request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
                 request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
+                request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
             }
-            request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-        }
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -392,7 +401,7 @@ public class WithdrawalDelegator {
                             if(length>0){
                                 Long size=length/1024;
                                 files.add(file);
-                                AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                                AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
                                 SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
                                 String e = str.substring(str.lastIndexOf("e") + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
@@ -403,8 +412,8 @@ public class WithdrawalDelegator {
                                 premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                                 appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                                 PageShowFileDto pageShowFileDto =new PageShowFileDto();
-                                pageShowFileDto.setFileName(file.getName());
                                 pageShowFileDto.setIndex(e);
+                                pageShowFileDto.setFileName(file.getName());
                                 pageShowFileDto.setFileMapId("selectedFileDiv"+e);
                                 pageShowFileDto.setSize(Integer.valueOf(size.toString()));
                                 pageShowFileDto.setMd5Code(fileMd5);
@@ -414,10 +423,10 @@ public class WithdrawalDelegator {
                             if(pageShowFileHashMap!=null){
                                 PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
                                 String e = str.substring(str.lastIndexOf("e") + 1);
-                                AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                                AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                                premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                                 premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
-                                premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                                 premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
@@ -425,14 +434,12 @@ public class WithdrawalDelegator {
                                 pageShowFileDtos.add(pageShowFileDto);
                             }
                         }
-
                     });
                 }
 
                 List<String> list = comFileRepoClient.saveFileRepo(files);
                 if(list!=null){
                     ListIterator<String> iterator = list.listIterator();
-
                     for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
                         String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
                         if(fileRepoId==null){
