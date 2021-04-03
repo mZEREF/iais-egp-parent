@@ -140,10 +140,8 @@ public class AppealDelegator {
         bpc. request.setAttribute("crud_action_type","appeal");
     }
     public void ackPage(BaseProcessClass bpc){
-        log.info("-----");
     }
     public void appealFrom(BaseProcessClass bpc){
-        log.info("-----");
     }
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
