@@ -46,7 +46,6 @@
           $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
             clearFlagValueFEFile();
         } else if (rslt == 'E') {
-          $("#error_"+fileAppendId+"Error").html('This field is mandatory.');
             clearFlagValueFEFile();
         } else {
           $.ajax({
