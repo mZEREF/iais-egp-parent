@@ -192,7 +192,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                        premisesSpecialDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setFileName(v.getName());
@@ -212,7 +211,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                        premisesSpecialDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         pageShowFileDtos.add(pageShowFileDto);
                     }
@@ -1511,7 +1509,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         premisesSpecialDocDto.setIndex( k.substring(k.lastIndexOf("e") + 1));
-                        premisesSpecialDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
                     }
                 }else {
@@ -1524,7 +1521,6 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setIndex(pageShowFileDto.getIndex());
-                        premisesSpecialDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
                     }
                 }
