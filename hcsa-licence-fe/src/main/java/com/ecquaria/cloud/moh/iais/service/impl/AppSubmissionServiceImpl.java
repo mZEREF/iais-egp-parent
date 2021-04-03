@@ -355,13 +355,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppGrpPrimaryDocDto> getMaxVersionPrimaryDocList(String appGrpId) {
-        return applicationFeClient.getMaxVersionPrimaryDocList(appGrpId).getEntity();
+    public List<AppGrpPrimaryDocDto> getMaxSeqNumPrimaryDocList(String appGrpId) {
+        return applicationFeClient.getMaxSeqNumPrimaryDocList(appGrpId).getEntity();
     }
 
     @Override
-    public List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId) {
-        return applicationFeClient.getMaxVersionSvcDocList(appGrpId).getEntity();
+    public List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId) {
+        return applicationFeClient.getMaxSeqNumSvcDocList(appGrpId).getEntity();
     }
 
     @Override

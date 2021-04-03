@@ -4783,9 +4783,9 @@ public class NewApplicationDelegator {
                 List<AppGrpPrimaryDocDto> maxVersionPrimaryDocList = IaisCommonUtils.genNewArrayList();
                 if(isRfi){
                     if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-                       maxVersionPrimaryDocList = appSubmissionService.getMaxVersionPrimaryDocList(oldAppSubmissionDto.getAppGrpId());
+                       maxVersionPrimaryDocList = appSubmissionService.getMaxSeqNumPrimaryDocList(oldAppSubmissionDto.getAppGrpId());
                     }else{
-                        List<AppSvcDocDto> maxVersionSvcDocList = appSubmissionService.getMaxVersionSvcDocList(oldAppSubmissionDto.getAppGrpId());
+                        List<AppSvcDocDto> maxVersionSvcDocList = appSubmissionService.getMaxSeqNumSvcDocList(oldAppSubmissionDto.getAppGrpId());
                         for(AppSvcDocDto appSvcDocDto:maxVersionSvcDocList){
                             AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                             appGrpPrimaryDocDto.setSvcComDocId(appSvcDocDto.getSvcDocId());
@@ -4844,7 +4844,7 @@ public class NewApplicationDelegator {
                 Set<String> psnIndexList = new HashSet<>(2);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
                     if(isRfi){
-                        maxVersionSvcDocList = appSubmissionService.getMaxVersionSvcDocList(oldAppSubmissionDto.getAppGrpId());
+                        maxVersionSvcDocList = appSubmissionService.getMaxSeqNumSvcDocList(oldAppSubmissionDto.getAppGrpId());
                     }
 
                     for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){

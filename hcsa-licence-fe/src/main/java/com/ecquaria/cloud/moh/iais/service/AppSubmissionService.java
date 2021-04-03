@@ -116,8 +116,8 @@ public interface AppSubmissionService {
     List<GiroAccountInfoDto> getGiroAccountByHciCodeAndOrgId(List<String> hciCode,String orgId);
     boolean checkIsGiroAcc(AppSubmissionDto appSubmissionDto,String orgId);
     List<String> saveFileList(List<File> fileList);
-    List<AppGrpPrimaryDocDto> getMaxVersionPrimaryDocList(String appGrpId);
-    List<AppSvcDocDto> getMaxVersionSvcDocList(String appGrpId);
+    List<AppGrpPrimaryDocDto> getMaxSeqNumPrimaryDocList(String appGrpId);
+    List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId);
     void updateDraftStatus(String draftNo,String status);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
 }

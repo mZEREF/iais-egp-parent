@@ -364,10 +364,10 @@ public interface ApplicationFeClient {
     FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto);
     @GetMapping(value = "/hcsa-app-common/app-grp-appNo/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(@PathVariable("appNo") String appNo);
-    @GetMapping(value = "/iais-application/max-version-primary-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxVersionPrimaryDocList(@RequestParam("appGrpId")String appGrpId);
-    @GetMapping(value = "/iais-application/max-version-svc-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSvcDocDto>> getMaxVersionSvcDocList(@RequestParam("appGrpId")String appGrpId);
+    @GetMapping(value = "/iais-application/max-seq-num-primary-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(@RequestParam("appGrpId")String appGrpId);
+    @GetMapping(value = "/iais-application/max-seq-num-svc-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcDocDto>> getMaxSeqNumSvcDocList(@RequestParam("appGrpId")String appGrpId);
     @PutMapping(value = "/iais-submission/draft/{draftNo}/{status}")
     FeignResponseEntity<String> updateDraftStatus(@PathVariable("draftNo")String draftNo, @PathVariable("status")String status);
     @PostMapping(value = "/iais-submission/draft-by-svc-codes",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
