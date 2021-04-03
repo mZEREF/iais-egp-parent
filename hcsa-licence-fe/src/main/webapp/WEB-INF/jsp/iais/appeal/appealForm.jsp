@@ -269,14 +269,6 @@ $('#submit').click(function () {
       });
   }
   function doUserRecUploadConfirmFile(event) {
-    var fileElement = event.target;
-    if (fileElement.value == "") {
-      if (debug) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
-      clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-      $(fileElement).remove(); //'Removing Original'
-      if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
-    }
-
       ajaxCallUpload('mainForm',"selectedFile");
 
   }
