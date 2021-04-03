@@ -13,7 +13,7 @@
     <meta http-equiv="Cache Control" content="no-store"/>
     <meta http-equiv="Expires" content="0"/>
     <meta name="description" content="HALP e-licensing portal for healthcare services, data submission, Inspection"/>
-    <title><layout:insertAttribute name="title" ignore="true" /></title>
+    <title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}" default="Healthcare Application and Licensing Portal"/></title>
     <%@ include file="/WEB-INF/jsp/inc/iais-internet-common-include.jsp" %>
     <link rel="shortcut icon" href="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT%>img/favicon.ico"/>
 
