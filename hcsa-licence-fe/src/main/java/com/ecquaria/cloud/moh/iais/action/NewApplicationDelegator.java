@@ -1338,7 +1338,8 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
-        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
+        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
@@ -1897,6 +1898,7 @@ public class NewApplicationDelegator {
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
+        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         //todo chnage edit
@@ -2969,7 +2971,8 @@ public class NewApplicationDelegator {
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
+        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
