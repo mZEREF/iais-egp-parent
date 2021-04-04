@@ -4632,6 +4632,7 @@ public class NewApplicationDelegator {
                 }else{
                     primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
                 }
+                ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                 //rfc/renew for primary doc
                 List<AppGrpPrimaryDocDto> newGrpPrimaryDocList = appSubmissionService.syncPrimaryDoc(appType,isRfi,appGrpPrimaryDocDtos,primaryDocConfig);
                 //set dupForPrem info
