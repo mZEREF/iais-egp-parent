@@ -2,6 +2,7 @@
 <input type="hidden" name="uploadFormId" id="uploadFormId" value="">
 <input type="hidden" name="fileAppendId" id="fileAppendId" value="">
 <input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">
+<input type="hidden" name="needGlobalMaxIndex" id="needGlobalMaxIndex" value="0">
 <input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
 <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
 <script type="text/javascript">
@@ -30,12 +31,18 @@
             }
         )
     }
-    function ajaxCallUpload(idForm,fileAppendId){
+
+    function ajaxCallUpload(idForm,fileAppendId) {
+        ajaxCallUploadForMax(idForm,fileAppendId,false);
+    }
+
+    function ajaxCallUploadForMax(idForm,fileAppendId,needMaxGlobalIndex){
         showWaiting();
         var reloadIndex =  $("#reloadIndex").val();
         if(reloadIndex == -1){
             $("#fileAppendId").val(fileAppendId);
         }
+        $("#needGlobalMaxIndex").val(needMaxGlobalIndex);
         fileAppendId =  $("#fileAppendId").val();
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);

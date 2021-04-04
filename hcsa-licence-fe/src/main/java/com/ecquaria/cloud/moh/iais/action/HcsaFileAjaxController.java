@@ -45,19 +45,23 @@ public class HcsaFileAjaxController {
 
     public static final String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
     public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
+    public static final String GLOBAL_MAX_INDEX_SESSION_ATTR = "sessIon_GlObal__MaxINdex_Attr";
 
     @ResponseBody
     @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile,
                              @RequestParam("fileAppendId")String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
                              @RequestParam("reloadIndex") int reloadIndex,
-                             @RequestParam(name = "globalMaxIndex", required = false) int globalMaxIndex){
+                             @RequestParam(value = "needGlobalMaxIndex", required = false) boolean needMaxGlobal){
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId);
-        int size = globalMaxIndex;
+        int size = 0;
+        if (needMaxGlobal && ParamUtil.getSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            size = (int) ParamUtil.getSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
         if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
-         } else if (globalMaxIndex <= 0) {
+         } else if (size <= 0) {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
@@ -73,6 +77,9 @@ public class HcsaFileAjaxController {
          try{
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
+                 if (needMaxGlobal) {
+                     ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
+                 }
                  map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
              }else {
                  map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
