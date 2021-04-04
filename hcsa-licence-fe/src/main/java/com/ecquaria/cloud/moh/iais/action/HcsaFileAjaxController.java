@@ -11,22 +11,26 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.sz.commons.util.JsonUtil;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wangyu
@@ -39,19 +43,23 @@ public class HcsaFileAjaxController {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    public  final static String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
-    public  final static String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
+    public static final String SEESION_FILES_MAP_AJAX = "seesion_files_map_ajax_fe";
+    public static final String SEESION_FILES_MAP_AJAX_MAX_INDEX = "_MaxIndex";
+
     @ResponseBody
     @PostMapping(value = "ajax-upload-file",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile, @RequestParam("fileAppendId")String fileAppendId,@RequestParam("uploadFormId") String uploadFormId,@RequestParam("reloadIndex") int reloadIndex){
+    public String ajaxUpload(HttpServletRequest request,@RequestParam("selectedFile") MultipartFile selectedFile,
+                             @RequestParam("fileAppendId")String fileAppendId, @RequestParam("uploadFormId") String uploadFormId,
+                             @RequestParam("reloadIndex") int reloadIndex,
+                             @RequestParam(name = "globalMaxIndex", required = false) int globalMaxIndex){
         log.info("-----------ajax-upload-file start------------");
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId);
-        Integer size;
-        if(map == null){
-            size = 0;
+        int size = globalMaxIndex;
+        if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
-         }else {
-            size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX);
+         } else if (globalMaxIndex <= 0) {
+            size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
+                    + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
         String errerMesssage = getErrorMessage(selectedFile);
         MessageDto messageCode = new MessageDto();
