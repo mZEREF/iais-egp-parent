@@ -565,6 +565,9 @@ public class WithOutRenewalDelegator {
 
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                if(IaisCommonUtils.isEmpty(primaryDocConfig) && appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
+                    primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+                }
                 //add align for dup for prem doc
                 NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
                 //set primary doc title
