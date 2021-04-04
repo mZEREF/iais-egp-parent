@@ -272,6 +272,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -1337,6 +1338,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
+        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
@@ -2967,7 +2969,7 @@ public class NewApplicationDelegator {
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-
+        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -4725,6 +4727,15 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             }
         }
+        //set max file index into session
+        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }else{
+            maxFileIndex ++;
+        }
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);
 
@@ -5170,7 +5181,7 @@ public class NewApplicationDelegator {
             }
 
             ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey, (Serializable) fileMap);
-            ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
+            //ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
         }
     }
 
@@ -5210,11 +5221,11 @@ public class NewApplicationDelegator {
                     Map<String,File> psnFileMap = dupPsnFileMap.get(psnIndex);
                     String psnDocSessionKey =  docSessionKey+ psnIndex;
                     ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocSessionKey, (Serializable) psnFileMap);
-                    ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
+                    //ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+psnDocSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
                 }
             }else{
                 ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey, (Serializable) fileMap);
-                ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
+                //ParamUtil.setSessionAttr(request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docSessionKey+HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX,initSeqNum);
             }
         }
     }
