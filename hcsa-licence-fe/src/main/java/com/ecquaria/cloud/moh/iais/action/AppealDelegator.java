@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -31,33 +30,24 @@ import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.mail.Multipart;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -237,6 +227,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
         bpc.getSession().removeAttribute("pageShowFiles");
         bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");

@@ -269,7 +269,7 @@ $('#submit').click(function () {
       });
   }
   function doUserRecUploadConfirmFile(event) {
-      ajaxCallUpload('mainForm',"selectedFile");
+      ajaxCallUploadForMax('mainForm',"selectedFile", true);
 
   }
 

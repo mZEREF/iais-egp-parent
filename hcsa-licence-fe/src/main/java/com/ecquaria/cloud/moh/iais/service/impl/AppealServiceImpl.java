@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -1274,6 +1275,10 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private String applicationPresmies(HttpServletRequest request, String applicationId) {
+        int maxFileIndex = 0;
+        if (ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            maxFileIndex = (int) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
         ApplicationDto applicationDto = applicationFeClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_APPEAL,AuditTrailConsts.FUNCTION_APPEAL,applicationDto.getApplicationNo());
@@ -1388,7 +1393,7 @@ public class AppealServiceImpl implements AppealService {
             appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
         }
-
+        appealDto.setMaxFileIndex(maxFileIndex);
         AppealPageDto appealPageDto = applicationFeClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealPageDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
