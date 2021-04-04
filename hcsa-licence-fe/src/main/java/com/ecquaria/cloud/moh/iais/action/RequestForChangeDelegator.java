@@ -434,6 +434,7 @@ public class RequestForChangeDelegator {
                 appPremisesSpecialDocDto.setMd5Code(SingeFileUtil.getInstance().getFileMd5(file));
                 appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
                 appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                appPremisesSpecialDocDto.setIndex(String.valueOf(i));
                 appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
                 appPremisesSpecialDocDto.setSubmitDt(new Date());
                 appPremisesSpecialDocDtos.add(appPremisesSpecialDocDto);
