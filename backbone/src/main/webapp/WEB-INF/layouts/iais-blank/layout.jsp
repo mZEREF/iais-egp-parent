@@ -4,7 +4,7 @@
 <%-- BEGIN taglib --%>
 <%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%@ taglib uri="ecquaria/sop/sop-core" prefix="sop-core"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%-- END taglib --%>
 
 <html lang="en">
