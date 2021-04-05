@@ -121,7 +121,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
             OrganizationDto postCreate = result.getEntity();
-            syncAccountInformationToBackend(postCreate);
             return postCreate.getFeUserDto();
         }else {
             return null;
