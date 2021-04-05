@@ -483,13 +483,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void receiveEntityFormEDH(FeUserDto user) {
-        String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
-        if (StringUtil.isNotEmpty(entityJson)){
-            JSONObject object = new JSONObject(entityJson);
-            JSONArray jsonArray = object.getJSONArray("licences");
-            if (Optional.ofNullable(jsonArray).isPresent()){
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
+        log.info("receiveEntityFormEDH START");
+        try {
+            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+            if (StringUtil.isNotEmpty(entityJson)){
+                log.info("receiveEntityFormEDH entityJson {}", entityJson);
+                JSONObject object = new JSONObject(entityJson);
+                JSONArray jsonArray = object.getJSONArray("licences");
+                if (Optional.ofNullable(jsonArray).isPresent()){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         JSONObject acraLicensee = jsonObject.getJSONObject("licensee");
                         String nric = acraLicensee.getJSONObject("id-no").getString("value");
@@ -498,11 +500,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                             String licenseeName = acraLicensee.getJSONObject("name").getString("value");
                             user.setDisplayName(licenseeName);
                         }
-                    }catch (Exception e){
-                        log.error(e.getMessage(), e);
                     }
                 }
             }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
         }
     }
 }
