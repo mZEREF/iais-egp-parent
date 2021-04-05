@@ -142,8 +142,8 @@ public class FECorppassLandingDelegator {
 
     public void validatePwd(BaseProcessClass bpc){
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
-        String testMode = FeLoginHelper.getTestMode(bpc.request);
-        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)) {
+        log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
+        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)) {
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");

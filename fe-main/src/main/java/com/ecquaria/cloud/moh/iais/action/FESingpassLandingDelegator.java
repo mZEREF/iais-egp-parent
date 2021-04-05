@@ -106,8 +106,8 @@ public class FESingpassLandingDelegator {
         log.info(StringUtil.changeForLog("SingPass Login service [validatePwd] START ...."));
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
-        String testMode = FeLoginHelper.getTestMode(request);
-        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(testMode)){
+        log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
+        if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
