@@ -10,12 +10,6 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +19,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * SftpElisFromHalpJob
@@ -203,7 +202,10 @@ public class SftpElisFromHalpJob {
                 String relFilePath = filePath + File.separator + fileName;
                 File file = new File(relFilePath);
                 if (!file.exists()) {
-                    file.createNewFile();
+                    boolean createFlag = file.createNewFile();
+                    if (!createFlag) {
+                        log.error("Create file Failed");
+                    }
                 }
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
 //                //header
