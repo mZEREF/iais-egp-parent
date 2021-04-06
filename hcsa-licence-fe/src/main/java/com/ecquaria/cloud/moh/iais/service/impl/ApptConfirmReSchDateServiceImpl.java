@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -676,8 +675,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     @Override
     public void sendReschedulingEmailToInspector(ProcessReSchedulingDto processReSchedulingDto,ApptViewDto apptViewDto) throws IOException {
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        ApplicationDto applicationDto=applicationFeClient.getApplicationById(apptViewDto.getAppId()).getEntity();
-
 
         emailMap.put("InspectorName", apptViewDto.getUserIds().get(0));
         emailMap.put("DDMMYYYY", Formatter.formatDate(new Date()));
@@ -687,16 +684,10 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         emailMap.put("premises_address", apptViewDto.getAddress());
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(applicationDto.getApplicationNo());
-        emailParam.setReqRefNum(applicationDto.getApplicationNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setRefId(applicationDto.getApplicationNo());
-        String emailContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,emailMap);
-        String smsContent = getEmailContent(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,emailMap);
-        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,null);
+
+        String emailContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,emailMap);
+        String smsContent = getEmailContent(MsgTemplateConstants. MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP_SMS ,emailMap);
+        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,null);
 
         EmailDto emailDto = new EmailDto();
         List<String> receiptEmail=IaisCommonUtils.genNewArrayList();

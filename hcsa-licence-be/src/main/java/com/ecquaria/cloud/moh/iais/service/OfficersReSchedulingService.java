@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQue
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -160,4 +161,7 @@ public interface OfficersReSchedulingService {
       * @Descripation: changeInspectorAndDate
       */
     String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+
+    void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException;
+
 }

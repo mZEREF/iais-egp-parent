@@ -25,6 +25,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -38,10 +40,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -61,17 +66,21 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,6 +157,15 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
+    @Autowired
+    private EmailSmsClient emailSmsClient;
+    @Autowired
+    private EmailHistoryCommonClient emailHistoryCommonClient;
+
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -434,6 +452,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         //cancel the original inspector and create new
                         List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(applicationNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                         saveNewInspectorReScheduling(appPremInspCorrelationDtoList, userIds, auditTrailDto, applicationNo);
+                        for (String userId:userIds
+                             ) {
+                            try {
+                                sendReschedulingEmailToInspector(applicationNo,userId);
+                            } catch (IOException e) {
+                                log.error(e.getMessage());
+                            }
+                        }
                     }
                     //save Inspection date by Recommendation
                     AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
@@ -693,6 +719,86 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         } else {
             return AppConsts.FAIL;
         }
+    }
+
+    @Override
+    public void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException {
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        AppGrpPremisesEntityDto appGrpPremisesEntityDto=applicationClient.getPremisesByAppNo(appNo).getEntity();
+        OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        emailMap.put("InspectorName", orgUserDto.getDisplayName());
+        emailMap.put("DDMMYYYY", Formatter.formatDate(new Date()));
+        emailMap.put("time", Formatter.formatTime(new Date()));
+        emailMap.put("HCI_Name", appGrpPremisesEntityDto.getHciName());
+        emailMap.put("HCI_Code", appGrpPremisesEntityDto.getHciCode());
+        String add = MiscUtil.getAddress(appGrpPremisesEntityDto.getBlkNo(),appGrpPremisesEntityDto.getStreetName(),appGrpPremisesEntityDto.getBuildingName(),appGrpPremisesEntityDto.getFloorNo(),appGrpPremisesEntityDto.getUnitNo(),appGrpPremisesEntityDto.getPostalCode());
+        emailMap.put("premises_address", add);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+
+        String emailContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,emailMap);
+        String smsContent = getEmailContent(MsgTemplateConstants. MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP_SMS ,emailMap);
+        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,null);
+
+        EmailDto emailDto = new EmailDto();
+        List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+        receiptEmail.add(orgUserDto.getEmail());
+        List<String> mobile = IaisCommonUtils.genNewArrayList();
+        mobile.add(orgUserDto.getMobileNo());
+        emailDto.setReceipts(receiptEmail);
+        emailDto.setContent(emailContent);
+        emailDto.setSubject(emailSubject);
+        emailDto.setSender(this.mailSender);
+        emailDto.setClientQueryCode(appNo);
+        emailDto.setReqRefNum(appNo);
+        emailSmsClient.sendEmail(emailDto, null);
+
+        SmsDto smsDto = new SmsDto();
+        smsDto.setSender(mailSender);
+        smsDto.setContent(smsContent);
+        smsDto.setOnlyOfficeHour(false);
+
+        emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
+    }
+
+
+
+    private String getEmailContent(String templateId, Map<String, Object> subMap){
+        String mesContext = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    }
+                    //replace num
+                    mesContext = MessageTemplateUtil.replaceNum(mesContext);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return mesContext;
+    }
+
+    private String getEmailSubject(String templateId, Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 
     private void updateUserForTask(List<TaskDto> taskDtos, ApptAppInfoShowDto apptAppInfoShowDto) {
