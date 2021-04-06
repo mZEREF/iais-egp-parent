@@ -30,6 +30,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import org.apache.commons.lang.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -39,11 +45,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Validator;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * WebValidationHelper
@@ -155,6 +156,9 @@ public class WebValidationHelper {
                                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap(cMsg.placeHolders().length);
                                 for (int i = 0; i < cMsg.placeHolders().length; i++) {
                                     repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
+                                }
+                                if(msg.contains("/")){
+                                    msg=msg.substring(0, msg.indexOf("/"));
                                 }
                                 msg = MessageUtil.getMessageDesc(msg, repMap);
                             }
