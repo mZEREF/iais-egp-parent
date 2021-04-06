@@ -111,11 +111,17 @@ public class AuditSystemListDelegator {
         AuditSystemPotentialDto dto = auditSystemPotitalListService.initDtoForSearch();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
         if(serviceNames != null && serviceNames.length >0){
-            serviceNmaeList.addAll(Arrays.asList(serviceNames));
+            dto.setSvcNameSelectList(Arrays.asList(serviceNames));
+            serviceNmaeList.addAll(dto.getSvcNameSelectList());
+        }else {
+            dto.setSvcNameSelectList(null);
         }
         List<String> hcsaServiceCodeList = IaisCommonUtils.genNewArrayList();
         if(hclSCodes != null && hclSCodes.length > 0) {
-            serviceNmaeList.addAll(Arrays.asList(hclSCodes));
+            dto.setSvcNameCodeSelectList(Arrays.asList(hclSCodes));
+            serviceNmaeList.addAll(dto.getSvcNameCodeSelectList());
+        }else {
+            dto.setSvcNameCodeSelectList(null);
         }
         dto.setSvcNameSelect(svcNameSelect);
         dto.setSvcNameCodeSelect(svcNameCodeSelect);
