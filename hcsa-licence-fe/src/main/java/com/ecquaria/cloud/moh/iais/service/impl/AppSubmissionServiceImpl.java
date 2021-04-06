@@ -1039,6 +1039,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public AppSubmissionDto viewAppSubmissionDto(String licenceId) {
+
+        return  licenceClient.viewAppSubmissionDto(licenceId).getEntity();
+    }
+
+    @Override
     public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
         return appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
     }
@@ -1062,12 +1068,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public MsgTemplateDto getMsgTemplateById(String id) {
         MsgTemplateDto msgTemplateDto = systemAdminClient.getMsgTemplate(id).getEntity();
         return msgTemplateDto;
-    }
-
-    @Override
-    public AppSubmissionDto viewAppSubmissionDto(String licenceId) {
-
-        return  licenceClient.viewAppSubmissionDto(licenceId).getEntity();
     }
 
     @Value("${iais.hmac.keyId}")

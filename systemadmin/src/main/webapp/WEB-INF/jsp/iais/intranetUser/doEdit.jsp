@@ -95,7 +95,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="firstName" maxlength="9" type="text" name="firstName" value="${orgUserDto.firstName}">
+                                            <input id="firstName" minlength="10" maxlength="66" type="text" name="firstName" value="${orgUserDto.firstName}">
                                             <span id="error_firstName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div>
@@ -105,7 +105,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="lastName" type="text"  maxlength="9" name="lastName" value="${orgUserDto.lastName}">
+                                            <input id="lastName" type="text"  minlength="10" maxlength="66" name="lastName" value="${orgUserDto.lastName}">
                                             <span id="error_lastName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div>

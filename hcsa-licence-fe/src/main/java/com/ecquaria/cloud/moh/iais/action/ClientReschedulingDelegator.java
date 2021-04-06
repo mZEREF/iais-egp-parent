@@ -39,14 +39,12 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -120,7 +118,7 @@ public class ClientReschedulingDelegator {
         StringBuilder stringBuilder=new StringBuilder();
         List<String> appStatus=IaisCommonUtils.genNewArrayList();
         for (String appSt: AppointmentUtil.getNoReschdulingAppStatus()
-        ) {
+             ) {
             appStatus.add(appSt);
             stringBuilder.append(appSt).append("','");
         }
@@ -211,7 +209,7 @@ public class ClientReschedulingDelegator {
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String,ApptViewDto> entry:apptViewDtos.entrySet()
-                ) {
+                     ) {
                     apptViewDtos1.add(entry.getValue());
                 }
                 List<ApptViewDto> apptViewDtos2=IaisCommonUtils.genNewArrayList();
@@ -287,7 +285,7 @@ public class ClientReschedulingDelegator {
 
         List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
         for (String key: keyIds
-        ) {
+             ) {
             ApptViewDto apptViewDto=apptViewDtos.get(key);
             apptViewDtos1.add(apptViewDto);
 
@@ -305,13 +303,12 @@ public class ClientReschedulingDelegator {
     }
 
 
-    public void sendReschedulingSuccessEmail(ApptViewDto apptViewDto) throws IOException, TemplateException {
+    public void sendReschedulingSuccessEmail(ApptViewDto apptViewDto)  {
 
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         ApplicationDto applicationDto=applicationFeClient.getApplicationById(apptViewDto.getAppId()).getEntity();
 
 
-        //TODO Need to be replaced with appSubmissionDto, and set submit by id to it
         ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
         if (applicationGroupDto != null){
             OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
@@ -365,7 +362,7 @@ public class ClientReschedulingDelegator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(httpServletRequest,"apptViewDtosMap");
         for (String id:apptIds
-        ) {
+             ) {
 
             String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
 
@@ -395,6 +392,38 @@ public class ClientReschedulingDelegator {
                 errMap.put("newDate" + appId,MessageUtil.replaceMessage("GENERAL_ERR0006", "New Date","field"));
             }
 
+        }
+        boolean err=false;
+        for (String id:apptIds
+        ) {
+
+            String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
+
+            String appId=apptViewDtos.get(id).getAppId();
+            if("".equals(reason)||reason==null){
+                errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Request","field"));
+            }
+            Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
+            Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
+            String inspNewDate=  ParamUtil.getString(httpServletRequest, "newDate"+id);
+            apptViewDtos.get(id).setReason(reason);
+            boolean changeReason=false;
+            if(apptViewDtos.get(id).getReason()!=null){
+                changeReason=!apptViewDtos.get(id).getReason().equals(reason);
+            }
+            boolean changeStartDate=false;
+            if(apptViewDtos.get(id).getSpecificStartDate()!=null){
+                changeStartDate=!apptViewDtos.get(id).getSpecificStartDate().equals(inspStDate);
+            }
+            boolean changeEndDate=false;
+            if(apptViewDtos.get(id).getSpecificEndDate()!=null){
+                changeEndDate=!apptViewDtos.get(id).getSpecificEndDate().equals(inspEndDate);
+            }
+            boolean hasNewDate=inspNewDate==null;
+
+            if(changeStartDate||changeEndDate||changeReason||hasNewDate){
+                err=true;
+            }
         }
         if(errMap.isEmpty()){
             for (String id:apptIds){
@@ -457,38 +486,8 @@ public class ClientReschedulingDelegator {
 
             }
         }
-        for (String id:apptIds
-        ) {
-
-            String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
-
-            String appId=apptViewDtos.get(id).getAppId();
-            if("".equals(reason)||reason==null){
-                errMap.put("reason" + appId, MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Request","field"));
-            }
-            Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
-            Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
-            String inspNewDate=  ParamUtil.getString(httpServletRequest, "newDate"+id);
-            apptViewDtos.get(id).setReason(reason);
-            boolean changeReason=false;
-            if(apptViewDtos.get(id).getReason()!=null){
-                changeReason=!apptViewDtos.get(id).getReason().equals(reason);
-            }
-            boolean changeStartDate=false;
-            if(apptViewDtos.get(id).getSpecificStartDate()!=null){
-                changeStartDate=!apptViewDtos.get(id).getSpecificStartDate().equals(inspStDate);
-            }
-            boolean changeEndDate=false;
-            if(apptViewDtos.get(id).getSpecificEndDate()!=null){
-                changeEndDate=!apptViewDtos.get(id).getSpecificEndDate().equals(inspEndDate);
-            }
-            boolean hasNewDate=inspNewDate==null;
-
-            if(changeStartDate||changeEndDate||changeReason||hasNewDate){
-                errMap.put("newTESTDate","1");
-            }
-
-
+        if(err){
+            errMap.put("newTESTDate","1");
         }
         ParamUtil.setSessionAttr(httpServletRequest, "apptViewDtosMap", (Serializable) apptViewDtos);
 

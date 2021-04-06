@@ -343,7 +343,7 @@ public class InspecReassignTaskDelegator {
 
     private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds, LoginContext loginContext) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(workGroupIds)) {
+        if (IaisCommonUtils.isEmpty(workGroupIds) || loginContext == null) {
             return null;
         }
         String loginUserId = loginContext.getUserId();

@@ -64,4 +64,6 @@ public interface LicenceService {
     List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId);
 
     void changePostInsForTodoAudit( ApplicationViewDto applicationViewDto );
+
+    LicenceDto getLicDtoById(String relateRecId);
 }

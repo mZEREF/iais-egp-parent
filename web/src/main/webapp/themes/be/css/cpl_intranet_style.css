@@ -3934,7 +3934,195 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     padding-bottom: 50px;
   }
 }
+.dashboard-chart .dashboard-tile-item {
+  width: calc((100% - 90px) / 4);
+  float: left;
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #efefef;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #efefef 0%, white 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#efefef", endColorstr="#ffffff",GradientType=1 );
+  /* IE6-9 */
+  -webkit-box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  -moz-box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  border-radius: 14px;
+  height: 145px;
+  margin-bottom: 35px;
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile a {
+  padding: 15px 35px 33px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile h1.dashboard-count {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 0;
+  width: 30px;
+  vertical-align: middle;
+  color: #333333;
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile .dashboard-txt {
+  font-size: 1.3rem;
+  color: #333333;
+  margin-bottom: 0;
+  width: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: 10px;
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile:hover, .dashboard-chart .dashboard-tile-item .dashboard-tile.hover {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #C2E7FE;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #C2E7FE 0%, #FFFFFF 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#C2E7FE", endColorstr="#FFFFFF",GradientType=1 );
+  /* IE6-9 */
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile.txt-only {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #F38616;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #F38616 0%, #FBA044 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #F38616 0%, #FBA044 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #F38616 0%, #FBA044 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#F38616", endColorstr="#FBA044",GradientType=1 );
+  /* IE6-9 */
+}
+.dashboard-chart .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
+  color: white;
+  width: 100%;
+  line-height: 53px;
+  font-weight: 600;
+}
+.dashboard-chart .dashboard-tile-item:not(:last-child) {
+  margin-right: 20px;
+}
+.dashboard-chart:before, .dashboard-chart:after {
+  display: table;
+  content: "";
+}
+.dashboard-chart:after {
+  clear: both;
+}
 
+.main-chart-text {
+  text-align: center;
+  margin-top: 20px;
+}
+/****************************************************/
+
+.dashboard-multiple .dashboard-tile-item {
+  width: calc((100% - 90px) / 4);
+  float: left;
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #efefef;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #efefef 0%, white 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#efefef", endColorstr="#ffffff",GradientType=1 );
+  /* IE6-9 */
+  -webkit-box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  -moz-box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.10);
+  border-radius: 14px;
+  height: 145px;
+  margin-bottom: 35px;
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile a {
+  padding: 15px 35px 33px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile h1.dashboard-count {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 0;
+  width: 30px;
+  vertical-align: middle;
+  color: #333333;
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile .dashboard-txt {
+  font-size: 1.3rem;
+  color: #333333;
+  margin-bottom: 0;
+  width: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  margin-top: 10px;
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile:hover, .dashboard-multiple .dashboard-tile-item .dashboard-tile.hover {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #C2E7FE;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #C2E7FE 0%, #FFFFFF 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#C2E7FE", endColorstr="#FFFFFF",GradientType=1 );
+  /* IE6-9 */
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile.txt-only {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
+  background: #F38616;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #F38616 0%, #FBA044 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #F38616 0%, #FBA044 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #F38616 0%, #FBA044 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#F38616", endColorstr="#FBA044",GradientType=1 );
+  /* IE6-9 */
+}
+.dashboard-multiple .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
+  color: white;
+  width: 100%;
+  line-height: 53px;
+  font-weight: 600;
+}
+.dashboard-multiple .dashboard-tile-item:not(:last-child) {
+  margin-right: 20px;
+}
+.dashboard-multiple:before, .dashboard-multiple:after {
+  display: table;
+  content: "";
+}
+.dashboard-multiple:after {
+  clear: both;
+}
+
+/***************************************************/
 .dashboard-gp .dashboard-tile-item {
   width: calc((100% - 90px) / 4);
   float: left;

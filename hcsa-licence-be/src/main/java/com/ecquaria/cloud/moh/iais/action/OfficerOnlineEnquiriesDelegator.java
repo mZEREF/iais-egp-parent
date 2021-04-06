@@ -1954,8 +1954,6 @@ public class OfficerOnlineEnquiriesDelegator {
             try {
                 if(mapIdSvcName.get(info.getServiceName())!=null){
                     info.setServiceName(mapIdSvcName.get(info.getServiceName()));
-                }else {
-                    info.setServiceName(info.getServiceName());
                 }
             }catch (Exception e){
                 log.debug("ServiceName is null");

@@ -224,7 +224,7 @@
              style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <%--                    <div class="modal-header">--%>
+                    <%--                    div class="modal-header">--%>
                     <%--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
                     <%--                    </div>--%>
                     <div class="modal-body" style="text-align: center;">
@@ -307,6 +307,7 @@
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
+        console.log(configFileSize)
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
@@ -376,7 +377,7 @@
         fileChooser.change(function (event) {
             console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
             /*  a();*/
-            ajaxCallUpload('mainForm', "selectedFile");
+            ajaxCallUploadForMax('mainForm', "selectedFile", true);
         });
     }
 

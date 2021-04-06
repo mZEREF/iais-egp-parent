@@ -32,18 +32,18 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
-import com.ecquaria.sz.commons.util.FileUtil;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @Author: Hc
@@ -81,6 +81,7 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
@@ -123,6 +124,8 @@ public class WithdrawalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request,
+                    HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, withdrawnDto.getMaxFileIndex());
             getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);

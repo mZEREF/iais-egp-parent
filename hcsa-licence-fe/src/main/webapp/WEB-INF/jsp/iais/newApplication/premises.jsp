@@ -314,6 +314,9 @@
       $Ele.find('.date_picker').attr('disabled',true);
       $Ele.find('.date_picker').addClass('disabled-placeHolder');
       $Ele.find('a.retrieveAddr').addClass('hidden');
+      $Ele.find('span.multi-select-button').css('border-color','#ededed');
+      $Ele.find('span.multi-select-button').css('color','#999');
+      $Ele.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
   }
 </script>
 

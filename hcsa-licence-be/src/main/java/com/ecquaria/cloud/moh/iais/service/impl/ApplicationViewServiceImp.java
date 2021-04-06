@@ -104,7 +104,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-
+     
         return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
 
 
@@ -127,7 +127,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     public String getWrkGrpName(String id) {
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         if(workingGroupDto == null){
-            return null;
+           return null;
         }
         return workingGroupDto.getGroupName();
     }
@@ -457,13 +457,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                        applicationDto.setNeedNewLicNo(true);
-                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                            applicationDtoMain.setNeedNewLicNo(true);
-                        }
+                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                             applicationDto.setNeedNewLicNo(true);
+                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                                 applicationDtoMain.setNeedNewLicNo(true);
+                             }
+                         }
                     }
-                }
                 applicationClient.clearHclcodeByAppIds(appovedNum);
             }
         }

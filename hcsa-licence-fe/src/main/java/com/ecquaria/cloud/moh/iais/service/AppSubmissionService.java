@@ -63,11 +63,11 @@ public interface AppSubmissionService {
      AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
      AppSubmissionDto getAppSubmissionDto(String appNo);
      AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
+     AppSubmissionDto viewAppSubmissionDto(String licenceId);
      FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
      AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
      AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
      MsgTemplateDto getMsgTemplateById(String id);
-    AppSubmissionDto viewAppSubmissionDto(String licenceId);
      void feSendEmail(EmailDto emailDto);
      ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
      void updateApplicationsStatus(String appGroupId,String stuts);

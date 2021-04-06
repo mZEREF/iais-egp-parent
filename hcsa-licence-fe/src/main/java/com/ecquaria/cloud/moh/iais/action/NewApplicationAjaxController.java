@@ -667,7 +667,7 @@ public class NewApplicationAjaxController {
                     weeklyAttr.put("name", premisesType+premPrefixName + weeklyName + i);
                     weeklyAttr.put("style", "display: none;");
                     List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
-                    String weeklyDropHtml = NewApplicationHelper.generateMultipleDropDown(weeklyAttr,weeklyOpList,null,null);
+                    String weeklyDropHtml = NewApplicationHelper.genMutilSelectOpHtml(weeklyAttr,weeklyOpList,null,weeklyDtoList.get(i).getSelectValList());
                     sql = sql.replace("${multipleDropDown}",weeklyDropHtml);
                     weeklyHtml.append(sql);
                 }
@@ -686,7 +686,7 @@ public class NewApplicationAjaxController {
                     pubHolidayAttr.put("name", premisesType +premPrefixName+ pubHolidayName + i);
                     pubHolidayAttr.put("style", "display: none;");
                     List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-                    String pubHolidayHtml = NewApplicationHelper.generateMultipleDropDown(pubHolidayAttr,phOpList,null,null);
+                    String pubHolidayHtml = NewApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,phDtoList.get(i).getSelectValList());
                     sql = sql.replace("${multipleDropDown}", pubHolidayHtml);
                     phHtml.append(sql);
                 }
@@ -1046,7 +1046,7 @@ public class NewApplicationAjaxController {
         weeklyAttr.put("name", premIndex +premPrefixName+ weeklyName + weeklyCount);
         weeklyAttr.put("style", "display: none;");
         List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
-        String weeklyDropHtml = NewApplicationHelper.generateMultipleDropDown(weeklyAttr,weeklyOpList,null,null);
+        String weeklyDropHtml = NewApplicationHelper.genMutilSelectOpHtml(weeklyAttr,weeklyOpList,null,null);
         weeklyHtml = weeklyHtml.replace("${multipleDropDown}",weeklyDropHtml);
         ajaxResDto.setResultJson(weeklyHtml);
         log.debug(StringUtil.changeForLog("the gen weekly end ...."));
@@ -1074,7 +1074,7 @@ public class NewApplicationAjaxController {
         pubHolidayAttr.put("name", premIndex +premPrefixName+ pubHolidayName + phCount);
         pubHolidayAttr.put("style", "display: none;");
         List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
-        String pubHolidayHtml = NewApplicationHelper.generateMultipleDropDown(pubHolidayAttr,phOpList,null,null);
+        String pubHolidayHtml = NewApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,null);
 
         phHtml = phHtml.replace("${multipleDropDown}", pubHolidayHtml);
 
@@ -1393,7 +1393,7 @@ public class NewApplicationAjaxController {
         attr.put("id", name);
         attr.put("name", premVal + premType + name + dropLength);
         attr.put("style", "display: none;");
-        return NewApplicationHelper.generateMultipleDropDown(attr,dropDownOpList,null,null);
+        return NewApplicationHelper.genMutilSelectOpHtml(attr,dropDownOpList,null,null);
     }
 
     private String genOperationHourDropDown(String premVal,String dropLength,List<SelectOption> dropDownOpList,String premType,String name){

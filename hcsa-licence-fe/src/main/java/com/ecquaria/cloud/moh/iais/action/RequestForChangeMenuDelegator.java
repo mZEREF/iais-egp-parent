@@ -605,7 +605,7 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "noRecord", "Y");
         }
         List<SelectOption> personelRoles = getPsnType();
-        Collections.sort(personelRoles,(s1, s2)->(s1.compareTo(s2)));
+        Collections.sort(personelRoles,(s1,s2)->(s1.compareTo(s2)));
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
@@ -769,7 +769,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setAutoRfc(true);
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
         }
@@ -1616,10 +1616,8 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
                 if (0 == total) {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-//                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                }/*else {
-                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-                }*/
+
+                }
                 appSubmissionDtoByLicenceId.setAmount(total);
                 AppGrpPremisesDto o = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList1.get(0));
                 List<AppGrpPremisesDto> appGrpPremise = new ArrayList<>(1);
@@ -1696,9 +1694,7 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
                 appSubmissionDtoByLicenceId.setPartPremise(grpLic);
-            /*    if (0.0 == total) {
-                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                }*/
+
                 appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                 oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                 requestForChangeService.svcDocToPresmise(appSubmissionDtoByLicenceId);

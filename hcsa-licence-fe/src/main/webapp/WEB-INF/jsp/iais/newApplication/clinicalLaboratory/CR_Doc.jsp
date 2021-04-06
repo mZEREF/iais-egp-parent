@@ -118,7 +118,7 @@
             var file = obj.value;
             if (file != null && file != '' && file != undefined) {
                 var configIndex = $('input[name="uploadKey"]').val();
-                ajaxCallUpload('mainForm',configIndex);
+                ajaxCallUploadForMax('mainForm',configIndex,true);
             }
         }
     }

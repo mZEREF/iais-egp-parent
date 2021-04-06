@@ -194,6 +194,9 @@
              fileSize = parseInt(fileSize);
             if(fileSize>= maxSize){
                 $('#selectedFileShow').html($("#fileMaxMBMessage").val());
+                if(fileSize >= 100){
+                    doDeleteShowFileName();
+                }
                 $('#uploadFileButton').attr("disabled", false);
                 return false;
             }

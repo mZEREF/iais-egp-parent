@@ -58,7 +58,7 @@ $('document').ready(function() {
         }
     });
 
-    $('table.control-grid tbody tr td select').niceSelect();
+    //$('table.control-grid tbody tr td select').niceSelect();
    // $('.nice-select ul').mCustomScrollbar();
 
     $('select.officer-select').on('change', function() {

@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -415,4 +416,8 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByAppIds(@RequestBody List<String> appIds);
     @GetMapping(value = "/iais-application-be/return-rfi-reminder-applications",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getRfiReminder();
+    @GetMapping(value = "/app-svc-key-person-by-appid-type",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnelDtoByAppIdAndPersoonType(@RequestParam("appId") String appId, @RequestParam("psnType") String psnType);
+    @GetMapping(value = "/iais-apppremisescorrelation-be/get-app-premise-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtoById(@RequestParam("id") String id);
 }

@@ -10,8 +10,8 @@
 <%-- END imports --%>
 
 <%-- BEGIN taglib --%>
-<%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%-- END taglib --%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -20,7 +20,7 @@
 	<meta http-equiv="Cache Control" content="no-store"/>
 	<meta http-equiv="Expires" content="0"/>
 	<meta name="description" content="HALP e-licensing portal for healthcare services, data submission, Inspection"/>
-	<title>Healthcare Application and Licensing Portal</title>
+	<title><c:out value="${iais_Audit_Trail_dto_Attr.functionName}" default="Healthcare Application and Licensing Portal"/></title>
 	<link rel="shortcut icon" href="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT%>img/favicon.ico"/>
 	<%@ include file="/WEB-INF/jsp/inc/iais-intranet-common-include.jsp" %>
 	<%-- BEGIN additional header --%>

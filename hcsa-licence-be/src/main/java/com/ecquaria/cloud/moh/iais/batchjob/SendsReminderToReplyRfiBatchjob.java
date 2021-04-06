@@ -181,7 +181,7 @@ public class SendsReminderToReplyRfiBatchjob {
             emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
 
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
@@ -297,7 +297,7 @@ public class SendsReminderToReplyRfiBatchjob {
         svcCode.add(svcDto.getSvcCode());
         String url="";
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
-       /* AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
             List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(appPremisesCorrelationDto.getId()).getEntity();
             if(entity!=null){
@@ -328,9 +328,7 @@ public class SendsReminderToReplyRfiBatchjob {
             }
             mapPrem.put("appId", applicationDto.getId());
             url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + applicationDto.getId() + "&premiseId=" + appGrpPremId;
-        }*/
-        url=HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-
+        }
         emailMap.put("systemLink", url);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
         emailParam.setTemplateContent(emailMap);
@@ -363,7 +361,7 @@ public class SendsReminderToReplyRfiBatchjob {
                     try {
                         sendEmail(applicationDto,reminderMax1Day);
                     }catch (Exception e){
-                        log.error(e.getMessage(),e);
+                       log.error(e.getMessage(),e);
                     }
                 }
             }else if(date.after(secondTime)&&date.before(thirdTime)){

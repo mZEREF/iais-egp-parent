@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -129,7 +131,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
-        withdrawnDtoList.forEach(h -> {
+        int maxSeqNum = 0;
+        if (ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
+        for (WithdrawnDto h : withdrawnDtoList) {
+            h.setMaxFileIndex(maxSeqNum);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
@@ -139,7 +146,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             AppSubmissionDto newAppSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
-                    ) {
+            ) {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
@@ -208,7 +215,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 updateWithdrawApp.add(newApplication);
                 applicationFeClient.updateApplicationList(updateWithdrawApp);
             }
-        });
+        }
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
@@ -277,7 +284,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
+        int maxSeqNum = (int) ParamUtil.getSessionAttr(httpRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         withdrawnDtoList.forEach(h -> {
+            h.setMaxFileIndex(maxSeqNum);
             String appId = h.getNewApplicationId();
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
             String originLicenceId = applicationDto.getOriginLicenceId();

@@ -344,7 +344,7 @@ public class InspectionServiceImpl implements InspectionService {
         TaskDto taskDto = taskService.getTaskById(taskId);
         //set leaders' name
         List<String> leadName =IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(taskDto.getWkGrpId())){
+        if(taskDto != null && !StringUtil.isEmpty(taskDto.getWkGrpId())){
             List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
             Set<String> leadNameSet = new HashSet<>(leadName);

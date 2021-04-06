@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PageDataCopyUtil {
@@ -181,6 +182,7 @@ public class PageDataCopyUtil {
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
         }
+        Collections.sort(appSvcDocDtos,(s1,s2)->(s1.getFileRepoId().compareTo(s2.getFileRepoId())));
         return appSvcDocDtos;
     }
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {

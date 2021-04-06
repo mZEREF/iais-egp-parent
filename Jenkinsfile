@@ -129,7 +129,7 @@ SFTP_CREDENTIALS = [
 
 // used by Katalon Runtime Engine
 KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
-    credentialsId: '80b49081-93ca-48cf-96ec-e53b988902ba',
+    credentialsId: '0bfbaa23-a895-48ce-b367-8a91cad331ec',
     variable: 'KATALON_OFFLINE_LICENSE')
 ]
 

@@ -8,8 +8,8 @@
   String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <style>
-    tr {padding: 8px}
-    td {padding: 8px}
+  tr {padding: 8px}
+  td {padding: 8px}
 </style>
 <input style="display: none" value="${NOT_VIEW}" id="view">
 <c:set var="appEdit" value="${appEditSelectDto}"/>
@@ -192,32 +192,32 @@
                                       Postal Code
                                       <a class="btn-tooltip styleguide-tooltip" id="addressClick" <c:if test="${empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
-                                    <div  class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
-                                      <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
-                                      <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
-                                        <tr>
-                                          <td  class="col-md-4">Name of Licensee</td>
-                                          <td  class="col-md-4">HCI Name</td>
-                                          <td  class="col-md-4">Service Name</td>
-                                        </tr>
-                                        <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
-                                          <tr>
-                                            <td>${applicationViewAddress.licensee}</td>
-                                            <td>${applicationViewAddress.hciName}</td>
-                                            <td>${applicationViewAddress.serviceName}</td>
-                                          </tr>
-                                        </c:forEach>
-                                      </table>
+                                      <div  class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
+                                          <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                                            <tr>
+                                              <td  class="col-md-4">Name of Licensee</td>
+                                              <td  class="col-md-4">HCI Name</td>
+                                              <td  class="col-md-4">Service Name</td>
+                                            </tr>
+                                            <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
+                                            <tr>
+                                              <td>${applicationViewAddress.licensee}</td>
+                                              <td>${applicationViewAddress.hciName}</td>
+                                              <td>${applicationViewAddress.serviceName}</td>
+                                            </tr>
+                                            </c:forEach>
+                                          </table>
 
-                                    </div>
+                                      </div>
 
 
                                     <div class="col-md-6">
                                       <div  class="col-md-6">
-                                        <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
                                       </div>
                                       <div  class="col-md-6">
-                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></span>
+                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></span>
                                       </div>
                                     </div>
                                   </div>
@@ -249,10 +249,10 @@
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                        <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></span>
+                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></span>
                                       </div>
                                     </div>
                                   </div>
@@ -277,21 +277,21 @@
                                   </div>
 
 
-                                    <%--   <div class="row">
-                                         <div class="col-md-6">
-                                           Unit No.
-                                         </div>
-                                         <div class="col-md-6">
-                                           <div class="col-md-6"><span class="newVal " attr="${appGrpPremDto.unitNo}"><c:out value="${appGrpPremDto.unitNo}"/></span>
+                               <%--   <div class="row">
+                                    <div class="col-md-6">
+                                      Unit No.
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="col-md-6"><span class="newVal " attr="${appGrpPremDto.unitNo}"><c:out value="${appGrpPremDto.unitNo}"/></span>
 
-                                           </div>
-                                           <div class="col-md-6">
-                                                   <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
-                                                         style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"/></span>
-                                           </div>
-                                         </div>
-                                       </div>
-     --%>
+                                      </div>
+                                      <div class="col-md-6">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
+                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"/></span>
+                                      </div>
+                                    </div>
+                                  </div>
+--%>
                                   <c:forEach items="${appGrpPremDto.appPremisesOperationalUnitDtos}" var="appPremisesOperationalUnitDto" varStatus="unitIndex">
                                     <div class="row">
                                       <div class="col-md-6">
@@ -353,7 +353,7 @@
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                        <span class="newVal " attr="${appGrpPremDto.buildingName}"><c:out value="${appGrpPremDto.buildingName}"/></span>
+                                            <span class="newVal " attr="${appGrpPremDto.buildingName}"><c:out value="${appGrpPremDto.buildingName}"/></span>
                                       </div>
                                       <div class="col-md-6">
                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"
@@ -415,15 +415,15 @@
                                       Operating Hours
                                     </div>
                                     <div class="col-md-6">
-                                      <span></span>
+                                     <span></span>
                                     </div>
                                   </div>
                                   <div class="row">
                                     <div class="col-md-6">Weekly</div>
                                     <div class="col-md-6">
-                                      <div class="col-md-4"><span>Start</span></div>
-                                      <div class="col-md-4"><span>End</span></div>
-                                      <div class="col-md-4"><span>All day</span></div>
+                                        <div class="col-md-4"><span>Start</span></div>
+                                        <div class="col-md-4"><span>End</span></div>
+                                        <div class="col-md-4"><span>All day</span></div>
                                     </div>
                                   </div>
                                   <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
@@ -590,7 +590,7 @@
                                         </div>
 
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px" >
+                                            <div class="col-md-6" style="padding: 0px" >
                                               <span class="newVal" attr="${op.selectAllDay}">
                                                 <c:if test="${op.selectAllDay}">
                                                   <div class="form-check active">
@@ -598,8 +598,8 @@
                                                   </div>
                                                 </c:if>
                                               </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
+                                            </div>
+                                            <div class="col-md-6" style="padding: 0px">
                                               <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
                                                  <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
                                                    <div class="form-check active">
@@ -607,7 +607,7 @@
                                                   </div>
                                                  </c:if>
                                               </span>
-                                          </div>
+                                            </div>
                                         </div>
                                       </div>
 
@@ -629,7 +629,7 @@
                                         </div>
                                         <div class="col-md-6" style="padding: 0px">
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                              ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
                                           </span>
                                         </div>
 
@@ -690,43 +690,43 @@
                                   <label style="font-size: 2.2rem">Uploaded Documents</label>
                                 </div>
                                 <table class="col-xs-12 col-md-12">
-                                  <%--                                <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
-                                                                    <tr>
-                                                                      <td>
-                                                                        <div class="field col-sm-12 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
-                                                                      </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                      <td>
-                                                                        <div class="col-xs-6 col-md-6">
-                                                                          <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
-                                                                                <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
-                                                                                <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                                                       value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile"><span id="${appGrpPrimaryDocDto.fileRepoId}Down">trueDown</span></a>
-                                                                                  <a onclick="doVerifyFileGo('${appGrpPrimaryDocDto.fileRepoId}')">${appGrpPrimaryDocDto.docName}<c:out value="(${appGrpPrimaryDocDto.docSize})KB"/></a>
-                                                                              </span>
-                                                                          </c:if>
-                                                                          <c:if test="${appGrpPrimaryDocDto.docSize==null}">
-                                                                                <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
-                                                                              </span>
-                                                                          </c:if>
-                                                                        </div>
-                                                                        <div class="col-xs-6 col-md-6">
-                                                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
-                                                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
-                                                                                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                                                      value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
-                                                                                </span>
-                                                                          </c:if>
-                                                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
-                                                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
-                                                                                </span>
-                                                                          </c:if>
+<%--                                <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                                  <tr>
+                                    <td>
+                                      <div class="field col-sm-12 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="col-xs-6 col-md-6">
+                                        <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
+                                              <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile"><span id="${appGrpPrimaryDocDto.fileRepoId}Down">trueDown</span></a>
+                                                <a onclick="doVerifyFileGo('${appGrpPrimaryDocDto.fileRepoId}')">${appGrpPrimaryDocDto.docName}<c:out value="(${appGrpPrimaryDocDto.docSize})KB"/></a>
+                                            </span>
+                                        </c:if>
+                                        <c:if test="${appGrpPrimaryDocDto.docSize==null}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
+                                            </span>
+                                        </c:if>
+                                      </div>
+                                      <div class="col-xs-6 col-md-6">
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                                <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
+                                              </span>
+                                        </c:if>
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                              </span>
+                                        </c:if>
 
-                                                                        </div>
-                                                                      </td>
-                                                                    </tr>
-                                                                    </c:forEach>--%>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  </c:forEach>--%>
                                   <c:forEach items="${appSubmissionDto.multipleGrpPrimaryDoc}" var="appGrpPrimaryDocDto">
                                     <c:set value="${appSubmissionDto.oldAppSubmissionDto.multipleGrpPrimaryDoc[appGrpPrimaryDocDto.key]}" var="oldAppGrpPrimaryDocDto"></c:set>
                                     <tr>
@@ -878,7 +878,7 @@
                                                 </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
+                                                  <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -889,10 +889,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.postalCode}"><c:out value="${newLicenceDto.postalCode}"/></span>
+                                                  <span class="newVal " attr="${newLicenceDto.postalCode}"><c:out value="${newLicenceDto.postalCode}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.postalCode}" style="display: none"><c:out value="${oldLicenceDto.postalCode}"/></span>
+                                                 <span class="oldVal " attr="${oldLicenceDto.postalCode}" style="display: none"><c:out value="${oldLicenceDto.postalCode}"/></span>
 
                                           </div>
                                         </div>
@@ -904,11 +904,11 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.addrType}"><c:out value="${newLicenceDto.addrType}"/></span>
+                                                 <span class="newVal " attr="${newLicenceDto.addrType}"><c:out value="${newLicenceDto.addrType}"/></span>
 
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal" attr="${oldLicenceDto.addrType}" style="display: none"><c:out value="${oldLicenceDto.addrType}"/></span>
+                                                 <span class="oldVal" attr="${oldLicenceDto.addrType}" style="display: none"><c:out value="${oldLicenceDto.addrType}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -919,11 +919,11 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
+                                                 <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
 
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none"><c:out value="${oldLicenceDto.unitNo}"/></span>
+                                                    <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none"><c:out value="${oldLicenceDto.unitNo}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -934,11 +934,11 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.floorNo}"><c:out value="${newLicenceDto.floorNo}"/></span>
+                                                 <span class="newVal " attr="${newLicenceDto.floorNo}"><c:out value="${newLicenceDto.floorNo}"/></span>
 
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.floorNo}" style="display: none"><c:out value="${oldLicenceDto.floorNo}"/></span>
+                                                   <span class="oldVal " attr="${oldLicenceDto.floorNo}" style="display: none"><c:out value="${oldLicenceDto.floorNo}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -949,10 +949,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
+                                                   <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none">${oldLicenceDto.unitNo}</span>
+                                                 <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none">${oldLicenceDto.unitNo}</span>
 
                                           </div>
                                         </div>
@@ -964,10 +964,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.streetName}"><c:out value="${newLicenceDto.streetName}"/></span>
+                                                   <span class="newVal " attr="${newLicenceDto.streetName}"><c:out value="${newLicenceDto.streetName}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.streetName}" style="display: none"><c:out value="${oldLicenceDto.streetName}"/></span>
+                                                 <span class="oldVal " attr="${oldLicenceDto.streetName}" style="display: none"><c:out value="${oldLicenceDto.streetName}"/></span>
 
                                           </div>
                                         </div>
@@ -979,10 +979,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.buildingName}"><c:out value="${newLicenceDto.buildingName}"/></span>
+                                                  <span class="newVal " attr="${newLicenceDto.buildingName}"><c:out value="${newLicenceDto.buildingName}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.buildingName}" style="display: none"><c:out value="${oldLicenceDto.buildingName}"/></span>
+                                                  <span class="oldVal " attr="${oldLicenceDto.buildingName}" style="display: none"><c:out value="${oldLicenceDto.buildingName}"/></span>
 
                                           </div>
                                         </div>
@@ -994,10 +994,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.officeTelNo}"><c:out value="${newLicenceDto.officeTelNo}"/></span>
+                                                  <span class="newVal " attr="${newLicenceDto.officeTelNo}"><c:out value="${newLicenceDto.officeTelNo}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.officeTelNo}" style="display: none"><c:out value="${oldLicenceDto.officeTelNo}"/></span>
+                                                 <span class="oldVal " attr="${oldLicenceDto.officeTelNo}" style="display: none"><c:out value="${oldLicenceDto.officeTelNo}"/></span>
 
                                           </div>
                                         </div>
@@ -1009,38 +1009,38 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${newLicenceDto.emilAddr}"><c:out value="${newLicenceDto.emilAddr}"/></span>
+                                                  <span class="newVal " attr="${newLicenceDto.emilAddr}"><c:out value="${newLicenceDto.emilAddr}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${oldLicenceDto.emilAddr}" style="display: none"><c:out value="${oldLicenceDto.emilAddr}"/></span>
+                                                 <span class="oldVal " attr="${oldLicenceDto.emilAddr}" style="display: none"><c:out value="${oldLicenceDto.emilAddr}"/></span>
 
                                           </div>
                                         </div>
                                       </div>
-                                      <c:forEach items="${appSubmissionDto.boardMember}" var="Board" varStatus="status">
-                                        <div class="row" style="margin-top: 1%;margin-bottom: 1%">
-                                          <div class="col-md-6"><label>Board Member ${status.index+1}</label></div>
+                                    <c:forEach items="${appSubmissionDto.boardMember}" var="Board" varStatus="status">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                      <div class="col-md-6"><label>Board Member ${status.index+1}</label></div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          Salutation
                                         </div>
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            Salutation
-                                          </div>
-                                          <div class="col-md-6">
-                                            <span class="newVal " attr="${Board.salutation}"><c:out value="${Board.salutation}"/></span>
-                                          </div>
+                                        <div class="col-md-6">
+                                          <span class="newVal " attr="${Board.salutation}"><c:out value="${Board.salutation}"/></span>
                                         </div>
+                                      </div>
 
 
-                                        <div class="row">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          Name
+                                        </div>
+                                        <div class="col-md-6">
                                           <div class="col-md-6">
-                                            Name
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div class="col-md-6">
-                                              <span class="newVal " attr="${Board.name}">${Board.name}</span>
-                                            </div>
+                                            <span class="newVal " attr="${Board.name}">${Board.name}</span>
                                           </div>
                                         </div>
+                                      </div>
 
                                         <div class="row img-show">
                                           <div class="col-md-6">
@@ -1059,43 +1059,43 @@
                                             </div>
                                           </div>
                                         </div>
-                                        <%--     <c:if test="${not empty hashMap[Board.idNo]}">
-                                               <div class="row new-img-show" style="display: none">
-                                                 <div  style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
-                                                   <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                                   <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                                     <tr>
-                                                       <td>Indentification No.</td>
-                                                       <td>Case No.</td>
-                                                       <td>Case Type Description</td>
-                                                       <td>Case Status Description</td>
-                                                       <td>Offence Description</td>
-                                                       <td>Outcome Description</td>
-                                                       <td>Outcome Issue Date</td>
-                                                       <td>Prosecution Outcome Description</td>
-                                                       <td>Created Date</td>
-                                                       <td>Update Date</td>
-                                                     </tr>
-                                                     <c:forEach items="${hashMap[Board.idNo]}" var="map">
-                                                       <tr>
-                                                         <td>${map.identificationNo}</td>
-                                                         <td>${map.caseNo}</td>
-                                                         <td>${map.caseType}</td>
-                                                         <td>${map.caseStatus}</td>
-                                                         <td>${map.offenceDesc}</td>
-                                                         <td>${map.outcome}</td>
-                                                         <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                         <td>${map.prosecutionOutcome}</td>
-                                                         <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                         <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                       </tr>
-                                                     </c:forEach>
-                                                     <tr></tr>
+                                 <%--     <c:if test="${not empty hashMap[Board.idNo]}">
+                                        <div class="row new-img-show" style="display: none">
+                                          <div  style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecution Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[Board.idNo]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>${map.caseStatus}</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
 
-                                                   </table>
-                                                 </div>
-                                               </div>
-                                             </c:if>--%>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </c:if>--%>
                                         <div class="row">
                                           <div class="col-md-6">
                                             Designation
@@ -1108,32 +1108,32 @@
                                         </div>
 
 
-                                      </c:forEach>
+                                    </c:forEach>
 
-                                      <c:forEach items="${appSubmissionDto.authorisedPerson}" var="Authorised" varStatus="status">
-                                        <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                    <c:forEach items="${appSubmissionDto.authorisedPerson}" var="Authorised" varStatus="status">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                        <div class="col-md-6">
+                                          <label>Authorised Person ${status.index+1}</label>
+                                        </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          Name
+                                        </div>
+                                        <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <label>Authorised Person ${status.index+1}</label>
+                                            <span  class="newVal " attr="${Authorised.displayName}">${Authorised.displayName}</span>
                                           </div>
                                         </div>
+                                      </div>
 
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            Name
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div class="col-md-6">
-                                              <span  class="newVal " attr="${Authorised.displayName}">${Authorised.displayName}</span>
-                                            </div>
-                                          </div>
+                                      <div class="row img-show">
+                                        <div class="col-md-6">
+                                          ID No.
                                         </div>
-
-                                        <div class="row img-show">
-                                          <div class="col-md-6">
-                                            ID No.
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div  class="col-md-6">
+                                        <div class="col-md-6">
+                                          <div  class="col-md-6">
                                             <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}
                                             <%--  <c:if test="${empty hashMap[Authorised.idNumber]}">--%>
                                                 <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
@@ -1142,58 +1142,58 @@
                                                 <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
                                               </c:if>--%>
                                             </span>
-                                            </div>
                                           </div>
                                         </div>
-                                        <%-- <c:if test="${not empty hashMap[Authorised.idNumber]}">
-                                           <div class="row new-img-show" style="display:none;">
-                                             <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
-                                               <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                               <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                                 <tr>
-                                                   <td>Indentification No.</td>
-                                                   <td>Case No.</td>
-                                                   <td>Case Type Description</td>
-                                                   <td>Case Status Description</td>
-                                                   <td>Offence Description</td>
-                                                   <td>Outcome Description</td>
-                                                   <td>Outcome Issue Date</td>
-                                                   <td>Prosecution Outcome Description</td>
-                                                   <td>Created Date</td>
-                                                   <td>Update Date</td>
-                                                 </tr>
-                                                 <c:forEach items="${hashMap[Authorised.idNumber]}" var="map">
-                                                   <tr>
-                                                     <td>${map.identificationNo}</td>
-                                                     <td>${map.caseNo}</td>
-                                                     <td>${map.caseType}</td>
-                                                     <td>${map.caseStatus}</td>
-                                                     <td>${map.offenceDesc}</td>
-                                                     <td>${map.outcome}</td>
-                                                     <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                     <td>${map.prosecutionOutcome}</td>
-                                                     <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                     <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                   </tr>
-                                                 </c:forEach>
-                                                 <tr></tr>
+                                      </div>
+                                     <%-- <c:if test="${not empty hashMap[Authorised.idNumber]}">
+                                        <div class="row new-img-show" style="display:none;">
+                                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 140%">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecution Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[Authorised.idNumber]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>${map.caseStatus}</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
 
-                                               </table>
-                                             </div>
-                                           </div>
-                                         </c:if>--%>
-
-
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            Designation
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div class="col-md-6">
-                                              <span  class="newVal " attr="${Authorised.designation}"><iais:code code="${Authorised.designation}"/></span>
-                                            </div>
+                                            </table>
                                           </div>
                                         </div>
+                                      </c:if>--%>
+
+
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          Designation
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-6">
+                                            <span  class="newVal " attr="${Authorised.designation}"><iais:code code="${Authorised.designation}"/></span>
+                                          </div>
+                                        </div>
+                                      </div>
 
                                         <div class="row">
                                           <div class="col-md-6">
@@ -1230,7 +1230,7 @@
                                         </div>
 
 
-                                      </c:forEach>
+                                    </c:forEach>
 
                                     </div>
                                   </div>
@@ -1296,53 +1296,53 @@
 <script>
 
     function closeThis(obj){
-        $(obj).closest('div.row').attr("style","display:none");
+       $(obj).closest('div.row').attr("style","display:none");
     }
-    $(document).ready(function () {
-        <c:if test="${pageAppEditSelectDto.docEdit}">
-        $('#primaryCheckbox').closest("div.panel-body").attr("style","");
-        </c:if>
-        <c:if test="${pageAppEditSelectDto.premisesEdit}">
-        $('#premisesCheckbox').closest("div.panel-body").attr("style","");
-        </c:if>
-        <c:if test="${pageAppEditSelectDto.serviceEdit}">
-        $('#serviceCheckbox').closest("div.panel-body").attr("style","");
-        </c:if>
-    });
+  $(document).ready(function () {
+      <c:if test="${pageAppEditSelectDto.docEdit}">
+      $('#primaryCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+      <c:if test="${pageAppEditSelectDto.premisesEdit}">
+      $('#premisesCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+      <c:if test="${pageAppEditSelectDto.serviceEdit}">
+      $('#serviceCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+  });
 
-    $('#hciNameClick').click(function () {
-        var jQuery = $('#hciNameShowOrHidden').attr('style');
-        if(jQuery.match("display: none")){
-            var a= $('#hciNameShowOrHidden').height();
-            var b= $('.panel-body').height();
-            if(a>b){
-                $('#hciNameShowOrHidden').height(b)
-            }else {
-                $('#hciNameShowOrHidden').height(a)
-            }
-            $('#hciNameShowOrHidden').show();
-            $('#addressShowOrHidden').hide();
-        }else {
-            $('#hciNameShowOrHidden').hide();
-        }
-    });
+  $('#hciNameClick').click(function () {
+      var jQuery = $('#hciNameShowOrHidden').attr('style');
+      if(jQuery.match("display: none")){
+          var a= $('#hciNameShowOrHidden').height();
+          var b= $('.panel-body').height();
+          if(a>b){
+              $('#hciNameShowOrHidden').height(b)
+          }else {
+              $('#hciNameShowOrHidden').height(a)
+          }
+          $('#hciNameShowOrHidden').show();
+          $('#addressShowOrHidden').hide();
+      }else {
+          $('#hciNameShowOrHidden').hide();
+      }
+  });
 
-    $('#addressClick').click(function () {
-        var jQuery = $('#addressShowOrHidden').attr('style');
-        if(jQuery.match("display: none")){
-            var a= $('#addressShowOrHidden').height();
-            var b= $('.panel-body').height();
-            if(a>b){
-                $('#addressShowOrHidden').height(b)
-            }else {
-                $('#addressShowOrHidden').height(a)
-            }
-            $('#addressShowOrHidden').show();
-            $('#hciNameShowOrHidden').hide();
+  $('#addressClick').click(function () {
+      var jQuery = $('#addressShowOrHidden').attr('style');
+      if(jQuery.match("display: none")){
+        var a= $('#addressShowOrHidden').height();
+        var b= $('.panel-body').height();
+        if(a>b){
+            $('#addressShowOrHidden').height(b)
         }else {
-            $('#addressShowOrHidden').hide();
+            $('#addressShowOrHidden').height(a)
         }
-    });
+          $('#addressShowOrHidden').show();
+          $('#hciNameShowOrHidden').hide();
+      }else {
+          $('#addressShowOrHidden').hide();
+      }
+  });
 
 
     function showThisTableNew(obj) {

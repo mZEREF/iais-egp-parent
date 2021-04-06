@@ -140,7 +140,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             searchGiroDtoResult.setRowCount(giroAccountResult.getRowCount());
             List<GiroAccountInfoViewDto> giroAccountInfoViewDtos=IaisCommonUtils.genNewArrayList();
             for (GiroAccountInfoQueryDto gai:
-                    giroAccountResult.getRows()) {
+            giroAccountResult.getRows()) {
                 GiroAccountInfoViewDto giroAccountInfoViewDto=new GiroAccountInfoViewDto();
                 List<GiroAccountFormDocDto> giroAccountFormDocDtoList=giroAccountService.findGiroAccountFormDocDtoListByAcctId(gai.getId());
                 giroAccountInfoViewDto.setAcctName(gai.getAcctName());
@@ -167,7 +167,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
-        ) {
+             ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             giroAccountInfoDto.setEventRefNo(refNo);
@@ -258,7 +258,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-            orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }

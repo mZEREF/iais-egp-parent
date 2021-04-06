@@ -440,7 +440,7 @@
                                             <div class="col-md-4 col-xs-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect  name="${premValue}onSiteWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                        <iais:select name="${premValue}onSiteWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList"  multiSelect="true"/>
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeekly${status.index}${weeklyStat.index}"></span>
@@ -513,7 +513,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}onSiteWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                    <iais:select name="${premValue}onSiteWeekly${suffix}"  options="weeklyOpList" multiSelect="true" multiValues="" />
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
                                                     <span class="error-msg " name="iaisErrorMsg" id="error_onSiteWeekly${status.index}${suffix}"></span>
@@ -596,7 +596,7 @@
                                             <div class="col-md-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect name="${premValue}onSitePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                        <iais:select name="${premValue}onSitePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"/>
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_onSitePubHoliday${status.index}${phyStat.index}"></span>
@@ -672,7 +672,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}onSitePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                    <iais:select name="${premValue}onSitePubHoliday${suffix}" options="phOpList"  multiSelect="true"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -973,7 +973,7 @@
                                             <div class="col-md-4 col-xs-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect  name="${premValue}conveyanceWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                        <iais:select  name="${premValue}conveyanceWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList"  multiSelect="true"/>
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceWeekly${status.index}${weeklyStat.index}"></span>
@@ -1046,7 +1046,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}conveyanceWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                    <iais:select  name="${premValue}conveyanceWeekly${suffix}"  options="weeklyOpList"  multiSelect="true"/>
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
                                                     <span class="error-msg " name="iaisErrorMsg" id="error_conveyanceWeekly${status.index}${suffix}"></span>
@@ -1129,7 +1129,7 @@
                                             <div class="col-md-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect name="${premValue}conveyancePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                        <iais:select name="${premValue}conveyancePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"  />
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_conveyancePubHoliday${status.index}${phyStat.index}"></span>
@@ -1205,7 +1205,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}conveyancePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                    <iais:select name="${premValue}conveyancePubHoliday${suffix}" options="phOpList" multiSelect="true"  />
                                                 </div>
                                             </div>
                                         </div>
@@ -1500,7 +1500,7 @@
                                             <div class="col-md-4 col-xs-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect  name="${premValue}offSiteWeekly${weeklyStat.index}" selectValue="${weekly.selectVal}" options="weeklyOpList" ></iais:multipleSelect>
+                                                        <iais:select name="${premValue}offSiteWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList" multiSelect="true"  />
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_offSiteWeekly${status.index}${weeklyStat.index}"></span>
@@ -1573,7 +1573,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}offSiteWeekly${suffix}" selectValue="" options="weeklyOpList" ></iais:multipleSelect>
+                                                    <iais:select name="${premValue}offSiteWeekly${suffix}" options="weeklyOpList" multiSelect="true"  />
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
                                                     <span class="error-msg " name="iaisErrorMsg" id="error_offSiteWeekly${status.index}${suffix}"></span>
@@ -1656,7 +1656,7 @@
                                             <div class="col-md-4">
                                                 <div class="row">
                                                     <div class="col-md-12 multi-select col-xs-12">
-                                                        <iais:multipleSelect name="${premValue}offSitePubHoliday${phyStat.index}" selectValue="${ph.selectVal}" options="phOpList" ></iais:multipleSelect>
+                                                        <iais:select name="${premValue}offSitePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"  />
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
                                                         <span class="error-msg " name="iaisErrorMsg" id="error_offSitePubHoliday${status.index}${phyStat.index}"></span>
@@ -1732,7 +1732,7 @@
                                         <div class="col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-md-12 multi-select col-xs-12">
-                                                    <iais:multipleSelect  name="${premValue}offSitePubHoliday${suffix}" selectValue="" options="phOpList" ></iais:multipleSelect>
+                                                    <iais:select name="${premValue}offSitePubHoliday${suffix}"  options="phOpList" multiSelect="true"  />
                                                 </div>
                                             </div>
                                         </div>

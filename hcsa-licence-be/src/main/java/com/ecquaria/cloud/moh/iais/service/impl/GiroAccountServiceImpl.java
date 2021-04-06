@@ -173,7 +173,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
                 for (OrgUserDto user:orgUserDtoList
                 ) {
                     for (ApplicationGroupDto apg:applicationGroupDtos
-                    ) {
+                         ) {
                         if (apg.getSubmitBy().equals(user.getId())&&applicationDto.getAppGrpId().equals(apg.getId())){
                             applicantName=user.getDisplayName();
                         }
@@ -229,7 +229,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 //
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
             for (LicenceDto lic:licenceDtos
-            ) {
+                 ) {
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
                 if(hcsaServiceDto!=null){
                     svcCodeSet.add(hcsaServiceDto.getSvcCode());

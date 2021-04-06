@@ -266,8 +266,8 @@ public class FeEicGatewayClient {
 
 
     public FeignResponseEntity<List> genInspApptRescheduleDate(AppointmentDto appointmentDto,
-                                                               String date, String authorization, String dateSec,
-                                                               String authorizationSec) {
+                                                     String date, String authorization, String dateSec,
+                                                     String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/appt-reschedule-action", HttpMethod.POST, appointmentDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
     }

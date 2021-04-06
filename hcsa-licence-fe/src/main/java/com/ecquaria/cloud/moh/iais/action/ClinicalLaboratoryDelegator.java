@@ -3350,9 +3350,6 @@ public class ClinicalLaboratoryDelegator {
     private Map<String,AppSvcPersonAndExtDto> removeDirtyDataFromPsnDropDown(AppSubmissionDto appSubmissionDto,Map<String,AppSvcPersonAndExtDto> licPersonMap,Map<String,AppSvcPersonAndExtDto> personMap){
         //add new person key
         Set<String> personKeySet = new HashSet<>(licPersonMap.keySet());
-        if(personKeySet == null){
-            personKeySet = IaisCommonUtils.genNewHashSet();
-        }
         Set<String> newPersonKeySet = getNewPersonKeySet(appSubmissionDto);
         personKeySet.addAll(newPersonKeySet);
         //filter removed person

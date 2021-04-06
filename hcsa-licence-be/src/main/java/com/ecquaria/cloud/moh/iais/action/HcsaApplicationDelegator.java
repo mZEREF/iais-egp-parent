@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -281,6 +282,15 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
+
+    private void dealWithDoc(ApplicationViewDto applicationViewDto){
+        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
+        if(appSupDocDtoList!=null){
+           for(AppSupDocDto v : appSupDocDtoList){
+
+           }
+        }
+    }
     /**
      * StartStep: chooseStage
      *
@@ -2277,7 +2287,7 @@ public class HcsaApplicationDelegator {
         if (withdrawApplicationDto != null) {
             /**
              * Send Withdrawal Application Email
-             */
+       14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
                 boolean isCharity = false;
                 String applicantName = "";
@@ -3178,7 +3188,7 @@ public class HcsaApplicationDelegator {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             String originLicenceId = applicationDto.getOriginLicenceId();
             if (!StringUtil.isEmpty(originLicenceId)) {
-                AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
+              /*  AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
                 boolean recomTypeLastIns = appLastInsGroup.isRecomTypeLastIns();
                 flag = recomTypeLastIns;
                 boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();
@@ -3189,7 +3199,7 @@ public class HcsaApplicationDelegator {
                     applicationViewDto.setVerified(routingStage);
                     ParamUtil.setSessionAttr(request, "verifiedValues", (Serializable) routingStage);
                 }
-                ParamUtil.setSessionAttr(request, "AppLastInsGroup", appLastInsGroup);
+                ParamUtil.setSessionAttr(request, "AppLastInsGroup", appLastInsGroup);*/
             }
         }
         return flag;
@@ -3521,7 +3531,7 @@ public class HcsaApplicationDelegator {
                 }
                 String appealType = premiseMiscDto.getAppealType();
                 if (ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)) {
-                    LicenceDto licenceDto = licenceService.getLicenceDto(premiseMiscDto.getRelateRecId());
+                    LicenceDto licenceDto = licenceService.getLicDtoById(premiseMiscDto.getRelateRecId());
                     if (licenceDto != null) {
                         appealNo = licenceDto.getLicenceNo();
                         type = "licence";

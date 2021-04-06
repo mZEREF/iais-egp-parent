@@ -475,8 +475,14 @@
         }
         appealAoFillBack();
         checkDms();
+        recommendationRemoveRequired();
     });
-
+    function recommendationRemoveRequired() {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
+        $('#recommendationFieldTrue').addClass('hidden');
+        $('#recommendationFieldFalse').removeClass('hidden');
+        }
+    }
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');

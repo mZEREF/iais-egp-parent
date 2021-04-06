@@ -688,8 +688,8 @@ public class HcsaChklItemDelegator {
     }
 
     /**
-     * @author: yichen
-     */
+    * @author: yichen 
+    */
     @GetMapping(value = "checklist-item-file")
     public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 

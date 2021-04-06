@@ -568,7 +568,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             if(!StringUtil.isEmpty(ncBestPractice)){
                 bestPractice = new StringBuilder();
                 for (String bp:recommendations
-                ) {
+                     ) {
                     bestPractice.append(bp).append("<br>");
                 }
             }
