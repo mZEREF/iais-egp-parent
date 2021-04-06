@@ -48,7 +48,7 @@
                         <div class="col-md-4">
                             <iais:datePicker id="fStartDate" name="fStartDate" value="${param.fStartDate}"/>
                         </div>
-                        <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
+                        <div class="col-md-1" style="margin-top: 1.5%">
                             <label>To</label>
                         </div>
                         <div class="col-md-4">
@@ -68,17 +68,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
+                        <label class="col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
                             Date:</label>
-                        <div class="col-xs-4 col-md-4">
+                        <div class="col-md-4">
                             <iais:datePicker id="fExpiryDate" name="fExpiryDate" value="${param.fExpiryDate}"/>
                         </div>
-                    </iais:value>
-                    <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
+                        <div class="col-md-1" style="margin-top: 1.5%">
                         <label>To</label>
                     </div>
-                    <iais:value>
-                        <div class="col-xs-4 col-md-4">
+                        <div class="col-md-4">
                             <iais:datePicker id="eExpiryDate" name="eExpiryDate" value="${param.eExpiryDate}"/>
                         </div>
                     </iais:value>
@@ -88,7 +86,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-9">
-                        <span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>
+                        <span class="error-msg" style="width: 150%;pfont-size:1.5rem">${LEEM}</span>
                     </div>
                 </div>
             </div>
