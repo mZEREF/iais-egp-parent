@@ -3538,4 +3538,41 @@ public class NewApplicationHelper {
         }
         return  mandatoryCount;
     }
+
+    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
+        StringBuilder sBuffer = new StringBuilder(100);
+        sBuffer.append("<select multiple=\"multiple\" ");
+        for(Map.Entry<String, String> entry : attrMap.entrySet()){
+//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey())
+                    .append("=\"")
+                    .append(entry.getValue())
+                    .append('\"');
+        }
+        sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+            sBuffer.append("<option value=\"\">")
+                    .append(firestOption)
+                    .append("</option>");
+        }
+        for(SelectOption sp:selectOptionList){
+            if(!IaisCommonUtils.isEmpty(checkedVals)){
+                if(checkedVals.contains(sp.getValue())){
+//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option selected=\"selected\" value=\"")
+                            .append(sp.getValue())
+                            .append("\">")
+                            .append(sp.getText())
+                            .append("</option>");
+                }else{
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+            }
+        }
+        sBuffer.append("</select>");
+        return sBuffer.toString();
+    }
 }

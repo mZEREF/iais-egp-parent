@@ -76,6 +76,9 @@
             $premContent.find('.date_picker').attr('disabled',false);
             //remove placeHolder disabled style
             $premContent.find('.date_picker').removeClass('disabled-placeHolder');
+            $premContent.find('span.multi-select-button').css('border-color','');
+            $premContent.find('span.multi-select-button').css('color','');
+            $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -228,6 +231,10 @@
                                 $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
                                 //remove first del btn
                                 $weeklyCountent.find('div.weeklyDiv .weeklyDel').remove();
+                                //gen multi dropdown
+                                $weeklyCountent.find('select.Weekly').each(function () {
+                                    $(this).multiSelect();
+                                });
                                 //fill data
                                 $weeklyCountent.find('div.weeklyDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -235,9 +242,6 @@
                                     if(weeklyData == null || weeklyData =='' || weeklyData == undefined){
                                         return;
                                     }
-                                    $.each(weeklyData.selectValList,function (k,v) {
-                                        $thisDiv.find('input[value="'+v+'"]').prop('checked',true);
-                                    });
 
                                     var selectAllDay = weeklyData.selectAllDay;
                                     if(typeof(selectAllDay) === 'undefined'){
@@ -281,6 +285,10 @@
                                 $phCountent.find('div.form-group:eq(0)').remove();
                                 //remove first del btn
                                 $phCountent.find('.pubHolidayDel').remove();
+                                //gen multi dropdown
+                                $phCountent.find('select.PubHoliday').each(function () {
+                                    $(this).multiSelect();
+                                });
                                 //fill data
                                 $phCountent.find('div.pubHolidayDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -288,9 +296,7 @@
                                     if(phData == null || phData =='' || phData == undefined){
                                         return;
                                     }
-                                    $.each(phData.selectValList,function (k,v) {
-                                        $thisDiv.find('input[value="'+v+'"]').prop('checked',true);
-                                    });
+
 
                                     var selectAllDay = phData.selectAllDay;
                                     if(typeof(selectAllDay) === 'undefined'){
@@ -368,6 +374,9 @@
                             $premContent.find('.date_picker').attr('disabled',true);
                             //add placeHolder disabled style
                             $premContent.find('.date_picker').addClass('disabled-placeHolder');
+                            $premContent.find('span.multi-select-button').css('border-color','#ededed');
+                            $premContent.find('span.multi-select-button').css('color','#999');
+                            $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                         }
                     },
                     'error':function () {
@@ -545,6 +554,10 @@
             premContent.find('.weeklyDel').removeClass('hidden');
             premContent.find('.pubHolidayDel').removeClass('hidden');
             premContent.find('.eventDel').removeClass('hidden');
+
+            premContent.find('span.multi-select-button').css('border-color','');
+            premContent.find('span.multi-select-button').css('color','');
+            premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
 
             console.log(premContent.find('.weeklyDiv').length);
             console.log(premContent.find('.pubHolidayDiv').length);
@@ -941,6 +954,9 @@
                     $premCountEle.find('.date_picker').attr('disabled',true);
                     //add placeHolder disabled style
                     $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -981,6 +997,9 @@
                     $premCountEle.find('.date_picker').attr('disabled',true);
                     //add placeHolder disabled style
                     $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -1021,6 +1040,9 @@
                     $premCountEle.find('.date_picker').attr('disabled',true);
                     //add placeHolder disabled style
                     $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
 
             }
@@ -1239,6 +1261,9 @@
                         if(length >= '${weeklyCount}'){
                             $currPremForm.find('.addWeeklyDiv').addClass('hidden');
                         }
+                        $currPremForm.find('select.Weekly').each(function () {
+                            $(this).multiSelect();
+                        });
                     }
                     dismissWaiting();
                 },
@@ -1281,6 +1306,9 @@
                         if(length >= '${phCount}'){
                             $currPremForm.find('.addPhDiv').addClass('hidden');
                         }
+                        $currPremForm.find('select.PubHoliday').each(function () {
+                            $(this).multiSelect();
+                        });
                     }
                     dismissWaiting();
                 },
@@ -1470,6 +1498,9 @@
                     //remove del btn
                     $contentDivEle.find('.weeklyDel').remove();
                     clickAllDay();
+                    $contentDivEle.find('select.Weekly').each(function () {
+                        $(this).multiSelect();
+                    });
                 }
 
 
@@ -1515,6 +1546,9 @@
                     //remove del btn
                     $contentDivEle.find('.pubHolidayDel').remove();
                     clickAllDay();
+                    $contentDivEle.find('select.PubHoliday').each(function () {
+                        $(this).multiSelect();
+                    });
                 }
 
 
@@ -1639,4 +1673,12 @@
         readonlyPartPage($allDayDiv.prev().find('div.col-md-5'));
     }
 
+    var genMulti = function(){
+        $('select').each(function () {
+            if($(this).prop('multiple')){
+                console.log('...multiple...');
+                $(this).multiSelect();
+            }
+        });
+    }
 </script>
