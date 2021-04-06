@@ -86,7 +86,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-9">
-                        <span class="error-msg" style="width: 150%;pfont-size:1.5rem">${LEEM}</span>
+                        <span class="error-msg" style="width: 150%;font-size:1.5rem">${LEEM}</span>
                     </div>
                 </div>
             </div>
