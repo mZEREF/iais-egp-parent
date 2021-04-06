@@ -11,25 +11,12 @@ failure_action: stop
 
 deployments:
   - type: image_tag
-    stack_name: be-iais-config
+    stack_name: be-iais-app
     services:
-      - config-service=hub.ecquaria.com:8251/docker-mohiais/config-eservice:${TagName}-${BUILD_NUMBER}
+      - hcsa-licence-web=hub.ecquaria.com:8251/docker-mohiais-egp/hcsa-licence:${TagName}-${BUILD_NUMBER}
+      - system-admin-web=hub.ecquaria.com:8251/docker-mohiais-egp/systemadmin-web:${TagName}-${BUILD_NUMBER}
+      - main-web=hub.ecquaria.com:8251/docker-mohiais-egp/main-web:${TagName}-${BUILD_NUMBER}
+      - web=hub.ecquaria.com:8251/docker-mohiais-egp/web:${TagName}-${BUILD_NUMBER}
   - type: wait_for_healthcheck
-    stack_name: be-iais-config
+    stack_name: be-iais-app
     timeout_seconds: 300
-  - type: image_tag
-    stack_name: be-iais-api
-    services:
-      - iais-event-bus=hub.ecquaria.com:8251/docker-mohiais/event-bus-eservice:${TagName}-${BUILD_NUMBER}
-      - audit-trail=hub.ecquaria.com:8251/docker-mohiais/audit-trail-eservice:${TagName}-${BUILD_NUMBER}
-      - iais-appointment=hub.ecquaria.com:8251/docker-mohiais/iais-appointment-eservice:${TagName}-${BUILD_NUMBER}
-      - system-admin=hub.ecquaria.com:8251/docker-mohiais/system-admin-eservice:${TagName}-${BUILD_NUMBER}
-      - email-sms=hub.ecquaria.com:8251/docker-mohiais/iais-email-sms-eservice:${TagName}-${BUILD_NUMBER}
-      - hcsa-licence=hub.ecquaria.com:8251/docker-mohiais/iais-hcsa-licence-be-eservice:${TagName}-${BUILD_NUMBER}
-      - iais-organization=hub.ecquaria.com:8251/docker-mohiais/iais-organization-be-eservice:${TagName}-${BUILD_NUMBER}
-      - file-repository=hub.ecquaria.com:8251/docker-mohiais/file-repo-eservice:${TagName}-${BUILD_NUMBER}
-      - hcsa-application=hub.ecquaria.com:8251/docker-mohiais/hcsa-application-be-eservice:${TagName}-${BUILD_NUMBER}
-      - hcsa-config=hub.ecquaria.com:8251/docker-mohiais/hcsa-config-eservice:${TagName}-${BUILD_NUMBER}
-  - type: wait_for_healthcheck
-    stack_name: be-iais-api
-    timeout_seconds: 600
