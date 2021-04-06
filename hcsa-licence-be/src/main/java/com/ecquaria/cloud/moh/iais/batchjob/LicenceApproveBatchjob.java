@@ -1162,6 +1162,7 @@ public class LicenceApproveBatchjob {
         if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
             for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos) {
                 LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto, LicSvcSpecificPersonnelDto.class);
+                licSvcSpecificPersonnelDto.setAppSvcPsnId(licSvcSpecificPersonnelDto.getId());
                 result.add(licSvcSpecificPersonnelDto);
             }
         }
