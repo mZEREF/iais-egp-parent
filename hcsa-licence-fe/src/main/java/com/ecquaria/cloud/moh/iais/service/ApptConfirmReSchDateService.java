@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -58,5 +59,7 @@ public interface ApptConfirmReSchDateService {
 
     void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos);
 
-    void comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
+    ProcessReSchedulingDto comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
+
+    void sendReschedulingEmailToInspector(ProcessReSchedulingDto processReSchedulingDto,ApptViewDto apptViewDto) throws IOException;
 }
