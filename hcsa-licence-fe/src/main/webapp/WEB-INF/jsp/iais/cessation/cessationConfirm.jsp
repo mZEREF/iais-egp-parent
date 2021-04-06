@@ -90,7 +90,7 @@
                           </div>
                         </div>
                         <div class="form-group">
-                          <label class="col-xs-12 col-md-6 control-label">Ratient's Record will be transferred <span
+                          <label class="col-xs-12 col-md-6 control-label">Patient's Records will be transferred <span
                                   style="color: red">*</span></label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <div class="form-check-gp">

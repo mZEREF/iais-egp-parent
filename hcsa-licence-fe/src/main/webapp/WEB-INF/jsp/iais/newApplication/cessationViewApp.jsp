@@ -76,7 +76,7 @@
                           </div>
                         </div>
                         <div class="form-group">
-                          <label class="col-xs-12 col-md-6 control-label">Ratient's Record
+                          <label class="col-xs-12 col-md-6 control-label">Patient's Records
                             will be transferred </label>
                           <div class="col-xs-12 col-sm-4 col-md-3">
                             <div class="form-check-gp">
@@ -318,10 +318,6 @@
   </div>
 </div>
 <style>
-  .col-md-5 {
-    width: 31%;
-  }
-
   /*.col-md-6 {*/
   /*    width: 35%;*/
   /*}*/
