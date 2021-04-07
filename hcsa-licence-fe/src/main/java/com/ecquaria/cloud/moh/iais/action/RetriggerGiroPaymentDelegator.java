@@ -71,7 +71,7 @@ public class RetriggerGiroPaymentDelegator {
     private static final String ISVALID_VALUE_TO_BANK = "tobank";
 
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.info(StringUtil.changeForLog("the doStart start ...."));
+        log.info(StringUtil.changeForLog("the retrigger giro doStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
@@ -80,6 +80,7 @@ public class RetriggerGiroPaymentDelegator {
 
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
+        log.debug(StringUtil.changeForLog("appGrpNo:")+appGrpNo);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //init data
         String switch2 = "topreview";
@@ -193,7 +194,7 @@ public class RetriggerGiroPaymentDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
-        log.info(StringUtil.changeForLog("the doStart end ...."));
+        log.info(StringUtil.changeForLog("the retrigger giro doStart end ...."));
     }
 
     public void prepreview(BaseProcessClass bpc) {
