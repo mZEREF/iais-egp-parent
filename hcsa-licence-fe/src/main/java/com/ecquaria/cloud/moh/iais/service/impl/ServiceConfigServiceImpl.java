@@ -921,6 +921,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
             if(amount >= applicationGroupDto.getAmount()){
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+                applicationGroupDto.setPaymentDt(new Date());
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 //sysn be create need sysn appgroup in xml
