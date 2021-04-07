@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -61,14 +60,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
-
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1544,6 +1541,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+        log.info(StringUtil.changeForLog("The translateForShow start ..."));
         Map<String, List<AppSvcDocDto>> result = IaisCommonUtils.genNewHashMap();
         Map<String,Integer> nums = IaisCommonUtils.genNewHashMap();
         if(multipleSvcDoc!=null){
@@ -1555,7 +1553,7 @@ public class LicenceViewServiceDelegator {
                     if(StringUtil.isEmpty(personType)){
                         personType = k.substring(0,k.indexOf(":"));
                     }
-                    log.info(StringUtil.changeForLog(personType));
+                    log.info(StringUtil.changeForLog("The translateForShow personType is -->:"+personType));
                     Integer num = nums.get(personType);
                     if(num == null){
                         num = 1;
@@ -1564,15 +1562,19 @@ public class LicenceViewServiceDelegator {
                     }
                     nums.put(personType,num);
                     String newKey = dealWithSvcDoc(appSvcDocDto,num);
+                    log.info(StringUtil.changeForLog("The translateForShow num is -->:"+num));
+                    log.info(StringUtil.changeForLog("The translateForShow newKey is -->:"+newKey));
                     result.put(newKey,appSvcDocDtos);
                 }
             });
         }
+        log.info(StringUtil.changeForLog("The translateForShow end ..."));
         return result;
     }
 
 
     private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num){
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc start ..."));
             String result = null;
             String svcDocId = appSvcDocDto.getSvcDocId();
             String upFileName = appSvcDocDto.getUpFileName();
@@ -1582,6 +1584,9 @@ public class LicenceViewServiceDelegator {
                 appSvcDocDto.setUpFileName(entity.getDocTitle());
             }
             String dupForPerson = entity.getDupForPerson();
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc svcDocId -->:"+svcDocId));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:"+dupForPrem));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:"+dupForPerson));
             if("0".equals(dupForPrem)&&dupForPerson==null){
                 result =  appSvcDocDto.getUpFileName();
             }else if("0".equals(dupForPrem)&&dupForPerson!=null){
@@ -1612,6 +1617,7 @@ public class LicenceViewServiceDelegator {
             }else if("1".equals(dupForPrem)&&dupForPerson==null){
                 result = "Premises 1:"+appSvcDocDto.getUpFileName();
             }
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc end..."));
           return  result;
     }
     private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){
