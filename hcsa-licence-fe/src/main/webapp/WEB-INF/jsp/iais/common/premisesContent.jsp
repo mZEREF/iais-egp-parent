@@ -944,7 +944,7 @@
                             <label class="control-label">Operating Hours</label>
                         </div>
                         <div class="col-md-4 col-xs-4">
-                            <label class="control-label">Weekly</label>
+                            <label class="control-label">Weekly <span class="mandatory">*</span></label>
                         </div>
                         <div class="col-md-3 col-xs-3">
                             <label class="control-label">Start</label>
@@ -1471,7 +1471,7 @@
                             <label class="control-label">Operating Hours</label>
                         </div>
                         <div class="col-md-4 col-xs-4">
-                            <label class="control-label">Weekly</label>
+                            <label class="control-label">Weekly <span class="mandatory">*</span></label>
                         </div>
                         <div class="col-md-3 col-xs-3">
                             <label class="control-label">Start</label>
