@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -118,8 +117,8 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             //set application info show
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
-            //get inspection appt draft
-            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
+            /*//get inspection appt draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);*/
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
