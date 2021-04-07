@@ -154,7 +154,9 @@
 
     function doSend() {
         showWaiting();
-        if ($('#decision_email option:selected').val() == "Select") {
+        var f = $('#decision_email option:selected').val();
+
+        if (f == "" || f == null) {
             $("#selectDecisionMsg").show();
             dismissWaiting();
         } else {
