@@ -148,7 +148,9 @@ public class StripeServiceImpl implements StripeService {
         applicationGroupDto.setPmtRefNo(paymentDto.getReqRefNo());
         applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
         applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+            paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
         paymentClient.saveHcsaPayment(paymentDto);
         paymentClient.updatePaymentResquset(paymentRequestDto);
 

@@ -350,12 +350,12 @@ public class PaymentNetsProxy extends PaymentProxy {
 		if(applicationGroupDto!=null){
 			if (status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-			}
-			applicationGroupDto.setPmtRefNo(refNo);
-			applicationGroupDto.setPaymentDt(new Date());
-			applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+				applicationGroupDto.setPmtRefNo(refNo);
+				applicationGroupDto.setPaymentDt(new Date());
+				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
 
-			PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
+			}
 		}
 		try {
 			log.debug(StringUtil.changeForLog("result="+status+"&reqRefNo="+refNo+"&txnRefNo="+transNo));
