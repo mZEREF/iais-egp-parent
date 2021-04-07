@@ -644,7 +644,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         //update application
         //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
-        setCreateHistoryDto(processReSchedulingDto);
+        //setCreateHistoryDto(processReSchedulingDto);
         //set some data to update recommendation
         setRecommendationDto(processReSchedulingDto);
         //set some data to update inspection status

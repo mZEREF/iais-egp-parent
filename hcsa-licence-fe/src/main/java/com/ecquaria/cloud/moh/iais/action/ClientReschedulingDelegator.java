@@ -430,7 +430,7 @@ public class ClientReschedulingDelegator {
                 Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
                 Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
 
-
+                if(err)
                 {
                     apptViewDtos.get(id).setSpecificStartDate(inspStDate);
                     apptViewDtos.get(id).setSpecificEndDate(inspEndDate);
