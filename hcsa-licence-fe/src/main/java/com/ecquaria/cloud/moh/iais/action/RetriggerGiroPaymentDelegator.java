@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
@@ -8,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -31,13 +32,14 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -63,6 +65,10 @@ public class RetriggerGiroPaymentDelegator {
     private RequestForChangeService requestForChangeService;
 
     private static final String SWITCH = "switch";
+    private static final String SWITCH_VALUE_PRE_ACK = "preack";
+    private static final String SWITCH_VALUE_PRE_PAYMENT = "prepayment";
+    private static final String ISVALID_VALUE_TO_PAYMENT = "topayment";
+    private static final String ISVALID_VALUE_TO_BANK = "tobank";
 
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the doStart start ...."));
@@ -70,21 +76,34 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,"test");
 
-        String appGrpNo = ParamUtil.getString(bpc.request,"appGrpNo");
+        String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //init data
         String switch2 = "topreview";
         AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppGrpNo(appGrpNo);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            switch2 = "preack";
+
+        InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
+        if (MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto.getStatus())) {
+            log.debug(StringUtil.changeForLog("message had response"));
+            switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
-            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"error !!!");
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,MessageUtil.getMessageDesc("INBOX_ERR010"));
             return;
         }
 
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            log.debug(StringUtil.changeForLog("data error ..."));
+            switch2 = SWITCH_VALUE_PRE_ACK;
+            ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
+            return;
+        }
+        appSubmissionDto.setRfiMsgId(msgId);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
@@ -202,24 +221,23 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the jumpBank start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        if (StringUtil.isEmpty(payMethod)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, "payment");
-            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("payMethod","payMethod is empty");
-            NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+        appSubmissionDto.setPaymentMethod(payMethod);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        if("next".equals(action)){
+            if (StringUtil.isEmpty(payMethod)) {
+                errorMap.put("payMethod",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            }
+        }
+        if(!"next".equals(action) || !errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_TO_PAYMENT);
             return;
         }
 
-        Double totalAmount = appSubmissionDto.getAmount();
-        if (totalAmount == 0.0) {
-            StringBuilder url = new StringBuilder();
-            url.append("https://")
-                    .append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-            return;
-        }
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
@@ -240,38 +258,18 @@ public class RetriggerGiroPaymentDelegator {
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
-
-        }else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
-            serviceConfigService.updateAppGrpPmtStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            StringBuilder url = new StringBuilder();
-            url.append("https://")
-                    .append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRetriggerGiroPayment/preAck");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-            return;
         }
-
+        ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_TO_BANK);
         log.info(StringUtil.changeForLog("the jumpBank end ...."));
     }
 
     public void doPayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the doPayment start ...."));
-        String switch2 = "prepayment";
+        String switch2 = SWITCH_VALUE_PRE_PAYMENT;
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
         if(appSubmissionDto != null){
             String pmtMethod = appSubmissionDto.getPaymentMethod();
 
-            if (!StringUtil.isEmpty(pmtMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(pmtMethod)) {
-                switch2 = "preack";
-                String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
-                ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
-            }
             String result = ParamUtil.getMaskedString(bpc.request, "result");
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
             if (!StringUtil.isEmpty(result)) {
@@ -282,24 +280,26 @@ public class RetriggerGiroPaymentDelegator {
                     String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
                     ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
                     ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
-                    switch2 = "preack";
-                    //update status
+                    switch2 = SWITCH_VALUE_PRE_ACK;
+                    //update grp status
                     String appGrpId = appSubmissionDto.getAppGrpId();
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appGrpId);
                     appGrp.setPmtRefNo(pmtRefNo);
                     appGrp.setPaymentDt(new Date());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                    appGrp.setPayMethod(pmtMethod);
                     appGrp = serviceConfigService.updateAppGrpPmtStatus(appGrp);
+                    //update
+                    appSubmissionService.updateMsgStatus(appSubmissionDto.getRfiMsgId(), MessageConstants.MESSAGE_STATUS_RESPONSE);
                     //eic
                     serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
-                    //todo:update giro table status
                 }else{
-                    switch2 = "prepayment";
+                    switch2 = SWITCH_VALUE_PRE_PAYMENT;
                     ParamUtil.setRequestAttr(bpc.request,"RetriggerGiro","test");
                 }
             }
-            if ("preack".equals(switch2)) {
+            if (SWITCH_VALUE_PRE_ACK.equals(switch2)) {
                 ParamUtil.setRequestAttr(bpc.request, NewApplicationDelegator.ACKMESSAGE, "payment success !!!");
             }
         }

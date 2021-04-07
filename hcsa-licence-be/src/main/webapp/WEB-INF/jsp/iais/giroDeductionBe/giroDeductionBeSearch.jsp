@@ -5,6 +5,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.grio.GrioConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -20,6 +21,9 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="beGiroDeductionType" value="">
     <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
+    <input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
+    <input type="hidden" id="fileMandatoryMessage" name="fileMandatoryMessage" value="<iais:message key=" GENERAL_ERR0006"/>">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -43,44 +47,44 @@
                   <p></p>
                   <div id="giroDeductionPool" class="collapse">
                     <iais:row>
-                      <iais:field value="Application No."/>
-                      <iais:value width="18">
+                      <iais:field value="Application No." />
+                      <iais:value width="6">
                         <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Transaction ID"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="transactionId" value="${giroDedSearchParam.filters['invoiceNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Reference No."/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['refNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Description"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['desc']}"></c:out></textarea>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" />
                       </iais:value>
                     </iais:row>
@@ -98,7 +102,7 @@
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">
-                      <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
+                      <th style="padding-bottom: 27px"><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
                                  onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
@@ -144,11 +148,13 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
+                    <button name="searchBtn" class="btn btn-primary" type="button"  onclick="doGiroDeductionRetrigger()">Re-trigger payment</button>
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
                     <input class="selectedFile"  id="selectedFile" name = "selectedFile" style="display: none"  type="file"  aria-label="selectedFile1" onclick="fileClicked(event)" onchange="javascript:doUserRecUploadConfirmFile(event)">
                     <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
+                    <iais:confirm  msg="RGP_ACK001" callBack="doGiroDeductionRetriggerSaveAck()" popupOrder="giroDeductionRetrigger" needCancel="false"></iais:confirm>
+                    <br/>
+                    <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                   </iais:action>
                 </div>
               </iais:body>
@@ -165,6 +171,9 @@
     $(document).ready(function (){
         if($('#reasult').val()!=''){
             $('#deleteFile').modal("show");
+        }
+        if(${'1' == saveRetriggerOK}){
+            $('#giroDeductionRetrigger').modal("show");
         }
     });
     function cancel() {
@@ -190,11 +199,37 @@
             $(fileElement).remove(); //'Removing Original'
             addEventListenersTo(clone[fileElement.id]) //If Needed Re-attach additional Event Listeners
         }
-        if(  $('#selectedFile').val()!=''){
-        $("[name='beGiroDeductionType']").val('uploadCsv');
-        var mainPoolForm =$('#giroDeductionForm');
-        mainPoolForm.submit();
+        var rslt = validateFileSizeMaxOrEmpty($("#fileMaxSize").val(),'selectedFile');
+        if (rslt == 'N') {
+            $("#error_selectedFileError").html($("#fileMaxMBMessage").val());
+        } else if (rslt == 'E') {
+            $("#error_selectedFileError").html($("#fileMandatoryMessage").val());
+        }else {
+            if(  $('#selectedFile').val()!=''){
+                $("[name='beGiroDeductionType']").val('uploadCsv');
+                var mainPoolForm =$('#giroDeductionForm');
+                mainPoolForm.submit();
+            }
         }
+    }
+
+    function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
+        var fileId= '#'+selectedFileId;
+        var fileV = $( fileId).val();
+        var file = $(fileId).get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        //alert('fileSize:'+fileSize);
+        //alert('maxSize:'+maxSize);
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            $(fileId).after( $( fileId).clone().val(""));
+            $(fileId).remove();
+            return "N";
+        }
+        return "Y";
     }
     $('#uploadFile').click(function (){
         $('#selectedFile').trigger('click');
@@ -265,6 +300,10 @@
         $("[name='beGiroDeductionType']").val(action);
         var mainPoolForm =$('#giroDeductionForm');
         mainPoolForm.submit();
+    }
+
+    function doGiroDeductionRetriggerSaveAck() {
+        $('#giroDeductionRetrigger').modal("hide");
     }
 </script>
 
