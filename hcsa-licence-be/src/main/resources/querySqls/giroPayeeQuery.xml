@@ -37,10 +37,8 @@
         <#if groupNo??> and APP_GROUP_NO like CONCAT('%',:groupNo,'%') </#if>
         <#if acctNo??>and ACCT_NO like CONCAT('%',:acctNo,'%')</#if>
         <#if amount??>and AMOUNT like CONCAT('%',:amount,'%')</#if>
-        <#if desc??>and PAY_DESC like CONCAT('%',:desc,'%')</#if>
-        <#if invoiceNo??> and INVOICE_NO like CONCAT('%',:invoiceNo,'%')</#if>
+        <#if txnRefNo??> and TXN_REF_NO like CONCAT('%',:txnRefNo,'%')</#if>
         <#if hciName??> and HCI_NAME like CONCAT('%',:hciName,'%')</#if>
-        <#if refNo??> and TXN_REF_NO like CONCAT('%',:refNo,'%')</#if>
         ]]>
     </sql>
 
