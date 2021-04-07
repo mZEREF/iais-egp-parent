@@ -5,6 +5,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.grio.GrioConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -20,6 +21,9 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="beGiroDeductionType" value="">
     <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
+    <input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
+    <input type="hidden" id="fileMandatoryMessage" name="fileMandatoryMessage" value="<iais:message key=" GENERAL_ERR0006"/>">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -148,7 +152,9 @@
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
                     <input class="selectedFile"  id="selectedFile" name = "selectedFile" style="display: none"  type="file"  aria-label="selectedFile1" onclick="fileClicked(event)" onchange="javascript:doUserRecUploadConfirmFile(event)">
                     <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="OAPPT_ACK007" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
+                    <iais:confirm yesBtnCls="btn btn-primary" msg="RGP_ACK001" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
+                    <br/>
+                    <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                   </iais:action>
                 </div>
               </iais:body>
@@ -190,11 +196,37 @@
             $(fileElement).remove(); //'Removing Original'
             addEventListenersTo(clone[fileElement.id]) //If Needed Re-attach additional Event Listeners
         }
-        if(  $('#selectedFile').val()!=''){
-        $("[name='beGiroDeductionType']").val('uploadCsv');
-        var mainPoolForm =$('#giroDeductionForm');
-        mainPoolForm.submit();
+        var rslt = validateFileSizeMaxOrEmpty($("#fileMaxSize").val(),'selectedFile');
+        if (rslt == 'N') {
+            $("#error_selectedFileError").html($("#fileMaxMBMessage").val());
+        } else if (rslt == 'E') {
+            $("#error_selectedFileError").html($("#fileMandatoryMessage").val());
+        }else {
+            if(  $('#selectedFile').val()!=''){
+                $("[name='beGiroDeductionType']").val('uploadCsv');
+                var mainPoolForm =$('#giroDeductionForm');
+                mainPoolForm.submit();
+            }
         }
+    }
+
+    function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
+        var fileId= '#'+selectedFileId;
+        var fileV = $( fileId).val();
+        var file = $(fileId).get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        //alert('fileSize:'+fileSize);
+        //alert('maxSize:'+maxSize);
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            $(fileId).after( $( fileId).clone().val(""));
+            $(fileId).remove();
+            return "N";
+        }
+        return "Y";
     }
     $('#uploadFile').click(function (){
         $('#selectedFile').trigger('click');
