@@ -90,6 +90,10 @@
             if($(this).data('value') == 'Inspection'){
                 $(this).css('padding-bottom','18px');
             }
+
+            if($(this).data('value') == 'Make Payment'){
+                $(this).css('padding-bottom','18px');
+            }
         });
 
         if ('${appIsAppealed}') {
