@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -199,7 +200,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo) {
+    public List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo,String userId) {
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
         Map<String, Map<String, String>> groupCheckUserIdMap = reschedulingOfficerDto.getGroupCheckUserIdMap();
@@ -207,6 +208,22 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             groupCheckUserIdMap = IaisCommonUtils.genNewHashMap();
         }
         List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos=organizationClient.getUserGroupCorreByUserId(userId).getEntity();
+        boolean isLead=false;
+        for (UserGroupCorrelationDto ugd:userGroupCorrelationDtos
+             ) {
+            if(ugd.getGroupId().equals(workGroupId)&&ugd.getIsLeadForGroup().equals(1)){
+                isLead=true;
+            }
+        }
+        if(!isLead){
+            orgUserDtoList.clear();
+            OrgUserDto orgUserDto=organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+            if(orgUserDto!=null){
+                orgUserDtoList.add(orgUserDto);
+            }
+        }
+
         if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
             for(int i = 0; i < orgUserDtoList.size(); i++){
                 //key and id
@@ -222,7 +239,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption) {
+    public List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption,String userId) {
         List<String> workGroupNos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(workGroupOption)){
             Map<String, String> workGroupMap = reschedulingOfficerDto.getWorkGroupIdMap();
@@ -231,7 +248,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 String workGroupNo = selectOption.getValue();
                 String workGroupName = selectOption.getText();
                 String workGroupId = workGroupMap.get(workGroupName);
-                List<SelectOption> inspectorOption = getInspectorByWorkGroupId(workGroupId, reschedulingOfficerDto, workGroupNo);
+                List<SelectOption> inspectorOption = getInspectorByWorkGroupId(workGroupId, reschedulingOfficerDto, workGroupNo, userId);
                 inspectorByGroup.put(workGroupNo, inspectorOption);
                 workGroupNos.add(workGroupNo);
             }
@@ -241,7 +258,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto) {
+    public List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto,String loginUserId,List<SelectOption> workGroupOption) {
         //get not in appStatus
         String[] appStatusStr = AppointmentUtil.getNoReschdulingAppStatus();
         List<String> appStatusList = IaisCommonUtils.genNewArrayList();
@@ -249,10 +266,18 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
         List<String> appNoList = IaisCommonUtils.genNewArrayList();
         String workGroupCheck = reschedulingOfficerDto.getWorkGroupCheck();
+        String wKGpId ="";
+        for (SelectOption wkGp:workGroupOption
+             ) {
+            if (wkGp.getValue().equals(workGroupCheck)){
+                wKGpId = reschedulingOfficerDto.getWorkGroupIdMap().get(wkGp.getText());
+            }
+        }
         Map<String, Map<String, String>> groupCheckUserIdMap = reschedulingOfficerDto.getGroupCheckUserIdMap();
         Map<String, List<SelectOption>> inspectorByGroup = reschedulingOfficerDto.getInspectorByGroup();
 
         if(!StringUtil.isEmpty(workGroupCheck) && inspectorByGroup != null && groupCheckUserIdMap != null){
+            List<String> leadIds = organizationClient.getInspectionLead(wKGpId).getEntity();
             //get group key and userId
             Map<String, String> userIdMap = groupCheckUserIdMap.get(workGroupCheck);
             List<SelectOption> inspectorOption = inspectorByGroup.get(workGroupCheck);
@@ -263,19 +288,36 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     inspectorAppNoMap = IaisCommonUtils.genNewHashMap();
                 }
                 List<String> repeatAppNo = IaisCommonUtils.genNewArrayList();
-                for (SelectOption selectOption : inspectorOption) {
-                    String inspectorValue = selectOption.getValue();
-                    String userId = userIdMap.get(inspectorValue);
-                    List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByUserIdStatus(userId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                    //filter rescheduling time limit
-                    List<String> appNos = filterTimeLimit(appPremInspCorrelationDtoList);
-                    //filter fast tracking and the same premises
-                    appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo, appStatusList);
-                    inspectorAppNoMap.put(userId, appNos);
-                    if(!IaisCommonUtils.isEmpty(appNos)) {
-                        appNoList.addAll(appNos);
+                if(leadIds.contains(loginUserId)){
+                    for (SelectOption selectOption : inspectorOption) {
+                        String inspectorValue = selectOption.getValue();
+                        String userId = userIdMap.get(inspectorValue);
+                        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByUserIdStatus(userId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        //filter rescheduling time limit
+                        List<String> appNos = filterTimeLimit(appPremInspCorrelationDtoList);
+                        //filter fast tracking and the same premises
+                        appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo, appStatusList);
+                        inspectorAppNoMap.put(userId, appNos);
+                        if(!IaisCommonUtils.isEmpty(appNos)) {
+                            appNoList.addAll(appNos);
+                        }
+                    }
+                } else {
+                    for (SelectOption selectOption : inspectorOption) {
+                        String inspectorValue = selectOption.getValue();
+                        String userId = userIdMap.get(inspectorValue);
+                        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByUserIdStatus(userId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        //filter rescheduling time limit
+                        List<String> appNos = filterTimeLimit(appPremInspCorrelationDtoList);
+                        //filter fast tracking and the same premises
+                        appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo, appStatusList);
+                        inspectorAppNoMap.put(userId, appNos);
+                        if(!IaisCommonUtils.isEmpty(appNos)&&userId.equals(loginUserId)) {
+                            appNoList.addAll(appNos);
+                        }
                     }
                 }
+
                 reschedulingOfficerDto.setInspectorAppNoMap(inspectorAppNoMap);
             }
         }
@@ -1388,7 +1430,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 String userId = userIdMap.getValue();
                 if(!StringUtil.isEmpty(userId)){
                     List<String> appNos = inspectorAppNoMap.get(userId);
-                    appNoList.addAll(appNos);
+                    if(appNos!=null){
+                        appNoList.addAll(appNos);
+                    }
                 }
             }
         }

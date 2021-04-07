@@ -261,6 +261,10 @@ public class InspectionMergeSendNcEmailDelegator {
                 try{
                     appPremCorrIds.add(appPremisesCorrelationDto.getId());
                     ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
+                    HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getEntity();
+                    if("NSH".equals(svcDto.getSvcCode())){
+                        mapTemplate.put("SVC_NSH","is Nursing Home");
+                    }
                     appNos.append(appViewDto.getApplicationDto().getApplicationNo()).append(' ');
                     svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
 
@@ -320,10 +324,7 @@ public class InspectionMergeSendNcEmailDelegator {
             stringTable.append(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
             mapTemplate.put("ApplicationNumber", appNos.toString());
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",stringTable.toString());
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId()).getEntity();
-            if("NSH".equals(svcDto.getSvcCode())){
-                mapTemplate.put("SVC_NSH","is Nursing Home");
-            }
+
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             AppPremisesRecommendationDto appPreRecommentdationDtoInspDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             List<Date> holidays = appointmentClient.getHolidays().getEntity();

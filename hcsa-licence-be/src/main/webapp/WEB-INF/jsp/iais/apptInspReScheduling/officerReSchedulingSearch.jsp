@@ -49,7 +49,7 @@
                   <iais:row>
                     <iais:field value="Working Group"/>
                     <iais:value width="18">
-                      <iais:select name="reSchInspWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                      <iais:select name="reSchInspWorkGroup" onchange="chooseWorkGroup()" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -194,6 +194,12 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         officerReSchedulingSubmit('sort');
+    }
+
+    function chooseWorkGroup() {
+      showWaiting();
+      officerReSchedulingSubmit('search');
+
     }
 </script>
 

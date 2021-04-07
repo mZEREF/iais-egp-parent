@@ -34,7 +34,7 @@ public interface OfficersReSchedulingService {
       * @return: List<SelectOption>
       * @Descripation: getInspectorByWorkGroupId
       */
-    List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo);
+    List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo,String userId);
 
     /**
       * @author: shicheng
@@ -43,7 +43,7 @@ public interface OfficersReSchedulingService {
       * @return: void
       * @Descripation: allInspectorFromGroupList
       */
-    List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption);
+    List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption,String userId);
 
     /**
       * @author: shicheng
@@ -52,7 +52,7 @@ public interface OfficersReSchedulingService {
       * @return: List<String>
       * @Descripation: getAppNoByInspectorAndConditions
       */
-    List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto);
+    List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto,String loginId,List<SelectOption> workGroupOption);
 
     /**
       * @author: shicheng
