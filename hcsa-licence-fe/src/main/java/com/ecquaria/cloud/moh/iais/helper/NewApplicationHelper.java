@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -1814,6 +1815,7 @@ public class NewApplicationHelper {
                             String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
                             if(!StringUtil.isEmpty(dupForPerson)){
                                 appSvcDocDto.setDupForPerson(dupForPerson);
+                                appSvcDocDto.setPersonType(getPsnType(dupForPerson));
                             }
                             //break;
                         }
@@ -2769,6 +2771,69 @@ public class NewApplicationHelper {
         }
     }
 
+    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
+        StringBuilder sBuffer = new StringBuilder(100);
+        sBuffer.append("<select multiple=\"multiple\" ");
+        for(Map.Entry<String, String> entry : attrMap.entrySet()){
+//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey())
+                    .append("=\"")
+                    .append(entry.getValue())
+                    .append('\"');
+        }
+        sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+            sBuffer.append("<option value=\"\">")
+                    .append(firestOption)
+                    .append("</option>");
+        }
+        for(SelectOption sp:selectOptionList){
+            if(!IaisCommonUtils.isEmpty(checkedVals)){
+                if(checkedVals.contains(sp.getValue())){
+//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option selected=\"selected\" value=\"")
+                            .append(sp.getValue())
+                            .append("\">")
+                            .append(sp.getText())
+                            .append("</option>");
+                }else{
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+            }
+        }
+        sBuffer.append("</select>");
+        return sBuffer.toString();
+    }
+
+    public static String getPsnType(String dupForPerson){
+        String psnType = "common";
+        if(!StringUtil.isEmpty(dupForPerson)){
+            switch(dupForPerson){
+                case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_CGO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_PO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_PO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_DPO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_MAP;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return psnType;
+    }
+
     public static void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, List<AppSvcPrincipalOfficersDto> principalOfficersDtos, List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){
         if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
             for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
@@ -3542,40 +3607,5 @@ public class NewApplicationHelper {
         return  mandatoryCount;
     }
 
-    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
-        StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<select multiple=\"multiple\" ");
-        for(Map.Entry<String, String> entry : attrMap.entrySet()){
-//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
-            sBuffer.append(entry.getKey())
-                    .append("=\"")
-                    .append(entry.getValue())
-                    .append('\"');
-        }
-        sBuffer.append(" >");
-        if(!StringUtil.isEmpty(firestOption)){
-//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
-            sBuffer.append("<option value=\"\">")
-                    .append(firestOption)
-                    .append("</option>");
-        }
-        for(SelectOption sp:selectOptionList){
-            if(!IaisCommonUtils.isEmpty(checkedVals)){
-                if(checkedVals.contains(sp.getValue())){
-//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
-                    sBuffer.append("<option selected=\"selected\" value=\"")
-                            .append(sp.getValue())
-                            .append("\">")
-                            .append(sp.getText())
-                            .append("</option>");
-                }else{
-                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-                }
-            }else{
-                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-            }
-        }
-        sBuffer.append("</select>");
-        return sBuffer.toString();
-    }
+
 }

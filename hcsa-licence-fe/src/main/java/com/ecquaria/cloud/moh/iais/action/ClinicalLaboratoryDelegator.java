@@ -3410,6 +3410,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcDocDto.setSeqNum(seqNum);
                     appSvcDocDto.setDupForPerson(dupForPerson);
                     appSvcDocDto.setVersion(getAppSvcDocVersion(hcsaSvcDocConfigDto.getId(),oldDocs,isRfi,md5Code,appGrpId,appNo,seqNum,dupForPrem,dupForPerson,psnId));
+                    appSvcDocDto.setPersonType(NewApplicationHelper.getPsnType(dupForPerson));
                     saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+psnIndexNo+seqNum,v);
                 }else{
                     appSvcDocDto = getAppSvcDocByConfigIdAndSeqNum(currSvcDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType,psnIndexNo);
