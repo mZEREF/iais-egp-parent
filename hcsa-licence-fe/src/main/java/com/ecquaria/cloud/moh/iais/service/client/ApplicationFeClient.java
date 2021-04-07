@@ -37,6 +37,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,9 +50,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -372,5 +371,6 @@ public interface ApplicationFeClient {
     FeignResponseEntity<String> updateDraftStatus(@PathVariable("draftNo")String draftNo, @PathVariable("status")String status);
     @PostMapping(value = "/iais-submission/draft-by-svc-codes",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftListBySvcCodeAndStatus(@RequestBody List<String> svcCodeList, @RequestParam("licenseeId")String licenseeId, @RequestParam("status")String status,@RequestParam("appType")String appType);
-
+    @GetMapping(value = "/iais-application/app-group-misc/grp-id/misc-type",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGroupMiscDto> getAppGroupMiscDtoByGrpIdAndTypeAndStatus(@RequestParam("appGrpId")String appGrpId, @RequestParam("miscType")String miscType, @RequestParam("status")String status);
 }
