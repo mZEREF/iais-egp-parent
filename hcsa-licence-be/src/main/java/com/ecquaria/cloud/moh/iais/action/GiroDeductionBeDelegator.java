@@ -118,6 +118,7 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         filterParameter.setPageNo(1);
@@ -159,7 +160,11 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization()).getEntity();
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
-
+        String saveRetriggerOK = (String) ParamUtil.getSessionAttr(bpc.request,"saveRetriggerOK");
+        if( !StringUtil.isEmpty(saveRetriggerOK)){
+            ParamUtil.setRequestAttr(bpc.request,"saveRetriggerOK",saveRetriggerOK);
+            ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
+        }
     }
 
     /**
@@ -347,6 +352,8 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+
+        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 
     @GetMapping(value = "/generatorFileCsv")

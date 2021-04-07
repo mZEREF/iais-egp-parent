@@ -148,11 +148,11 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="searchBtn" class="btn btn-primary" type="button" data-toggle= "modal" data-target= "#giroDeductionRetrigger">Re-trigger payment</button>
+                    <button name="searchBtn" class="btn btn-primary" type="button"  onclick="doGiroDeductionRetrigger()">Re-trigger payment</button>
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
                     <input class="selectedFile"  id="selectedFile" name = "selectedFile" style="display: none"  type="file"  aria-label="selectedFile1" onclick="fileClicked(event)" onchange="javascript:doUserRecUploadConfirmFile(event)">
                     <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
-                    <iais:confirm yesBtnCls="btn btn-primary" msg="RGP_ACK001" callBack="doGiroDeductionRetrigger()" popupOrder="giroDeductionRetrigger" needCancel="true"></iais:confirm>
+                    <iais:confirm  msg="RGP_ACK001" callBack="doGiroDeductionRetriggerSaveAck()" popupOrder="giroDeductionRetrigger" needCancel="false"></iais:confirm>
                     <br/>
                     <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                   </iais:action>
@@ -171,6 +171,9 @@
     $(document).ready(function (){
         if($('#reasult').val()!=''){
             $('#deleteFile').modal("show");
+        }
+        if(${'1' == saveRetriggerOK}){
+            $('#giroDeductionRetrigger').modal("show");
         }
     });
     function cancel() {
@@ -297,6 +300,10 @@
         $("[name='beGiroDeductionType']").val(action);
         var mainPoolForm =$('#giroDeductionForm');
         mainPoolForm.submit();
+    }
+
+    function doGiroDeductionRetriggerSaveAck() {
+        $('#giroDeductionRetrigger').modal("hide");
     }
 </script>
 
