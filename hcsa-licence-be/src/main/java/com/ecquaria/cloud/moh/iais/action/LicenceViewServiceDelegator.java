@@ -1539,8 +1539,9 @@ public class LicenceViewServiceDelegator {
         }
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
             String personType = appSvcDocDto.getPersonType();
+            String svcDocId = appSvcDocDto.getSvcDocId();
             Integer personTypeNum = appSvcDocDto.getPersonTypeNum();
-            docDealWith(multipleSvcDoc,appSvcDocDto,personType+":"+personTypeNum);
+            docDealWith(multipleSvcDoc,appSvcDocDto,personType+svcDocId+":"+personTypeNum);
         }
     }
     private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
@@ -1552,10 +1553,11 @@ public class LicenceViewServiceDelegator {
                 List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(k);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
                     AppSvcDocDto appSvcDocDto = appSvcDocDtos.get(0);
-                    String personType = appSvcDocDto.getPersonType();
-                    if(StringUtil.isEmpty(personType)){
-                        personType = k.substring(0,k.indexOf(":"));
-                    }
+                    //String personType = appSvcDocDto.getPersonType();
+//                    if(StringUtil.isEmpty(personType)){
+//                        personType = k.substring(0,k.indexOf(":"));
+//                    }
+                   String  personType = k.substring(0,k.indexOf(":"));
                     log.info(StringUtil.changeForLog("The translateForShow personType is -->:"+personType));
                     Integer num = nums.get(personType);
                     if(num == null){
@@ -1591,7 +1593,7 @@ public class LicenceViewServiceDelegator {
         log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:"+dupForPrem));
         log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:"+dupForPerson));
             if("0".equals(dupForPrem)&&dupForPerson==null){
-                result =  appSvcDocDto.getUpFileName();
+                result =  appSvcDocDto.getUpFileName() +" "+num;
             }else if("0".equals(dupForPrem)&&dupForPerson!=null){
                 if("1".equals(dupForPerson)){
                     result = "Clinical Governance Officer "+num+": "+appSvcDocDto.getUpFileName();
