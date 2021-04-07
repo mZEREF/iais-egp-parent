@@ -47,44 +47,44 @@
                   <p></p>
                   <div id="giroDeductionPool" class="collapse">
                     <iais:row>
-                      <iais:field value="Application No."/>
-                      <iais:value width="18">
+                      <iais:field value="Application No." />
+                      <iais:value width="6">
                         <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Transaction ID"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="transactionId" value="${giroDedSearchParam.filters['invoiceNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Reference No."/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['refNo']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Description"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['desc']}"></c:out></textarea>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
-                      <iais:value width="18">
+                      <iais:value width="6">
                         <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" />
                       </iais:value>
                     </iais:row>
@@ -102,7 +102,7 @@
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">
-                      <th><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
+                      <th style="padding-bottom: 27px"><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
                                  onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
