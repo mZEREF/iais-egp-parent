@@ -282,6 +282,10 @@ public class InspecEmailDelegator {
             msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
 
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
+            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId()).getEntity();
+            if("NSH".equals(svcDto.getSvcCode())){
+                mapTemplate.put("SVC_NSH","is Nursing Home");
+            }
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             AppPremisesRecommendationDto appPreRecommentdationDtoInspDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             List<Date> holidays = appointmentClient.getHolidays().getEntity();
