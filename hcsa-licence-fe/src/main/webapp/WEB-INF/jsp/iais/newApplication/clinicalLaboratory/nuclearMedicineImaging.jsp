@@ -73,6 +73,7 @@
                     <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                   </c:if>
                   <table class="personnel-content" id="personnelRemoveId${status.index}">
+                    <input type="hidden" name="cgoIndexNo" value="${appSvcPersonnelDto.cgoIndexNo}"/>
                     <tbody>
                     <tr height="1" class="personnel-header">
                       <td class="" style="width: 100%;">
