@@ -49,43 +49,31 @@
                     <iais:row>
                       <iais:field value="Application No." />
                       <iais:value width="6">
-                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" />
+                        <input type="text" name="applicationNo" value="${giroDedSearchParam.filters['groupNo']}" maxlength="50"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
-                      <iais:field value="Transaction ID"/>
+                      <iais:field value="Transaction Reference No."/>
                       <iais:value width="6">
-                        <input type="text" name="transactionId" value="${giroDedSearchParam.filters['invoiceNo']}" />
+                        <input type="text" name="txnRefNo" value="${giroDedSearchParam.filters['txnRefNo']}" maxlength="50"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Bank Account No."/>
                       <iais:value width="6">
-                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Payment Reference No."/>
-                      <iais:value width="6">
-                        <input type="text" name="paymentRefNo" value="${giroDedSearchParam.filters['refNo']}" />
+                        <input type="text" name="bankAccountNo" value="${giroDedSearchParam.filters['acctNo']}" maxlength="35"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Payment Amount"/>
                       <iais:value width="6">
-                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" />
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Payment Description"/>
-                      <iais:value width="6">
-                        <textarea id="paymentDescription" name="paymentDescription" maxlength="500" cols="60" rows="7" style="font-size:16px"><c:out value="${giroDedSearchParam.filters['desc']}"></c:out></textarea>
+                        <input type="text" name="paymentAmount" value="${giroDedSearchParam.filters['amount']}" maxlength="10"/>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="6">
-                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" />
+                        <input type="text" name="hci_name" value="${giroDedSearchParam.filters['hciName']}" maxlength="100"/>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
@@ -102,13 +90,13 @@
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">
-                      <th style="padding-bottom: 27px"><input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if>
-                                 onchange="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/></th>
+                      <th style="padding-bottom: 27px">
+                        <input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if> onclick="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/>
+                      </th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Transaction Reference No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="INVOICE_NO" value="Invoice No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Bank Account No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Amount"></iais:sortableHeader>
@@ -129,14 +117,13 @@
                             <td>
                               <c:if test="${pool.pmtStatus=='FAIL'}">
                                 <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
-                                       onchange="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
+                                       onclick="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
                               </c:if>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
                             <td>${pool.hciName}</td>
                             <td><iais:code code="${pool.appGroupNo}"/></td>
                             <td><c:out value="${pool.txnRefNo}"/></td>
-                            <td><iais:code code="${pool.invoiceNo}"/></td>
                             <td><iais:code code="${pool.acctNo}"/></td>
                             <td>
                               ${pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_PENDING ? "Pending" : (pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_FAILED ? "Failed" : (pool.pmtStatus == AppConsts.COMMON_STATUS_ACTIVE ? "Success" : ""))}</td>
@@ -148,11 +135,11 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="searchBtn" class="btn btn-primary" type="button"  onclick="doGiroDeductionRetrigger()">Re-trigger payment</button>
+                    <button name="searchBtn" class="btn btn-primary disabled" type="button" id="retrigger" onclick="doGiroDeductionRetrigger()">Re-trigger payment</button>
                     <a  class="btn btn-primary" id="download" href="${pageContext.request.contextPath}/generatorFileCsv">Download Spreadsheet</a>
                     <input class="selectedFile"  id="selectedFile" name = "selectedFile" style="display: none"  type="file"  aria-label="selectedFile1" onclick="fileClicked(event)" onchange="javascript:doUserRecUploadConfirmFile(event)">
                     <a class="btn btn-file-upload btn-secondary" id="uploadFile">Upload Status</a>
-                    <iais:confirm  msg="RGP_ACK001" callBack="doGiroDeductionRetriggerSaveAck()" popupOrder="giroDeductionRetrigger" needCancel="false"></iais:confirm>
+                    <iais:confirm  msg="RGP_ACK001" callBack="doGiroDeductionRetriggerSaveAck()" popupOrder="giroDeductionRetrigger" needCancel="false"/>
                     <br/>
                     <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                   </iais:action>
@@ -179,6 +166,17 @@
     function cancel() {
         $('#deleteFile').modal("hide");
     }
+
+    function retrigerClick(){
+        var checkedNum = $("[name='giroDueCheck']:checked").length;
+        if (checkedNum > 0){
+            $('#retrigger').removeClass('disabled');
+        }else{
+            $("#retrigger").addClass('disabled');
+        }
+    }
+
+
     function doGiroDeductionRetrigger() {
         showWaiting();
         giroDeductionSubmit('retrigger');
@@ -233,8 +231,6 @@
     }
     $('#uploadFile').click(function (){
         $('#selectedFile').trigger('click');
-
-
     });
     /*$('#download').click(function (){
         $("[name='beGiroDeductionType']").val('uploadCsv');
@@ -256,15 +252,32 @@
         }else{
             allNcItemCheck.checked = false;
         }
+        var checkedNum = $("[name='giroDueCheck']:checked").length;
+        if (checkedNum > 0){
+            $('#retrigger').removeClass('disabled');
+        }else{
+            $("#retrigger").addClass('disabled');
+        }
+        checkNum()
     }
     function giroDeductionCheckAll(){
         if ($('#allGiroDeductionCheck').is(':checked')) {
-            $("input[name = 'giroDueCheck']").attr("checked","true");
+            $("input[name ='giroDueCheck']").prop("checked",true);
         } else {
-            $("input[name = 'giroDueCheck']").removeAttr("checked");
+            $("input[name ='giroDueCheck']").prop("checked",false);
         }
+        checkNum()
     }
-
+    
+    function checkNum() {
+        var checkedNum = $("[name='giroDueCheck']:checked").length;
+        if (checkedNum > 0){
+            $('#retrigger').removeClass('disabled');
+        }else{
+            $("#retrigger").addClass('disabled');
+        }
+        
+    }
     function doGiroDeductionClear() {
         $('input[name="applicationNo"]').val("");
         $('input[name="transactionId"]').val("");
