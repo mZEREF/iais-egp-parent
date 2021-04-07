@@ -15,8 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.ApplicationElisToHalpDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.HciElisToHalpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -149,10 +147,6 @@ public interface ApplicationClient {
     FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchApp(@RequestBody SearchParam searchParam);
     @PostMapping (path = "/iais-application-be/app-lic-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ApplicationLicenceQueryDto>> searchAppLic(@RequestBody SearchParam searchParam);
-    @PostMapping (path = "/iais-application-be/app-lic-elis-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<ApplicationElisToHalpDto>> searchApplicationElis(@RequestBody SearchParam searchParam);
-    @PostMapping (path = "/iais-application-be/app-hci-elis-enquiry-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<HciElisToHalpDto>> searchHciElis(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-application/files-rec-inspec", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
