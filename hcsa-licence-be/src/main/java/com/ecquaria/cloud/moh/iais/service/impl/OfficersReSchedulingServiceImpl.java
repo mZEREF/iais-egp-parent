@@ -498,7 +498,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                              ) {
                             try {
                                 sendReschedulingEmailToInspector(applicationNo,userId);
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 log.error(e.getMessage());
                             }
                         }
@@ -799,6 +799,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         smsDto.setSender(mailSender);
         smsDto.setContent(smsContent);
         smsDto.setOnlyOfficeHour(false);
+        smsDto.setReceipts(mobile);
+        smsDto.setReqRefNum(appNo);
 
         emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
     }
