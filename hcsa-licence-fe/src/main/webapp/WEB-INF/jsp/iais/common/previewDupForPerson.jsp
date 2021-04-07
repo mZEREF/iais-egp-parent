@@ -15,10 +15,10 @@
         <!--MAP -->
         <c:set var="psnList" value="${AppSvcMedAlertPsn}"/>
     </c:when>
-    <%--<c:when test="${'16' == config.dupForPerson}">
+    <c:when test="${'16' == config.dupForPerson}">
         <!--SVCPSN -->
         <c:set var="psnList" value="${AppSvcPersonnelDtoList}"/>
-    </c:when>--%>
+    </c:when>
 </c:choose>
 
 <c:choose>

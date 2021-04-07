@@ -2636,12 +2636,14 @@ public class NewApplicationHelper {
                 }
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                /*List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-                for(AppSvcPersonnelDto spDto:spDtos){
-                    AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                    psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
-                    psnDtoList.add(psnDto);
-                }*/
+                List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                if(!IaisCommonUtils.isEmpty(spDtos)){
+                    for(AppSvcPersonnelDto spDto:spDtos){
+                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                        psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
+                        psnDtoList.add(psnDto);
+                    }
+                }
                 break;
             default:
                 break;
@@ -2763,6 +2765,7 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "ReloadPrincipalOfficers", principalOfficersDtos);
             ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
             ParamUtil.setRequestAttr(request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
+            ParamUtil.setRequestAttr(request,"AppSvcPersonnelDtoList",appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         }
     }
 
