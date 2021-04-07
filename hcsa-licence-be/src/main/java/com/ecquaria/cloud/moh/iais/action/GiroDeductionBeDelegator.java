@@ -357,14 +357,14 @@ public class GiroDeductionBeDelegator {
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();
         FileWriter out = new FileWriter("classpath:"+l+".csv");
-        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.EXCEL
                 .withHeader(HEADERS))) {
             rows.forEach(v->{
                 try {
-                    printer.printRecord(v.getHciName(),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
-                    ,v.getAcctNo(),v.getPmtStatus(),v.getAmount());
+                    printer.printRecord(v.getHciName().replace("<br>", " "),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
                 } catch (IOException e) {
-
+                    log.error(e.getMessage(), e);
                 }
             });
         }
@@ -380,7 +380,7 @@ public class GiroDeductionBeDelegator {
             }
             ops.flush();
         }catch (Exception e){
-
+            log.error(e.getMessage(), e);
         }
 
 
