@@ -273,10 +273,10 @@ public class LicenceApproveBatchjob {
         try{
             IaisUENDto iaisUENDto = new IaisUENDto();
             List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
-            if(IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
                 LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
                 List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
-                if(IaisCommonUtils.isEmpty(superLicDtos)){
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
                     SuperLicDto superLicDto = superLicDtos.get(0);
                     LicenceDto licenceDto = superLicDto.getLicenceDto();
                     String svcCode = licenceDto.getSvcCode();
