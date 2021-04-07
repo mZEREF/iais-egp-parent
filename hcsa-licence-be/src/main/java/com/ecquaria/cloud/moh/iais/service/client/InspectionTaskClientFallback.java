@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
@@ -309,6 +310,30 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("fusing", "fusing");
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremInspApptDraftDto>> createAppPremisesInspecApptDto(List<AppPremInspApptDraftDto> appPremInspApptDraftDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremInspApptDraftDto> updateAppPremisesInspecApptDto(AppPremInspApptDraftDto appPremInspApptDraftDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremInspApptDraftDto>> getInspApptDraftListByAppNo(String appNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }

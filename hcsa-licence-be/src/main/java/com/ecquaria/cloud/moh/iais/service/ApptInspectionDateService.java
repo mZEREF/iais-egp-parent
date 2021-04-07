@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -154,4 +155,13 @@ public interface ApptInspectionDateService {
     ApptInspectionDateDto cancelSystemDateBySpecStep(ApptInspectionDateDto apptInspectionDateDto);
 
     void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/7
+      * @Param: apptInspectionDateDto
+      * @return: List<AppPremInspApptDraftDto>
+      * @Descripation: getInspApptDraftBySamePremises
+      */
+    List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto);
 }
