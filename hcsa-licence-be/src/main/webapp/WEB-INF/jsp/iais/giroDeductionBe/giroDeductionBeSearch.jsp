@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.grio.GrioConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -132,7 +134,8 @@
                             <td><c:out value="${pool.txnRefNo}"/></td>
                             <td><iais:code code="${pool.invoiceNo}"/></td>
                             <td><iais:code code="${pool.acctNo}"/></td>
-                            <td><iais:code code="${pool.pmtStatus}"/></td>
+                            <td>
+                              ${pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_PENDING ? "Pending" : (pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_FAILED ? "Failed" : (pool.pmtStatus == AppConsts.COMMON_STATUS_ACTIVE ? "Success" : ""))}</td>
                             <td><iais:code code="$${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
