@@ -1271,6 +1271,8 @@ public class LicenceViewServiceDelegator {
                 }
                 Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
                 sortSvcDoc(multipleSvcDoc);
+                multipleSvcDoc = translateForShow(multipleSvcDoc);
+                appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
             }
             Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
             sortPremiseDoc(multipleGrpPrimaryDoc);
@@ -1332,6 +1334,7 @@ public class LicenceViewServiceDelegator {
             List<AppSvcDocDto> appSvcDocDtos = finalOldMultipleSvcDoc.get(k);
             copyServiceDoc(v,appSvcDocDtos);
         });
+        log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
         multipleSvcDoc = translateForShow(multipleSvcDoc);
         oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
