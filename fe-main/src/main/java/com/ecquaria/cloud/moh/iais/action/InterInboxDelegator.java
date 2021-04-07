@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -1246,20 +1247,34 @@ public class InterInboxDelegator {
         this.appDoDraft(bpc);
     }
 
-    public void appDoRecall(BaseProcessClass bpc){
+    public void appDoRecall(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
         String appGroupId = ParamUtil.getString(request, "action_grp_value");
-        RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
-        recallApplicationDto.setAppId(appId);
-        recallApplicationDto.setAppNo(appNo);
-        recallApplicationDto.setAppGrpId(appGroupId);
-        recallApplicationDto = inboxService.recallApplication(recallApplicationDto);
-        if ("RECALLMSG001".equals(recallApplicationDto.getMessage())){
-            ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
-            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","This data is being processed. Please try again later");
+        String appSelfFlag = ParamUtil.getString(request, "action_self_value");
+        if ("appMakePayment".equals(appSelfFlag)){
+            ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
+            if (applicationGroupDto != null){
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
+                        .append("?appGrpNo=")
+                        .append(MaskUtil.maskValue("appGrpNo", applicationGroupDto.getGroupNo()));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }
+        }else{
+            RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
+            recallApplicationDto.setAppId(appId);
+            recallApplicationDto.setAppNo(appNo);
+            recallApplicationDto.setAppGrpId(appGroupId);
+            recallApplicationDto = inboxService.recallApplication(recallApplicationDto);
+            if ("RECALLMSG001".equals(recallApplicationDto.getMessage())){
+                ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","This data is being processed. Please try again later");
+            }
         }
     }
 

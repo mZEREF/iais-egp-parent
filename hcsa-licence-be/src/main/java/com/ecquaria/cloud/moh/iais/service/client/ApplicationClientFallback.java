@@ -15,8 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.ApplicationElisToHalpDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.HciElisToHalpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -337,20 +335,6 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
-
-    @Override
-    public FeignResponseEntity<SearchResult<ApplicationElisToHalpDto>> searchApplicationElis(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;    }
-
-    @Override
-    public FeignResponseEntity<SearchResult<HciElisToHalpDto>> searchHciElis(SearchParam searchParam) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;    }
 
     @Override
     public FeignResponseEntity<Void> saveInspecRecDate(ApplicationListFileDto applicationListFileDto) {

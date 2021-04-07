@@ -9,6 +9,9 @@
 
 <script>
     $(document).ready(function () {
+        $('#nav-tabs-ul').css('display','none');
+        $('#paymentTab').css('margin-top','3%');
+
         $('#premisesli').removeClass('incomplete');
         $('#premisesli').addClass('complete');
 

@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -38,14 +39,15 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -94,9 +96,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private String mailSender;
 
     @Autowired
-    private EmailSmsClient emailSmsClient;
-    @Autowired
-    private EmailHistoryCommonClient emailHistoryCommonClient;
+    private Environment env;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -644,7 +644,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         //update application
         //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
-        setCreateHistoryDto(processReSchedulingDto);
+        //setCreateHistoryDto(processReSchedulingDto);
         //set some data to update recommendation
         setRecommendationDto(processReSchedulingDto);
         //set some data to update inspection status
@@ -700,14 +700,23 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         emailDto.setSender(this.mailSender);
         emailDto.setClientQueryCode(apptViewDto.getAppId());
         emailDto.setReqRefNum(apptViewDto.getAppId());
-        emailSmsClient.sendEmail(emailDto, null);
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), String.class);
 
         SmsDto smsDto = new SmsDto();
         smsDto.setSender(mailSender);
         smsDto.setContent(smsContent);
         smsDto.setOnlyOfficeHour(false);
+        smsDto.setReceipts(mobile);
+        smsDto.setReqRefNum(apptViewDto.getAppId());
 
-        emailHistoryCommonClient.sendSMS(mobile, smsDto, apptViewDto.getAppId());
+        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), InterMessageDto.class);
     }
 
 

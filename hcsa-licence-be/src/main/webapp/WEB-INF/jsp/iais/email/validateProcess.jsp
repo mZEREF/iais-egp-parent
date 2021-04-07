@@ -159,7 +159,7 @@
         showWaiting();
         var f = $('#decision-validate-email option:selected').val();
 
-        if (f != "Select") {
+        if (f != "" && f != null) {
             SOP.Crud.cfxSubmit("mainForm", "send");
         } else {
             $("#selectDecisionMsg").show();

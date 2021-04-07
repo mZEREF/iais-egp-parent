@@ -118,6 +118,7 @@ public class GiroDeductionBeDelegator {
      */
     public void beGiroDeductionStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.MODULE_GIRO_DEDUCTION);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         filterParameter.setPageNo(1);
@@ -159,7 +160,11 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization()).getEntity();
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
-
+        String saveRetriggerOK = (String) ParamUtil.getSessionAttr(bpc.request,"saveRetriggerOK");
+        if( !StringUtil.isEmpty(saveRetriggerOK)){
+            ParamUtil.setRequestAttr(bpc.request,"saveRetriggerOK",saveRetriggerOK);
+            ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",null);
+        }
     }
 
     /**
@@ -174,33 +179,26 @@ public class GiroDeductionBeDelegator {
         String beGiroDeductionType =request.getParameter("beGiroDeductionType");
         bpc.request.setAttribute("beGiroDeductionType",beGiroDeductionType);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
-        String transactionId = request.getParameter("transactionId");
+        String txnRefNo = request.getParameter("txnRefNo");
         String bankAccountNo = request.getParameter("bankAccountNo");
         String group_no = request.getParameter("applicationNo");
-        String paymentRefNo = request.getParameter("paymentRefNo");
         String paymentAmount = request.getParameter("paymentAmount");
-        String paymentDescription = request.getParameter("paymentDescription");
         String hci_name = request.getParameter("hci_name");
         if(!StringUtil.isEmpty(group_no)){
-            searchParam.addFilter("groupNo",group_no,true);
+            searchParam.addFilter("groupNo",group_no.trim(),true);
         }
-        if(!StringUtil.isEmpty(paymentDescription)){
-            searchParam.addFilter("desc",paymentDescription,true);
-        }
+
         if(!StringUtil.isEmpty(paymentAmount)){
-            searchParam.addFilter("amount",paymentAmount,true);
+            searchParam.addFilter("amount",paymentAmount.trim(),true);
         }
         if(!StringUtil.isEmpty(bankAccountNo)){
-            searchParam.addFilter("acctNo",bankAccountNo,true);
+            searchParam.addFilter("acctNo",bankAccountNo.trim(),true);
         }
         if(!StringUtil.isEmpty(hci_name)){
-            searchParam.addFilter("hciName",hci_name,true);
+            searchParam.addFilter("hciName",hci_name.trim(),true);
         }
-        if(!StringUtil.isEmpty(paymentRefNo)){
-            searchParam.addFilter("refNo",paymentRefNo,true);
-        }
-        if(!StringUtil.isEmpty(transactionId)){
-            searchParam.addFilter("invoiceNo",transactionId,true);
+        if(!StringUtil.isEmpty(txnRefNo)){
+            searchParam.addFilter("txnRefNo",txnRefNo.trim(),true);
         }
         bpc.request.setAttribute("searchParam",searchParam);
         bpc.request.setAttribute("param","Y");
@@ -267,6 +265,7 @@ public class GiroDeductionBeDelegator {
             }
         } else {
             errMap.put(retValiError, "GENERAL_ERR0006");
+            ParamUtil.setRequestAttr(bpc.request, "RGP_ACK001", AppConsts.FALSE);
         }
         if(errMap != null && errMap.size() > 0){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
@@ -296,29 +295,33 @@ public class GiroDeductionBeDelegator {
                 if("Application No.".equals(s)){
                     continue;
                 }
-                record.get("HCI Name");
-                record.get("Transaction Reference No.");
-                record.get("Invoice No.");
-                record.get("Bank Account No.");
+//                record.get("HCI Name");
+//                record.get("Transaction Reference No.");
+//                record.get("Invoice No.");
+//                record.get("Bank Account No.");
                 String payment_status = record.get("Payment Status");
-                record.get("Payment Amount");
+//                record.get("Payment Amount");
                 map.put(s,payment_status);
             }
         }catch (Exception e){
             bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<GiroDeductionDto> giroDeductionDtoList=new ArrayList<>();
+        List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
         map.forEach((k,v)->{
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
             giroDeductionDto.setAppGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
         });
-        beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        bpc.request.setAttribute("message", MessageUtil.getMessageDesc("GENERAL_ACK021"));
+        if (StringUtil.isEmpty(giroDeductionDtoList)){
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+            bpc.request.setAttribute("message", MessageUtil.getMessageDesc("GENERAL_ACK021"));
+        }else{
+            bpc.request.setAttribute("message", "The file is empty");
+        }
     }
     public void download(BaseProcessClass bpc) throws Exception {
 
@@ -347,6 +350,8 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+
+        ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 
     @GetMapping(value = "/generatorFileCsv")
@@ -357,14 +362,14 @@ public class GiroDeductionBeDelegator {
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();
         FileWriter out = new FileWriter("classpath:"+l+".csv");
-        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.EXCEL
                 .withHeader(HEADERS))) {
             rows.forEach(v->{
                 try {
-                    printer.printRecord(v.getHciName(),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
-                    ,v.getAcctNo(),v.getPmtStatus(),v.getAmount());
+                    printer.printRecord(v.getHciName().replace("<br>", " "),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
                 } catch (IOException e) {
-
+                    log.error(e.getMessage(), e);
                 }
             });
         }
@@ -380,7 +385,7 @@ public class GiroDeductionBeDelegator {
             }
             ops.flush();
         }catch (Exception e){
-
+            log.error(e.getMessage(), e);
         }
 
 

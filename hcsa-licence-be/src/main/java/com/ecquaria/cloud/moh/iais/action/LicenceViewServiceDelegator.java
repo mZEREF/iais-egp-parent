@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -61,14 +60,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
-
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1274,6 +1271,8 @@ public class LicenceViewServiceDelegator {
                 }
                 Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
                 sortSvcDoc(multipleSvcDoc);
+                multipleSvcDoc = translateForShow(multipleSvcDoc);
+                appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
             }
             Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
             sortPremiseDoc(multipleGrpPrimaryDoc);
@@ -1330,10 +1329,16 @@ public class LicenceViewServiceDelegator {
         dealMapSvcDoc(multipleSvcDoc,oldMultipleSvcDoc);
         sortSvcDoc(multipleSvcDoc);
         sortSvcDoc(oldMultipleSvcDoc);
-        multipleSvcDoc.forEach((k,v)->{
-            List<AppSvcDocDto> appSvcDocDtos = oldMultipleSvcDoc.get(k);
+        Map<String, List<AppSvcDocDto>> finalOldMultipleSvcDoc = oldMultipleSvcDoc;
+        multipleSvcDoc.forEach((k, v)->{
+            List<AppSvcDocDto> appSvcDocDtos = finalOldMultipleSvcDoc.get(k);
             copyServiceDoc(v,appSvcDocDtos);
         });
+        log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
+        multipleSvcDoc = translateForShow(multipleSvcDoc);
+        oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc);
+        appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+        oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
        if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {
@@ -1490,7 +1495,7 @@ public class LicenceViewServiceDelegator {
         if(multipleSvcDoc==null){
             multipleSvcDoc=new HashMap<>();
         }
-        dealWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
+        groupWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         if(appSubmissionDto.getOldAppSubmissionDto()!=null){
             dealWithMultipleDoc(appSubmissionDto.getOldAppSubmissionDto());
@@ -1528,84 +1533,97 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void dealWithSvcDoc( List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+    private void groupWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
         if(appSvcDocDtoLit==null){
             return;
         }
-        Map<String,Integer> map=new HashMap<>();
-        AtomicInteger i=new AtomicInteger(1);
-        appSvcDocDtoLit.forEach((v)->{
-            String vDupForPerson = v.getAppGrpPersonId();
-            if(vDupForPerson!=null){
-                Integer integer = map.get(vDupForPerson);
-                if(integer==null){
-                    map.put(vDupForPerson,i.get());
-                    i.getAndIncrement();
-                }/*else {
-                    map.put(vDupForPerson,1);
-                }*/
-            }
-        });
-        for(AppSvcDocDto v : appSvcDocDtoLit){
-            String svcDocId = v.getSvcDocId();
-            String upFileName = v.getUpFileName();
+        for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
+            String personType = appSvcDocDto.getPersonType();
+            String svcDocId = appSvcDocDto.getSvcDocId();
+            Integer personTypeNum = appSvcDocDto.getPersonTypeNum();
+            docDealWith(multipleSvcDoc,appSvcDocDto,personType+svcDocId+":"+personTypeNum);
+        }
+    }
+    private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+        log.info(StringUtil.changeForLog("The translateForShow start ..."));
+        Map<String, List<AppSvcDocDto>> result = IaisCommonUtils.genNewHashMap();
+        Map<String,Integer> nums = IaisCommonUtils.genNewHashMap();
+        if(multipleSvcDoc!=null){
+            multipleSvcDoc.forEach((k,v)->{
+                List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(k);
+                if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                    AppSvcDocDto appSvcDocDto = appSvcDocDtos.get(0);
+                    //String personType = appSvcDocDto.getPersonType();
+//                    if(StringUtil.isEmpty(personType)){
+//                        personType = k.substring(0,k.indexOf(":"));
+//                    }
+                   String  personType = k.substring(0,k.indexOf(":"));
+                    log.info(StringUtil.changeForLog("The translateForShow personType is -->:"+personType));
+                    Integer num = nums.get(personType);
+                    if(num == null){
+                        num = 1;
+                    }else{
+                        num = num + 1;
+                    }
+                    nums.put(personType,num);
+                    String newKey = dealWithSvcDoc(appSvcDocDto,num);
+                    log.info(StringUtil.changeForLog("The translateForShow num is -->:"+num));
+                    log.info(StringUtil.changeForLog("The translateForShow newKey is -->:"+newKey));
+                    result.put(newKey,appSvcDocDtos);
+                }
+            });
+        }
+        log.info(StringUtil.changeForLog("The translateForShow end ..."));
+        return result;
+    }
+
+
+    private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num){
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc start ..."));
+            String result = null;
+            String svcDocId = appSvcDocDto.getSvcDocId();
+            String upFileName = appSvcDocDto.getUpFileName();
             HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
             String dupForPrem = entity.getDupForPrem();
             if(upFileName==null){
-                v.setUpFileName(entity.getDocTitle());
+                appSvcDocDto.setUpFileName(entity.getDocTitle());
             }
             String dupForPerson = entity.getDupForPerson();
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc svcDocId -->:"+svcDocId));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:"+dupForPrem));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:"+dupForPerson));
             if("0".equals(dupForPrem)&&dupForPerson==null){
-                docDealWith(multipleSvcDoc,v,v.getUpFileName());
+                result =  appSvcDocDto.getUpFileName() +" "+num;
             }else if("0".equals(dupForPrem)&&dupForPerson!=null){
-                String vDupForPerson = v.getAppGrpPersonId();
                 if("1".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Clinical Governance Officer "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
-                }else if("2".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Principal Officer(s) "+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    result = "Clinical Governance Officer "+num+": "+appSvcDocDto.getUpFileName();
+                  }else if("2".equals(dupForPerson)){
+                    result = "Principal Officer(s) "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("4".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Nominee "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
+                    result = "Nominee "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("8".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"MedAlert Person "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
+                    result = "MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("16".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Service Personnel "+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    result = "Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
                 }
-
             }else if("1".equals(dupForPrem)&&dupForPerson!=null){
-
-                String vDupForPerson = v.getAppGrpPersonId();
                 if("1".equals(dupForPerson)){
-                    docDealWith(multipleSvcDoc,v,"Premises 1:Clinical Governance Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    result = "Premises 1:Clinical Governance Officers "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("2".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:Principal Officers "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
+                    result = "Premises 1:Principal Officers "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("4".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:Nominee "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
+                    result = "Premises 1:Nominee "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("8".equals(dupForPerson)){
-
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:MedAlert Person "+map.get(vDupForPerson)+": "+v.getUpFileName());
-
+                    result = "Premises 1:MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("16".equals(dupForPerson)){
-
-                    docDealWith(multipleSvcDoc,v,"Premises 1:Service Personnel "+map.get(vDupForPerson)+": "+v.getUpFileName());
+                    result = "Premises 1:Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
                 }
 
             }else if("1".equals(dupForPrem)&&dupForPerson==null){
-                docDealWith(multipleSvcDoc,v,"Premises 1:"+v.getUpFileName());
+                result = "Premises 1:"+appSvcDocDto.getUpFileName();
             }
-        }
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc end..."));
+          return  result;
     }
     private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){
         List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(key);

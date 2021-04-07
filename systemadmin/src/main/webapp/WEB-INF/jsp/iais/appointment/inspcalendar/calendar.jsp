@@ -25,6 +25,7 @@
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
+
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
       <form class="form-horizontal">
         <iais:section title="" id = "demoList">
@@ -98,79 +99,86 @@
             </c:if>
           </div>
         </iais:section>
-      </form>
-      <br><br><br>
 
 
-    <div>
-      <div class="tab-pane active" id="tabInbox" role="tabpanel">
-        <div class="tab-content">
-          <div class="row">
-            <br><br>
-            <div class="col-xs-12">
-              <div class="components">
-                <c:if test="${'Y' eq sessionScope.isGroupLead}">
-                  <h3>
-                    <span>Search Results</span>
-                  </h3>
-                </c:if>
 
-                <iais:pagination  param="inspectorCalenDarQueryAttr" result="inspectorCalenDarResultAttr"/>
-                <div class="table-gp">
-                  <table class="table">
-                    <thead>
-                    <tr>
-                      <iais:sortableHeader needSort="false"  style="width:1%" field="index" value="No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" style="width:10%"  field="NAME" value="Inspector ID"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  style="width:10%"  field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   style="width:20%" field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  style="width:15%"  field="RECURRENCE" value="Recurrence"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"  style="width:20%"  field="RECURRENCE_END_DATE" value="Recurrence End Date"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"  style="width:20%"  field="action" value="Action"></iais:sortableHeader>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:choose>
-                      <c:when test="${empty inspectorCalenDarResultAttr.rows}">
+
+
+        <div>
+          <div class="tab-pane active" id="tabInbox" role="tabpanel">
+            <div class="tab-content">
+              <div class="row">
+                <br><br>
+                <div class="col-xs-12">
+                  <div class="components">
+                    <c:if test="${'Y' eq sessionScope.isGroupLead}">
+                      <h3>
+                        <span>Search Results</span>
+                      </h3>
+                    </c:if>
+
+                    <iais:pagination  param="inspectorCalenDarQueryAttr" result="inspectorCalenDarResultAttr"/>
+                    <div class="table-gp">
+                      <table class="table">
+                        <thead>
                         <tr>
-                          <td colspan="9">
-                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                          </td>
+                          <iais:sortableHeader needSort="false"  style="width:1%" field="index" value="No."></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true" style="width:10%"  field="NAME" value="Inspector ID"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"  style="width:10%"  field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"   style="width:20%" field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"  style="width:15%"  field="RECURRENCE" value="Recurrence"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="true"  style="width:20%"  field="RECURRENCE_END_DATE" value="Recurrence End Date"></iais:sortableHeader>
+                          <iais:sortableHeader needSort="false"  style="width:20%"  field="action" value="Action"></iais:sortableHeader>
                         </tr>
-                      </c:when>
-                      <c:otherwise>
-                        <c:forEach var="calendar" items="${inspectorCalenDarResultAttr.rows}" varStatus="status">
-                          <tr>
-                            <td>${status.index + 1}</td>
-                            <td><c:out value="${calendar.userName}"></c:out></td>
-                            <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="yyyy"/></td>
-                            <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="dd/MM/yyyy"/></td>
-                            <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="dd/MM/yyyy"/></td>
+                        </thead>
+                        <tbody>
+                        <c:choose>
+                          <c:when test="${empty inspectorCalenDarResultAttr.rows}">
+                            <tr>
+                              <td colspan="9">
+                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                              </td>
+                            </tr>
+                          </c:when>
+                          <c:otherwise>
+                            <c:forEach var="calendar" items="${inspectorCalenDarResultAttr.rows}" varStatus="status">
+                              <tr>
+                                <td>${status.index + 1}</td>
+                                <td><c:out value="${calendar.userName}"></c:out></td>
+                                <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="yyyy"/></td>
+                                <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="dd/MM/yyyy"/></td>
+                                <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="dd/MM/yyyy"/></td>
 
-                            <td><c:out value="${calendar.description}"></c:out></td>
-                            <td><iais:code code="${calendar.recurrence}"></iais:code></td>
-                            <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="dd/MM/yyyy"/></td>
-                            <td>
-                                <button type="button" onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" data-toggle= "modal" data-target= "#deleteNonDate" class="btn btn-default btn-sm" >Delete</button>
-                                <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
-                            </td>
-                          </tr>
-                        </c:forEach>
-                        <iais:confirm yesBtnCls="btn btn-primary" msg="Are you sure you want to delete this item?" callBack="deleteThisNonDate()" popupOrder="deleteNonDate" needCancel="true"></iais:confirm>
-                      </c:otherwise>
-                    </c:choose>
-                    </tbody>
-                  </table>
+                                <td><c:out value="${calendar.description}"></c:out></td>
+                                <td><iais:code code="${calendar.recurrence}"></iais:code></td>
+                                <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="dd/MM/yyyy"/></td>
+                                <td>
+                                  <button type="button" onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" data-toggle= "modal" data-target= "#deleteNonDate" class="btn btn-default btn-sm" >Delete</button>
+                                  <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                                </td>
+                              </tr>
+                            </c:forEach>
+                            <iais:confirm yesBtnCls="btn btn-primary" msg="Are you sure you want to delete this item?" callBack="deleteThisNonDate()" popupOrder="deleteNonDate" needCancel="true"></iais:confirm>
+                          </c:otherwise>
+                        </c:choose>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-    </div>
+        </div>
+
+      </form>
+      <br><br><br>
+
+
+
 
 
       <div class="text-right text-center-mobile">

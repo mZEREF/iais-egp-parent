@@ -59,6 +59,7 @@ public class ClientCheckNotResultPaymentJob {
                 if(appGrp.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                     serviceConfigService.updatePaymentStatus(appGrp);
                 }
+
             }catch (Exception e){
                 log.info(e.getMessage(),e);
             }

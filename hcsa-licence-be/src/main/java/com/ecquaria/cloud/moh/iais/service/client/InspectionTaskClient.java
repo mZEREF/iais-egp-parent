@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
@@ -178,4 +179,16 @@ public interface InspectionTaskClient {
     @PostMapping(value = "/iais-inspection/re-schedule-date/both-fe-be", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptRequestDto>> reScheduleNewDate(@RequestBody AppointmentDto appointmentDto);
+
+    /**
+     * Inspection appt Draft
+     */
+    @PostMapping(value = "/insp-appt-draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> createAppPremisesInspecApptDto(@RequestBody List<AppPremInspApptDraftDto> appPremInspApptDraftDtos);
+
+    @PutMapping(value = "/insp-appt-draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremInspApptDraftDto> updateAppPremisesInspecApptDto(@RequestBody AppPremInspApptDraftDto appPremInspApptDraftDto);
+
+    @GetMapping(value = "/insp-appt-draft/insp-appt-draft/{appNo}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> getInspApptDraftListByAppNo(@PathVariable(name = "appNo") String appNo);
 }

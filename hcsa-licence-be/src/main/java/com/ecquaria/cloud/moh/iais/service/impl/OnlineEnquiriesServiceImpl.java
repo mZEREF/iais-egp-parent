@@ -16,8 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.ApplicationElisToHalpDto;
-import com.ecquaria.cloud.moh.iais.common.dto.eLIS.HciElisToHalpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
@@ -361,18 +359,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
 
         return detail;
-    }
-
-    @Override
-    @SearchTrack(catalog = "onlineEnquiry", key = "searchByProfessionalInfo")
-    public SearchResult<HciElisToHalpDto> searchHciElisParam(SearchParam hciLicParam) {
-        return applicationClient.searchHciElis(hciLicParam).getEntity();
-    }
-
-    @Override
-    @SearchTrack(catalog = "onlineEnquiry", key = "searchByProfessionalInfo")
-    public SearchResult<ApplicationElisToHalpDto> searchAppElisParam(SearchParam hciLicParam) {
-        return applicationClient.searchApplicationElis(hciLicParam).getEntity();
     }
 
     @Override

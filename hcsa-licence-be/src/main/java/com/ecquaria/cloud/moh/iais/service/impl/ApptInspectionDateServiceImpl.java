@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
@@ -253,6 +254,23 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
         }
         return map;
+    }
+
+    @Override
+    public List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto) {
+        String actionButtonFlag = apptInspectionDateDto.getActionButtonFlag();
+        if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
+            Map<String, ApplicationDto> corrAppMap = apptInspectionDateDto.getCorrAppMap();
+            List<String> premCorrIds = apptInspectionDateDto.getRefNo();
+            if(!IaisCommonUtils.isEmpty(premCorrIds) && corrAppMap != null) {
+                for (String appPremCorrId : premCorrIds) {
+                    ApplicationDto applicationDto = corrAppMap.get(appPremCorrId);
+                    String appNo = applicationDto.getApplicationNo();
+
+                }
+            }
+        }
+        return null;
     }
 
     @Override

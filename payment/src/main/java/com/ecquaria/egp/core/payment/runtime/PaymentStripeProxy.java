@@ -260,9 +260,9 @@ public class PaymentStripeProxy extends PaymentProxy {
 				applicationGroupDto.setPmtRefNo(refNo);
 				applicationGroupDto.setPaymentDt(new Date());
 				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
-
 				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
 			}
+
 		}
 
 		try {

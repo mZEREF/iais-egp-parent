@@ -159,7 +159,7 @@
     function doSend() {
         var f = $('#decision-revise-email option:selected').val()
 
-        if (f != "Select") {
+        if (f != null && f != ""  ) {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         } else {

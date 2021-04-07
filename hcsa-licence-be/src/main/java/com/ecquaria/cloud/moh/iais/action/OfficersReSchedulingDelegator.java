@@ -123,7 +123,7 @@ public class OfficersReSchedulingDelegator {
                 reschedulingOfficerDto.setWorkGroupCheck(workGroupOption.get(0).getValue());
             }
             //get all inspector by work group list
-            List<String> workGroupNos = officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption);
+            List<String> workGroupNos = officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption,loginContext.getUserId());
             //set session inspector options
             Map<String, List<SelectOption>> inspectorByGroup = reschedulingOfficerDto.getInspectorByGroup();
             if(inspectorByGroup != null){
@@ -134,7 +134,7 @@ public class OfficersReSchedulingDelegator {
                 }
             }
             //get Work Group Check and it's inspector, get appNo by inspector and some Filter conditions
-            List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto);
+            List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto,loginContext.getUserId(), workGroupOption);
             searchParam = getSearchParamByFilter(searchParam, appNoList);
             QueryHelp.setMainSql("inspectionQuery", "reschedulingSearch",searchParam);
             searchResult = officersReSchedulingService.getOfficersSearch(searchParam);
@@ -169,10 +169,12 @@ public class OfficersReSchedulingDelegator {
     }
 
     private List<String> removeNull(List<String> appNoList) {
-        for (int i = 0; i < appNoList.size(); i++) {
-            if(StringUtil.isEmpty(appNoList.get(i))){
-                appNoList.remove(i);
-                i--;
+        if(!IaisCommonUtils.isEmpty(appNoList)){
+            for (int i = 0; i < appNoList.size(); i++) {
+                if(StringUtil.isEmpty(appNoList.get(i))){
+                    appNoList.remove(i);
+                    i--;
+                }
             }
         }
         return appNoList;

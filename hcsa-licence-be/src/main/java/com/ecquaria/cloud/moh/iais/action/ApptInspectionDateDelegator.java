@@ -66,6 +66,7 @@ public class ApptInspectionDateDelegator {
      * @throws
      */
     public void apptInspectionDateStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
         String taskId = "";
         try{
             taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
@@ -82,7 +83,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
-        log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_ONLINE_APPOINTMENT);
     }
 
     /**
@@ -114,9 +115,11 @@ public class ApptInspectionDateDelegator {
         if(apptInspectionDateDto == null){
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
-            apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
+            //set application info show
+            apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
+            /*//get inspection appt draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);*/
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_ONLINE_APPOINTMENT);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);

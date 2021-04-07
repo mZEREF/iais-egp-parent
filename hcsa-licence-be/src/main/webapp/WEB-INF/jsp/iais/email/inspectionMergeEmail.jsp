@@ -163,7 +163,8 @@
     }
 
     function doSend() {
-        if ($('#decision_merge_email option:selected').val() == "Select") {
+        var f =$('#decision_merge_email option:selected').val();
+        if (f == null || f == "") {
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
         } else {
