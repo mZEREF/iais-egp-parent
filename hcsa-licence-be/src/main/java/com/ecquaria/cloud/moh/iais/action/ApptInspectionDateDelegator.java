@@ -160,6 +160,7 @@ public class ApptInspectionDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         //cancel System date
         apptInspectionDateDto = apptInspectionDateService.cancelSystemDateBySpecStep(apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
@@ -292,6 +293,7 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
+                ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);
