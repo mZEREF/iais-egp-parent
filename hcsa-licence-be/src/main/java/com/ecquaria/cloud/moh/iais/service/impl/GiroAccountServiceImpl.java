@@ -91,19 +91,6 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     private EmailHistoryCommonClient emailHistoryCommonClient;
     @Autowired
     HcsaLicenceClient hcsaLicenceClient;
-
-//    @Bean(name = "giroAccMailAsyncExecutor")
-//    public Executor asyncExecutor() {
-//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-//        executor.setCorePoolSize(50);
-//        executor.setMaxPoolSize(50);
-//        executor.setQueueCapacity(500);
-//        executor.setThreadNamePrefix("GiroAccMailAsynchThread-");
-//        executor.initialize();
-//
-//        return executor;
-//    }
-
     @Override
     public SearchResult<GiroAccountInfoQueryDto> searchGiroInfoByParam(SearchParam searchParam) {
         return giroAccountBeClient.searchGiroInfoByParam(searchParam).getEntity();

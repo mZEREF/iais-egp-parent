@@ -217,6 +217,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String actionType=ParamUtil.getString(request,"crud_action_type");
         if("back".equals(actionType)){
             orgPremParam= (SearchParam) ParamUtil.getSessionAttr(request,"orgPremParam");
+            ParamUtil.setSessionAttr(request,"hciSession",null);
         }else if("add".equals(actionType)){
             orgPremParameter.setPageSize(pageSize);
             orgPremParameter.setPageNo(1);
