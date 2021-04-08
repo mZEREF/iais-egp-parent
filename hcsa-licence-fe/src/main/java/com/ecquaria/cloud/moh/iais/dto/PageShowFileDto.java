@@ -17,4 +17,5 @@ public class PageShowFileDto implements Serializable {
     private String index;
     private Integer size;
     private String md5Code;
+    private Integer version=1;
 }

@@ -770,7 +770,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","can not transfer to self");
                     }
                 }else{
-                    error.put("uenError","RFC_ERR007");
+                    /*error.put("uenError","RFC_ERR007");*/
                 }
             }
         }

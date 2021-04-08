@@ -1228,21 +1228,23 @@ public class WithOutRenewalDelegator {
         }
     }
 
+    private void updateDraftStatus(AppSubmissionDto appSubmissionDto){
+        if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
+            List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
+            for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+                String draftJson = applicationSubDraftDto.getDraftJson();
+                AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+            }
+        }
+    }
     //prepareAcknowledgement
     public void prepareAcknowledgement(BaseProcessClass bpc) throws Exception {
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request, "INTER_INBOX_USER_INFO");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
-                List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-                for(ApplicationSubDraftDto applicationSubDraftDto : entity){
-                    String draftJson = applicationSubDraftDto.getDraftJson();
-                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                    appSubmissionDto1.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationFeClient.saveDraft(appSubmissionDto1);
-                }
-            }
+            updateDraftStatus(appSubmissionDto);
         }
         List<AppSubmissionDto> rfcAppSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
         if(rfcAppSubmissionDtos!=null){
