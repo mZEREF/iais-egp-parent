@@ -57,7 +57,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,6 +184,33 @@ public class MohIntranetUserDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            int activeTab=0;
+            boolean activeTabAcc=false;
+            boolean activeTabPer=false;
+            boolean activeTabCon=false;
+            for (String errKey:errorMap.keySet()
+            ) {
+                switch (errKey){
+                    case "userId":
+                    case "displayName":
+                    case "accountDeactivateDatetime":
+                    case "accountActivateDatetime":activeTabAcc=true;break;
+                    case "email":
+                    case "mobileNo":
+                    case "officeTelNo":activeTabCon=true;break;
+                    case "firstName":
+                    case "lastName":activeTabPer=true;break;
+                    default:;
+                }
+            }
+            if(activeTabAcc){
+                activeTab=1;
+            }else if(activeTabPer){
+                activeTab=2;
+            }else if(activeTabCon){
+                activeTab=3;
+            }
+            ParamUtil.setRequestAttr(bpc.request, "activeTab",activeTab);
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -229,12 +255,37 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>(34);
         OrgUserDto orgUserDto = prepareEditOrgUserDto(bpc);
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "edit");
+        Map<String, String> errorMap  = validationResult.retrieveAll();
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            Map<String, String> validationResultMap = validationResult.retrieveAll();
-            errorMap.putAll(validationResultMap);
+            int activeTab=0;
+            boolean activeTabAcc=false;
+            boolean activeTabPer=false;
+            boolean activeTabCon=false;
+            for (String errKey:errorMap.keySet()
+            ) {
+                switch (errKey){
+                    case "userId":
+                    case "displayName":
+                    case "accountDeactivateDatetime":
+                    case "accountActivateDatetime":activeTabAcc=true;break;
+                    case "email":
+                    case "mobileNo":
+                    case "officeTelNo":activeTabCon=true;break;
+                    case "firstName":
+                    case "lastName":activeTabPer=true;break;
+                    default:;
+                }
+            }
+            if(activeTabAcc){
+                activeTab=1;
+            }else if(activeTabPer){
+                activeTab=2;
+            }else if(activeTabCon){
+                activeTab=3;
+            }
+            ParamUtil.setRequestAttr(bpc.request, "activeTab",activeTab);
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -421,7 +472,7 @@ public class MohIntranetUserDelegator {
         }
 
         for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
-             ) {
+        ) {
             assignRoleOptionFull.remove(e.getKey());
         }
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
@@ -635,7 +686,7 @@ public class MohIntranetUserDelegator {
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
             for (OrgUserRoleDto role:orgUserRoleDtoList
-                 ) {
+            ) {
                 if(RoleIds.contains(role.getRoleName())){
                     groupIdsNotLead.forEach((groupId, isLeader) -> {
                         UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();

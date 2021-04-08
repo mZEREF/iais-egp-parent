@@ -48,6 +48,8 @@
 
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
+                                <button class="btn btn-secondary" type="button"
+                                        onclick="javascript:doClear()">Clear</button>
                                 <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
                                 </button>
@@ -192,6 +194,9 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function doClear() {
+        $('input[type="text"]').val("");
+    }
     function controlCease() {
         var checkOne = false;
         var checkBox = $("input[name='acctIds']");
