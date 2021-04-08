@@ -42,7 +42,9 @@
     </c:if>
 </c:if>
 <input type="hidden" name="uploadKey" value=""/>
-<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
+<div id="selectFileDiv">
+    <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
+</div>
 <c:set var="docType" value="svcDoc"/>
 <c:forEach var="config" items="${svcDocConfig}" varStatus="configStat">
     <c:choose>
@@ -102,9 +104,9 @@
         $('.file-upload').click(function () {
             var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
             $('input[name="uploadKey"]').val(index);
-            $('input[type="file"]').click();
             clearFlagValueFEFile();
-            $('#selectedFile').val('');
+            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('input[type="file"]').click();
         });
     });
 
