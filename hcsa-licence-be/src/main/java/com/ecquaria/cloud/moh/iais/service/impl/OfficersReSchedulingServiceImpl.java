@@ -752,6 +752,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         //update recommendation inspection date
                         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                         createOrUpdateRecommendation(appPremisesRecommendationDto, appPremisesCorrelationDto.getId(), apptAppInfoShowDto.getInspDate());
+                        try {
+                            for (String userId:apptAppInfoShowDto.getUserIdList()
+                            ) {
+                                sendReschedulingEmailToInspector(appNo,userId);
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage());
+                        }
                     }
                 }
                 //save new apptRefNo and cancel old
