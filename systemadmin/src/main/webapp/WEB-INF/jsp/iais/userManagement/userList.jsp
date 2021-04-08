@@ -171,7 +171,7 @@
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
         <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
-
+        <iais:confirm msg="Do you confirm the delete?"  needCancel="true" callBack="submitFrom()" popupOrder="deletePopup" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -183,10 +183,14 @@
 
     function deleteUser() {
         if ($("input:checkbox:checked").length > 0) {
-            SOP.Crud.cfxSubmit("mainForm", "delete");
+            $('#deletePopup').modal('show');
         }else{
             $('#support').modal('show');
         }
+    }
+
+    function submitFrom(){
+        SOP.Crud.cfxSubmit("mainForm", "delete");
     }
 
     function searchUser() {
