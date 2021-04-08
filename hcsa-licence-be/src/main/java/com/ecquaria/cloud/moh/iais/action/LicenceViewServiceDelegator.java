@@ -225,16 +225,14 @@ public class LicenceViewServiceDelegator {
                     ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTOLIST, withdrawnDtoList);
                 }
             }
-            List<String> list = new ArrayList<>(1);
             if (applicationDto.getOriginLicenceId() != null) {
-                list.add(applicationDto.getOriginLicenceId());
                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(applicationDto.getOriginLicenceId()).getEntity();
                 if (licenceDto != null) {
                     LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                     bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
                 }
 
-                AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(list.get(0)).getEntity();
+                AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(applicationDto.getOriginLicenceId()).getEntity();
                 if (entity!=null) {
                     List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                     if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
