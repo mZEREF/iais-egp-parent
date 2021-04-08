@@ -6,10 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,7 @@ public class ComFileRepoClient {
         if (!IaisCommonUtils.isEmpty(files)) {
             for (File file : files) {
                 HttpHeaders fileHeader = new HttpHeaders();
-                try (FileInputStream fis = new FileInputStream(file);
+                try (InputStream fis = Files.newInputStream(file.toPath());
                      ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                     byte[] con = new byte[1024];
                     int count = fis.read(con);

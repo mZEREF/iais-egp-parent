@@ -729,7 +729,7 @@ public class MohIntranetUserDelegator {
                             for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
                                 dto.setIsLeadForGroup(0);
                             }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);//NOSONAR
                         }
                     } else {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 0);
@@ -737,14 +737,14 @@ public class MohIntranetUserDelegator {
                             for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
                                 dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp); //NOSONAR
                         }
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
                             for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp1) {
                                 dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);//NOSONAR
                         }
                     }
                 }
