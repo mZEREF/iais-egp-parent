@@ -74,6 +74,8 @@
                                 </iais:value>
                             </iais:row>
                             <iais:action style="text-align:right;">
+                                <button class="btn btn-secondary" type="button"
+                                        onclick="javascript:doClear()">Clear</button>
                                 <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
                                 </button>
@@ -175,6 +177,9 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function doClear() {
+        $('input[type="text"]').val("");
+    }
     function doBack(){
         showWaiting();
         $("[name='crud_action_type']").val("back");
