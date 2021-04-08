@@ -339,6 +339,22 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
     }
 
     @Override
+    public FeignResponseEntity<List<AppPremInspApptDraftDto>> deleteInspDateDraftByAppNo(List<String> appNoList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremInspApptDraftDto>> deleteInspDateDraftByApptRefNo(List<String> apptRefNos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(String licenceId, String appId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
