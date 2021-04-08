@@ -639,6 +639,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 AppPremInspApptDraftDto appPremInspApptDraftDto = appPremInspApptDraftDtoList.get(0);
                 //set insp start date
                 apptAppInfoShowDto.setInspDate(appPremInspApptDraftDto.getStartDate());
+                apptAppInfoShowDto.setEndDate(appPremInspApptDraftDto.getEndDate());
                 //set apptRefNo
                 List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 apptRefNos.add(appPremInspApptDraftDto.getApptRefNo());
@@ -689,7 +690,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         }
                         //There's only one piece of data now
                         ApptRequestDto apptReDto = apptRequestDtos.get(0);
-                        //set user with appNo
+                        //set user with appNo and save inspection date draft
                         apptAppInfoShowDtos = setUserWithAppNo(apptReDto, apptAppInfoShowDtos);
                     } else {
                         reschedulingOfficerDto.setNewInspDates(null);
@@ -803,11 +804,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 //update any data
                 List<AppPremisesInspecApptDto> appPremInspecApptUpdateDtos = IaisCommonUtils.genNewArrayList();
                 List<AppPremisesInspecApptDto> appPremInspecApptCreateDtos = IaisCommonUtils.genNewArrayList();
+                //need delete inspection date draft
+                List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 for (ApptAppInfoShowDto apptAppInfoShowDto : apptReSchAppInfoShowDtos) {
                     if(apptAppInfoShowDto != null) {
                         String appNo = apptAppInfoShowDto.getApplicationNo();
-
-
+                        //set appt RefNos
+                        apptRefNos.addAll(apptAppInfoShowDto.getApptRefNo());
+                        //get application data
                         ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
                         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                         //update and create apptRefNo;
@@ -837,6 +841,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
                 //save new apptRefNo and cancel old
                 cancelOrConfirmApptDate(apptCalendarStatusDto);
+                //delete draft
+                inspectionTaskClient.deleteInspDateDraftByApptRefNo(apptRefNos);
             }
             return AppConsts.SUCCESS;
         } else {
@@ -886,6 +892,45 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
     }
 
+    @Override
+    public ReschedulingOfficerDto setNewInspStartDate(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto) {
+        if(reschedulingOfficerDto != null && !IaisCommonUtils.isEmpty(apptReSchAppInfoShowDtos)) {
+            ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);
+            if(apptAppInfoShowDto != null) {
+                AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
+                appointmentDto.setStartDate(Formatter.formatDateTime(apptAppInfoShowDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+            }
+        }
+        return reschedulingOfficerDto;
+    }
+
+    @Override
+    public List<String> getOldApptRefNos(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos) {
+        List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(apptReSchAppInfoShowDtos)) {
+            for(ApptAppInfoShowDto apptAppInfoShowDto : apptReSchAppInfoShowDtos) {
+                if(apptAppInfoShowDto != null) {
+                    apptRefNos.addAll(apptAppInfoShowDto.getApptRefNo());
+                }
+            }
+        }
+        return apptRefNos;
+    }
+
+    @Override
+    public void confirmAndCancelApptRefNo(List<String> confirmApptRefNo, List<String> cancelApptRefNos) {
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        if(!IaisCommonUtils.isEmpty(confirmApptRefNo)) {
+            apptCalendarStatusDto.setCancelRefNums(confirmApptRefNo);
+        }
+        if(!IaisCommonUtils.isEmpty(cancelApptRefNos)) {
+            apptCalendarStatusDto.setCancelRefNums(cancelApptRefNos);
+        }
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
+        //cancel draft
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelApptRefNos);
+    }
 
 
     private String getEmailContent(String templateId, Map<String, Object> subMap){
@@ -1092,6 +1137,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             //set user with App No.
             if(!IaisCommonUtils.isEmpty(userClandars)){//NOSONAR
                 Date inspDate = userClandars.get(0).getStartSlot().get(0);//NOSONAR
+                int endTimeSize = userClandars.get(0).getEndSlot().size();
+                Date inspEndDate = userClandars.get(0).getEndSlot().get(endTimeSize - 1);
                 Map<String, List<String>> appNoUserLoginId = getAppNoUserLoginIdByUserClandars(userClandars);
                 if(appNoUserLoginId != null) {
                     for (ApptAppInfoShowDto apptAppInfoShowDto : apptAppInfoShowDtos) {
@@ -1104,12 +1151,40 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                             //set user
                             apptAppInfoShowDto = setUserIdByLoginIds(apptAppInfoShowDto, userLoginIds);
                             apptAppInfoShowDto.setInspDate(inspDate);
+                            apptAppInfoShowDto.setEndDate(inspEndDate);
+                            //create inspection date Draft
+                            List<String> userIds = apptAppInfoShowDto.getUserIdList();
+                            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = getInspecDateDraftList(userIds, apptReDto, apptAppInfoShowDto);
+                            inspectionTaskClient.createAppPremisesInspecApptDto(appPremInspApptDraftDtos).getEntity();
                         }
                     }
                 }
             }
         }
         return apptAppInfoShowDtos;
+    }
+
+    private List<AppPremInspApptDraftDto> getInspecDateDraftList(List<String> userIds, ApptRequestDto apptReDto, ApptAppInfoShowDto apptAppInfoShowDto) {
+        List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = IaisCommonUtils.genNewArrayList();
+        //get date
+        int endTimeSize = apptReDto.getUserClandars().get(0).getEndSlot().size();
+        Date inspStartDate = apptReDto.getUserClandars().get(0).getStartSlot().get(0);
+        Date inspEndDate = apptReDto.getUserClandars().get(0).getEndSlot().get(endTimeSize - 1);
+        if(!IaisCommonUtils.isEmpty(userIds)) {
+            for (String userId : userIds) {
+                if (!StringUtil.isEmpty(userId)) {
+                    //set data
+                    AppPremInspApptDraftDto appPremInspApptDraftDto = new AppPremInspApptDraftDto();
+                    appPremInspApptDraftDto.setApplicationNo(apptAppInfoShowDto.getApplicationNo());
+                    appPremInspApptDraftDto.setApptRefNo(apptReDto.getApptRefNo());
+                    appPremInspApptDraftDto.setStartDate(inspStartDate);
+                    appPremInspApptDraftDto.setEndDate(inspEndDate);
+                    appPremInspApptDraftDto.setUserId(userId);
+                    appPremInspApptDraftDtos.add(appPremInspApptDraftDto);
+                }
+            }
+        }
+        return appPremInspApptDraftDtos;
     }
 
     private ApptAppInfoShowDto setUserIdByLoginIds(ApptAppInfoShowDto apptAppInfoShowDto, List<String> userLoginIds) {
