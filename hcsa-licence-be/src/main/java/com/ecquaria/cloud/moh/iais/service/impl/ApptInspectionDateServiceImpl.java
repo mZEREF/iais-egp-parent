@@ -262,12 +262,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
             Map<String, ApplicationDto> corrAppMap = apptInspectionDateDto.getCorrAppMap();
             List<String> premCorrIds = apptInspectionDateDto.getRefNo();
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtoList = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(premCorrIds) && corrAppMap != null) {
                 for (String appPremCorrId : premCorrIds) {
                     ApplicationDto applicationDto = corrAppMap.get(appPremCorrId);
                     String appNo = applicationDto.getApplicationNo();
-
+                    List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = inspectionTaskClient.getInspApptDraftListByAppNo(appNo).getEntity();
+                    if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
+                        appPremInspApptDraftDtoList.addAll(appPremInspApptDraftDtos);
+                    }
                 }
+                return appPremInspApptDraftDtoList;
             }
         }
         return null;

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -99,6 +100,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
     }
 
     /**
@@ -117,9 +119,10 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             //set application info show
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
-            /*//get inspection appt draft
-            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);*/
+            //get inspection appt draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", (Serializable) appPremInspApptDraftDtos);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);
