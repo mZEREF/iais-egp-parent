@@ -419,6 +419,7 @@ public class AppealServiceImpl implements AppealService {
                         pageShowFileDto.setSize(appPremisesSpecialDocDtoOne.getDocSize());
                         pageShowFileDto.setMd5Code(appPremisesSpecialDocDtoOne.getMd5Code());
                         pageShowFileDto.setFileUploadUrl(appPremisesSpecialDocDtoOne.getFileRepoId());
+                        pageShowFileDto.setVersion(appPremisesSpecialDocDtoOne.getVersion());
                         pageShowFileDtos.add(pageShowFileDto);
                         map.put("selectedFile"+index,null);
                         pageShowFileHashMap.put("selectedFile"+index, pageShowFileDto);
@@ -1542,6 +1543,7 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setIndex(pageShowFileDto.getIndex());
+                        premisesSpecialDocDto.setVersion(pageShowFileDto.getVersion());
                         appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
                     }
                 }
