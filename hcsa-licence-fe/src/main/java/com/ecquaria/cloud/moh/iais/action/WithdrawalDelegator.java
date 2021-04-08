@@ -394,7 +394,7 @@ public class WithdrawalDelegator {
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                if (validationResult.isHasErrors()){
+                if (validationResult != null && validationResult.isHasErrors()){
                     errorMap=validationResult.retrieveAll();
                 }
                 if(map!=null&&!map.isEmpty()){
@@ -406,7 +406,7 @@ public class WithdrawalDelegator {
                                 files.add(file);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
                                 SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                                String e = str.substring(str.lastIndexOf("e") + 1);
+                                String e = str.substring(str.lastIndexOf('e') + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
                                 String fileMd5 = singeFileUtil.getFileMd5(file);
                                 premisesSpecialDocDto.setMd5Code(fileMd5);
@@ -425,7 +425,7 @@ public class WithdrawalDelegator {
                         }else {
                             if(pageShowFileHashMap!=null){
                                 PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
-                                String e = str.substring(str.lastIndexOf("e") + 1);
+                                String e = str.substring(str.lastIndexOf('e') + 1);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
                                 premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());

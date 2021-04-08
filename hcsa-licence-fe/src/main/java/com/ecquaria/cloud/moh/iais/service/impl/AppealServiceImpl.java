@@ -203,7 +203,7 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setFileName(v.getName());
-                        String e = k.substring(k.lastIndexOf("e") + 1);
+                        String e = k.substring(k.lastIndexOf('e') + 1);
                         pageShowFileDto.setIndex(e);
                         pageShowFileDto.setFileMapId("selectedFileDiv"+e);
                         pageShowFileDto.setSize(Integer.valueOf(size.toString()));
@@ -221,7 +221,7 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
                         premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                        premisesSpecialDocDto.setIndex(k.substring(k.lastIndexOf("e") + 1));
+                        premisesSpecialDocDto.setIndex(k.substring(k.lastIndexOf('e') + 1));
                         appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
                         pageShowFileDtos.add(pageShowFileDto);
                     }
@@ -832,7 +832,7 @@ public class AppealServiceImpl implements AppealService {
                 if(v!=null){
                     PageShowFileDto pageShowFileDto =new PageShowFileDto();
                     pageShowFileDto.setFileName(v.getName());
-                    String e = k.substring(k.lastIndexOf("e") + 1);
+                    String e = k.substring(k.lastIndexOf('e') + 1);
                     pageShowFileDto.setIndex(e);
                     pageShowFileDto.setFileMapId("selectedFileDiv"+e);
                     Long l = v.length() / 1024;
@@ -1143,7 +1143,6 @@ public class AppealServiceImpl implements AppealService {
                         if(pageShowFileDto!=null){
                             boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
                             if(equals){
-                                v.setVersion(v.getVersion());
                                 v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                             }else {
                                 v.setVersion(v.getVersion()+1);
@@ -1353,7 +1352,6 @@ public class AppealServiceImpl implements AppealService {
                     if(pageShowFileDto!=null){
                         boolean equals = v.getMd5Code().equals(pageShowFileDto.getMd5Code());
                         if(equals){
-                            v.setVersion(v.getVersion());
                             v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         }else {
                             v.setVersion(v.getVersion()+1);
@@ -1458,13 +1456,13 @@ public class AppealServiceImpl implements AppealService {
         request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
         request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
         ApplicationDto entity = applicationFeClient.getApplicationByCorrId(appPremCorreId).getEntity();
-        AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(entity.getAppGrpId(),
-                ApplicationConsts.APP_GROUP_MISC_TYPE_MAX_FILE_INDEX, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        if (grpMisc != null) {
-            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,
-                    Integer.parseInt(grpMisc.getMiscValue()));
-        }
         if (entity != null) {
+            AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(entity.getAppGrpId(),
+                    ApplicationConsts.APP_GROUP_MISC_TYPE_MAX_FILE_INDEX, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            if (grpMisc != null) {
+                ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,
+                        Integer.valueOf(grpMisc.getMiscValue()));
+            }
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                 String appGrpId = entity.getAppGrpId();
                 List<AppSvcCgoDto> appSvcCgoDtos = applicationFeClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
@@ -1529,7 +1527,7 @@ public class AppealServiceImpl implements AppealService {
                         premisesSpecialDocDto.setMd5Code(fileMd5);
                         premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
                         premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-                        premisesSpecialDocDto.setIndex( k.substring(k.lastIndexOf("e") + 1));
+                        premisesSpecialDocDto.setIndex( k.substring(k.lastIndexOf('e') + 1));
                         appPremisesSpecialDocDtos.add(premisesSpecialDocDto);
                     }
                 }else {

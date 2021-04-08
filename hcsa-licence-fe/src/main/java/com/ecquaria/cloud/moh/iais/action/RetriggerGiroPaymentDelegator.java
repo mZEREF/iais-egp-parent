@@ -80,7 +80,7 @@ public class RetriggerGiroPaymentDelegator {
 
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
-        log.debug(StringUtil.changeForLog("appGrpNo:")+appGrpNo);
+        log.debug(StringUtil.changeForLog("appGrpNo:" +appGrpNo));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //init data
         String switch2 = "topreview";
@@ -228,8 +228,9 @@ public class RetriggerGiroPaymentDelegator {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if("next".equals(action)){
             if (StringUtil.isEmpty(payMethod)) {
-                errorMap.put("payMethod",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
-                errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                String GENERAL_ERR0006Msg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
+                errorMap.put("payMethod", GENERAL_ERR0006Msg);
+                errorMap.put("pay", GENERAL_ERR0006Msg);
                 NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             }

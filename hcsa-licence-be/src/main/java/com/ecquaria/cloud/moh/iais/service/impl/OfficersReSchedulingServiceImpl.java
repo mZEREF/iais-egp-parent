@@ -267,10 +267,10 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         List<String> appNoList = IaisCommonUtils.genNewArrayList();
         String workGroupCheck = reschedulingOfficerDto.getWorkGroupCheck();
         String wKGpId ="";
-        for (SelectOption wkGp:workGroupOption
-             ) {
+        for (SelectOption wkGp:workGroupOption) {
             if (wkGp.getValue().equals(workGroupCheck)){
                 wKGpId = reschedulingOfficerDto.getWorkGroupIdMap().get(wkGp.getText());
+                break;
             }
         }
         Map<String, Map<String, String>> groupCheckUserIdMap = reschedulingOfficerDto.getGroupCheckUserIdMap();
@@ -572,8 +572,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         ApplicationDto appInfoDto = getApplicationByAppNo(appNo);
                         //set application data
                         apptAppInfoShowDto.setApplicationNo(appNo);
-                        apptAppInfoShowDto.setStatus(appInfoDto.getStatus());
                         if(appInfoDto != null){
+                            apptAppInfoShowDto.setStatus(appInfoDto.getStatus());
                             serviceIds.add(appInfoDto.getServiceId());
                             if(renewalDateFlag) {
                                 //set service's licence end date
@@ -1073,17 +1073,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 if(apptUserCalendarDto != null) {
                     String appNo = apptUserCalendarDto.getAppNo();
                     if(!StringUtil.isEmpty(appNo)) {//NOSONAR
-                        if(appNoUserLoginId.containsKey(appNo)) {
-                            List<String> userLoginId = appNoUserLoginId.get(appNo);
-                            if(!IaisCommonUtils.isEmpty(userLoginId)) {//NOSONAR
-                                userLoginId.add(apptUserCalendarDto.getLoginUserId());
-                                appNoUserLoginId.put(appNo, userLoginId);
-                            }
-                        } else {
-                            List<String> userLoginId = IaisCommonUtils.genNewArrayList();
-                            userLoginId.add(apptUserCalendarDto.getLoginUserId());
-                            appNoUserLoginId.put(appNo, userLoginId);
+                        List<String> userLoginId = appNoUserLoginId.get(appNo);
+                        if(IaisCommonUtils.isEmpty(userLoginId)){
+                           userLoginId = IaisCommonUtils.genNewArrayList();
                         }
+                        userLoginId.add(apptUserCalendarDto.getLoginUserId());
+                        appNoUserLoginId.put(appNo, userLoginId);
                     }
                 }
             }

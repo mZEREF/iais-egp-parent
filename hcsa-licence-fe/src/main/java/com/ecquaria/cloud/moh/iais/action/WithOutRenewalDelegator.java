@@ -1491,18 +1491,18 @@ public class WithOutRenewalDelegator {
         Double totalAmount = (Double) ParamUtil.getSessionAttr(bpc.request, "totalAmount");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appSubmissionDto.setPaymentMethod(payMethod);
-        }
         //
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         String groupNo = "";
         String appGrpId = "";
         String licenseeId = null;
-        if (appSubmissionDtos.size() != 0) {
+        if ( !IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
             appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                appSubmissionDto.setPaymentMethod(payMethod);
+            }
         }
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)

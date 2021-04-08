@@ -426,6 +426,7 @@ public class ClientReschedulingDelegator {
             }
         }
         if(errMap.isEmpty()){
+           String OAPPT_ERR012Msg =  MessageUtil.getMessageDesc("OAPPT_ERR012");
             for (String id:apptIds){
                 Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
                 Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
@@ -465,13 +466,13 @@ public class ClientReschedulingDelegator {
                         }else {
                             apptViewDtos.get(id).setInspNewDate(null);
                             apptViewDtos.get(id).setUserIds(null);
-                            errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),MessageUtil.getMessageDesc("OAPPT_ERR012"));
+                            errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),OAPPT_ERR012Msg);
 
                         }
                     }else {
                         apptViewDtos.get(id).setInspNewDate(null);
                         apptViewDtos.get(id).setUserIds(null);
-                        errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),MessageUtil.getMessageDesc("OAPPT_ERR012"));
+                        errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),OAPPT_ERR012Msg);
 
                     }
                 }
