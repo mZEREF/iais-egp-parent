@@ -2848,6 +2848,19 @@ public class NewApplicationHelper {
         return appSvcDocDtoList;
     }
 
+    public static HcsaSvcDocConfigDto getHcsaSvcDocConfigDtoById(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, String id){
+        HcsaSvcDocConfigDto result = null;
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(id)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
+                if(id.equals(hcsaSvcDocConfigDto.getId())){
+                    result = hcsaSvcDocConfigDto;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     public static void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, List<AppSvcPrincipalOfficersDto> principalOfficersDtos, List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){
         if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
             for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {

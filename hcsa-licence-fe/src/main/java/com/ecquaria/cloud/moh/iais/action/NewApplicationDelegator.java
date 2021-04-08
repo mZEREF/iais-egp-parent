@@ -279,7 +279,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
+//        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -1683,6 +1683,8 @@ public class NewApplicationDelegator {
                     break;
             }
         }
+        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         List<AppPremisesRoutingHistoryDto> hisList;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -4647,7 +4649,7 @@ public class NewApplicationDelegator {
                         String premTye = appGrpPremisesDtos.get(0).getPremisesType();
                         String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:newGrpPrimaryDocList){
-                            HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(primaryDocConfig,appGrpPrimaryDocDto.getSvcComDocId());
+                            HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(primaryDocConfig,appGrpPrimaryDocDto.getSvcComDocId());
                             if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
                                 appGrpPrimaryDocDto.setPremisessName(premVal);
                                 appGrpPrimaryDocDto.setPremisessType(premTye);
@@ -4671,7 +4673,7 @@ public class NewApplicationDelegator {
                                 String premTye = appGrpPremisesDtos.get(0).getPremisesType();
                                 String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
                                 for(AppSvcDocDto svcDocDto:appSvcDocDtos){
-                                    HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
+                                    HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
                                     if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
                                         svcDocDto.setPremisesVal(premVal);
                                         svcDocDto.setPremisesType(premTye);
@@ -5316,18 +5318,7 @@ public class NewApplicationDelegator {
 
     }
 
-    private HcsaSvcDocConfigDto getHcsaSvcDocConfigDtoById(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,String id){
-        HcsaSvcDocConfigDto result = null;
-        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(id)){
-            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
-                if(id.equals(hcsaSvcDocConfigDto.getId())){
-                    result = hcsaSvcDocConfigDto;
-                    break;
-                }
-            }
-        }
-        return result;
-    }
+
 
     private AppGrpPrimaryDocDto getAppGrpPrimaryDocByConfigIdAndPremIndex(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String config,String premIndex){
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;

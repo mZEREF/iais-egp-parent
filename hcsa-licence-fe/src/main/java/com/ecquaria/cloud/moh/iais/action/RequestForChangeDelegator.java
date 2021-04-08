@@ -643,6 +643,27 @@ public class RequestForChangeDelegator {
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 //set doc info
                 requestForChangeService.changeDocToNewVersion(appSubmissionDto);
+                //svc doc set align
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
+                    String premTye = appGrpPremisesDtos.get(0).getPremisesType();
+                    String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                    if(appSvcRelatedInfoDtos !=null && appSvcRelatedInfoDtos.size() > 0){
+                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+                        List<AppSvcDocDto> appSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList)){
+                            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+                            for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
+                                HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,appSvcDocDto.getSvcDocId());
+                                if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
+                                    appSvcDocDto.setPremisesVal(premVal);
+                                    appSvcDocDto.setPremisesType(premTye);
+                                }
+                            }
+                        }
+                    }
+                }
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
