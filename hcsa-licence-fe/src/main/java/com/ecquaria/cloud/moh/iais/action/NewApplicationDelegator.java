@@ -3242,7 +3242,7 @@ public class NewApplicationDelegator {
                     String draftJson = applicationSubDraftDto.getDraftJson();
                     AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                     appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationFeClient.deleteDraftByNo(draftNo);
+                    applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }else {
                     if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
                         String draftJson = applicationSubDraftDto.getDraftJson();
