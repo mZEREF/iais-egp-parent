@@ -450,6 +450,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         apptInspectionDateDto.setInspectionDateMap(null);
         apptInspectionDateDto.setInspectionDate(null);
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
         return apptInspectionDateDto;
     }
 
