@@ -189,6 +189,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"env_jsp",GatewayConfig.eNetsEnvUrl);
 		ParamUtil.setSessionAttr(bpc.request,"apps_js",GatewayConfig.eNetsAppsUrl);
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
+		log.info(StringUtil.changeForLog(StringUtil.changeForLog("==========>txnReq message:"+txnRep)));
+		log.debug(StringUtil.changeForLog(StringUtil.changeForLog("==========>txnReq message:"+txnRep)));
+
 		ParamUtil.setSessionAttr(bpc.request,"API_KEY",keyId);
 		ParamUtil.setSessionAttr(bpc.request,"newHMAC",hmac);
 		ParamUtil.setSessionAttr(bpc.request,"sessionNetsId",fields.get("vpc_ReturnURL").substring(fields.get("vpc_ReturnURL").indexOf('=')+1));
