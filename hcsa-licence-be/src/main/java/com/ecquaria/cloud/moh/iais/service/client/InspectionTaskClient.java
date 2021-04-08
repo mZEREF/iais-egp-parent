@@ -195,9 +195,9 @@ public interface InspectionTaskClient {
 
     @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremInspApptDraftDto>> deleteInspDateDraftByAppNo(@RequestBody List<String> appNoList);
+    FeignResponseEntity<String> deleteInspDateDraftByAppNo(@RequestBody List<String> appNoList);
 
     @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an-ref",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremInspApptDraftDto>> deleteInspDateDraftByApptRefNo(@RequestBody List<String> apptRefNos);
+    FeignResponseEntity<String> deleteInspDateDraftByApptRefNo(@RequestBody List<String> apptRefNos);
 }
