@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
@@ -559,7 +560,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     svcIdLicDtMap = IaisCommonUtils.genNewHashMap();
                 }
             }
-
+            //get insp date draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtoList = IaisCommonUtils.genNewArrayList();
             //get start date and end date by Service and appShow info
             if(samePremisesAppMap != null) {
                 List<String> appNoList = samePremisesAppMap.get(applicationNo);
@@ -581,6 +583,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                             }
                         }
                         apptAppInfoShowDtos.add(apptAppInfoShowDto);
+                        //set insp date draft
+                        List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = inspectionTaskClient.getInspApptDraftListByAppNo(appNo).getEntity();
+                        if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
+                            appPremInspApptDraftDtoList.addAll(appPremInspApptDraftDtos);
+                        }
                     }
                     appointmentDto.setSvcIdLicDtMap(svcIdLicDtMap);
                     appointmentDto.setServiceIds(serviceIds);
@@ -591,13 +598,77 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
             }
             boolean dateFlag = getStartEndDateFlag(appointmentDto);
-            if(dateFlag) {
-                reschedulingOfficerDto.setAppointmentDto(appointmentDto);
+            reschedulingOfficerDto.setAppointmentDto(appointmentDto);
+            if(IaisCommonUtils.isEmpty(appPremInspApptDraftDtoList) && dateFlag) {
                 //set app data to show ,and set userId correlation app No. to save
                 apptAppInfoShowDtos = setInfoByDateAndUserIdToSave(apptAppInfoShowDtos, reschedulingOfficerDto);
+            } else if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtoList)) {
+                //set app data to show ,and set userId correlation app No.By Inspection Date Draft
+                apptAppInfoShowDtos = setInfoByDateAndUserIdByDraft(appPremInspApptDraftDtoList, apptAppInfoShowDtos, reschedulingOfficerDto);
             }
         }
         return apptAppInfoShowDtos;
+    }
+
+    private List<ApptAppInfoShowDto> setInfoByDateAndUserIdByDraft(List<AppPremInspApptDraftDto> appPremInspApptDraftDtoList, List<ApptAppInfoShowDto> apptAppInfoShowDtos,
+                                                                   ReschedulingOfficerDto reschedulingOfficerDto) {
+        for (ApptAppInfoShowDto apptAppInfoShowDto : apptAppInfoShowDtos) {
+            //user uuId list
+            List<String> userIds = IaisCommonUtils.genNewArrayList();
+            //user name list
+            List<String> userNameList = IaisCommonUtils.genNewArrayList();
+            if(apptAppInfoShowDto != null) {
+                String appNo = apptAppInfoShowDto.getApplicationNo();
+                for (AppPremInspApptDraftDto appPremInspApptDraftDto : appPremInspApptDraftDtoList) {
+                    if(appPremInspApptDraftDto != null) {
+                        //set new inspection date string to show
+                        reschedulingOfficerDto = getShowDraftDateTimeStringList(appPremInspApptDraftDto, reschedulingOfficerDto);
+                        //set user uuId
+                        String applicationNo = appPremInspApptDraftDto.getApplicationNo();
+                        if (appNo.equals(applicationNo)) {
+                            String userId = appPremInspApptDraftDto.getUserId();
+                            userIds.add(userId);
+                            //set user name
+                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                            if(orgUserDto != null) {
+                                userNameList.add(orgUserDto.getDisplayName());
+                            }
+                        }
+                    }
+                }
+                AppPremInspApptDraftDto appPremInspApptDraftDto = appPremInspApptDraftDtoList.get(0);
+                //set insp start date
+                apptAppInfoShowDto.setInspDate(appPremInspApptDraftDto.getStartDate());
+                //set apptRefNo
+                List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
+                apptRefNos.add(appPremInspApptDraftDto.getApptRefNo());
+                apptAppInfoShowDto.setApptRefNo(apptRefNos);
+                //sort
+                Collections.sort(userNameList);
+            }
+            apptAppInfoShowDto.setUserIdList(userIds);
+            apptAppInfoShowDto.setUserDisName(userNameList);
+        }
+        return apptAppInfoShowDtos;
+    }
+
+    private ReschedulingOfficerDto getShowDraftDateTimeStringList(AppPremInspApptDraftDto appPremInspApptDraftDto, ReschedulingOfficerDto reschedulingOfficerDto) {
+        if(reschedulingOfficerDto != null){
+            List<String> newInspDates;
+            if(IaisCommonUtils.isEmpty(reschedulingOfficerDto.getNewInspDates())){//NOSONAR
+                newInspDates = IaisCommonUtils.genNewArrayList();
+            } else {
+                newInspDates = reschedulingOfficerDto.getNewInspDates();
+            }
+            if(appPremInspApptDraftDto != null) {
+                String inspStartDate = apptDateToStringShow(appPremInspApptDraftDto.getStartDate());
+                String inspEndDate = apptDateToStringShow(appPremInspApptDraftDto.getEndDate());
+                String inspectionDate = inspStartDate + " - " + inspEndDate;
+                newInspDates.add(inspectionDate);
+            }
+            reschedulingOfficerDto.setNewInspDates(newInspDates);
+        }
+        return reschedulingOfficerDto;
     }
 
     @Override

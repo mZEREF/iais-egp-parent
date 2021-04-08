@@ -630,6 +630,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
         createFeAppPremisesInspecApptDto(apptInspectionDateDto);
         //cancel or confirm appointment date
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+        if(inspectionDateMap != null) {
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                String refNo = inspDateMap.getKey();
+                cancelRefNo.add(refNo);
+            }
+        }
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         Date inspDate;
         try {
@@ -639,8 +647,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             log.error("Error when insp Date ==>", e);
         }
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
+        //cancel draft
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
         //url
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
