@@ -3239,15 +3239,11 @@ public class NewApplicationDelegator {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
-                    String draftJson = applicationSubDraftDto.getDraftJson();
-                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                    appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+
                     applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }else {
                     if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
-                        String draftJson = applicationSubDraftDto.getDraftJson();
-                        AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                        appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+
                         applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }
