@@ -51,14 +51,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +103,8 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    private final static String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
      *
@@ -281,7 +276,7 @@ public class GiroDeductionBeDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
         String name = file.getOriginalFilename();
-        String substring = name.substring(name.lastIndexOf(".")+1);
+        String substring = name.substring(name.lastIndexOf('.')+1);
         if(!CSV.equals(substring.toLowerCase())|| name.length()>100){
             bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK022"));
             return;
@@ -358,7 +353,7 @@ public class GiroDeductionBeDelegator {
     @ResponseBody
     public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
-        String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
+
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();
         FileWriter out = new FileWriter("classpath:"+l+".csv");
@@ -377,7 +372,7 @@ public class GiroDeductionBeDelegator {
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
         try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              FileInputStream in = new FileInputStream(file.getPath())){
+              InputStream in =Files.newInputStream(file.toPath())){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){

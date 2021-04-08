@@ -193,6 +193,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
                          ) {
                         if (apg.getSubmitBy().equals(user.getId())&&applicationDto.getAppGrpId().equals(apg.getId())){
                             applicantName=user.getDisplayName();
+                            break;
                         }
                     }
                 }
