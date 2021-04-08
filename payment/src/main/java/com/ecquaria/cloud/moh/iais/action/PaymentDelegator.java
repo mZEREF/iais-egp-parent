@@ -50,7 +50,9 @@ public class PaymentDelegator {
         String message =  ParamUtil.getRequestString(request,"message");//contains TxnRes message
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace('\n',' ');
-        System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
+        //System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
+        log.info(StringUtil.changeForLog(StringUtil.changeForLog("==========>MerchantApp:b2sTxnEndUrl : data, message:"+message)));
+        log.debug(StringUtil.changeForLog(StringUtil.changeForLog("==========>MerchantApp:b2sTxnEndUrl : data, message:"+message)));
         System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
         System.out.println("====>  new Session ID : " + bpc.request.getSession().getId());
         redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),bpc.request);
