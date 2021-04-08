@@ -476,7 +476,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InputHeaderAck1Dto inputHeaderAck1Dto = new InputHeaderAck1Dto("HEADER", "15545033",dateString, "DBSSSGSG", tag, "UFF.001.003.01", "MINISTRY OF HEALTH", "SG","MIOFHE01", "ACTC","");
         InputTrailerDto INPUT_TRAILER = grioXmlPaymentDto.getINPUT_TRAILER();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(inputHeaderAck1Dto.toString()).append(INPUT_TRAILER.toString());
+        stringBuilder.append(inputHeaderAck1Dto).append(INPUT_TRAILER);
         String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
         String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK1";
         return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
@@ -486,15 +486,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InputHeaderAck2Or3Dto inputHeaderAck2Dto = new InputHeaderAck2Or3Dto("HEADER", "D000001554503310",tag, dateString, "MINISTRY OF HEALTH","MIOFHE01", "ACTC","");
         InputTrailerDto INPUT_TRAILER = grioXmlPaymentDto.getINPUT_TRAILER();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(inputHeaderAck2Dto.toString());
+        stringBuilder.append(inputHeaderAck2Dto);
         List<InputDetailDto> INPUT_DETAIL = grioXmlPaymentDto.getINPUT_DETAIL();
         if(!IaisCommonUtils.isEmpty(INPUT_DETAIL)){
             for(InputDetailDto inputDetailDto : INPUT_DETAIL){
                 InputDataAck2Or3Dto inputDataAck2Or3Dto = new InputDataAck2Or3Dto("DATA", "COL", "0010521098", "SGD","SGD", inputDetailDto.getParticulars(), inputDetailDto.getPaymentDate(), "client 1", "OCBCSGSGXXX", "SGD", inputDetailDto.getAmount(), "ACWC", "", inputDetailDto.getBatchID(), "", "0", inputDetailDto.getReceivingAccountNumber());
-                stringBuilder.append(inputDataAck2Or3Dto.toString());
+                stringBuilder.append(inputDataAck2Or3Dto);
             }
         }
-        stringBuilder.append(INPUT_TRAILER.toString());
+        stringBuilder.append(INPUT_TRAILER);
         String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
         String fileName = path+ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK2";
         return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
@@ -504,15 +504,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         InputHeaderAck2Or3Dto inputHeaderAck3Dto = new InputHeaderAck2Or3Dto("HEADER", "D000001554503310",tag, dateString, "MINISTRY OF HEALTH","MIOFHE01", "ACSP","");
         InputTrailerDto INPUT_TRAILER = grioXmlPaymentDto.getINPUT_TRAILER();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(inputHeaderAck3Dto.toString());
+        stringBuilder.append(inputHeaderAck3Dto);
         List<InputDetailDto> INPUT_DETAIL = grioXmlPaymentDto.getINPUT_DETAIL();
         if(!IaisCommonUtils.isEmpty(INPUT_DETAIL)){
             for(InputDetailDto inputDetailDto : INPUT_DETAIL){
                 InputDataAck2Or3Dto inputDataAck2Or3Dto = new InputDataAck2Or3Dto("DATA", "COL", "0010521098", "SGD","SGD", inputDetailDto.getParticulars(),inputDetailDto.getPaymentDate() , "client 1", "OCBCSGSGXXX", "SGD", inputDetailDto.getAmount(), "ACCP", "", inputDetailDto.getBatchID(), "", "", "");
-                stringBuilder.append(inputDataAck2Or3Dto.toString());
+                stringBuilder.append(inputDataAck2Or3Dto);
             }
         }
-        stringBuilder.append(INPUT_TRAILER.toString());
+        stringBuilder.append(INPUT_TRAILER);
         String path = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
         String fileName = path +ConfigHelper.getString("giro.sftp.linux.seperator")+ tag + '.'+ dateString + '.'+"ACK3";
         return genXmlFileToSftp(stringBuilder.toString(),fileName,path);
@@ -529,11 +529,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
     private String dbsFileDataByGiroXmlPaymentDto(GiroXmlPaymentDto grioXmlPaymentDto){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(grioXmlPaymentDto.getINPUT_HEADER().toString());
+        stringBuilder.append(grioXmlPaymentDto.getINPUT_HEADER());
         List<InputDetailDto> inputDetailDtos = grioXmlPaymentDto.getINPUT_DETAIL();
         if(!IaisCommonUtils.isEmpty(inputDetailDtos)){
             for(InputDetailDto inputDetailDto : inputDetailDtos){
-                stringBuilder.append(inputDetailDto.toString());
+                stringBuilder.append(inputDetailDto);
             }
         }
         stringBuilder.append(grioXmlPaymentDto.getINPUT_TRAILER());
@@ -648,7 +648,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setPhoneNumber4("");
                 inputDetailDto.setPhoneNumber5("");
                 if("E".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
-                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
+                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto(); //NOSONAR
                     //todo true data
                     String inNo = "1010039098";
                     invoiceDetailsDto.setSNo("001");
