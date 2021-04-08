@@ -41,6 +41,8 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -56,6 +58,7 @@ import java.util.Set;
  */
 @Slf4j
 @Service
+@EnableAsync
 public class GiroAccountServiceImpl implements GiroAccountService {
 
     @Autowired
@@ -149,7 +152,8 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
 
     @Override
-    public void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto) {
+    @Async("emailAsyncExecutor")
+    public void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto,int size) {
         try{
             List<LicenseeDto> licenseeDtos=organizationClient.getLicenseeByOrgId(giroAccountInfoDto.getOrganizationId()).getEntity();
             List<LicenceDto> licenceDtos=hcsaLicenceClient.getLicenceDtoByHciCode(giroAccountInfoDto.getHciCode(),licenseeDtos.get(0).getId()).getEntity();
@@ -166,16 +170,19 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(giroAccountInfoDto.getOrganizationId()).getEntity();
             String applicantName=licenseeDtos.get(0).getName();
-            List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
-            if(applicationGroupDtos!=null){
-                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
-                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-                for (OrgUserDto user:orgUserDtoList
-                ) {
-                    for (ApplicationGroupDto apg:applicationGroupDtos
-                         ) {
-                        if (apg.getSubmitBy().equals(user.getId())&&applicationDto.getAppGrpId().equals(apg.getId())){
-                            applicantName=user.getDisplayName();
+            if(size<5){
+                List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
+                if(applicationGroupDtos!=null){
+                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
+                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+                    for (OrgUserDto user:orgUserDtoList
+                    ) {
+                        for (ApplicationGroupDto apg:applicationGroupDtos
+                        ) {
+                            if (apg.getSubmitBy().equals(user.getId())&&applicationDto.getAppGrpId().equals(apg.getId())){
+                                applicantName=user.getDisplayName();
+                                break;
+                            }
                         }
                     }
                 }
@@ -193,7 +200,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
             String emailContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,templateContent);
             String smsContent = getEmailContent(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,templateContent);
-            String messageContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG,templateContent);
+            //String messageContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG,templateContent);
             EmailDto emailDto = new EmailDto();
             List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
             List<String> mobile = IaisCommonUtils.genNewArrayList();
@@ -204,6 +211,10 @@ public class GiroAccountServiceImpl implements GiroAccountService {
                     mobile.add(user.getMobileNo());
                 }
             }
+            Set<String> set = IaisCommonUtils.genNewHashSet();
+            set.addAll(receiptEmail);
+            receiptEmail.clear();
+            receiptEmail.addAll(set);
             emailDto.setReceipts(receiptEmail);
             emailDto.setContent(emailContent);
             emailDto.setSubject(emailSubject);
@@ -211,7 +222,10 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             emailDto.setClientQueryCode(giroAccountInfoDto.getHciCode());
             emailDto.setReqRefNum(giroAccountInfoDto.getOrganizationId());
             emailSmsClient.sendEmail(emailDto, null);
-
+            set.clear();
+            set.addAll(mobile);
+            mobile.clear();
+            mobile.addAll(set);
             SmsDto smsDto = new SmsDto();
             smsDto.setSender(mailSender);
             smsDto.setContent(smsContent);
@@ -224,17 +238,23 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             msgParam.setTemplateContent(templateContent);
             msgParam.setSubject(messageSubject);
             msgParam.setQueryCode(giroAccountInfoDto.getHciCode());
-            msgParam.setReqRefNum(licenseeDtos.get(0).getId());
-            msgParam.setRefId(licenseeDtos.get(0).getId());
-//
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
-            for (LicenceDto lic:licenceDtos
-                 ) {
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
-                if(hcsaServiceDto!=null){
-                    svcCodeSet.add(hcsaServiceDto.getSvcCode());
+
+            if(licenceDtos!=null){
+                msgParam.setReqRefNum(licenceDtos.get(0).getId());
+                msgParam.setRefId(licenceDtos.get(0).getId());
+                for (LicenceDto lic:licenceDtos
+                ) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
+                    if(hcsaServiceDto!=null){
+                        svcCodeSet.add(hcsaServiceDto.getSvcCode());
+                    }
                 }
+            }else {
+                msgParam.setReqRefNum(licenseeDtos.get(0).getId());
+                msgParam.setRefId(licenseeDtos.get(0).getId());
             }
+
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             svcCodeList.addAll(svcCodeSet);
             msgParam.setSvcCodeList(svcCodeList);
