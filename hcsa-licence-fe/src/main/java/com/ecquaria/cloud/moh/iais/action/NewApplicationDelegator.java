@@ -3232,7 +3232,7 @@ public class NewApplicationDelegator {
             AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(draftAppSubmissionDto!=null){
                 draftAppSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                applicationFeClient.saveDraft(draftAppSubmissionDto);
+                applicationFeClient.deleteDraftByNo(draftNo);
             }
         }
         if (!StringUtil.isEmpty(appSubmissionDto)&&!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
@@ -3242,13 +3242,13 @@ public class NewApplicationDelegator {
                     String draftJson = applicationSubDraftDto.getDraftJson();
                     AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                     appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationFeClient.saveDraft(appSubmissionDto1);
+                    applicationFeClient.deleteDraftByNo(draftNo);
                 }else {
                     if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
                         String draftJson = applicationSubDraftDto.getDraftJson();
                         AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
                         appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                        applicationFeClient.saveDraft(appSubmissionDto1);
+                        applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }
             }
