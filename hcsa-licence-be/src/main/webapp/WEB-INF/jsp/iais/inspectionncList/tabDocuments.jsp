@@ -143,7 +143,7 @@
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
                                     <td width="10%">
-                                        <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
+                                        <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
                                             <button type="button" class="btn btn-secondary-del btn-sm"
                                                     onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
                                                                                                     value="${interalFile.id}"/>');">

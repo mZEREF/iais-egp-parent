@@ -167,7 +167,7 @@
         var maxFileSize = $('#sysFileSize').val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
         if (error == "N") {
-            $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxLengthMessage").val());
+            $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
             $(this).closest('.document-upload-list').find('span.delBtn').trigger('click');
             dismissWaiting();
         } else {

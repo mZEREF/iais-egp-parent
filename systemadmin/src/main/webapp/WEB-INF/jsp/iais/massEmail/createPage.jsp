@@ -206,7 +206,7 @@
         console.log(error)
         if (error == "N"){
             $("#selectedFile").val('');
-            $('#error_file').html($("#fileMaxLengthMessage").val());
+            $('#error_file').html($("#fileMaxMBMessage").val());
         }else{
             var files = event.target.files;
             $(".filename").html("");
