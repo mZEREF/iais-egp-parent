@@ -120,7 +120,7 @@
         let maxFileSize = 100;
         let error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         if (error == "N"){
-          $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxLengthMessage").val());
+          $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
           $(".fileNameDisplay").text("");
           $(this).val(null);
         }else{

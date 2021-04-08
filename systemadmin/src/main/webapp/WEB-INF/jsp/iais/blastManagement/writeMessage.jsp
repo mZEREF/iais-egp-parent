@@ -132,7 +132,7 @@
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
         console.log(error)
         if (error == "N"){
-            $('#error_fileUploadError').html($("#fileMaxLengthMessage").val());
+            $('#error_fileUploadError').html($("#fileMaxMBMessage").val());
             $("#selectFile").val('');
             $(".filename").html("");
         }else if(error == "Y"){
@@ -140,7 +140,7 @@
                 callAjaxUploadFile();
                 $('#error_fileUploadError').html('');
             }else{
-                $('#error_fileUploadError').html($("#fileMaxLengthMessage").val());
+                $('#error_fileUploadError').html($("#fileMaxMBMessage").val());
                 $("#selectFile").val('');
             }
         }
