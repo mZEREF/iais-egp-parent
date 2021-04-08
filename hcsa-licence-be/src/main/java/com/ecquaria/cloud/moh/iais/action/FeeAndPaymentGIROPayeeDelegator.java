@@ -458,7 +458,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         try {
             for (GiroAccountInfoDto giro:giroAccountInfoDtoList1
             ) {
-                giroAccountService.sendEmailForGiroAccountAndSMSAndMessage(giro);
+                giroAccountService.sendEmailForGiroAccountAndSMSAndMessage(giro,giroAccountInfoDtoList1.size());
             }
         }catch (Exception e){
             log.debug("send Email failed");
