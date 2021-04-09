@@ -142,7 +142,7 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)"/><a
+                                                       onclick="fileClicked(event)" ONCHANGE="doUserRecUploadConfirmFile(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
@@ -207,35 +207,14 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        var fileElement = event.target;
-        if (fileElement.value == "") {
-            if (debug) {
-                console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
-            }
-            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-            $(fileElement).remove(); //'Removing Original'
-            if (evenMoreListeners) {
-                addEventListenersTo(clone[fileElement.id])
-            }//If Needed Re-attach additional Event Listeners
-        }
-        var file = $('#selectedFile').val();
-        file = file.split("\\");
-        $("span[name='fileName']").html(file[file.length - 1]);
-
-        if (file != '') {
-            $('#delete').attr("style", "display: inline-block;margin-left: 20px");
-            $('#isDelete').val('Y');
-            $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
-        }
-        uploadFileValidate();
+        ajaxCallUploadForMax('mainForm', "selectedFile",true);
     }
 
     function addEventListenersTo(fileChooser) {
         fileChooser.change(function (event) {
             console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
             /*  a();*/
-            ajaxCallUpload('mainForm', "selectedFile");
+            ajaxCallUploadForMax('mainForm', "selectedFile",true);
         });
     }
 
