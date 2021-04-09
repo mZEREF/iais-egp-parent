@@ -175,7 +175,7 @@
                                                         <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                             <option value="Assessment">Assessment</option>
                                                         </c:if>
-                                                        <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                        <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                             <option value="Make Payment">Make Payment</option>
                                                         </c:if>
                                                 </select>
@@ -185,7 +185,7 @@
                                                     <option value="" selected>Select</option>
                                                     <option value="Continue">Continue</option>
                                                     <option value="Delete">Delete</option>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                 </select>
@@ -202,7 +202,7 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
@@ -229,7 +229,7 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
@@ -241,7 +241,7 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Continue">Continue</option>
@@ -262,7 +262,7 @@
                                                 <c:if test="${app.canInspection}">
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                 </c:if>
-                                                <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                     <option value="Make Payment">Make Payment</option>
                                                 </c:if>
                                             </select>
@@ -284,7 +284,7 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
@@ -311,7 +311,7 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
@@ -346,7 +346,7 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
@@ -370,7 +370,7 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
