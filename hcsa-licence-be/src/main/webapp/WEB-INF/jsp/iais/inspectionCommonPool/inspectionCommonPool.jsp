@@ -82,12 +82,6 @@
                         <input type="text" name="hci_address" value="${cPoolSearchParam.filters['hci_address']}" />
                       </iais:value>
                     </iais:row>
-                    <iais:row>
-                      <iais:field value="Application Date From"/>
-                      <iais:value width="18">
-                        <iais:datePicker id = "sub_date" name = "sub_date" value="${sub_date2}"></iais:datePicker>
-                      </iais:value>
-                    </iais:row>
                     <iais:action style="text-align:right;">
                       <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
                       <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
