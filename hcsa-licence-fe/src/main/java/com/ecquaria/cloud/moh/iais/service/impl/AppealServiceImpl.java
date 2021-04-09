@@ -1146,7 +1146,7 @@ public class AppealServiceImpl implements AppealService {
                             if(equals){
                                 v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                             }else {
-                                v.setVersion(v.getVersion()+1);
+                                v.setVersion(pageShowFileDto.getVersion()+1);
                             }
                         }
                     }
@@ -1355,7 +1355,7 @@ public class AppealServiceImpl implements AppealService {
                         if(equals){
                             v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         }else {
-                            v.setVersion(v.getVersion()+1);
+                            v.setVersion(pageShowFileDto.getVersion()+1);
                         }
                     }
                 }
@@ -1445,6 +1445,7 @@ public class AppealServiceImpl implements AppealService {
                 pageShowFileDto.setSize(Integer.valueOf(appliSpecialDocDtoOne.getDocSize()));
                 pageShowFileDto.setMd5Code(appliSpecialDocDtoOne.getMd5Code());
                 pageShowFileDto.setFileUploadUrl(appliSpecialDocDtoOne.getFileRepoId());
+                pageShowFileDto.setVersion(appliSpecialDocDtoOne.getVersion());
                 pageShowFileDtos.add(pageShowFileDto);
                 map.put("selectedFile"+index,null);
                 pageShowFileHashMap.put("selectedFile"+index, pageShowFileDto);

@@ -280,7 +280,7 @@
     }
     function doGiroDeductionClear() {
         $('input[name="applicationNo"]').val("");
-        $('input[name="transactionId"]').val("");
+        $('input[name="txnRefNo"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="bankAccountNo"]').val("");
         $('input[name="paymentRefNo"]').val("");

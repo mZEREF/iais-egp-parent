@@ -1591,7 +1591,7 @@ public class LicenceViewServiceDelegator {
         log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:"+dupForPrem));
         log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:"+dupForPerson));
             if(dupForPerson==null && "0".equals(dupForPrem)){
-                result =  appSvcDocDto.getUpFileName() +" "+num;
+                result =  appSvcDocDto.getUpFileName() ;
             }else if(dupForPerson!=null&&"0".equals(dupForPrem)){
                 if("1".equals(dupForPerson)){
                     result = "Clinical Governance Officer "+num+": "+appSvcDocDto.getUpFileName();
