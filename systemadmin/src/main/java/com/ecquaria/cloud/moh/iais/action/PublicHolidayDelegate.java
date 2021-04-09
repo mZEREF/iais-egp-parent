@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -106,7 +107,11 @@ public class PublicHolidayDelegate {
      */
     public void doPrepare(BaseProcessClass bpc){
         SearchParam holidaySearchParam = getSearchParam(bpc.request);
-
+        //set public holiday description sort data
+        List<SelectOption> masterCodes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+        MasterCodePair masterCodePair = new MasterCodePair("PH_CODE", "PH_DESC", masterCodes);
+        holidaySearchParam.setMasterCode(masterCodePair);
+        //search
         QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
 
@@ -307,7 +312,7 @@ public class PublicHolidayDelegate {
     private String getPublicCode(String text,List<PublicHolidayDto> publicHolidayDtos){
         if("Chinese New Year".equals(text)){
             for (PublicHolidayDto item:publicHolidayDtos
-                 ) {
+            ) {
                 if("PUHD012".equals(item.getPhCode())){
                     return "PUHD002";
                 }
@@ -349,7 +354,7 @@ public class PublicHolidayDelegate {
         String[] id = ParamUtil.getMaskedStrings(bpc.request,"deleteId");
         List<String> holidayIds = IaisCommonUtils.genNewArrayList();
         for (String item:id
-             ) {
+        ) {
             holidayIds.add(item);
         }
         publicHolidayService.deleteHoliday(holidayIds);
@@ -428,6 +433,7 @@ public class PublicHolidayDelegate {
         SearchParam holidaySearchParam = getSearchParam(bpc.request);
         CrudHelper.doSorting(holidaySearchParam,bpc.request);
         System.out.println("111");
+        setSearchParam(bpc.request,holidaySearchParam);
     }
 
 
