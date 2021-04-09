@@ -182,6 +182,7 @@
                             <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
                               Sub-specialty or relevant qualification
                             </label>
+                            <span class="mandatory subSpecialtySpan">*</span>
                           </div>
                           <div class="col-xs-9 col-sm-5 col-md-7">
                             <div class="">
