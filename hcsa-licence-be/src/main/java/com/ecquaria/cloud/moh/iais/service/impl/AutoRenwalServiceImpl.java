@@ -858,8 +858,4 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
        }
 
-    public static void main(String[] args) {
-        String format = new SimpleDateFormat("dd/mm/yyyy").format(new Date());
-        System.out.println(format);
-    }
 }
