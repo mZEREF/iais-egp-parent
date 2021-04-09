@@ -929,10 +929,7 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
-        List<AppGrpPrimaryDocDto> oldPrimaryDocDtoList = null;
-        if(oldSubmissionDto != null){
-            oldPrimaryDocDtoList = oldSubmissionDto.getAppGrpPrimaryDocDtos();
-        }
+        List<AppGrpPrimaryDocDto> oldPrimaryDocDtoList = oldSubmissionDto.getAppGrpPrimaryDocDtos();
         String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {

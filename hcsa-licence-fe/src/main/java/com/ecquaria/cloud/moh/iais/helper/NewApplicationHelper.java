@@ -2178,6 +2178,9 @@ public class NewApplicationHelper {
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         }
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
         return appSubmissionDto;
     }
 
