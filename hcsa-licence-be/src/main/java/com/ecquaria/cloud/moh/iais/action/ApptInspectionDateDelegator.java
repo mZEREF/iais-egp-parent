@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -99,6 +100,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
     }
 
     /**
@@ -117,9 +119,10 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             //set application info show
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
-            /*//get inspection appt draft
-            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);*/
+            //get inspection appt draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", (Serializable) appPremInspApptDraftDtos);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);
@@ -155,8 +158,7 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateSpec(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        //cancel System date
-        apptInspectionDateDto = apptInspectionDateService.cancelSystemDateBySpecStep(apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
@@ -240,7 +242,7 @@ public class ApptInspectionDateDelegator {
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             StringBuilder subDate = new StringBuilder();
-             subDate.append(sdf2.format(sub_date1)) ;
+            subDate.append(sdf2.format(sub_date1)) ;
             if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
                     if(hours.equals(so.getValue())){
@@ -289,6 +291,7 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
+                ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);
