@@ -44,7 +44,9 @@
         window.clearTimeout(warningDlgIntHook);
 
         var min = parseInt('<%=warning%>');
+        var logout = parseInt('<%=timeout%>');
         warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
+        window.setTimeout('doLogout();', logout * 60 * 1000, 'JavaScript');
     }
 
     function startCountdown(min) {
@@ -71,12 +73,8 @@
 
     function showTimeoutWarning() {
         var min = parseInt('<%=(timeout - warning)%>');
-        if (min <= 0) {
-            doLogout();
-        } else {
-            $('#timeoutDlg').modal('show');
-            startCountdown(min);
-        }
+        $('#timeoutDlg').modal('show');
+        startCountdown(min);
     }
 
     function doExtend() {
