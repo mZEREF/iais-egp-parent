@@ -34,15 +34,15 @@
                             <c:choose>
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:value width="11">
-                                        <iais:select id="organizationId" name="organizationId" options="uenSelection"  cssClass="designationOption" firstOption="Please Select"
-                                                     value="${inter_user_attr.orgId}"></iais:select>
-                                        <span class="error-msg" name="errorMsg" id="error_organizationId"></span>
+                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" />
+                                        <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
                                 <c:otherwise>
                                     <iais:value width="11">
-                                        <input name="uenNo" id="uenNo" type="text" value="${uenNo}" readonly/>
+                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" readonly/>
                                         <input name="organizationId" id="organizationId" type="text" value="${organizationId}" hidden/>
+                                        <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:otherwise>
                             </c:choose>

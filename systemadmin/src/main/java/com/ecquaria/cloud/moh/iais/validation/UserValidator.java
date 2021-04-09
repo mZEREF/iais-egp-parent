@@ -43,10 +43,14 @@ public class UserValidator implements CustomizeValidator {
                 }
             }
 
-
-            if (StringUtil.isEmpty(dto.getOrgId())) {
-                map.put("organizationId", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            if (StringUtil.isEmpty(dto.getUenNo())){
+                map.put("uenNo", "GENERAL_ERR0006");
             }
+
+            /*if (StringUtil.isEmpty(dto.getOrgId())) {
+                map.put("organizationId", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }*/
+
             if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
                 map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
@@ -62,7 +66,6 @@ public class UserValidator implements CustomizeValidator {
                     map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
                 }
             }
-
         return map;
     }
 }
