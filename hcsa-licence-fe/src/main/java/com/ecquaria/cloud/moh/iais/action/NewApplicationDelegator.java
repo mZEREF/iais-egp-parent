@@ -2981,7 +2981,21 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
+        log.debug(StringUtil.changeForLog("before submit ..."));
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            appGrpPremisesDtos.forEach(k->{
+                log.debug("premises hci code is {}",k.getHciCode());
+            });
+        }
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
+        log.debug(StringUtil.changeForLog("after submit ..."));
+        appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            appGrpPremisesDtos.forEach(k->{
+                log.debug("premises hci code is {}",k.getHciCode());
+            });
+        }
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
