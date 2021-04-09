@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,7 @@ public class FeUserManagement {
 
     private void organizationSelection(BaseProcessClass bpc, String orgId){
         List<OrganizationDto> organList = intranetUserService.getUenList();
+        Map<String,String> uenMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(orgId)){
             for (OrganizationDto i :organList
@@ -80,13 +82,13 @@ public class FeUserManagement {
                 }
             }
         }else{
-            for (OrganizationDto i :organList
-            ) {
+            for (OrganizationDto i :organList) {
+                uenMap.put(i.getUenNo(), i.getId());
                 selectOptions.add(new SelectOption(i.getId(), i.getUenNo()));
             }
             ParamUtil.setRequestAttr(bpc.request,"uenSelection", selectOptions);
         }
-
+        ParamUtil.setSessionAttr(bpc.request,"existedUenMap", (Serializable) uenMap);
     }
 
     public void search(BaseProcessClass bpc){
@@ -187,6 +189,7 @@ public class FeUserManagement {
         }else{
             //do validation
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
+            String uenNo = ParamUtil.getString(bpc.request,"uenNo");
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
             String idType = ParamUtil.getString(bpc.request,"idType");
@@ -205,6 +208,7 @@ public class FeUserManagement {
             }
 
             FeUserDto feUserDto = new FeUserDto();
+            feUserDto.setUenNo(uenNo);
             feUserDto.setIdType(idType);
             feUserDto.setIdentityNo(idNo);
             feUserDto.setDisplayName(name);
@@ -299,9 +303,8 @@ public class FeUserManagement {
                 }
             }else{
                 if("Create".equalsIgnoreCase(title)){
-                    if (intranetUserService.accountAlreadyExist(feUserDto)){
-                        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                        errorMap.put("identityNo", "USER_ERR015");
+                    Map<String, String> errorMap = validateUen(bpc.request, uenNo, feUserDto, userDto);
+                    if (!errorMap.isEmpty()){
                         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                         return;
@@ -341,6 +344,24 @@ public class FeUserManagement {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
             }
         }
+    }
+
+    private Map<String,String> validateUen(HttpServletRequest request, String uenNo, FeUserDto feUserDto, OrgUserDto userDto){
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> existedUenMap = (Map<String, String>) ParamUtil.getSessionAttr(request, "existedUenMap");
+        if (IaisCommonUtils.isNotEmpty(existedUenMap) && StringUtil.isNotEmpty(uenNo) &&  existedUenMap.containsKey(uenNo)){
+            //save orgid when create
+            String orgId = existedUenMap.get(uenNo);
+            userDto.setOrgId(orgId);
+        }else {
+            errorMap.put("uenNo", "USER_ERR020");
+        }
+
+        if (intranetUserService.accountAlreadyExist(feUserDto)){
+            errorMap.put("identityNo", "USER_ERR002");
+        }
+
+        return errorMap;
     }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean refresh){
