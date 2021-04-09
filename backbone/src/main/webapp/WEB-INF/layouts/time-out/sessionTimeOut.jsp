@@ -42,12 +42,8 @@
     var countdownIntHook;
     function initSessionTimeout() {
         window.clearTimeout(warningDlgIntHook);
-        if (min <= 0) {
-            doLogout();
-        } else {
-            $('#timeoutDlg').modal('show');
-            startCountdown(min);
-        }
+        var min = parseInt('<%=warning%>');
+        warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
     }
 
     function startCountdown(min) {
@@ -74,8 +70,12 @@
 
     function showTimeoutWarning() {
         var min = parseInt('<%=(timeout - warning)%>');
-        $('#timeoutDlg').modal('show');
-        startCountdown(min);
+        if (min <= 0) {
+            doLogout();
+        } else {
+            $('#timeoutDlg').modal('show');
+            startCountdown(min);
+        }
     }
 
     function doExtend() {
