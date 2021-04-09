@@ -474,6 +474,7 @@
                                                                                     Sub-specialty or relevant
                                                                                     qualification
                                                                                 </label>
+                                                                                <span class="mandatory subSpecialtySpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <div class="">
@@ -640,6 +641,7 @@
 
         removeCgo();
 
+        addRemarkForSubspecialty();
 
         $('input[name="licPerson"]').each(function (k, v) {
             if ('1' == $(this).val()) {
@@ -690,8 +692,23 @@
         if($("#errorMapIs").val()=='error'){
             $('.edit').trigger('click');
         }
+
+        $('input[name="professionRegoNo"]').trigger('blur');
         init = 1;
     });
+
+    var addRemarkForSubspecialty = function () {
+        $('input[name="professionRegoNo"]').unbind('blur');
+        $('input[name="professionRegoNo"]').blur(function(){
+            var professionRegoNoVal = $(this).val().trim();
+            var $currContent = $(this).closest('.new-officer-form');
+            if(professionRegoNoVal.length == 0){
+                $currContent.find('span.subSpecialtySpan').html('*');
+            }else if(professionRegoNoVal.length > 0){
+                $currContent.find('span.subSpecialtySpan').html('');
+            }
+        });
+    }
 
     var psnSelect = function () {
         $('select.assignSel').change(function () {
@@ -773,6 +790,8 @@
                     $('.cgo-header').css('font-size', "18px");
                     <!--change psn item -->
                     changePsnItem();
+
+                    addRemarkForSubspecialty();
                     <!--set Scrollbar -->
                     /*$("div.assignSel->ul").mCustomScrollbar({
                             advanced: {

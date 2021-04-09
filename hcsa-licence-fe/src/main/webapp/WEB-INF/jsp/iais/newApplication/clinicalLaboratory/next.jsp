@@ -306,6 +306,7 @@
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         }
 
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur');
     }
     <!--cgo,medAlert -->
     var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
