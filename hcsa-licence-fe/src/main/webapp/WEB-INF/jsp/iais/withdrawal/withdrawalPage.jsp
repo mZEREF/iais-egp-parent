@@ -317,7 +317,7 @@
             $("#fileName").html(fileName.substring(pos + 1));
         } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
     }
