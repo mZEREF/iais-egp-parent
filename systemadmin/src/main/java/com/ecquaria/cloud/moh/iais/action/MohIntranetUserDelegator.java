@@ -476,7 +476,7 @@ public class MohIntranetUserDelegator {
             assignRoleOptionFull.remove(e.getKey());
         }
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
-        ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", roleNameAndIdMap);
+        ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", sortByKey(roleNameAndIdMap));
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable) insGroupOptions);
