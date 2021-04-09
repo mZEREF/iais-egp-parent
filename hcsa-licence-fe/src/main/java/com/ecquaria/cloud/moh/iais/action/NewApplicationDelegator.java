@@ -279,7 +279,6 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
-//        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -4372,6 +4371,15 @@ public class NewApplicationDelegator {
             }
 
             if (appSubmissionDto != null) {
+                //set max file index into session
+                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+                if(maxFileIndex == null){
+                    maxFileIndex = 0;
+                }else{
+                    maxFileIndex ++;
+                }
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+
                 appSubmissionDto.setRfiAppNo(appNo);
                 //clear svcDoc id
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -4736,14 +4744,6 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             }
         }
-        //set max file index into session
-        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-        if(maxFileIndex == null){
-            maxFileIndex = 0;
-        }else{
-            maxFileIndex ++;
-        }
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
 
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);

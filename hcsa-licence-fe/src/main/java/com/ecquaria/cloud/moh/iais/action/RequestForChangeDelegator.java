@@ -114,6 +114,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         init(bpc,licenceId);
         removeSession(bpc.request);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
@@ -613,6 +614,8 @@ public class RequestForChangeDelegator {
             }else{
                 log.debug(StringUtil.changeForLog("do request for change ------ licence no:"+appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+                //set file max seq num
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,appSubmissionDto.getMaxFileIndex()+1);
                 //set audit trail licNo
                 String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
