@@ -653,7 +653,10 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         List<AppGrpPremisesDto> allPremiseList = IaisCommonUtils.genNewArrayList();
         if(appSubmissionDtos.size() == 1){
-            int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+            Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+            if(maxFileIndex == null){
+                maxFileIndex = 0;
+            }
             appSubmissionDtos.get(0).setMaxFileIndex(maxFileIndex);
         }
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
@@ -733,9 +736,6 @@ public class WithOutRenewalDelegator {
                 if(eqServiceChange){
                     appEditSelectDto.setServiceEdit(true);
                 }
-                //set max file seq num
-                int maxFilSeqNum = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
-                appSubmissionDtos.get(0).setMaxFileIndex(maxFilSeqNum);
             }
 
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {

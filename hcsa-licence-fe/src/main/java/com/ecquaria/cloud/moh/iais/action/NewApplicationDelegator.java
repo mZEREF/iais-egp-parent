@@ -1344,7 +1344,10 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
-        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
@@ -1680,7 +1683,10 @@ public class NewApplicationDelegator {
                     break;
             }
         }
-        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         List<AppPremisesRoutingHistoryDto> hisList;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -2980,7 +2986,10 @@ public class NewApplicationDelegator {
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
 
