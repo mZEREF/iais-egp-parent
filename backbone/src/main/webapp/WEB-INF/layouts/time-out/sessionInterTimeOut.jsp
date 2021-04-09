@@ -71,8 +71,12 @@
 
     function showTimeoutWarning() {
         var min = parseInt('<%=(timeout - warning)%>');
-        $('#timeoutDlg').modal('show');
-        startCountdown(min);
+        if (min <= 0) {
+            doLogout();
+        } else {
+            $('#timeoutDlg').modal('show');
+            startCountdown(min);
+        }
     }
 
     function doExtend() {

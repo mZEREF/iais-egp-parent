@@ -42,8 +42,12 @@
     var countdownIntHook;
     function initSessionTimeout() {
         window.clearTimeout(warningDlgIntHook);
-        var min = parseInt('<%=warning%>');
-        warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
+        if (min <= 0) {
+            doLogout();
+        } else {
+            $('#timeoutDlg').modal('show');
+            startCountdown(min);
+        }
     }
 
     function startCountdown(min) {
