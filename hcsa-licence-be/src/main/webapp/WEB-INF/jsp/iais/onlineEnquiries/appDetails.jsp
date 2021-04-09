@@ -9,18 +9,18 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" >
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <div class="main-content">
-        <div class="container">
-            <div class="row ">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <iais:body>
-                            <div class="col-lg-12 col-sm-12">
+    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="crud_action_type" value="">
+        <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_additional" value="">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-lg-12 col-xs-12">
+                    <div class="center-content">
+                        <div class="intranet-content">
+                            <iais:body >
+                                <div class="col-xs-12">
                                 <div class="tab-gp dashboard-tab">
                                     <br><br><br>
                                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
@@ -277,12 +277,12 @@
                                     </div>
                                 </div>
                                 <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" ><em class="fa fa-angle-left"> </em> Back</a>
-                            </div>
-                        </iais:body>
+                                </div>
+                            </iais:body>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 </div>
