@@ -19,149 +19,175 @@ import java.util.List;
  **/
 public interface OfficersReSchedulingService {
     /**
-      * @author: shicheng
-      * @Date 2020/7/2
-      * @Param: loginContext, reschedulingOfficerDto
-      * @return: List<SelectOption>
-      * @Descripation: getInspWorkGroupByLogin
-      */
+     * @author: shicheng
+     * @Date 2020/7/2
+     * @Param: loginContext, reschedulingOfficerDto
+     * @return: List<SelectOption>
+     * @Descripation: getInspWorkGroupByLogin
+     */
     List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/2
-      * @Param: workGroupId
-      * @return: List<SelectOption>
-      * @Descripation: getInspectorByWorkGroupId
-      */
+     * @author: shicheng
+     * @Date 2020/7/2
+     * @Param: workGroupId
+     * @return: List<SelectOption>
+     * @Descripation: getInspectorByWorkGroupId
+     */
     List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo,String userId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/3
-      * @Param: reschedulingOfficerDto,workGroupOption
-      * @return: void
-      * @Descripation: allInspectorFromGroupList
-      */
+     * @author: shicheng
+     * @Date 2020/7/3
+     * @Param: reschedulingOfficerDto,workGroupOption
+     * @return: void
+     * @Descripation: allInspectorFromGroupList
+     */
     List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption,String userId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/3
-      * @Param: reschedulingOfficerDto
-      * @return: List<String>
-      * @Descripation: getAppNoByInspectorAndConditions
-      */
+     * @author: shicheng
+     * @Date 2020/7/3
+     * @Param: reschedulingOfficerDto
+     * @return: List<String>
+     * @Descripation: getAppNoByInspectorAndConditions
+     */
     List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto,String loginId,List<SelectOption> workGroupOption);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/6
-      * @Param: searchParam
-      * @return: SearchResult<ReschedulingOfficerQueryDto>
-      * @Descripation: getOfficersSearch
-      */
+     * @author: shicheng
+     * @Date 2020/7/6
+     * @Param: searchParam
+     * @return: SearchResult<ReschedulingOfficerQueryDto>
+     * @Descripation: getOfficersSearch
+     */
     SearchResult<ReschedulingOfficerQueryDto> getOfficersSearch(SearchParam searchParam);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/6
-      * @Param: searchResult, reschedulingOfficerDto
-      * @return: SearchResult<ReschedulingOfficerQueryDto>
-      * @Descripation: setInspectorsAndServices
-      */
+     * @author: shicheng
+     * @Date 2020/7/6
+     * @Param: searchResult, reschedulingOfficerDto
+     * @return: SearchResult<ReschedulingOfficerQueryDto>
+     * @Descripation: setInspectorsAndServices
+     */
     SearchResult<ReschedulingOfficerQueryDto> setInspectorsAndServices(SearchResult<ReschedulingOfficerQueryDto> searchResult, ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/7
-      * @Param: reschedulingOfficerDto, workGroupCheck, inspectorCheck
-      * @return: List<String>
-      * @Descripation: appNoListByGroupAndUserCheck
-      */
+     * @author: shicheng
+     * @Date 2020/7/7
+     * @Param: reschedulingOfficerDto, workGroupCheck, inspectorCheck
+     * @return: List<String>
+     * @Descripation: appNoListByGroupAndUserCheck
+     */
     List<String> appNoListByGroupAndUserCheck(ReschedulingOfficerDto reschedulingOfficerDto, String workGroupCheck, String inspectorCheck);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/7
-      * @Param: applicationNo
-      * @return: ApplicationDto
-      * @Descripation: getApplicationByAppNo
-      */
+     * @author: shicheng
+     * @Date 2020/7/7
+     * @Param: applicationNo
+     * @return: ApplicationDto
+     * @Descripation: getApplicationByAppNo
+     */
     ApplicationDto getApplicationByAppNo(String applicationNo);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/8
-      * @Param: reschedulingOfficerDto
-      * @return: void
-      * @Descripation: reScheduRoutingTask
-      */
+     * @author: shicheng
+     * @Date 2020/7/8
+     * @Param: reschedulingOfficerDto
+     * @return: void
+     * @Descripation: reScheduRoutingTask
+     */
     void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/9
-      * @Param: 
-      * @return: 
-      * @Descripation: 
-      */
+     * @author: shicheng
+     * @Date 2020/7/9
+     * @Param:
+     * @return:
+     * @Descripation:
+     */
     AppointmentDto getInspDateValidateData(ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/9
-      * @Param: reschedulingOfficerDto
-      * @return: void
-      * @Descripation: reScheduleRoutingAudit
-      */
+     * @author: shicheng
+     * @Date 2020/7/9
+     * @Param: reschedulingOfficerDto
+     * @return: void
+     * @Descripation: reScheduleRoutingAudit
+     */
     void reScheduleRoutingAudit(ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2020/7/22
-      * @Param: appointmentDto
-      * @return: AppointmentDto
-      * @Descripation: subtractEndHourByApptDto
-      */
+     * @author: shicheng
+     * @Date 2020/7/22
+     * @Param: appointmentDto
+     * @return: AppointmentDto
+     * @Descripation: subtractEndHourByApptDto
+     */
     AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/29
-      * @Param: reschedulingOfficerDto
-      * @return: List<ApptAppInfoShowDto>
-      * @Descripation: getReScheduleNewDateInfo
-      */
+     * @author: shicheng
+     * @Date 2021/3/29
+     * @Param: reschedulingOfficerDto
+     * @return: List<ApptAppInfoShowDto>
+     * @Descripation: getReScheduleNewDateInfo
+     */
     List<ApptAppInfoShowDto> getReScheduleNewDateInfo(ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/30
-      * @Param: apptAppInfoShowDtos, reschedulingOfficerDto
-      * @return: List<ApptAppInfoShowDto>
-      * @Descripation: setInfoByDateAndUserIdToSave
-      */
+     * @author: shicheng
+     * @Date 2021/3/30
+     * @Param: apptAppInfoShowDtos, reschedulingOfficerDto
+     * @return: List<ApptAppInfoShowDto>
+     * @Descripation: setInfoByDateAndUserIdToSave
+     */
     List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/30
-      * @Param: reschedulingOfficerDto
-      * @return: void
-      * @Descripation: sendEmailToApplicant
-      */
+     * @author: shicheng
+     * @Date 2021/3/30
+     * @Param: reschedulingOfficerDto
+     * @return: void
+     * @Descripation: sendEmailToApplicant
+     */
     void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/30
-      * @Param: reschedulingOfficerDto, apptReSchAppInfoShowDtos
-      * @return: void
-      * @Descripation: changeInspectorAndDate
-      */
+     * @author: shicheng
+     * @Date 2021/3/30
+     * @Param: reschedulingOfficerDto, apptReSchAppInfoShowDtos
+     * @return: void
+     * @Descripation: changeInspectorAndDate
+     */
     String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
 
     void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException;
 
+    /**
+     * @author: shicheng
+     * @Date 2021/4/8
+     * @Param: reschedulingOfficerDto
+     * @return: ReschedulingOfficerDto
+     * @Descripation: setNewInspStartDate
+     */
+    ReschedulingOfficerDto setNewInspStartDate(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/8
+     * @Param: apptReSchAppInfoShowDtos
+     * @return: List<String>
+     * @Descripation: getOldApptRefNos
+     */
+    List<String> getOldApptRefNos(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/8
+     * @Param: cancelApptRefNos
+     * @return: void
+     * @Descripation: confirmAndCancelApptRefNo
+     */
+    void confirmAndCancelApptRefNo(List<String> confirmApptRefNo, List<String> cancelApptRefNos);
 }
