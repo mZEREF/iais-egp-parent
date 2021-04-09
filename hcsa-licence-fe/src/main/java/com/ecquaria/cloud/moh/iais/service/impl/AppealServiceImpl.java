@@ -1147,7 +1147,7 @@ public class AppealServiceImpl implements AppealService {
                                 v.setVersion(v.getVersion());
                                 v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                             }else {
-                                v.setVersion(v.getVersion()+1);
+                                v.setVersion(pageShowFileDto.getVersion()+1);
                             }
                         }
                     }
@@ -1357,7 +1357,7 @@ public class AppealServiceImpl implements AppealService {
                             v.setVersion(v.getVersion());
                             v.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                         }else {
-                            v.setVersion(v.getVersion()+1);
+                            v.setVersion(pageShowFileDto.getVersion()+1);
                         }
                     }
                 }
