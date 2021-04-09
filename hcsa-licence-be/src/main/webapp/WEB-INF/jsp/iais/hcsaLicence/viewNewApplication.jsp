@@ -1916,7 +1916,7 @@
                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
                                       value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download"
-                                       class="downloadFile">${sinage.docName}</a> <c:out value="(${sinage.docSize})KB"/>
+                                       class="downloadFile">${sinage.docName}</a> <c:out value="(${sinage.docSize} KB)"/>
                                    </span>
                           </c:if>
                           <c:if test="${sinage.docSize==null}">
@@ -1935,7 +1935,7 @@
                                      title="Download" class="downloadFile">
                                       ${oldSvcDoc[inx.index].docName}
                                   </a>
-                                  <c:out value="(${oldSvcDoc[inx.index].docSize})KB"/>
+                                  <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
                                 </span>
                           </c:if>
                           <c:if test="${oldSvcDoc[inx.index].docSize==null}">

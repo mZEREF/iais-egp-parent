@@ -743,7 +743,7 @@
                                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
                                               <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
                                                      value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download" class="downloadFile"><span id="${sinage.fileRepoId}Down">trueDown</span></a>
-                                                <a onclick="doVerifyFileGo('${sinage.fileRepoId}')">${sinage.docName}<c:out value="(${sinage.docSize})KB"/></a>
+                                                <a onclick="doVerifyFileGo('${sinage.fileRepoId}')">${sinage.docName}</a><c:out value="(${sinage.docSize} KB)"/>
                                             </span>
                                             </c:if>
                                             <c:if test="${sinage.docSize==null}">
@@ -754,7 +754,7 @@
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize!=null}">
                                                  <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
                                                    <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
-                                                       value="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}"/>&fileRepoName=${oldAppGrpPrimaryDocDto[inx.index].docName}" title="Download" class="downloadFile">${oldAppGrpPrimaryDocDto[inx.index].docName}</a><c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize})KB"/>
+                                                       value="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}"/>&fileRepoName=${oldAppGrpPrimaryDocDto[inx.index].docName}" title="Download" class="downloadFile">${oldAppGrpPrimaryDocDto[inx.index].docName}</a><c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
                                                  </span>
                                             </c:if>
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize==null}">
