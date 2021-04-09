@@ -13,6 +13,7 @@
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <c:choose>
             <c:when test="${!empty rfi_already_err}">
