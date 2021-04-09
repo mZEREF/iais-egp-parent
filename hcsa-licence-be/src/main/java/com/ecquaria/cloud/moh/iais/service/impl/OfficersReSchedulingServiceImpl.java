@@ -639,7 +639,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 AppPremInspApptDraftDto appPremInspApptDraftDto = appPremInspApptDraftDtoList.get(0);
                 //set insp start date
                 apptAppInfoShowDto.setInspDate(appPremInspApptDraftDto.getStartDate());
-                apptAppInfoShowDto.setEndDate(appPremInspApptDraftDto.getEndDate());
+                apptAppInfoShowDto.setInspEndDate(appPremInspApptDraftDto.getEndDate());
                 //set apptRefNo
                 List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 apptRefNos.add(appPremInspApptDraftDto.getApptRefNo());
@@ -898,7 +898,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);
             if(apptAppInfoShowDto != null) {
                 AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
-                appointmentDto.setStartDate(Formatter.formatDateTime(apptAppInfoShowDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                appointmentDto.setStartDate(Formatter.formatDateTime(apptAppInfoShowDto.getInspEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                reschedulingOfficerDto.setAppointmentDto(appointmentDto);
             }
         }
         return reschedulingOfficerDto;
@@ -1151,7 +1152,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                             //set user
                             apptAppInfoShowDto = setUserIdByLoginIds(apptAppInfoShowDto, userLoginIds);
                             apptAppInfoShowDto.setInspDate(inspDate);
-                            apptAppInfoShowDto.setEndDate(inspEndDate);
+                            apptAppInfoShowDto.setInspEndDate(inspEndDate);
                             //create inspection date Draft
                             List<String> userIds = apptAppInfoShowDto.getUserIdList();
                             List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = getInspecDateDraftList(userIds, apptReDto, apptAppInfoShowDto);
