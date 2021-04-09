@@ -130,6 +130,7 @@
                                     <p class="appId"><iais:mask name="action_id_value" value="${app.id}"/></p>
                                     <p class="appSelfFlag">${app.selfAssmtFlag}</p>
                                      <p class="appGroupId">${app.appGrpId}</p>
+                                     <p class="appPmtStatus">${app.pmtStatus}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>

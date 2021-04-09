@@ -235,7 +235,7 @@
         fileChooser.change(function (event) {
             console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
             /*  a();*/
-            ajaxCallUpload('mainForm', "selectedFile");
+            ajaxCallUpload('mainForm', "selectedFile",true);
         });
     }
 

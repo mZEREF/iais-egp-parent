@@ -59,11 +59,14 @@
         var appNo = $(this).closest("tr").find(".appNo").html();
         var appType = $(this).closest("tr").find(".apptype").html();
         var appGrpId = $(this).closest("tr").find(".appGroupId").html();
+        var appPmtStatus = $(this).closest("tr").find(".appPmtStatus").html();
         showWaiting();
         $("[name='action_no_value']").val(appNo);
         $("[name='action_type_value']").val(appType);
-        $("[name='action_grp_value']").val(appGrpId);
-        $("[name='action_self_value']").val('appMakePayment');
+        if ('PMT06' == appPmtStatus){
+            $("[name='action_grp_value']").val(appGrpId);
+            $("[name='action_self_value']").val('appMakePayment');
+        }
         submit("appToAppView");
     })
 </script>
