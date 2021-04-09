@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -103,7 +104,8 @@ public class RetriggerGiroPaymentDelegator {
             return;
         }
         //appSubmissionDto.setRfiMsgId(msgId);
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        //set type for page display
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
@@ -197,7 +199,8 @@ public class RetriggerGiroPaymentDelegator {
 
     public void prepreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the prepreview start ...."));
-
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+        ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.FALSE);
         log.info(StringUtil.changeForLog("the prepreview end ...."));
     }
 
