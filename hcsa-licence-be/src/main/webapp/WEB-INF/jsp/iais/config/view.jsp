@@ -113,7 +113,7 @@
         <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-7 control-label" >Base Service Subsumed Under&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
+            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@
         <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-7 control-label" >Pre-requisite Base Service&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
+            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
         </div>
       </div>
