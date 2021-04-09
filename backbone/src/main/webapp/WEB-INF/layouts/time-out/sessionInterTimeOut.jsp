@@ -44,7 +44,9 @@
         window.clearTimeout(warningDlgIntHook);
 
         var min = parseInt('<%=warning%>');
+        var logout = parseInt('<%=timeout%>');
         warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
+        window.setTimeout('doLogout();', logout * 60 * 1000, 'JavaScript');
     }
 
     function startCountdown(min) {
