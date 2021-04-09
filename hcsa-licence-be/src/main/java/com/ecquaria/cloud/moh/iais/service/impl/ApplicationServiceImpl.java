@@ -368,7 +368,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             String tlGroupNumber = "-";
             String tlAppType = "-";
             String tlSvcName = "-";
-            String inspDate = DateUtil.formatDate(i.getInspectionDate());
+            String inspDate = Formatter.formatDate(i.getInspectionDate());
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
