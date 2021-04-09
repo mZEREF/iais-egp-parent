@@ -178,7 +178,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, "requestInformationConfig", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
-//        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -208,7 +208,7 @@ public class WithOutRenewalDelegator {
             if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
                 log.info(StringUtil.changeForLog("appSubmissionDtoList size:" + appSubmissionDtoList.size()));
                 appSubmissionDtoList.get(0).setOneLicDoRenew(true);
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,appSubmissionDtoList.get(0).getMaxFileIndex());
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,appSubmissionDtoList.get(0).getMaxFileIndex() +1);
             }
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
@@ -733,6 +733,9 @@ public class WithOutRenewalDelegator {
                 if(eqServiceChange){
                     appEditSelectDto.setServiceEdit(true);
                 }
+                //set max file seq num
+                int maxFilSeqNum = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+                appSubmissionDtos.get(0).setMaxFileIndex(maxFilSeqNum);
             }
 
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
