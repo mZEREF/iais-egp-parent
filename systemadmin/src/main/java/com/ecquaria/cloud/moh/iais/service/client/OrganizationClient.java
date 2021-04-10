@@ -67,4 +67,6 @@ public interface OrganizationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<String>> getMobileInLicenseeIds(@RequestBody List<String> ids);
 
+    @GetMapping(value = "/iais-orguser-be/org-user-account-sample-by-organization-id",produces = { MediaType.APPLICATION_JSON_VALUE })
+    FeignResponseEntity<List<OrgUserDto>> getUserListByOrganId(@RequestParam("organizationId") String organizationId);
 }

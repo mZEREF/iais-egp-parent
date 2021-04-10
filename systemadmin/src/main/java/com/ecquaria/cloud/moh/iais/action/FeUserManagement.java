@@ -40,6 +40,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -144,10 +146,15 @@ public class FeUserManagement {
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
-                    FeUserDto feUserDto = intranetUserService.getFeUserAccountByNricAndType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
-                    feUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
-                    eicGatewayClient.syncFeUser(feUserDto);
-                    intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
+                    String orgId = orgUserDto.getOrgId();
+                    List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
+                    Optional<FeUserDto> user = userList.stream().filter(i -> i.getOrgId().equals(orgId)).findFirst();
+                    user.ifPresent(i -> {
+                        i.setStatus(AppConsts.COMMON_STATUS_DELETED);
+                        eicGatewayClient.syncFeUser(i);
+                        intranetUserService.deleteEgpUser(orgUserDto.getUserDomain(),orgUserDto.getUserId());
+                    });
+
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
@@ -162,6 +169,7 @@ public class FeUserManagement {
     }
 
     public void edit(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr_is_corppass",null);
         String userId = ParamUtil.getMaskedString(bpc.request,"userId");
         FeUserDto feUserDto;
 
@@ -183,7 +191,7 @@ public class FeUserManagement {
     public void validation(BaseProcessClass bpc){
         String title = ParamUtil.getRequestString(bpc.request,"feusertitle");
         String action = ParamUtil.getRequestString(bpc.request,"action");
-        FeUserDto feUserDtoSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request,"inter_user_attr");
+        FeUserDto userAttr = (FeUserDto) ParamUtil.getSessionAttr(bpc.request,"inter_user_attr");
         if("back".equals(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
         }else{
@@ -200,96 +208,71 @@ public class FeUserManagement {
             String email = ParamUtil.getString(bpc.request,"email");
             String active = ParamUtil.getString(bpc.request,"active");
             String role = ParamUtil.getString(bpc.request,"role");
-            String organizationId = ParamUtil.getString(bpc.request,"organizationId");
-            if("active".equals(active)){
-                active = AppConsts.COMMON_STATUS_ACTIVE;
-            }else{
-                active = AppConsts.COMMON_STATUS_IACTIVE;
-            }
-
-            FeUserDto feUserDto = new FeUserDto();
-            feUserDto.setUenNo(uenNo);
-            feUserDto.setIdType(idType);
-            feUserDto.setIdentityNo(idNo);
-            feUserDto.setDisplayName(name);
-            feUserDto.setSalutation(salutation);
-            feUserDto.setDesignation(designation);
-            feUserDto.setMobileNo(mobileNo);
-            feUserDto.setOfficeTelNo(officeNo);
-            feUserDto.setEmail(email);
-            feUserDto.setOrgId(organizationId);
-            feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            feUserDto.setAvailable(Boolean.TRUE);
-            feUserDto.setStatus(active);
-
+            active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
+            userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
+            String prevIdNumber = userAttr.getIdentityNo();
+            userAttr.setUenNo(uenNo);
+            userAttr.setIdType(idType);
+            userAttr.setIdentityNo(idNo);
+            userAttr.setIdNumber(idNo);
+            userAttr.setDisplayName(name);
+            userAttr.setSalutation(salutation);
+            userAttr.setDesignation(designation);
+            userAttr.setMobileNo(mobileNo);
+            userAttr.setOfficeTelNo(officeNo);
+            userAttr.setEmail(email);
+            userAttr.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            userAttr.setAvailable(Boolean.TRUE);
+            userAttr.setStatus(active);
+            userAttr.setAccountActivateDatetime(new Date());
             List<OrgUserRoleDto> orgUserRoleDtoList = IaisCommonUtils.genNewArrayList();
-
             OrgUserRoleDto orgUserRoleDtoAdmin = new OrgUserRoleDto();
             OrgUserRoleDto orgUserRoleDtoUser = new OrgUserRoleDto();
             orgUserRoleDtoAdmin.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             if("admin".equals(role)){
+                //TODO i don't know why this need two role
                 orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
                 orgUserRoleDtoList.add(orgUserRoleDtoAdmin);
                 orgUserRoleDtoList.add(orgUserRoleDtoUser);
-                feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
+                userAttr.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
             }else{
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
                 orgUserRoleDtoList.add(orgUserRoleDtoUser);
-                feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
+                userAttr.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
             }
 
-            OrgUserDto userDto = new OrgUserDto();
-            userDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            userDto.setSalutation(salutation);
-            userDto.setIdentityNo(idNo);
-            userDto.setIdType(idType);
-            userDto.setDesignation(designation);
-            userDto.setOrgId(organizationId);
-            userDto.setDisplayName(name);
-            userDto.setMobileNo(mobileNo);
-            userDto.setOfficeTelNo(officeNo);
-            userDto.setStatus(active);
-            userDto.setEmail(email);
-
+            OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
-
-            if("Edit".equals(title)) {
-                feUserDto.setId(feUserDtoSession.getId());
-                feUserDto.setUserId(feUserDtoSession.getUserId());
-                feUserDto.setUenNo(feUserDtoSession.getUenNo());
-                feUserDto.setAvailable(Boolean.TRUE);
-                feUserDto.setOrganization(feUserDtoSession.getOrganization());
-                feUserDto.setAccountActivateDatetime(feUserDtoSession.getAccountActivateDatetime());
-                userDto.setUserId(feUserDtoSession.getUserId());
-                userDto.setId(feUserDtoSession.getId());
-                userDto.setAvailable(Boolean.TRUE);
-                userDto.setOrganization(feUserDtoSession.getOrganization());
-                userDto.setAccountActivateDatetime(feUserDtoSession.getAccountActivateDatetime());
+            if(userAttr.isCorpPass()){
+                userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
+                userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
             }else{
-                feUserDto.setAvailable(Boolean.TRUE);
-                feUserDto.setIdentityNo(idNo);
-                feUserDto.setAccountActivateDatetime(new Date());
-                userDto.setAvailable(Boolean.TRUE);
-                userDto.setIdentityNo(idNo);
-                userDto.setIdNumber(idNo);
-                userDto.setAccountActivateDatetime(new Date());
-            }
-
-            if(feUserDto.isCorpPass()){
-                feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-                userDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-            }else{
-                feUserDto.setUserId(idNo);
+                userAttr.setUserId(idNo);
                 userDto.setUserId(idNo);
             }
-            ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
+            ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",userAttr);
             if("Edit".equals(title)){
-                validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
+                validationResult = WebValidationHelper.validateProperty(userAttr, "edit");
             }else{
-                validationResult = WebValidationHelper.validateProperty(feUserDto, "create");
+                validationResult = WebValidationHelper.validateProperty(userAttr, "create");
+                if (StringUtil.isEmpty(uenNo)){
+                    validationResult.addMessage("uenNo", "GENERAL_ERR0006");
+                    validationResult.setHasErrors(true);
+                }else {
+                    Map<String, String> existedUenMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "existedUenMap");
+                    if (IaisCommonUtils.isNotEmpty(existedUenMap) &&  existedUenMap.containsKey(uenNo)){
+                        //save orgid when create
+                        String orgId = existedUenMap.get(uenNo);
+                        userDto.setOrgId(orgId);
+                        userAttr.setOrgId(orgId);
+                    }else {
+                        validationResult.addMessage("uenNo", "USER_ERR020");
+                        validationResult.setHasErrors(true);
+                    }
+                }
             }
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
@@ -302,66 +285,45 @@ public class FeUserManagement {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                 }
             }else{
-                if("Create".equalsIgnoreCase(title)){
-                    Map<String, String> errorMap = validateUen(bpc.request, uenNo, feUserDto, userDto);
-                    if (!errorMap.isEmpty()){
-                        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
-                        return;
+                if (intranetUserService.canUpdateAccount(userAttr, prevIdNumber)){
+                    AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
+                    att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
+                    AuditTrailHelper.callSaveAuditTrail(att);
+
+                    Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
+                    successMap.put("save","suceess");
+                    //save be
+                    //save client
+                    if("Edit".equals(title)) {
+                        intranetUserService.updateOrgUser(userDto);
+                        orgUserRoleDtoAdmin.setUserAccId(userAttr.getId());
+                        orgUserRoleDtoUser.setUserAccId(userAttr.getId());
+                        intranetUserService.removeRoleByAccount(userAttr.getId());
+                        intranetUserService.assignRole(orgUserRoleDtoList);
+                        editEgpUser(userDto);
+                    }else{
+                        OrgUserDto orgUserDto = intranetUserService.createIntrenetUser(userDto);
+                        orgUserRoleDtoAdmin.setUserAccId(orgUserDto.getId());
+                        orgUserRoleDtoUser.setUserAccId(orgUserDto.getId());
+                        userAttr.setId(orgUserDto.getId());
+                        intranetUserService.assignRole(orgUserRoleDtoList);
+                        saveEgpUser(userDto);
                     }
-                }
+                    //sync fe db
+                    try {
+                        eicGatewayClient.syncFeUser(userAttr);
+                    }catch (Exception e){
+                        log.error(e.getMessage(), e);
+                    }
 
-                AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
-                att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
-                AuditTrailHelper.callSaveAuditTrail(att);
-
-                Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
-                successMap.put("save","suceess");
-                //save be
-                //save client
-                if("Edit".equals(title)) {
-                    intranetUserService.updateOrgUser(userDto);
-                    orgUserRoleDtoAdmin.setUserAccId(feUserDto.getId());
-                    orgUserRoleDtoUser.setUserAccId(feUserDto.getId());
-                    intranetUserService.removeRoleByAccount(feUserDto.getId());
-                    intranetUserService.assignRole(orgUserRoleDtoList);
-                    editEgpUser(userDto);
-                }else{
-                    OrgUserDto orgUserDto = intranetUserService.createIntrenetUser(userDto);
-                    orgUserRoleDtoAdmin.setUserAccId(orgUserDto.getId());
-                    orgUserRoleDtoUser.setUserAccId(orgUserDto.getId());
-                    feUserDto.setId(orgUserDto.getId());
-                    intranetUserService.assignRole(orgUserRoleDtoList);
-                    saveEgpUser(userDto);
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
+                }else {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr("identityNo", "USER_ERR002"));
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
+                    return;
                 }
-                //sync fe db
-                try {
-                    eicGatewayClient.syncFeUser(feUserDto);
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"suc");
             }
         }
-    }
-
-    private Map<String,String> validateUen(HttpServletRequest request, String uenNo, FeUserDto feUserDto, OrgUserDto userDto){
-        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        Map<String, String> existedUenMap = (Map<String, String>) ParamUtil.getSessionAttr(request, "existedUenMap");
-        if (IaisCommonUtils.isNotEmpty(existedUenMap) && StringUtil.isNotEmpty(uenNo) &&  existedUenMap.containsKey(uenNo)){
-            //save orgid when create
-            String orgId = existedUenMap.get(uenNo);
-            userDto.setOrgId(orgId);
-        }else {
-            errorMap.put("uenNo", "USER_ERR020");
-        }
-
-        if (intranetUserService.accountAlreadyExist(feUserDto)){
-            errorMap.put("identityNo", "USER_ERR002");
-        }
-
-        return errorMap;
     }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean refresh){

@@ -48,7 +48,7 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(String nric, String idType) {
+    public FeignResponseEntity<List<FeUserDto>> getUserListByNricAndIdType(String nric, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

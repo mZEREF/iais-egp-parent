@@ -106,4 +106,11 @@ public class OrganizationClientFallback implements OrganizationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> getUserListByOrganId(String organizationId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
