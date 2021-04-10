@@ -216,7 +216,6 @@
             $("#disApptSpecInspDate").show();
             $("#apptSpecInspDate").hide();
         }
-        apptInspectionDateJump();
         var apptBackShow = $("#apptBackShow").val();
         if('back' == apptBackShow){
             apptInspectionDateJump();
