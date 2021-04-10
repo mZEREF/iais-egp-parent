@@ -194,11 +194,12 @@
             disabeleForAllDay($allDayDiv);
         });
         init = 1;
-        if($("#errorMapIs").val()=='error'){
+        if($("#errorMapIs").val()=='error' &&$('#eqHciNameChange').val()==true){
             $('.premisesEdit').trigger('click');
         }
         if($('#eqHciNameChange').val()==false){
             $("input[name='isPartEdit']").val('1');
+            $("input[name='chooseExistData']").val('1');
         }
     });
 

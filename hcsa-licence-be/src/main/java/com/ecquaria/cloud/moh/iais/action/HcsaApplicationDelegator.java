@@ -3504,6 +3504,7 @@ public class HcsaApplicationDelegator {
                 //file
                 List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if (appealSpecialDocDto != null) {
+                    Collections.sort(appealSpecialDocDto,(s1,s2)->(s1.getIndex().compareTo(s2.getIndex())));
                     request.getSession().setAttribute("feAppealSpecialDocDto", appealSpecialDocDto);
 
                 }

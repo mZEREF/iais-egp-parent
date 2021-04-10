@@ -830,6 +830,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 TaskHistoryDto taskHistoryDtoCessionOrWithDrawal  = getRoutingTaskForRequestForInformation(cessionOrwith,intranet);
                 onSubmitTaskList.addAll(taskDtos);
                 if(taskHistoryDtoCessionOrWithDrawal != null && !IaisCommonUtils.isEmpty(taskHistoryDtoCessionOrWithDrawal.getAppPremisesRoutingHistoryDtos())){
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = taskHistoryDtoCessionOrWithDrawal.getAppPremisesRoutingHistoryDtos();
+                    for(AppPremisesRoutingHistoryDto v : appPremisesRoutingHistoryDtos1){
+                        v.setWrkGrpId(null);
+                    }
                     appPremisesRoutingHistoryDtos.addAll(taskHistoryDtoCessionOrWithDrawal.getAppPremisesRoutingHistoryDtos());
                 }
             }catch (Exception e){

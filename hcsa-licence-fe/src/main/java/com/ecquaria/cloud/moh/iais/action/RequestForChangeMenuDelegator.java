@@ -1588,9 +1588,9 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
         boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        if(!eqHciCode){
-            bpc.request.setAttribute("eqHciCode",eqHciCode);
-        }
+
+        bpc.request.setAttribute("eqHciCode",eqHciCode);
+
         if (!isSame || !b || eqAddFloorNo) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);

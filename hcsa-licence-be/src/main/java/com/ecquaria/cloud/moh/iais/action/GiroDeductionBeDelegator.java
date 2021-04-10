@@ -82,6 +82,8 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private GiroDeductionClient giroDeductionClient;
     private final static String CSV="csv";
+
+    private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -291,12 +293,7 @@ public class GiroDeductionBeDelegator {
                 if("Application No.".equals(s)){
                     continue;
                 }
-//                record.get("HCI Name");
-//                record.get("Transaction Reference No.");
-//                record.get("Invoice No.");
-//                record.get("Bank Account No.");
                 String payment_status = record.get("Payment Status");
-//                record.get("Payment Amount");
                 map.put(s,payment_status);
             }
         }catch (Exception e){
@@ -309,7 +306,7 @@ public class GiroDeductionBeDelegator {
             giroDeductionDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
         });
-        if (!StringUtil.isEmpty(giroDeductionDtoList)){
+        if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),

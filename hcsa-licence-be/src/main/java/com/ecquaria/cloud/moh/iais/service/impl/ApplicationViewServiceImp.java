@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,6 +376,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 //file
                 List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
+                    Collections.sort(appealSpecialDocDto,(s1,s2)->(s1.getIndex().compareTo(s2.getIndex())));
                     applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();
