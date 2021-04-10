@@ -906,7 +906,10 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 calendar.add(Calendar.DATE, 1);
                 Date newStartDate = calendar.getTime();
                 //get map
-                HashMap<String, Date> userSpecMap = IaisCommonUtils.genNewHashMap();
+                HashMap<String, Date> userSpecMap = appointmentDto.getUserSpecMap();
+                if(userSpecMap == null) {
+                    userSpecMap = IaisCommonUtils.genNewHashMap();
+                }
                 for(ApptAppInfoShowDto appInfoShowDto : apptReSchAppInfoShowDtos) {
                     List<String> userIds = appInfoShowDto.getUserIdList();
                     if(!IaisCommonUtils.isEmpty(userIds)) {
