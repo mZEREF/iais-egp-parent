@@ -62,7 +62,6 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppGrpByNo(appGroupNo).getEntity();
                 //todo status before insp, after insp
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER);
-                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
                 applicationGroupDtos.add(applicationGroupDto);
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 String applicantId = applicationGroupDto.getSubmitBy();
