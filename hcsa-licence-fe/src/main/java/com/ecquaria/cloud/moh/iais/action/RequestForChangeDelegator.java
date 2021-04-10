@@ -692,6 +692,14 @@ public class RequestForChangeDelegator {
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
             }
             ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,"test");
+            //set max file index into session
+            Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+            if(maxFileIndex == null){
+                maxFileIndex = 0;
+            }else{
+                maxFileIndex ++;
+            }
+            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         }else{
             action = "error";
             ParamUtil.setRequestAttr(bpc.request, RfcConst.ACKMESSAGE,"error !!!");

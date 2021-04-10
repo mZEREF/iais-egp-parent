@@ -4254,6 +4254,14 @@ public class NewApplicationDelegator {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
+                //set max file index into session
+                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+                if(maxFileIndex == null){
+                    maxFileIndex = 0;
+                }else{
+                    maxFileIndex ++;
+                }
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if (stepColor != null) {
                     HashMap<String, String> coMap = new HashMap<>(4);
