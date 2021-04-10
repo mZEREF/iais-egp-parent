@@ -142,7 +142,7 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)" ONCHANGE="doUserRecUploadConfirmFile(event)"/><a
+                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
@@ -180,12 +180,6 @@
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
-
-        var evenMoreListeners = true;
-        if (evenMoreListeners) {
-            var allFleChoosers = $("input[type='file']");
-            addEventListenersTo(allFleChoosers);
-        }
     });
 
     function withdrawalReasons(obj) {
@@ -210,14 +204,6 @@
         ajaxCallUploadForMax('mainForm', "selectedFile",true);
     }
 
-    function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) {
-            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
-            /*  a();*/
-            ajaxCallUploadForMax('mainForm', "selectedFile",true);
-        });
-    }
-
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
         console.log(configFileSize)
@@ -235,22 +221,6 @@
         }
     }
 
-    function deleteWithdraw(it) {
-        console.log("delete withdraw app");
-        $(it).parent().parent().parent().parent().parent().remove();
-    }
-
-    function deleteWdFile() {
-        // document.getElementById("withdrawFile").files[0] = null;
-        let wdfile = $("#selectedFile");
-        wdfile.val("");
-        $("#delFile").attr("hidden", "hidden");
-    }
-
-    // $(".delete-withdraw").click(function () {
-    //     console.log("delete withdraw app");
-    //     $(this).parent().parent().parent().parent().remove();
-    // });
     function deleteWithdraw(it){
         console.log("delete withdraw app");
         $(it).parent().parent().parent().parent().parent().remove();
