@@ -5002,6 +5002,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }
