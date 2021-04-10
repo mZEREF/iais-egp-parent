@@ -124,6 +124,7 @@ public class OnlineApptAjaxController {
                         //get Inspection date Draft
                         apptInspectionDateDto = setInspDateDraftData(apptInspectionDateDto, appPremInspApptDraftDtos);
                         apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                        apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                         map.put("buttonFlag", AppConsts.TRUE);
                         map.put("specButtonFlag", AppConsts.TRUE);
                         map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
@@ -273,6 +274,7 @@ public class OnlineApptAjaxController {
                         inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
                     }
                     apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                     apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                     //save inspection draft
                     List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = saveInspectionDateDraft(apptRequestDtos, taskDtoList);
