@@ -57,7 +57,7 @@
         } else {
           $.ajax({
             type:"post",
-            url:"${pageContext.request.contextPath}/ajax-upload-file",
+            url:"${pageContext.request.contextPath}/ajax-upload-file?stamp="+new Date().getTime(),
             data: form,
             async:true,
             dataType: "json",
