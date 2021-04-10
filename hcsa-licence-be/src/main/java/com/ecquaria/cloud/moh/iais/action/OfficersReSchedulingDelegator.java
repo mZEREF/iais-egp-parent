@@ -327,7 +327,7 @@ public class OfficersReSchedulingDelegator {
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedInspAgain start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
         List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos = (List<ApptAppInfoShowDto>)ParamUtil.getSessionAttr(bpc.request, "apptReSchAppInfoShowDtos");
-        //set new start date
+        //set user and new start date
         reschedulingOfficerDto = officersReSchedulingService.setNewInspStartDate(apptReSchAppInfoShowDtos, reschedulingOfficerDto);
         //get old appt refNo.
         List<String> apptRefNos = officersReSchedulingService.getOldApptRefNos(apptReSchAppInfoShowDtos);

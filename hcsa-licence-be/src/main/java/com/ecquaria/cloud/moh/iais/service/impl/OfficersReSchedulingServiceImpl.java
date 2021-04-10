@@ -89,6 +89,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -896,11 +897,29 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     public ReschedulingOfficerDto setNewInspStartDate(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto) {
         if(reschedulingOfficerDto != null && !IaisCommonUtils.isEmpty(apptReSchAppInfoShowDtos)) {
             ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);
+            AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
             if(apptAppInfoShowDto != null) {
-                AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
-                appointmentDto.setStartDate(Formatter.formatDateTime(apptAppInfoShowDto.getInspEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                reschedulingOfficerDto.setAppointmentDto(appointmentDto);
+                //get new start date
+                Date endDate = apptAppInfoShowDto.getInspEndDate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(endDate);
+                calendar.add(Calendar.DATE, 1);
+                Date newStartDate = calendar.getTime();
+                //get map
+                HashMap<String, Date> userSpecMap = IaisCommonUtils.genNewHashMap();
+                for(ApptAppInfoShowDto appInfoShowDto : apptReSchAppInfoShowDtos) {
+                    List<String> userIds = appInfoShowDto.getUserIdList();
+                    if(!IaisCommonUtils.isEmpty(userIds)) {
+                        for(String userId : userIds) {
+                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                            //login Id and date
+                            userSpecMap.put(orgUserDto.getUserId(), newStartDate);
+                        }
+                    }
+                }
+                appointmentDto.setUserSpecMap(userSpecMap);
             }
+            reschedulingOfficerDto.setAppointmentDto(appointmentDto);
         }
         return reschedulingOfficerDto;
     }
