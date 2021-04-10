@@ -313,7 +313,7 @@ public class GiroDeductionBeDelegator {
             giroDeductionDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
         });
-        if (!StringUtil.isEmpty(giroDeductionDtoList)){
+        if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
