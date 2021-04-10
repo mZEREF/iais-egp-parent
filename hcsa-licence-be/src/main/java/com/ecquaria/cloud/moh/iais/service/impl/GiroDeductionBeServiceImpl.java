@@ -116,7 +116,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         emailParam.setTemplateContent(map);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setRefId(appNo);
         //todo
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
