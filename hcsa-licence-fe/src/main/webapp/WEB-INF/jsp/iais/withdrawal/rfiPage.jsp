@@ -117,7 +117,7 @@
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                            varStatus="ind">
                                                   <div id="${pageShowFileDto.fileMapId}">
                                                       <span name="fileName"
@@ -150,7 +150,6 @@
                                             <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

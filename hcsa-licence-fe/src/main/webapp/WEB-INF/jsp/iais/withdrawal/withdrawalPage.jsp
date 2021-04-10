@@ -141,7 +141,7 @@
                                             <c:when test="${isDoView != 'Y'}">
                                                 <div class="file-upload-gp">
                                                         <span name="selectedFileShowId" id="selectedFileShowId">
-                                                        <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                        <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                                    varStatus="ind">
                                                           <div id="${pageShowFileDto.fileMapId}">
                                                               <span name="fileName"
@@ -174,7 +174,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                            varStatus="ind">
                                                   <div id="${pageShowFileDto.fileMapId}">
                                                       <span name="fileName"

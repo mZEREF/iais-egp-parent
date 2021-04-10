@@ -87,8 +87,8 @@ public class WithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
-        ParamUtil.setSessionAttr(bpc.request, "pageShowFiles", null);
-        ParamUtil.setSessionAttr(bpc.request, "pageShowFileHashMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFiles", null);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFileHashMap", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
@@ -165,10 +165,10 @@ public class WithdrawalDelegator {
                         pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
                     }
                 }
-                request.getSession().setAttribute("pageShowFileHashMap", pageShowFileHashMap);
+                request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
                 request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
                 request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
-                request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+                request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
             }
     }
 
@@ -457,7 +457,7 @@ public class WithdrawalDelegator {
                 }
 
                 withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
-                mulReq.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+                mulReq.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
 
                 if(validationResult != null && validationResult.isHasErrors()){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
