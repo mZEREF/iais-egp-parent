@@ -107,12 +107,13 @@ public class PublicHolidayDelegate {
      */
     public void doPrepare(BaseProcessClass bpc){
         SearchParam holidaySearchParam = getSearchParam(bpc.request);
+        //search
+        QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
         //set public holiday description sort data
         List<SelectOption> masterCodes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
         MasterCodePair masterCodePair = new MasterCodePair("PH_CODE", "PH_DESC", masterCodes);
         holidaySearchParam.setMasterCode(masterCodePair);
-        //search
-        QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
+        //run sql
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
 
         ParamUtil.setRequestAttr(bpc.request,"HolidaySearchResult",HolidaySearchResult);
