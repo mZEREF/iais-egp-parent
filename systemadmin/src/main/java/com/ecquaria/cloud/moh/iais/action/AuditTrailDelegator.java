@@ -133,56 +133,20 @@ public class AuditTrailDelegator {
     private AuditLogDetailView generateViewDetail(AuditTrailDto atd) {
         AuditLogDetailView view = new AuditLogDetailView();
         if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
-            view.setBeforeChange(genAuditLogRecList(atd.getBeforeAction()));
+            view.setBeforeChange(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
         }
         if (StringUtil.isNotEmpty(atd.getAfterAction())) {
-            view.setAfterChange(genAuditLogRecList(atd.getAfterAction()));
+            view.setAfterChange(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
         }
         if (StringUtil.isNotEmpty(atd.getViewParams())) {
-            view.setSearchParam(genAuditLogRecList(atd.getViewParams()));
+            view.setSearchParam(auditTrailService.genAuditLogRecList(atd.getViewParams()));
         }
         if (StringUtil.isNotEmpty(atd.getValidationFail())) {
-            view.setErrorMsg(genAuditLogRecList(atd.getValidationFail()));
+            view.setErrorMsg(auditTrailService.genAuditLogRecList(atd.getValidationFail()));
         }
 
         return view;
     }
-
-    private void addAuditLogRevToList(ArrayList<AuditLogRecView> list, Map<String, Object> map){
-        for (Map.Entry<String, Object> ent : map.entrySet()) {
-            AuditLogRecView arv = new AuditLogRecView();
-            arv.setColName(ent.getKey());
-            arv.setColDetail(String.valueOf(ent.getValue()));
-            arv.setLongText(String.valueOf(ent.getValue()));
-            list.add(arv);
-        }
-    }
-
-    private ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
-        ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode jn = mapper.readTree(detail);
-            Map<String, Object> map = null;
-            if (jn.isArray()) {
-                map = IaisCommonUtils.genNewHashMap(jn.size());
-                for (JsonNode js : jn) {
-                    Iterator<Map.Entry<String, JsonNode>> it = js.fields();
-                    while (it.hasNext()) {
-                        Map.Entry<String, JsonNode> ent = it.next();
-                        map.put(ent.getKey(), ent.getValue());
-                    }
-                }
-            } else {
-                map = JsonUtil.parseToObject(detail, Map.class);
-            }
-            addAuditLogRevToList(list, map);
-        } catch (JsonProcessingException e) {
-            throw new IaisRuntimeException(e);
-        }
-        return list;
-    }
-
     private void preSelectOption(HttpServletRequest request) {
         List<SelectOption> operationList =  IaisCommonUtils.genNewArrayList();
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_LOGIN), "Login"));
@@ -229,46 +193,9 @@ public class AuditTrailDelegator {
         try {
             List<AuditTrailExcelDto> etList = IaisCommonUtils.genNewArrayList();
             List<AuditTrailQueryDto> atList = searchResult.getRows();
-            for (AuditTrailQueryDto i : atList){
-                int domain = i.getDomain();
-                int loginType = i.getLoginType();
-                String nricNum = i.getNricNumber();
-                String uenId = i.getUenId();
-                String mohUserId = i.getMohUserId();
-                String entityId = i.getEntityId();
-
+            for (AuditTrailQueryDto i : atList) {
                 AuditTrailExcelDto atExcel = new AuditTrailExcelDto();
-                if (AuditTrailConsts.OPERATION_TYPE_BATCH_JOB == domain){
-                    atExcel.setBatchjobId(entityId);
-                    atExcel.setCreateBy(nricNum);
-                }else if (AuditTrailConsts.OPERATION_TYPE_INTRANET == domain){
-                    atExcel.setMohUserId(mohUserId);
-                    atExcel.setCreateBy(mohUserId);
-                    atExcel.setAdId(mohUserId);
-                }else if (AuditTrailConsts.OPERATION_TYPE_INTERNET == domain){
-                    if (AuditTrailConsts.LOGIN_TYPE_SING_PASS == loginType){
-                        atExcel.setSingpassId(nricNum);
-                    }else if (AuditTrailConsts.LOGIN_TYPE_CORP_PASS == loginType){
-                        atExcel.setCorppassId(nricNum);
-                        atExcel.setCorppassNric(nricNum);
-                        atExcel.setUen(uenId);
-                    }
-                    atExcel.setCreateBy(nricNum);
-                }
-                atExcel.setOperation(i.getOperationDesc());
-                atExcel.setOperationType(i.getDomainDesc());
-                atExcel.setActionTime(i.getActionTime());
-                atExcel.setClientIp(i.getClientIp());
-                atExcel.setUserAgent(i.getUserAgent());
-                atExcel.setSessionId(i.getSessionId());
-                atExcel.setTotalSessionDuration(i.getTotalSessionDuration());
-                atExcel.setApplicationId(i.getAppNum());
-                atExcel.setLicenseNum(i.getLicenseNum());
-                atExcel.setModule(i.getModule());
-                atExcel.setFunctionName(i.getFunctionName());
-                atExcel.setProgrammeName(i.getProgrammeName());
-                atExcel.setDataActivities(i.getOperationDesc());
-                atExcel.setCreateDate(i.getActionTime());
+                auditTrailService.doSetAuditTrailExcel(atExcel, i);
                 etList.add(atExcel);
             }
             File file = ExcelWriter.writerToExcel(etList, AuditTrailExcelDto.class, "Audit Trail Logging");
