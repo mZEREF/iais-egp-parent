@@ -268,6 +268,7 @@ public class MohIntranetUserDelegator {
                 switch (errKey){
                     case "userId":
                     case "displayName":
+                    case "status":
                     case "accountDeactivateDatetime":
                     case "accountActivateDatetime":activeTabAcc=true;break;
                     case "email":
