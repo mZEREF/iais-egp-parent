@@ -276,7 +276,7 @@ public class MohIntranetUserDelegator {
                     case "officeTelNo":activeTabCon=true;break;
                     case "firstName":
                     case "lastName":activeTabPer=true;break;
-                    default:;
+                    default:
                 }
             }
             if(activeTabAcc){
