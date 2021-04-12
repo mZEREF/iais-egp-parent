@@ -464,7 +464,9 @@ public class InspectEmailAo1Delegator {
                         cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
                         try {
                             List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
-                            mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                            if(apptUserCalendarDtos!=null&&!apptUserCalendarDtos.isEmpty()&&apptUserCalendarDtos.get(0).getEndSlot()!=null){
+                                mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                            }
                         }catch (Exception e1){
                             log.info(e1.getMessage(),e1);
                         }
