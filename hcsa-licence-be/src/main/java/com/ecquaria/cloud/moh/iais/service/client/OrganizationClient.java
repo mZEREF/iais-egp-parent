@@ -124,9 +124,8 @@ public interface OrganizationClient {
     @GetMapping(path = "/iais-licensee/getAllLicenseeIdName",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> getAllLicenseeIdName();
 
-    @GetMapping(value = "/iais-licensee-be/licensee-overtime/{days}")
+    @GetMapping(value = "/iais-licensee/licensee-overtime/{days}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoOvertime (@PathVariable("days") String days);
-
 
     @GetMapping(value = "/iais-licensee-be/licenseeDto-by-uenNo/{uenNo}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoByUen(@PathVariable(name = "uenNo") String uenNo);
