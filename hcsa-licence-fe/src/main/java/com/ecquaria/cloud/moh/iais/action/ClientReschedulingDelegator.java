@@ -386,7 +386,7 @@ public class ClientReschedulingDelegator {
                     errMap.put("newDate" + appId,MessageUtil.getMessageDesc("OAPPT_ERR013"));
                 }
                 if(inspStartDate.compareTo(nowDate)<0){
-                    errMap.put("newDate" + appId,"Inspection date must be future");
+                    errMap.put("newDate" + appId,MessageUtil.getMessageDesc("OAPPT_ERR015"));
                 }
             }else {
                 errMap.put("newDate" + appId,MessageUtil.replaceMessage("GENERAL_ERR0006", "New Date","field"));
