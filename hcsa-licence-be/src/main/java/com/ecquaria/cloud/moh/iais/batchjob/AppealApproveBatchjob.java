@@ -321,16 +321,15 @@ public class AppealApproveBatchjob {
                     ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
                     newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     appealApplicaiton.add(newAppealApplicaitonDto);
-
                     rollBackApplicationGroupDtos.add(applicationGroupDto);
                     ApplicationGroupDto newAppealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
                     newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                     appealApplicationGroupDtos.add(newAppealApplicationGroupDto);
-
                 rollBackAppPremisesRecommendationDtos.add(appPremisesRecommendationDto);
                 AppPremisesRecommendationDto appwalAppPremisesRecommendationDto = (AppPremisesRecommendationDto) CopyUtil.copyMutableObject(appPremisesRecommendationDto);
                 appwalAppPremisesRecommendationDto.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
                 appwalAppPremisesRecommendationDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
+                appwalAppPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 appealAppPremisesRecommendationDtos.add(appwalAppPremisesRecommendationDto);
             }
 

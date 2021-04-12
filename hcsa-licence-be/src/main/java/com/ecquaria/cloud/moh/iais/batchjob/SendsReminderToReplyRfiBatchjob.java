@@ -297,8 +297,10 @@ public class SendsReminderToReplyRfiBatchjob {
         svcCode.add(svcDto.getSvcCode());
         String url="";
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+/*
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+*/
+        /*if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
             List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(appPremisesCorrelationDto.getId()).getEntity();
             if(entity!=null){
                 for(AppPremiseMiscDto appPremiseMiscDto : entity){
@@ -328,7 +330,8 @@ public class SendsReminderToReplyRfiBatchjob {
             }
             mapPrem.put("appId", applicationDto.getId());
             url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + applicationDto.getId() + "&premiseId=" + appGrpPremId;
-        }
+        }*/
+        url=HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         emailMap.put("systemLink", url);
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
         emailParam.setTemplateContent(emailMap);

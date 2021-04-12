@@ -773,6 +773,9 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
         }
+        for(AppSubmissionDto v : appSubmissionDtos1){
+            requestForChangeService.premisesDocToSvcDoc(v);
+        }
         //save
         List<AppSubmissionDto> appSubmissionDtos2 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
@@ -1675,12 +1678,6 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionDtoByLicenceId.setAutoRfc(false);
                 }
 
-                //update status
-         /*  LicenceDto licenceDto = new LicenceDto();
-            licenceDto.setId(appSubmissionDto.getLicenceId());
-            licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            requestForChangeService.upDateLicStatus(licenceDto);*/
-
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 appEditSelectDto.setServiceEdit(false);
                 appEditSelectDto.setDocEdit(false);
@@ -1709,7 +1706,7 @@ public class RequestForChangeMenuDelegator {
 
                 appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                 oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                requestForChangeService.svcDocToPresmise(appSubmissionDtoByLicenceId);
+                requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
         }

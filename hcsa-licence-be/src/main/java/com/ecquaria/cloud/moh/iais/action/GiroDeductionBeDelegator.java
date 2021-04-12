@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -107,7 +108,7 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private final static String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
+    private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
      *
@@ -285,7 +286,7 @@ public class GiroDeductionBeDelegator {
             return;
         }
         Reader reader=new FileReader(FileUtils.multipartFileToFile(file));
-        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
+        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         try {
             for(CSVRecord record:parse){
@@ -355,12 +356,14 @@ public class GiroDeductionBeDelegator {
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();
         FileWriter out = new FileWriter("classpath:"+l+".csv");
+        AtomicInteger integer=new AtomicInteger(1);
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.EXCEL
                 .withHeader(HEADERS))) {
             rows.forEach(v->{
                 try {
-                    printer.printRecord(v.getHciName().replace("<br>", " "),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
                     ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
+                    integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
@@ -370,7 +373,7 @@ public class GiroDeductionBeDelegator {
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
         try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              InputStream in =Files.newInputStream(Paths.get(file.getPath()))){
+              InputStream in = new FileInputStream(file.getPath())){//NOSONAR
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){
