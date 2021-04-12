@@ -388,9 +388,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-        contrastNewAndOld(appSubmissionDto,bpc.request);
-        try {
 
+        try {
+            contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
