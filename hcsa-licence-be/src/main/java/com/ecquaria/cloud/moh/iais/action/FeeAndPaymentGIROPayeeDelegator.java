@@ -140,7 +140,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             searchGiroDtoResult.setRowCount(giroAccountResult.getRowCount());
             List<GiroAccountInfoViewDto> giroAccountInfoViewDtos=IaisCommonUtils.genNewArrayList();
             for (GiroAccountInfoQueryDto gai:
-                    giroAccountResult.getRows()) {
+            giroAccountResult.getRows()) {
                 GiroAccountInfoViewDto giroAccountInfoViewDto=new GiroAccountInfoViewDto();
                 List<GiroAccountFormDocDto> giroAccountFormDocDtoList=giroAccountService.findGiroAccountFormDocDtoListByAcctId(gai.getId());
                 giroAccountInfoViewDto.setAcctName(gai.getAcctName());
@@ -167,7 +167,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
-        ) {
+             ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             giroAccountInfoDto.setEventRefNo(refNo);
@@ -259,7 +259,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-            orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
@@ -425,17 +425,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
 
     public static MultipartFile toMultipartFile(String fieldName, String fileName, byte[] fileByteArray) throws Exception {
-        DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-        String contentType = new MimetypesFileTypeMap().getContentType(fileName);
-        FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
-        try (
-                InputStream inputStream = new ByteArrayInputStream(fileByteArray);
-                OutputStream outputStream = fileItem.getOutputStream()
-        ) {
-            FileCopyUtils.copy(inputStream, outputStream);
-        } catch (Exception e) {
-            throw e;
-        }
+         DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+         String contentType = new MimetypesFileTypeMap().getContentType(fileName);
+         FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
+         try (
+         InputStream inputStream = new ByteArrayInputStream(fileByteArray);
+         OutputStream outputStream = fileItem.getOutputStream()
+         ) {
+             FileCopyUtils.copy(inputStream, outputStream);
+         } catch (Exception e) {
+             throw e;
+         }
         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
         return multipartFile;
     }
@@ -448,7 +448,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String refNo=System.currentTimeMillis()+"";
         List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,"giroAccountInfoDtoList");
         for (GiroAccountInfoDto giro:giroAccountInfoDtoList
-        ) {
+             ) {
             giro.setEventRefNo(refNo);
             giro.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }

@@ -166,10 +166,12 @@ public class InspectorCalendarDelegator {
 
 		String sqlStr = SqlHelper.constructInCondition("T1.GROUP_SHORT_NAME", workingGroupQueryList.size());
 		searchParam.addParam("wrkGroupList", sqlStr);
-		int indx = 0;
-		for (WorkingGroupQueryDto i : workingGroupQueryList){
-			searchParam.addFilter("T1.GROUP_SHORT_NAME"+indx, i.getGroupName());
-			indx++;
+		if( !IaisCommonUtils.isEmpty(workingGroupQueryList)){
+			int indx = 0;
+			for (WorkingGroupQueryDto i : workingGroupQueryList){
+				searchParam.addFilter("T1.GROUP_SHORT_NAME"+indx, i.getGroupName());
+				indx++;
+			}
 		}
 
 		QueryHelp.setMainSql("systemAdmin", "queryCurrentUserCalendar", searchParam);

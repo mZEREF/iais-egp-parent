@@ -15,4 +15,5 @@ public interface LicenceViewService {
 
     public AppEditSelectDto saveAppEditSelect(AppEditSelectDto appEditSelectDto);
     public AppEditSelectDto saveAppEditSelectToFe(AppEditSelectDto appEditSelectDto);
+    void svcDocToPremise(AppSubmissionDto appSubmissionDto);
 }

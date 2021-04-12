@@ -241,7 +241,7 @@ public class ApptInspectionDateDelegator {
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             StringBuilder subDate = new StringBuilder();
-            subDate.append(sdf2.format(sub_date1)) ;
+             subDate.append(sdf2.format(sub_date1)) ;
             if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
                     if(hours.equals(so.getValue())){

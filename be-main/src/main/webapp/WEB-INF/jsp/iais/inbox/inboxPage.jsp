@@ -43,23 +43,23 @@
 %>
 
 <div class="main-content" style="min-height: 73vh;">
-    <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-        <div class="col-md-12">
-            <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-                <div class="dashalert alert-info dash-announce alertMaintainace">
-                    <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-                    <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-                    <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-            </c:if>
-            <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-                <div class="dashalert alert-info dash-announce alertBanner">
-                    <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-                    <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-                    <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
-                </div>
-            </c:if>
-        </div>
-    </c:if>
+<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+  <div class="col-md-12">
+  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce alertMaintainace">
+      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+                            <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
+  </c:if>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce alertBanner">
+      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
+      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+    </div>
+  </c:if>
+  </div>
+</c:if>
     <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="SearchSwitchType" value="">
@@ -301,68 +301,68 @@
         console.log("groupajax")
         dividajaxlist.push(divid);
         $.post(
-                '/main-web/backend/appGroup.do',
-                {groupno: applicationGroupNo},
-                function (data, status) {
-                    console.log("ajax start")
-                    var serviceName = data.serviceName;
-                    var res = data.ajaxResult;
-                    var url = data.appNoUrl;
-                    var taskList = data.taskList;
-                    var hastaskList = data.hastaskList;
-                    var html = '';
-                    html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                            '<td colspan="6" style="padding: 0px 8px !important;">' +
-                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                            '<thead>' +
-                            '<tr>';
-                    if (hastaskList == "true") {
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }
-
-                    html += '<th width="15%">Application No.</th>' +
-                            '<th width="15%">Service</th>' +
-                            '<th width="15%">Licence Expiry Date</th>' +
-                            '<th width="15%">Application Status</th>' +
-                            '<th width="15%">HCI Code</th>' +
-                            '<th width="25%">HCI Name / Address</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>';
-                    for (var i = 0; i < res.length; i++) {
-                        var color = "black";
-                        if (res[i].timeLimitWarning == "black") {
-                            color = "black";
-                        } else if (res[i].timeLimitWarning == "red") {
-                            color = "red";
-                        } else if (res[i].timeLimitWarning == "amber") {
-                            color = "#DD9C00";
-                        }
-                        if(res[i].hciName == null || res[i].hciName == ''){
-                            var address = res[i].address;
-                        }else{
-                            var address = res[i].hciName + ' / ' +res[i].address;
-                        }
-
-                        html += '<tr style = "color : ' + color + ';">';
-                        if (hastaskList == "true") {
-                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res[i].applicationNo+'" data-taskstatus = "'+res[i].status+'" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
-                        }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
-                                '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
-                                '</tr>';
-                    }
-                    html += '</tbody></table></div></td></tr>';
-                    console.log(dividajaxlist)
-                    console.log(divid)
-                    console.log("ajax end")
-                    $('#advfilter' + divid).after(html);
+            '/main-web/backend/appGroup.do',
+            {groupno: applicationGroupNo},
+            function (data, status) {
+                console.log("ajax start")
+                var serviceName = data.serviceName;
+                var res = data.ajaxResult;
+                var url = data.appNoUrl;
+                var taskList = data.taskList;
+                var hastaskList = data.hastaskList;
+                var html = '';
+                html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                    '<td colspan="6" style="padding: 0px 8px !important;">' +
+                    '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                    '<thead>' +
+                    '<tr>';
+                if (hastaskList == "true") {
+                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                 }
+
+                html += '<th width="15%">Application No.</th>' +
+                    '<th width="15%">Service</th>' +
+                    '<th width="15%">Licence Expiry Date</th>' +
+                    '<th width="15%">Application Status</th>' +
+                    '<th width="15%">HCI Code</th>' +
+                    '<th width="25%">HCI Name / Address</th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                for (var i = 0; i < res.length; i++) {
+                    var color = "black";
+                    if (res[i].timeLimitWarning == "black") {
+                        color = "black";
+                    } else if (res[i].timeLimitWarning == "red") {
+                        color = "red";
+                    } else if (res[i].timeLimitWarning == "amber") {
+                        color = "#DD9C00";
+                    }
+                    if(res[i].hciName == null || res[i].hciName == ''){
+                        var address = res[i].address;
+                    }else{
+                        var address = res[i].hciName + ' / ' +res[i].address;
+                    }
+
+                    html += '<tr style = "color : ' + color + ';">';
+                    if (hastaskList == "true") {
+                        html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res[i].applicationNo+'" data-taskstatus = "'+res[i].status+'" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                    }
+                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
+                        '</tr>';
+                }
+                html += '</tbody></table></div></td></tr>';
+                console.log(dividajaxlist)
+                console.log(divid)
+                console.log("ajax end")
+                $('#advfilter' + divid).after(html);
+            }
         )
 
 

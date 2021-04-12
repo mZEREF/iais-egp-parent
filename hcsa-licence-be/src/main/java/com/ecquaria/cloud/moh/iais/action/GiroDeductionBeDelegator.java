@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -18,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -33,9 +31,25 @@ import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.http.HttpStatus;
@@ -47,27 +61,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -88,6 +81,8 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private GiroDeductionClient giroDeductionClient;
     private final static String CSV="csv";
+
+    private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -110,6 +105,8 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
      *
@@ -281,13 +278,13 @@ public class GiroDeductionBeDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
         String name = file.getOriginalFilename();
-        String substring = name.substring(name.lastIndexOf(".")+1);
+        String substring = name.substring(name.lastIndexOf('.')+1);
         if(!CSV.equals(substring.toLowerCase())|| name.length()>100){
             bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK022"));
             return;
         }
         Reader reader=new FileReader(FileUtils.multipartFileToFile(file));
-        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
+        Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         try {
             for(CSVRecord record:parse){
@@ -295,12 +292,7 @@ public class GiroDeductionBeDelegator {
                 if("Application No.".equals(s)){
                     continue;
                 }
-//                record.get("HCI Name");
-//                record.get("Transaction Reference No.");
-//                record.get("Invoice No.");
-//                record.get("Bank Account No.");
                 String payment_status = record.get("Payment Status");
-//                record.get("Payment Amount");
                 map.put(s,payment_status);
             }
         }catch (Exception e){
@@ -358,16 +350,18 @@ public class GiroDeductionBeDelegator {
     @ResponseBody
     public void generatorFileCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SearchResult<GiroDeductionDto> giroDedSearchResult =(SearchResult<GiroDeductionDto>)request.getSession().getAttribute("giroDedSearchResult");
-        String[] HEADERS = { "HCI Name", "Application No.","Transaction Reference No.","Invoice No.","Bank Account No.","Payment Status","Payment Amount"};
+
         List<GiroDeductionDto> rows = giroDedSearchResult.getRows();
         long l = System.currentTimeMillis();
         FileWriter out = new FileWriter("classpath:"+l+".csv");
+        AtomicInteger integer=new AtomicInteger(1);
         try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.EXCEL
                 .withHeader(HEADERS))) {
             rows.forEach(v->{
                 try {
-                    printer.printRecord(v.getHciName().replace("<br>", " "),v.getAppGroupNo(),v.getTxnRefNo(),v.getInvoiceNo()
+                    printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
                     ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
+                    integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
@@ -377,7 +371,7 @@ public class GiroDeductionBeDelegator {
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
         try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              FileInputStream in = new FileInputStream(file.getPath())){
+              InputStream in = new FileInputStream(file.getPath())){//NOSONAR
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){

@@ -300,7 +300,7 @@ public class SendsReminderToReplyRfiBatchjob {
 /*
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
 */
-       /* if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+        /*if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
             List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(appPremisesCorrelationDto.getId()).getEntity();
             if(entity!=null){
                 for(AppPremiseMiscDto appPremiseMiscDto : entity){

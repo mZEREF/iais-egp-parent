@@ -80,15 +80,15 @@
                         <div class="table-gp">
                             <table class="table">
                                 <thead>
-                                <tr align="center">
-                                    <iais:sortableHeader needSort="false" field="" value=" "/>
-                                    <iais:sortableHeader needSort="false" field="" value="S/N"/>
-                                    <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
-                                    <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
-                                    <iais:sortableHeader needSort="true"  field="PH_CODE" value="Holiday Description"/>
-                                    <iais:sortableHeader needSort="true" field="status" value="Status"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Action"/>
-                                </tr>
+                                    <tr align="center">
+                                        <iais:sortableHeader needSort="false" field="" value=" "/>
+                                        <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                        <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
+                                        <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
+                                        <iais:sortableHeader needSort="true"  field="PH_DESC" value="Holiday Description"/>
+                                        <iais:sortableHeader needSort="true" field="status" value="Status"/>
+                                        <iais:sortableHeader needSort="false" field="" value="Action"/>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <c:choose>

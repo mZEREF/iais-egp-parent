@@ -97,38 +97,43 @@
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:value width="18">
-                                                        <div class="file-upload-gp">
-                                                            <input class="hidden validFlag" type="hidden" name="commValidFlag${rfiDoc.id}" <c:if test="${rfiDoc.passDocValidate}">value="Y"</c:if> <c:if test="${!rfiDoc.passDocValidate}">value="N"</c:if>/>
-                                                            <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" value="Y"/>
-                                                            <span>
-                                                                <c:choose>
-                                                                    <c:when test="${rfiDoc.passDocValidate}">
-                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        ${rfiDoc.docName}
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </span>
-                                                            <c:choose>
-                                                                <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
-                                                                    <span class="existFile delBtn "></span>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
-                                                                    <span class="existFile delBtn ">
-                                                                        &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                                        <div class="document-upload-gp ">
+                                                            <div class="document-upload-list">
+                                                                <div class="file-upload-gp">
+                                                                    <input class="hidden validFlag" type="hidden" name="commValidFlag${rfiDoc.id}" <c:if test="${rfiDoc.passDocValidate}">value="Y"</c:if> <c:if test="${!rfiDoc.passDocValidate}">value="N"</c:if>/>
+                                                                    <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" value="Y"/>
+                                                                    <span>
+                                                                        <c:choose>
+                                                                            <c:when test="${rfiDoc.passDocValidate}">
+                                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                ${rfiDoc.docName}
+                                                                            </c:otherwise>
+                                                                        </c:choose>
                                                                     </span>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            <br/>
-                                                            <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
-                                                                   name="UploadFile${rfiDoc.id}" type="file"
-                                                                   style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
-                                                                   aria-label="selectedFile">
-                                                            <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
-                                                            <span name="iaisErrorMsg" class="error-msg"
-                                                                  id="error_UploadFile${rfiDoc.id}"></span>
+                                                                    <c:choose>
+                                                                        <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
+                                                                            <span class="existFile delBtn "></span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
+                                                                            <span class="existFile delBtn ">
+                                                                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                                                                            </span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                    <br/>
+                                                                    <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
+                                                                           name="UploadFile${rfiDoc.id}" type="file"
+                                                                           style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
+                                                                           aria-label="selectedFile">
+                                                                    <br>
+                                                                    <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
+                                                                    <span name="iaisErrorMsg" class="error-msg"
+                                                                          id="error_UploadFile${rfiDoc.id}"></span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <br/>
                                                     </iais:value>

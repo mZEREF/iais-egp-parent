@@ -741,7 +741,7 @@
                                           <div class="col-xs-6 col-md-6 ">
                                             <c:if test="${sinage.docSize!=null}">
                                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
-                                              <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
+                                              <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
                                                      value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download" class="downloadFile"><span id="${sinage.fileRepoId}Down">trueDown</span></a>
                                                 <a onclick="doVerifyFileGo('${sinage.fileRepoId}')">${sinage.docName}</a><c:out value="(${sinage.docSize} KB)"/>
                                             </span>

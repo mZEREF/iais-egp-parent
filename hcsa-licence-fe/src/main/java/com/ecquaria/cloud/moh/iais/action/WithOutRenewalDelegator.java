@@ -1173,7 +1173,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
     }
 
-    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,List<AppFeeDetailsDto> appFeeDetailsDto,BaseProcessClass bpc){
+    public static void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList, FeeDto feeDto, List<AppFeeDetailsDto> appFeeDetailsDto, BaseProcessClass bpc){
         List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
         Double total = feeDto.getTotal();
         String totalString = Formatter.formatterMoney(total);
@@ -1259,6 +1259,7 @@ public class WithOutRenewalDelegator {
 
         }
     }
+
     private void updateDraftStatus(AppSubmissionDto appSubmissionDto){
         if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
@@ -1524,18 +1525,18 @@ public class WithOutRenewalDelegator {
         Double totalAmount = (Double) ParamUtil.getSessionAttr(bpc.request, "totalAmount");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appSubmissionDto.setPaymentMethod(payMethod);
-        }
         //
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         String groupNo = "";
         String appGrpId = "";
         String licenseeId = null;
-        if (appSubmissionDtos.size() != 0) {
+        if ( !IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
             appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                appSubmissionDto.setPaymentMethod(payMethod);
+            }
         }
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)

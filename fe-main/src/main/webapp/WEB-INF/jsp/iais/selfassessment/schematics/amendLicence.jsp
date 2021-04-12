@@ -59,7 +59,7 @@
         class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"
         data-toggle="tooltip" data-html="true"
         title='${inbox_ack022}' data-original-title=''
-        style="position: absolute;left: 393px; top: 278px;z-index: 10">i</a>
+        style="position: absolute;left: 393px; top: 273px;z-index: 10">i</a>
     <div class="form-check progress-step-check" style="width: 900px">
         <input class="form-check-input" id="amendLicence5"
                type="radio" name="amendLicenceType"

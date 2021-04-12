@@ -1517,6 +1517,12 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
         AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+        for(AppGrpPremisesDto v : appGrpPremisesDtoList1){
+            v.setLicenceDtos(selectLicence);
+        }
         List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
         if (selectLicence != null) {
             for (LicenceDto string : selectLicence) {
@@ -1545,9 +1551,6 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
 
 
         boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
@@ -1586,6 +1589,9 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
+        boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
+
+        bpc.request.setAttribute("eqHciCode",eqHciCode);
 
         if (!isSame || !b || eqAddFloorNo) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
@@ -1671,12 +1677,6 @@ public class RequestForChangeMenuDelegator {
                 } else {
                     appSubmissionDtoByLicenceId.setAutoRfc(false);
                 }
-
-                //update status
-         /*  LicenceDto licenceDto = new LicenceDto();
-            licenceDto.setId(appSubmissionDto.getLicenceId());
-            licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            requestForChangeService.upDateLicStatus(licenceDto);*/
 
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 appEditSelectDto.setServiceEdit(false);

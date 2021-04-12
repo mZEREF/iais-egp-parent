@@ -64,6 +64,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -854,26 +855,20 @@ public class InterInboxDelegator {
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
-//                String appGroupId = h.getAppGrpId();
-////                if (h.getApplicationType())
-//                if (!StringUtil.isEmpty(appGroupId)){
-//                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
-//                    if (applicationGroupDto != null){
-//                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
-//                            h.setCanInspection(Boolean.FALSE);
-//                        }else{
-//                            h.setCanInspection(Boolean.TRUE);
-//                        }
-//                    }
-//                }else{
-//                    h.setCanInspection(Boolean.FALSE);
-//                }
+                String status = h.getStatus();
+                Integer selfAssmtFlag = h.getSelfAssmtFlag();
+                if ((status.equals(ApplicationConsts.PENDING_ASO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_PSO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_INP_REPLY))
+                        && selfAssmtFlag == 2){
+                    h.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                }
+
                 if(h.getHasSubmitPrefDate() == null || 0==h.getHasSubmitPrefDate()){
                     h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
                 }
-
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
@@ -1255,16 +1250,7 @@ public class InterInboxDelegator {
         String appGroupId = ParamUtil.getString(request, "action_grp_value");
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
         if ("appMakePayment".equals(appSelfFlag)){
-            ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
-            if (applicationGroupDto != null){
-                StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
-                        .append("?appGrpNo=")
-                        .append(MaskUtil.maskValue("appGrpNo", applicationGroupDto.getGroupNo()));
-                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
-            }
+            doPaymentAction(appGroupId,request,bpc.response);
         }else{
             RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
             recallApplicationDto.setAppId(appId);
@@ -1307,6 +1293,8 @@ public class InterInboxDelegator {
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
+        String appGroupId = ParamUtil.getString(bpc.request, "action_grp_value");
+        String appSelfFlag = ParamUtil.getString(bpc.request, "action_self_value");
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.FALSE);
         if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
@@ -1325,7 +1313,10 @@ public class InterInboxDelegator {
                     .append("&isDoView=Y");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else{
+        }else if("appMakePayment".equals(appSelfFlag)){
+            doPaymentAction(appGroupId,bpc.request,bpc.response);
+        }
+        else{
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
@@ -1333,6 +1324,20 @@ public class InterInboxDelegator {
                     .append(MaskUtil.maskValue("appNo",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+        }
+    }
+
+
+    private void doPaymentAction(String appGroupId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
+        if (applicationGroupDto != null){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
+                    .append("?appGrpNo=")
+                    .append(MaskUtil.maskValue("appGrpNo", applicationGroupDto.getGroupNo()));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+            response.sendRedirect(tokenUrl);
         }
     }
 

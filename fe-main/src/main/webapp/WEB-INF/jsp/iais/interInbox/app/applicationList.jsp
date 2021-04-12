@@ -111,7 +111,7 @@
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
                                          value="Submission Date" style="width:16%" isFE="true"/>
                     <iais:sortableHeader needSort="false" field=""
-                                         value="Actions" style="width:16%" />
+                                         value="Actions" style="width:17%" />
                 </tr>
                 </thead>
                 <tbody>

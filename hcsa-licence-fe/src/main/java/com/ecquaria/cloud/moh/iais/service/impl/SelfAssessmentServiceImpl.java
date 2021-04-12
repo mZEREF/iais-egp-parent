@@ -139,7 +139,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String appId = app.getId();
             String svcId = app.getServiceId();
             String appNo = app.getApplicationNo();
-            log.info("SelfAssessmentServiceImpl [receiveSelfAssessmentByGroupId]  appId... {} , service id ...{,} app number  ...{} ", appId, svcId, appNo);
+            log.info("SelfAssessmentServiceImpl [receiveSelfAssessmentByGroupId]  appId... {} , service id ...{} app number  ...{} ", appId, svcId, appNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
             String svcCode = hcsaServiceDto.getSvcCode();
             String svcName = hcsaServiceDto.getSvcName();

@@ -655,7 +655,7 @@ public class RequestForChangeDelegator {
                     if(appSvcRelatedInfoDtos !=null && appSvcRelatedInfoDtos.size() > 0){
                         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                         List<AppSvcDocDto> appSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList)){
+                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && hcsaServiceDto != null){
                             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
                             for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
                                 HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,appSvcDocDto.getSvcDocId());
@@ -787,7 +787,7 @@ public class RequestForChangeDelegator {
     }
     private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
         if(licenceDto==null){
-            error.put("uenError","Licence Error!!!");
+            error.put("uenError","NEW_ERR0010");
         }else{
             if(licenseeDto == null){
                 error.put("uenError","RFC_ERR002");
@@ -799,10 +799,10 @@ public class RequestForChangeDelegator {
                 if(canTransfer){
                     if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         log.debug(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                        error.put("uenError","can not transfer to self");
+                        error.put("uenError","RFC_ERR021");
                     }
                 }else{
-                    error.put("uenError","RFC_ERR007");
+                    /*error.put("uenError","RFC_ERR007");*/
                 }
             }
         }

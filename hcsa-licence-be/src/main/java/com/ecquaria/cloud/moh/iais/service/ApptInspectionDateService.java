@@ -19,30 +19,30 @@ import java.util.Map;
 public interface ApptInspectionDateService {
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: taskDto, apptInspectionDateDto, applicationViewDto
-     * @return: ApptInspectionDateDto
-     * @Descripation: get Inspection Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: taskDto, apptInspectionDateDto, applicationViewDto
+      * @return: ApptInspectionDateDto
+      * @Descripation: get Inspection Date
+      */
     ApptInspectionDateDto getInspectionDate(TaskDto taskDto, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: get Process Decision
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get Process Decision
+      */
     List<SelectOption> getProcessDecList();
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: get Inspection Date Hour
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get Inspection Date Hour
+      */
     List<SelectOption> getInspectionDateHours();
 
     /**
@@ -55,113 +55,113 @@ public interface ApptInspectionDateService {
     List<SelectOption> getInspectionDateEndHours();
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: get am or pm option
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get am or pm option
+      */
     List<SelectOption> getAmPmOption();
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: apptInspectionDateDto
-     * @return: void
-     * @Descripation: save Lead Specific Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: apptInspectionDateDto
+      * @return: void
+      * @Descripation: save Lead Specific Date
+      */
     void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/11
-     * @Param: apptInspectionDateDto
-     * @return: void
-     * @Descripation: save System Inspection Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/11
+      * @Param: apptInspectionDateDto
+      * @return: void
+      * @Descripation: save System Inspection Date
+      */
     void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/19
-     * @Param: apptInspectionDateDto
-     * @return:
-     * @Descripation: get Re-Scheduling ProcessDec List
-     */
+      * @author: shicheng
+      * @Date 2020/2/19
+      * @Param: apptInspectionDateDto
+      * @return:
+      * @Descripation: get Re-Scheduling ProcessDec List
+      */
     List<SelectOption> getReShProcessDecList(ApptInspectionDateDto apptInspectionDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/19
-     * @Param: taskId, apptInspectionDateDto
-     * @return: ApptInspectionDateDto
-     * @Descripation: get Applicant choose Specific Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/19
+      * @Param: taskId, apptInspectionDateDto
+      * @return: ApptInspectionDateDto
+      * @Descripation: get Applicant choose Specific Date
+      */
     ApptInspectionDateDto getApptSpecificDate(String taskId, ApptInspectionDateDto apptInspectionDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/19
-     * @Param: apptInspectionDateDto, loginContext
-     * @return: void
-     * @Descripation: save Specific Date Last
-     */
+      * @author: shicheng
+      * @Date 2020/2/19
+      * @Param: apptInspectionDateDto, loginContext
+      * @return: void
+      * @Descripation: save Specific Date Last
+      */
     void saveSpecificDateLast(ApptInspectionDateDto apptInspectionDateDto, LoginContext loginContext);
 
     /**
-     * @author: shicheng
-     * @Date 2020/3/12
-     * @Param: premCorrIds, taskDtoList, corrAppMap
-     * @return: ApptAppInfoShowDto
-     * @Descripation: getApplicationInfoToShow
-     */
+      * @author: shicheng
+      * @Date 2020/3/12
+      * @Param: premCorrIds, taskDtoList, corrAppMap
+      * @return: ApptAppInfoShowDto
+      * @Descripation: getApplicationInfoToShow
+      */
     List<ApptAppInfoShowDto> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap);
 
     /**
-     * @author: shicheng
-     * @Date 2020/3/12
-     * @Param:
-     * @return:
-     * @Descripation: All task(From The Same Premises) is go to inspection(some of them jump over Inspection),
-     *                can do get Inspection Date
-     */
+      * @author: shicheng
+      * @Date 2020/3/12
+      * @Param: 
+      * @return: 
+      * @Descripation: All task(From The Same Premises) is go to inspection(some of them jump over Inspection),
+      *                can do get Inspection Date
+      */
     String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto, ApplicationDto applicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/4/10
-     * @Param: apptInspectionDateDto, applicationViewDto
-     * @return: void
-     * @Descripation: saveAuditInspectionDate
-     */
+      * @author: shicheng
+      * @Date 2020/4/10
+      * @Param: apptInspectionDateDto, applicationViewDto
+      * @return: void
+      * @Descripation: saveAuditInspectionDate
+      */
     void saveAuditInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/7/10
-     * @Param: apptInspectionDateDto
-     * @return: void
-     * @Descripation: saveAppUserCorrelation
-     */
+      * @author: shicheng
+      * @Date 2020/7/10
+      * @Param: apptInspectionDateDto
+      * @return: void
+      * @Descripation: saveAppUserCorrelation
+      */
     void saveAppUserCorrelation(ApptInspectionDateDto apptInspectionDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/10/19
-     * @Param: apptInspectionDateDto
-     * @return: ApptInspectionDateDto
-     * @Descripation: cancel System Date By SpecStep
-     */
+      * @author: shicheng
+      * @Date 2020/10/19
+      * @Param: apptInspectionDateDto
+      * @return: ApptInspectionDateDto
+      * @Descripation: cancel System Date By SpecStep
+      */
     ApptInspectionDateDto cancelSystemDateBySpecStep(ApptInspectionDateDto apptInspectionDateDto);
 
     void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/7
-     * @Param: apptInspectionDateDto
-     * @return: List<AppPremInspApptDraftDto>
-     * @Descripation: getInspApptDraftBySamePremises
-     */
+      * @author: shicheng
+      * @Date 2021/4/7
+      * @Param: apptInspectionDateDto
+      * @return: List<AppPremInspApptDraftDto>
+      * @Descripation: getInspApptDraftBySamePremises
+      */
     List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto);
 }

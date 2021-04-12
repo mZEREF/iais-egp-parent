@@ -66,7 +66,7 @@ public class InspDateDraftRegularDelHandler extends IJobHandler {
                         long diffMs = today.getTime() - createDate.getTime();
                         long diffHours = diffMs / (1000 * 60 * 60);
                         long hoursLong = hours;
-                        if(diffHours > hoursLong) {
+                        if(diffHours >= hoursLong) {
                             inspectionTaskClient.deleteInspDateDraftById(appPremInspApptDraftDto.getId());
                             List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
                             cancelRefNo.add(appPremInspApptDraftDto.getApptRefNo());
