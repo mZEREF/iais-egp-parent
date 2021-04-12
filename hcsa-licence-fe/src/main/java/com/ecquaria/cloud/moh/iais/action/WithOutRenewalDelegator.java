@@ -1173,7 +1173,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
     }
 
-    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,List<AppFeeDetailsDto> appFeeDetailsDto,BaseProcessClass bpc){
+    public static void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList, FeeDto feeDto, List<AppFeeDetailsDto> appFeeDetailsDto, BaseProcessClass bpc){
         List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
         Double total = feeDto.getTotal();
         String totalString = Formatter.formatterMoney(total);
