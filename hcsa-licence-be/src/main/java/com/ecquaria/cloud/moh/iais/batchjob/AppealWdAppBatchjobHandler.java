@@ -149,7 +149,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 msgInfoMap.put("S_LName", serviceName);
                                 msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                                 msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                                if (StringUtil.isEmpty(paymentMethod) ||
+                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||
                                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
                                     msgInfoMap.put("paymentType", "2");
                                     msgInfoMap.put("paymentMode", "");
