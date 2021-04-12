@@ -160,10 +160,8 @@ public class OnlineApptAjaxController {
             for(AppPremInspApptDraftDto appPremInspApptDraftDto : appPremInspApptDraftDtos) {
                 if(appPremInspApptDraftDto != null) {
                     String apptRefNo = appPremInspApptDraftDto.getApptRefNo();
-                    List<ApptUserCalendarDto> apptUserCalendarDtos;
-                    if (inspectionDateMap.containsKey(apptRefNo)) {
-                        apptUserCalendarDtos = inspectionDateMap.get(apptRefNo);
-                    } else {
+                    List<ApptUserCalendarDto> apptUserCalendarDtos = inspectionDateMap.get(apptRefNo);
+                    if (IaisCommonUtils.isEmpty(apptUserCalendarDtos)) {
                         apptUserCalendarDtos = IaisCommonUtils.genNewArrayList();
                     }
                     ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
