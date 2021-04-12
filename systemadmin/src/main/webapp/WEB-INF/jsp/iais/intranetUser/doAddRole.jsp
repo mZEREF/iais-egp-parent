@@ -16,116 +16,132 @@
         <h2>Role Management</h2>
         <iais:section title="" id="addRole">
             <iais:row>
-                <iais:field value="UserId"/>
+                <label class="col-xs-12 col-md-3 control-label" >UserId</label>
                 <iais:value width="7">
                     <span style="font-size: 25px">${userIdName}</span>
                 </iais:value>
             </iais:row>
             <iais:row>
-                <iais:field value="Add Role" required="true"/>
-                <div class="col-md-6">
+                <label class="col-xs-12 col-md-3 control-label" >Add Role <span style="color:red">*</span></label>
+                <div class="col-md-9">
                     <c:forEach items="${assignRoleOption}" var="role">
                         <c:choose>
                             <c:when test="${role.key=='AO1'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="ao1Check" onclick="checkRole()" type="checkbox"
                                            name="assignRoleAo1" value="${role.value}">
                                     <label class="form-check-label" for="ao1Check"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="ao1" hidden>
-                                    <c:forEach items="${ao1GroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="ao1" hidden class="col-md-6">
+                                    <iais:select name="ao1GroupSelect"  options="ao1GroupOptions" multiSelect="true"></iais:select>
+
+                                        <%--                                    <c:forEach items="${ao1GroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:when test="${role.key=='AO1_LEAD'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="ao1LeadCheck" onclick="checkRole()"
                                            type="checkbox" name="assignRoleAo1Lead" value="${role.value}">
                                     <label class="form-check-label" for="ao1LeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="ao1Lead" hidden>
-                                    <c:forEach items="${ao1GroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="ao1Lead" hidden class="col-md-6">
+                                    <iais:select name="ao1GroupLeadSelect"  options="ao1GroupOptions" multiSelect="true"></iais:select>
+
+                                        <%--                                    <c:forEach items="${ao1GroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="ao1GroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:when test="${role.key=='INSPECTOR'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="insCheck" onclick="checkRole()" type="checkbox"
                                            name="assignRoleIns" value="${role.value}">
                                     <label class="form-check-label" for="insCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="ins" hidden>
-                                        <%--                                    <iais:multipleSelect name="insGroupSelect" selectValue="" options="insGroupOptions"></iais:multipleSelect>--%>
-                                    <c:forEach items="${insGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="ins" hidden class="col-md-6">
+                                    <iais:select name="insGroupSelect"  options="insGroupOptions" multiSelect="true"></iais:select>
+                                        <%--                                    <c:forEach items="${insGroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:when test="${role.key=='INSPECTOR_LEAD'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="insLeadCheck" onclick="checkRole()"
                                            type="checkbox" name="assignRoleInsLead" value="${role.value}">
                                     <label class="form-check-label" for="insLeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="insLead" hidden>
-                                    <c:forEach items="${insGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="insGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="insLead" hidden class="col-md-6">
+                                    <iais:select name="insGroupLeadSelect" options="insGroupOptions" multiSelect="true"></iais:select>
+
+                                        <%--                                    <c:forEach items="${insGroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="insGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:when test="${role.key=='PSO'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="psoCheck" onclick="checkRole()" type="checkbox"
                                            name="assignRolePso" value="${role.value}">
                                     <label class="form-check-label" for="psoCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="pso" hidden>
-                                    <c:forEach items="${psoGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="psoGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="pso" hidden class="col-md-6">
+                                    <iais:select name="psoGroupSelect" options="psoGroupOptions" multiSelect="true"></iais:select>
+
+                                        <%--                                    <c:forEach items="${psoGroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="psoGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:when test="${role.key=='PSO_LEAD'}">
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="psoLeadCheck" onclick="checkRole()"
                                            type="checkbox" name="assignRolePsoLead" value="${role.value}">
                                     <label class="form-check-label" for="psoLeadCheck"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
-                                <br/>
-                                <div id="psoLead" hidden>
-                                    <c:forEach items="${psoGroupOptions}" var="groupId">
-                                        <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><br/>
-                                    </c:forEach>
+
+                                <div id="psoLead" hidden class="col-md-6">
+                                    <iais:select name="psoGroupLeadSelect" options="psoGroupOptions" multiSelect="true"></iais:select>
+
+                                        <%--                                    <c:forEach items="${psoGroupOptions}" var="groupId">--%>
+                                        <%--                                        <input type="checkbox" value="${groupId.value}" name="psoGroupLeadSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
+                                        <%--                                    </c:forEach>--%>
                                 </div>
+                                <div class="row">&nbsp;</div>
                             </c:when>
                             <c:otherwise>
-                                <div class="form-check">
+                                <div class="form-check col-md-6">
                                     <input class="form-check-input" id="roleId" type="checkbox" name="assignRoleOther"
                                            value="${role.value}">
                                     <label class="form-check-label" for="roleId"><span
                                             class="check-square"></span></label>
                                     <span style="font-size: 18px;font-weight: normal">${role.value}</span>
                                 </div>
-                                <br/>
+                                <div class="row">&nbsp;</div>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -139,7 +155,7 @@
 
         <iais:section title="" id="removeRole">
             <iais:row>
-                <iais:field value="Remove Role"/>
+                <label class="col-xs-12 col-md-3 control-label" >Remove Role</label>
                 <iais:value width="7">
                     <c:forEach items="${roleNameAndIdMap}" var="role">
                         <div class="form-check">
