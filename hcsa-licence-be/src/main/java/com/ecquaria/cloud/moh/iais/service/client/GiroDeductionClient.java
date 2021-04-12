@@ -16,7 +16,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2021/3/15 15:31
  */
-@FeignClient(url = "http://192.168.7.85:8881",name = "iais-payment")
+@FeignClient(name = "iais-payment")
 public interface GiroDeductionClient {
     @PutMapping(value = "iais-payment/update-giro-realut-status-by-groups",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroDeductionDto>> updateDeductionDtoSearchResultUseGroups(@RequestBody List<String> groups);

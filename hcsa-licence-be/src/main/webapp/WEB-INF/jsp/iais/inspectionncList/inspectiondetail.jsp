@@ -298,6 +298,7 @@
             }
         }else {
             if(error == "N"){
+                bigFileClear();
                 doDeleteFile();
                 $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             }
@@ -311,6 +312,16 @@
         $("#error_litterFile").html("");
         $('#error_litterFile_Show').html("");
         $("#selectedFileView").val('');
+    }
+
+    function bigFileClear() {
+        var error = validateUploadSizeMaxOrEmpty('100','selectedFileView');
+        if(error == "N") {
+            var file = $("#selectedFileView");
+            var fileClone = file.clone();
+            file.after(fileClone.val(""));
+            file.remove();
+        }
     }
 
     function doSubmitUploadFile(){

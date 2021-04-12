@@ -205,7 +205,7 @@ public class InspectionNcCheckListDelegator {
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         //comparative data for sef and check list nc
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
-        boolean remarksIsNull = StringUtil.isEmpty(serListDto.getTcuRemark());
+        boolean remarksIsNull = (serListDto != null && StringUtil.isEmpty(serListDto.getTcuRemark()));
         //get RemarksAndStartTimeAndEndTimeForCheckList BY mobile api
         fillupChklistService.setRemarksAndStartTimeAndEndTimeForCheckList(serListDto,commonDto,appPremCorrId);
         if(remarksIsNull){

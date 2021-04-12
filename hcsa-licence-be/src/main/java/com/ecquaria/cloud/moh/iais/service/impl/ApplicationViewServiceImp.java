@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,7 +214,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
-                    }else if("1".equals(equals(docTitleList.get(j).getDupForPrem()))&&docTitleList.get(j).getDupForPerson()!=null){
+                    }else if(docTitleList.get(j).getDupForPerson()!=null && "1".equals(docTitleList.get(j).getDupForPrem())){
                         switch (docTitleList.get(j).getDupForPerson()){
                             case "1" :   appSupDocDtos.get(i).setFile("Premises 1: Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "2" :   appSupDocDtos.get(i).setFile(" Premises 1: Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
@@ -222,7 +223,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
-                    }else if("1".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()==null){
+                    }else if(docTitleList.get(j).getDupForPerson()==null && "1".equals(docTitleList.get(j).getDupForPrem())){
                         appSupDocDtos.get(i).setFile("Premises 1 :"+docTitleList.get(j).getDocTitle());
                     }else {
                         appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
@@ -375,6 +376,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 //file
                 List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
+                    Collections.sort(appealSpecialDocDto,(s1,s2)->(s1.getIndex().compareTo(s2.getIndex())));
                     applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();

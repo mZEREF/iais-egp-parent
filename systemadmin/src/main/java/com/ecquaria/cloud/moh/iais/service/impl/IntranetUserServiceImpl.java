@@ -38,6 +38,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -70,8 +72,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
-        return intranetUserClient.getInternetUserByNricAndIdType(nric, idType).getEntity();
+    public List<FeUserDto> getUserListByNricAndIdType(String nric, String idType) {
+        return intranetUserClient.getUserListByNricAndIdType(nric, idType).getEntity();
     }
 
     @Override
@@ -117,10 +119,31 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public boolean accountAlreadyExist(FeUserDto user) {
+    public boolean canUpdateAccount(FeUserDto user, String prevIdNumber) {
+        String idType = user.getIdType();
+        String identityNo = user.getIdentityNo();
+        if (identityNo.equals(prevIdNumber)){
+            return true;
+        }
+
         String orgId = user.getOrgId();
-        FeUserDto exist = getFeUserAccountByNricAndType(user.getIdentityNo(), user.getIdType());
-        return exist != null && exist.getOrgId().equals(orgId);
+        if (user.isCorpPass()){
+            List<OrgUserDto> userList = organizationClient.getUserListByOrganId(orgId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(userList)){
+                for (OrgUserDto i : userList){
+                    if (identityNo.equals(i.getIdentityNo())){
+                        return false;
+                    }
+                }
+            }
+
+        }else {
+            List<FeUserDto> exist = getUserListByNricAndIdType(identityNo, idType);
+            if (IaisCommonUtils.isNotEmpty(exist)){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -33,8 +33,6 @@ public class DistributionListServiceImpl implements DistributionListService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient ;
 
-    @Autowired
-    private OrganizationClient organizationClient;
     @Override
     @SearchTrack(catalog = "systemAdmin", key = "queryMassDistributionList")
     public SearchResult<DistributionListDto> distributionList(SearchParam searchParam) {

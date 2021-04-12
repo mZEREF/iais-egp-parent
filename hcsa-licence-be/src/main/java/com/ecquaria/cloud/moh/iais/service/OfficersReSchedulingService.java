@@ -164,4 +164,30 @@ public interface OfficersReSchedulingService {
 
     void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException;
 
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: reschedulingOfficerDto
+      * @return: ReschedulingOfficerDto
+      * @Descripation: setNewInspStartDate
+      */
+    ReschedulingOfficerDto setNewInspStartDate(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: apptReSchAppInfoShowDtos
+      * @return: List<String>
+      * @Descripation: getOldApptRefNos
+      */
+    List<String> getOldApptRefNos(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: cancelApptRefNos
+      * @return: void
+      * @Descripation: confirmAndCancelApptRefNo
+      */
+    void confirmAndCancelApptRefNo(List<String> confirmApptRefNo, List<String> cancelApptRefNos);
 }

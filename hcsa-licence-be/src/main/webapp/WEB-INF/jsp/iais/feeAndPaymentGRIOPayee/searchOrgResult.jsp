@@ -1,8 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
@@ -74,6 +71,8 @@
                                 </iais:value>
                             </iais:row>
                             <iais:action style="text-align:right;">
+                                <button class="btn btn-secondary" type="button"
+                                        onclick="javascript:doClear()">Clear</button>
                                 <button type="button" class="btn btn-primary"
                                         onclick="javascript:doSearch();">Search
                                 </button>
@@ -175,6 +174,9 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    function doClear() {
+        $('input[type="text"]').val("");
+    }
     function doBack(){
         showWaiting();
         $("[name='crud_action_type']").val("back");

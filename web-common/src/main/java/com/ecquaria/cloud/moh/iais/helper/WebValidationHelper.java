@@ -158,7 +158,7 @@ public class WebValidationHelper {
                                     repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
                                 }
                                 if(msg.contains("/")){
-                                    msg=msg.substring(0, msg.indexOf("/"));
+                                    msg=msg.substring(0, msg.indexOf('/'));
                                 }
                                 msg = MessageUtil.getMessageDesc(msg, repMap);
                             }

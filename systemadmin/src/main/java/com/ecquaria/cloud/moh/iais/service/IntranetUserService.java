@@ -30,7 +30,7 @@ public interface IntranetUserService {
     void createIntranetUser(OrgUserDto orgUserDto);
     OrgUserDto createIntrenetUser(OrgUserDto orgUserDto);
     void createIntranetUsers(List<OrgUserDto> orgUserDtos);
-    FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
+    List<FeUserDto> getUserListByNricAndIdType(String nric, String idType);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);
@@ -39,7 +39,7 @@ public interface IntranetUserService {
     OrgUserDto findIntranetUserByUserId(String userId);
     Boolean UserIsExist(String userId);
 
-    boolean accountAlreadyExist(FeUserDto user);
+    boolean canUpdateAccount(FeUserDto user, String prevIdNumber);
 
     ClientUser saveEgpUser(ClientUser clientUser);
     ClientUser updateEgpUser(ClientUser clientUser);

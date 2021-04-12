@@ -361,15 +361,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         Map<String, List<ProcessFileTrackDto>> appIdProFileMap = IaisCommonUtils.genNewHashMap();
         for(ProcessFileTrackDto processFileTrackDto : processFileTrackDtos){//NOSONAR
             String appId = processFileTrackDto.getRefId();
-            if(appIdProFileMap.containsKey(appId)){
-                List<ProcessFileTrackDto> processFileTrackDtoList = appIdProFileMap.get(appId);
-                processFileTrackDtoList.add(processFileTrackDto);
-                appIdProFileMap.put(appId, processFileTrackDtoList);
-            } else {
-                List<ProcessFileTrackDto> processFileTrackDtoList = IaisCommonUtils.genNewArrayList();
-                processFileTrackDtoList.add(processFileTrackDto);
-                appIdProFileMap.put(appId, processFileTrackDtoList);
+            List<ProcessFileTrackDto> processFileTrackDtoList = appIdProFileMap.get(appId);
+            if(IaisCommonUtils.isEmpty(processFileTrackDtoList)){
+                processFileTrackDtoList = IaisCommonUtils.genNewArrayList();
             }
+            processFileTrackDtoList.add(processFileTrackDto);
+            appIdProFileMap.put(appId, processFileTrackDtoList);
         }
         return appIdProFileMap;
     }

@@ -27,14 +27,14 @@
                         </div>
                         <div class="tab-gp dashboard-tab">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="active" role="presentation"><a href="#tabAccount" aria-controls="tabAccount"
+                                <li class="<c:if test="${activeTab==1 || activeTab==null}">active</c:if> <c:if test="${activeTab!=1 && activeTab!=null}">complete</c:if> " role="presentation"><a href="#tabAccount" aria-controls="tabAccount"
                                                                           role="tab" data-toggle="tab">Account
                                     Information</a></li>
-                                <li class="complete" role="presentation"><a href="#tabPersonal"
+                                <li class="<c:if test="${activeTab!=2}">complete</c:if> <c:if test="${activeTab==2}">active</c:if>" role="presentation"><a href="#tabPersonal"
                                                                             aria-controls="tabPersonal" role="tab"
                                                                             data-toggle="tab">Personal Information</a>
                                 </li>
-                                <li class="complete" role="presentation"><a href="#tabContact"
+                                <li class="<c:if test="${activeTab!=3}">complete</c:if> <c:if test="${activeTab==3}">active</c:if>" role="presentation"><a href="#tabContact"
                                                                             aria-controls="tabContact" role="tab"
                                                                             data-toggle="tab">Contact Information</a>
                                 </li>
@@ -43,7 +43,7 @@
 <br/><br/>
 
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabAccount" role="tabAccount">
+                            <div class="tab-pane <c:if test="${activeTab==1}">active</c:if> <c:if test="${activeTab==null}">active</c:if>" id="tabAccount" role="tabAccount">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
                                     <iais:value>
@@ -96,7 +96,7 @@
                                     </iais:value>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabPersonal" role="tabPersonal">
+                            <div class="tab-pane <c:if test="${activeTab==2}">active</c:if>" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
                                     <iais:value>
@@ -155,7 +155,7 @@
                                     </iais:value>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabContact" role="tabContact">
+                            <div class="tab-pane <c:if test="${activeTab==3}">active</c:if>" id="tabContact" role="tabContact">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
                                     <iais:value>

@@ -66,7 +66,6 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
-import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -368,7 +367,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             String tlGroupNumber = "-";
             String tlAppType = "-";
             String tlSvcName = "-";
-            String inspDate = DateUtil.formatDate(i.getInspectionDate());
+            String inspDate = Formatter.formatDate(i.getInspectionDate());
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
@@ -513,6 +512,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void alertSelfDeclNotification() {
+        //These emails will only be reminded three times at different times, see database table -> smemail.notification
         List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
         sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
 

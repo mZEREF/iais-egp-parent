@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -426,13 +427,13 @@ public class AppealApproveBatchjob {
                 signature2.date(), signature2.authorization());
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
+    //sync hciName
     public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
-        ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
@@ -465,6 +466,8 @@ public class AppealApproveBatchjob {
             throw new IaisRuntimeException("appeal dto is null");
         }
         ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
+        String appGrpId = entity.getAppGrpId();
+        List<ApplicationDto> applicationDtos = otherChangeHciNameApp(appGrpId,entity);
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
         o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
         String appId = o.getId();
@@ -474,6 +477,7 @@ public class AppealApproveBatchjob {
             o.setNeedNewLicNo(false);
             o.setOriginLicenceId(oldLicenceId);
             appealApplicaiton.add(o);
+            addOtherChangeHciNameApp(applicationDtos,appealApplicaiton);
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
             ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
             a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
@@ -492,6 +496,63 @@ public class AppealApproveBatchjob {
             }*/
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
+    }
+
+    private void addOtherChangeHciNameApp( List<ApplicationDto> applicationDtos,List<ApplicationDto> appealApplicaiton){
+        applicationDtos.forEach((v)->{
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(v.getStatus())){
+                try {
+                    ApplicationDto c=(ApplicationDto)CopyUtil.copyMutableObject(v);
+                    appealApplicaiton.add(c);
+                } catch (Exception e) {
+                   log.error(e.getMessage());
+                }
+            }else if(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(v.getStatus())){
+                LicAppCorrelationDto entity1 = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(v.getId()).getEntity();
+                try {
+                    ApplicationDto c=(ApplicationDto)CopyUtil.copyMutableObject(v);
+                    c.setNeedNewLicNo(false);
+                    c.setOriginLicenceId(entity1.getLicenceId());
+                    c.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    appealApplicaiton.add(c);
+                } catch (Exception e) {
+                  log.error(e.getMessage());
+                }
+            }
+
+        });
+    }
+    private List<ApplicationDto> otherChangeHciNameApp(String appGrpId,ApplicationDto applicationDto){
+        List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+        ListIterator<ApplicationDto> iterator = applicationDtoList.listIterator();
+        while (iterator.hasNext()){
+            ApplicationDto next = iterator.next();
+            if(ApplicationConsts.APPLICATION_STATUS_DELETED.equals(next.getStatus())||applicationDto.getApplicationNo().equals(next.getApplicationNo())){
+                iterator.remove();
+            }
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
+            while (iterator.hasNext()){
+                ApplicationDto next = iterator.next();
+                if(applicationDto.getServiceId().equals(next.getServiceId())){
+                    iterator.remove();
+                }
+            }
+        }else {
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            String hciCode1 = appGrpPremisesEntityDto.getHciCode();
+
+            while (iterator.hasNext()){
+                ApplicationDto next = iterator.next();
+                AppGrpPremisesEntityDto entity = applicationClient.getPremisesByAppNo(next.getApplicationNo()).getEntity();
+                String hciCode = entity.getHciCode();
+                if(!hciCode.equals(hciCode1)){
+                    iterator.remove();
+                }
+            }
+        }
+
+        return applicationDtoList;
     }
     private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,

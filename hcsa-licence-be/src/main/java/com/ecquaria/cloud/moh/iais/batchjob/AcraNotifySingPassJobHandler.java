@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -34,12 +33,12 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * AcraNotifySingPassJobHandler
@@ -72,119 +71,140 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
 
     @Autowired
     NotificationHelper notificationHelper;
+
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
+
     @Autowired
     private MsgTemplateClient msgTemplateClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
 
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
-    final static int OUTDATEMONTH = 6;
     @Override
     public ReturnT<String> execute(String s) throws IOException, TemplateException{
         log.info(StringUtil.changeForLog("AcraNotifySingPassJobHandler start..." ));
-        OrganizationDto organizationDto = new OrganizationDto();
         //90days
-        List<LicenseeDto> licenseeDtoList90 = IaisCommonUtils.genNewArrayList();
-        licenseeDtoList90 = organizationClient.getLicenseeDtoOvertime("90").getEntity();
-        for (LicenseeDto item: licenseeDtoList90
-             ) {
+        int firReminder = systemParamConfig.getSingpassCeasedReminderFir();
+        List<LicenseeDto> licenseeDtoList90 = organizationClient.getLicenseeDtoOvertime(String.valueOf(firReminder)).getEntity();
+        for (LicenseeDto item: licenseeDtoList90) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_002_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_002_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_002_MSG);
         }
         //60days
-        List<LicenseeDto> licenseeDtoList60 = IaisCommonUtils.genNewArrayList();
-        licenseeDtoList60 = organizationClient.getLicenseeDtoOvertime("60").getEntity();
-        for (LicenseeDto item: licenseeDtoList60
-        ) {
+        int secReminder = systemParamConfig.getSingpassCeasedReminderSec();
+        List<LicenseeDto> licenseeDtoList60 = organizationClient.getLicenseeDtoOvertime(String.valueOf(secReminder)).getEntity();
+        for (LicenseeDto item: licenseeDtoList60) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_003_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_003_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_003_MSG);
         }
         //30days
-        List<LicenseeDto> licenseeDtoList30 = IaisCommonUtils.genNewArrayList();
-        licenseeDtoList30 = organizationClient.getLicenseeDtoOvertime("30").getEntity();
-        for (LicenseeDto item: licenseeDtoList30
-        ) {
+        int thirdReminder = systemParamConfig.getSingpassCeasedReminderThird();
+        List<LicenseeDto> licenseeDtoList30 = organizationClient.getLicenseeDtoOvertime(String.valueOf(thirdReminder)).getEntity();
+        for (LicenseeDto item: licenseeDtoList30) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_004_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_004_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_004_MSG);
         }
         log.info(StringUtil.changeForLog("AcraNotifySingPassJobHandler end..." ));
         return ReturnT.SUCCESS;
-
     }
 
     private void sendEmail(LicenseeDto licenseeDto,String emailId,String smsId,String msgId){
+        OrganizationDto organization = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
+        List<OrgUserDto> orgUserList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+        if (IaisCommonUtils.isNotEmpty(orgUserList)&& Optional.ofNullable(organization).isPresent()){
+            for (OrgUserDto user : orgUserList){
+                String applicantName = user.getDisplayName();
+                List<ApplicationGroupDto> applicationGroup = applicationClient.getApplicationGroupByLicensee(licenseeDto.getId()).getEntity();
+                if (IaisCommonUtils.isNotEmpty(applicationGroup)){
+                    for (ApplicationGroupDto group : applicationGroup){
+                        sendEachApplication(group, organization.getUenNo(), applicantName, emailId, smsId, msgId);
+                    }
+                }
+            }
+        }
+    }
 
+    private void sendEachApplication(ApplicationGroupDto applicationGroup, String uen, String applicantName, String emailId,String smsId,String msgId){
         String emailSubject = getEmailSubject(emailId,null);
         String smsSubject = getEmailSubject(smsId ,null);
         String messageSubject = getEmailSubject(msgId,null);
 
+        List<ApplicationDto> applicationList = applicationClient.getAppDtosByAppGrpId(applicationGroup.getId()).getEntity();
+        if (IaisCommonUtils.isNotEmpty(applicationList)){
+            for (ApplicationDto app : applicationList){
+                AppGrpPremisesEntityDto appGrpPremisesEntity = applicationClient.getPremisesByAppNo(app.getApplicationNo()).getEntity();
+                if (Optional.ofNullable(appGrpPremisesEntity).isPresent()){
+                    Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                    templateContent.put("HCI_Name", appGrpPremisesEntity.getHciName());
+                    String address = MiscUtil.getAddress(appGrpPremisesEntity.getBlkNo(),appGrpPremisesEntity.getStreetName(),
+                            appGrpPremisesEntity.getBuildingName(),appGrpPremisesEntity.getFloorNo(),appGrpPremisesEntity.getUnitNo(),appGrpPremisesEntity.getPostalCode());
+                    templateContent.put("HCI_Address", address);
+                    log.info(StringUtil.changeForLog("HCI_Address = " + address));
+                    templateContent.put("UEN_No", uen);
+                    templateContent.put("Applicant", applicantName);
+                    HcsaServiceDto hcsaService = hcsaConfigClient.getHcsaServiceDtoByServiceId(app.getServiceId()).getEntity();
 
-        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
-        OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
-        String applicantName = orgUserDtoList.get(0).getDisplayName();
-        List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDto.getId()).getEntity();
-        List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(applicationGroupDtos.get(0).getId()).getEntity();
-        AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDtoList.get(0).getApplicationNo()).getEntity();
+                    List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                    if (Optional.ofNullable(hcsaService).isPresent()){
+                        templateContent.put("ServiceName", hcsaService.getSvcName());
+                        svcCodeList.add(hcsaService.getSvcCode());
+                    }
 
-        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        templateContent.put("HCI_Name", appGrpPremisesEntityDto.getHciName());
-        String address = MiscUtil.getAddress(appGrpPremisesEntityDto.getBlkNo(),appGrpPremisesEntityDto.getStreetName(),appGrpPremisesEntityDto.getBuildingName(),appGrpPremisesEntityDto.getFloorNo(),appGrpPremisesEntityDto.getUnitNo(),appGrpPremisesEntityDto.getPostalCode());
-        templateContent.put("HCI_Address", address);
-        log.info(StringUtil.changeForLog("HCI_Address = " + address));
-        templateContent.put("UEN_No", organizationDto.getUenNo());
-        templateContent.put("Applicant", applicantName);
-        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDtoList.get(0).getServiceId()).getEntity();
-        templateContent.put("ServiceName", hcsaServiceDto.getSvcName());
-        LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(applicationDtoList.get(0).getId()).getEntity();
-        LicenceDto licenceDto = hcsaLicenceClient.getLicdtoByOrgId(licAppCorrelationDto.getLicenceId()).getEntity();
-        templateContent.put("LicenceNo", licenceDto.getLicenceNo());
+                    LicAppCorrelationDto licAppCorrelation = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(app.getId()).getEntity();
 
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        templateContent.put("HALP", loginUrl);
-        templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-        templateContent.put("telNo", systemParamConfig.getSystemAddressOne());
+                    EmailParam emailParam = new EmailParam();
+                    EmailParam msgParam = new EmailParam();
+                    EmailParam smsParam = new EmailParam();
 
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(emailId);
-        emailParam.setTemplateContent(templateContent);
-        emailParam.setSubject(emailSubject);
-        emailParam.setQueryCode(licenceDto.getLicenceNo());
-        emailParam.setReqRefNum(licenceDto.getLicenceNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-        emailParam.setRefId(licenceDto.getId());
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send email end"));
+                    if (Optional.ofNullable(licAppCorrelation).isPresent()){
+                        LicenceDto licence = hcsaLicenceClient.getLicenceDtoById(licAppCorrelation.getLicenceId()).getEntity();
+                        if (Optional.ofNullable(licence).isPresent()){
+                            templateContent.put("LicenceNo", licence.getLicenceNo());
+                            emailParam.setQueryCode(licence.getLicenceNo());
+                            emailParam.setReqRefNum(licence.getLicenceNo());
+                            emailParam.setRefId(licence.getId());
+                            emailParam.setQueryCode(licence.getLicenceNo());
+                            emailParam.setReqRefNum(licence.getLicenceNo());
+                            emailParam.setRefId(licence.getId());
 
-        EmailParam smsParam = new EmailParam();
-        smsParam.setTemplateId(smsId);
-        smsParam.setSubject(smsSubject);
-        smsParam.setTemplateContent(templateContent);
-        smsParam.setQueryCode(licenceDto.getLicenceNo());
-        smsParam.setReqRefNum(licenceDto.getLicenceNo());
-        smsParam.setRefId(licenceDto.getId());
-        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-        notificationHelper.sendNotification(smsParam);
-        log.info(StringUtil.changeForLog("send sms end"));
+                            smsParam.setQueryCode(licence.getLicenceNo());
+                            smsParam.setReqRefNum(licence.getLicenceNo());
+                            smsParam.setRefId(licence.getId());
 
-        EmailParam msgParam = new EmailParam();
-        msgParam.setTemplateId(msgId);
-        msgParam.setTemplateContent(templateContent);
-        msgParam.setSubject(messageSubject);
-        msgParam.setQueryCode(licenceDto.getLicenceNo());
-        msgParam.setReqRefNum(licenceDto.getLicenceNo());
-        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-        svcCodeList.add(hcsaServiceDto.getSvcCode());
-        msgParam.setSvcCodeList(svcCodeList);
-        msgParam.setRefId(licenceDto.getId());
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        notificationHelper.sendNotification(msgParam);
-        log.info(StringUtil.changeForLog("send msg end"));
+                            msgParam.setQueryCode(licence.getLicenceNo());
+                            msgParam.setReqRefNum(licence.getLicenceNo());
+                            msgParam.setRefId(licence.getId());
+                        }
+                    }
+
+                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                    StringBuilder hrefStr = new StringBuilder();
+                    hrefStr.append("<a href=\"").append(loginUrl).append("\">HALP</a>");
+                    templateContent.put("HALP", hrefStr.toString());
+                    templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+                    templateContent.put("telNo", systemParamConfig.getSystemPhoneNumber());
+
+                    emailParam.setTemplateId(emailId);
+                    emailParam.setTemplateContent(templateContent);
+                    emailParam.setSubject(emailSubject);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+
+                    notificationHelper.sendNotification(emailParam);
+                    log.info(StringUtil.changeForLog("send email end"));
+
+                    smsParam.setTemplateId(smsId);
+                    smsParam.setSubject(smsSubject);
+                    smsParam.setTemplateContent(templateContent);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                    notificationHelper.sendNotification(smsParam);
+                    log.info(StringUtil.changeForLog("send sms end"));
+
+                    msgParam.setTemplateId(msgId);
+                    msgParam.setTemplateContent(templateContent);
+                    msgParam.setSubject(messageSubject);
+
+                    msgParam.setSvcCodeList(svcCodeList);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(msgParam);
+                    log.info(StringUtil.changeForLog("send msg end"));
+                }
+            }
+        }
 
     }
 

@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -22,13 +21,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -80,13 +79,13 @@ public class RetriggerGiroPaymentDelegator {
 
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
-        log.debug(StringUtil.changeForLog("appGrpNo:")+appGrpNo);
+        log.debug(StringUtil.changeForLog("appGrpNo:" +appGrpNo));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //init data
         String switch2 = "topreview";
         AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppGrpNo(appGrpNo);
 
-        InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
+        /*InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
         if (MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto.getStatus())) {
             log.debug(StringUtil.changeForLog("message had response"));
             switch2 = SWITCH_VALUE_PRE_ACK;
@@ -94,7 +93,7 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,MessageUtil.getMessageDesc("INBOX_ERR010"));
             return;
         }
-
+*/
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
@@ -104,8 +103,9 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
             return;
         }
-        appSubmissionDto.setRfiMsgId(msgId);
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        //appSubmissionDto.setRfiMsgId(msgId);
+        //set type for page display
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
@@ -199,7 +199,8 @@ public class RetriggerGiroPaymentDelegator {
 
     public void prepreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the prepreview start ...."));
-
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+        ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.FALSE);
         log.info(StringUtil.changeForLog("the prepreview end ...."));
     }
 
@@ -228,8 +229,9 @@ public class RetriggerGiroPaymentDelegator {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if("next".equals(action)){
             if (StringUtil.isEmpty(payMethod)) {
-                errorMap.put("payMethod",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
-                errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                String GENERAL_ERR0006Msg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
+                errorMap.put("payMethod", GENERAL_ERR0006Msg);
+                errorMap.put("pay", GENERAL_ERR0006Msg);
                 NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             }
@@ -292,7 +294,7 @@ public class RetriggerGiroPaymentDelegator {
                     appGrp.setPayMethod(pmtMethod);
                     appGrp = serviceConfigService.updateAppGrpPmtStatus(appGrp);
                     //update
-                    appSubmissionService.updateMsgStatus(appSubmissionDto.getRfiMsgId(), MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    //appSubmissionService.updateMsgStatus(appSubmissionDto.getRfiMsgId(), MessageConstants.MESSAGE_STATUS_RESPONSE);
                     //eic
                     serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
                 }else{

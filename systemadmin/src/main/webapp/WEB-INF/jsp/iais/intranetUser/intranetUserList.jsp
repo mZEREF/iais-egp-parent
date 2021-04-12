@@ -150,7 +150,7 @@
         const userFileSize = $("#userFileSize").val();
         const error = validateUploadSizeMaxOrEmpty(userFileSize, "inputFile");
         if (error == "N"){
-            $('#error_userUploadFile').html($("#fileMaxLengthMessage").val());
+            $('#error_userUploadFile').html($("#fileMaxMBMessage").val());
             dismissWaiting();
         } else {
             var fileName =  getFileName($("#inputFile").val());

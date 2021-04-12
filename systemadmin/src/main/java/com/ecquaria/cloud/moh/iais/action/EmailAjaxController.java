@@ -283,15 +283,16 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
             selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
         }else{
+           String naText = MasterCodeUtil.getCodeDesc(na);
             switch (deliveyMode){
                 case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
-                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    selectOptions.add(new SelectOption(na,naText ));
                     break;
                 case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
-                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    selectOptions.add(new SelectOption(na,naText));
                     break;
                 case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
-                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    selectOptions.add(new SelectOption(na,naText));
                     break;
                 case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
                     selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
@@ -305,7 +306,7 @@ public class EmailAjaxController {
                 default:
                     selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
                     selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
-                    selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                    selectOptions.add(new SelectOption(na,naText));
                     selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
                     break;
             }

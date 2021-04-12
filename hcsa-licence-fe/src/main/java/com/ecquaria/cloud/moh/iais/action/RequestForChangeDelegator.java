@@ -114,6 +114,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         init(bpc,licenceId);
         removeSession(bpc.request);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
@@ -613,6 +614,8 @@ public class RequestForChangeDelegator {
             }else{
                 log.debug(StringUtil.changeForLog("do request for change ------ licence no:"+appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+                //set file max seq num
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,appSubmissionDto.getMaxFileIndex()+1);
                 //set audit trail licNo
                 String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
@@ -643,6 +646,27 @@ public class RequestForChangeDelegator {
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 //set doc info
                 requestForChangeService.changeDocToNewVersion(appSubmissionDto);
+                //svc doc set align
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
+                    String premTye = appGrpPremisesDtos.get(0).getPremisesType();
+                    String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                    if(appSvcRelatedInfoDtos !=null && appSvcRelatedInfoDtos.size() > 0){
+                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
+                        List<AppSvcDocDto> appSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && hcsaServiceDto != null){
+                            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+                            for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
+                                HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,appSvcDocDto.getSvcDocId());
+                                if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
+                                    appSvcDocDto.setPremisesVal(premVal);
+                                    appSvcDocDto.setPremisesType(premTye);
+                                }
+                            }
+                        }
+                    }
+                }
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
@@ -668,6 +692,14 @@ public class RequestForChangeDelegator {
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
             }
             ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,"test");
+            //set max file index into session
+            Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+            if(maxFileIndex == null){
+                maxFileIndex = 0;
+            }else{
+                maxFileIndex ++;
+            }
+            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         }else{
             action = "error";
             ParamUtil.setRequestAttr(bpc.request, RfcConst.ACKMESSAGE,"error !!!");
@@ -770,7 +802,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","RFC_ERR021");
                     }
                 }else{
-                    error.put("uenError","RFC_ERR007");
+                    /*error.put("uenError","RFC_ERR007");*/
                 }
             }
         }

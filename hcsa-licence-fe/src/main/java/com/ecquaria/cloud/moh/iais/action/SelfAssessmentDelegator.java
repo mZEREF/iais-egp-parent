@@ -173,8 +173,13 @@ public class SelfAssessmentDelegator {
 
     private void loadSelfAssessment(HttpServletRequest request) {
         SelfAssessment selfAssessment = getCurrentSelfAssessment(request);
+        if (selfAssessment == null ){
+            return;
+        }
         List<SelfAssessmentConfig> selfAssessmentConfig = selfAssessment.getSelfAssessmentConfig();
-        if (selfAssessment == null || IaisCommonUtils.isEmpty(selfAssessmentConfig)) return;
+        if(IaisCommonUtils.isEmpty(selfAssessmentConfig)){
+            return;
+        }
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessment);
         // look <input type="hidden" name="tagIndex" value="<iais:mask name="tagIndex" value="${tagIndex}"/>">
         String idx = selfAssessmentConfig.get(0).getConfigId();

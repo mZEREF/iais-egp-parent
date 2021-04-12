@@ -98,7 +98,15 @@ import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -132,7 +140,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * egator
@@ -272,7 +279,6 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -921,7 +927,7 @@ public class NewApplicationDelegator {
         Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request);
+        AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
         List<AppGrpPrimaryDocDto> oldPrimaryDocDtoList = oldSubmissionDto.getAppGrpPrimaryDocDtos();
         String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         String appType = appSubmissionDto.getAppType();
@@ -1338,7 +1344,10 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
-        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
@@ -1517,8 +1526,9 @@ public class NewApplicationDelegator {
                             requestForChangeService.svcDocToPresmise(appSubmissionDto);
                         }
                     }
+                    premiseView(appSubmissionDto,applicationDto,bpc.request);
                 }
-                premiseView(appSubmissionDto,applicationDto,bpc.request);
+
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
@@ -1673,6 +1683,11 @@ public class NewApplicationDelegator {
                     break;
             }
         }
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         List<AppPremisesRoutingHistoryDto> hisList;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -1898,7 +1913,11 @@ public class NewApplicationDelegator {
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
         strList.add(serviceConfig);
         appSubmissionDto.setStepColor(strList);
-        appSubmissionDto.setMaxFileIndex((int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR));
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         //todo chnage edit
@@ -2971,7 +2990,10 @@ public class NewApplicationDelegator {
         //handler primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.handlerPrimaryDoc(appSubmissionDto.getAppGrpPremisesDtoList(),appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        int maxFileIndex = (int) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
 
@@ -3221,24 +3243,19 @@ public class NewApplicationDelegator {
         if(draftNo!=null){
             AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(draftAppSubmissionDto!=null){
-                draftAppSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                applicationFeClient.saveDraft(draftAppSubmissionDto);
+                applicationFeClient.deleteDraftByNo(draftNo);
             }
         }
         if (!StringUtil.isEmpty(appSubmissionDto)&&!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
-                    String draftJson = applicationSubDraftDto.getDraftJson();
-                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                    appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    applicationFeClient.saveDraft(appSubmissionDto1);
+
+                    applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }else {
                     if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
-                        String draftJson = applicationSubDraftDto.getDraftJson();
-                        AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                        appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                        applicationFeClient.saveDraft(appSubmissionDto1);
+
+                        applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }
             }
@@ -4241,6 +4258,14 @@ public class NewApplicationDelegator {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
+                //set max file index into session
+                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+                if(maxFileIndex == null){
+                    maxFileIndex = 0;
+                }else{
+                    maxFileIndex ++;
+                }
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if (stepColor != null) {
                     HashMap<String, String> coMap = new HashMap<>(4);
@@ -4367,6 +4392,15 @@ public class NewApplicationDelegator {
             }
 
             if (appSubmissionDto != null) {
+                //set max file index into session
+                Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+                if(maxFileIndex == null){
+                    maxFileIndex = 0;
+                }else{
+                    maxFileIndex ++;
+                }
+                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+
                 appSubmissionDto.setRfiAppNo(appNo);
                 //clear svcDoc id
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -4641,7 +4675,7 @@ public class NewApplicationDelegator {
                         String premTye = appGrpPremisesDtos.get(0).getPremisesType();
                         String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:newGrpPrimaryDocList){
-                            HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(primaryDocConfig,appGrpPrimaryDocDto.getSvcComDocId());
+                            HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(primaryDocConfig,appGrpPrimaryDocDto.getSvcComDocId());
                             if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
                                 appGrpPrimaryDocDto.setPremisessName(premVal);
                                 appGrpPrimaryDocDto.setPremisessType(premTye);
@@ -4661,11 +4695,11 @@ public class NewApplicationDelegator {
                         NewApplicationHelper.setDocInfo(null, appSvcDocDtos, null, svcDocConfig);
                         //set dupForPrem info for not rfi rfc or renew
                         if(!isRfi &&(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))){
-                            if(appGrpPremisesDtos != null && appGrpPremisesDtos.size()>0){
+                            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                                 String premTye = appGrpPremisesDtos.get(0).getPremisesType();
                                 String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
                                 for(AppSvcDocDto svcDocDto:appSvcDocDtos){
-                                    HcsaSvcDocConfigDto docConfig = getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
+                                    HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,svcDocDto.getSvcDocId());
                                     if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
                                         svcDocDto.setPremisesVal(premVal);
                                         svcDocDto.setPremisesType(premTye);
@@ -4731,14 +4765,6 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             }
         }
-        //set max file index into session
-        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-        if(maxFileIndex == null){
-            maxFileIndex = 0;
-        }else{
-            maxFileIndex ++;
-        }
-        ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
 
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);
@@ -4962,6 +4988,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }
@@ -5178,7 +5205,7 @@ public class NewApplicationDelegator {
             if(!IaisCommonUtils.isEmpty(maxVersionPrimaryDocList)){
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:maxVersionPrimaryDocList){
                     int seqNum = appGrpPrimaryDocDto.getSeqNum();
-                    if(configId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && seqNum > initSeqNum){
+                    if(seqNum > initSeqNum  &&  configId.equals(appGrpPrimaryDocDto.getSvcComDocId())){
                         initSeqNum = seqNum;
                     }
                 }
@@ -5215,7 +5242,7 @@ public class NewApplicationDelegator {
             if(!IaisCommonUtils.isEmpty(maxVersionSvcDocList)){
                 for(AppSvcDocDto appSvcDocDto:maxVersionSvcDocList){
                     int seqNum = appSvcDocDto.getSeqNum();
-                    if(configId.equals(appSvcDocDto.getSvcDocId()) && seqNum > initSeqNum){
+                    if(seqNum > initSeqNum  &&  configId.equals(appSvcDocDto.getSvcDocId())){
                         initSeqNum = seqNum;
                     }
                 }
@@ -5310,18 +5337,7 @@ public class NewApplicationDelegator {
 
     }
 
-    private HcsaSvcDocConfigDto getHcsaSvcDocConfigDtoById(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,String id){
-        HcsaSvcDocConfigDto result = null;
-        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(id)){
-            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
-                if(id.equals(hcsaSvcDocConfigDto.getId())){
-                    result = hcsaSvcDocConfigDto;
-                    break;
-                }
-            }
-        }
-        return result;
-    }
+
 
     private AppGrpPrimaryDocDto getAppGrpPrimaryDocByConfigIdAndPremIndex(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String config,String premIndex){
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;

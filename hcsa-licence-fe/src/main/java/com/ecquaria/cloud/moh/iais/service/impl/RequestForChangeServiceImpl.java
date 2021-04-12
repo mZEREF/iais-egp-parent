@@ -477,7 +477,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
         //do validate one premiss
         List<String> list = IaisCommonUtils.genNewArrayList();//NOSONAR
-        List<String> opFloorUnitNo=new ArrayList<>(20);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
@@ -1937,8 +1936,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         if(selectAllDay){
             if(!isEmpty){
-                operationHoursReloadDto.setStartFrom(Time.valueOf(LocalTime.of(0,0,0)));
-                operationHoursReloadDto.setEndTo(Time.valueOf(LocalTime.of(0,0,0)));
+                Time time = Time.valueOf(LocalTime.of(0,0,0));
+                operationHoursReloadDto.setStartFrom(time);
+                operationHoursReloadDto.setEndTo(time);
             }
         }else{
             if(StringUtil.isEmpty(startHH) || StringUtil.isEmpty(startMM)){

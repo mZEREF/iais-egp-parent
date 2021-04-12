@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -514,8 +513,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 Calendar expireCalendar = Calendar.getInstance();
                 expireCalendar.setTime(expiryDate);
                 expireCalendar.add(Calendar.MONTH, -2);
-                String expireDateString = DateUtil.formatDate(expiryDate);
-                String temp = DateUtil.formatDate(expireCalendar.getTime());
+                String expireDateString = new SimpleDateFormat("dd/mm/yyyy").format(expiryDate);
+                String temp =new SimpleDateFormat("dd/mm/yyyy").format(expireCalendar.getTime());
                 map.put("endDate", temp);
                 map.put("expireDate", expireDateString);
                 //first - sixth reminder

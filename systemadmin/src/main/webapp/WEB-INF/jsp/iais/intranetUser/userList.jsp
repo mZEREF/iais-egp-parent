@@ -176,7 +176,7 @@
         const userFileSize = $("#userFileSize").val();
         const error = validateUploadSizeMaxOrEmpty(userFileSize, "userRoleUpload");
         if (error == "N"){
-            $('#error_userUploadFile').html($("#fileMaxLengthMessage").val());
+            $('#error_userUploadFile').html($("#fileMaxMBMessage").val());
             dismissWaiting();
         } else {
             const file = $("#userRoleUpload").val();

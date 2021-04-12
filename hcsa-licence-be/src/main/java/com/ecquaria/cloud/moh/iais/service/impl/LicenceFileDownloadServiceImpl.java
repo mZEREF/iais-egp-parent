@@ -1248,6 +1248,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info(StringUtil.changeForLog("----"+routingTaskOneUserForSubmisison));
             if(routingTaskOneUserForSubmisison!=null&&routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos()!=null){
                 log.info(StringUtil.changeForLog("----"+JsonUtil.parseToJson(routingTaskOneUserForSubmisison)));
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos();
+                for(AppPremisesRoutingHistoryDto v : appPremisesRoutingHistoryDtos1){
+                    v.setWrkGrpId(null);
+                }
                 appPremisesRoutingHistoryDtos.addAll(routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos());
             }
         }

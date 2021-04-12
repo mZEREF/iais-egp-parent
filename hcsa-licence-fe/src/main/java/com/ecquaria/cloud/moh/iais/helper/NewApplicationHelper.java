@@ -2171,8 +2171,17 @@ public class NewApplicationHelper {
         return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
     }
 
-    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request){
-        return ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO) == null?new AppSubmissionDto(): (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request,String appType){
+        AppSubmissionDto appSubmissionDto  = null;
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,"oldRenewAppSubmissionDto");
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        }
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
+        return appSubmissionDto;
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto appGrpPremisesDto){
@@ -2832,6 +2841,27 @@ public class NewApplicationHelper {
             }
         }
         return psnType;
+    }
+
+    public static List<AppSvcDocDto> getSvcDocumentByParams(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndex,String psnIndex){
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)){
+            appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psnIndex);
+        }
+        return appSvcDocDtoList;
+    }
+
+    public static HcsaSvcDocConfigDto getHcsaSvcDocConfigDtoById(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, String id){
+        HcsaSvcDocConfigDto result = null;
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(id)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
+                if(id.equals(hcsaSvcDocConfigDto.getId())){
+                    result = hcsaSvcDocConfigDto;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public static void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, List<AppSvcPrincipalOfficersDto> principalOfficersDtos, List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){

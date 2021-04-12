@@ -13,6 +13,7 @@
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <c:choose>
             <c:when test="${!empty rfi_already_err}">
@@ -116,7 +117,7 @@
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                            varStatus="ind">
                                                   <div id="${pageShowFileDto.fileMapId}">
                                                       <span name="fileName"
@@ -141,7 +142,7 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)"/><a
+                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
@@ -149,7 +150,6 @@
                                             <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -179,12 +179,6 @@
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
-
-        var evenMoreListeners = true;
-        if (evenMoreListeners) {
-            var allFleChoosers = $("input[type='file']");
-            addEventListenersTo(allFleChoosers);
-        }
     });
 
     function withdrawalReasons(obj) {
@@ -206,36 +200,7 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        var fileElement = event.target;
-        if (fileElement.value == "") {
-            if (debug) {
-                console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
-            }
-            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-            $(fileElement).remove(); //'Removing Original'
-            if (evenMoreListeners) {
-                addEventListenersTo(clone[fileElement.id])
-            }//If Needed Re-attach additional Event Listeners
-        }
-        var file = $('#selectedFile').val();
-        file = file.split("\\");
-        $("span[name='fileName']").html(file[file.length - 1]);
-
-        if (file != '') {
-            $('#delete').attr("style", "display: inline-block;margin-left: 20px");
-            $('#isDelete').val('Y');
-            $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
-        }
-        uploadFileValidate();
-    }
-
-    function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) {
-            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
-            /*  a();*/
-            ajaxCallUpload('mainForm', "selectedFile");
-        });
+        ajaxCallUploadForMax('mainForm', "selectedFile",true);
     }
 
     function uploadFileValidate() {
@@ -250,27 +215,11 @@
             $("#fileName").html(fileName.substring(pos + 1));
         } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
     }
 
-    function deleteWithdraw(it) {
-        console.log("delete withdraw app");
-        $(it).parent().parent().parent().parent().parent().remove();
-    }
-
-    function deleteWdFile() {
-        // document.getElementById("withdrawFile").files[0] = null;
-        let wdfile = $("#selectedFile");
-        wdfile.val("");
-        $("#delFile").attr("hidden", "hidden");
-    }
-
-    // $(".delete-withdraw").click(function () {
-    //     console.log("delete withdraw app");
-    //     $(this).parent().parent().parent().parent().remove();
-    // });
     function deleteWithdraw(it){
         console.log("delete withdraw app");
         $(it).parent().parent().parent().parent().parent().remove();

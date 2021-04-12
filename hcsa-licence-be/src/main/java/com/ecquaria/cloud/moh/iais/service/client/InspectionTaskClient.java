@@ -27,6 +27,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -191,4 +192,19 @@ public interface InspectionTaskClient {
 
     @GetMapping(value = "/insp-appt-draft/insp-appt-draft/{appNo}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremInspApptDraftDto>> getInspApptDraftListByAppNo(@PathVariable(name = "appNo") String appNo);
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftByAppNo(@RequestBody List<String> appNoList);
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an-ref",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftByApptRefNo(@RequestBody List<String> apptRefNos);
+
+    @GetMapping(value = "/insp-appt-draft/insp-appt-draft/all", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> getAllInspApptDrafts();
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an/{id}",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftById(@PathVariable(name = "id") String id);
 }

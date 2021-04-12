@@ -290,7 +290,7 @@ function uploadFileValidate(){
   } else if(error =="N"){
     clearFileFunction();
     flag = false;
-    $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+    $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
     $('#error_file').html("");
   }
   return flag;

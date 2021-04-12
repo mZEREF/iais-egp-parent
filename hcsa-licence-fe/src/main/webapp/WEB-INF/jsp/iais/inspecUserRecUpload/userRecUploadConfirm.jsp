@@ -158,7 +158,7 @@
         var maxFileSize = $("#maxFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, "recFileUpload");
         if (error == "N"){
-            $('#error_recFile').html($("#fileMaxLengthMessage").val());
+            $('#error_recFile').html($("#fileMaxMBMessage").val());
             dismissWaiting();
         } else {
             let remarksError = $("#error_remarks").text();

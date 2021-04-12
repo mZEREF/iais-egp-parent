@@ -64,7 +64,7 @@ public class SingeFileUtil {
                     Long size=length/1024;
                     PageShowFileDto pageShowFileDto =new PageShowFileDto();
                     pageShowFileDto.setFileName(v.getName());
-                    String e = k.substring(k.lastIndexOf("e") + 1);
+                    String e = k.substring(k.lastIndexOf('e') + 1);
                     pageShowFileDto.setIndex(e);
                     SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
                     String fileMd5 = singeFileUtil.getFileMd5(v);

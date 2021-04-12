@@ -141,7 +141,7 @@
                                             <c:when test="${isDoView != 'Y'}">
                                                 <div class="file-upload-gp">
                                                         <span name="selectedFileShowId" id="selectedFileShowId">
-                                                        <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                        <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                                    varStatus="ind">
                                                           <div id="${pageShowFileDto.fileMapId}">
                                                               <span name="fileName"
@@ -174,7 +174,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="pageShowFileDto"
                                                            varStatus="ind">
                                                   <div id="${pageShowFileDto.fileMapId}">
                                                       <span name="fileName"
@@ -307,8 +307,9 @@
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        console.log(configFileSize)
+        console.log(configFileSize);
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+        console.log(error);
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");
@@ -317,7 +318,7 @@
             $("#fileName").html(fileName.substring(pos + 1));
         } else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html($("#fileMaxLengthMessage").val());
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
     }
