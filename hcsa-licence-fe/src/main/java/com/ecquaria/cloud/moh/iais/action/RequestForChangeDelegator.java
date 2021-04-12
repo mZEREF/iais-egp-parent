@@ -655,7 +655,7 @@ public class RequestForChangeDelegator {
                     if(appSvcRelatedInfoDtos !=null && appSvcRelatedInfoDtos.size() > 0){
                         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                         List<AppSvcDocDto> appSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList)){
+                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && hcsaServiceDto != null){
                             List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
                             for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
                                 HcsaSvcDocConfigDto docConfig = NewApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,appSvcDocDto.getSvcDocId());
