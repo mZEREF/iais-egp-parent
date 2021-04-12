@@ -855,26 +855,20 @@ public class InterInboxDelegator {
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
-//                String appGroupId = h.getAppGrpId();
-////                if (h.getApplicationType())
-//                if (!StringUtil.isEmpty(appGroupId)){
-//                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
-//                    if (applicationGroupDto != null){
-//                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
-//                            h.setCanInspection(Boolean.FALSE);
-//                        }else{
-//                            h.setCanInspection(Boolean.TRUE);
-//                        }
-//                    }
-//                }else{
-//                    h.setCanInspection(Boolean.FALSE);
-//                }
+                String status = h.getStatus();
+                Integer selfAssmtFlag = h.getSelfAssmtFlag();
+                if ((status.equals(ApplicationConsts.PENDING_ASO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_PSO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_INP_REPLY))
+                        && selfAssmtFlag == 2){
+                    h.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                }
+
                 if(h.getHasSubmitPrefDate() == null || 0==h.getHasSubmitPrefDate()){
                     h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
                 }
-
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
