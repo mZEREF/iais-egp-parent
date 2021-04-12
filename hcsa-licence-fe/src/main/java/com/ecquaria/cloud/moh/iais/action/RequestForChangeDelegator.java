@@ -755,7 +755,7 @@ public class RequestForChangeDelegator {
     }
     private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
         if(licenceDto==null){
-            error.put("uenError","Licence Error!!!");
+            error.put("uenError","NEW_ERR0010");
         }else{
             if(licenseeDto == null){
                 error.put("uenError","RFC_ERR002");
@@ -767,7 +767,7 @@ public class RequestForChangeDelegator {
                 if(canTransfer){
                     if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         log.debug(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                        error.put("uenError","can not transfer to self");
+                        error.put("uenError","RFC_ERR021");
                     }
                 }else{
                     error.put("uenError","RFC_ERR007");
