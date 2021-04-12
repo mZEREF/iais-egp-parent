@@ -796,6 +796,13 @@ public class RequestForChangeMenuDelegator {
             if(appSubmissionDtos!=null){
                 updateGroupStatus(appSubmissionDtos);
             }
+            try {
+                if (appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                }
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
         }
 
         log.debug(StringUtil.changeForLog("the paymentSwitch end ...."));
@@ -1190,14 +1197,6 @@ public class RequestForChangeMenuDelegator {
         String licenseeId = loginContext.getLicenseeId();
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddr = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
-        try {
-            List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-            if (appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
-                requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage(), e);
-        }
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddr);
         ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", "N/A");

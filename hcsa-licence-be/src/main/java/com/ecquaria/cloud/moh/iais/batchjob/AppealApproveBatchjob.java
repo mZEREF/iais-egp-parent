@@ -505,7 +505,7 @@ public class AppealApproveBatchjob {
                     ApplicationDto c=(ApplicationDto)CopyUtil.copyMutableObject(v);
                     appealApplicaiton.add(c);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                   log.error(e.getMessage());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(v.getStatus())){
                 LicAppCorrelationDto entity1 = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(v.getId()).getEntity();
@@ -516,7 +516,7 @@ public class AppealApproveBatchjob {
                     c.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     appealApplicaiton.add(c);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                  log.error(e.getMessage());
                 }
             }
 
