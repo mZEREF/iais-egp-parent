@@ -1687,6 +1687,7 @@ public class WithOutRenewalDelegator {
                         appSubmissionDto.setId(null);
                         appSubmissionDto.setAppGrpNo(null);
                         appSubmissionDto.setAppGrpId(null);
+                        appSubmissionDto.setAppEditSelectDto(null);
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
                     }
                 }

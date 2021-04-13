@@ -122,6 +122,7 @@ public class RequestForChangeDelegator {
 
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute("rfc_eqHciCode");
     }
     /**
      *

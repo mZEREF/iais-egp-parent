@@ -17,6 +17,7 @@
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_additional" value=""/>
     <input type="hidden" name="psnSwitch" value="">
+    <input type="hidden" name="eqHciCode" value="${eqHciCode}">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
         <div class="navigation-gp">
