@@ -263,7 +263,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String saveFileName(String fileName ,String filePath ){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setEventRefNo(System.currentTimeMillis()+"");
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        processFileTrackDto.setProcessType(ApplicationConsts.AUDIT_TYPE_ROUTINE);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId(UUID.randomUUID().toString());
