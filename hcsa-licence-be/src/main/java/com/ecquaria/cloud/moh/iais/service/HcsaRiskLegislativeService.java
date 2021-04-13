@@ -13,4 +13,6 @@ public interface HcsaRiskLegislativeService {
                       String inthershold, String inleftmod, String inlefthigh, String inrightlow, String inrightmod,
                       String inStartDate, String inEndDate);
     void saveDto(RiskLegislativeShowDto legDto);
+
+    boolean compareVersionsForRiskLegislative(RiskLegislativeShowDto needSaveDto,RiskLegislativeShowDto dbSearchDto);
 }

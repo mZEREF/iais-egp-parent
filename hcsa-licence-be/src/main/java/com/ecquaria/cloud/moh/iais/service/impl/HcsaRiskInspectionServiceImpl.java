@@ -373,4 +373,26 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         return finDto;
     }
 
+    @Override
+    public boolean compareVersionsForRiskInspection(InspectionShowDto needSaveDto, InspectionShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty( needSaveDto.getInspectionDtoList())){
+            return false;
+        }else {
+            if(dbSearchDto == null || IaisCommonUtils.isEmpty(dbSearchDto.getInspectionDtoList())){
+                return true;
+            }
+            List<HcsaRiskInspectionMatrixDto> inspectionDtoList = needSaveDto.getInspectionDtoList();
+            List<HcsaRiskInspectionMatrixDto> inspectionDtoListDb = dbSearchDto.getInspectionDtoList();
+            for(HcsaRiskInspectionMatrixDto hcsaRiskInspectionMatrixDto : inspectionDtoList){
+                for(HcsaRiskInspectionMatrixDto hcsaRiskInspectionMatrixDtoDb : inspectionDtoListDb){
+                    if(hcsaRiskInspectionMatrixDto.getSvcCode().equalsIgnoreCase( hcsaRiskInspectionMatrixDtoDb.getSvcCode())){
+                        if(!hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskInspectionMatrixDto.getVersion(),hcsaRiskInspectionMatrixDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

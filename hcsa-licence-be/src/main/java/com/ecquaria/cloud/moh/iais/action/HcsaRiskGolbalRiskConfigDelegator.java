@@ -89,9 +89,12 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");
-       // hcsaRiskWeightageService.saveDto(wightageDto);
-        hcsaRiskGolbalService.saveDto(golbalShowDto);
-
+        if( hcsaRiskGolbalService.compareVersionsForGolbalRisk(golbalShowDto,hcsaRiskGolbalService.getGolbalRiskShowDto())){
+            // hcsaRiskWeightageService.saveDto(wightageDto);
+            hcsaRiskGolbalService.saveDto(golbalShowDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

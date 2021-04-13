@@ -220,4 +220,27 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
 
         return finDto;
     }
+
+    @Override
+    public boolean compareVersionsForRiskLegislative(RiskLegislativeShowDto needSaveDto, RiskLegislativeShowDto dbSearchDto) {
+         if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getLegislativeList())){
+             return false;
+         }else {
+             if( dbSearchDto == null || IaisCommonUtils.isEmpty(dbSearchDto.getLegislativeList())){
+                 return true;
+             }
+             List<HcsaRiskLegislativeMatrixDto> legislativeList = needSaveDto.getLegislativeList();
+             List<HcsaRiskLegislativeMatrixDto> legislativeListDb = dbSearchDto.getLegislativeList();
+             for(HcsaRiskLegislativeMatrixDto hcsaRiskLegislativeMatrixDto :legislativeList){
+                 for(HcsaRiskLegislativeMatrixDto hcsaRiskLegislativeMatrixDtoDb : legislativeListDb){
+                     if(hcsaRiskLegislativeMatrixDto.getSvcCode().equalsIgnoreCase(hcsaRiskLegislativeMatrixDtoDb.getSvcCode())){
+                         if( !hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskLegislativeMatrixDto.getVersion(),hcsaRiskLegislativeMatrixDtoDb.getVersion())){
+                          return false;
+                         }
+                     }
+                 }
+             }
+         }
+        return true;
+    }
 }

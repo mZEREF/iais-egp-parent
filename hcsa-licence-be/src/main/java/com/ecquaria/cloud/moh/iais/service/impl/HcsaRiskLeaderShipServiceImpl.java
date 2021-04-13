@@ -39,11 +39,6 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public RiskLeaderShipShowDto getLeaderShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
         RiskLeaderShipShowDto showDto  = hcsaConfigClient.getRiskLeaderShipShow(serviceDtoList).getEntity();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
-        RiskAcceptiionDto dto = new RiskAcceptiionDto();
-        dto.setScvCode("CLB");
-        riskAcceptiionDtoList.add(dto);
-        List<RiskResultDto> riskList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         return showDto;
     }
     @Override
@@ -363,5 +358,28 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             }
         }
         return finDto;
+    }
+
+    @Override
+    public boolean compareVersionsForRiskLeaderShip(RiskLeaderShipShowDto needSaveDto, RiskLeaderShipShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getLeaderShipDtoList())){
+            return false;
+        }else {
+            if( dbSearchDto == null || IaisCommonUtils.isEmpty( dbSearchDto.getLeaderShipDtoList())){
+                return true;
+            }
+            List<HcsaRiskLeadershipMatrixDto> leaderShipDtoList = needSaveDto.getLeaderShipDtoList();
+            List<HcsaRiskLeadershipMatrixDto> leaderShipDtoListDb = dbSearchDto.getLeaderShipDtoList();
+            for(HcsaRiskLeadershipMatrixDto hcsaRiskLeadershipMatrixDto : leaderShipDtoList){
+                for(HcsaRiskLeadershipMatrixDto hcsaRiskLeadershipMatrixDtoDb : leaderShipDtoListDb){
+                    if(hcsaRiskLeadershipMatrixDto.getSvcCode().equalsIgnoreCase(hcsaRiskLeadershipMatrixDtoDb.getSvcCode())){
+                        if(!hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskLeadershipMatrixDto.getVersion(),hcsaRiskLeadershipMatrixDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

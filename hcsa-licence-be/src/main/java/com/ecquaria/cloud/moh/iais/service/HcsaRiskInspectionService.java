@@ -11,4 +11,5 @@ public interface HcsaRiskInspectionService {
     InspectionShowDto getInspectionShowDto();
     void getOneFinDto(HcsaRiskInspectionMatrixDto fin, String caleftmod, String calefthigh, String carightlow, String carightmod, String caStartDate, String caEndDate, String mileftmod, String milefthigh, String mirightlow, String mirightmod, String miStartDate, String miEndDate, String mjleftmod, String mjlefthigh, String mjrightlow, String mjrightmod, String mjStartDate, String mjEndDate);
     void saveDto(InspectionShowDto showDto);
+    boolean compareVersionsForRiskInspection(InspectionShowDto needSaveDto,InspectionShowDto dbSearchDto);
 }

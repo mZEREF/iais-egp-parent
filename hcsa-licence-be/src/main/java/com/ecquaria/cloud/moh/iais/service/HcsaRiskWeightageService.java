@@ -11,4 +11,5 @@ public interface HcsaRiskWeightageService {
     HcsaRiskWeightageShowDto getWeightage();
     void getOneWdto(HcsaRiskWeightageDto wDto,String lastInp,String secLastInp,String finan,String leadership,String legislative,String inStartDate,String inEndDate);
     void saveDto(HcsaRiskWeightageShowDto wShowDto);
+    boolean compareVersionsForRiskWeightage(HcsaRiskWeightageShowDto needSaveDto,HcsaRiskWeightageShowDto dbSearchDto);
 }
