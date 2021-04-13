@@ -1404,6 +1404,9 @@ public class RequestForChangeMenuDelegator {
             }
             return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+            if(appSubmissionDtos.size() > 1){
+                appSubmissionDtos.get(0).setTotalAmountGroup(a);
+            }
             String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
