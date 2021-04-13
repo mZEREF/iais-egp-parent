@@ -1718,8 +1718,7 @@ public class HcsaApplicationDelegator {
     }
 
     private void checkRecommendationDropdownValue(Integer recomInNumber, String chronoUnit, String recomDecision, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
-        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
-        if(!isRequestForChange){
+        if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             if (StringUtil.isEmpty(recomInNumber)) {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
                 return;
@@ -1754,7 +1753,7 @@ public class HcsaApplicationDelegator {
                 String recommTime = count + " " + dateType;
                 if (recommTime.equals(recomInNumber + " " + chronoUnit)) {
                     ParamUtil.setRequestAttr(bpc.request, "recommendationStr", recommTime);
-                    if (isRequestForChange) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
                         ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "approve");
                     }
                     flag = false;

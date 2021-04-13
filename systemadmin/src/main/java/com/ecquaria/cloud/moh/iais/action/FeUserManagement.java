@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -263,11 +262,13 @@ public class FeUserManagement {
                     validationResult.setHasErrors(true);
                 }else {
                     Map<String, String> existedUenMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "existedUenMap");
-                    if (IaisCommonUtils.isNotEmpty(existedUenMap) &&  existedUenMap.containsKey(uenNo)){
+                    if (IaisCommonUtils.isNotEmpty(existedUenMap) ){
                         //save orgid when create
                         String orgId = existedUenMap.get(uenNo);
-                        userDto.setOrgId(orgId);
-                        userAttr.setOrgId(orgId);
+                        if(orgId!=null){
+                            userDto.setOrgId(orgId);
+                            userAttr.setOrgId(orgId);
+                        }
                     }else {
                         validationResult.addMessage("uenNo", "USER_ERR020");
                         validationResult.setHasErrors(true);

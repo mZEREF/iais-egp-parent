@@ -275,7 +275,7 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
         }
 
-        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",true);
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
         log.info(StringUtil.changeForLog("the prePayment end ...."));
     }
 
@@ -392,7 +392,7 @@ public class RetriggerGiroPaymentDelegator {
                     switch2 = SWITCH_VALUE_PRE_PAYMENT;
                 }
             }
-            ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",true);
+            ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
 
         }
         ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);

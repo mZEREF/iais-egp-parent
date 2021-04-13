@@ -647,9 +647,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 apptAppInfoShowDto.setApptRefNo(apptRefNos);
                 //sort
                 Collections.sort(userNameList);
+                apptAppInfoShowDto.setUserIdList(userIds);
+                apptAppInfoShowDto.setUserDisName(userNameList);
             }
-            apptAppInfoShowDto.setUserIdList(userIds);
-            apptAppInfoShowDto.setUserDisName(userNameList);
         }
         return apptAppInfoShowDtos;
     }
