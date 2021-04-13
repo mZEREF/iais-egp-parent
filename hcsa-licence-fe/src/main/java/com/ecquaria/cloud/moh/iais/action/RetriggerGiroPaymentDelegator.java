@@ -389,8 +389,17 @@ public class RetriggerGiroPaymentDelegator {
                     //eic
                     serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
                 }else{
+                    if(!"cancelled".equals(result)){
+                        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                        String err024 = MessageUtil.getMessageDesc("NEW_ERR0024");
+                        errorMap.put("pay",err024);
+                        errorMap.put("payMethod",err024);
+                        ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    }
                     switch2 = SWITCH_VALUE_PRE_PAYMENT;
                 }
+            }else{
+                switch2 = SWITCH_VALUE_PRE_PAYMENT;
             }
             ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
 

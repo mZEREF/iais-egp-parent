@@ -17,6 +17,9 @@ public class NewApplicationConstant {
     public static final String SESSION_SELF_DECL_APPLICATION_NUMBER = "selfDeclApplicationNumber";
     public static final String SESSION_SELF_DECL_ACTION = "selfDeclAction";
 
+    public static final String ATTR_RELOAD_PAYMENT_METHOD = "reloadPaymentMethod";
+
     public static final String ACK_STATUS_ERROR = "error";
     public static final String PREMISES_HCI_LIST= "premisesHciList";
+
 }

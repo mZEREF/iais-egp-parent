@@ -279,6 +279,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
         ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
+        ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer",null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -709,6 +710,7 @@ public class NewApplicationDelegator {
         HashMap<String, String> coMap  = bpc.request.getSession().getAttribute("coMap")==null ?
                 null : (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> strList = new ArrayList<>(5);
+        String paymentMethod = "";
         if(coMap!=null){
             coMap.forEach((k, v) -> {
                 if (!StringUtil.isEmpty(v)) {
@@ -721,6 +723,7 @@ public class NewApplicationDelegator {
             strList.add(serviceConfig);
         }
         appSubmissionDto.setStepColor(strList);
+        //get transfer info
         AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
         if (tranferSub != null) {
             if (appSubmissionDtos == null) {
@@ -736,6 +739,11 @@ public class NewApplicationDelegator {
             String transferFlag = appSubmissionDto.getTransferFlag();
             appSubmissionDto = tranferSub;
             appSubmissionDto.setTransferFlag(transferFlag);
+            //reload transfer payment method
+            paymentMethod = tranferSub.getPaymentMethod();
+        }else{
+            //reload new/rfc payment method
+            paymentMethod = appSubmissionDto.getPaymentMethod();
         }
         Double total = 0.0;
         if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -788,6 +796,7 @@ public class NewApplicationDelegator {
         }
         boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto,orgId);
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
+        ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,paymentMethod);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
@@ -1191,8 +1200,7 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
-                log.info("credit card payment success");
-                //todo validate payment is success
+                log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
                     if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                         List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
@@ -2496,7 +2504,13 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         String tranSferFlag = appSubmissionDto.getTransferFlag();
+        //back to tansfer page
         if(!"next".equals(action) && !StringUtil.isEmpty(tranSferFlag)){
+            AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
+            if(tranferSub != null){
+                tranferSub.setPaymentMethod(payMethod);
+                ParamUtil.setSessionAttr(bpc.request,"app-rfc-tranfer",tranferSub);
+            }
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareTranfer");
@@ -3716,11 +3730,6 @@ public class NewApplicationDelegator {
         String[] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
         String[] offTelNo = ParamUtil.getStrings(request, "onSiteOffTelNo");
         String[] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
-/*        String[] onsiteStartHH = ParamUtil.getStrings(request, "onSiteStartHH");
-        String[] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
-        String[] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
-        String[] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");*/
-        //String[] fireSafetyCertIssuedDateStr = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
         String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
         //conveyance
         String[] conveyanceHciName = ParamUtil.getStrings(request, "conveyanceHciName");
@@ -3733,10 +3742,6 @@ public class NewApplicationDelegator {
         String[] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
         String[] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
         String[] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
-        String[] conStartHH = ParamUtil.getStrings(request, "conveyanceStartHH");
-        String[] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
-        String[] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
-        String[] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
         //offSite
         String[] offSiteHciName = ParamUtil.getStrings(request, "offSiteHciName");
         String[] offSitePremisesSelect = ParamUtil.getStrings(request, "offSiteSelect");
@@ -3747,10 +3752,6 @@ public class NewApplicationDelegator {
         String[] offSiteUnitNo = ParamUtil.getStrings(request, "offSiteUnitNo");
         String[] offSiteBuildingName = ParamUtil.getStrings(request, "offSiteBuildingName");
         String[] offSiteSiteAddressType = ParamUtil.getStrings(request, "offSiteAddrType");
-        String[] offSiteStartHH = ParamUtil.getStrings(request, "offSiteStartHH");
-        String[] offSiteStartMM = ParamUtil.getStrings(request, "offSiteStartMM");
-        String[] offSiteEndHHS = ParamUtil.getStrings(request, "offSiteEndHH");
-        String[] offSiteEndMMS = ParamUtil.getStrings(request, "offSiteEndMM");
 
         //every prem's ph length
         String[] phLengths = ParamUtil.getStrings(request, "phLength");

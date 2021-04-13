@@ -77,9 +77,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Value("${iais.current.domain}")
     private String currentDomain;
 
-    @Value("${moh.halp.acra.enable}")
-    private String enableAcra;
-
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
