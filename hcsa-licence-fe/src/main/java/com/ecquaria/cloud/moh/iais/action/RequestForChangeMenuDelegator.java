@@ -1332,9 +1332,12 @@ public class RequestForChangeMenuDelegator {
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
         }
-        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
-        ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
+        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        if(mainSubmisDto != null){
+            boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
+            ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
+        }
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
@@ -1842,7 +1845,9 @@ public class RequestForChangeMenuDelegator {
     public void doPayValidate(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("do doPayValidate start ..."));
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        appSubmissionDto.setPaymentMethod(payMethod);
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:" + payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:" + noNeedPayment));
@@ -1855,18 +1860,17 @@ public class RequestForChangeMenuDelegator {
                 NewApplicationHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
                 return;
             }
         } else {
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
             String eqHciCode = bpc.request.getParameter("eqHciCode");
             bpc.request.setAttribute("eqHciCode",eqHciCode);
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         }
-
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));
     }
 
