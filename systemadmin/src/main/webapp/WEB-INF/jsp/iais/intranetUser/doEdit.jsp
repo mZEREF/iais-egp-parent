@@ -100,7 +100,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="firstName" minlength="10" maxlength="66" type="text" name="firstName" value="${orgUserDto.firstName}">
@@ -109,7 +109,7 @@
                                         </div>
                                     </iais:value>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group hidden">
                                     <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">

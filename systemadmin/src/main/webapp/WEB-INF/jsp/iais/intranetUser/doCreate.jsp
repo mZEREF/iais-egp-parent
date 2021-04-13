@@ -28,19 +28,19 @@
                         <div class="tab-gp dashboard-tab">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                 <li class="<c:if test="${activeTab==1 || activeTab==null}">active</c:if> <c:if test="${activeTab!=1 && activeTab!=null}">complete</c:if> " role="presentation"><a href="#tabAccount" aria-controls="tabAccount"
-                                                                          role="tab" data-toggle="tab">Account
+                                                                                                                                                                                                  role="tab" data-toggle="tab">Account
                                     Information</a></li>
                                 <li class="<c:if test="${activeTab!=2}">complete</c:if> <c:if test="${activeTab==2}">active</c:if>" role="presentation"><a href="#tabPersonal"
-                                                                            aria-controls="tabPersonal" role="tab"
-                                                                            data-toggle="tab">Personal Information</a>
+                                                                                                                                                           aria-controls="tabPersonal" role="tab"
+                                                                                                                                                           data-toggle="tab">Personal Information</a>
                                 </li>
                                 <li class="<c:if test="${activeTab!=3}">complete</c:if> <c:if test="${activeTab==3}">active</c:if>" role="presentation"><a href="#tabContact"
-                                                                            aria-controls="tabContact" role="tab"
-                                                                            data-toggle="tab">Contact Information</a>
+                                                                                                                                                           aria-controls="tabContact" role="tab"
+                                                                                                                                                           data-toggle="tab">Contact Information</a>
                                 </li>
                             </ul>
                         </div>
-<br/><br/>
+                        <br/><br/>
 
                         <div class="tab-content">
                             <div class="tab-pane <c:if test="${activeTab==1}">active</c:if> <c:if test="${activeTab==null}">active</c:if>" id="tabAccount" role="tabAccount">
@@ -108,7 +108,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="firstName" type="text" name="firstName" minlength="10" maxlength="66"
@@ -118,7 +118,7 @@
                                         </div>
                                     </iais:value>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group hidden">
                                     <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
