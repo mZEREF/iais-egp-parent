@@ -360,8 +360,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String tranNo = genGiroTranNo();
         appGrp.setGiroTranNo(tranNo);
         GiroGroupDataDto giroPaymentDto = new GiroGroupDataDto();
-        giroPaymentDto.setAmount(appGrp.getAmount());
-        giroPaymentDto.setResidualPayment(appGrp.getAmount());
+        Double amount = (appGrp.getTotalAmountGroup() == null) ? appGrp.getAmount() : appGrp.getTotalAmountGroup();
+        giroPaymentDto.setAmount(amount);
+        giroPaymentDto.setResidualPayment(amount);
         giroPaymentDto.setAppGroupNo(appGrp.getAppGrpNo());
         giroPaymentXmlDto.setTag(appGrp.getAppGrpNo());
         giroPaymentDto.setGiroTranNo(tranNo);
