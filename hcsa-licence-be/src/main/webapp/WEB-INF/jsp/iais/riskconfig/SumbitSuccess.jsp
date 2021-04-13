@@ -17,7 +17,7 @@
                             <c:if test="${empty RSMVerisonChanged}">
                                 The data have been submitted.
                             </c:if>
-                            <c:if test="${empty not RSMVerisonChanged}">
+                            <c:if test="${not empty RSMVerisonChanged}">
                                 <iais:message key="RSM_ACK001" escape="true"></iais:message>
                             </c:if>
                            </h2>
