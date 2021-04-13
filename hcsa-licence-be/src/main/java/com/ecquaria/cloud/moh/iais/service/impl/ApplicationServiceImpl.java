@@ -358,15 +358,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
     }
 
-    private void sendSelfDecl(String queryCode, String emailId, String noticeId, String smsId, List<SelfAssMtEmailDto> allAssLt){
+    private void sendChecklistReminder(String queryCode, String emailId, String noticeId, String smsId, List<SelfAssMtEmailDto> allAssLt){
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-
         for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
             String refType;
             String tlGroupNumber = "-";
             String tlAppType = "-";
             String tlSvcName = "-";
+            String licenseeId = i.getLicenseeId();
             String inspDate = Formatter.formatDate(i.getInspectionDate());
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
@@ -472,6 +472,18 @@ public class ApplicationServiceImpl implements ApplicationService {
             templateContent.put("tatTime", inspDate);
             templateContent.put("reminderDate", today);
             templateContent.put("systemLink", loginUrl);
+            templateContent.put("officer_name", "officer_name");
+            templateContent.put("telPhone", systemParamConfig.getSystemPhoneNumber());
+
+            if (StringUtil.isNotEmpty(licenseeId)){
+                LicenseeDto licensee = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                if (Optional.ofNullable(licensee).isPresent()){
+                    templateContent.put("licenseeEmailAddress", licensee.getEmilAddr());
+                    templateContent.put("licenseeTelPhone", licensee.getOfficeTelNo());
+                }
+            }
+
+
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
             jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
             jobRemindMsgTrackingDto.setRefNo(reqRefNum);
@@ -482,6 +494,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             subjectParams.put("{appType}", tlAppType);
             subjectParams.put("{serviceName}", tlSvcName);
             EmailParam emailParam = new EmailParam();
+            emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
             emailParam.setSubjectParams(subjectParams);
             emailParam.setTemplateId(emailId);
             emailParam.setTemplateContent(templateContent);
@@ -490,20 +503,29 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setRefIdType(refType);
             emailParam.setRefId(reqRefNum);
             emailParam.setSvcCodeList(svcCodeList);
-            emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
+
+            //send to inspector
+            if (HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB.equals(queryCode)){
+                emailParam.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+            }
+
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
             if (IaisCommonUtils.isNotEmpty(appList)){
                 ApplicationDto applicationDto = appList.get(0);
-                emailParam.setTemplateId(noticeId);
-                emailParam.setRefId(applicationDto.getApplicationNo());
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                notificationHelper.sendNotification(emailParam);
+                if (StringUtil.isNotEmpty(noticeId)){
+                    emailParam.setTemplateId(noticeId);
+                    emailParam.setRefId(applicationDto.getApplicationNo());
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(emailParam);
+                }
 
-                emailParam.setTemplateId(smsId);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(emailParam);
+                if (StringUtil.isNotEmpty(smsId)){
+                    emailParam.setTemplateId(smsId);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(emailParam);
+                }
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
@@ -514,13 +536,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void alertSelfDeclNotification() {
         //These emails will only be reminded three times at different times, see database table -> smemail.notification
         List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
 
         List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
 
         List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
+
+        List<SelfAssMtEmailDto> email_to_inspecotr_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_008);
     }
 
     @Override
