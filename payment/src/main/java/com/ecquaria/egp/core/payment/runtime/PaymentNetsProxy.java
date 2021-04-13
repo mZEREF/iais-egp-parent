@@ -21,6 +21,7 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.ecquaria.egp.core.payment.api.config.GatewayNetsConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecq.commons.helper.StringHelper;
@@ -186,6 +187,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		}
 		ParamUtil.setSessionAttr(bpc.request,"failUrl",failUrl);
 		ParamUtil.setSessionAttr(bpc.request,"jquery_js",GatewayConfig.eNetsJqueryUrl);
+		ParamUtil.setSessionAttr(bpc.request,"timeout", GatewayNetsConfig.timeout);
 		ParamUtil.setSessionAttr(bpc.request,"env_jsp",GatewayConfig.eNetsEnvUrl);
 		ParamUtil.setSessionAttr(bpc.request,"apps_js",GatewayConfig.eNetsAppsUrl);
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);

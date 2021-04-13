@@ -53,7 +53,9 @@ public class GatewayNetsConfig {
 	public static final String input_charset = properties.getProperty("eNets.payment.input.charset");//UTF_8
 
 	public static final String sign_type = properties.getProperty("eNets.payment.sign.type");//RSA
-	
+
+	public static final String timeout = properties.getProperty("eNets.payment.timeout.ms");
+
 	public static final String dtLong                  = "yyyyMMddHHmmss";
     
     public static final String simple                  = "yyyy-MM-dd HH:mm:ss";
