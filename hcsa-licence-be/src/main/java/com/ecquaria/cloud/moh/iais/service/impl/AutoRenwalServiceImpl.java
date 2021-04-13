@@ -513,8 +513,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 Calendar expireCalendar = Calendar.getInstance();
                 expireCalendar.setTime(expiryDate);
                 expireCalendar.add(Calendar.MONTH, -2);
-                String expireDateString = new SimpleDateFormat("dd/mm/yyyy").format(expiryDate);
-                String temp =new SimpleDateFormat("dd/mm/yyyy").format(expireCalendar.getTime());
+                String expireDateString = new SimpleDateFormat("dd/MM/yyyy").format(expiryDate);
+                String temp =new SimpleDateFormat("dd/MM/yyyy").format(expireCalendar.getTime());
                 map.put("endDate", temp);
                 map.put("expireDate", expireDateString);
                 //first - sixth reminder

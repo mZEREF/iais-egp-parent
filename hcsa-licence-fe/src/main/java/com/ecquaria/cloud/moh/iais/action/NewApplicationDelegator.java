@@ -526,6 +526,19 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
         ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
+        //
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+            //now no group licence
+            if(oldAppSubmissionDto!=null){
+                List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()&&oldAppGrpPremisesDtoList!=null&&!oldAppGrpPremisesDtoList.isEmpty()){
+                    boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDtoList.get(0), oldAppGrpPremisesDtoList.get(0));
+                    bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(eqHciCode));
+                }
+            }
+        }
     }
 
     /**
@@ -859,7 +872,7 @@ public class NewApplicationDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()&&oldAppGrpPremisesDtoList!=null&&!oldAppGrpPremisesDtoList.isEmpty()){
                     boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDtoList.get(0), oldAppGrpPremisesDtoList.get(0));
-                    bpc.request.getSession().setAttribute("",String.valueOf(eqHciCode));
+                    bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(eqHciCode));
                 }
             }
         }

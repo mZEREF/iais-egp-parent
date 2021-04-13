@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
+import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -711,6 +712,15 @@ public class NewApplicationAjaxController {
         licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+        if(oldAppSubmissionDto!=null){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, appGrpPremisesDtoList.get(0));
+                appGrpPremisesDto.setEqHciCode(String.valueOf(eqHciCode));
+            }
+        }
+
         return appGrpPremisesDto;
     }
 

@@ -147,7 +147,7 @@
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-
+  <input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">
 </form>
 <script type="text/javascript">
     var init;
@@ -234,7 +234,7 @@
         </c:if>
 
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-          if($("#errorMapIs").val()=='error'){
+          if($("#errorMapIs").val()=='error'&&$('#rfc_eqHciNameChange').val()=='true'){
               $('.premisesEdit').trigger('click');
           }
         </c:if>
@@ -247,6 +247,11 @@
         });
 
         init = 1;
+        if($('#rfc_eqHciNameChange').val()=='false'){
+            $("input[name='isPartEdit']").val('1');
+            $("input[name='chooseExistData']").val('1');
+            $('.premSelect').removeClass('disabled');
+        }
     });
 
 

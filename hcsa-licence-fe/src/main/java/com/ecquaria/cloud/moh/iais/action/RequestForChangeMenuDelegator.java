@@ -515,6 +515,9 @@ public class RequestForChangeMenuDelegator {
 
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        if(eqHciCode){
+            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
+        }
         bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
@@ -1870,6 +1873,10 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+                appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
+            }
             String eqHciCode = bpc.request.getParameter("eqHciCode");
             bpc.request.setAttribute("eqHciCode",eqHciCode);
         }

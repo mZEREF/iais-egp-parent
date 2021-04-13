@@ -201,6 +201,11 @@
             $("input[name='isPartEdit']").val('1');
             $("input[name='chooseExistData']").val('1');
             $('.premSelect').removeClass('disabled');
+            $('.premisesEdit').addClass('hidden');
+        }else  if($('#eqHciNameChange').val()=='true'){
+            $('.premisesEdit').removeClass('hidden');
+            $("input[name='isPartEdit']").val('0');
+            $("input[name='chooseExistData']").val('0');
         }
     });
 

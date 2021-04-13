@@ -195,8 +195,12 @@
                             return;
                         }
                         if(premisesType != ''){
+
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
+                            var eqHciCode= data.eqHciCode;
+                            $("input[name='isEdit']").val('1');
+
                             //copy ph form
                             //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
@@ -377,6 +381,10 @@
                             $premContent.find('span.multi-select-button').css('border-color','#ededed');
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+                            if(eqHciCode=='true'){
+                                $('.premisesEdit').trigger('click');
+                                return;
+                            }
                         }
                     },
                     'error':function () {
