@@ -5,12 +5,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-internet"/>
-
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-
 <div class="main-content">
   <div class="container">
     <div class="row">
@@ -64,7 +62,7 @@
                           </div>
                           <div class="col-xs-8 col-sm-2 col-md-2">
                             <a class="btn-tooltip styleguide-tooltip"
-                               data-toggle="tooltip" data-html="true"
+                               data-toggle="tooltip" data-html="true" style="position: absolute;z-index: 1000"
                                title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.&lt;/p&gt;">i</a>
                           </div>
                         </div>
@@ -383,10 +381,6 @@
            style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <%--                <div class="modal-header">--%>
-            <%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
-            <%--                            aria-hidden="true">&times;</span></button>--%>
-            <%--                </div>--%>
             <div class="modal-body" style="text-align: center;">
               <div class="row">
                 <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
