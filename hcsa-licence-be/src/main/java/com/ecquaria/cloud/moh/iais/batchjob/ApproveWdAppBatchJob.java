@@ -136,7 +136,8 @@ public class ApproveWdAppBatchJob {
                         }
                         try {
                             if (!StringUtil.isEmpty(fee)){
-                                assembleReturn(h,fee);
+                                AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                                applicationService.saveAppReturnFee(appReturnFeeDto);
                             }
                         }catch (Exception e){
                             log.error("Withdraw application return is failed");
@@ -195,6 +196,7 @@ public class ApproveWdAppBatchJob {
     }
 
     private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto, Double returnFee){
+        JobLogger.log(StringUtil.changeForLog("The withdraw Application Return fee function "));
         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
         appReturnFeeDto.setStatus("paying");
         appReturnFeeDto.setTriggerCount(0);
