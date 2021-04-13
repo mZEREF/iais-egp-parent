@@ -86,7 +86,7 @@ public interface AppSubmissionService {
     InterMessageDto getInterMessageById(String msgId);
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
     List<AppGrpPremisesEntityDto> getPendAppPremises(String licenseeId,List<HcsaServiceDto> hcsaServiceDtos);
-    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames);
+    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames,List<String> premTypeList);
     List<AppGrpPremisesDto> getLicPremisesInfo(String id);
     Boolean isNewLicensee(String licenseeId);
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);

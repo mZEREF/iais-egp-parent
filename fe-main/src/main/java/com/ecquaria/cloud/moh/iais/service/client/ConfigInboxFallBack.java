@@ -7,6 +7,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Set;
 
 public class ConfigInboxFallBack implements ConfigInboxClient{
 
@@ -60,6 +61,14 @@ public class ConfigInboxFallBack implements ConfigInboxClient{
 
     @Override
     public FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(List<String> serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
