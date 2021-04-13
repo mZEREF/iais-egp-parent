@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -134,6 +135,12 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
                                     fee = applicationDtoList2.get(0).getReturnFee();
                                 }
+                                try {
+                                    assembleReturn(h,fee);
+                                }catch (Exception e){
+                                    log.error("Withdraw application return is failed");
+                                    log.error(e.getMessage(), e);
+                                }
                                 Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                                 msgInfoMap.put("Applicant", applicantName);
                                 msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
@@ -142,7 +149,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 msgInfoMap.put("S_LName", serviceName);
                                 msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                                 msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                                if (StringUtil.isEmpty(paymentMethod) ||
+                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||
                                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
                                     msgInfoMap.put("paymentType", "2");
                                     msgInfoMap.put("paymentMode", "");
@@ -251,6 +258,16 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             }
         }
         return oldApplicationList;
+    }
+
+    private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto,Double returnFee){
+        AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+        appReturnFeeDto.setStatus("paying");
+        appReturnFeeDto.setTriggerCount(0);
+        appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
+        appReturnFeeDto.setReturnAmount(returnFee);
+        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+        return appReturnFeeDto;
     }
 
     private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status, String roleId, String currentAppNo){
