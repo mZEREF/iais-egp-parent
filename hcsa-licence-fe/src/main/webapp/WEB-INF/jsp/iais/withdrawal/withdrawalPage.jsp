@@ -141,23 +141,23 @@
                                             <c:when test="${isDoView != 'Y'}">
                                                 <div class="file-upload-gp">
                                                         <span name="selectedFileShowId" id="selectedFileShowId">
-                                                        <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                        <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                                    varStatus="ind">
-                                                          <div id="${pageShowFileDto.fileMapId}">
+                                                          <div id="${withdrawPageShowFile.fileMapId}">
                                                               <span name="fileName"
                                                                     style="font-size: 14px;color: #2199E8;text-align: center">
-                                                              <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                              <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${withdrawPageShowFile.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
                                                                  title="Download"
-                                                                 class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                                 class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
                                                               <span class="error-msg" name="iaisErrorMsg"
                                                                     id="file${ind.index}"></span>
                                                               <span class="error-msg" name="iaisErrorMsg"
                                                                     id="error_${configIndex}error"></span>
                                                             <button type="button" class="btn btn-secondary btn-sm"
-                                                                    onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                                                                    onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
                                                             Delete</button>  <button type="button"
                                                                                      class="btn btn-secondary btn-sm"
-                                                                                     onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+                                                                                     onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
                                                           ReUpload</button>
                                                           </div>
                                                         </c:forEach>
@@ -174,14 +174,14 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
-                                                  <div id="${pageShowFileDto.fileMapId}">
+                                                  <div id="${withdrawPageShowFile.fileMapId}">
                                                       <span name="fileName"
                                                             style="font-size: 14px;color: #2199E8;text-align: center">
-                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${withdrawPageShowFile.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
                                                          title="Download"
-                                                         class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                         class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="file${ind.index}"></span>
                                                       <span class="error-msg" name="iaisErrorMsg"
@@ -254,12 +254,6 @@
         if ('${appIsWithdrawal}') {
             $('#isAppealModal').modal('show');
         }
-
-        var evenMoreListeners = true;
-        if (evenMoreListeners) {
-            var allFleChoosers = $("input[type='file']");
-            addEventListenersTo(allFleChoosers);
-        }
     });
 
     function withdrawalReasons(obj) {
@@ -281,33 +275,11 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        var fileElement = event.target;
-        if (fileElement.value == "") {
-            if (debug) {
-                console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop())
-            }
-            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-            $(fileElement).remove(); //'Removing Original'
-            if (evenMoreListeners) {
-                addEventListenersTo(clone[fileElement.id])
-            }//If Needed Re-attach additional Event Listeners
-        }
-        var file = $('#selectedFile').val();
-        file = file.split("\\");
-        $("span[name='fileName']").html(file[file.length - 1]);
-
-        if (file != '') {
-            $('#delete').attr("style", "display: inline-block;margin-left: 20px");
-            $('#isDelete').val('Y');
-            $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
-        }
-        uploadFileValidate();
+        ajaxCallUploadForMax('mainForm', "selectedFile",true);
     }
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        console.log(configFileSize)
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
@@ -315,7 +287,10 @@
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
-        } else {
+        } else if(error == "E"){
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        } else{
             $("#selectedFile").val("");
             $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
@@ -373,16 +348,7 @@
         submit("withdrawalStep");
     }
 
-    function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) {
-            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
-            /*  a();*/
-            ajaxCallUploadForMax('mainForm', "selectedFile", true);
-        });
-    }
-
     function toApplicationView(appMaskNo, appNo) {
-        // let appNo = $(this).closest("p").find(".appNo").html();
         let url = "";
         console.log(appMaskNo);
         var appNoStr = appNo.substr(0, 2);
@@ -395,13 +361,4 @@
         showPopupWindow(url);
     }
 
-    <%--$(".appNo").click(function () {--%>
-    <%--let appNo = $(this).closest("p").find(".appNo").html();--%>
-    <%--let appmask = $(this).parent().parent().find(".appmask").html();--%>
-    <%--let url = '${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo='+appmask;--%>
-    <%--console.log(url);--%>
-    <%--showPopupWindow(url);--%>
-    <%--// $("[name='action_no_value']").val(appNo);--%>
-    <%--// submit("toAppStep");--%>
-    <%--})--%>
 </script>

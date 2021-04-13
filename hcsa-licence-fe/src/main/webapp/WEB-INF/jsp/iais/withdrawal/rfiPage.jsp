@@ -117,23 +117,23 @@
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
                                                 <span name="selectedFileShowId" id="selectedFileShowId">
-                                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                                <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
-                                                  <div id="${pageShowFileDto.fileMapId}">
+                                                  <div id="${withdrawPageShowFile.fileMapId}">
                                                       <span name="fileName"
                                                             style="font-size: 14px;color: #2199E8;text-align: center">
-                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${withdrawPageShowFile.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
                                                          title="Download"
-                                                         class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                                         class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="file${ind.index}"></span>
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="error_${configIndex}error"></span>
                                                     <button type="button" class="btn btn-secondary btn-sm"
-                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
                                                     Delete</button>  <button type="button"
                                                                              class="btn btn-secondary btn-sm"
-                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
                                                   ReUpload</button>
                                                   </div>
                                                 </c:forEach>
@@ -142,7 +142,7 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)" ONCHANGE="doUserRecUploadConfirmFile(event)"/><a
+                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
@@ -150,7 +150,6 @@
                                             <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -180,12 +179,6 @@
         if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
-
-        var evenMoreListeners = true;
-        if (evenMoreListeners) {
-            var allFleChoosers = $("input[type='file']");
-            addEventListenersTo(allFleChoosers);
-        }
     });
 
     function withdrawalReasons(obj) {
@@ -210,14 +203,6 @@
         ajaxCallUploadForMax('mainForm', "selectedFile",true);
     }
 
-    function addEventListenersTo(fileChooser) {
-        fileChooser.change(function (event) {
-            console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
-            /*  a();*/
-            ajaxCallUploadForMax('mainForm', "selectedFile",true);
-        });
-    }
-
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
         console.log(configFileSize)
@@ -228,29 +213,16 @@
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
-        } else {
+        } else if(error == "E"){
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }else {
             $("#selectedFile").val("");
             $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
     }
 
-    function deleteWithdraw(it) {
-        console.log("delete withdraw app");
-        $(it).parent().parent().parent().parent().parent().remove();
-    }
-
-    function deleteWdFile() {
-        // document.getElementById("withdrawFile").files[0] = null;
-        let wdfile = $("#selectedFile");
-        wdfile.val("");
-        $("#delFile").attr("hidden", "hidden");
-    }
-
-    // $(".delete-withdraw").click(function () {
-    //     console.log("delete withdraw app");
-    //     $(this).parent().parent().parent().parent().remove();
-    // });
     function deleteWithdraw(it){
         console.log("delete withdraw app");
         $(it).parent().parent().parent().parent().parent().remove();
