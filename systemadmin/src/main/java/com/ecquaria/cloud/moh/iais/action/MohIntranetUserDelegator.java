@@ -1227,7 +1227,7 @@ public class MohIntranetUserDelegator {
             orgUserDto.setSalutation(salutation[0]);
         }
         String firstName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_FIRSTNAME);
-        String lastName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_LASTNAME);
+        String lastName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_FIRSTNAME);
         String division = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DIVISION);
         String branch = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_BRANCH);
         String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
@@ -1275,7 +1275,7 @@ public class MohIntranetUserDelegator {
         }
         String firstName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
         String status = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_STATUS);
-        String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_LASTNAME);
+        String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
         String division = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DIVISION);
         String branch = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_BRANCH);
         String email = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_EMAILADDR);
