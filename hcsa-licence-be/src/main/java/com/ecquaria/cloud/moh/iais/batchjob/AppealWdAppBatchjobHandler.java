@@ -136,7 +136,8 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                     fee = applicationDtoList2.get(0).getReturnFee();
                                 }
                                 try {
-                                    assembleReturn(h,fee);
+                                    AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                                    applicationService.saveAppReturnFee(appReturnFeeDto);
                                 }catch (Exception e){
                                     log.error("Withdraw application return is failed");
                                     log.error(e.getMessage(), e);
