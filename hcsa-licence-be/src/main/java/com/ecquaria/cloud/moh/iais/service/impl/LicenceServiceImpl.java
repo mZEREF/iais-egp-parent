@@ -85,6 +85,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * LicenceServiceImpl
@@ -390,92 +391,94 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
         log.info(StringUtil.changeForLog("send uen email start"));
-        for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
-             ) {
-            for (SuperLicDto superLicDto:item.getSuperLicDtos()
-                 ) {
+        for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
+            for (SuperLicDto superLicDto:item.getSuperLicDtos()) {
                 try {
                     LicenceDto licenceDto = superLicDto.getLicenceDto();
-                    log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-                    OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
-                    if(!StringUtil.isEmpty(organizationDto.getUenNo())){
-                        LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
-                        PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
-                        log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
-                        log.info(StringUtil.changeForLog("premisesDto = " + JsonUtil.parseToJson(premisesDto)));
-                        //judge licence is singlepass
-                        if(licenseeIndividualDto.getUenMailFlag() == 0){
-                            Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                            templateContent.put("HCI_Name", premisesDto.getHciName());
-                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                            templateContent.put("HCI_Address", address);
-                            log.info(StringUtil.changeForLog("HCI_Address = " + address));
-                            templateContent.put("UEN_No", organizationDto.getUenNo());
-                            List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationDto.getId()).getEntity();
-                            String applicantName = orgUserDtoList.get(0).getDisplayName();
+                    if (Optional.ofNullable(licenceDto).isPresent()){
+                        log.info(StringUtil.changeForLog("licence id = " + licenceDto.getId()));
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+                        OrganizationDto organizationDto = organizationClient.getOrganizationById(licenseeDto.getOrganizationId()).getEntity();
+                        if(!StringUtil.isEmpty(organizationDto.getUenNo())){
+                            LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
+                            PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
+                            log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
+                            log.info(StringUtil.changeForLog("premisesDto = " + JsonUtil.parseToJson(premisesDto)));
+                            //judge licence is singlepass
+                            if(licenseeIndividualDto.getUenMailFlag() == 0){
+                                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                                templateContent.put("HCI_Name", premisesDto.getHciName());
+                                String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                                templateContent.put("HCI_Address", address);
+                                log.info(StringUtil.changeForLog("HCI_Address = " + address));
+                                templateContent.put("UEN_No", organizationDto.getUenNo());
+                                List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationDto.getId()).getEntity();
+                                String applicantName = orgUserDtoList.get(0).getDisplayName();
 
-                            templateContent.put("Applicant", applicantName);
-                            templateContent.put("ServiceName", licenceDto.getSvcName());
-                            templateContent.put("LicenceNo", licenceDto.getLicenceNo());
-                            Calendar c = Calendar.getInstance();
-                            c.add(Calendar.DAY_OF_MONTH, systemParamConfig.getIssueUenGraceDay());
-                            templateContent.put("GraceDate", Formatter.formatDate(c.getTime()));
-                            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            templateContent.put("newSystem", loginUrl);
-                            templateContent.put("emailAddress", systemAddressOne);
-                            templateContent.put("telNo", systemPhoneNumber);
+                                templateContent.put("Applicant", applicantName);
+                                templateContent.put("ServiceName", licenceDto.getSvcName());
+                                templateContent.put("LicenceNo", licenceDto.getLicenceNo());
+                                Calendar c = Calendar.getInstance();
+                                c.add(Calendar.DAY_OF_MONTH, systemParamConfig.getIssueUenGraceDay());
+                                templateContent.put("GraceDate", Formatter.formatDate(c.getTime()));
+                                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                                templateContent.put("newSystem", loginUrl);
+                                templateContent.put("emailAddress", systemAddressOne);
+                                templateContent.put("telNo", systemPhoneNumber);
 
-                            MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL).getEntity();
-                            MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS).getEntity();
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG).getEntity();
-                            String emailSubject = emailTemplateDto.getTemplateName();
-                            String smsSubject = smsTemplateDto.getTemplateName();
-                            String msgSubject = msgTemplateDto.getTemplateName();
+                                MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL).getEntity();
+                                MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS).getEntity();
+                                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG).getEntity();
+                                String emailSubject = emailTemplateDto.getTemplateName();
+                                String smsSubject = smsTemplateDto.getTemplateName();
+                                String msgSubject = msgTemplateDto.getTemplateName();
 
 
-                            EmailParam emailParam = new EmailParam();
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
-                            emailParam.setTemplateContent(templateContent);
-                            emailParam.setSubject(emailSubject);
-                            emailParam.setQueryCode(licenceDto.getLicenceNo());
-                            emailParam.setReqRefNum(licenceDto.getLicenceNo());
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                            emailParam.setRefId(licenceDto.getId());
-                            notificationHelper.sendNotification(emailParam);
-                            log.info(StringUtil.changeForLog("send email end"));
+                                EmailParam emailParam = new EmailParam();
+                                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_EMAIL);
+                                emailParam.setTemplateContent(templateContent);
+                                emailParam.setSubject(emailSubject);
+                                emailParam.setQueryCode(licenceDto.getLicenceNo());
+                                emailParam.setReqRefNum(licenceDto.getLicenceNo());
+                                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                                emailParam.setRefId(licenceDto.getId());
+                                notificationHelper.sendNotification(emailParam);
+                                log.info(StringUtil.changeForLog("send email end"));
 
-                            EmailParam smsParam = new EmailParam();
-                            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS);
-                            smsParam.setSubject(smsSubject);
-                            smsParam.setTemplateContent(templateContent);
-                            smsParam.setQueryCode(licenceDto.getLicenceNo());
-                            smsParam.setReqRefNum(licenceDto.getLicenceNo());
-                            smsParam.setRefId(licenceDto.getId());
-                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                            notificationHelper.sendNotification(smsParam);
-                            log.info(StringUtil.changeForLog("send sms end"));
+                                EmailParam smsParam = new EmailParam();
+                                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS);
+                                smsParam.setSubject(smsSubject);
+                                smsParam.setTemplateContent(templateContent);
+                                smsParam.setQueryCode(licenceDto.getLicenceNo());
+                                smsParam.setReqRefNum(licenceDto.getLicenceNo());
+                                smsParam.setRefId(licenceDto.getId());
+                                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                                notificationHelper.sendNotification(smsParam);
+                                log.info(StringUtil.changeForLog("send sms end"));
 
-                            EmailParam msgParam = new EmailParam();
-                            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG);
-                            msgParam.setTemplateContent(templateContent);
-                            msgParam.setSubject(msgSubject);
-                            msgParam.setQueryCode(licenceDto.getLicenceNo());
-                            msgParam.setReqRefNum(licenceDto.getLicenceNo());
+                                EmailParam msgParam = new EmailParam();
+                                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG);
+                                msgParam.setTemplateContent(templateContent);
+                                msgParam.setSubject(msgSubject);
+                                msgParam.setQueryCode(licenceDto.getLicenceNo());
+                                msgParam.setReqRefNum(licenceDto.getLicenceNo());
 
-                            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
-                            svcCodeList.add(hcsaServiceDto.getSvcCode());
-                            msgParam.setSvcCodeList(svcCodeList);
-                            msgParam.setRefId(licenceDto.getId());
-                            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                            notificationHelper.sendNotification(msgParam);
-                            log.info(StringUtil.changeForLog("send msg end"));
-                            //set flag = 1
-                            organizationClient.updateIndividualFlag(licenseeIndividualDto.getId());
-                            log.info(StringUtil.changeForLog("updateIndividualFlag end"));
+                                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+                                svcCodeList.add(hcsaServiceDto.getSvcCode());
+                                msgParam.setSvcCodeList(svcCodeList);
+                                msgParam.setRefId(licenceDto.getId());
+                                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                                notificationHelper.sendNotification(msgParam);
+                                log.info(StringUtil.changeForLog("send msg end"));
+                                //set flag = 1
+                                organizationClient.updateIndividualFlag(licenseeIndividualDto.getId());
+                                log.info(StringUtil.changeForLog("updateIndividualFlag end"));
+                            }
                         }
                     }
+
+
                 }catch (Exception e){
                     continue;
                 }

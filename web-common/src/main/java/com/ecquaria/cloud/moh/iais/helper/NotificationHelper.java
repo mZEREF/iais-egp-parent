@@ -880,21 +880,43 @@ public class NotificationHelper {
 		for (ApplicationDto app : appList) {
 			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
 		}
+
+		//send email to applicant
 		set.addAll(getSubmitApplicant(roles, grpDto));
+
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
-		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
+
+		//can add logic of officer email
+		List<String> receiptEmailList = inspectionEmailTemplateDto.getReceiptEmails();
+		if (IaisCommonUtils.isEmpty(receiptEmailList)){
+			receiptEmailList = IaisCommonUtils.genNewArrayList();
+		}
+
+		receiptEmailList.addAll(set);
+
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmailList);//NOSONAR
 		return inspectionEmailTemplateDto;
 	}
 
 	private InspectionEmailTemplateDto getRecriptApp(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
+
+		//send email to applicant
 		set.addAll(getSubmitApplicant(roles, grpDto));
+
 		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
 		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
-		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
+
+		//can add logic of officer email
+		List<String> receiptEmailList = inspectionEmailTemplateDto.getReceiptEmails();
+		if (IaisCommonUtils.isEmpty(receiptEmailList)){
+			receiptEmailList = IaisCommonUtils.genNewArrayList();
+		}
+
+		receiptEmailList.addAll(set);
+
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmailList);//NOSONAR
 		return inspectionEmailTemplateDto;
 	}
 
@@ -939,18 +961,20 @@ public class NotificationHelper {
 	}
 
 	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, List<String> processUrl, List<String> taskStatus){
-		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-
 		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
 		params.put("appNo", appNo);
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
-
-		return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
-				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)){
+			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		}else {
+			return taskOrganizationClient.getCurrentTaskAssignedInspectorInfo(params).getEntity();
+		}
 	}
 
 	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo,String recipientUserId) {
@@ -987,17 +1011,23 @@ public class NotificationHelper {
 			emailAddressMap = IaisCommonUtils.genNewHashMap();
 		}
 
+		HashSet<String> receiveEmail = IaisCommonUtils.genNewHashSet();
 		int index = officerNameMap.size();
 		for (OrgUserDto u : orgUserList) {
 			if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
 				officerNameMap.put(String.valueOf(index), u.getDisplayName());
 				emailAddressMap.put(String.valueOf(index), u.getEmail());
+				receiveEmail.add(u.getEmail());
 				index++;
 			}
 		}
 
 		inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
 		inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
+
+		if (MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR.equals(emtpId)){
+			inspectionEmailTemplateDto.setReceiptEmails(new ArrayList<>(receiveEmail));
+		}
 		return inspectionEmailTemplateDto;
 	}
 

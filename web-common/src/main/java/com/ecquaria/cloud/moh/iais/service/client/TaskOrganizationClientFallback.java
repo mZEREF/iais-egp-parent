@@ -187,4 +187,12 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> getCurrentTaskAssignedInspectorInfo(Map<String, Object> params) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
