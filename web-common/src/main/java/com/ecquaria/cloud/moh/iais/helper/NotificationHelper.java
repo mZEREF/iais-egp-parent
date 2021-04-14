@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -77,6 +78,7 @@ public class NotificationHelper {
 	public static final String RECEIPT_TYPE_APP_GRP 			  	 = "GRP";
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
+	public static final String RECEIPT_TYPE_LICENSEE_ID               = "LICENSEE";
 	public static final String RECEIPT_TYPE_SMS_PSN		             = "SMS_PSN";
 	public static final String RECEIPT_TYPE_SMS_APP		             = "SMS_APP";
 	public static final String RECEIPT_TYPE_SMS_LICENCE_ID		     = "SMS_LIC";
@@ -807,10 +809,23 @@ public class NotificationHelper {
 			inspectionEmailTemplateDto = getRecriptApp(role, refId, moduleType, inspectionEmailTemplateDto,recipientUserId);
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
 			inspectionEmailTemplateDto = getRecriptLic(role, refId, inspectionEmailTemplateDto,recipientUserId);
-		} else {
+		} else if (RECEIPT_TYPE_LICENSEE_ID.equals(refType)){
+			setRecriptByLicenseeId(refId, inspectionEmailTemplateDto);
+		}else {
 			inspectionEmailTemplateDto = getOfficer(role, inspectionEmailTemplateDto,recipientUserId);
 		}
 		return inspectionEmailTemplateDto;
+	}
+
+	private void setRecriptByLicenseeId(String refId, InspectionEmailTemplateDto inspectionEmailTemplateDto){
+		LicenseeDto licensee = licenseeClient.getLicenseeDtoById(refId).getEntity();
+		if (licensee != null){
+			String licenseeName = licensee.getName();
+			String emailAddr = licensee.getEmilAddr();
+			List<String> emailList = new ArrayList<>();
+			emailList.add(emailAddr);
+			inspectionEmailTemplateDto.setReceiptEmails(emailList);
+		}
 	}
 
 	private InspectionEmailTemplateDto getRecriptLic(List<String> roles, String licenceId, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
@@ -939,18 +954,20 @@ public class NotificationHelper {
 	}
 
 	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, List<String> processUrl, List<String> taskStatus){
-		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-
 		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
 		params.put("appNo", appNo);
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
-
-		return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
-				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)){
+			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		}else {
+			return taskOrganizationClient.getCurrentTaskAssignedInspectorInfo(params).getEntity();
+		}
 	}
 
 	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo,String recipientUserId) {
