@@ -881,64 +881,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
             processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
             applicationClient.updateProcessFileTrack(processFileTrackDto);
-            /**
-             * Send Email
-             */
-            log.info("Send Withdraw 003 Email");
-            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
-            if (applicationDtoList != null && applicationDtoList.size() > 0){
-                applicationDtoList.forEach(h -> {
-                    if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(h.getApplicationType())
-                            && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(h.getStatus())) {
-                        String officerName = "";
-                        String applicationNo = h.getApplicationNo();
-                        String applicationGrpId = h.getAppGrpId();
-                        String applicationType = h.getApplicationType();
-                        String serviceId = h.getServiceId();
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                        try {
-                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(h.getApplicationNo()).getEntity();
-                            if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
-                                for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
-                                    String actionBy = appPremisesRoutingHistoryDto.getActionby();
-                                    log.info(StringUtil.changeForLog("Send Withdraw 003 Email actionBy  ---->  " + actionBy));
-                                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
-                                    if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_USER)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_DIRECTOR))) {
-                                        officerName = orgUserDto.getDisplayName();
-                                    }
-                                }
-                            }
-                            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(h.getId()).getEntity();
-                            AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
-                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("systemLink", loginUrl);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
-                            msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("HCIName", appGrpPremisesDto.getHciName());
-                            msgInfoMap.put("Address", appGrpPremisesDto.getAddress());
-                            msgInfoMap.put("Applicant", officerName);
-                            msgInfoMap.put("submissionDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
-                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                            msgInfoMap.put("S_LName", serviceName);
-                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                            try {
-                                newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
-                                newApplicationDelegator.sendInboxMessage(h,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
-                                newApplicationDelegator.sendSMS(h,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
-                            } catch (IOException | TemplateException e) {
-                                log.error(e.getMessage(), e);
-                            }
-                        } catch (Exception e) {
-                            log.info(e.getMessage(), e);
-                        }
-                    }
-                });
-            }
         }
     }
 

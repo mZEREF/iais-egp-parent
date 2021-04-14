@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -43,15 +44,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -100,6 +94,8 @@ public class RoundRobinCommPoolBatchJob {
     private ApplicationClient applicationClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private ApplicationGroupService applicationGroupService;
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
@@ -122,6 +118,8 @@ public class RoundRobinCommPoolBatchJob {
     @Autowired
     private AppointmentClient appointmentClient;
 
+    @Autowired
+    HcsaApplicationDelegator newApplicationDelegator;
 
 
     @Autowired
@@ -888,5 +886,49 @@ public class RoundRobinCommPoolBatchJob {
             }
         }
         return apptUserIdSvrIdMap;
+    }
+
+    private void sendEmailWIT005(ApplicationViewDto applicationViewDto,String userId){
+        log.info("------------->  Send Withdraw 003 Email");
+        String officerName = "";
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        if (officerName != null){
+            officerName = orgUserDto.getUserId();
+        }
+        log.info("------------->  Send Withdraw 003 Email  officerName {}",officerName);
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if (applicationDto != null){
+            String appGrpId = applicationDto.getAppGrpId();
+            String applicationNo = applicationDto.getApplicationNo();
+            String applicationType = applicationViewDto.getApplicationType();
+            String serviceId = applicationViewDto.getServiceType();
+            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(appGrpId);
+            try {
+                AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
+                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                msgInfoMap.put("systemLink", loginUrl);
+                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
+                msgInfoMap.put("ApplicationNumber", applicationNo);
+                msgInfoMap.put("HCIName", appGrpPremisesDto.getHciName());
+                msgInfoMap.put("Address", appGrpPremisesDto.getAddress());
+                msgInfoMap.put("Applicant", officerName);
+                msgInfoMap.put("submissionDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
+                msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                msgInfoMap.put("S_LName", serviceName);
+                msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                try {
+                    newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, applicationDto);
+                    newApplicationDelegator.sendInboxMessage(applicationDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
+                    newApplicationDelegator.sendSMS(applicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
+                } catch (Exception e) {
+                    log.info("------------->  Send Withdraw 003 Email  Failed");
+                    log.error(e.getMessage(), e);
+                }
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
+        }
     }
 }
