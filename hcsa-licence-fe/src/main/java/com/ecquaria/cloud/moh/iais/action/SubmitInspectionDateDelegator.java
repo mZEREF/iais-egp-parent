@@ -54,6 +54,7 @@ public class SubmitInspectionDateDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest servletRequest = bpc.request;
 
+        ParamUtil.setRequestAttr(servletRequest,"DashboardTitle","Indicate Preferred Inspection Date");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
         if(appSubmissionDto == null){
             return;
