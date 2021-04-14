@@ -18,7 +18,12 @@
                                 <iais:message key="LOLEV_ACK039" escape="true" />
                             </c:if>
                             <c:if test="${!COMPLETED}">
-                                <iais:message key="LOLEV_ACK035" escape="true"/>
+                                <c:if test="${LEADER_SEND}" >
+                                    <iais:message key="LOLEV_ACK053" escape="true" />
+                                </c:if>
+                                <c:if test="${!LEADER_SEND}">
+                                    <iais:message key="LOLEV_ACK035" escape="true"/>
+                                </c:if>
                             </c:if>
                         </h2>
                     </div>

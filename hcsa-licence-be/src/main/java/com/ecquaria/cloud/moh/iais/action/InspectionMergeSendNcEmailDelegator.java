@@ -611,26 +611,8 @@ public class InspectionMergeSendNcEmailDelegator {
 
             }
             try {
-//                InterMessageDto interMessageDto = new InterMessageDto();
-//                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-//                interMessageDto.setSubject(inspectionEmailTemplateDto.getSubject());
-//                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-//                String mesNO = inboxMsgService.getMessageNo();
-//                interMessageDto.setRefNo(mesNO);
-//                HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceById(applicationViewDto.getApplicationDto().getServiceId());
-//                interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+'@');
-//                interMessageDto.setMsgContent(inspectionEmailTemplateDto.getMessageContent());
-//                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-//                interMessageDto.setUserId(licenseeId);
-//                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//                inboxMsgService.saveInterMessage(interMessageDto);
+                ParamUtil.setRequestAttr(request,"LEADER_SEND",Boolean.TRUE);
 
-//                EmailDto emailDto=new EmailDto();
-//                emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
-//                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-//                emailDto.setSender(mailSender);
-//                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-//                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
                 mapTemplate.put("msgContent",inspectionEmailTemplateDto.getMessageContent());
                 EmailParam emailParam = new EmailParam();
