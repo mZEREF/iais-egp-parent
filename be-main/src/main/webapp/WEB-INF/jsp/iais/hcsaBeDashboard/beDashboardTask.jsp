@@ -266,20 +266,8 @@
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
-
-        $.ajax({
-            data: {remove: 1},
-            type: "POST",
-            dataType: 'json',
-            url: '/main-web/backend/removeSearchParam.do',
-            error: function (data) {
-
-            },
-            success: function (data) {
-
-            }
-        })
     })
+
     function cancel() {
         $('#support').modal('hide');
     }
@@ -408,7 +396,7 @@
                 }
             });
             $.ajax({
-                url:'${pageContext.request.contextPath}/backend/aoApprove.do',
+                url:'${pageContext.request.contextPath}/hcsa/intranet/dashboard/aoApprove.do',
                 data:{
                     applications:  arr.toString()
                 },
@@ -421,20 +409,9 @@
                     }else{
                         $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
                         $('#approveAo').modal('show');
-
                     }
                 }
             });
-            /*$.post(
-                '/main-web/backend/aoApprove.do',
-                {'applications':  arr},
-                function (data, status) {
-                    // $('#action').val(action);
-                    // showWaiting();
-                    // submit('approve');
-                }
-            );*/
-
         } else {
             $('#support').modal('show');
         }
@@ -454,7 +431,7 @@
 
             console.log(approveStatus);
             if(!approveStatus){
-                $('#approveAo .modal-body span').html(data+ " You have no access to support.");
+                $('#approveAo .modal-body span').html(data + " You have no access to support.");
                 $('#approveAo').modal('show');
             }else{
                 $('#action').val('approve');
@@ -529,7 +506,7 @@
             },
             type:"POST",
             dataType: 'json',
-            url: '/main-web/backend/changeTaskStatus.do',
+            url: '/main-web/hcsa/intranet/dashboard/changeTaskStatus.do',
             error:function(data){
 
             },
