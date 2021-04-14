@@ -1567,6 +1567,15 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
             }
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
+            if(appSubmissionDtos.size() > 1){
+                Double a = 0.0;
+                for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                    if(appSubmissionDto.getAmount()!= null){
+                        a = a + appSubmissionDto.getAmount();
+                    }
+                }
+                appSubmissionDtos.get(0).setTotalAmountGroup(a);
+            }
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDtos.get(0),loginContext.getUserName());
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
