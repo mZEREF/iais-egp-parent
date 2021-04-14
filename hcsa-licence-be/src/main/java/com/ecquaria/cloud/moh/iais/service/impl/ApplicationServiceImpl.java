@@ -363,6 +363,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
             String refType;
+            String msgReqRefNum;
             String tlGroupNumber = "-";
             String tlAppType = "-";
             String tlSvcName = "-";
@@ -377,6 +378,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             String appGrpId;
             if (msgTrackRefNumType == 1) {
                 refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
+                msgReqRefNum = i.getGroupId();
                 reqRefNum = i.getGroupId();
                 appGrpId = i.getGroupId();
                 appList = i.getAppList();
@@ -430,7 +432,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                 tlGroupNumber = app.getApplicationNo();
                 tlAppType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
 
-                reqRefNum = String.valueOf(app.getEndDate().getTime());
+                reqRefNum = app.getApplicationNo();
+                msgReqRefNum = String.valueOf(app.getEndDate().getTime());
                 templateContent.put("applicationNumber", reqRefNum);
                 templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(app.getApplicationType()));
                 templateContent.put("applicationDate", Formatter.formatDate(app.getStartDate()));
@@ -486,7 +489,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
             jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
-            jobRemindMsgTrackingDto.setRefNo(reqRefNum);
+            jobRemindMsgTrackingDto.setRefNo(msgReqRefNum);
             jobRemindMsgTrackingDto.setCreateTime(new Date());
             jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             HashMap<String, String> subjectParams = IaisCommonUtils.genNewHashMap();
@@ -497,7 +500,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
             emailParam.setSubjectParams(subjectParams);
             emailParam.setTemplateId(emailId);
-            emailParam.setTemplateContent(templateContent);
             emailParam.setQueryCode(queryCode);
             emailParam.setReqRefNum(randomStr);
             emailParam.setRefIdType(refType);
@@ -507,8 +509,19 @@ public class ApplicationServiceImpl implements ApplicationService {
             //send to inspector
             if (HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB.equals(queryCode)){
                 emailParam.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+                JobRemindMsgTrackingDto firReminderRecord = msgTemplateClient.getJobRemindMsgTrackingDto(msgReqRefNum, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
+                JobRemindMsgTrackingDto secReminderRecord = msgTemplateClient.getJobRemindMsgTrackingDto(msgReqRefNum, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();if (Optional.ofNullable(firReminderRecord).isPresent() && Optional.ofNullable(secReminderRecord).isPresent()){
+                    if (Optional.ofNullable(firReminderRecord).isPresent() && Optional.ofNullable(secReminderRecord).isPresent()){
+                        templateContent.put("inspReminderStartDate", Formatter.formatDate(firReminderRecord.getCreateTime()));
+                        templateContent.put("inspReminderEndDate", Formatter.formatDate(secReminderRecord.getCreateTime()));
+                    }else {
+                        log.info("break send reminder email to inspector , because the applicant has not been reminded");
+                        continue;
+                    }
+                }
             }
 
+            emailParam.setTemplateContent(templateContent);
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
@@ -545,7 +558,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
 
         List<SelfAssMtEmailDto> email_to_inspecotr_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
-        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_008);
+         sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_008);
     }
 
     @Override
