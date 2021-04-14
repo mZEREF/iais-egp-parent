@@ -19,17 +19,26 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
+                    <div class="center-content">
+                        <div class="licence-renewal-content">
+                            <div class="tab-pane"  role="tabpanel">
+                                <div class="multiservice">
+                                    <ul class="progress-tracker col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''}>
+                                            <li class="tracker-item active">Instructions</li>
+                                            <li class="tracker-item active">Licence Review</li>
+                                            <li class="tracker-item active">Payment</li>
+                                            <li class="tracker-item disabled">Acknowledgement</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-gp steps-tab">
                         <div class="tab-content">
 
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <br/>
-                                <ul class="progress-tracker" style="margin-top: 50px">
-                                    <li class="tracker-item active">Instructions</li>
-                                    <li class="tracker-item active">Licence Review</li>
-                                    <li class="tracker-item active">Payment</li>
-                                    <li class="tracker-item disabled">Acknowledgement</li>
-                                </ul>
+
                                 <h2 style="margin-top: 20px; border-bottom: none;">Payment Summary</h2>
                                 <%@include file="../common/renewPayment.jsp"%>
                                 <c:choose>

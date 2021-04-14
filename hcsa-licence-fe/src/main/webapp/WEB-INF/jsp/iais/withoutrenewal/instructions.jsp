@@ -19,12 +19,16 @@
                     <div class="col-xs-12">
                         <div class="center-content">
                             <div class="licence-renewal-content">
-                                <ul class="progress-tracker">
+                                <div class="tab-pane"  role="tabpanel">
+                                    <div class="multiservice">
+                                      <ul class="progress-tracker  col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''}>
                                     <li class="tracker-item active">Instructions</li>
                                     <li class="tracker-item disabled">Licence Review</li>
                                     <li class="tracker-item disabled">Payment</li>
                                     <li class="tracker-item disabled">Acknowledgement</li>
-                                </ul>
+                                     </ul>
+                                    </div>
+                                </div>
                                 <c:if test="${isSingle == 'Y'}">
                                     <p>You are renewing the following licence:</p>
                                 </c:if>

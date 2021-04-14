@@ -9,6 +9,7 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<%@include file="../cessation/head.jsp" %>
 <div class="main-content">
   <div class="container">
     <div class="row">

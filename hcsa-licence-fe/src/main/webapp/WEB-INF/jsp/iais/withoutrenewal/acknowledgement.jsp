@@ -27,13 +27,16 @@
                 <div class="col-xs-12">
                     <div class="center-content">
                         <div class="licence-renewal-content">
-                            <ul class="progress-tracker">
+                            <div class="tab-pane"  role="tabpanel">
+                                <div class="multiservice">
+                            <ul class="progress-tracker  col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''} >
                                 <li class="tracker-item active">Instructions</li>
                                 <li class="tracker-item active">Licence Review</li>
                                 <li class="tracker-item active">Payment</li>
                                 <li class="tracker-item active">Acknowledgement</li>
                             </ul>
-
+                                </div>
+                            </div>
                             <c:choose>
                                 <c:when test="${'error' != AckStatus}">
                                     <%@include file="../common/rennewAck.jsp"%>
