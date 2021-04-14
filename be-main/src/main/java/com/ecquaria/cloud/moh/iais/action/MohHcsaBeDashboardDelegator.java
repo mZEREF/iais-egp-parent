@@ -414,14 +414,8 @@ public class MohHcsaBeDashboardDelegator {
 
     /**
      * @Function: Routing Task
+     *
      * @param bpc
-     * @param stageId
-     * @param appStatus
-     * @param roleId
-     * @param applicationViewDto
-     * @param taskDto
-     * @throws FeignException
-     * @throws CloneNotSupportedException
      */
     private void routingTask(BaseProcessClass bpc, String stageId, String appStatus, String roleId, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException {
 
@@ -716,7 +710,9 @@ public class MohHcsaBeDashboardDelegator {
     }
 
     /**
-     * Route Back
+     * @Function: Route Back
+     *
+     * @param bpc
      */
     private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String stageId,String appStatus,String roleId ,String wrkGpId,String userId, TaskDto taskDto) throws CloneNotSupportedException {
         //send internal route back email
@@ -821,10 +817,9 @@ public class MohHcsaBeDashboardDelegator {
     }
 
     /**
-     * StartStep: replay
+     * @Function: replay
      *
      * @param bpc
-     * @throws
      */
     private void replay(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws FeignException, CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do replay start ...."));
@@ -892,7 +887,6 @@ public class MohHcsaBeDashboardDelegator {
      * StartStep: routeToDMS
      *
      * @param bpc
-     * @throws
      */
     public void routeToDMS(BaseProcessClass bpc, ApplicationViewDto applicationViewDto, TaskDto taskDto) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do routeToDMS start ...."));
