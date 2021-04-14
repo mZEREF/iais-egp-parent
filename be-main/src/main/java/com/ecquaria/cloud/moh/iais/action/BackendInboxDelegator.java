@@ -1242,7 +1242,7 @@ public class BackendInboxDelegator {
             ) {
                 ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
                 ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
                     saveReturnFeeDtosStripe.add(appreturn);
                 }
             }
