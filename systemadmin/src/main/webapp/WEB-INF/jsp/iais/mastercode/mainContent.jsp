@@ -16,6 +16,7 @@
                             <span>Search Results</span>
                         </h3>
                         <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
+                        <div class="table-gp">
                         <table class="table">
                             <thead>
                             <tr>
@@ -136,6 +137,7 @@
                             </c:choose>
                             </tbody>
                         </table>
+                        </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-12 text-right">
                                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/master-code-file">Download</a>
