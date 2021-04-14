@@ -67,10 +67,10 @@
       </c:if>
     </div>
   </c:if>
-  <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
+  <form method="post" id="beDashboardForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="SearchSwitchType" value="">
-    <input type="hidden" id="action" name="action" value="">
+    <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
+    <input type="hidden" id="action" name="action" value="${dashActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
     <input type="hidden" id="inspector_name" name="inspector_name" value="">
     <div class="col-xs-12">
@@ -267,7 +267,6 @@
         $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
 
-
         $.ajax({
             data: {remove: 1},
             type: "POST",
@@ -293,16 +292,17 @@
     function tagConfirmCallbackapproveAo(){
         $('#approveAo').modal('hide');
     }
-    function submit(action) {
+    function intraDashboardSubmit(action) {
         showWaiting();
-        $("[name='SearchSwitchType']").val(action);
-        var mainPoolForm = document.getElementById('mainSupForm');
+        $("[name='hcsaBeDashboardSwitchType']").val(action);
+        var mainPoolForm = document.getElementById('beDashboardForm');
         mainPoolForm.submit();
     }
 
     $("#searchBtn").click(function () {
         showWaiting();
-        submit('search');
+        let actionValue = $('#action').val();
+        intraDashboardSubmit(actionValue);
     })
 
     function groupAjax(applicationGroupNo, divid) {
@@ -372,8 +372,6 @@
                 $('#advfilter' + divid).after(html);
             }
         )
-
-
     }
 
     function getAppByGroupId(applicationGroupNo, divid) {
@@ -392,12 +390,11 @@
             }
 
         }
-
     }
 
     function jumpToPagechangePage() {
         showWaiting();
-        submit('page');
+        intraDashboardSubmit('page');
     }
 
     function aoApprove(action) {
@@ -405,7 +402,6 @@
             var arr = new Array();
             var num = 0;
             $("input:checkbox:checked").each(function(i){
-
                 if($(this).val() != "on" && $("#"+$(this).val()).html() != ""){
                     arr[num] = $("#"+$(this).val()).html();
                     num ++;
@@ -421,7 +417,7 @@
                 'success':function (data) {
                     if(data.res == 1){
                         $('#action').val(action);
-                        submit('approve');
+                        intraDashboardSubmit('approve');
                     }else{
                         $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
                         $('#approveAo').modal('show');
@@ -463,20 +459,18 @@
             }else{
                 $('#action').val('approve');
                 showWaiting();
-                submit('approve');
+                intraDashboardSubmit('approve');
             }
-
         } else {
             $('#support').modal('show');
         }
-
     }
 
     function trigger() {
         if ($("input:checkbox:checked").length > 0) {
             $('#action').val('trigger');
             showWaiting();
-            submit('approve');
+            intraDashboardSubmit('approve');
         } else {
             $('#support').modal('show');
         }
@@ -511,7 +505,8 @@
 
     function chooseCurRole() {
         showWaiting();
-        submit('changeRole');
+        let actionValue = $('#action').val();
+        intraDashboardSubmit(actionValue);
     }
 
     function isInArray(arr,value){
@@ -543,5 +538,4 @@
             }
         });
     })
-
 </script>
