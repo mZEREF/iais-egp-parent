@@ -6,6 +6,7 @@
                     <span>Search Results</span>
                 </h3>
                 <iais:pagination param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
+                <div class="table-gp">
                 <table class="table">
                     <thead>
                     <tr>
@@ -98,6 +99,7 @@
                     </c:choose>
                     </tbody>
                 </table>
+                </div>
                 <!--delete  Modal -->
                 <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">

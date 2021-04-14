@@ -90,6 +90,7 @@
                             <iais:pagination  param="systemParamSearch" result="systemParamSearchResult"/>
                             <div class="components">
                                 <div >
+                                    <div class="table-gp">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -152,6 +153,7 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

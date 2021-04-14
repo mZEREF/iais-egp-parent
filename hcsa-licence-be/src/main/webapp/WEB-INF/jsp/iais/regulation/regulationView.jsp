@@ -65,6 +65,7 @@
                     <span>Search Results</span>
                 </h3>
                 <iais:pagination  param="regulationSearch" result="regulationResult"/>
+                <div class="table-gp">
                 <table class="table">
                     <thead>
                     <tr>
@@ -107,6 +108,7 @@
                     </c:choose>
                     </tbody>
                 </table>
+                </div>
                 <div class="table-footnote">
                     <div class="row">
                         <div class="col-xs-6 col-md-4">

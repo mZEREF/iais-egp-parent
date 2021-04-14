@@ -101,7 +101,8 @@
                   <span>Search Results</span>
                 </h3>
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
-                  <table class="table">
+                <div class="table-gp">
+                <table class="table">
                     <colgroup>
                       <col style="width: 1%;"/>
                       <col style="width: 3%;"/>
@@ -188,6 +189,7 @@
                     </c:choose>
                     </tbody>
                   </table>
+                  </div>
                   <div class="table-footnote">
                     <div class="row">
                       <div class="col-xs-6 col-md-4">

@@ -96,6 +96,7 @@
           <span>Search Results</span>
         </h3>
         <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
+        <div class="table-gp">
           <table class="table">
             <thead>
             <tr>
@@ -161,7 +162,7 @@
             </c:choose>
             </tbody>
           </table>
-
+        </div>
 
               <td>
 
