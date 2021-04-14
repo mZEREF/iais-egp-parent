@@ -834,14 +834,23 @@
         if("1" == deputyFlag){
             $poContentEle.find('div.deputy-content ').removeClass('hidden');
 
-            //remove hidden
-            var $contentEle = $('.dpo-content:eq(1)');
-            // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
-            $contentEle.find('.edit-content').removeClass('hidden');
-            $contentEle.find('input[type="text"]').prop('disabled',false);
-            $contentEle.find('div.nice-select').removeClass('disabled');
-            $contentEle.find('input[type="text"]').css('border-color','');
-            $contentEle.find('input[type="text"]').css('color','');
+            var $dpoContent = $poContentEle.find('div.deputy-content .panel-main-content');
+            var dpoLength = $dpoContent.find('div.dpo-content').length;
+            if(dpoLength > 1){
+                //remove hidden
+                var $contentEle = $('.dpo-content:eq(1)');
+                // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
+                $contentEle.find('.edit-content').removeClass('hidden');
+                $contentEle.find('input[type="text"]').prop('disabled',false);
+                $contentEle.find('div.nice-select').removeClass('disabled');
+                $contentEle.find('input[type="text"]').css('border-color','');
+                $contentEle.find('input[type="text"]').css('color','');
+            }else{
+                //add one
+                $('#addDpoBtn').trigger('click');
+                //close dropdown
+                $('#deputyPrincipalOfficer').niceSelect('update');
+            }
 
         }else{
             $poContentEle.find('div.deputy-content ').addClass('hidden');
