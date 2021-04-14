@@ -243,18 +243,6 @@
 <script type="text/javascript">
     var dividajaxlist = [];
 
-    function inspectorSearchTask_optionNameAuto(value) {
-        if (value != null && value != null) {
-            $("#inspectorSearchTask_inspectorName").val(value);
-        }
-        doInspectorSearchTaskSelect();
-    }
-
-    function doInspectorSearchTaskSelect() {
-        var options = $("#inspectorSearchTask_inspectorName option:selected");
-        $("#inspector_name").val(options);
-    }
-
     $("#clearBtn").click(function () {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");

@@ -1,7 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -24,7 +28,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardStart start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardStart start ...."));
     }
 
     /**
@@ -34,7 +38,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardInit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardInit start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardInit start ...."));
     }
 
     /**
@@ -44,7 +48,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardInitPre(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardInitPre start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardInitPre start ...."));
     }
 
     /**
@@ -54,7 +58,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardStep start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardStep start ...."));
     }
 
     /**
@@ -64,7 +68,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardApprove(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardApprove start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardApprove start ...."));
     }
 
     /**
@@ -74,7 +78,8 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardSwitchSort(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardSwitchSort start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardSwitchSort start ...."));
+        //todo:The current requirements do not need to be sorted
     }
 
     /**
@@ -84,7 +89,9 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardPage(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardPage start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardPage start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
     /**
@@ -94,7 +101,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardInGroup(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardInGroup start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardInGroup start ...."));
     }
 
     /**
@@ -104,7 +111,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardApplicantReply(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardApplicantReply start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardApplicantReply start ...."));
     }
 
     /**
@@ -114,7 +121,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardKpi(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardKpi start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardKpi start ...."));
     }
 
     /**
@@ -124,7 +131,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardCommonPool(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
     }
 
     /**
@@ -134,7 +141,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardWaitApprove(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardWaitApprove start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardWaitApprove start ...."));
     }
 
     /**
@@ -144,7 +151,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardRenewExpiry(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardRenewExpiry start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardRenewExpiry start ...."));
     }
 
     /**
@@ -154,7 +161,7 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardAssignToMe(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardAssignToMe start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardAssignToMe start ...."));
     }
 
     /**
@@ -164,6 +171,22 @@ public class MohHcsaBeDashboardDelegator {
      * @throws
      */
     public void hcsaBeDashboardQuery(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        return getSearchParam(bpc, false, null);
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew, String className){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "dashSearchParam");
+        int pageSize = SystemParamUtil.getDefaultPageSize();
+        if(searchParam == null || isNew){
+            searchParam = new SearchParam(className);
+            searchParam.setPageSize(pageSize);
+            searchParam.setPageNo(1);
+            searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
+        }
+        return searchParam;
     }
 }
