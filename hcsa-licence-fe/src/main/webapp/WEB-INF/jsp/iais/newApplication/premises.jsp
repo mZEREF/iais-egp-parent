@@ -234,7 +234,7 @@
         </c:if>
 
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-          if($("#errorMapIs").val()=='error'&&$('#rfc_eqHciNameChange').val()=='true'){
+          if($("#errorMapIs").val()=='error'){
               $('.premisesEdit').trigger('click');
           }
         </c:if>
@@ -247,10 +247,16 @@
         });
 
         init = 1;
+        //68859
         if($('#rfc_eqHciNameChange').val()=='false'){
             $("input[name='isPartEdit']").val('1');
             $("input[name='chooseExistData']").val('1');
             $('.premSelect').removeClass('disabled');
+            $('.premisesEdit').addClass('hidden');
+        }else if($('#rfc_eqHciNameChange').val()=='true'){
+            $("input[name='isPartEdit']").val('0');
+            $("input[name='chooseExistData']").val('0');
+            $('.premisesEdit').removeClass('hidden');
         }
     });
 

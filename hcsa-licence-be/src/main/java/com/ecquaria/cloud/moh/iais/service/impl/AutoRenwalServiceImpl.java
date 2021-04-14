@@ -134,7 +134,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
         clearDouble(entity,entity1);
         sendEmail(entity,mouth);
-       /* sendEmail(entity1,mouth);*/
+        sendEmail(entity1,mouth);
         List<LicenceDto> licence = getLicence("IS_NO_AUTO" + F_60, "IS_NO_AUTO" + F_60,systemParameterDto5);
         List<LicenceDto> licence1 = getLicence("IS_NO_AUTO" + S_45, "IS_NO_AUTO" + S_45,systemParameterDto6);
         log.info(StringUtil.changeForLog("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence))));

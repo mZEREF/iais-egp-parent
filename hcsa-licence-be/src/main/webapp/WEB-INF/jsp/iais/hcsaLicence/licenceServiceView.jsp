@@ -7,7 +7,7 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-blank"/>
+<webui:setLayout name="iais-intranet-blank"/>
 <style>
   *{
     font-size: 16px;

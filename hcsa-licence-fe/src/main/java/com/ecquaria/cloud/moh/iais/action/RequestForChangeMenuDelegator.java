@@ -514,11 +514,29 @@ public class RequestForChangeMenuDelegator {
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
 
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        if(eqHciCode){
-            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
+        if(isRfi){
+           for(AppGrpPremisesDto v : appGrpPremisesDtoList) {
+               String hciCode = v.getHciCode();
+               String oldHciCode = v.getOldHciCode();
+               if(hciCode!=null&&oldHciCode!=null){
+                   boolean equals = hciCode.equals(oldHciCode);
+
+                   v.setExistingData(AppConsts.YES);
+
+                   bpc.request.getSession().setAttribute("eqHciCode",String.valueOf(equals));
+               }else if(hciCode==null){
+                   v.setExistingData(AppConsts.NO);
+                   bpc.request.getSession().setAttribute("eqHciCode","true");
+               }
+           }
+        }else {
+            boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            if(eqHciCode){
+                appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
+            }
+            bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         }
-        bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
+
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");

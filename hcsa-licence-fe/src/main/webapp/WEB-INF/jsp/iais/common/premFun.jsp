@@ -149,6 +149,10 @@
                     var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
                     genEventHtml($premContent,$eventHtml);
                 }
+                //if Moving to new address need value from page 68859
+                $("input[name='isPartEdit']").val('1');
+                $("input[name='isEdit']").val('1');
+                $("input[name='chooseExistData']").val('0');
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');

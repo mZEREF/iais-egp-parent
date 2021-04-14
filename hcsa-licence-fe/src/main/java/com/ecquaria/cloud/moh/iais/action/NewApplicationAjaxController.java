@@ -712,14 +712,14 @@ public class NewApplicationAjaxController {
         licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+       /* AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
         if(oldAppSubmissionDto!=null){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
             if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
                 boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, appGrpPremisesDtoList.get(0));
                 appGrpPremisesDto.setEqHciCode(String.valueOf(eqHciCode));
             }
-        }
+        }*/
 
         return appGrpPremisesDto;
     }

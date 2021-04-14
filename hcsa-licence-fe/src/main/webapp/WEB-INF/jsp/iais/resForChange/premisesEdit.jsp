@@ -194,7 +194,7 @@
             disabeleForAllDay($allDayDiv);
         });
         init = 1;
-        if($("#errorMapIs").val()=='error' && $('#eqHciNameChange').val()=='true' ){
+        if($("#errorMapIs").val()=='error' ){
             $('.premisesEdit').trigger('click');
         }
         if($('#eqHciNameChange').val()=='false'){
