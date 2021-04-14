@@ -849,6 +849,7 @@
                 //add one
                 $('#addDpoBtn').trigger('click');
                 //close dropdown
+                $('#deputyPrincipalOfficer').removeClass('disabled');
                 $('#deputyPrincipalOfficer').niceSelect('update');
             }
 
