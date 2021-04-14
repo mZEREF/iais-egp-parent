@@ -213,6 +213,7 @@ public class NotificationHelper {
 		sendNotification(emailParam);
 	}
 
+	@Async("emailAsyncExecutor")
 	public void sendNotification(EmailParam emailParam){
 		if (emailParam == null){
 			return;
