@@ -374,14 +374,14 @@ public class ClientReschedulingDelegator {
             Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));
             apptViewDtos.get(id).setReason(reason);
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(inspStDate);
-            cal.add(Calendar.DAY_OF_MONTH, 3);
             String inspStartDate = Formatter.formatDateTime(inspStDate, SystemAdminBaseConstants.DATE_FORMAT);
-            String inspStartDate_3 = Formatter.formatDateTime(cal.getTime(), SystemAdminBaseConstants.DATE_FORMAT);
             String inspToDate = Formatter.formatDateTime(inspEndDate, SystemAdminBaseConstants.DATE_FORMAT);
             String nowDate = Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT);
             if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(inspStDate);
+                cal.add(Calendar.DAY_OF_MONTH, 3);
+                String inspStartDate_3 = Formatter.formatDateTime(cal.getTime(), SystemAdminBaseConstants.DATE_FORMAT);
                 if( inspStartDate_3.compareTo(inspToDate)>0){
                     errMap.put("newDate" + appId,MessageUtil.getMessageDesc("OAPPT_ERR013"));
                 }
