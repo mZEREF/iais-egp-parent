@@ -34,5 +34,5 @@ public interface MohHcsaBeDashboardService {
 
     SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam);
 
-    SearchResult getDashComPoolOtherData(SearchResult searchResult);
+    SearchResult<DashComPoolQueryDto> getDashComPoolOtherData(SearchResult<DashComPoolQueryDto> searchResult);
 }

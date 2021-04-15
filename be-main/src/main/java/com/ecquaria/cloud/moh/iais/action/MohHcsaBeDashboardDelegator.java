@@ -459,15 +459,13 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         String dashActionValue = (String) ParamUtil.getSessionAttr(bpc.request, "dashActionValue");
-        SearchResult searchResult = null;
         if("common".equals(dashActionValue)) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
-            searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
+            SearchResult<DashComPoolQueryDto> searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
-
+            ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
         }
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){

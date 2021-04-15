@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Autowired
     private AppInspectionStatusMainClient appInspectionStatusMainClient;
+
+    @Autowired
+    private InspectionTaskMainClient inspectionTaskMainClient;
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
@@ -135,11 +140,21 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashCommonTask")
     public SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam) {
-        return null;
+        return inspectionTaskMainClient.searchDashComPoolResult(searchParam).getEntity();
     }
 
     @Override
-    public SearchResult getDashComPoolOtherData(SearchResult searchResult) {
-        return null;
+    public SearchResult<DashComPoolQueryDto> getDashComPoolOtherData(SearchResult<DashComPoolQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashComPoolQueryDto dashComPoolQueryDto : searchResult.getRows()) {
+            if (1 == dashComPoolQueryDto.getAppCount()) {
+                dashComPoolQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashComPoolQueryDto.getAppCount()) {
+                dashComPoolQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashComPoolQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
     }
 }
