@@ -12,9 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MsgCommonUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.UenManagementService;
@@ -48,7 +48,7 @@ public class UenManagementServiceImpl implements UenManagementService {
     @Autowired
     private MsgTemplateClient systemAdminClient;
     @Autowired
-    private NotificationHelper notificationHelper;
+    private MsgCommonUtil msgCommonUtil;
     @Autowired
     private InboxMsgService inboxMsgService;
     @Autowired
@@ -139,7 +139,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             emailDto.setSender(mailSender);
             List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
             licenseeIds.add(licenseeId);
-            List<String> emailAddress = notificationHelper.getEmailAddressListByLicenseeId(licenseeIds);
+            List<String> emailAddress = msgCommonUtil.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
             emailClient.sendNotification(emailDto);
         }catch (Exception e){
