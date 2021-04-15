@@ -136,43 +136,43 @@
 <script type="text/javascript">
   function dashboardAssignMe() {
       showWaiting();
-      $('#action').val('assignme');
+      $('#switchAction').val('assignme');
       intraDashboardSubmit('assignme');
   }
 
   function dashboardApplicantReply() {
       showWaiting();
-      $('#action').val('reply');
+      $('#switchAction').val('reply');
       intraDashboardSubmit('reply');
   }
 
   function dashboardKpiTask() {
       showWaiting();
-      $('#action').val('kpi');
+      $('#switchAction').val('kpi');
       intraDashboardSubmit('kpi');
   }
 
   function dashboardRenewalExpiry() {
       showWaiting();
-      $('#action').val('renew');
+      $('#switchAction').val('renew');
       intraDashboardSubmit('renew');
   }
 
   function dashboardWaitApproval() {
       showWaiting();
-      $('#action').val('wait');
+      $('#switchAction').val('wait');
       intraDashboardSubmit('wait');
   }
 
   function dashboardCommonPool() {
       showWaiting();
-      $('#action').val('common');
+      $('#switchAction').val('common');
       intraDashboardSubmit('common');
   }
 
   function dashboardSupervisorPool() {
       showWaiting();
-      $('#action').val('group');
+      $('#switchAction').val('group');
       intraDashboardSubmit('group');
   }
 </script>

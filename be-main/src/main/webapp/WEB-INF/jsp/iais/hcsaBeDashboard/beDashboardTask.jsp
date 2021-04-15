@@ -70,7 +70,8 @@
   <form method="post" id="beDashboardForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
-    <input type="hidden" id="action" name="action" value="${dashActionValue}">
+    <input type="hidden" id="action" name="action" value="">
+    <input type="hidden" id="switchAction" name="switchAction" value="${dashActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
     <input type="hidden" id="inspector_name" name="inspector_name" value="">
     <div class="col-xs-12">
@@ -277,7 +278,7 @@
 
     $("#searchBtn").click(function () {
         showWaiting();
-        let actionValue = $('#action').val();
+        let actionValue = $('#switchAction').val();
         intraDashboardSubmit(actionValue);
     })
 
@@ -370,6 +371,7 @@
 
     function jumpToPagechangePage() {
         showWaiting();
+        $('#switchAction').val('page');
         intraDashboardSubmit('page');
     }
 
@@ -393,6 +395,7 @@
                 'success':function (data) {
                     if(data.res == 1){
                         $('#action').val(action);
+                        $('#switchAction').val('approve');
                         intraDashboardSubmit('approve');
                     }else{
                         $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
@@ -422,6 +425,7 @@
                 $('#approveAo .modal-body span').html(data + " You have no access to support.");
                 $('#approveAo').modal('show');
             }else{
+                $('#switchAction').val('approve');
                 $('#action').val('approve');
                 showWaiting();
                 intraDashboardSubmit('approve');
@@ -434,6 +438,7 @@
     function trigger() {
         if ($("input:checkbox:checked").length > 0) {
             $('#action').val('trigger');
+            $('#switchAction').val('approve');
             showWaiting();
             intraDashboardSubmit('approve');
         } else {
@@ -470,7 +475,7 @@
 
     function chooseCurRole() {
         showWaiting();
-        let actionValue = $('#action').val();
+        let actionValue = $('#switchAction').val();
         intraDashboardSubmit(actionValue);
     }
 
