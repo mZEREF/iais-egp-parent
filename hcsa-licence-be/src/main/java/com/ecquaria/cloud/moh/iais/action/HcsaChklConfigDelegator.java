@@ -168,8 +168,14 @@ public class HcsaChklConfigDelegator {
         String section = ParamUtil.getString(request, "section");
         String sectionDesc = ParamUtil.getString(request, "sectionDesc");
 
-        if(StringUtils.isEmpty(section) || StringUtils.isEmpty(sectionDesc)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "GENERAL_ERR0006"));
+        ChecklistSectionDto sectionDto = new ChecklistSectionDto();
+        sectionDto.setSection(section);
+        sectionDto.setDescription(sectionDesc);
+        sectionDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        ValidationResult vrResult = WebValidationHelper.validateProperty(sectionDto, "create");
+        if (vrResult.isHasErrors()){
+            Map<String, String> errorMap = vrResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -187,14 +193,12 @@ public class HcsaChklConfigDelegator {
 
                 secList = Optional.ofNullable(secList).orElseGet(() -> IaisCommonUtils.genNewArrayList());
 
-                ChecklistSectionDto cs = new ChecklistSectionDto();
-
                 //going to clear it in submit method
-                cs.setId(UUID.randomUUID().toString());
-                cs.setSection(section);
-                cs.setDescription(sectionDesc);
-                cs.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                secList.add(cs);
+                sectionDto.setId(UUID.randomUUID().toString());
+                sectionDto.setSection(section);
+                sectionDto.setDescription(sectionDesc);
+                sectionDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                secList.add(sectionDto);
                 secList.sort(Comparator.comparing(ChecklistSectionDto::getOrder, Comparator.nullsFirst(Comparator.naturalOrder())));
                 conf.setSectionDtos(secList);
                 curSecName.add(section);

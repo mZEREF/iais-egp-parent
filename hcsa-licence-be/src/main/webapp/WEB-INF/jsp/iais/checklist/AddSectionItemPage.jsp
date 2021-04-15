@@ -19,7 +19,7 @@
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 
-  <span id="error_sectionName" name="iaisErrorMsg" class="error-msg"></span>
+
   <br><br>
     <div class="">
       <div class="row">
@@ -31,17 +31,21 @@
                 <div class="form-horizontal">
                   <div class="form-group">
                     <iais:field value="Section Name" required="true"></iais:field>
-                    <div class="col-xs-12 col-md-2">
-                      <input type="text" name="section" value="" />
+                    <div class="col-xs-12 col-md-5">
+                      <input type="text" name="section" maxlength="255" value="${param.section}" />
+                      <span id="error_section" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
+
                   </div>
                 </div>
                 <div class="form-horizontal">
                   <div class="form-group">
                     <iais:field value="Section Description" required="true"></iais:field>
                     <div class="col-xs-12 col-md-5">
-                      <input type="text" name="sectionDesc" value="" />
+                      <input type="text" name="sectionDesc" maxlength="255" value="${param.sectionDesc}" />
+                      <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
+
                   </div>
                 </div>
               </div>
