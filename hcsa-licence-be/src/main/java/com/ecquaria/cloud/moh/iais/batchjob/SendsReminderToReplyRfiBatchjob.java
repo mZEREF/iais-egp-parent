@@ -257,7 +257,11 @@ public class SendsReminderToReplyRfiBatchjob {
         String appGrpId = applicationDto.getAppGrpId();
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
         String applicantName=licenseeDto.getName();
+        if(orgUserDtoList!=null&&!orgUserDtoList.isEmpty()){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
