@@ -263,6 +263,9 @@
         </c:if>
     </div>
 </div>
+<div style="display: none;">
+    <select id="nice_select_effect"></select>
+</div>
 
 <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>

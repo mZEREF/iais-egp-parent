@@ -284,6 +284,9 @@
     </div>
   </div>
 </div>
+<div style="display: none;">
+  <select id="nice_select_effect"></select>
+</div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
     var init = 0;
