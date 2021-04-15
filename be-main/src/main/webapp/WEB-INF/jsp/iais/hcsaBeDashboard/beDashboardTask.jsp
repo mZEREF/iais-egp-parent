@@ -102,7 +102,7 @@
                 <iais:row>
                   <iais:field value="Application No."/>
                   <iais:value width="18">
-                    <input type="text" name="application_no" value="${application_no}"/>
+                    <input type="text" name="application_no" value="${dashSearchParam.filters['application_no']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:row>
@@ -110,7 +110,7 @@
                   <iais:value width="18">
                     <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
                                  firstOption="Please Select"
-                                 value="${backendinboxSearchParam.filters['application_type']}"></iais:select>
+                                 value="${dashSearchParam.filters['application_type']}"></iais:select>
                   </iais:value>
                 </iais:row>
                 <iais:row>
@@ -119,25 +119,25 @@
                     <iais:select name="application_status" options="appStatusOption"
                                  cssClass="application_status"
                                  firstOption="Please Select"
-                                 value="${application_status}"></iais:select>
+                                 value="${dashSearchParam.filters['application_status']}"></iais:select>
                   </iais:value>
                 </iais:row>
                 <iais:row>
                   <iais:field value="HCI Code"/>
                   <iais:value width="18">
-                    <input type="text" name="hci_code" value="${backendinboxSearchParam.filters['hci_code']}"/>
+                    <input type="text" name="hci_code" value="${dashSearchParam.filters['hci_code']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:row>
                   <iais:field value="HCI Name"/>
                   <iais:value width="18">
-                    <input type="text" name="hci_name" value="${hci_name}"/>
+                    <input type="text" name="hci_name" value="${dashSearchParam.filters['hci_name']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:row>
                   <iais:field value="HCI Address"/>
                   <iais:value width="18">
-                    <input type="text" name="hci_address" value="${hci_address}"/>
+                    <input type="text" name="hci_address" value="${dashSearchParam.filters['hci_address']}"/>
                   </iais:value>
                 </iais:row>
                 <iais:action style="text-align:right;">
@@ -149,7 +149,7 @@
             <h3>
               <span>Search Results</span>
             </h3>
-            <iais:pagination param="backendinboxSearchParam" result="supTaskSearchResult"/>
+            <iais:pagination param="dashSearchParam" result="supTaskSearchResult"/>
             <div class="table-gp">
               <table class="table application-group" style="border-collapse:collapse;">
                 <thead>
@@ -173,12 +173,12 @@
                   <c:otherwise>
                     <c:forEach var="pool" items="${supTaskSearchResult.rows}"
                                varStatus="status">
-                      <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
-                        <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
+                      <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
+                        <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                         <td><p style="width: 165px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
                                                                                                    data-toggle="collapse" aria-expanded="false"
-                                                                                                   data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
-                                                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
+                                                                                                   data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><c:out value="${pool.applicationType}"/></td>
                         <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
                         <td><c:out value="${pool.submitDate}"/></td>

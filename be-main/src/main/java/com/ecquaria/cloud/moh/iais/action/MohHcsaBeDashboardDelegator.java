@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -53,6 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -114,6 +117,9 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "dashActionValue", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
     }
 
     /**
@@ -124,6 +130,7 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardInit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInit start ...."));
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_INTRANET_DASHBOARD);
     }
 
     /**
@@ -344,6 +351,7 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardKpi(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardKpi start ...."));
+        SearchParam searchParam = getSearchParam(bpc, true, null);
     }
 
     /**
@@ -354,6 +362,57 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardCommonPool(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
+        String actionValue = ParamUtil.getRequestString(bpc.request, "switchAction");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        SearchParam searchParam = getSearchParam(bpc, true, null);
+        //set form value
+        List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+        searchParam = setFilterByDashForm(searchParam, bpc.request, actionValue);
+        //if not lead and approver, set userId
+        workGroupIds = mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
+        ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", (Serializable) workGroupIds);
+        ParamUtil.setSessionAttr(bpc.request, "dashActionValue", actionValue);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+    }
+
+    private SearchParam setFilterByDashForm(SearchParam searchParam, HttpServletRequest request, String actionValue) {
+        String application_no = ParamUtil.getRequestString(request, "application_no");
+        String application_type = ParamUtil.getRequestString(request, "application_type");
+        String application_status = ParamUtil.getRequestString(request, "application_status");
+        String hci_code = ParamUtil.getRequestString(request, "hci_code");
+        String hci_name = ParamUtil.getRequestString(request, "hci_name");
+        String hci_address = ParamUtil.getRequestString(request, "hci_address");
+        if(!StringUtil.isEmpty(application_no)){
+            searchParam.addFilter("application_no", application_no,true);
+            ParamUtil.setSessionAttr(request, "dashFilterAppNo", application_no);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashFilterAppNo", null);
+        }
+        if(!StringUtil.isEmpty(application_type)){
+            searchParam.addFilter("application_type",application_type,true);
+        }
+        if(!StringUtil.isEmpty(application_status) && !("common".equals(actionValue))) {
+            //Filter the Common Pool Task in another place
+            if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                searchParam.addFilter("application_status", application_status, true);
+                ParamUtil.setSessionAttr(request, "commonPoolStatus", null);
+            } else {//Filter the Common Pool Task
+                searchParam.addParam("commonPoolStatus", "commonPoolStatus");
+                ParamUtil.setSessionAttr(request, "commonPoolStatus", "commonPoolStatus");
+            }
+        } else {
+            ParamUtil.setSessionAttr(request, "appStatusOption", null);
+        }
+        if(!StringUtil.isEmpty(hci_code)){
+            searchParam.addFilter("hci_code",hci_code,true);
+        }
+        if(!StringUtil.isEmpty(hci_name)){
+            searchParam.addFilter("hci_name",hci_name,true);
+        }
+        if(!StringUtil.isEmpty(hci_address)){
+            searchParam.addFilter("hci_address", hci_address,true);
+        }
+        return searchParam;
     }
 
     /**
@@ -900,8 +959,7 @@ public class MohHcsaBeDashboardDelegator {
                             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
             if(appPremisesRoutingHistoryDto == null){
                 log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto is null"));
-                appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
-                        getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
+                appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
             }
             if(appPremisesRoutingHistoryDto != null){
                 log.info(StringUtil.changeForLog("appPremisesRoutingHistoryDto.getRoleId() ：" + appPremisesRoutingHistoryDto.getRoleId()));
