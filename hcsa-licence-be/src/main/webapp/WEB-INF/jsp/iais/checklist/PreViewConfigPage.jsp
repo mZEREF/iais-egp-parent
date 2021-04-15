@@ -45,13 +45,13 @@
                         <c:forEach var="sec" items="${configSessionAttr.sectionDtos}" varStatus="status">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading" id="headingPremise" role="tab">
+                                    <div class="panel-heading" id="headingPremise${status.index}" role="tab">
                                         <h4 class="panel-title"><a role="button" data-toggle="collapse"
-                                                                   href="#collapsePremise" aria-expanded="true"
+                                                                   href="#collapsePremise${status.index}" aria-expanded="true"
                                                                    aria-controls="collapsePremise">${sec.section}</a>
                                         </h4>
                                     </div>
-                                    <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel"
+                                    <div class="panel-collapse collapse in" id="collapsePremise${status.index}" role="tabpanel"
                                          aria-labelledby="headingPremise">
                                         <div class="panel-body">
                                             <table class="table">
