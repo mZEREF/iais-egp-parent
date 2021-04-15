@@ -4,6 +4,9 @@
         <div class="row">
             <div class="col-xs-12 col-md-7">
                 <div class="footer-link">
+                    <ul class="list-inline">
+                    <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS020"/>')">Report vulnerability</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="col-xs-12 col-md-5">

@@ -29,14 +29,15 @@
                         <div class="licence-renewal-content">
                             <%--content--%>
                             <div class="tab-pane" id="serviceInformationTab" role="tabpanel">
-                                <div class="multiservice">
-                                    <ul class="progress-tracker col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''}>
+                                    <ul class="progress-tracker">
                                         <li class="tracker-item active">Instructions</li>
                                         <li class="tracker-item active">Licence Review</li>
                                         <li class="tracker-item disabled">Payment</li>
                                         <li class="tracker-item disabled">Acknowledgement</li>
                                     </ul>
-                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
                                 <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
                                         <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
