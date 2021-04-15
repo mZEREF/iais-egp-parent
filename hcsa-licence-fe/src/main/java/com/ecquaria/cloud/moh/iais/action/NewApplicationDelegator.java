@@ -410,6 +410,11 @@ public class NewApplicationDelegator {
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                     if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            // rfc for rfi (choose move  a new address will join this address (if nothing this dropdown is empty))
+                            String premisesSelect = appGrpPremisesDto.getPremisesSelect();
+                            if("newPremise".equals(premisesSelect)){
+                                continue;
+                            }
                             newLicAppGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
                         }
                     }

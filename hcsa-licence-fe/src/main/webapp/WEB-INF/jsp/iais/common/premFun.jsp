@@ -387,6 +387,8 @@
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                             if(eqHciCode=='true'){
                                 $('.premisesEdit').trigger('click');
+                                $("input[name='isPartEdit']").val('0');
+                                $("input[name='chooseExistData']").val('0');
                                 return;
                             }
                         }

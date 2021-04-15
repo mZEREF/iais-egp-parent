@@ -288,10 +288,17 @@ public class GiroDeductionBeDelegator {
         Reader reader=new FileReader(FileUtils.multipartFileToFile(file));
         Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
+        List<String> list=new ArrayList<>(HEADERS.length);
         try {
             for(CSVRecord record:parse){
+                for(String v : HEADERS){
+                    String s = record.get(v);
+                    if(Arrays.asList(HEADERS).contains(s)){
+                        list.add(s);
+                    }
+                }
                 String s = record.get("Application No.");
-                if("Application No.".equals(s)){
+                if(Arrays.asList(HEADERS).contains(s)){
                     continue;
                 }
                 String payment_status = record.get("Payment Status");
@@ -299,6 +306,11 @@ public class GiroDeductionBeDelegator {
             }
         }catch (Exception e){
             bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+        }
+
+        if(!list.equals(Arrays.asList(HEADERS))){
+            bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+            return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
         map.forEach((k,v)->{
@@ -310,9 +322,22 @@ public class GiroDeductionBeDelegator {
         if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-            bpc.request.setAttribute("message", MessageUtil.getMessageDesc("GENERAL_ACK021"));
+            List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+            String general_ack021 = "{num} records were updated.";
+            if(entity!=null&&entity.isEmpty()){
+                general_ack021=general_ack021.replace("{num}","0");
+                general_ack021=general_ack021.replace("were","was");
+                general_ack021=general_ack021.replace("records","record");
+            }else if(entity!=null&&entity.size()==1){
+                general_ack021=general_ack021.replace("{num}","1");
+                general_ack021=general_ack021.replace("records","record");
+                general_ack021=general_ack021.replace("were","was");
+            }else if(entity!=null&&entity.size()>1){
+                general_ack021=general_ack021.replace("{num}",String.valueOf(entity.size()));
+
+            }
+            bpc.request.setAttribute("message", general_ack021);
         }else{
             bpc.request.setAttribute("message", "The file is empty");
         }

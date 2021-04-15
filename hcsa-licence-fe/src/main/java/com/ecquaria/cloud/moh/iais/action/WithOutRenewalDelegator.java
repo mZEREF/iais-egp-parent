@@ -1697,8 +1697,10 @@ public class WithOutRenewalDelegator {
                         appSubmissionDto.setId(null);
                         appSubmissionDto.setAppGrpNo(null);
                         appSubmissionDto.setAppGrpId(null);
-                        appSubmissionDto.setAppEditSelectDto(null);
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                    }
+                    if(appSubmissionDtos.size()==1){
+                        appSubmissionDtos.get(0).setAppEditSelectDto(null);
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
