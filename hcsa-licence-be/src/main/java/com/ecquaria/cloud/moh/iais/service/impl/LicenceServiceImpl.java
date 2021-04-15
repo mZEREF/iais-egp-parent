@@ -390,6 +390,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+        log.info("send uen email ............ {}", JsonUtil.parseToJson(eventBusLicenceGroupDtos));
         log.info(StringUtil.changeForLog("send uen email start"));
         for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
             for (SuperLicDto superLicDto:item.getSuperLicDtos()) {
@@ -440,8 +441,8 @@ public class LicenceServiceImpl implements LicenceService {
                                 emailParam.setSubject(emailSubject);
                                 emailParam.setQueryCode(licenceDto.getLicenceNo());
                                 emailParam.setReqRefNum(licenceDto.getLicenceNo());
-                                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-                                emailParam.setRefId(licenceDto.getId());
+                                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+                                emailParam.setRefId(licenseeDto.getId());
                                 notificationHelper.sendNotification(emailParam);
                                 log.info(StringUtil.changeForLog("send email end"));
 
@@ -451,8 +452,8 @@ public class LicenceServiceImpl implements LicenceService {
                                 smsParam.setTemplateContent(templateContent);
                                 smsParam.setQueryCode(licenceDto.getLicenceNo());
                                 smsParam.setReqRefNum(licenceDto.getLicenceNo());
-                                smsParam.setRefId(licenceDto.getId());
-                                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                                smsParam.setRefId(licenseeDto.getId());
+                                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
                                 notificationHelper.sendNotification(smsParam);
                                 log.info(StringUtil.changeForLog("send sms end"));
 
@@ -467,7 +468,7 @@ public class LicenceServiceImpl implements LicenceService {
                                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
                                 svcCodeList.add(hcsaServiceDto.getSvcCode());
                                 msgParam.setSvcCodeList(svcCodeList);
-                                msgParam.setRefId(licenceDto.getId());
+                                msgParam.setRefId(licenseeDto.getId());
                                 msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                                 notificationHelper.sendNotification(msgParam);
                                 log.info(StringUtil.changeForLog("send msg end"));
