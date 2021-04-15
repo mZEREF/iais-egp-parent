@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -36,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
@@ -364,12 +367,13 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
         String actionValue = ParamUtil.getRequestString(bpc.request, "switchAction");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        SearchParam searchParam = getSearchParam(bpc, true, null);
+        SearchParam searchParam = getSearchParam(bpc, true, DashComPoolQueryDto.class.getName());
         //set form value
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         searchParam = setFilterByDashForm(searchParam, bpc.request, actionValue);
         //if not lead and approver, set userId
         workGroupIds = mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
+
         ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", (Serializable) workGroupIds);
         ParamUtil.setSessionAttr(bpc.request, "dashActionValue", actionValue);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
@@ -395,13 +399,13 @@ public class MohHcsaBeDashboardDelegator {
             //Filter the Common Pool Task in another place
             if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                 searchParam.addFilter("application_status", application_status, true);
-                ParamUtil.setSessionAttr(request, "commonPoolStatus", null);
+                ParamUtil.setSessionAttr(request, "dashCommonPoolStatus", null);
             } else {//Filter the Common Pool Task
-                searchParam.addParam("commonPoolStatus", "commonPoolStatus");
-                ParamUtil.setSessionAttr(request, "commonPoolStatus", "commonPoolStatus");
+                searchParam.addParam("dashCommonPoolStatus", "dashCommonPoolStatus");
+                ParamUtil.setSessionAttr(request, "dashCommonPoolStatus", "dashCommonPoolStatus");
             }
         } else {
-            ParamUtil.setSessionAttr(request, "appStatusOption", null);
+            ParamUtil.setSessionAttr(request, "dashCommonPoolStatus", null);
         }
         if(!StringUtil.isEmpty(hci_code)){
             searchParam.addFilter("hci_code",hci_code,true);
@@ -453,6 +457,17 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardQuery(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        String dashActionValue = (String) ParamUtil.getSessionAttr(bpc.request, "dashActionValue");
+        SearchResult searchResult = null;
+        if("common".equals(dashActionValue)) {
+            QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
+            searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
+            searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
+
+        }
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){

@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -29,4 +31,8 @@ public interface MohHcsaBeDashboardService {
       * @Descripation: setPoolScopeByCurRoleId
       */
     List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String actionValue, List<String> workGroupIds);
+
+    SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam);
+
+    SearchResult getDashComPoolOtherData(SearchResult searchResult);
 }

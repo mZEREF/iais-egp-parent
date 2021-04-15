@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="intraDashboardQuery">
+    <sql key = "dashCommonTask" remarks = "Dashboard Search Common Pool Task By Application Group">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
+            (SELECT DISTINCT T4.ID, T4.GROUP_NO, T4.PMT_STATUS, T1.ID AS APP_PREM_CORRID, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE,
+             T6.COU
+             FROM APP_PREMISES_CORRELATION T1
+             JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+             WHERE 1 = 1
+             <#if workGroup_list??> and ${workGroup_list} </#if>
+             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+             and T7.USER_ID is NULL
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+</sqls>

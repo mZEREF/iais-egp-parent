@@ -83,7 +83,7 @@
                 <div class="form-group">
                   <label class="col-xs-12 col-md-4 control-label">Role</label>
                   <div class="col-xs-10 col-sm-7 col-md-6">
-                    <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
+                    <iais:select name="beDashRoleId" onchange="chooseCurRole()" options="roleIds"
                                  cssClass="roleIds" value="${curRole}"></iais:select>
                   </div>
                 </div>
@@ -149,7 +149,7 @@
             <h3>
               <span>Search Results</span>
             </h3>
-            <iais:pagination param="dashSearchParam" result="supTaskSearchResult"/>
+            <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
             <div class="table-gp">
               <table class="table application-group" style="border-collapse:collapse;">
                 <thead>
@@ -163,7 +163,7 @@
                 </tr>
                 </thead>
                 <c:choose>
-                  <c:when test="${empty supTaskSearchResult.rows}">
+                  <c:when test="${empty dashSearchResult.rows}">
                     <tr>
                       <td colspan="6">
                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -171,7 +171,7 @@
                     </tr>
                   </c:when>
                   <c:otherwise>
-                    <c:forEach var="pool" items="${supTaskSearchResult.rows}"
+                    <c:forEach var="pool" items="${dashSearchResult.rows}"
                                varStatus="status">
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
@@ -371,7 +371,6 @@
 
     function jumpToPagechangePage() {
         showWaiting();
-        $('#switchAction').val('page');
         intraDashboardSubmit('page');
     }
 

@@ -1,10 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -97,8 +100,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
                 } else {
                     //for myself
+                    if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+                        curRoleId = loginContext.getCurRoleId();
+                    } else {
+                        curRoleId = RoleConsts.USER_LEAD;
+                    }
+                    searchParam.addFilter("dashRoleId", curRoleId,true);
                     if(!("common".equals(actionValue))) {
-                        searchParam.addFilter("officerId",loginContext.getUserId(),true);
+                        searchParam.addFilter("officerId", loginContext.getUserId(), true);
                     } else {
                         Set<String> wrkGrpIds = loginContext.getWrkGrpIds();
                         if(!IaisCommonUtils.isEmpty(wrkGrpIds)) {
@@ -121,5 +130,16 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return workGroupIds;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashCommonTask")
+    public SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam) {
+        return null;
+    }
+
+    @Override
+    public SearchResult getDashComPoolOtherData(SearchResult searchResult) {
+        return null;
     }
 }
