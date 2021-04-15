@@ -197,21 +197,31 @@ public class LicenceExpiredBatchJob {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //sms
+                EmailParam smsParam = new EmailParam();
+                smsParam.setQueryCode(licenceNo);
+                smsParam.setReqRefNum(licenceNo);
+                smsParam.setRefId(licId);
+                smsParam.setTemplateContent(emailMap);
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-                emailParam.setSubject(subject);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                notificationHelper.sendNotification(emailParam);
+                smsParam.setSubject(subject);
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(smsParam);
                 //msg
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-                emailParam.setSubject(subject);
-                emailParam.setSvcCodeList(serviceCodes);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                emailParam.setRefId(licenceDto.getId());
-                notificationHelper.sendNotification(emailParam);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(licenceNo);
+                msgParam.setReqRefNum(licenceNo);
+                msgParam.setRefId(licId);
+                msgParam.setTemplateContent(emailMap);
+                msgParam.setSubject(subject);
+                msgParam.setSvcCodeList(serviceCodes);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                msgParam.setRefId(licenceDto.getId());
+                notificationHelper.sendNotification(msgParam);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -281,22 +291,32 @@ public class LicenceExpiredBatchJob {
                 //sms
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-                emailParam.setSubject(subject);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setQueryCode(licenceNo);
+                smsParam.setReqRefNum(licenceNo);
+                smsParam.setRefId(licenceDtoId);
+                smsParam.setTemplateContent(emailMap);
+                smsParam.setSubject(subject);
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(smsParam);
                 //msg
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(), map);
-                emailParam.setSubject(subject);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(licenceNo);
+                msgParam.setReqRefNum(licenceNo);
+                msgParam.setRefId(licenceDtoId);
+                msgParam.setTemplateContent(emailMap);
+                msgParam.setSubject(subject);
                 HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
                 List<String> svcCode = IaisCommonUtils.genNewArrayList();
                 svcCode.add(svcDto.getSvcCode());
-                emailParam.setSvcCodeList(svcCode);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                emailParam.setRefId(licenceDto.getId());
-                notificationHelper.sendNotification(emailParam);
+                msgParam.setSvcCodeList(svcCode);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                msgParam.setRefId(licenceDto.getId());
+                notificationHelper.sendNotification(msgParam);
                 //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

@@ -114,7 +114,8 @@ public class BackendInboxDelegator {
 
     @Autowired
     ApplicationMainClient applicationMainClient;
-
+    @Autowired
+    private BeDashboardSupportService beDashboardSupportService;
     @Value("${iais.email.sender}")
     private String mailSender;
 
@@ -524,11 +525,11 @@ public class BackendInboxDelegator {
             svcCodeList.add(svcDto.getSvcCode());
         }
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             log.info("ao1 or ao2 send application reject email");
             try {
@@ -540,238 +541,8 @@ public class BackendInboxDelegator {
         }
     }
 
-    private void rfcSendRejectNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        String applicantName = "";
-        OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-        if(orgUserDto != null){
-            applicantName = orgUserDto.getDisplayName();
-        }
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        emailMap.put("ApplicantName", applicantName);
-        emailMap.put("ApplicationType", applicationTypeShow);
-        emailMap.put("ApplicationNumber", applicationNo);
-        emailMap.put("ApplicationDate", appDate);
-        emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(applicationNo);
-        emailParam.setReqRefNum(applicationNo);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setRefId(applicationNo);
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
-        map.put("ApplicationType", applicationTypeShow);
-        map.put("ApplicationNumber", applicationNo);
-        String subject= null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
-        } catch (IOException | TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setSubject(subject);
-        //email
-        log.info(StringUtil.changeForLog("send RFC Reject email send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject email end"));
-        //msg
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
-        subject = null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        } catch (IOException |TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setSubject(subject);
-        emailParam.setSvcCodeList(svcCodeList);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(applicationNo);
-        log.info(StringUtil.changeForLog("send RFC Reject msg send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject msg end"));
-        //sms
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
-        subject = null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        } catch (IOException |TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-        log.info(StringUtil.changeForLog("send RFC Reject sms send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject sms end"));
-    }
 
-    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        log.info(StringUtil.changeForLog("send new application notification start"));
-        //send email
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        if(applicationGroupDto != null) {
-            String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            String aubmitBy = applicationGroupDto.getSubmitBy();
-            log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
 
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-
-            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(aubmitBy).getEntity();
-            if (orgUserDto != null){
-                map.put("ApplicantName", orgUserDto.getDisplayName());
-            }
-
-            map.put("applicationType", applicationTypeShow);
-            map.put("applicationNumber", applicationNo);
-            map.put("applicationDate", appDate);
-            map.put("emailAddress", systemAddressOne);
-            map.put("MOH_AGENCY_NAME", MohName);
-            try {
-//                String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
-                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                subMap.put("ApplicationType", applicationTypeShow);
-                subMap.put("ApplicationNumber", applicationNo);
-                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID,subMap);
-                String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID,subMap);
-                String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID,subMap);
-                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                EmailParam emailParam = new EmailParam();
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
-                emailParam.setTemplateContent(map);
-                emailParam.setQueryCode(applicationNo);
-                emailParam.setReqRefNum(applicationNo);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                emailParam.setRefId(applicationNo);
-                emailParam.setSubject(emailSubject);
-                //send email
-                log.info(StringUtil.changeForLog("send new application email"));
-                notificationHelper.sendNotification(emailParam);
-                //send sms
-                EmailParam smsParam = new EmailParam();
-                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
-                smsParam.setSubject(smsSubject);
-                smsParam.setQueryCode(applicationNo);
-                smsParam.setReqRefNum(applicationNo);
-                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                smsParam.setRefId(applicationNo);
-                log.info(StringUtil.changeForLog("send new application sms"));
-                notificationHelper.sendNotification(smsParam);
-                //send message
-                EmailParam messageParam = new EmailParam();
-                messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
-                messageParam.setTemplateContent(map);
-                messageParam.setQueryCode(applicationNo);
-                messageParam.setReqRefNum(applicationNo);
-                messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                messageParam.setRefId(applicationNo);
-                messageParam.setSubject(messageSubject);
-                messageParam.setSvcCodeList(svcCodeList);
-                log.info(StringUtil.changeForLog("send new application message"));
-                notificationHelper.sendNotification(messageParam);
-                log.info(StringUtil.changeForLog("send new application notification end"));
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-            }
-
-        }
-    }
-
-    private String getEmailSubject(String templateId,Map<String, Object> subMap){
-        String subject = "-";
-        if(!StringUtil.isEmpty(templateId)){
-            MsgTemplateDto emailTemplateDto = msgTemplateMainClient.getMsgTemplate(templateId).getEntity();
-            if(emailTemplateDto != null){
-                try {
-                    if(!IaisCommonUtils.isEmpty(subMap)){
-                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
-                    }else{
-                        subject = emailTemplateDto.getTemplateName();
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }
-        return subject;
-    }
-
-    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        log.info(StringUtil.changeForLog("send renewal application notification start"));
-        //send email
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        if(applicationGroupDto != null){
-            String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
-            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
-            if(licenseeDto != null){
-                String applicantName = "";
-                OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                if(orgUserDto != null){
-                    applicantName = orgUserDto.getDisplayName();
-                }
-                log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", applicationNo);
-                map.put("ApplicationDate", appDate);
-                map.put("emailAddress", systemAddressOne);
-                map.put("MOH_AGENCY_NAME", MohName);
-                try {
-                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                    subMap.put("ApplicationType", applicationTypeShow);
-                    subMap.put("ApplicationNumber", applicationNo);
-                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subMap);
-                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS,subMap);
-                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE,subMap);
-                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(emailSubject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send renewal application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
-                    smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(applicationNo);
-                    smsParam.setReqRefNum(applicationNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send renewal application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(applicationNo);
-                    messageParam.setReqRefNum(applicationNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(messageSubject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send renewal application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send renewal application notification end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
-    }
 
 
     private void inspectorAo1(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,TaskDto taskDto){

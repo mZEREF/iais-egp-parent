@@ -1214,15 +1214,26 @@ public class HcsaApplicationDelegator {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //msg
-                emailParam.setSvcCodeList(svcCodeList);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                emailParam.setRefId(applicationNo);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(applicationNo);
+                msgParam.setReqRefNum(applicationNo);
+                msgParam.setTemplateContent(emailMap);
+                msgParam.setSubject(subject);
+                msgParam.setSvcCodeList(svcCodeList);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                msgParam.setRefId(applicationNo);
+                notificationHelper.sendNotification(msgParam);
                 //sms
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setQueryCode(applicationNo);
+                smsParam.setReqRefNum(applicationNo);
+                smsParam.setRefId(applicationNo);
+                smsParam.setTemplateContent(emailMap);
+                smsParam.setSubject(subject);
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(smsParam);
             } catch (Exception e) {
                 log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
             }

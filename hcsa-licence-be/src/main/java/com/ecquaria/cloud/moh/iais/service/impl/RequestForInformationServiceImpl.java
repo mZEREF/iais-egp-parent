@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -13,30 +16,48 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,11 +72,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -88,7 +114,27 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     HcsaChklClient hcsaChklClient;
     @Autowired
     private LicEicClient licEicClient;
+    @Autowired
+    InspEmailService inspEmailService;
+    @Autowired
+    LicInspNcEmailService licInspNcEmailService;
+    @Autowired
+    EmailClient emailClient;
+    @Autowired
+    private NotificationHelper notificationHelper;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
+    @Value("${iais.system.rfc.sms.reminder.day}")
+    String reminderMax1Day;
+    @Value("${iais.system.rfc.sms.sec.reminder.day}")
+    String reminderMax2Day;
+    @Value("${iais.system.rfc.sms.third.reminder.day}")
+    String reminderMax3Day;
+    @Autowired
+    OrganizationClient organizationClient;
+    @Autowired
+    private SystemBeLicClient systemBeLicClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -515,6 +561,297 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         }
     }
 
+    @Override
+    public void reminderRfiJob() {
+        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= getAllReqForInfo();
+        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
+        ) {
+            if(rfi.getReminder()<3){
+                Calendar cal1 = Calendar.getInstance();
+                cal1.setTime(rfi.getDueDateSubmission());
+                String reminderMaxDay;
+                switch (rfi.getReminder()){
+                    case 0:reminderMaxDay=reminderMax1Day;break;
+                    case 1:reminderMaxDay=reminderMax2Day;break;
+                    case 2:reminderMaxDay=reminderMax3Day;break;
+                    default:reminderMaxDay="0";
+                }
+                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
+                if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                    try {
+                        reminder(rfi);
+                    }catch (Exception e){
+                        log.info(e.getMessage(),e);
+                    }
+                }
+            }
+        }
+        try {
+            getInfo();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+    private void sendEmail(ApplicationDto applicationDto, String time) throws Exception{
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDate());
+        String appGrpId = applicationDto.getAppGrpId();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
+        String applicantName=licenseeDto.getName();
+        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
+        emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("email", systemParamConfig.getSystemAddressOne());
+        emailMap.put("ApplicationDate", Formatter.formatDate(applicationDto.getModifiedAt()));
+        emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+        emailParam.setTemplateContent(emailMap);
+        emailParam.setQueryCode(applicationDto.getAppGrpId());
+        emailParam.setReqRefNum(applicationDto.getAppGrpId());
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationDto.getApplicationNo());
+        emailParam.setSubject(subject);
+        //email
+        notificationHelper.sendNotification(emailParam);
+        saveMailJob(applicationDto.getId(),"sendRfi"+time);
+        //sms
+        rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+        subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setTemplateContent(emailMap);
+        smsParam.setQueryCode(applicationDto.getAppGrpId());
+        smsParam.setReqRefNum(applicationDto.getAppGrpId());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setSubject(subject);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setQueryCode(applicationDto.getAppGrpId());
+        msgParam.setReqRefNum(applicationDto.getAppGrpId());
+        rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+        subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        msgParam.setSubject(subject);
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCode=IaisCommonUtils.genNewArrayList();
+        svcCode.add(svcDto.getSvcCode());
+        String url="";
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+        url=HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        emailMap.put("systemLink", url);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+        msgParam.setTemplateContent(emailMap);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setMaskParams(mapPrem);
+        msgParam.setSvcCodeList(svcCode);
+        msgParam.setRefId(applicationDto.getApplicationNo());
+        notificationHelper.sendNotification(msgParam);
+    }
+    private void reminder(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException, TemplateException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDate());
+        String licenseeId=getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
+        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
+        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+        StringBuilder stringBuilder=new StringBuilder();
+        int i=0;
+        if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
+            for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            }
+        }
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+            for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
+                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
+            }
+        }
+        String url = "https://" + systemParamConfig.getInterServerName() +
+                "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
+                "?licenseeId=" + licPremisesReqForInfoDto.getLicenseeId();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+        map.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
+        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+        String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+        mapPrem.put("licenseeId",licPremisesReqForInfoDto.getLicenseeId());
+        LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId()).getEntity();
+        try{
+
+
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+            emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
+            emailMap.put("ApplicationDate", Formatter.formatDate(licPremisesReqForInfoDto.getRequestDate()));
+            emailMap.put("email", systemParamConfig.getSystemAddressOne());
+            emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
+            emailMap.put("systemLink", loginUrl);
+            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+            emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //sms
+            rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+            subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+            EmailParam smsParam = new EmailParam();
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+            smsParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+            smsParam.setRefId(licenceViewDto.getLicenceDto().getId());
+            smsParam.setSubject(subject);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(smsParam);
+            //msg
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+            msgParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+            rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+            subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+            msgParam.setSubject(subject);
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(svcDto.getSvcCode());
+            emailMap.put("systemLink", url);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setMaskParams(mapPrem);
+            msgParam.setSvcCodeList(svcCode);
+            msgParam.setRefId(licenceViewDto.getLicenceDto().getId());
+            notificationHelper.sendNotification(msgParam);
+
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
+
+        licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
+        licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        licPremisesReqForInfoDto1.setAction("update");
+
+        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        Date now = new Date();
+        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
+        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
+        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
+        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
+        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
+        eicRequestTrackingDto.setProcessNum(1);
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
+        licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
+        updateLicEicRequestTrackingDto(eicRequestTrackingDto);
+        createFeRfiLicDto(licPremisesReqForInfoDto1);
+
+    }
+
+    private void getInfo() throws Exception{
+        List<ApplicationDto> applicationDtos = applicationClient.getRfiReminder().getEntity();
+        Date date=new Date();
+        Calendar calendar=Calendar.getInstance();
+
+        ListIterator<ApplicationDto> iterator = applicationDtos.listIterator();
+        while (iterator.hasNext()){
+            ApplicationDto applicationDto = iterator.next();
+            Date modifiedAt = applicationDto.getModifiedAt();
+            calendar.setTime(modifiedAt);
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax1Day));
+            Date firstTime = calendar.getTime();
+            calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMax2Day));
+            Date secondTime = calendar.getTime();
+            calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(reminderMax3Day));
+            Date thirdTime = calendar.getTime();
+            if(date.after(firstTime)&&date.before(secondTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax1Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax1Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }else if(date.after(secondTime)&&date.before(thirdTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax2Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax2Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }else if(date.after(thirdTime)){
+                boolean checkEmailIsSend = checkEmailIsSend(applicationDto.getId(), "sendRfi" + Integer.parseInt(reminderMax3Day));
+                if(checkEmailIsSend){
+                    try {
+                        sendEmail(applicationDto,reminderMax3Day);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean checkEmailIsSend(String applicationId,String magKey){
+        try {
+            JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(applicationId, magKey).getEntity();
+            if(auto_renew==null){
+                return true;
+            }else {
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew)+"auto_renew"));
+                return false;
+            }
+
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+            log.info(StringUtil.changeForLog("-----have error---"));
+            return false;
+        }
+    }
+    private void saveMailJob(String applicationId,String magKey){
+        JobRemindMsgTrackingDto jobRemindMsgTrackingDto=new JobRemindMsgTrackingDto();
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        jobRemindMsgTrackingDto.setMsgKey(magKey);
+        jobRemindMsgTrackingDto.setRefNo(applicationId);
+        List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos=new ArrayList<>(1);
+        jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
+        systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos).getEntity();
+    }
 
     @Override
     public LicPremisesReqForInfoDto createFeRfiLicDto(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {

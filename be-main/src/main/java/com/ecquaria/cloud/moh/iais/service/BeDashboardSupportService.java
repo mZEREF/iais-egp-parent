@@ -53,4 +53,11 @@ public interface BeDashboardSupportService {
     void setRiskScore(ApplicationDto applicationDto,String newCorrelationId);
 
     void rejectSendNotification(ApplicationDto applicationDto);
-}
+
+    void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+                                           List<String> svcCodeList);
+    void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList);
+
+    void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+                                        List<String> svcCodeList);
+    }

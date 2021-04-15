@@ -567,7 +567,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         log.info("end send email sms and msg");
     }
 
-    private void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    @Override
+    public void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
                                           List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         String applicantName = "";
@@ -613,15 +614,24 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         } catch (IOException |TemplateException e) {
             log.info(e.getMessage(),e);
         }
-        emailParam.setSubject(subject);
-        emailParam.setSvcCodeList(svcCodeList);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(applicationNo);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setQueryCode(applicationNo);
+        msgParam.setReqRefNum(applicationNo);
+        msgParam.setTemplateContent(emailMap);
+        msgParam.setSubject(subject);
+        msgParam.setSvcCodeList(svcCodeList);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(applicationNo);
         log.info(StringUtil.changeForLog("send RFC Reject msg send"));
-        notificationHelper.sendNotification(emailParam);
+        notificationHelper.sendNotification(msgParam);
         log.info(StringUtil.changeForLog("send RFC Reject msg end"));
         //sms
+        EmailParam smsParam = new EmailParam();
+        smsParam.setQueryCode(applicationNo);
+        smsParam.setReqRefNum(applicationNo);
+        smsParam.setRefId(applicationNo);
+        smsParam.setTemplateContent(emailMap);
         rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
         subject = null;
         try {
@@ -629,14 +639,15 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         } catch (IOException |TemplateException e) {
             log.info(e.getMessage(),e);
         }
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        smsParam.setSubject(subject);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         log.info(StringUtil.changeForLog("send RFC Reject sms send"));
-        notificationHelper.sendNotification(emailParam);
+        notificationHelper.sendNotification(smsParam);
         log.info(StringUtil.changeForLog("send RFC Reject sms end"));
     }
-
-    private void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    @Override
+    public void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
                                        List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send new application notification start"));
         //send email
@@ -709,8 +720,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
 
         }
     }
-
-    private void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+    @Override
+    public void renewalSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
                                         List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email

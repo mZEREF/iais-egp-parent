@@ -1717,7 +1717,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
 
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             for (AppSubmissionDto appSubmissionDto1:appSubmissionDtos){
@@ -1733,20 +1732,43 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
             rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-            emailParam.setSubject(subject);
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(appSubmissionDto.getLicenceId());
-            notificationHelper.sendNotification(emailParam);
+            EmailParam msgParam = new EmailParam();
+            if(appSubmissionDto.getAppGrpId()==null){
+                msgParam.setQueryCode(appSubmissionDto.getLicenceNo());
+                msgParam.setReqRefNum(appSubmissionDto.getLicenceNo());
+                msgParam.setRefId(appSubmissionDto.getLicenceId());
+            }else {
+                msgParam.setQueryCode(appSubmissionDto.getAppGrpNo());
+                msgParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
+                msgParam.setRefId(appSubmissionDto.getAppGrpId());
+            }
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
+            msgParam.setSubject(subject);
+            msgParam.setSvcCodeList(svcCode);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(appSubmissionDto.getLicenceId());
+            notificationHelper.sendNotification(msgParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
         //sms
         rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS).getEntity();
         subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        emailParam.setSubject(subject);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+        EmailParam smsParam = new EmailParam();
+        if(appSubmissionDto.getAppGrpId()==null){
+            smsParam.setQueryCode(appSubmissionDto.getLicenceNo());
+            smsParam.setReqRefNum(appSubmissionDto.getLicenceNo());
+            smsParam.setRefId(appSubmissionDto.getLicenceId());
+        }else {
+            smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
+            smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
+            smsParam.setRefId(appSubmissionDto.getAppGrpId());
+        }
+        smsParam.setTemplateContent(emailMap);
+        smsParam.setSubject(subject);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
         notificationHelper.sendNotification(emailParam);
     }
 

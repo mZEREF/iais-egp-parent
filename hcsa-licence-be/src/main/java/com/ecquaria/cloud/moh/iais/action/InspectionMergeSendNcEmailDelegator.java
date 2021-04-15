@@ -632,14 +632,26 @@ public class InspectionMergeSendNcEmailDelegator {
                     HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
                     svcCode.add(svcDto.getSvcCode());
                 }
-                emailParam.setSvcCodeList(svcCode);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_MSG);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
+                msgParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
+                msgParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+                msgParam.setTemplateContent(mapTemplate);
+                msgParam.setSubject(inspectionEmailTemplateDto.getSubject());
+                msgParam.setSvcCodeList(svcCode);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_MSG);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                notificationHelper.sendNotification(msgParam);
                 //sms
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
+                smsParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
+                smsParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+                smsParam.setTemplateContent(mapTemplate);
+                smsParam.setSubject(inspectionEmailTemplateDto.getSubject());
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(smsParam);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }

@@ -515,10 +515,19 @@ public class MohIntranetUserDelegator {
         }
         Map<String, String> roleMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleMap");
         Map<String, String> roleNameGroupId = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleNameGroupId");
-        Map<String, Integer> groupIds = IaisCommonUtils.genNewHashMap();
-        Map<String, Integer> groupIdsNotLead = IaisCommonUtils.genNewHashMap();
-        Map<String, Integer> groupIdsOthers = IaisCommonUtils.genNewHashMap();
-        Map<String, Integer> groupIdsOthersLead = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupInsIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupInsLeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo1Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo1LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo2Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo2LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo3Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo3LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupPsoIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupPsoLeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAsoIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAsoLeadIds = IaisCommonUtils.genNewHashMap();
+
 
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
@@ -540,7 +549,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", ao1);
                     String roleId = roleMap.get(assignRoleAo1);
                     assignRoles.add(roleId);
-                    groupIdsNotLead.put(groupId,0);
+                    groupAo1Ids.put(groupId,0);
 
                 }
             }
@@ -553,7 +562,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", ao1Leader);
                     String roleId = roleMap.get(assignRoleAo1Lead);
                     assignRoles.add(roleId);
-                    groupIds.put(groupId, 1);
+                    groupAo1LeadIds.put(groupId, 1);
                 }
             }
         }
@@ -565,7 +574,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", ins);
                     String roleId = roleMap.get(assignRoleIns);
                     assignRoles.add(roleId);
-                    groupIdsNotLead.put(groupId,0);
+                    groupInsIds.put(groupId,0);
 
                 }
             }
@@ -578,7 +587,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", insLeader);
                     String roleId = roleMap.get(assignRoleInsLead);
                     assignRoles.add(roleId);
-                    groupIds.put(groupId, 1);
+                    groupInsLeadIds.put(groupId, 1);
                 }
             }
         }
@@ -590,7 +599,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", pso);
                     String roleId = roleMap.get(assignRolePso);
                     assignRoles.add(roleId);
-                    groupIdsNotLead.put(groupId,0);
+                    groupPsoIds.put(groupId,0);
 
                 }
             }
@@ -603,7 +612,7 @@ public class MohIntranetUserDelegator {
                     String groupId = MaskUtil.unMaskValue("groupId", psoLeader);
                     String roleId = roleMap.get(assignRolePsoLead);
                     assignRoles.add(roleId);
-                    groupIds.put(groupId, 1);
+                    groupPsoLeadIds.put(groupId, 1);
                 }
             }
         }
@@ -617,10 +626,10 @@ public class MohIntranetUserDelegator {
                     String groupIdMask = roleNameGroupId.get(groupName);
                     String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
-                        groupIdsOthers.put(groupId, 0);
+                        groupAo2Ids.put(groupId, 0);
 
                     } else {
-                        groupIdsOthersLead.put(groupId, 1);
+                        groupAo2LeadIds.put(groupId, 1);
                     }
 
                 } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)) {
@@ -628,18 +637,18 @@ public class MohIntranetUserDelegator {
                     String groupIdMask = roleNameGroupId.get(groupName);
                     String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO3.equals(roleId)) {
-                        groupIdsOthers.put(groupId, 0);
+                        groupAo3Ids.put(groupId, 0);
                     } else {
-                        groupIdsOthersLead.put(groupId, 1);
+                        groupAo3LeadIds.put(groupId, 1);
                     }
                 } else if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)) {
                     String groupName = "Admin Screening officer";
                     String groupIdMask = roleNameGroupId.get(groupName);
                     String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_ASO.equals(roleId)) {
-                        groupIdsOthers.put(groupId, 0);
+                        groupAsoIds.put(groupId, 0);
                     } else {
-                        groupIdsOthersLead.put(groupId, 1);
+                        groupAsoLeadIds.put(groupId, 1);
                     }
                 }
             }
@@ -683,54 +692,133 @@ public class MohIntranetUserDelegator {
             }
             List<OrgUserRoleDto> orgUserRoleDtoList= intranetUserService.assignRole(orgUserRoleDtos);
             intranetUserService.createEgpRoles(egpUserRoleDtos);
-            System.out.println(groupIds.hashCode());
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
             for (OrgUserRoleDto role:orgUserRoleDtoList
                  ) {
-                if(RoleIds.contains(role.getRoleName())){
-                    groupIdsNotLead.forEach((groupId, isLeader) -> {
-                        UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                        userGroupCorrelationDto.setUserRoleId(role.getId());
-                        userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        userGroupCorrelationDto.setGroupId(groupId);
-                        userGroupCorrelationDto.setIsLeadForGroup(isLeader);
-                        userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                        userGroupCorrelationDtos.add(userGroupCorrelationDto);
-                    });
-                }
-                if(RoleLeadIds.contains(role.getRoleName())){
-                    groupIds.forEach((groupId, isLeader) -> {
-                        UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                        userGroupCorrelationDto.setUserRoleId(role.getId());
-                        userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        userGroupCorrelationDto.setGroupId(groupId);
-                        userGroupCorrelationDto.setIsLeadForGroup(isLeader);
-                        userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                        userGroupCorrelationDtos.add(userGroupCorrelationDto);
-                    });
-                }
-                if(RoleOtherIds.contains(role.getRoleName())){
-                    groupIdsOthers.forEach((groupId, isLeader) -> {
-                        UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                        userGroupCorrelationDto.setUserRoleId(role.getId());
-                        userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        userGroupCorrelationDto.setGroupId(groupId);
-                        userGroupCorrelationDto.setIsLeadForGroup(isLeader);
-                        userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                        userGroupCorrelationDtos.add(userGroupCorrelationDto);
-                    });
-                }
-                if(RoleOtherLeadIds.contains(role.getRoleName())){
-                    groupIdsOthersLead.forEach((groupId, isLeader) -> {
-                        UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                        userGroupCorrelationDto.setUserRoleId(role.getId());
-                        userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        userGroupCorrelationDto.setGroupId(groupId);
-                        userGroupCorrelationDto.setIsLeadForGroup(isLeader);
-                        userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                        userGroupCorrelationDtos.add(userGroupCorrelationDto);
-                    });
+                switch (role.getRoleName()){
+                    case RoleConsts.USER_ROLE_AO1:
+                        groupAo1Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });
+                        break;
+                    case RoleConsts.USER_ROLE_AO1_LEAD:
+                        groupAo1LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_INSPECTIOR:
+                        groupInsIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_INSPECTION_LEAD:
+                        groupInsLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO2:
+                        groupAo2Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO2_LEAD:
+                        groupAo2LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO3:
+                        groupAo3Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO3_LEAD:
+                        groupAo3LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_ASO:
+                        groupAsoIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_ASO_LEAD:
+                        groupAsoLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_PSO:
+                        groupPsoIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_PSO_LEAD:
+                        groupPsoLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    default:
                 }
             }
 
