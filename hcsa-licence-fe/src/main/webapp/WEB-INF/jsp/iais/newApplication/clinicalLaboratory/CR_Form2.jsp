@@ -80,6 +80,11 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span>
+                    </td>
+                </tr>
                 <tr height="1">
                     <td class="first last" style="width: 100%;">
                         <div id="control--runtime--1" class="section control  container-s-1">
@@ -619,6 +624,9 @@
     </div>
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
+<div style="display: none;">
+    <select id="nice_select_effect"></select>
+</div>
 <script>
     var init;
     $(document).ready(function () {

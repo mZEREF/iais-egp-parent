@@ -2875,7 +2875,19 @@ public class NewApplicationHelper {
             }
         }
     }
-    
+
+    public static Map<String,String> psnMandatoryValidate(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList, String psnType, Map<String,String> errMap,int psnLength,String errName,String psnName){
+        int mandatoryCount = getManDatoryCountByPsnType(hcsaSvcPersonnelList,psnType);
+        if(psnLength < mandatoryCount){
+            String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",psnName);
+            mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}",String.valueOf(mandatoryCount));
+            errMap.put(errName,mandatoryErrMsg);
+        }
+        return errMap;
+    }
+
+
     //=============================================================================
     //private method
     //=============================================================================

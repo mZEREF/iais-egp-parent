@@ -894,6 +894,15 @@ public class ClinicalLaboratoryDelegator {
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                 Map<String, String> map = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
+                //validate mandatory count
+                int psnLength = 0;
+                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList)){
+                    psnLength = appSvcCgoDtoList.size();
+                }
+                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                if(!isRfi){
+                    map = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, map, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
+                }
                 errList.putAll(map);
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1057,7 +1066,7 @@ public class ClinicalLaboratoryDelegator {
                 doValidateDisciplineAllocation(errorMap, daList, bpc.request);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
+                    //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     appSubmissionDto.setClickEditPage(clickEditPages);
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                     appEditSelectDto.setServiceEdit(true);
@@ -1152,6 +1161,27 @@ public class ClinicalLaboratoryDelegator {
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
                 map = NewApplicationHelper.doValidatePo(poDto, licPersonMap,svcCode);
+                //validate mandatory count
+                int poLength = 0;
+                int dpoLength = 0;
+                if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtoList)){
+                    for(AppSvcPrincipalOfficersDto psnDto:appSvcPrincipalOfficersDtoList){
+                        String psnType = psnDto.getPsnType();
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
+                            poLength++;
+                        }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+                            dpoLength++;
+                        }
+                    }
+                }
+                List<HcsaSvcPersonnelDto> poPsnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                List<HcsaSvcPersonnelDto> dpoPsnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                if(!isRfi){
+                    map = NewApplicationHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poLength, "poPsnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER);
+                    if(dpoLength > 0){
+                        map = NewApplicationHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map, dpoLength, "dpoPsnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
+                    }
+                }
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
 //                    if (isGetDataFromPagePo) {
@@ -1288,7 +1318,7 @@ public class ClinicalLaboratoryDelegator {
             }
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
+                //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                 appEditSelectDto.setServiceEdit(true);
@@ -1492,6 +1522,16 @@ public class ClinicalLaboratoryDelegator {
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             if (!StringUtil.isEmpty(nextStep)) {
                 doValidatetionServicePerson(errorMap, appSvcPersonnelDtos, currentSvcCod);
+                //validate mandatory count
+                int psnLength = 0;
+                if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+                    psnLength = appSvcPersonnelDtos.size();
+                }
+                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+                if(!isRfi){
+                    errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
+                }
+
                 for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
                     AppSvcPersonnelDto appSvcPersonnelDto = appSvcPersonnelDtos.get(i);
                     String profRegNo = appSvcPersonnelDto.getProfRegNo();
@@ -1531,7 +1571,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
+                    //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
                     appSubmissionDto.setClickEditPage(clickEditPages);
                 }
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -1650,6 +1690,16 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
+                //validate mandatory count
+                int psnLength = 0;
+                if(!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)){
+                    psnLength = appSvcMedAlertPersonList.size();
+                }
+                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                if(!isRfi){
+                    errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                }
+
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errorMap.isEmpty() && allChecked.isEmpty()) {
@@ -1834,6 +1884,9 @@ public class ClinicalLaboratoryDelegator {
     }*/
 
     private static void doValidatetionServicePerson(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String svcCode) {
+        if(IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+            return;
+        }
         String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
         String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
         String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field");
@@ -2982,17 +3035,6 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
     }
 
-    private AppSubmissionDto setPrincipalOfficersClickEditPage(AppSubmissionDto appSubmissionDto, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
-        Set<String> clickEditPages = getRfcClickEditPageSet(appSubmissionDto);
-        if (isGetDataFromPagePo) {
-            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
-        }
-        if (isGetDataFromPageDpo) {
-            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
-        }
-        appSubmissionDto.setClickEditPage(clickEditPages);
-        return appSubmissionDto;
-    }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson star ..."));

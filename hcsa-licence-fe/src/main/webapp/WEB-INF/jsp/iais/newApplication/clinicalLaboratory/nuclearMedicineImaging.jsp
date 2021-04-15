@@ -32,6 +32,9 @@
                   </c:when>
                 </c:choose>
               </div>
+              <p>
+                <span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span>
+              </p>
               <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
               <div class="personnel-edit">
                 <c:if test="${AppSubmissionDto.needEditController }">
@@ -41,7 +44,7 @@
                     </c:if>
                   </c:forEach>
                   <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
+                    <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     </c:when>
                     <c:otherwise>

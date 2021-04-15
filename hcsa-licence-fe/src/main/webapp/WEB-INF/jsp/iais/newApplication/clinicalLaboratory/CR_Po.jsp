@@ -16,6 +16,7 @@
               <div class="" style="height: auto">
                 <h2>Principal Officer</h2>
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
+                <p><span class="error-msg" name="iaisErrorMsg" id="error_poPsnMandatory"></span></p>
                 <div class="row"></div>
               </div>
               <div class="po-content">
@@ -26,7 +27,7 @@
                     </c:if>
                   </c:forEach>
                   <c:choose>
-                    <c:when test="${!isClickEdit}">
+                    <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     </c:when>
                     <c:otherwise>
@@ -281,7 +282,7 @@
                   </c:if>
                 </c:forEach>
                 <c:choose>
-                  <c:when test="${!isClickEditDpo}">
+                  <c:when test="${'true' != isClickEditDpo && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
                     <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
                   </c:when>
                   <c:otherwise>
@@ -341,6 +342,7 @@
           <div class="panel-body">
             <div class="panel-main-content">
               <h2>Nominee</h2>
+              <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
               <div class="dpo-content">
               </div>
               <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />

@@ -10,6 +10,7 @@
         <p style="font-weight: 600;font-size: 2.2rem">MedAlert Person</p>
         <p>MedAlert Person is the person appointed to receive the medical alert notification and circulars issued by MOH.</p>
         <hr>
+        <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>
         <div class="row">
             <c:if test="${AppSubmissionDto.needEditController }">
                 <c:set var="isClickEdit" value="false"/>
@@ -19,7 +20,7 @@
                     </c:if>
                 </c:forEach>
                 <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
+                    <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
                         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     </c:when>
                     <c:otherwise>
