@@ -75,22 +75,7 @@ public class MohIntranetUserDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
-    private static final Set<String> RoleIds = ImmutableSet.of(
-            RoleConsts.USER_ROLE_AO1,
-            RoleConsts.USER_ROLE_INSPECTIOR,
-            RoleConsts.USER_ROLE_PSO);
-    private static final Set<String> RoleLeadIds = ImmutableSet.of(
-            RoleConsts.USER_ROLE_AO1_LEAD,
-            RoleConsts.USER_ROLE_INSPECTION_LEAD,
-            RoleConsts.USER_ROLE_PSO_LEAD);
-    private static final Set<String> RoleOtherIds = ImmutableSet.of(
-            RoleConsts.USER_ROLE_AO2,
-            RoleConsts.USER_ROLE_AO3,
-            RoleConsts.USER_ROLE_ASO);
-    private static final Set<String> RoleOtherLeadIds = ImmutableSet.of(
-            RoleConsts.USER_ROLE_AO2_LEAD,
-            RoleConsts.USER_ROLE_AO3_LEAD,
-            RoleConsts.USER_ROLE_ASO_LEAD);
+
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
         HttpServletRequest request = bpc.request;
