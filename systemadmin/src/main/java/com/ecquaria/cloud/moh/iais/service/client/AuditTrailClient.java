@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author: yichen
  * @date time:2/5/2020 3:57 PM
@@ -28,4 +30,8 @@ public interface AuditTrailClient {
 
 	@GetMapping(path = "/iais-audit-trail/audit-trail/{auditId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<AuditTrailDto> getAuditTrailById(@PathVariable("auditId") String auditId);
+
+	@GetMapping(path = "/iais-audit-trail/auditTrail-last-action-user",produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<List<String>> getLastLoginInfoAllUserBe();
+
 }
