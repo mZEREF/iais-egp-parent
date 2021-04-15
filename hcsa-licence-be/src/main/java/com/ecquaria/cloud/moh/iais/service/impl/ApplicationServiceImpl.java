@@ -947,15 +947,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         emailParam.setSubject(subject);
         //email
         notificationHelper.sendNotification(emailParam);
-        //msg
-//        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-//        List<String> svcCode=IaisCommonUtils.genNewArrayList();
-//        svcCode.add(svcDto.getSvcCode());
-//        emailParam.setSvcCodeList(svcCode);
-//        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
-//        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-//        emailParam.setRefId(applicationDto.getApplicationNo());
-//        notificationHelper.sendNotification(emailParam);
+
         //sms
         rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS).getEntity();
         subject = null;
@@ -964,10 +956,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         } catch (TemplateException e) {
             log.info(e.getMessage(), e);
         }
-        emailParam.setSubject(subject);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-        notificationHelper.sendNotification(emailParam);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setTemplateContent(emailMap);
+        smsParam.setSubject(subject);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        notificationHelper.sendNotification(smsParam);
     }
 
     @Override

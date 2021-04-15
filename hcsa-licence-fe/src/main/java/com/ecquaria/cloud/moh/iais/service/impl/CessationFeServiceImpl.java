@@ -402,22 +402,33 @@ public class CessationFeServiceImpl implements CessationFeService {
                     log.info(StringUtil.changeForLog("==================== email ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setQueryCode(baseAppNo);
+                    msgParam.setReqRefNum(baseAppNo);
+                    msgParam.setRefId(baseAppNo);
+                    msgParam.setTemplateContent(emailMap);
+
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setSvcCodeList(serviceCodes);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    msgParam.setSubject(subject);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     log.info(StringUtil.changeForLog("==================== notification ===============>>>>>>>"));
-                    notificationHelper.sendNotification(emailParam);
+                    notificationHelper.sendNotification(msgParam);
                     //sms
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setQueryCode(baseAppNo);
+                    smsParam.setReqRefNum(baseAppNo);
+                    smsParam.setRefId(baseAppNo);
+                    smsParam.setTemplateContent(emailMap);
+                    smsParam.setSubject(subject);
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     log.info(StringUtil.changeForLog("==================== sms ===============>>>>>>>"));
-                    notificationHelper.sendNotification(emailParam);
+                    notificationHelper.sendNotification(smsParam);
 
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
@@ -459,20 +470,30 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setQueryCode(baseAppNo);
+                    msgParam.setReqRefNum(baseAppNo);
+                    msgParam.setRefId(baseAppNo);
+                    msgParam.setTemplateContent(emailMap);
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setSvcCodeList(serviceCodes);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    notificationHelper.sendNotification(emailParam);
+                    msgParam.setSubject(subject);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(msgParam);
                     //sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateContent(emailMap);
+                    smsParam.setQueryCode(baseAppNo);
+                    smsParam.setReqRefNum(baseAppNo);
+                    smsParam.setRefId(baseAppNo);
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(emailParam);
+                    smsParam.setSubject(subject);
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(smsParam);
                 }
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));

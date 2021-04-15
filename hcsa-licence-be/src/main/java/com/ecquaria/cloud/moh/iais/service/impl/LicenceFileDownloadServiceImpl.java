@@ -1142,14 +1142,19 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             } catch (IOException |TemplateException e) {
                                 log.info(e.getMessage(),e);
                             }
-                            emailParam.setSubject(subject);
+                            EmailParam smsParam = new EmailParam();
+                            smsParam.setQueryCode(application.getApplicationNo());
+                            smsParam.setReqRefNum(application.getApplicationNo());
+                            smsParam.setRefId(application.getApplicationNo());
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setSubject(subject);
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
                             emailMap.put("ApplicationNumber", application.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                             log.info("start send sms start");
-                            notificationHelper.sendNotification(emailParam);
+                            notificationHelper.sendNotification(smsParam);
                             log.info("start send sms end");
                         }
 

@@ -286,9 +286,9 @@ public class HcsaApplicationDelegator {
     private void dealWithDoc(ApplicationViewDto applicationViewDto){
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
         if(appSupDocDtoList!=null){
-           for(AppSupDocDto v : appSupDocDtoList){
+            for(AppSupDocDto v : appSupDocDtoList){
 
-           }
+            }
         }
     }
     /**
@@ -1214,15 +1214,26 @@ public class HcsaApplicationDelegator {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //msg
-                emailParam.setSvcCodeList(svcCodeList);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                emailParam.setRefId(applicationNo);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(applicationNo);
+                msgParam.setReqRefNum(applicationNo);
+                msgParam.setTemplateContent(emailMap);
+                msgParam.setSubject(subject);
+                msgParam.setSvcCodeList(svcCodeList);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                msgParam.setRefId(applicationNo);
+                notificationHelper.sendNotification(msgParam);
                 //sms
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setQueryCode(applicationNo);
+                smsParam.setReqRefNum(applicationNo);
+                smsParam.setRefId(applicationNo);
+                smsParam.setTemplateContent(emailMap);
+                smsParam.setSubject(subject);
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(smsParam);
             } catch (Exception e) {
                 log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
             }
@@ -1718,8 +1729,7 @@ public class HcsaApplicationDelegator {
     }
 
     private void checkRecommendationDropdownValue(Integer recomInNumber, String chronoUnit, String recomDecision, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
-        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
-        if(!isRequestForChange){
+        if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             if (StringUtil.isEmpty(recomInNumber)) {
                 ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "");
                 return;
@@ -1754,7 +1764,7 @@ public class HcsaApplicationDelegator {
                 String recommTime = count + " " + dateType;
                 if (recommTime.equals(recomInNumber + " " + chronoUnit)) {
                     ParamUtil.setRequestAttr(bpc.request, "recommendationStr", recommTime);
-                    if (isRequestForChange) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
                         ParamUtil.setRequestAttr(bpc.request, "recommendationStr", "approve");
                     }
                     flag = false;
@@ -2287,7 +2297,7 @@ public class HcsaApplicationDelegator {
         if (withdrawApplicationDto != null) {
             /**
              * Send Withdrawal Application Email
-       14      */
+             14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
                 boolean isCharity = false;
                 String applicantName = "";
@@ -2423,7 +2433,7 @@ public class HcsaApplicationDelegator {
             ) {
                 ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
                 ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
                     saveReturnFeeDtosStripe.add(appreturn);
                 }
             }
@@ -2793,7 +2803,7 @@ public class HcsaApplicationDelegator {
                     (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_PSO.equals(roleId))
-                    ) {
+            ) {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
             subStageId = HcsaConsts.ROUTING_STAGE_POT;

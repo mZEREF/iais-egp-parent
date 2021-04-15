@@ -339,23 +339,33 @@ public class ClientReschedulingDelegator {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_MSG);
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(applicationDto.getApplicationNo());
+            msgParam.setReqRefNum(applicationDto.getApplicationNo());
+            msgParam.setRefId(applicationDto.getApplicationNo());
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_MSG);
 
             HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(applicationDto.getApplicationNo());
-            notificationHelper.sendNotification(emailParam);
+            msgParam.setSvcCodeList(svcCode);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(applicationDto.getApplicationNo());
+            notificationHelper.sendNotification(msgParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
         //sms
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        EmailParam smsParam = new EmailParam();
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
+        smsParam.setReqRefNum(applicationDto.getApplicationNo());
+        smsParam.setRefId(applicationDto.getApplicationNo());
+        smsParam.setTemplateContent(emailMap);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_SMS);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
 
-        notificationHelper.sendNotification(emailParam);
+        notificationHelper.sendNotification(smsParam);
     }
 
     public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) throws ParseException {
