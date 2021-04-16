@@ -1315,7 +1315,8 @@ public class LicenceViewServiceDelegator {
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
         });
-
+        sortPremiseDoc(multipleGrpPrimaryDoc);
+        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -1335,6 +1336,8 @@ public class LicenceViewServiceDelegator {
         log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
         multipleSvcDoc = translateForShow(multipleSvcDoc);
         oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc);
+        sortSvcDoc(multipleSvcDoc);
+        sortSvcDoc(oldMultipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
