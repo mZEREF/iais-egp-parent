@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
@@ -74,7 +75,7 @@ public class RetriggerGiroPaymentDelegator {
     private static final String SWITCH = "switch";
     private static final String SWITCH_VALUE_PRE_ACK = "preack";
     private static final String SWITCH_VALUE_PRE_PAYMENT = "prepayment";
-    private static final String ISVALID_VALUE_TO_PAYMENT = "topayment";
+    private static final String ISVALID_VALUE_PRE_PAYMENT = "prepayment";
     private static final String ISVALID_VALUE_TO_BANK = "tobank";
 
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
@@ -85,10 +86,8 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
 
-        String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
         log.debug(StringUtil.changeForLog("appGrpNo:" +appGrpNo));
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //init data
         String switch2 = "topreview";
         AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppGrpNo(appGrpNo);
@@ -101,6 +100,14 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
             return;
+        }
+        String appType = appSubmissionDto.getAppType();
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
         }
         //appSubmissionDto.setRfiMsgId(msgId);
         //set type for page display
@@ -118,7 +125,6 @@ public class RetriggerGiroPaymentDelegator {
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
         }
-        String appType = appSubmissionDto.getAppType();
         if(!StringUtil.isEmpty(appType)){
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
@@ -273,6 +279,7 @@ public class RetriggerGiroPaymentDelegator {
             }
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,appSubmissionDto.getPaymentMethod());
         }
 
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
@@ -307,7 +314,7 @@ public class RetriggerGiroPaymentDelegator {
             }
         }
         if(!"next".equals(action) || !errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_TO_PAYMENT);
+            ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_PRE_PAYMENT);
             return;
         }
 
@@ -408,7 +415,7 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the doPayment end ...."));
     }
 
-    public void preAck(BaseProcessClass bpc) {
+    public void preAck(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the preAck start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
         String appType = appSubmissionDto.getAppType();
@@ -422,12 +429,19 @@ public class RetriggerGiroPaymentDelegator {
 
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
             List<AppSubmissionDto> appSubmissionDtoList = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
+            List<AppSubmissionDto> oneSubmsonDtoList = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appSubmissionDtoList)){
+                AppSubmissionDto targetDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDtoList.get(0));
+                targetDto.setPaymentMethod(paymentMethod);
+                double totalAmount = 0;
                 for(AppSubmissionDto appSubmissionDto1:appSubmissionDtoList){
-                    appSubmissionDto1.setPaymentMethod(paymentMethod);
+                    totalAmount = totalAmount + 100;
                 }
+                targetDto.setAmount(totalAmount);
+                targetDto.setAmountStr(Formatter.formatterMoney(totalAmount));
+                oneSubmsonDtoList.add(targetDto);
             }
-            bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",appSubmissionDtoList);
+            bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",oneSubmsonDtoList);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
 
         }

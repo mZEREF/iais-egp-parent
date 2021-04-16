@@ -52,7 +52,7 @@
                 </div>
                 <c:if test="${empty AckMessage}">
                     <div class="col-xs-11 col-md-11">
-                        <a class="btn btn-primary  col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
+                        <a class="btn btn-primary  col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to <br>Dashboard</a>
                     </div>
                 </c:if>
             </div>
