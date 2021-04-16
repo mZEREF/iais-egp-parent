@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -1315,8 +1316,6 @@ public class LicenceViewServiceDelegator {
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
         });
-        sortPremiseDoc(multipleGrpPrimaryDoc);
-        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -1336,8 +1335,6 @@ public class LicenceViewServiceDelegator {
         log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
         multipleSvcDoc = translateForShow(multipleSvcDoc);
         oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc);
-        sortSvcDoc(multipleSvcDoc);
-        sortSvcDoc(oldMultipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -1978,7 +1975,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private static void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos){
-        Set<Integer> set=new HashSet<>();
+        Set<Integer> set=new TreeSet<>();
         appGrpPrimaryDocDtos.forEach((v)->{
             set.add(v.getSeqNum());
         });
@@ -2054,7 +2051,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private void serviceDoc(List<AppSvcDocDto> appSvcDocDtos,  List<AppSvcDocDto> oldAppSvcDocDtos){
-        Set<Integer> set=new HashSet<>();
+        Set<Integer> set=new TreeSet<>();
         appSvcDocDtos.forEach((v)->{
             set.add(v.getSeqNum());
             String upFileName = v.getUpFileName();
