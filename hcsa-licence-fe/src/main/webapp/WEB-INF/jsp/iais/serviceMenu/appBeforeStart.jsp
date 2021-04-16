@@ -79,6 +79,9 @@
         <h3>Before You Begin</h3>
         <ul class="">
           <li>
+            <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents needed during the licence application.</p>
+          </li>
+          <li>
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
           </li>
           <li>
