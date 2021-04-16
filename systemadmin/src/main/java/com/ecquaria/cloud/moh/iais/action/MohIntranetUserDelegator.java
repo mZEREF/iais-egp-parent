@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
-import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -140,6 +139,8 @@ public class MohIntranetUserDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
+        List<SelectOption> statusOptions = getStatusOption();
+        ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
     }
 
     public void prepareCreate(BaseProcessClass bpc) {
@@ -225,10 +226,10 @@ public class MohIntranetUserDelegator {
                 return;
             }
         }
+        List<SelectOption> statusOptions = getStatusOption();
+        ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
-            List<SelectOption> statusOptions = getStatusOption();
-            ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
