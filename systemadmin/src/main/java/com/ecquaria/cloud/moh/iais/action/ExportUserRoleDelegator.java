@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -24,6 +24,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,39 +79,14 @@ public class ExportUserRoleDelegator {
                 if(!IaisCommonUtils.isEmpty(userGroupsByUserId)){
                     for(UserGroupCorrelationDto dto : userGroupsByUserId){
                         String groupId = dto.getGroupId();
-                        String groupName = intranetUserService.getWrkGrpById(groupId);
                         Element userGroup = userGroups.addElement("user-group");
                         Element userId = userGroup.addElement("userId");
                         userId.setText(orgUserDto.getUserId());
                         Element roleId = userGroup.addElement("roleId");
+                        OrgUserRoleDto roleDto=intranetUserService.getOrgUserRoleDtoById(Collections.singletonList(dto.getUserRoleId())).get(0);
+                        roleId.setText(roleDto.getRoleName());
                         Element workingGroupId = userGroup.addElement("workingGroupId");
                         workingGroupId.setText(groupId);
-                        Integer isLeadForGroup = dto.getIsLeadForGroup();
-                        if(groupName.equals("Admin Screening officer")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_ASO);
-                        }else if(groupName.equals("Admin Screening officer")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_ROLE_ASO_LEAD);
-                        }else if(groupName.equals("Professional")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_PSO);
-                        }else if(groupName.equals("Professional")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_ROLE_PSO_LEAD);
-                        }else if(groupName.equals("Inspection")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_INSPECTIOR);
-                        }else if(groupName.equals("Inspection")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_MASTER_INSPECTION_LEAD);
-                        }else if(groupName.equals("Level 1 Approval")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_AO1);
-                        }else if(groupName.equals("Level 1 Approval")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_ROLE_AO1_LEAD);
-                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_AO2);
-                        }else if(groupName.equals("Level 2 Approval")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_ROLE_AO2_LEAD);
-                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==0){
-                            roleId.setText(RoleConsts.USER_ROLE_AO3);
-                        }else if(groupName.equals("Level 3 Approval")&&isLeadForGroup==1){
-                            roleId.setText(RoleConsts.USER_ROLE_AO3_LEAD);
-                        }
                     }
                 }
             }
