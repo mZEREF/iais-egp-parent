@@ -749,11 +749,9 @@ text-decoration-color: white !important;
   text-align: left;
   vertical-align: middle;
   border-radius: 50px;
-  font-size: 90%;
+  font-size: 100%;
   background-image: url("../img/signs.png");
   background-repeat: no-repeat;
   background-position: 15px 50%;
   background-color: #e4fbdb;
-  word-wrap: ;
-  white-space: nowrap;
 }
