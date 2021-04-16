@@ -68,4 +68,5 @@ public interface ServiceConfigService {
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
     List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList);
     List<HcsaServiceDto> getActiveHcsaSvcByNames(List<String> names);
+    String getGiroAccountByGroupNo(String groupNo);
 }

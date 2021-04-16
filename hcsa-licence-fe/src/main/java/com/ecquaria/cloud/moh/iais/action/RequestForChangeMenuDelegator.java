@@ -1398,6 +1398,13 @@ public class RequestForChangeMenuDelegator {
             if(appSubmissionDtos.size() > 1){
                 appSubmissionDtos.get(0).setTotalAmountGroup(a);
             }
+            try {
+                if (appSubmissionDtos != null && appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                }
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
             String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
