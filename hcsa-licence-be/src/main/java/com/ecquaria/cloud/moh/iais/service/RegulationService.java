@@ -25,4 +25,6 @@ public interface RegulationService {
     IaisApiResult<HcsaChklSvcRegulationDto> updateRegulation(HcsaChklSvcRegulationDto regulationDto);
 
     List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
+
+    List<HcsaChklSvcRegulationDto> listRegulationByIds(List<String> ids);
 }

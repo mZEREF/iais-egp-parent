@@ -56,7 +56,7 @@
           <iais:field value="Risk Level" required="true"></iais:field>
           <div class="col-xs-5 col-md-3">
             <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
-                         firstOption="Select Risk Level" value="${itemRequestAttr.riskLevel}"></iais:select>
+                         firstOption="Please Select" value="${itemRequestAttr.riskLevel}"></iais:select>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
           <iais:field value="Answer Type" required="true"></iais:field>
           <div class="col-xs-5 col-md-3">
             <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE"
-                         firstOption="Select Answer Type" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
+                         firstOption="Please Select" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
           </div>
         </div>
       </div>

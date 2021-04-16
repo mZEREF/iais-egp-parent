@@ -11,7 +11,7 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
-<form class="form-horizontal" method="post" id="InstructionsForm" action=<%=process.runtime.continueURL()%>>
+<form class="form-horizontal table-responsive" method="post" id="InstructionsForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <div class="main-content">
             <div class="container">
@@ -85,9 +85,20 @@
             </div>
         </div>
 </form>
+<iais:confirm msg="GENERAL_ERR0043"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 <script>
     $('#proceed').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('doInstructions');
         $('#InstructionsForm').submit();
     });
+    function tagConfirmCallbacksupportReport(){
+        $('#supportReport').modal('hide');
+    }
+    $(document).ready(function () {
+        if('${isSingle}' == 'N'){
+            $('#supportReport').modal('show');
+        }
+    });
+
 </script>

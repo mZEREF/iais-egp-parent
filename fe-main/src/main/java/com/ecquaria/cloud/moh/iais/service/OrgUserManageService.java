@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -54,7 +53,7 @@ public interface OrgUserManageService {
 
     List<LicenseeKeyApptPersonDto> getPersonById(String id);
 
-    IaisApiResult<Void> checkIssueUen(String idNo, String idType);
+    Boolean validateSingpassAccount(String idNo, String idType);
 
     List<LicenseeDto> getLicenseeNoUen();
 
@@ -65,4 +64,8 @@ public interface OrgUserManageService {
     Boolean isNotExistUserAccount(String orgId);
 
     Boolean isKeyAppointment(String uen);
+
+    void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit);
+
+    void receiveEntityFormEDH(FeUserDto user);
 }

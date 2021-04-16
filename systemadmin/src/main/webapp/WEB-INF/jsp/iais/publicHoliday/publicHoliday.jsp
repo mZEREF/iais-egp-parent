@@ -13,6 +13,15 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<style type="text/css">
+    .btn.btn-md {
+        font-size: .986rem;
+        font-weight: 600;
+        padding: 10px 25px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <div class="main-content">
     <form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -71,15 +80,15 @@
                         <div class="table-gp">
                             <table class="table">
                                 <thead>
-                                <tr align="center">
-                                    <iais:sortableHeader needSort="false" field="" value=" "/>
-                                    <iais:sortableHeader needSort="false" field="" value="S/N"/>
-                                    <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
-                                    <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
-                                    <iais:sortableHeader needSort="true"  field="DESCRIPTION" value="Holiday Description"/>
-                                    <iais:sortableHeader needSort="true" field="status" value="Status"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Action"/>
-                                </tr>
+                                    <tr align="center">
+                                        <iais:sortableHeader needSort="false" field="" value=" "/>
+                                        <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                        <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
+                                        <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
+                                        <iais:sortableHeader needSort="true"  field="PH_DESC" value="Holiday Description"/>
+                                        <iais:sortableHeader needSort="true" field="status" value="Status"/>
+                                        <iais:sortableHeader needSort="false" field="" value="Action"/>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <c:choose>
@@ -99,7 +108,7 @@
                                                     <td><c:out value="${item.nonWorking}"/></td>
                                                     <td><iais:code code="${item.phCode}"></iais:code></td>
                                                     <td><iais:code code="${item.status}"></iais:code></td>
-                                                    <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
+                                                    <td><a class="editHoliday btn btn-secondary btn-md" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:otherwise>
@@ -119,7 +128,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <p style="margin-left: 100px"><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
+                            <p style="margin-left: 100px">
+                                <span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span>
+                                <c:if test="${not empty duplicateDateStrList}">
+                                    <c:forEach var="duplicateDateStr" items="${duplicateDateStrList}">
+                                        <br><span class="error-msg"><c:out value="${duplicateDateStr}"></c:out></span>
+                                    </c:forEach>
+                                </c:if>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -178,6 +194,7 @@
         $("#phCode option:first").prop("selected", 'selected');
         $("#year option:first").prop("selected", 'selected');
         $(".searchdiv .current").text("Please Select");
+        $(".error-msg").text("");
 
         $.ajax({
             data: {remove: 1},

@@ -73,7 +73,7 @@
                                     </div>
                                   </div>
                                   <div class="col-sm-10">
-                                    <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})</label>
+                                    <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo} (<iais:code code="${currentCgo.idType}"/>)</label>
                                   </div>
                                   <div class="col-sm-2" style="margin-top:3%;">
                                     <div class="edit-content">
@@ -161,7 +161,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-3" id="idType${suffix}">
                                       <div class="">
-                                        <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                       </div>
                                     </div>

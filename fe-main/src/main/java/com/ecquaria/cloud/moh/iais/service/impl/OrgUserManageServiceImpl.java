@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -27,17 +26,19 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.service.client.EDHClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ import sop.rbac.user.UserIdentifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -64,6 +66,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     private FEMainRbacClient feMainRbacClient;
 
     @Autowired
+    private LicenseeClient licenseeClient;
+
+    @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
 
     @Value("${spring.application.name}")
@@ -71,12 +76,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Value("${iais.current.domain}")
     private String currentDomain;
-
-    @Value("${moh.halp.acra.enable}")
-    private String enableAcra;
-
-    @Autowired
-    private EDHClient edhClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -119,7 +118,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
             OrganizationDto postCreate = result.getEntity();
-            syncAccountInformationToBackend(postCreate);
             return postCreate.getFeUserDto();
         }else {
             return null;
@@ -154,10 +152,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             log.error(StringUtil.changeForLog("encounter failure when sync user account to be"), e);
         }
 
-        //create egp user
-        FeUserDto postCreateUser = postCreate.getFeUserDto();
-        createClientUser(postCreateUser);
 
+        FeUserDto postCreateUser = postCreate.getFeUserDto();
         return postCreateUser;
     }
 
@@ -180,14 +176,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             // sonar check
             return null;
         }
-        postCreate.getFeUserDto().setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
-        FeUserDto dto = syncAccountInformationToBackend(postCreate);
-        //if enable acra, licensee info create by this method
-        if (!StringUtil.isEmpty(postCreate.getUenNo()) && "Y".equals(enableAcra)){
-            eicGatewayFeMainClient.getUen(postCreate.getUenNo());
-        }
 
-        return dto;
+        return postCreate.getFeUserDto();
     }
 
     @Override
@@ -387,6 +377,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
           feUserDto.setEmail(myInfoDto.getEmail());
           feUserDto.setMobileNo(myInfoDto.getMobileNo());
           feUserDto.setDisplayName(myInfoDto.getUserName());
+          licenseeDto.setName(myInfoDto.getUserName());
           licenseeDto.setFloorNo(myInfoDto.getFloor());
           licenseeDto.setPostalCode(myInfoDto.getPostalCode());
           licenseeDto.setUnitNo(myInfoDto.getUnitNo());
@@ -409,8 +400,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setOrgType(organizationById.getOrgType());
         organizationDto.setStatus(organizationById.getStatus());
         organizationDto.setUenNo(organizationById.getUenNo());
+        if (amendLicensee){
+            organizationById.setLicenseeDto(licenseeDto);
+        }
         organizationDto.setId(organizationById.getId());
-        organizationDto.setLicenseeDto(licenseeDto);
         updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee
@@ -464,8 +457,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public IaisApiResult<Void> checkIssueUen(String idNo, String idType) {
-        return feUserClient.checkIssueUen(idNo, idType).getEntity();
+    public Boolean validateSingpassAccount(String idNo, String idType) {
+        log.info(StringUtil.changeForLog("SingPass Login service [checkIssueUen] ...ID " + idNo + " ID Type..." + idType));
+        return feUserClient.validateSingpassAccount(idNo, idType).getEntity().isHasError();
     }
 
     @Override
@@ -476,5 +470,37 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public Boolean validatePwd(FeUserDto feUserDto) {
         return feUserClient.validatePwd(feUserDto).getEntity();
+    }
+
+    @Override
+    public void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit) {
+        feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
+    }
+
+    @Override
+    public void receiveEntityFormEDH(FeUserDto user) {
+        log.info("receiveEntityFormEDH START");
+        try {
+            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+            if (StringUtil.isNotEmpty(entityJson)){
+                log.info("receiveEntityFormEDH entityJson {}", entityJson);
+                JSONObject object = new JSONObject(entityJson);
+                JSONArray jsonArray = object.getJSONArray("licences");
+                if (Optional.ofNullable(jsonArray).isPresent()){
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject acraLicensee = jsonObject.getJSONObject("licensee");
+                        String nric = acraLicensee.getJSONObject("id-no").getString("value");
+                        if (user.getIdentityNo().equals(nric)){
+                            log.info("writeInfoFromEDH START................. {}", nric);
+                            String licenseeName = acraLicensee.getJSONObject("name").getString("value");
+                            user.setDisplayName(licenseeName);
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
     }
 }

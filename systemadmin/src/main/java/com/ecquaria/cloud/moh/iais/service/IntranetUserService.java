@@ -3,7 +3,16 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.role.Role;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,13 +28,18 @@ import java.util.Map;
  */
 public interface IntranetUserService {
     void createIntranetUser(OrgUserDto orgUserDto);
+    OrgUserDto createIntrenetUser(OrgUserDto orgUserDto);
     void createIntranetUsers(List<OrgUserDto> orgUserDtos);
+    List<FeUserDto> getUserListByNricAndIdType(String nric, String idType);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
     OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
     void delOrgUser(String id);
     OrgUserDto findIntranetUserById(String id);
+    List<LicenseeDto> findLicenseesFe();
     OrgUserDto findIntranetUserByUserId(String userId);
     Boolean UserIsExist(String userId);
+
+    boolean canUpdateAccount(FeUserDto user, String prevIdNumber);
 
     ClientUser saveEgpUser(ClientUser clientUser);
     ClientUser updateEgpUser(ClientUser clientUser);
@@ -33,7 +47,7 @@ public interface IntranetUserService {
     ClientUser getUserByIdentifier(String userId,String userDomain);
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
-    void removeEgpRoles(String userDomain,String userId,List<String> roleIds);
+    void removeRoleByAccount(String accountId);
     void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
     String getWrkGrpById(String groupId);
@@ -42,6 +56,7 @@ public interface IntranetUserService {
     List<String> getRoleIdByUserId(String userId);
 
     String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos);
+    Boolean removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     List<OrgUserRoleDto> retrieveRolesByuserAccId (String userAccId);
     List<OrgUserRoleDto> getOrgUserRoleDtoById(List<String> ids);
     List<Role> getRolesByDomain(String domain);
@@ -69,4 +84,6 @@ public interface IntranetUserService {
       * @Descripation: save role data
       */
     List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException;
+
+    List<OrganizationDto> getUenList();
 }

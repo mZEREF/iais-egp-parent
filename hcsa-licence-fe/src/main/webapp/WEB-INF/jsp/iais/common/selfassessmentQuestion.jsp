@@ -21,14 +21,12 @@
                 &nbsp;<span id="error_noFillUpItemError" name="iaisErrorMsg" class="error-msg"></span>
                 <br><br>
                 <div class="dashboard-gp">
-
-      
                     <c:forEach  var="declItem" items="${selfAssessmentDetail.selfAssessmentConfig}" varStatus="status">
                         <c:choose>
                             <c:when test="${declItem.common eq true}">
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile" id="myBody">
-                                        <a data-tab="#tabInbox" href="javascript:switchNextStep('<iais:mask name="tabIndex" value="${declItem.configId}"/>');">
+                                        <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
                                             <p class="dashboard-txt">General Regulation</p>
                                         </a>
                                     </div>
@@ -37,7 +35,7 @@
                             <c:otherwise>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#tabInbox" href="javascript:switchNextStep('<iais:mask name="tabIndex" value="${declItem.configId}"/>');">
+                                        <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
                                             <p class="dashboard-txt">${declItem.svcName}</p>
                                         </a>
                                     </div>
@@ -48,12 +46,7 @@
                 </div>
             </div>
         </div>
-
-
-
         <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
-
-
         <br>
     </c:otherwise>
 </c:choose>

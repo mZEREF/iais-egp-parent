@@ -16,7 +16,7 @@
         font-size: 16px;
     }
 </style>
-<form class="" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
+<form class="table-responsive" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
@@ -29,14 +29,15 @@
                         <div class="licence-renewal-content">
                             <%--content--%>
                             <div class="tab-pane" id="serviceInformationTab" role="tabpanel">
-                                <div class="multiservice">
-                                    <ul class="progress-tracker col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''}>
+                                    <ul class="progress-tracker">
                                         <li class="tracker-item active">Instructions</li>
                                         <li class="tracker-item active">Licence Review</li>
                                         <li class="tracker-item disabled">Payment</li>
                                         <li class="tracker-item disabled">Acknowledgement</li>
                                     </ul>
-                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
                                 <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
                                         <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
@@ -44,13 +45,7 @@
                                                 <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-                                        <div class="mobile-side-nav-tab visible-xs visible-sm" ${isSingle == 'Y' ? 'hidden' : ''}>
-                                            <select id="serviceSelect">
-                                                <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
-                                                    <option value="serviceName${status.index}">${serviceName}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
+
                                         <%--main content--%>
 
                                         <div class="tab-gp steps-tab">
@@ -95,6 +90,7 @@
                                                                                     <c:set var="ReloadPrincipalOfficers" value="${ReloadPrincipalOfficersList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}"></c:set>
+                                                                                    <c:set var="svcDocConfig" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0).svcDocConfig}"/>
                                                                                     <%@include file="../common/previewSvcInfo.jsp"%>
                                                                                 </div>
                                                                             </div>
@@ -102,10 +98,10 @@
                                                                     </div>
                                                                     <c:if test="${changeRenew eq 'Y'}">
                                                                     <div class="row">
-                                                                        <div class="col-xs-5">
+                                                                        <div class="col-md-7"  style="text-align: justify;width: 70%" >
                                                                             Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
                                                                         </div>
-                                                                        <div class="col-xs-7">
+                                                                        <div  class="col-md-5" style="width: 30%">
                                                                             <iais:datePicker cssClass="renewEffectiveDate" name="renewEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
                                                                         </div>
                                                                     </div>
@@ -151,7 +147,7 @@
                                     </div>
                                 </c:if>
                                 <div class="col-xs-12 col-sm-3">
-                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Submit and Pay</a></div>
+                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Make Payment</a></div>
                                     <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>
@@ -165,12 +161,13 @@
     <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
+<%--                <div class="modal-header">--%>
+<%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                    <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--                </div>--%>
+                <div class="modal-body" >
                     <div class="row">
-                        <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                        <div class="col-md-12" ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
                     </div>
                 </div>
                 <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -244,6 +241,7 @@
     });
 
     $('#BACK').click(function () {
+        showWaiting();
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });
@@ -256,21 +254,25 @@
         }else if(jQuery || (isSingle == 'N')) {
             $('#error_fieldMandatory').html("");
             $('[name="switch_value"]').val('doLicenceReview');
+            showWaiting();
             $('#LicenceReviewForm').submit();
         }
     });
 
     $('#premisesEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('premises');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();
     });
     $('#docEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('doc');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();
     });
     $('#doSvcEdit').click(function () {
+        showWaiting();
         $('#EditValue').val('service');
         $('[name="switch_value"]').val('doEdit');
         $('#LicenceReviewForm').submit();

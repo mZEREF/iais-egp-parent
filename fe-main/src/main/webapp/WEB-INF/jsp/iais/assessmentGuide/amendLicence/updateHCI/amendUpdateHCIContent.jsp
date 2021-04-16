@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">You may select one HCI to amend at a time:</p>
+    <p class="form-check-title">Please select the business to amend:</p>
     <iais:pagination  param="amendHCISearchParam" result="amendHCISearchResult"/>
     <div class="table-gp">
         <table class="table">

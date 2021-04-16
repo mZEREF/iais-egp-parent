@@ -98,6 +98,7 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "systemAssignMap", null);
         ParamUtil.setSessionAttr(bpc.request, "stageOption", null);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", null);
     }
 
     /**
@@ -113,24 +114,18 @@ public class SystemSearchAssignPoolDelegator {
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         //get userId
-        String userId = loginContext.getUserId();
-        List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
+        String taskUserId = loginContext.getUserId();
+        List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(taskUserId);
         //First search
         if(searchResult == null && groupRoleFieldDto == null) {
             //get stage
             groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
-            List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
-            StringBuilder sb = new StringBuilder("(");
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                sb.append(":appCorrId")
-                        .append(i)
-                        .append(',');
+            String curStageId = systemSearchAssignPoolService.getSysCurStageId(groupRoleFieldDto);
+            if(!StringUtil.isEmpty(curStageId)){
+                searchParam.addFilter("curStageId", curStageId,true);
             }
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParam.addParam("appCorrId_list", inSql);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            if(!StringUtil.isEmpty(taskUserId)){
+                searchParam.addFilter("taskUserId", taskUserId,true);
             }
             QueryHelp.setMainSql("inspectionQuery", "systemGroupPoolSearch",searchParam);
             searchResult = systemSearchAssignPoolService.getSystemGroupPoolByParam(searchParam);
@@ -213,25 +208,25 @@ public class SystemSearchAssignPoolDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        //get userId
+        String taskUserId = loginContext.getUserId();
         //systemAssignStage is true and Set current stage
         boolean stageFlag = getStageBooleanAndSet(systemAssignStage, groupRoleFieldDto);
         if(stageFlag) {
             searchParam = getSearchParam(bpc, true);
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
-            List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
-            StringBuilder sb = new StringBuilder("(");
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                sb.append(":appCorrId")
-                        .append(i)
-                        .append(',');
+            String curStageId = systemSearchAssignPoolService.getSysCurStageId(groupRoleFieldDto);
+            if(!StringUtil.isEmpty(curStageId)){
+                searchParam.addFilter("curStageId", curStageId,true);
             }
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParam.addParam("appCorrId_list", inSql);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            if(!StringUtil.isEmpty(taskUserId)){
+                searchParam.addFilter("taskUserId", taskUserId,true);
             }
             if (!StringUtil.isEmpty(application_no)) {
                 searchParam.addFilter("application_no", application_no, true);
+                ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", application_no);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "systemPoolFilterAppNo", null);
             }
             if (!StringUtil.isEmpty(application_type)) {
                 searchParam.addFilter("application_type", application_type, true);

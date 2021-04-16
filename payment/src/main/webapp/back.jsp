@@ -5,7 +5,7 @@
 <%
 
     String sessionId= request.getParameter("reqNo");
-    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
+    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/eservice/INTERNET/Payment";
     StringBuilder bud = new StringBuilder();
     bud.append(url).append("?reqNo=").append(sessionId);
     String header =  request.getParameter("hmac");

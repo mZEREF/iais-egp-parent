@@ -31,22 +31,28 @@
                             <c:choose>
                                 <c:when test="${'Email'.equals(mode)}">
                                     <tr align="center">
+                                        <th>S/N</th>
                                         <th>Recipient</th>
                                         <th>Subject</th>
                                         <th>Content</th>
                                         <th>Number of attempts</th>
                                         <th>Log message</th>
                                         <th>Sent date time</th>
+                                        <th>Created By</th>
+                                        <th>Created Date</th>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <tr align="center">
+                                        <th>S/N</th>
                                         <th>Recipient</th>
                                         <th>Header</th>
                                         <th>Text</th>
                                         <th>Number of attempts</th>
                                         <th>Log message</th>
                                         <th>Sent date time</th>
+                                        <th>Created By</th>
+                                        <th>Created Date</th>
                                     </tr>
                                 </c:otherwise>
                             </c:choose>
@@ -55,15 +61,21 @@
                                 <c:choose>
                                     <c:when test="${empty searchResult.rows}">
                                         <tr>
-                                            <td  colspan="10" >
+                                            <td colspan="9">
                                                 <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                 <!--No Record!!-->
                                             </td>
                                         </tr>
+                                        <input hidden id="rows" value="0">
                                     </c:when>
                                     <c:otherwise>
                                         <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
+                                            <c:set var="massIndex" value="${(status.index + 1) + (auditSearchParam.pageNo - 1) * auditSearchParam.pageSize}"></c:set>
                                             <tr style="display: table-row;">
+                                                <td>
+                                                    <p><c:out
+                                                            value="${massIndex}"/></p>
+                                                </td>
                                                 <td>
                                                     <p><c:out value="${item.recipient}"/></p>
                                                 </td>
@@ -82,6 +94,12 @@
                                                 <td>
                                                     <p><fmt:formatDate value="${item.sentTime}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                 </td>
+                                                <td>
+                                                    <p><c:out value="${createby}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${createDt}"/></p>
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
@@ -94,7 +112,7 @@
                             <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 text-right ">
-                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}" title="Download">Download</a>
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}&createby=${createby}&createDt=${createDt}" title="Download">Download</a>
                         </div>
                     </div>
                 </div>
@@ -102,6 +120,7 @@
         </div>
       <input hidden id="editBlast" name="editBlast" value="${editBlast}">
       <input hidden id="mode" name="mode" value="${mode}">
+      <input hidden id="msgId" name="msgId" value="${msgId}">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

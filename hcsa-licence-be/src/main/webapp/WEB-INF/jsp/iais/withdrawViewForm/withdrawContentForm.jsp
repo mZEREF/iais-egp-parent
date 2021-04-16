@@ -47,13 +47,22 @@
                     <div class="document-upload-list">
                         <h3>File upload for Withdrawal Reasons</h3>
                         <div class="file-upload-gp">
-                            <div id="delFile" style="margin-top: 13px;color: #1F92FF;">
-                                <c:if test="${not empty appealSpecialDocDto}">
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}"
-                                       title="Download" class="downloadFile"><c:out
-                                            value="${appealSpecialDocDto.docName}"/></a>
-                                </c:if>
-                            </div>
+                           <span name="selectedFileShowId" id="selectedFileShowId">
+                                <c:forEach items="${pageShowFiles}" var="pageShowFileDto"
+                                           varStatus="ind">
+                                  <div id="${pageShowFileDto.fileMapId}">
+                                      <span name="fileName"
+                                            style="font-size: 14px;color: #2199E8;text-align: center">
+                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
+                                         title="Download"
+                                         class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                                      <span class="error-msg" name="iaisErrorMsg"
+                                            id="file${ind.index}"></span>
+                                      <span class="error-msg" name="iaisErrorMsg"
+                                            id="error_${configIndex}error"></span>
+                                  </div>
+                                </c:forEach>
+                            </span>
                         </div>
                         <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                     </div>

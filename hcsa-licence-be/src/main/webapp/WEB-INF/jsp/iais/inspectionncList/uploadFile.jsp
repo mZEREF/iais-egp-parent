@@ -4,6 +4,7 @@
     <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${applicationViewDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${applicationViewDto.systemFileType}">
     <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -32,7 +33,7 @@
                                 <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
                                 <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
-                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"></div>
+                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
                         </div>
 
                     </div>
@@ -62,7 +63,8 @@
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
         $('#fileRemark').val('');
-        $('#uploadDoc').dialog('close');
+        $('#uploadDoc').dialog().dialog('close');
+        $('#uploadDoc').dialog('open');
         doDeleteShowFileName();
     };
 
@@ -113,8 +115,8 @@
                         removeNoData();
                     }
                     var tr = "<tr>"+"<td width=\"30%\"><p>" +data.docDesc+"</p></td>" +"<td  width=\"20%\"><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
-                        "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"15%\"><p>" +data.submitDtString+"</p></td>"
-                        + "<td width=\"5%\">" + "  <button type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\"><i class=\"fa fa-times\"></i></button>" +"</td>"+"</tr>";
+                        "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"10%\"><p>" +data.submitDtString+"</p></td>"
+                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
                     doAddTr(tr);
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){
@@ -191,7 +193,10 @@
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
              fileSize = parseInt(fileSize);
             if(fileSize>= maxSize){
-                $('#selectedFileShow').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+                $('#selectedFileShow').html($("#fileMaxMBMessage").val());
+                if(fileSize >= 100){
+                    doDeleteShowFileName();
+                }
                 $('#uploadFileButton').attr("disabled", false);
                 return false;
             }
@@ -249,15 +254,34 @@
     });
 
 
-    $('#selectedFile').change(function () {
-        var file = $(this).val();
+    $('#selectedFile').change(
+        fileChange()
+    );
+    function fileChange(){
+        var file = $("#selectedFile").val();
         if(file != null && file !=""){
             $('#selectedFileShowTextName').val(getFileName(file));
+        }else {
+            $('#selectedFileShowTextName').val("");
         }
-    });
-
+    }
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
+    }
+
+    // FileChanged()
+    function fileChanged(event) {
+        var fileElement = event.target;
+        if (fileElement.value == "") {
+            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+            $(fileElement).remove(); //'Removing Original'
+            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+        }else {
+            $('#selectedFile').change(
+                fileChange()
+            );
+        }
+        //What ever else you want to do when File Chooser Changed
     }
 </script>

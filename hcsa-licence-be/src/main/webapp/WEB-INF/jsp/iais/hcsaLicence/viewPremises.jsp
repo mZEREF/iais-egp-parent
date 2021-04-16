@@ -99,23 +99,6 @@
                                     </div>
                                   </div>
 
-                                  <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Vehicle No
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div  class="col-md-6">
-                                          <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
-                                        </div>
-                                        <div  class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
-                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </c:if>
-
                                   <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">
@@ -151,45 +134,59 @@
                                         </div>
                                       </div>
                                     </div>
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                      HCI Name
+                                  </c:if>
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      Name of HCI
                                       <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
-                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
-                                          <p>The HCI name is currently used by another licensee</p>
-                                          <br>
-                                          <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
-                                            <tr>
-                                              <td  class="col-md-4">Name of Licensee</td>
-                                              <td  class="col-md-4">HCI Name</td>
-                                              <td  class="col-md-4">Service Name</td>
-                                            </tr>
-                                            <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
-                                            <tr>
-                                              <td>${applicationViewHciNameDtos.licensee}</td>
-                                              <td>${applicationViewHciNameDtos.hciName}</td>
-                                              <td>${applicationViewHciNameDtos.serviceName}</td>
-                                            </tr>
-                                            </c:forEach>
-                                          </table>
+                                    <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
+                                      <p>The  Name of HCI is currently used by another licensee</p>
+                                      <br>
+                                      <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                                        <tr>
+                                          <td  class="col-md-4">Name of Licensee</td>
+                                          <td  class="col-md-4">HCI Name</td>
+                                          <td  class="col-md-4">Service Name</td>
+                                        </tr>
+                                        <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
+                                          <tr>
+                                            <td>${applicationViewHciNameDtos.licensee}</td>
+                                            <td>${applicationViewHciNameDtos.hciName}</td>
+                                            <td>${applicationViewHciNameDtos.serviceName}</td>
+                                          </tr>
+                                        </c:forEach>
+                                      </table>
 
-                                      </div>
+                                    </div>
 
+                                    <div class="col-md-6">
                                       <div class="col-md-6">
-                                        <div class="col-md-6">
-                                                <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
-                                        </div>
-                                        <div class="col-md-6">
+                                        <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
+                                      </div>
+                                      <div class="col-md-6">
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></span>
 
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Vehicle No.
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div  class="col-md-6">
+                                          <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
+                                        </div>
+                                        <div  class="col-md-6">
+                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></span>
                                         </div>
                                       </div>
                                     </div>
                                   </c:if>
-
                                   <div class="row">
                                     <div class="col-md-6">
                                       Postal Code
@@ -368,7 +365,7 @@
                                   <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Are you co-locating with another licensee ?
+                                        Are you co-locating with another licensee?
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
@@ -415,122 +412,258 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      Operating Hours (Start)
+                                      Operating Hours
                                     </div>
                                     <div class="col-md-6">
-                                      <div class="col-md-6">
-                                        <c:if test="${appGrpPremDto.wrkTimeFrom==null}">
-                                             <span class="newVal "  attr=""></span>
-                                        </c:if>
-                                        <c:if test="${appGrpPremDto.wrkTimeFrom!=null}">
-                                          <span class="newVal "  attr="${appGrpPremDto.wrkTimeFrom}">
-                                                    <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
-                                                                    pattern="HH : mm"></fmt:formatDate>
-                                                </span>
-                                        </c:if>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom==null}">
-                                            <span class=" oldVal" attr="" style="display: none"></span>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom!=null}">
-                                          <span class=" oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
-                                                              pattern="HH : mm"></fmt:formatDate></span>
-                                          </c:if>
-                                        </c:if>
-                                      </div>
+                                     <span></span>
                                     </div>
                                   </div>
-
                                   <div class="row">
+                                    <div class="col-md-6">Weekly</div>
                                     <div class="col-md-6">
-                                      Operating Hours (End)
-                                    </div>
-                                    <div class="col-md-6">
-                                      <div class="col-md-6">
-                                        <c:if test="${appGrpPremDto.wrkTimeTo==null}">
-                                           <span class="newVal " attr=""></span>
-                                        </c:if>
-                                        <c:if test="${appGrpPremDto.wrkTimeTo!=null}">
-                                           <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"><fmt:formatDate value="${appGrpPremDto.wrkTimeTo}" pattern="HH : mm"></fmt:formatDate></span>
-                                        </c:if>
-
-                                      </div>
-                                      <div class="col-md-6">
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo==null}">
-                                            <span class="oldVal " attr="" style="display: none"></span>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo!=null}">
-                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
-                                                 style="display: none"> <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
-                                                                                        pattern="HH : mm"></fmt:formatDate></span>
-                                          </c:if>
-                                        </c:if>
-                                      </div>
+                                        <div class="col-md-4"><span>Start</span></div>
+                                        <div class="col-md-4"><span>End</span></div>
+                                        <div class="col-md-4"><span>All day</span></div>
                                     </div>
                                   </div>
-                                  <c:choose>
-                                    <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                      <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                      <c:set var="phLength" value="0"/>
-                                    </c:otherwise>
-                                  </c:choose>
-                                  <c:forEach varStatus="statu"  begin="0" end="${phLength}">
-                                    <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
+                                  <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Select Public Holiday
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-6">
-                                             <span class="newVal " attr="${appPremPhOpenPeriod.dayName}">
-                                               <c:out value="${appPremPhOpenPeriod.dayName}"/></span>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="newVal" attr="${weeklyDto.selectValList}">
+                                             <c:forEach items="${weeklyDto.selectValList}" var="selectVal" varStatus="in">
+                                               <iais:code code="${selectVal}"/><c:if test="${!in.last}">,</c:if>
+                                             </c:forEach>
+                                          </span>
                                         </div>
-                                        <div class="col-md-6">
-                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}" style="display: none">
-                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}"/></span>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
+                                            <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList" varStatus="in">
+                                              <iais:code code="${oldSelectValList}"/><c:if test="${!in.last}">,</c:if>
+                                            </c:forEach>
+                                          </span>
                                         </div>
-                                      </div>
-                                    </div>
 
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Public Holiday Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-                                          <div class="col-md-6">
-                                             <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}">
-                                               <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate></span>
-                                          </div>
-                                            <div class="col-md-6">
-                                              <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"></fmt:formatDate>
-                                            </div>
-                                      </div>
-                                    </div>
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${weeklyDto.startFrom}">
+                                              <c:if test="${weeklyDto.selectAllDay}">
 
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Public Holiday Operating Hours (End)
-                                      </div>
-                                      <div class="col-md-6">
-                                          <div class="col-md-6">
-                                              <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"><fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
-                                                                                                                        pattern="HH : mm"></fmt:formatDate>
-                                              </span>
+                                              </c:if>
+                                              <c:if test="${!weeklyDto.selectAllDay}">
+                                                <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
                                           </div>
-                                          <div class="col-md-6">
-                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                     style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}" pattern="HH : mm"></fmt:formatDate></span>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}">
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                                                <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
                                           </div>
+
+                                        </div>
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${weeklyDto.endTo}">
+                                              <c:if test="${weeklyDto.selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!weeklyDto.selectAllDay}">
+                                                <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}">
+                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+
+                                               </c:if>
+                                               <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}" pattern="HH : mm"/>
+                                               </c:if>
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${weeklyDto.selectAllDay}">
+                                              <c:if test="${weeklyDto.selectAllDay}">
+                                                <div class="form-check active">
+                                                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                                                <div class="form-check active">
+                                                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </c:forEach>
+                                  <div class="row">
+                                    <div class="col-md-6">Public Holiday</div>
+                                    <div class="col-md-6">
+                                      <div class="col-md-4"></div>
+                                      <div class="col-md-4"></div>
+                                      <div class="col-md-4"></div>
+                                    </div>
+                                  </div>
+                                  <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="newVal" attr="${op.selectValList}">
+                                               <c:forEach items="${op.selectValList}" var="phDto" varStatus="in">
+                                                 <iais:code code="${phDto}"></iais:code><c:if test="${!in.last}">,</c:if>
+                                               </c:forEach>
+                                          </span>
+                                        </div>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
+                                              <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList" varStatus="in">
+                                                <iais:code code="${oldPhDtoList}"/><c:if test="${!in.last}">,</c:if>
+                                              </c:forEach>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${op.startFrom}">
+                                              <c:if test="${op.selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!op.selectAllDay}">
+                                                <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}">
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
+                                          </div>
+
+                                        </div>
+
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${op.endTo}">
+                                              <c:if test="${op.selectAllDay}">
+
+                                              </c:if>
+                                               <c:if test="${!op.selectAllDay}">
+                                                 <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                                               </c:if>
+
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}">
+                                              <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+
+                                              </c:if>
+                                              <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-md-4" style="padding-right: 0px">
+                                            <div class="col-md-6" style="padding: 0px" >
+                                              <span class="newVal" attr="${op.selectAllDay}">
+                                                <c:if test="${op.selectAllDay}">
+                                                  <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                  </div>
+                                                </c:if>
+                                              </span>
+                                            </div>
+                                            <div class="col-md-6" style="padding: 0px">
+                                              <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                                                   <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                  </div>
+                                                 </c:if>
+                                              </span>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </c:forEach>
+                                  <div class="row">
+                                    <div class="col-md-6">Event</div>
+                                    <div class="col-md-6">
+                                      <div class="col-md-4"></div>
+                                      <div class="col-md-4"></div>
+                                      <div class="col-md-4"></div>
+                                    </div>
+                                  </div>
+                                  <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
+                                        </div>
+                                        <div class="col-md-6" style="padding: 0px">
+                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
+                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                          </span>
+                                        </div>
+
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-6">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.startDate}">
+                                              <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                          </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.endDate}">
+                                                <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6" style="padding: 0px">
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}" pattern="dd/MM/yyyy"/>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </c:forEach>
+
                                 </div>
                               </div>
                             </c:forEach>
@@ -557,7 +690,7 @@
                                   <label style="font-size: 2.2rem">Uploaded Documents</label>
                                 </div>
                                 <table class="col-xs-12 col-md-12">
-                                <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+<%--                                <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                   <tr>
                                     <td>
                                       <div class="field col-sm-12 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
@@ -567,32 +700,71 @@
                                     <td>
                                       <div class="col-xs-6 col-md-6">
                                         <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
-                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.fileRepoId}${appGrpPrimaryDocDto.docName}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
                                               <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                                      value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile"><span id="${appGrpPrimaryDocDto.fileRepoId}Down">trueDown</span></a>
                                                 <a onclick="doVerifyFileGo('${appGrpPrimaryDocDto.fileRepoId}')">${appGrpPrimaryDocDto.docName}<c:out value="(${appGrpPrimaryDocDto.docSize})KB"/></a>
                                             </span>
                                         </c:if>
                                         <c:if test="${appGrpPrimaryDocDto.docSize==null}">
-                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.fileRepoId}${appGrpPrimaryDocDto.docName}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.md5Code}${appGrpPrimaryDocDto.docName}">
                                             </span>
                                         </c:if>
                                       </div>
                                       <div class="col-xs-6 col-md-6">
                                         <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
-                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
                                                 <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
                                               </span>
                                         </c:if>
                                         <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
-                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].md5Code}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
                                               </span>
                                         </c:if>
 
                                       </div>
                                     </td>
                                   </tr>
+                                  </c:forEach>--%>
+                                  <c:forEach items="${appSubmissionDto.multipleGrpPrimaryDoc}" var="appGrpPrimaryDocDto">
+                                    <c:set value="${appSubmissionDto.oldAppSubmissionDto.multipleGrpPrimaryDoc[appGrpPrimaryDocDto.key]}" var="oldAppGrpPrimaryDocDto"></c:set>
+                                    <tr>
+                                      <td>
+                                        <div class="field col-sm-12 control-label formtext"><label>${appGrpPrimaryDocDto.key}:</label></div>
+                                      </td>
+                                    </tr>
+                                    <c:forEach items="${appGrpPrimaryDocDto.value}" var="sinage" varStatus="inx">
+
+                                      <tr>
+                                        <td>
+                                          <div class="col-xs-6 col-md-6 ">
+                                            <c:if test="${sinage.docSize!=null}">
+                                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
+                                              <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
+                                                     value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download" class="downloadFile"><span id="${sinage.fileRepoId}Down">trueDown</span></a>
+                                                <a onclick="doVerifyFileGo('${sinage.fileRepoId}')">${sinage.docName}</a><c:out value="(${sinage.docSize} KB)"/>
+                                            </span>
+                                            </c:if>
+                                            <c:if test="${sinage.docSize==null}">
+                                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}"></span>
+                                            </c:if>
+                                          </div>
+                                          <div class="col-xs-6 col-md-6">
+                                            <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize!=null}">
+                                                 <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
+                                                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
+                                                       value="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}"/>&fileRepoName=${oldAppGrpPrimaryDocDto[inx.index].docName}" title="Download" class="downloadFile">${oldAppGrpPrimaryDocDto[inx.index].docName}</a><c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
+                                                 </span>
+                                            </c:if>
+                                            <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize==null}">
+                                               <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
+                                               </span>
+                                            </c:if>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </c:forEach>
                                   </c:forEach>
                                 </table>
                               </div>

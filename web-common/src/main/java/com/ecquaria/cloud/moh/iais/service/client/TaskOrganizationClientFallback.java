@@ -52,6 +52,14 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
+    public FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupNameExceptLeader(String workGroupId, String staus) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<TaskDto>> getTaskScores(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -66,6 +74,7 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
 
     @Override
     public FeignResponseEntity<List<TaskDto>> getCommPoolTaskByWorkGroupId(String workGroupId) {
@@ -124,7 +133,7 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date) {
+    public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date, boolean isRouting) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -173,6 +182,14 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
 
     @Override
     public FeignResponseEntity<String> getRollBackInspector(String refNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> getCurrentTaskAssignedInspectorInfo(Map<String, Object> params) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

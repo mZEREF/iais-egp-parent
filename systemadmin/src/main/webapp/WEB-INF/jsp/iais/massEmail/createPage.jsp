@@ -7,11 +7,21 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -94,6 +104,9 @@
                                     <div class="file-upload-gp">
                                         <div class="filename fileNameDisplay">
                                             <c:out value="${fileName}"/>
+                                            <c:if test="${!empty fileName}">
+                                                &emsp;<button type='button' class='btn btn-secondary btn-sm' onclick='deleteFile()'>Delete</button>
+                                            </c:if>
                                         </div>
                                             <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
@@ -149,12 +162,12 @@
                 html += data.roleSelect;
                 html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
                 $("#serviceDivByrole").html(html);
-                $("div.premSelect->ul").mCustomScrollbar({
+                /*$("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
             }
         });
     })
@@ -169,6 +182,23 @@
             $("#addMobile").show();
         }
     })
+    function deleteFile(){
+        $.ajax({
+            data:{email:$("#email").val(),
+                mobile:$("#mobile").val()},
+            type:"POST",
+            dataType:"json",
+            url:"/system-admin-web/emailAjax/recoverTextarea",
+            success:function (data) {
+                console.log(data)
+                $(".filename").html("");
+                $("#mobile").val(data.mobile);
+                $("#email").val(data.email);
+                $("#error_file").hide();
+            }
+        })
+
+    }
 
     $('#selectedFile').change(function (event) {
         var maxFileSize = 10;
@@ -176,12 +206,12 @@
         console.log(error)
         if (error == "N"){
             $("#selectedFile").val('');
-            $('#error_file').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_file').html($("#fileMaxMBMessage").val());
         }else{
             var files = event.target.files;
             $(".filename").html("");
             for(var i=0;i<files.length;i++){
-                $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+                $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"&emsp;<button type='button' class='btn btn-secondary btn-sm' onclick='deleteFile()'>Delete</button></div>");
             }
             SOP.Crud.cfxSubmit("mainForm","upload");
             $('#error_file').html('');

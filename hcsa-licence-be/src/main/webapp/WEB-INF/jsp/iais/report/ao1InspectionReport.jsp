@@ -23,8 +23,7 @@
                     <div class="center-content">
                         <div class="intranet-content">
                             <iais:body>
-                                <div class="container">
-                                    <div class="col-xs-12">
+                                <div class="col-xs-12">
                                         <div class="tab-gp dashboard-tab">
                                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                                 <li id="info" class="${infoClassTop}" role="presentation"><a
@@ -119,8 +118,7 @@
                                                                                          cssClass="nice-select nextStage"
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                                            <span id="error_submit" class="error-msg"
-                                                                                  hidden>This is mandatory</span>
+                                                                            <span id="error_submit" class="error-msg" hidden>This field is mandatory</span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
@@ -254,7 +252,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </iais:body>
                         </div>
                     </div>

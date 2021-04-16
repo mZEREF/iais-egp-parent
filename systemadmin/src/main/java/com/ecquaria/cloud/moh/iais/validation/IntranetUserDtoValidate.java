@@ -1,16 +1,20 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -22,6 +26,7 @@ import java.util.Map;
  * @date 2019/12/31 15:03
  */
 @Component
+@Slf4j
 public class IntranetUserDtoValidate implements CustomizeValidator {
 
     @Autowired
@@ -55,7 +60,16 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             String[] eftStartDateStr = startDateStr.split("/");
             String[] eftEndDateStr = endDateStr.split("/");
             Date today = new Date();
-            String todayStr = DateUtil.formatDate(today, "yyyyMMdd");
+            //get today string
+            String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+            //get start Date By request
+            Date sDate;
+            try {
+                sDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            } catch (ParseException e) {
+                log.error(e.getMessage(), e);
+                sDate = new Date();
+            }
             StringBuilder nStr = new StringBuilder();
             StringBuilder eStr = new StringBuilder();
             int len = Math.min(eftStartDateStr.length, eftEndDateStr.length);
@@ -66,10 +80,11 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
-            LocalDate todayDate = LocalDate.parse(todayStr, formatter);
-            int i = todayDate.compareTo(startDate);
-            if (i >= 0&&"create".equals(user_action)) {
-                errorMap.put("accountActivateDatetime", "USER_ERR007");
+
+            if ("create".equals(user_action)) {
+                if(!(startDateStr.equals(todayStr) || sDate.after(today))) {//NOSONAR
+                    errorMap.put("accountActivateDatetime", "USER_ERR007");
+                }
             } else {
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0) {
@@ -84,7 +99,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         }
 
         if (!StringUtil.isEmpty(officeNo)) {
-            if (!officeNo.matches("^[6][0-9]{7}$")) {
+            if (!officeNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errorMap.put("officeTelNo", "GENERAL_ERR0015");
             }
         }

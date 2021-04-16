@@ -79,6 +79,19 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
+                            <p>Clinical Governance Officer(s)</p>
+                        </td>
+                        <td class="col-xs-4">
+                            <c:if test="${insRepDto.clinicalGovernanceOfficer != null && not empty insRepDto.clinicalGovernanceOfficer}">
+                                <p><c:forEach items="${insRepDto.clinicalGovernanceOfficer}" var="cgoName">
+                                    <c:out value="${cgoName}"/><br>
+                                </c:forEach></p>
+                            </c:if>
+                        </td>
+                        <td class="col-xs-4"/>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
                             <p>Principal Officer(s)</p>
                         </td>
                         <td class="col-xs-4">
@@ -258,6 +271,7 @@
                                             <th>SN</th>
                                             <th>Checklist Item</th>
                                             <th>Regulation Clause</th>
+                                            <th>Findings/NCs</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -272,6 +286,9 @@
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${ncRegulations.regulation}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${ncRegulations.ncs}"></c:out></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -327,6 +344,7 @@
                                     <tr>
                                         <th>SN</th>
                                         <th>Checklist Item</th>
+                                        <th>Findings/NCs</th>
                                         <th>Rectified?</th>
                                     </tr>
                                     </thead>
@@ -339,6 +357,9 @@
                                             </td>
                                             <td>
                                                 <p><c:out value="${ncRectification.nc}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${ncRectification.ncs}"></c:out></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${ncRectification.rectified}"></c:out></p>
@@ -368,7 +389,9 @@
 
                     <tr>
                         <td class="col-xs-4">
-                            <p>Rectified Within KPI?</p>
+                            <p>Rectified Within KPI? <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
+                                                        data-html="true"
+                                                        data-original-title="${kpiInfo}">i</a></p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>

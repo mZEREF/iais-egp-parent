@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -58,10 +60,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * BankedInboxDelegator
@@ -180,6 +179,14 @@ public class BackendInboxDelegator {
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+        String appStatusDefault = (String) ParamUtil.getSessionAttr(bpc.request, "application_status");
+
+        String application_status_firstAo3 = (String) ParamUtil.getSessionAttr(bpc.request, "application_status_firstAo3");
+        if(!"firstAo3".equals(application_status_firstAo3) && StringUtil.isEmpty(appStatusDefault) && appStatusOption.size() == 1 && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatusOption.get(0).getValue())){
+            application_status_firstAo3 = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+
+        appStatusOption.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
@@ -204,6 +211,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
+        ParamUtil.setSessionAttr(bpc.request, "application_status_firstAo3",application_status_firstAo3);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
@@ -456,9 +464,6 @@ public class BackendInboxDelegator {
                     log.info(StringUtil.changeForLog("the do approve end ...."));
                 }
             }
-            //update commPools
-            List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
-
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(successStatus)){
                 successInfo = "LOLEV_ACK009";
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(successStatus)){
@@ -912,6 +917,8 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",(Serializable) returnFeeMap);
         log.info(StringUtil.changeForLog("BackendInboxReturnFee:" + JsonUtil.parseToJson(returnFeeMap)));
         changePostInsForTodoAudit(applicationViewDto);
+        //set risk score
+        setRiskScore(applicationDto,newCorrelationId);
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
@@ -1165,6 +1172,30 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
+    private void setRiskScore(ApplicationDto applicationDto,String newCorrelationId){
+        log.debug(StringUtil.changeForLog("correlationId : " + newCorrelationId));
+        try {
+            if(applicationDto != null && !StringUtil.isEmpty(newCorrelationId)){
+                AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =inspectionService.getAppRecomDtoByAppCorrId(newCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+                if(appPreRecommentdationDtoInspectionDate != null){
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    applicationDtos.add(applicationDto);
+                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    HcsaRiskScoreDto entity = hcsaConfigMainClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                    String riskLevel = entity.getRiskLevel();
+                    log.debug(StringUtil.changeForLog("riskLevel : " + riskLevel));
+                    applicationDto.setRiskLevel(riskLevel);
+                }
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+
     public  void changePostInsForTodoAudit( ApplicationViewDto applicationViewDto ){
         if(applicationViewDto.getLicPremisesAuditDto() != null && ApplicationConsts.INCLUDE_RISK_TYPE_INSPECTION_KEY.equalsIgnoreCase(applicationViewDto.getLicPremisesAuditDto().getIncludeRiskType())){
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -1206,20 +1237,23 @@ public class BackendInboxDelegator {
 
     private void doRefunds(List<AppReturnFeeDto> saveReturnFeeDtos){
         List<AppReturnFeeDto> saveReturnFeeDtosStripe=IaisCommonUtils.genNewArrayList();
-        for (AppReturnFeeDto appreturn:saveReturnFeeDtos
-        ) {
-            ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-            ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                saveReturnFeeDtosStripe.add(appreturn);
-            }
-        }
-        List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);        for (PaymentRequestDto refund:paymentRequestDtos
-        ) {
+        if(saveReturnFeeDtos!=null){
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
-                if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
-                    appreturn.setStatus(refund.getStatus());
+                ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
+                ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                    saveReturnFeeDtosStripe.add(appreturn);
+                }
+            }
+            List<PaymentRequestDto> paymentRequestDtos= applicationViewService.eicFeStripeRefund(saveReturnFeeDtosStripe);
+            for (PaymentRequestDto refund:paymentRequestDtos
+            ) {
+                for (AppReturnFeeDto appreturn:saveReturnFeeDtos
+                ) {
+                    if(appreturn.getApplicationNo().equals(refund.getReqRefNo())){
+                        appreturn.setStatus(refund.getStatus());
+                    }
                 }
             }
         }
@@ -1468,30 +1502,17 @@ public class BackendInboxDelegator {
 
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
-        String application_status = ParamUtil.getRequestString(bpc.request, "application_status");
+        String application_status = ParamUtil.getString(bpc.request, "application_status");
+        String application_status_firstAo3 = (String) ParamUtil.getSessionAttr(bpc.request, "application_status_firstAo3");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
         if(commPools != null && !commPools.isEmpty()){
-            StringBuilder sb = new StringBuilder("(");
-            int i =0;
-            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
-            for (TaskDto item: commPools) {
-                    sb.append(":itemKey").append(i).append(',');
-                searchParamGroup.addFilter("itemKey" + i,
-                        item.getRefNo());
-                searchParamAjax.addFilter("itemKey" + i,
-                        item.getRefNo());
-                    i++;
-            }
-            log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
-            log.info(StringUtil.changeForLog("commPools size = "+commPools.size()));
-            log.info(StringUtil.changeForLog("i size = "+commPools.size()));
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParamGroup.addParam("remises_corr_id_in", inSql);
-            searchParamAjax.addParam("remises_corr_id_in", inSql);
-
+            searchParamGroup.addFilter("userId",loginContext.getUserId(),true);
+            searchParamAjax.addFilter("userId",loginContext.getUserId(),true);
+            searchParamGroup.addFilter("roleId",loginContext.getCurRoleId(),true);
+            searchParamAjax.addFilter("roleId",loginContext.getCurRoleId(),true);
             if(!StringUtil.isEmpty(application_no)){
                 searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
                 searchParamAjax.addFilter("application_no", "%" +application_no +"%",true);
@@ -1518,6 +1539,10 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("hci_code");
             }
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
+            if(!"firstAo3".equals(application_status_firstAo3)){
+                application_status = application_status_firstAo3;
+                ParamUtil.setSessionAttr(bpc.request,"application_status_firstAo3","firstAo3");
+            }
             if(!StringUtil.isEmpty(application_status)){
                 List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(APPSTATUSCATEID);
                 String codeValue = MasterCodeUtil.getCodeDesc(application_status);

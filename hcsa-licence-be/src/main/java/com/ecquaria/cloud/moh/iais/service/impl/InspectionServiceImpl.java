@@ -5,28 +5,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -35,28 +27,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Shicheng
@@ -113,9 +90,14 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<SelectOption> getAppStatusOption(LoginContext loginContext) {
+    public List<SelectOption> getAppStatusOption(LoginContext loginContext, String poolType) {
         String roleId = loginContext.getCurRoleId();
         List<SelectOption> appStatusOption = IaisEGPHelper.getAppStatusByRoleId(roleId);
+        if(AppConsts.SUPERVISOR_POOL.equals(poolType)){
+            String pendingTaskAssignStatus = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+            SelectOption so = new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT, pendingTaskAssignStatus);
+            appStatusOption.add(so);
+        }
         return appStatusOption;
     }
 
@@ -128,7 +110,6 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getApplicationNoListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
             List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
-            appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
         Set<String> appCorrIdSet = IaisCommonUtils.genNewHashSet();
@@ -146,39 +127,71 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks) {
-        TaskDto taskDto = getTaskDtoByPool(commPools, inspectionTaskPoolListDto);
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //create history, update application, update/create inspection status
-        String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
-        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)){
-            //create inspManHours recommendation or update
-            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
-            if(appPremisesRecommendationDto != null){
-                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            } else {
-                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                appPremisesRecommendationDto.setVersion(1);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
-                appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskId())) {
+            TaskDto taskDto = taskService.getTaskById(inspectionTaskPoolListDto.getTaskId());
+            ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            //create history, update application, update/create inspection status
+            String saveFlag = assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
+            if (!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours()) && AppConsts.SUCCESS.equals(saveFlag)) {
+                //create inspManHours recommendation or update
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+                if (appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                } else {
+                    appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                    appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appPremisesRecommendationDto.setVersion(1);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+                    appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+                }
             }
+            return saveFlag;
+        } else {
+            return null;
         }
-        return saveFlag;
     }
 
     @Override
     public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-        for(UserGroupCorrelationDto ugcDto : userGroupCorrelationDtos){
-            if(ugcDto != null) {
-                if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus()) && ugcDto.getIsLeadForGroup() == 1) {
-                    workGroupIdList.add(ugcDto.getGroupId());
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupLeadByUserId(loginContext.getUserId()).getEntity();
+        String roleId = loginContext.getCurRoleId();
+        if(!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+            for (UserGroupCorrelationDto ugcDto : userGroupCorrelationDtos) {
+                if (ugcDto != null) {
+                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus())) {
+                        WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
+                        String groupName = workingGroupDto.getGroupName();
+                        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) && (groupName.contains("Inspection"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                        if (RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId) && (groupName.contains("Admin Screening officer"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                        if (RoleConsts.USER_ROLE_PSO_LEAD.equals(roleId) && (groupName.contains("Professional"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                        if (RoleConsts.USER_ROLE_AO1_LEAD.equals(roleId) && (groupName.contains("Level 1 Approval"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                        if (RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId) && (groupName.contains("Level 2 Approval"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                        if (RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId) && (groupName.contains("Level 3 Approval"))) {
+                            workGroupIdList.add(ugcDto.getGroupId());
+                            continue;
+                        }
+                    }
                 }
             }
         }
@@ -213,8 +226,8 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setRoles(roleList);
         inspectionTaskPoolListDto.setLoginContextId(loginContext.getUserId());
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
-        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         TaskDto taskDto = organizationClient.getTaskById(taskId).getEntity();
+        List<OrgUserDto> orgUserDtoList = organizationClient.activeUsersByWorkGroupAndRole(inspectionTaskPoolListDto.getWorkGroupId(), taskDto.getRoleId()).getEntity();
         String userId = taskDto.getUserId();
         for(OrgUserDto oDto:orgUserDtoList){
             if(!(oDto.getId().equals(userId))){
@@ -242,13 +255,15 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext, List<TaskDto> superPool) {
+    public SearchResult<InspectionSubPoolQueryDto> getGroupLeadName(SearchResult<InspectionSubPoolQueryDto> searchResult, LoginContext loginContext) {
         if(!IaisCommonUtils.isEmpty(searchResult.getRows())){
             for(InspectionSubPoolQueryDto iDto : searchResult.getRows()){
-                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(iDto.getId()).getEntity();
-                if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos) && !IaisCommonUtils.isEmpty(superPool)) {
-                    for (TaskDto taskDto : superPool) {
-                        iDto = getLeadByAppPremCorrId(taskDto, appPremisesCorrelationDtos, iDto);
+                if(iDto != null) {
+                    String workingGroupId = iDto.getWorkGroupId();
+                    if (!StringUtil.isEmpty(workingGroupId)) {
+                        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workingGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                        List<String> leadName = getWorkGroupLeadsByGroupId(workingGroupId, orgUserDtoList);
+                        iDto.setGroupLead(leadName);
                     }
                 }
             }
@@ -276,7 +291,11 @@ public class InspectionServiceImpl implements InspectionService {
                 //get Application data
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(superPoolTaskQueryDto.getTaskRefNo()).getEntity();
                 superPoolTaskQueryDto.setAppNo(applicationDto.getApplicationNo());
-                superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(applicationDto.getStatus()));
+                if(StringUtil.isEmpty(memberName) || HcsaConsts.HCSA_PREMISES_HCI_NULL.equals(memberName)) {
+                    superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
+                } else {
+                    superPoolTaskQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(applicationDto.getStatus()));
+                }
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
@@ -323,16 +342,27 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
-        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
-        Set<String> leadNameSet = new HashSet<>(leadName);
-        leadName = new ArrayList<>(leadNameSet);
-
+        //set leaders' name
+        List<String> leadName =IaisCommonUtils.genNewArrayList();
+        if(taskDto != null && !StringUtil.isEmpty(taskDto.getWkGrpId())){
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
+            Set<String> leadNameSet = new HashSet<>(leadName);
+            leadName = new ArrayList<>(leadNameSet);
+            inspectionTaskPoolListDto.setInspectorLeads(leadName);
+            String leadersStr = setLeadersStrShow(leadName);
+            inspectionTaskPoolListDto.setGroupLeadersShow(leadersStr);
+        }
+        //set task data
         inspectionTaskPoolListDto.setTaskId(taskId);
         inspectionTaskPoolListDto.setTaskDto(taskDto);
         inspectionTaskPoolListDto.setWorkGroupId(superPoolTaskQueryDto.getWorkGroupId());
-        inspectionTaskPoolListDto.setInspectorLeads(leadName);
-        inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
+        //set application data
+        if(taskDto != null && !StringUtil.isEmpty(taskDto.getUserId())) {
+            inspectionTaskPoolListDto.setApplicationStatus(applicationDto.getStatus());
+        } else {
+            inspectionTaskPoolListDto.setApplicationStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+        }
         inspectionTaskPoolListDto.setApplicationNo(applicationDto.getApplicationNo());
         inspectionTaskPoolListDto.setApplicationType(applicationDto.getApplicationType());
         inspectionTaskPoolListDto.setSubmitDt(applicationGroupDto.getSubmitDt());
@@ -341,8 +371,10 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setHciName(superPoolTaskQueryDto.getHciAddress());
         //todo: get authentic Inspection Type
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
-        String appPremCorrId = taskDto.getRefNo();
-        if(StringUtil.isEmpty(taskDto.getUserId())) {
+
+        //save leaders in recommendation
+        if(taskDto!= null && StringUtil.isEmpty(taskDto.getUserId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
+            String appPremCorrId = taskDto.getRefNo();
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
             if (appPremisesRecommendationDto == null) {
                 if (!IaisCommonUtils.isEmpty(leadName)) {
@@ -369,6 +401,24 @@ public class InspectionServiceImpl implements InspectionService {
         return inspectionTaskPoolListDto;
     }
 
+    private String setLeadersStrShow(List<String> leadName) {
+        if(leadName != null){
+            StringBuilder leadStrBu = new StringBuilder();
+            Collections.sort(leadName);
+            for(String lead : leadName){
+                if(StringUtil.isEmpty(leadStrBu.toString())) {
+                    leadStrBu.append(lead);
+                } else {
+                    leadStrBu.append(',');
+                    leadStrBu.append(' ');
+                    leadStrBu.append(lead);
+                }
+            }
+            return leadStrBu.toString();
+        }
+        return "";
+    }
+
     @Override
     public List<String> getUserIdByWorkGrpId(String workGrpId) {
         List<String> userIds = IaisCommonUtils.genNewArrayList();
@@ -387,12 +437,59 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<String> getWorkIdsByLogin(LoginContext loginContext) {
+        List<String> roleIds = loginContext.getRoleIds();
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-            workGroupIdList.add(ugcDto.getGroupId());
+            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
+            String groupName = workingGroupDto.getGroupName();
+            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_ASO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_ASO))&&(groupName.contains("Admin Screening officer"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_PSO_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_PSO))&&(groupName.contains("Professional"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO1_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO1))&&(groupName.contains("Level 1 Approval"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO2_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO2))&&(groupName.contains("Level 2 Approval"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+            if((roleIds.contains(RoleConsts.USER_ROLE_AO3_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_AO3))&&(groupName.contains("Level 3 Approval"))){
+                workGroupIdList.add(ugcDto.getGroupId());
+                continue;
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(workGroupIdList)) {
+            Set<String> workGroupIdSet = new HashSet<>(workGroupIdList);
+            workGroupIdList = new ArrayList<>(workGroupIdSet);
         }
         return workGroupIdList;
+    }
+
+    @Override
+    public List<TaskDto> filterCommonPoolTask(List<TaskDto> superPool) {
+        if(IaisCommonUtils.isEmpty(superPool)){
+            return superPool;
+        } else {
+            List<TaskDto> commonPool = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto : superPool){//NOSONAR
+                if(taskDto != null){
+                    if(StringUtil.isEmpty(taskDto.getUserId())){
+                        commonPool.add(taskDto);
+                    }
+                }
+            }
+            return commonPool;
+        }
     }
 
     private String getMemberNameByUserId(String userId) {
@@ -509,7 +606,7 @@ public class InspectionServiceImpl implements InspectionService {
                             if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
                                 for (int i = 0; i < inspectorCheckList.size(); i++) {
                                     if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                         applicationService.updateFEApplicaiton(applicationDto1);
                                         inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
                                         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());

@@ -84,7 +84,7 @@
 
                         <div class="col-xs-12 col-sm-12 margin-bottom-10">
                             <div class="button-group col-xs-12 col-sm-6">
-                                <a class="btn btn-secondary next" id="Acknowledgement" href="javascript:void(0);">Print this Acknowledgement</a>
+                                <p class="print"><div style="font-size: 16px;"><a id="Acknowledgement" href="${pageContext.request.contextPath}/rfc-app-ack-print"> <em class="fa fa-print"></em>Print</a></div></p>
                             </div>
                             <div class="button-group col-xs-12 col-sm-6 ">
                                 <a class="btn btn-primary aMarginleft col-md-6 pull-right" id="GotoDashboard" href="javascript:void(0);">Go to Dashboard</a>
@@ -99,9 +99,9 @@
 
 
 <script>
-$('#Acknowledgement').click(function () {
+<%--$('#Acknowledgement').click(function () {
  window.print();
-});
+});--%>
 $('#GotoDashboard').click(function () {
     Utils.submit('menuListForm','dashboard','','','');
 });

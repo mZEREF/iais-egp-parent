@@ -83,6 +83,9 @@ public interface OrganizationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupCorreByUserId(@PathVariable(value = "userId") String userId);
 
+    @GetMapping(value = "/iais-workgroup/group-role-lead/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupLeadByUserId(@PathVariable(name = "userId") String userId);
+
     @RequestMapping(path = "/iais-broadcast/{groupName}/{groupDomain}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(@PathVariable(name = "groupName") String groupName,
                                                                               @PathVariable(name = "groupDomain") String groupDomain);
@@ -99,7 +102,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-task/insert-inpor",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionTaskPoolListDto> filterInspectorOption(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 
-    @GetMapping(value = "/iais-workgroup/inspection-lead/{workGroupId}")
+    @GetMapping(value = "/iais-workgroup/group-lead/{workGroupId}")
     FeignResponseEntity<List<String>> getInspectionLead(@PathVariable(name = "workGroupId") String workGroupId);
 
     @GetMapping(value = "/iais-task/history-tasks/{refNo}",produces = MediaType.APPLICATION_JSON_VALUE,
@@ -121,9 +124,8 @@ public interface OrganizationClient {
     @GetMapping(path = "/iais-licensee/getAllLicenseeIdName",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> getAllLicenseeIdName();
 
-    @GetMapping(value = "/iais-licensee-be/licensee-overtime/{days}")
+    @GetMapping(value = "/iais-licensee/licensee-overtime/{days}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoOvertime (@PathVariable("days") String days);
-
 
     @GetMapping(value = "/iais-licensee-be/licenseeDto-by-uenNo/{uenNo}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoByUen(@PathVariable(name = "uenNo") String uenNo);
@@ -145,6 +147,10 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-workgroup/work-group-by-group-domain", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(@RequestParam("uerDomain") String uerDomain);
 
+    @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
+    FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
+                                                                          @PathVariable(name = "roleId") String roleId);
+
     @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
@@ -163,6 +169,11 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-licensee-be/licenseeKeyApptPersonByLicId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(@PathVariable("licenseeId") String licenseeId);
+
+
+    @GetMapping(value = "/iais-licensee-be/licenseesByOrgId/{orgId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(@PathVariable(name = "orgId") String orgId);
+
 
     @PostMapping(value = "/iais-task/ins-kpi-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getInsKpiTask(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);

@@ -12,6 +12,14 @@ import org.springframework.http.HttpHeaders;
  */
 public class PaymentAppGrpClientFallBack implements PaymentAppGrpClient{
     @Override
+    public FeignResponseEntity<String> doPaymentUpDate(ApplicationGroupDto applicationGroupDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<ApplicationGroupDto> paymentUpDateByGrpNo(String groupNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

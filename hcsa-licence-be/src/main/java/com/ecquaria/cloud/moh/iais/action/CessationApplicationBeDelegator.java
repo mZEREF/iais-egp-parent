@@ -9,24 +9,27 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -51,21 +54,14 @@ public class CessationApplicationBeDelegator {
     @Autowired
     private CessationBeService cessationBeService;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    @Autowired
+    private ApplicationClient applicationClient;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
+    private static final String TRANSFORMNO = "patNoConfirm";
     private static final String WHICHTODO = "whichTodo";
     private static final String EFFECTIVEDATE = "effectiveDate";
     private static final String REASON = "reason";
@@ -75,8 +71,12 @@ public class CessationApplicationBeDelegator {
     private static final String PATNOREMARKS = "patNoRemarks";
     private static final String PATHCINAME = "patHciName";
     private static final String PATREGNO = "patRegNo";
-    private static final String PATOTHERS = "patOthers";
+    private static final String PATOTHERS = "patOthersTakeOver";
+    private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
+    private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String ERROR = "GENERAL_ERR0006";
+    private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
+    private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
 
     public void start(BaseProcessClass bpc) {
@@ -84,8 +84,8 @@ public class CessationApplicationBeDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag",null);
-        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",null);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
+        ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -94,21 +94,21 @@ public class CessationApplicationBeDelegator {
         boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
         List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
-        if(specLicInfo.size()>0) {
-            Map<String,List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
-            for(AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo){
+        if (specLicInfo.size() > 0) {
+            Map<String, List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
+            for (AppSpecifiedLicDto appSpecifiedLicDto : specLicInfo) {
                 String specLicId = appSpecifiedLicDto.getSpecLicId();
                 String baseLicNo = appSpecifiedLicDto.getBaseLicNo();
-                if(specLicIds.contains(specLicId)){
+                if (specLicIds.contains(specLicId)) {
                     licIds.remove(specLicId);
                 }
                 List<AppSpecifiedLicDto> specLicInfoConfirmExist = map.get(baseLicNo);
-                if(!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)){
+                if (!IaisCommonUtils.isEmpty(specLicInfoConfirmExist)) {
                     specLicInfoConfirmExist.add(appSpecifiedLicDto);
-                }else {
+                } else {
                     List<AppSpecifiedLicDto> specLicInfoConfirm = IaisCommonUtils.genNewArrayList();
                     specLicInfoConfirm.add(appSpecifiedLicDto);
-                    map.put(baseLicNo,specLicInfoConfirm);
+                    map.put(baseLicNo, specLicInfoConfirm);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
@@ -122,7 +122,7 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
-        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
+        ParamUtil.setSessionAttr(bpc.request, "isGrpLic", isGrpLicence);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -138,7 +138,7 @@ public class CessationApplicationBeDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
-        List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
+        List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, APPCESSATIONDTOS);
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
@@ -160,7 +160,7 @@ public class CessationApplicationBeDelegator {
             }
         }
         if (!choose) {
-            errorMap.put("choose",MessageUtil.getMessageDesc("CESS_ERR003"));
+            errorMap.put("choose", MessageUtil.getMessageDesc("CESS_ERR003"));
         }
         if (confirmDtos.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -179,10 +179,10 @@ public class CessationApplicationBeDelegator {
             }
         }
         if (!errorMap.isEmpty()) {
-            if(!IaisCommonUtils.isEmpty(licIds)){
-                if(licIds.size()==1){
+            if (!IaisCommonUtils.isEmpty(licIds)) {
+                if (licIds.size() == 1) {
                     LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
-                    WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,errorMap);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto, errorMap);
                 }
             }
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -233,19 +233,34 @@ public class CessationApplicationBeDelegator {
                 String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
                 String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
                 Boolean patNeedTrans = null;
-                if(!StringUtil.isEmpty(patRadio)){
+                if (!StringUtil.isEmpty(patRadio)) {
                     patNeedTrans = "yes".equals(patRadio);
                 }
                 String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
                 String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
                 String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
                 String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
-                String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
                 String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
+                String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
+                String patMobile = ParamUtil.getRequestString(bpc.request, i + PATOTHERSMOBILENO + j);
+                String patEmailAddress = ParamUtil.getRequestString(bpc.request, i + PATOTHERSEMAILADDRESS + j);
+                String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);
                 String hciName = appCessHciDto.getHciName();
                 String hciAddress = appCessHciDto.getHciAddress();
 
                 appCessHciDto.setHciAddress(hciAddress);
+                appCessHciDto.setHciAddress(hciAddress);
+                if (!StringUtil.isEmpty(patHciName)) {
+                    PremisesDto premisesDto = cessationBeService.getPremiseByHciCodeName(patHciName);
+                    if (premisesDto != null) {
+                        String hciAddressPat = premisesDto.getHciAddress();
+                        String hciNamePat = premisesDto.getHciName();
+                        String hciCodePat = premisesDto.getHciCode();
+                        appCessHciDto.setHciCodePat(hciCodePat);
+                        appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciAddressPat(hciAddressPat);
+                    }
+                }
                 appCessHciDto.setHciName(hciName);
                 appCessHciDto.setEffectiveDate(effectiveDate);
                 appCessHciDto.setReason(reason);
@@ -256,7 +271,10 @@ public class CessationApplicationBeDelegator {
                 appCessHciDto.setPatHciName(patHciName);
                 appCessHciDto.setPatRegNo(patRegNo);
                 appCessHciDto.setPatOthers(patOthers);
+                appCessHciDto.setMobileNo(patMobile);
+                appCessHciDto.setEmailAddress(patEmailAddress);
                 appCessHciDto.setPremiseIdChecked(whichTodo);
+                appCessHciDto.setPatNoConfirm(patNoConfirm);
                 appCessHciDto.setReadInfo(readInfo);
                 appCessHciDtos.add(appCessHciDto);
             }
@@ -264,6 +282,19 @@ public class CessationApplicationBeDelegator {
             appCessLicDtos.add(appCessLicDto);
         }
         return appCessLicDtos;
+    }
+
+    @GetMapping(value = "/hci-info")
+    public @ResponseBody
+    PremisesDto getPsnSelectInfo(HttpServletRequest request) {
+        String hciNameCode = ParamUtil.getDate(request, "hciNameCode");
+        PremisesDto premisesDto ;
+        try{
+            premisesDto = cessationBeService.getPremiseByHciCodeName(hciNameCode);
+        }catch (Exception e){
+            return null;
+        }
+        return premisesDto;
     }
 
     private List<AppCessationDto> transformDto(List<AppCessLicDto> appCessLicDtos) {
@@ -286,6 +317,8 @@ public class CessationApplicationBeDelegator {
                         String patRegNo = appCessHciDto.getPatRegNo();
                         String patNoRemarks = appCessHciDto.getPatNoRemarks();
                         String patOthers = appCessHciDto.getPatOthers();
+                        String mobileNo = appCessHciDto.getMobileNo();
+                        String emailAddress = appCessHciDto.getEmailAddress();
                         String readInfo = appCessHciDto.getReadInfo();
 
                         AppCessationDto appCessationDto = new AppCessationDto();
@@ -299,6 +332,8 @@ public class CessationApplicationBeDelegator {
                         appCessationDto.setPatRegNo(patRegNo);
                         appCessationDto.setPatHciName(patHciName);
                         appCessationDto.setPatOthers(patOthers);
+                        appCessationDto.setMobileNo(mobileNo);
+                        appCessationDto.setEmailAddress(emailAddress);
                         appCessationDto.setPatNoRemarks(patNoRemarks);
                         appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
@@ -361,7 +396,10 @@ public class CessationApplicationBeDelegator {
         String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, i + PATNOREMARKS + j);
         String patHciName = ParamUtil.getRequestString(httpServletRequest, i + PATHCINAME + j);
         String patRegNo = ParamUtil.getRequestString(httpServletRequest, i + PATREGNO + j);
+        String patMobile = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSMOBILENO + j);
+        String patEmailAddress = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSEMAILADDRESS + j);
         String patOthers = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERS + j);
+        String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
                 errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
@@ -382,8 +420,8 @@ public class CessationApplicationBeDelegator {
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
                 errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", "field"));
-            }else if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)){
-                if("Y".equals(prsFlag)){
+            } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)) {
+                if ("Y".equals(prsFlag)) {
                     ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
                     List<String> prgNos = IaisCommonUtils.genNewArrayList();
                     prgNos.add(patRegNo);
@@ -393,44 +431,61 @@ public class CessationApplicationBeDelegator {
                     String format = simpleDateFormat.format(new Date());
                     professionalParameterDto.setTimestamp(format);
                     professionalParameterDto.setSignature("2222");
-                    HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                    HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                     try {
-                        List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                signature2.date(), signature2.authorization()).getEntity();
-                        if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
+                        List<ProfessionalResponseDto> professionalResponseDtos = applicationClient.getProfessionalDetail(professionalParameterDto).getEntity();
+                        if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
                             List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                            if(IaisCommonUtils.isEmpty(specialty)){
+                            if (IaisCommonUtils.isEmpty(specialty)) {
                                 errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
                             }
                         }
-                    }catch (Throwable e){
-                        bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+                    } catch (Throwable e) {
+                        bpc.request.setAttribute("PRS_SERVICE_DOWN", "PRS_SERVICE_DOWN");
 
                     }
                 }
 
             }
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect) && StringUtil.isEmpty(patOthers)) {
-                errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
+                if (StringUtil.isEmpty(patOthers)) {
+                    errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                }
+                if (StringUtil.isEmpty(patMobile)) {
+                    errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, "field"));
+                } else {
+                    if (!patMobile.matches("^[8|9][0-9]{7}$")) {
+                        errorMap.put(i + PATOTHERSMOBILENO + j, "GENERAL_ERR0007");
+                    }
+                }
+                if (StringUtil.isEmpty(patEmailAddress)) {
+                    errorMap.put(i + PATOTHERSEMAILADDRESS + j, MessageUtil.replaceMessage(ERROR, PATOTHERSEMAILADDRESS, "field"));
+                } else {
+                    if (!ValidationUtils.isEmail(patEmailAddress)) {
+                        errorMap.put(i + PATOTHERSEMAILADDRESS + j, "GENERAL_ERR0014");
+                    }
+                }
             }
         }
-        if ("no".equals(patRadio) && StringUtil.isEmpty(patNoRemarks)) {
-            errorMap.put(i + PATNOREMARKS + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
+        if ("no".equals(patRadio)) {
+            String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
+            if (StringUtil.isEmpty(patNoRemarks)) {
+                errorMap.put(i + PATNOREMARKS + j, genErr006);
+            }
+            if (StringUtil.isEmpty(patNoConfirm)) {
+                errorMap.put(i + "patNoConfirm" + j, genErr006);
+            }
         }
         //max length
         return errorMap;
     }
 
     private List<SelectOption> getReasonOption() {
-        String [] arr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE,ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA,ApplicationConsts.CESSATION_REASON_OTHER};
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(reasonArr);
         return selectOptions;
     }
 
     private List<SelectOption> getPatientsOption() {
-        String [] arr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI,ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO,ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
-        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(arr);
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
         return selectOptions;
     }
 }

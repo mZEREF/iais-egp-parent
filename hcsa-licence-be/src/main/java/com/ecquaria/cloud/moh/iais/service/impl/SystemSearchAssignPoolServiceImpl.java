@@ -31,16 +31,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -69,13 +65,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     private OrganizationClient organizationClient;
 
     @Autowired
-    private ApplicationViewService applicationViewService;
-
-    @Autowired
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
-
-    @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
 
     @Autowired
     private TaskService taskService;
@@ -84,13 +74,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private ApplicationService applicationService;
-
-    @Autowired
     private ApplicationClient applicationClient;
-
-    @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
 
     @Override
     public GroupRoleFieldDto getSystemSearchStage() {
@@ -226,12 +210,13 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     @Override
     public SystemAssignTaskDto setWorkGroupAndOfficer(GroupRoleFieldDto groupRoleFieldDto, SystemAssignTaskDto systemAssignTaskDto) {
         String curStage = groupRoleFieldDto.getCurStage();
+        TaskDto taskDto = systemAssignTaskDto.getTaskDto();
         Map<String, HcsaSvcRoutingStageDto> stageMap = groupRoleFieldDto.getStageMap();
         HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = stageMap.get(curStage);
         String stage = hcsaSvcRoutingStageDto.getId();
         //get work group
         List<String> workGroupIds = hcsaConfigClient.getWorkGroupIdsByStageId(stage).getEntity();
-        if(!IaisCommonUtils.isEmpty(workGroupIds)){
+        if(!IaisCommonUtils.isEmpty(workGroupIds) && taskDto != null){
             Map<String, String> workGroupIdMap = IaisCommonUtils.genNewHashMap();
             Map<String, Map<String, String>> groupCheckUserIdMap = IaisCommonUtils.genNewHashMap();
             Map<String, List<SelectOption>> inspectorByGroup = IaisCommonUtils.genNewHashMap();
@@ -243,7 +228,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
                 SelectOption workGroupOption = new SelectOption(workGroupNo + "", workingGroupDto.getGroupName());
                 workGroupOptions.add(workGroupOption);
                 workGroupIdMap.put(workGroupNo + "", workGroupId);
-                List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                List<OrgUserDto> orgUserDtoList = organizationClient.activeUsersByWorkGroupAndRole(workGroupId, taskDto.getRoleId()).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
                     Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
                     List<SelectOption> officerOption = IaisCommonUtils.genNewArrayList();
@@ -346,8 +331,10 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             if(workGroupIdMap != null){
                 String workGroupId = workGroupIdMap.get(checkGroup);
                 createTask.setWkGrpId(workGroupId);
-                //set inspector leads
-                setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(applicationDto.getStatus()) && !StringUtil.isEmpty(workGroupId)) {
+                    //set inspector leads
+                    setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
+                }
             }
             Map<String, String> groupUserMap = groupCheckUserIdMap.get(checkGroup);
             if(groupUserMap != null){
@@ -372,6 +359,24 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, InspectionConstants.PROCESS_DECI_SYSTEM_ADMIN_RE_ASSIGN, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
+    }
+
+    @Override
+    public String getSysCurStageId(GroupRoleFieldDto groupRoleFieldDto) {
+        String stageId = "";
+        if(groupRoleFieldDto != null) {
+            String curStage = groupRoleFieldDto.getCurStage();
+            if (!StringUtil.isEmpty(curStage)) {
+                Map<String, HcsaSvcRoutingStageDto> stageMap = groupRoleFieldDto.getStageMap();
+                if (stageMap != null) {
+                    HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = stageMap.get(curStage);
+                    if (hcsaSvcRoutingStageDto != null) {
+                        stageId = hcsaSvcRoutingStageDto.getId();
+                    }
+                }
+            }
+        }
+        return stageId;
     }
 
     private TaskDto setOtherDataByOldTask(TaskDto createTask, TaskDto taskDto) {

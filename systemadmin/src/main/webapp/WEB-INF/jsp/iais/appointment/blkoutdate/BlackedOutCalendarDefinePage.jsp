@@ -36,7 +36,7 @@
       <div class="bg-title"><h2>Create Blacked Out Dates </h2></div>
     </c:if>
     <c:if test="${switchPageAction == 'update'}">
-      <div class="bg-title"><h2>Update Blacked Out Dates </h2></div>
+      <div class="bg-title"><h2>Amend Blacked Out Dates </h2></div>
     </c:if>
 
     <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>

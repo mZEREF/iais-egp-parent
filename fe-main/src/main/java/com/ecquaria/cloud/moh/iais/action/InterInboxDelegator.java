@@ -64,6 +64,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -510,14 +511,18 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
-        List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
-        if(!licenceDtos.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ACK002"));
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-            return;
-        }
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
         if(licenceDto != null){
+            boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+           boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
+            if(!isActive && !isApprove){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
+                List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+                licIdValues.add(licId);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                return;
+            }
             Calendar calendar=Calendar.getInstance();
             calendar.setTime(licenceDto.getCreatedAt());
             calendar.add(Calendar.DAY_OF_MONTH,Integer.parseInt(systemParamConfig.getLicencePeriod()));
@@ -533,18 +538,13 @@ public class InterInboxDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
                 return;
             }
-            boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
-           boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
-            if(!isActive && !isApprove){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
-                List<String> licIdValues = IaisCommonUtils.genNewArrayList();
-                licIdValues.add(licId);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
-                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-                return;
-            }
         }
-
+        List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
+        if(!licenceDtos.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ACK002"));
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            return;
+        }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
         if(!draftByLicAppId.isEmpty()){
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");
@@ -635,6 +635,12 @@ public class InterInboxDelegator {
                     return;
                 }
             }
+            if(errorMap.isEmpty()){
+                List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+                if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
+                }
+            }
 
             if(errorMap.isEmpty()){
                 StringBuilder url = new StringBuilder();
@@ -707,6 +713,14 @@ public class InterInboxDelegator {
                     result = false;
                 }
             }
+            if(result && licIdValue.size()==1){
+                List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue.get(0),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+                if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
+                    result = false;
+                }
+            }
+
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -841,21 +855,20 @@ public class InterInboxDelegator {
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
-                String appGroupId = h.getAppGrpId();
-//                if (h.getApplicationType())
-                if (!StringUtil.isEmpty(appGroupId)){
-                    ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
-                    if (applicationGroupDto != null){
-                        if (applicationGroupDto.getPrefInspEndDate() != null || applicationGroupDto.getPrefInspStartDate() != null){
-                            h.setCanInspection(Boolean.FALSE);
-                        }else{
-                            h.setCanInspection(Boolean.TRUE);
-                        }
-                    }
+                String status = h.getStatus();
+                Integer selfAssmtFlag = h.getSelfAssmtFlag();
+                if ((status.equals(ApplicationConsts.PENDING_ASO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_PSO_REPLY)
+                        || status.equals(ApplicationConsts.PENDING_INP_REPLY))
+                        && selfAssmtFlag == 2){
+                    h.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                }
+
+                if(h.getHasSubmitPrefDate() == null || 0==h.getHasSubmitPrefDate()){
+                    h.setCanInspection(Boolean.TRUE);
                 }else{
                     h.setCanInspection(Boolean.FALSE);
                 }
-
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
@@ -1050,6 +1063,14 @@ public class InterInboxDelegator {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         }
          List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
+        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
+ /*       //68521
+        if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
+            LicenceDto entity = licenceInboxClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+            if(entity!=null && ApplicationConsts.LICENCE_STATUS_IACTIVE.equals(entity.getStatus())){
+                licenceDtos.add(entity);
+            }
+        }*/
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
@@ -1090,7 +1111,6 @@ public class InterInboxDelegator {
                 return;
             }
         }
-        ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
         Calendar calendar=Calendar.getInstance();
         Date createAt = applicationDto.getCreateAt();
         calendar.setTime(createAt);
@@ -1207,10 +1227,7 @@ public class InterInboxDelegator {
             log.info(StringUtil.changeForLog("delete draft start ..."));
             inboxService.deleteDraftByNo(draft);
 
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setApplicationNum(draft);
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
-            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+
 
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
@@ -1225,26 +1242,30 @@ public class InterInboxDelegator {
         this.appDoDraft(bpc);
     }
 
-    public void appDoRecall(BaseProcessClass bpc){
+    public void appDoRecall(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
         String appGroupId = ParamUtil.getString(request, "action_grp_value");
-        RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
-        recallApplicationDto.setAppId(appId);
-        recallApplicationDto.setAppNo(appNo);
-        recallApplicationDto.setAppGrpId(appGroupId);
-        recallApplicationDto = inboxService.recallApplication(recallApplicationDto);
-        if ("RECALLMSG001".equals(recallApplicationDto.getMessage())){
-            ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
-            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","This data is being processed. Please try again later");
+        String appSelfFlag = ParamUtil.getString(request, "action_self_value");
+        if ("appMakePayment".equals(appSelfFlag)){
+            doPaymentAction(appGroupId,request,bpc.response);
+        }else{
+            RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
+            recallApplicationDto.setAppId(appId);
+            recallApplicationDto.setAppNo(appNo);
+            recallApplicationDto.setAppGrpId(appGroupId);
+            recallApplicationDto = inboxService.recallApplication(recallApplicationDto);
+            if ("RECALLMSG001".equals(recallApplicationDto.getMessage())){
+                ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","This data is being processed. Please try again later");
+            }
         }
     }
 
     public void doSelfAssMt(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-
         //selfDeclAction // selfDeclApplicationNumber // appGroupId
         String appSelfFlag = ParamUtil.getString(request, "action_self_value");
         String appGroupId = ParamUtil.getString(request, "action_grp_value");
@@ -1272,6 +1293,9 @@ public class InterInboxDelegator {
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
+        String appGroupId = ParamUtil.getString(bpc.request, "action_grp_value");
+        String appSelfFlag = ParamUtil.getString(bpc.request, "action_self_value");
+        ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.FALSE);
         if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -1289,7 +1313,10 @@ public class InterInboxDelegator {
                     .append("&isDoView=Y");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else{
+        }else if("appMakePayment".equals(appSelfFlag)){
+            doPaymentAction(appGroupId,bpc.request,bpc.response);
+        }
+        else{
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
@@ -1297,6 +1324,20 @@ public class InterInboxDelegator {
                     .append(MaskUtil.maskValue("appNo",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+        }
+    }
+
+
+    private void doPaymentAction(String appGroupId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ApplicationGroupDto applicationGroupDto = inboxService.getAppGroupByGroupId(appGroupId);
+        if (applicationGroupDto != null){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
+                    .append("?appGrpNo=")
+                    .append(MaskUtil.maskValue("appGrpNo", applicationGroupDto.getGroupNo()));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+            response.sendRedirect(tokenUrl);
         }
     }
 
@@ -1317,10 +1358,10 @@ public class InterInboxDelegator {
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
-        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
-        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         inboxServiceSelectList.add(new SelectOption("NMA@", "Nuclear Medicine (Assay)"));
         inboxServiceSelectList.add(new SelectOption("NMI@", "Nuclear Medicine (Imaging)"));
+        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
+        inboxServiceSelectList.add(new SelectOption("TSB@", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
@@ -1359,33 +1400,33 @@ public class InterInboxDelegator {
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
         appServiceTypeSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
-        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
-        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         appServiceTypeSelectList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        appServiceTypeSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        appServiceTypeSelectList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_ACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_APPROVED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_CEASED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_EXPIRY)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_LAPSED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_APPROVED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_IACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_IACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
-        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         LicenceTypeList.add(new SelectOption("Blood Banking", "Blood Banking"));
-        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         LicenceTypeList.add(new SelectOption("Nuclear Medicine (Imaging)", "Nuclear Medicine (Imaging)"));
+        LicenceTypeList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        LicenceTypeList.add(new SelectOption("Tissue Banking", "Tissue Banking"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
 
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();

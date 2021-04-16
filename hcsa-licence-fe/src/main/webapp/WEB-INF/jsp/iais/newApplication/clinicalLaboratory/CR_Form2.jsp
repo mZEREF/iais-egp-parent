@@ -84,9 +84,10 @@
                     <td class="first last" style="width: 100%;">
                         <div id="control--runtime--1" class="section control  container-s-1">
                             <div class="control-set-font control-font-header section-header"></div>
-                            <c:if test="${CgoMandatoryCount >0}">
+                            <c:set value="${GovernanceOfficersList}" var="cgoList"/>
+                            <c:set var="editControl" value="${(!empty cgoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:if test="${CgoMandatoryCount >0 && editControl}">
                                 <c:forEach begin="0" end="${CgoMandatoryCount-1}" step="1" varStatus="status">
-                                    <c:set value="${GovernanceOfficersList}" var="cgoList"/>
                                     <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                                     <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                                     <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
@@ -132,7 +133,7 @@
                                                                         <div class="col-sm-10">
                                                                             <label class="control-font-label">
                                                                                 <c:if test="${!empty currentCgo.name && !empty currentCgo.idNo && !empty currentCgo.idType}">
-                                                                                    ${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})
+                                                                                    ${currentCgo.name}, ${currentCgo.idNo} (<iais:code code="${currentCgo.idType}"/>)
                                                                                 </c:if>
                                                                             </label>
                                                                         </div>
@@ -141,14 +142,14 @@
                                                                                 <c:if test="${'true' == canEdit}">
                                                                                     <p>
                                                                                     <div class="text-right app-font-size-16">
-                                                                                        <a class="edit"><em
+                                                                                        <a class="edit cgoEdit"><em
                                                                                                 class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
                                                                                     </div>
                                                                                     </p>
                                                                                 </c:if>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="<c:if test="${'-1' != currentCgo.assignSelect}"> hidden </c:if>">
+                                                                        <div class="<c:if test="${!empty currentCgo.assignSelect && '-1' != currentCgo.assignSelect}"> hidden </c:if>">
                                                                             <div class="col-sm-5 control-label formtext ">
                                                                                 <label class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                                                                 <span class="mandatory">*</span>
@@ -233,7 +234,7 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3"
+                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
                                                                                  id="salutation${suffix}">
                                                                                 <iais:select cssClass="salutationSel"
                                                                                              name="salutation"
@@ -244,7 +245,7 @@
                                                                                       name="iaisErrorMsg"
                                                                                       id="error_salutation${status.index}"></span>
                                                                             </div>
-                                                                            <div class="col-sm-3 col-md-4"
+                                                                            <div class="col-sm-3 col-md-4 col-xs-4"
                                                                                  id="name${suffix}">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="66"
@@ -272,20 +273,21 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3"
+                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
                                                                                  id="idType${suffix}">
                                                                                 <div class="">
                                                                                     <iais:select cssClass="idTypeSel"
                                                                                                  name="idType"
                                                                                                  needSort="false"
                                                                                                  value="${currentCgo.idType}"
-                                                                                                 options="IdTypeSelect"></iais:select>
+                                                                                                 firstOption="Please Select"
+                                                                                                 codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_idTyp${status.index}"></span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-4">
+                                                                            <div class="col-sm-5 col-md-4 col-xs-4">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="9"
                                                                                                 type="text" name="idNo"
@@ -472,6 +474,7 @@
                                                                                     Sub-specialty or relevant
                                                                                     qualification
                                                                                 </label>
+                                                                                <span class="mandatory subSpecialtySpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <div class="">
@@ -553,6 +556,7 @@
                                     </div>
                                 </c:forEach>
                             </c:if>
+                            <div class="cgo-content-point"></div>
                         </div>
                     </td>
                 </tr>
@@ -562,7 +566,14 @@
                             <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
                         </c:when>
                         <c:otherwise>
-                            <c:set var="cgoDtoLength" value="1"/>
+                            <c:choose>
+                                <c:when test="${AppSubmissionDto.needEditController}">
+                                    <c:set var="cgoDtoLength" value="0"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="cgoDtoLength" value="${HcsaSvcPersonnel.mandatoryCount}"/>
+                                </c:otherwise>
+                            </c:choose>
                         </c:otherwise>
                     </c:choose>
                     <c:set var="needAddPsn" value="true"/>
@@ -589,12 +600,13 @@
         </div>
     </div>
 </div>
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+<%--            <div class="modal-header">--%>
+<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--            </div>--%>
             <div class="modal-body" style="text-align: center;">
                 <div class="row">
                     <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
@@ -629,6 +641,7 @@
 
         removeCgo();
 
+        addRemarkForSubspecialty();
 
         $('input[name="licPerson"]').each(function (k, v) {
             if ('1' == $(this).val()) {
@@ -676,8 +689,26 @@
         doEdit();
         //ajac();
         //init end
+        if($("#errorMapIs").val()=='error'){
+            $('.edit').trigger('click');
+        }
+
+        $('input[name="professionRegoNo"]').trigger('blur');
         init = 1;
     });
+
+    var addRemarkForSubspecialty = function () {
+        $('input[name="professionRegoNo"]').unbind('blur');
+        $('input[name="professionRegoNo"]').blur(function(){
+            var professionRegoNoVal = $(this).val().trim();
+            var $currContent = $(this).closest('.new-officer-form');
+            if(professionRegoNoVal.length == 0){
+                $currContent.find('span.subSpecialtySpan').html('*');
+            }else if(professionRegoNoVal.length > 0){
+                $currContent.find('span.subSpecialtySpan').html('');
+            }
+        });
+    }
 
     var psnSelect = function () {
         $('select.assignSel').change(function () {
@@ -738,7 +769,7 @@
         $('.assignContent:last').after(appendHtml);*/
         showWaiting();
         $('.hideen-div').addClass('hidden');
-        var number = $('.assign-psn-item').size();
+        var number = $('.assign-psn-item').length;
         var addNumber = ${HcsaSvcPersonnel.maximumCount} -number;
         $.ajax({
             url: '${pageContext.request.contextPath}/governance-officer-html',
@@ -751,7 +782,7 @@
             success: function (data) {
                 console.log(data.res);
                 if ('success' == data.res) {
-                    $('.cgo-content:last').after(data.sucInfo);
+                    $('.cgo-content-point').before(data.sucInfo);
                     showSpecialty();
                     psnSelect();
                     removeCgo();
@@ -759,17 +790,22 @@
                     $('.cgo-header').css('font-size', "18px");
                     <!--change psn item -->
                     changePsnItem();
+
+                    addRemarkForSubspecialty();
                     <!--set Scrollbar -->
-                    $("div.assignSel->ul").mCustomScrollbar({
+                    /*$("div.assignSel->ul").mCustomScrollbar({
                             advanced: {
                                 updateOnContentResize: true
                             }
                         }
-                    );
+                    );*/
                     //hidden add more
                     var psnLength = $('.assignContent').length - 1;
                     if (psnLength >= '${HcsaSvcPersonnel.maximumCount}') {
                         $('#addPsnDiv').addClass('hidden');
+                    }
+                    if(psnLength <= '${HcsaSvcPersonnel.mandatoryCount}'){
+                        $('.assignContent:last .removeBtn').remove();
                     }
                 } else {
                     $('.errorMsg').html(data.errInfo);
@@ -857,7 +893,7 @@
             $contentEle.find('input[type="text"]').css('color', '');
             //get data from page
             var cgoSelectVal = $contentEle.find('select[name="assignSelect"]').val();
-            if('-1' != cgoSelectVal){
+            if('-1' != cgoSelectVal && '' != cgoSelectVal){
                 $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             }
             $('#isEditHiddenVal').val('1');

@@ -11,10 +11,10 @@ public final class SelfAssessmentConstant {
 
     public static final String SELF_ASSESSMENT_QUERY_ATTR  = "selfAssessmentQueryAttr";
     public static final String SELF_ASSESSMENT_DETAIL_ATTR  = "selfAssessmentDetail";
-    public static final String SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION  = "tabIndex";
+    public static final String SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION  = "tagIndex";
     public static final String SELF_ASSESSMENT_DETAIL_CAN_EDIT_ANSWER_FLAG  = "canEditAnswerFlag";
-    public static final String SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION  = "prevTabIndex";
-    public static final String SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP  = "detailIndexMap";
+    public static final String SELF_ASSESSMENT_DETAIL_LAST_TAB_INDEX_POSTION  = "prevTagIndex";
+    public static final String SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP  = "selfAssessmentMap";
     public static final String SELF_ASSESSMENT_EACH_DETAIL_CORR_ID  = "selfAssessmentCorrId";
     public static final String SELF_ASSESSMENT_HAS_SUBMITTED_FLAG  = "hasSubmitted";
     public static final String SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG  = "hasSubmittedMsg";

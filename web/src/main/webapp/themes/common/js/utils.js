@@ -155,6 +155,26 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
     });
 }
 
+function getQueryVariable(variable)
+{
+    let query = window.location.search.substring(1);
+    let vars = query.split("&");
+    for (let i = 0; i< vars.length; i++) {
+        let pair = vars[i].split("=");
+        if(pair[0] == variable) return pair[1];
+    }
+
+    return null;
+}
+
+function printpage(id) {
+    let newStr = document.getElementById(id).innerHTML;
+    let oldStr = document.body.innerHTML;
+    document.body.innerHTML = newStr;
+    window.print();
+    document.body.innerHTML = oldStr;
+}
+
 function changeMemoryPage(paginationDiv, checkType, pageNo) {
     var ids = "NA";
     if (checkType == 1) {
@@ -280,4 +300,60 @@ function callAjaxSetCheckBoxSelectedItem(checkboxName, destUrl) {
         'error': function () {
         }
     });
+}
+
+function ajaxCallSelectCheckbox(){
+        let destUrl = '/hcsa-licence-web/checkbox-ajax/record-status'
+        if (this.checked) {
+            destUrl += '?action=checked'
+          }else{
+            destUrl += '?action=unchecked'
+          }
+        destUrl += '&itemId=' + this.value + '&forName=' + $(this).attr('data-redisplay-name') + '&checkboxName=' + this.name
+        $.ajax({
+                'url': destUrl,
+                'type': 'GET',
+                'traditional':true,
+                'async': true,
+                'success': function (data) {
+                },
+                'error': function () {
+                }
+        });
+    }
+
+//This is All Just For Logging:
+var debugFile = true;//true: add debug logs when cloning
+var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
+if (evenMoreListeners) {
+    var allFleChoosers = $("input[type='file']");
+    addEventListenersTo(allFleChoosers);
+    function addEventListenersTo(fileChooser) {
+        fileChooser.change(function (event) { console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop()) });
+        fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
+    }
+}
+
+var clone = {};
+
+// FileClicked()
+function fileClicked(event) {
+    var fileElement = event.target;
+    if (fileElement.value != "") {
+        if (debugFile) { console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop()) }
+        clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+    }
+    //What ever else you want to do when File Chooser Clicked
+}
+
+// FileChanged()
+function fileChanged(event) {
+    var fileElement = event.target;
+    if (fileElement.value == "") {
+        if (debugFile) { console.log("Restore( #" + fileElement.id + " ) : " + clone[fileElement.id].val().split("\\").pop()) }
+        clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
+        $(fileElement).remove(); //'Removing Original'
+        if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
+    }
+    //What ever else you want to do when File Chooser Changed
 }

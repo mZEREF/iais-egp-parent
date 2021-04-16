@@ -12,10 +12,20 @@
 %>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
+<style>
+    .btn.btn-sm {
+        font-size: .775rem;
+        font-weight: 500;
+        padding: 6px 10px;
+        text-transform: uppercase;
+        border-radius: 30px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -54,7 +64,7 @@
                                         <div id="uploadFileBox" class="file-upload-gp">
                                             <c:forEach var="attachmentDto" items="${blastManagementDto.attachmentDtos}"
                                                        varStatus="status">
-                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-danger btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')"><em class="fa fa-times"></em></button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
+                                                <p class="fileList">${attachmentDto.docName}&emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${attachmentDto.id}')">Delete</button><input hidden name='fileSize' value='${attachmentDto.docSize}'/></p>
                                             </c:forEach>
                                         </div>
                                         <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
@@ -122,7 +132,7 @@
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectFile');
         console.log(error)
         if (error == "N"){
-            $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_fileUploadError').html($("#fileMaxMBMessage").val());
             $("#selectFile").val('');
             $(".filename").html("");
         }else if(error == "Y"){
@@ -130,7 +140,7 @@
                 callAjaxUploadFile();
                 $('#error_fileUploadError').html('');
             }else{
-                $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+                $('#error_fileUploadError').html($("#fileMaxMBMessage").val());
                 $("#selectFile").val('');
             }
         }

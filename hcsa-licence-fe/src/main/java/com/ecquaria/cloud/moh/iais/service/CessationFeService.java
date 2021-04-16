@@ -5,7 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -38,5 +40,5 @@ public interface CessationFeService {
 
     List<AppCessLicDto> initRfiData(String appId,String premiseId);
 
-
+    PremisesDto getPremiseByHciCodeName(String hciNameCode);
 }

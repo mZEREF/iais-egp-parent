@@ -1,6 +1,6 @@
 <div class="form-check-gp">
 
-    <p class="form-check-title">You select one licence to amend at a time:</p>
+    <p class="form-check-title">Please select the licence to amend:</p>
 
     <iais:pagination  param="amendUpdatePersonnelSearchParam" result="amendUpdatePersonnelSearchResult"/>
     <div class="table-gp">

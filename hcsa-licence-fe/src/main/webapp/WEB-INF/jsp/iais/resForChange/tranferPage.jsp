@@ -40,7 +40,7 @@
                              </iais:row>
                            </c:if>
                                  <iais:row>
-                                     <iais:field value="UEN of Licence to transfer licence to" mandatory="true"></iais:field>
+                                     <iais:field value="UEN of Licensee to transfer licence to" mandatory="true"></iais:field>
                                      <iais:value width="10">
                                        <p>
                                         <input type="text" name="UEN" value="${UEN}" maxlength="10">

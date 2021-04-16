@@ -135,7 +135,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity1 + "-----entity1")));
         clearDouble(entity,entity1);
         sendEmail(entity,mouth);
-       /* sendEmail(entity1,mouth);*/
+        sendEmail(entity1,mouth);
         List<LicenceDto> licence = getLicence("IS_NO_AUTO" + F_60, "IS_NO_AUTO" + F_60,systemParameterDto5);
         List<LicenceDto> licence1 = getLicence("IS_NO_AUTO" + S_45, "IS_NO_AUTO" + S_45,systemParameterDto6);
         log.info(StringUtil.changeForLog("======"+StringUtil.changeForLog(JsonUtil.parseToJson(licence))));
@@ -506,16 +506,16 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 subMap.put("count", "1st");
                 subMap.put("ServiceName", serviceName);
                 MsgTemplateDto emailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
-                MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
-                MsgTemplateDto messageTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER).getEntity();
+                MsgTemplateDto smsTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_SMS).getEntity();
+                MsgTemplateDto messageTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_MESSAGE).getEntity();
                 String emailSubject = getEmailSubject(emailTemplateDto,subMap);
                 String smsSubject = getEmailSubject(smsTemplateDto,subMap);
                 String messageSubject = getEmailSubject(messageTemplateDto,subMap);
                 Calendar expireCalendar = Calendar.getInstance();
                 expireCalendar.setTime(expiryDate);
                 expireCalendar.add(Calendar.MONTH, -2);
-                String expireDateString = DateUtil.formatDate(expiryDate);
-                String temp = DateUtil.formatDate(expireCalendar.getTime());
+                String expireDateString = new SimpleDateFormat("dd/MM/yyyy").format(expiryDate);
+                String temp = new SimpleDateFormat("dd/MM/yyyy").format(expireCalendar.getTime());
                 map.put("endDate", temp);
                 map.put("expireDate", expireDateString);
                 //first - sixth reminder

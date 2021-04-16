@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -170,6 +171,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@SearchTrack(catalog = "Appointment Inspector Calendar", key = "search")
 	public SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam) {
 		return onlineApptClient.queryInspectorCalendar(searchParam).getEntity();
+	}
+
+	@Override
+	public List<String> getLeadWorkGroupName(List<WorkingGroupQueryDto> workingGroupQueryList, List<String> leadGroupList) {
+		List<String> result = IaisCommonUtils.genNewArrayList();
+		for (WorkingGroupQueryDto i : workingGroupQueryList){
+			for (String s : leadGroupList){
+				if (i.getId().equals(s)){
+					result.add(i.getGroupName());
+				}
+			}
+		}
+		return result;
 	}
 
 }

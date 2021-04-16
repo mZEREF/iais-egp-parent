@@ -89,14 +89,14 @@
                   <input type="hidden" name="${chklsec.section}" data-name="sectionWant" value="${sectionStatus.index}">
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
-                      <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
+                      <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne${sectionStatus.index}" aria-expanded="true" style="color: black" aria-controls="collapseOne">${chklsec.section}</a>
                         <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><em class=""></em>Up</a></p>
                         <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><em class=""></em>Down</a></p>
                         <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('<iais:mask name="currentValidateId" value="${chklsec.id}"/>')"><em class=""></em>Remove</a></p>
                       </h4>
 
                     </div>
-                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-collapse collapse in" id="collapseOne${sectionStatus.index}" role="tabpanel" aria-labelledby="headingOne">
                       <div class="panel-body">
                         <p class="text-right"><a onclick="javascript:routeToItemProcess('<iais:mask name="currentValidateId" value="${chklsec.id}"/>');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
 

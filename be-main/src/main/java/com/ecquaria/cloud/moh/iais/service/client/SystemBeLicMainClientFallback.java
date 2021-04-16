@@ -16,21 +16,21 @@ import java.util.Map;
  * @date 2020/4/16
  */
 public class SystemBeLicMainClientFallback {
-    FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String,String> map){
+    public FeignResponseEntity<ProcessFileTrackDto> isFileExistence(Map<String,String> map){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus(String processType, String status){
+    public FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus(String processType, String status){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto){
+    public FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(ProcessFileTrackDto processFileTrackDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -44,7 +44,7 @@ public class SystemBeLicMainClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
+    public FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
                                          Integer yearLength,  Integer licenceSeq) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -80,21 +80,28 @@ public class SystemBeLicMainClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<Void> saveSendMailJob(JobRemindMsgTrackingDto jobRemindMsgTrackingDto){
+    public FeignResponseEntity<Void> saveSendMailJob(JobRemindMsgTrackingDto jobRemindMsgTrackingDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<JobRemindMsgTrackingDto>>  listJob(){
+    public FeignResponseEntity<List<JobRemindMsgTrackingDto>>  listJob(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<Void> getJobRemindMsgTrackingDto( String refNo, String msgKey){
+    public FeignResponseEntity<Void> getJobRemindMsgTrackingDto( String refNo, String msgKey){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<Void> initCachePostCodes() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

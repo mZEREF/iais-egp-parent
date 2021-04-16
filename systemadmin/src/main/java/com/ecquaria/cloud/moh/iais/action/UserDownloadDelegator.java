@@ -121,14 +121,14 @@ public class UserDownloadDelegator {
                 if (!StringUtil.isEmpty(salutationText)) {
                     salutation.setText(salutationText);
                 }
-                Element firstName = userGroup.addElement("firstName");
+                Element firstName = userGroup.addElement("name");
                 if (!StringUtil.isEmpty(firstNameText)) {
                     firstName.setText(firstNameText);
                 }
-                Element lastName = userGroup.addElement("lastName");
-                if (!StringUtil.isEmpty(lastNameText)) {
-                    lastName.setText(lastNameText);
-                }
+//                Element lastName = userGroup.addElement("lastName");
+//                if (!StringUtil.isEmpty(lastNameText)) {
+//                    lastName.setText(lastNameText);
+//                }
                 Element organization = userGroup.addElement("organization");
                 if (!StringUtil.isEmpty(organizationText)) {
                     organization.setText(organizationText);

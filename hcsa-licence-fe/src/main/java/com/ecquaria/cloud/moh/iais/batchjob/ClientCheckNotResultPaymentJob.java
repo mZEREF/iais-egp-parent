@@ -3,15 +3,17 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +29,8 @@ public class ClientCheckNotResultPaymentJob {
     ApplicationFeClient applicationFeClient;
     @Autowired
     AppGrpPaymentClient appGrpPaymentClient;
-
+    @Autowired
+    private ServiceConfigService serviceConfigService;
 
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.setupBatchJobAuditTrail(this);
@@ -41,13 +44,22 @@ public class ClientCheckNotResultPaymentJob {
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {
-                PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getPmtRefNo()).getEntity();
-                if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
-                    appGrp.setPmtRefNo(paymentDto.getReqRefNo());
-                    appGrp.setPaymentDt(paymentDto.getTxnDt());
-                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    applicationFeClient.doPaymentUpDate(appGrp).getEntity();
+                List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                if(paymentRequestDtos!=null){
+                    for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                    ) {
+                        if("success".equals(paymentRequestDto.getStatus())){
+                            appGrp.setPmtRefNo(paymentRequestDto.getReqRefNo());
+                            appGrp.setPaymentDt(new Date());
+                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            appGrp.setPayMethod(paymentRequestDto.getPayMethod());
+                        }
+                    }
                 }
+                if(appGrp.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+                    serviceConfigService.updatePaymentStatus(appGrp);
+                }
+
             }catch (Exception e){
                 log.info(e.getMessage(),e);
             }

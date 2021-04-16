@@ -32,7 +32,7 @@
                   </c:when>
                 </c:choose>
               </div>
-
+              <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
               <div class="personnel-edit">
                 <c:if test="${AppSubmissionDto.needEditController }">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
@@ -56,8 +56,8 @@
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                     <div id="edit-content">
                       <c:choose>
-                        <c:when test="${'true' == canEdit}">
-                            <p><div class="text-right app-font-size-16"><a id="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
+                        <c:when test="${'true' == canEdit && editControl}">
+                            <p><div class="text-right app-font-size-16"><a id="edit" class="svcPsnEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
                         </c:when>
                         <c:otherwise>
                         </c:otherwise>
@@ -66,14 +66,14 @@
                   </c:if>
                 </c:if>
               </div>
-
-              <c:if test="${ServicePersonnelMandatory>0}">
+              <c:if test="${ServicePersonnelMandatory>0 && editControl}">
                 <c:set var="spMandatoryCount" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
                 <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
                   <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                     <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                   </c:if>
                   <table class="personnel-content" id="personnelRemoveId${status.index}">
+                    <input type="hidden" name="cgoIndexNo" value="${appSvcPersonnelDto.cgoIndexNo}"/>
                     <tbody>
                     <tr height="1" class="personnel-header">
                       <td class="" style="width: 100%;">
@@ -212,15 +212,32 @@
                   </table>
                 </c:forEach>
               </c:if>
+              <div class="personnel-content-point"></div>
               <c:if test="${requestInformationConfig==null}">
+               <%-- <c:choose>
+                  <c:when test="${!empty AppSvcPersonnelDtoList}">
+                    <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
+                  </c:when>
+                  <c:otherwise>
+                    <c:set var="spDtoLength" value="0"/>
+                  </c:otherwise>
+                </c:choose>--%>
                 <c:choose>
                   <c:when test="${!empty AppSvcPersonnelDtoList}">
                     <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
                   </c:when>
                   <c:otherwise>
-                    <c:set var="spDtoLength" value="1"/>
+                    <c:choose>
+                      <c:when test="${AppSubmissionDto.needEditController}">
+                        <c:set var="spDtoLength" value="0"/>
+                      </c:when>
+                      <c:otherwise>
+                        <c:set var="spDtoLength" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
+                      </c:otherwise>
+                    </c:choose>
                   </c:otherwise>
                 </c:choose>
+
                 <c:set var="needAddPsn" value="true"/>
                 <c:choose>
                   <c:when test="${spHcsaSvcPersonnelDto.status =='CMSTAT003'}">
@@ -250,9 +267,9 @@
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
+<%--      <div class="modal-header">--%>
+<%--        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--      </div>--%>
       <div class="modal-body" style="text-align: center;">
         <div class="row">
           <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
@@ -290,7 +307,9 @@
 
       if(${AppSubmissionDto.needEditController && !isClickEdit}){
           disabledPage();
-          $('.addListBtn').addClass('hidden');
+          if(${editControl}){
+              $('.addListBtn').addClass('hidden');
+          }
           $('.text-danger').addClass('hidden');
       }
 
@@ -390,7 +409,7 @@
 
   $('.addListBtn').click(function () {
       showWaiting();
-      var HasNumber = $(".personnel-content").size();
+      var HasNumber = $(".personnel-content").length;
       console.log("HasNumber"+HasNumber);
       $.ajax({
           url:'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
@@ -401,7 +420,7 @@
           type:'POST',
           success:function (data) {
               if ("success" == data.res){
-                  $('.personnel-content:last').after(data.sucInfo);
+                  $('.personnel-content-point').before(data.sucInfo);
                   pageController($('.personnel-content:last'));
                   spRemove();
                   //hidden add more
@@ -409,13 +428,17 @@
                   if(psnLength >='${spHcsaSvcPersonnelDto.maximumCount}'){
                       $('#addPsnDiv').addClass('hidden');
                   }
+                  if(psnLength <= '${spHcsaSvcPersonnelDto.mandatoryCount}'){
+                      $('.personnel-content:last em.removeSpBtn').remove();
+                  }
+                  $('#isEditHiddenVal').val('1');
                   changePsnItem();
-                  $("div.designation->ul").mCustomScrollbar({
+                  /*$("div.designation->ul").mCustomScrollbar({
                           advanced: {
                               updateOnContentResize: true
                           }
                       }
-                  );
+                  );*/
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }

@@ -27,6 +27,7 @@ public class PersonFieldDto implements Serializable {
     private String specialityOther;
     private String subSpeciality;
     private String preferredMode;
+    private String description;
     //sp
     private String wrkExpYear;
     private String qualification;

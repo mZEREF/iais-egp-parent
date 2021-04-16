@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -33,18 +34,16 @@ public final class FeSelfChecklistHelper {
      * @return:
      **/
     public static LinkedHashMap<String, List<PremCheckItem>> loadPremisesQuestion(final ChecklistConfigDto configDto, final boolean isSubType){
-        LinkedHashMap<String, List<PremCheckItem>> sqMap = new LinkedHashMap<>();
-        List<ChecklistSectionDto> checklistSectionDtos = configDto.getSectionDtos();
-        if (!IaisCommonUtils.isEmpty(checklistSectionDtos)){
-            for(ChecklistSectionDto i : checklistSectionDtos){
+        log.info("FeSelfChecklistHelper [loadPremisesQuestion] START......isSubType {}", isSubType);
+        LinkedHashMap<String, List<PremCheckItem>> answerMap = new LinkedHashMap<>();
+        List<ChecklistSectionDto> checklistSection = configDto.getSectionDtos();
+        if (IaisCommonUtils.isNotEmpty(checklistSection)){
+            for(ChecklistSectionDto i : checklistSection){
                 String sectionName = i.getSection();
                 List<ChecklistItemDto> item = i.getChecklistItemDtos();
-                if (!IaisCommonUtils.isEmpty(item)){
-                    List<PremCheckItem> premCheckItemList = sqMap.get(sectionName);
-                    if (premCheckItemList == null){
-                        premCheckItemList = IaisCommonUtils.genNewArrayList();
-                    }
-
+                if (IaisCommonUtils.isNotEmpty(item)){
+                    List<PremCheckItem> premCheckItemList = answerMap.get(sectionName);
+                    premCheckItemList = Optional.ofNullable(premCheckItemList).orElseGet(() -> IaisCommonUtils.genNewArrayList());
                     for (ChecklistItemDto j : item){
                         PremCheckItem premCheckItem = new PremCheckItem();
 
@@ -63,18 +62,19 @@ public final class FeSelfChecklistHelper {
                         premCheckItem.setChecklistItemId(j.getItemId());
                         premCheckItemList.add(premCheckItem);
                     }
-                    sqMap.put(sectionName, premCheckItemList);
+                    answerMap.put(sectionName, premCheckItemList);
                 }
             }
         }
 
-        return sqMap;
+        log.info("FeSelfChecklistHelper [loadPremisesQuestion] END......");
+        return answerMap;
     }
 
     public static List<SelfAssessment> receiveSelfAssessmentDataByCorrId(String corrId){
-        ApplicationFeClient applicationFeClient = SpringContextHelper.getContext().getBean(ApplicationFeClient.class);
-        if (applicationFeClient != null){
-            return applicationFeClient.receiveSelfAssessmentDataByCorrId(corrId).getEntity();
+        ApplicationFeClient appFeClient = SpringContextHelper.getContext().getBean(ApplicationFeClient.class);
+        if (Optional.ofNullable(appFeClient).isPresent()){
+            return appFeClient.receiveSelfAssessmentDataByCorrId(corrId).getEntity();
         }
         return Collections.EMPTY_LIST;
     }

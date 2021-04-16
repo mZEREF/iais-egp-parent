@@ -16,7 +16,14 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp"%>
-
+<style type="text/css">
+  .fa.fa-check-circle {
+    cursor: default;
+  }
+  .fa.fa-times-circle {
+    cursor: default;
+  }
+</style>
 <div class="container">
   <div class="component-gp">
     <br>

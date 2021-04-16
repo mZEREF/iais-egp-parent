@@ -258,7 +258,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<String> listHciName() {
-        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        List<String> hciNames = licenceClient.listHciNames().getEntity();
         return hciNames;
     }
 
@@ -402,22 +402,33 @@ public class CessationFeServiceImpl implements CessationFeService {
                     log.info(StringUtil.changeForLog("==================== email ===============>>>>>>>"));
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setQueryCode(baseAppNo);
+                    msgParam.setReqRefNum(baseAppNo);
+                    msgParam.setRefId(baseAppNo);
+                    msgParam.setTemplateContent(emailMap);
+
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setSvcCodeList(serviceCodes);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    msgParam.setSubject(subject);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     log.info(StringUtil.changeForLog("==================== notification ===============>>>>>>>"));
-                    notificationHelper.sendNotification(emailParam);
+                    notificationHelper.sendNotification(msgParam);
                     //sms
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setQueryCode(baseAppNo);
+                    smsParam.setReqRefNum(baseAppNo);
+                    smsParam.setRefId(baseAppNo);
+                    smsParam.setTemplateContent(emailMap);
+                    smsParam.setSubject(subject);
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     log.info(StringUtil.changeForLog("==================== sms ===============>>>>>>>"));
-                    notificationHelper.sendNotification(emailParam);
+                    notificationHelper.sendNotification(smsParam);
 
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
@@ -459,20 +470,30 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setQueryCode(baseAppNo);
+                    msgParam.setReqRefNum(baseAppNo);
+                    msgParam.setRefId(baseAppNo);
+                    msgParam.setTemplateContent(emailMap);
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setSvcCodeList(serviceCodes);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    notificationHelper.sendNotification(emailParam);
+                    msgParam.setSubject(subject);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(msgParam);
                     //sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateContent(emailMap);
+                    smsParam.setQueryCode(baseAppNo);
+                    smsParam.setReqRefNum(baseAppNo);
+                    smsParam.setRefId(baseAppNo);
                     msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS).getEntity();
                     subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
-                    emailParam.setSubject(subject);
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(emailParam);
+                    smsParam.setSubject(subject);
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(smsParam);
                 }
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));
@@ -610,6 +631,22 @@ public class CessationFeServiceImpl implements CessationFeService {
         }
         appCessHciDtos.add(appCessHciDto);
         return appCessDtosByLicIds;
+    }
+
+    @Override
+    public PremisesDto getPremiseByHciCodeName(String hciNameCode) {
+        PremisesDto premisesDto = licenceClient.getPremiseDtoByHciCodeOrName(hciNameCode).getEntity();
+        if(premisesDto!=null){
+            String blkNo = premisesDto.getBlkNo();
+            String streetName = premisesDto.getStreetName();
+            String buildingName = premisesDto.getBuildingName();
+            String floorNo = premisesDto.getFloorNo();
+            String unitNo = premisesDto.getUnitNo();
+            String postalCode = premisesDto.getPostalCode();
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            premisesDto.setHciAddress(hciAddress);
+        }
+        return premisesDto;
     }
 
 
@@ -817,25 +854,33 @@ public class CessationFeServiceImpl implements CessationFeService {
         String patRegNo = appCessationDto.getPatRegNo();
         String patOthers = appCessationDto.getPatOthers();
         String patNoRemarks = appCessationDto.getPatNoRemarks();
+        String emailAddress = appCessationDto.getEmailAddress();
+        String mobileNo = appCessationDto.getMobileNo();
         for (String appId : appIds) {
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
             appCessMiscDto.setEffectiveDate(effectiveDate);
             appCessMiscDto.setReason(reason);
-            appCessMiscDto.setOtherReason(otherReason);
             appCessMiscDto.setPatNeedTrans(patNeedTrans);
-            appCessMiscDto.setPatNoReason(patNoRemarks);
             appCessMiscDto.setPatTransType(patientSelect);
             appCessMiscDto.setAppId(appId);
             appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
-            if (!StringUtil.isEmpty(patHciName)) {
-                appCessMiscDto.setPatTransTo(patHciName);
+            //reason
+            if(ApplicationConsts.CESSATION_REASON_OTHER.equals(reason)){
+                appCessMiscDto.setOtherReason(otherReason);
             }
-            if (!StringUtil.isEmpty(patRegNo)) {
-                appCessMiscDto.setPatTransTo(patRegNo);
-            }
-            if (!StringUtil.isEmpty(patOthers)) {
-                appCessMiscDto.setPatTransTo(patOthers);
+            if(patNeedTrans){
+               if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)) {
+                   appCessMiscDto.setPatTransTo(patHciName);
+               }else if(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)){
+                   appCessMiscDto.setPatTransTo(patRegNo);
+               }else {
+                   appCessMiscDto.setPatTransTo(patOthers);
+                   appCessMiscDto.setMobileNo(mobileNo);
+                   appCessMiscDto.setEmailAddress(emailAddress);
+               }
+            }else {
+                appCessMiscDto.setPatNoReason(patNoRemarks);
             }
             appCessMiscDtos.add(appCessMiscDto);
         }

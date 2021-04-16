@@ -24,11 +24,21 @@
               <h2><iais:message key="LOLEV_ACK043" escape="true"></iais:message></h2>
             </c:if>
             <c:if test="${'APTY007' ne applicationDto.applicationType}">
-              <h2><iais:message key="LOLEV_ACK044" escape="true"></iais:message></h2>
+              <c:if test="${'reScheduleSuccess' eq reScheduleSuccess}">
+                <c:if test="${'SUCCESS' eq appStatusFlag}">
+                  <h2><iais:message key="LOLEV_ACK044" escape="true"></iais:message></h2>
+                </c:if>
+                <c:if test="${'FAIL' eq appStatusFlag}">
+                  <h2><iais:message key="Rescheduled appointment failed. The status of these applications has been changed." escape="true"></iais:message></h2>
+                </c:if>
+              </c:if>
+              <c:if test="${'reScheduleSuccess' ne reScheduleSuccess}">
+                <h2><iais:message key="LOLEV_ACK052" escape="true"></iais:message></h2>
+              </c:if>
             </c:if>
           </div>
         </div>
-        <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
+        <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/MohOfficerReScheduling"><em class="fa fa-angle-left"></em> Back</a></span></div>
       </div>
     </div>
   </div>

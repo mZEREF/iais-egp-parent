@@ -74,9 +74,7 @@
                       <label style="font-size: 16px">Inspector Lead</label>
                     </div>
                     <div class="col-md-6">
-                      <c:forEach var = "insepctionLead" items = "${inspectionReportDto.inspectorLeads}">
-                        <span style="font-size: 16px"><c:out value="${insepctionLead}"/></span>
-                      </c:forEach>
+                        <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectorLeadStr}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -113,7 +111,7 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Remarks</label>
+                      <label style="font-size: 16px">Internal Remarks</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionReportDto.taskRemarks}"/></span>
@@ -137,7 +135,7 @@
                       <c:if test="${fileRepoDto != null}">
                         <div class="fileList ">
                             <span class="filename server-site" id="140" style="font-size: 16px">
-                              <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile">${fileRepoDto.fileName}</a></u>
+                              <u><iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${fileRepoDto.id}" docName="${fileRepoDto.realFileName}"/></u>
                             </span>
                         </div>
                       </c:if>

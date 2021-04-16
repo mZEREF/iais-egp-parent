@@ -15,8 +15,7 @@
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
-                var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
-                $premSelect.find('.phLength').val(length);
+
             }else if('CONVEYANCE' == checkedType){
                 //reset indexNo for clear
                 $premSelect.find('.premisesIndexNo').val('');
@@ -28,8 +27,6 @@
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
-                var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
-                $premSelect.find('.phLength').val(length);
             }else if('OFFSITE' == checkedType){
                 //reset indexNo for clear
                 $premSelect.find('.premisesIndexNo').val('');
@@ -41,8 +38,6 @@
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
-                var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
-                $premSelect.find('.phLength').val(length);
 
             }
 
@@ -64,19 +59,36 @@
             $premContent.find('.removePhBtn').removeClass('hidden');
             $premContent.find('.addOperational').removeClass('hidden');
             $premContent.find('.opDel').removeClass('hidden');
+            $premContent.find('.addWeekly').removeClass('hidden');
+            $premContent.find('.addPubHolDay').removeClass('hidden');
+            $premContent.find('.addEvent').removeClass('hidden');
             //init opertation
             $premContent.find('div.operationDivGroup div.operationDiv').remove();
             $premContent.find('input[name="opLength"]').val(0);
+            $premContent.find('input[name="retrieveflag"]').val(0);
+            $premContent.find('input[name="weeklyLength"]').val(1);
+            $premContent.find('input[name="eventLength"]').val(1);
+            $premContent.find('input[name="phLength"]').val(1);
+            $premContent.find('.allDay').attr('disabled',false);
+            $premContent.find('.addWeeklyDiv').removeClass('hidden');
+            $premContent.find('.addPhDiv').removeClass('hidden');
+            $premContent.find('.addEventDiv').removeClass('hidden');
+            $premContent.find('.date_picker').attr('disabled',false);
+            //remove placeHolder disabled style
+            $premContent.find('.date_picker').removeClass('disabled-placeHolder');
+            $premContent.find('span.multi-select-button').css('border-color','');
+            $premContent.find('span.multi-select-button').css('color','');
+            $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
                 premDivName = 'new-premise-form-on-site';
                 //
-                if('0' != init){
+                /*if('0' != init){
                     replaceFireIssueDateHtml($premContent,'');
-                }
+                }*/
             }else if ("conveyanceSel" == thisId) {
-                premDivName = 'new-premise-form-on-site';
+                premDivName = 'new-premise-form-conv';
             }else if ('offSiteSel' == thisId){
                 premDivName = 'new-premise-form-off-site';
             }
@@ -92,13 +104,16 @@
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
                     //initPhForm('onSite',$premContent);
-                    //remove placeHolder disabled style
-                    $premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
-                    var $phDivEle = $premContent.find('.new-premise-form-on-site ');
-                    //remove ph
-                    $phDivEle.find('div.pubHolidayContent').remove();
-                    //gen new ph
+
+                    //gen weekly html
+                    var $weeklyDivEle = $premContent.find('.'+premDivName).find('div.weeklyContent');
+                    genWeeklyHtml($premContent,$weeklyDivEle);
+                    //gen weekly html
+                    var $phDivEle = $premContent.find('.'+premDivName).find('div.pubHolDayContent');
                     genPhHtml($premContent,$phDivEle);
+                    //gen event html
+                    var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
+                    genEventHtml($premContent,$eventHtml);
                 }else if ("conveyanceSel" == thisId) {
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -107,11 +122,15 @@
                     fillForm('conveyance',data,$premContent);
                     setAddress('conveyance',data,$premContent);
                     // initPhForm('conveyance',$premContent);
-                    var $phDivEle = $premContent.find('.new-premise-form-conv');
-                    //remove ph
-                    $phDivEle.find('div.pubHolidayContent').remove();
-                    //gen new ph
+                    //gen weekly html
+                    var $weeklyDivEle = $premContent.find('.'+premDivName).find('div.weeklyContent');
+                    genWeeklyHtml($premContent,$weeklyDivEle);
+                    //gen weekly html
+                    var $phDivEle = $premContent.find('.'+premDivName).find('div.pubHolDayContent');
                     genPhHtml($premContent,$phDivEle);
+                    //gen event html
+                    var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
+                    genEventHtml($premContent,$eventHtml);
                 }else if('offSiteSel' == thisId){
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -120,11 +139,15 @@
                     fillForm('offSite',data,$premContent);
                     setAddress('offSite',data,$premContent);
                     // initPhForm('offSite',$premContent);
-                    var $phDivEle = $premContent.find('.new-premise-form-off-site');
-                    //remove ph
-                    $phDivEle.find('div.pubHolidayContent').remove();
-                    //gen new ph
+                    //gen weekly html
+                    var $weeklyDivEle = $premContent.find('.'+premDivName).find('div.weeklyContent');
+                    genWeeklyHtml($premContent,$weeklyDivEle);
+                    //gen weekly html
+                    var $phDivEle = $premContent.find('.'+premDivName).find('div.pubHolDayContent');
                     genPhHtml($premContent,$phDivEle);
+                    //gen event html
+                    var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
+                    genEventHtml($premContent,$eventHtml);
                 }
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -159,7 +182,8 @@
                     return;
                 }
                 var jsonData = {
-                    'premIndexNo':premSelectVal
+                    'premIndexNo':premSelectVal,
+                    'premisesType':premisesType
                 };
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/lic-premises',
@@ -174,9 +198,9 @@
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
                             //copy ph form
-                            copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
+                            //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
-                            fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
+                            //fillPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set opertaion -->
                             var $currForm;
                             if(premisesType == 'onSite') {
@@ -195,6 +219,138 @@
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
 
+                            var allDayTime = "0";
+                            //weekly
+                            //remove weekly div
+                            var $weeklyCountent = $currForm.find('div.weeklyContent');
+                            if(data.weeklyDtoList != null && data.weeklyDtoList != '' && data.weeklyDtoList != undefined){
+                                $weeklyCountent.find('div.weeklyDiv').remove();
+                                //add html
+                                $weeklyCountent.find('div.addWeeklyDiv').before(data.weeklyHtml);
+                                //remove first field
+                                $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
+                                //remove first del btn
+                                $weeklyCountent.find('div.weeklyDiv .weeklyDel').remove();
+                                //gen multi dropdown
+                                $weeklyCountent.find('select.Weekly').each(function () {
+                                    $(this).multiSelect();
+                                });
+                                //fill data
+                                $weeklyCountent.find('div.weeklyDiv').each(function (k,v) {
+                                    var $thisDiv = $(this);
+                                    var weeklyData = data.weeklyDtoList[k];
+                                    if(weeklyData == null || weeklyData =='' || weeklyData == undefined){
+                                        return;
+                                    }
+
+                                    var selectAllDay = weeklyData.selectAllDay;
+                                    if(typeof(selectAllDay) === 'undefined'){
+                                        selectAllDay = false;
+                                    }
+                                    if(selectAllDay){
+                                        fillWeekly($thisDiv,premisesType,'Weekly','','','','',selectAllDay);
+                                    }else{
+                                        var startHHVal = weeklyData.startFromHH;
+                                        if(typeof(startHHVal) === 'undefined'){
+                                            startHHVal = '';
+                                        }
+                                        var startMMVal = weeklyData.startFromMM;
+                                        if(typeof(startMMVal) === 'undefined'){
+                                            startMMVal = '';
+                                        }
+                                        var endHHVal = weeklyData.endToHH;
+                                        if(typeof(endHHVal) === 'undefined'){
+                                            endHHVal = '';
+                                        }
+                                        var endMMVal = weeklyData.endToMM;
+                                        if(typeof(endMMVal) === 'undefined'){
+                                            endMMVal = '';
+                                        }
+                                        fillWeekly($thisDiv,premisesType,'Weekly',startHHVal,startMMVal,endHHVal,endMMVal,selectAllDay);
+                                    }
+
+
+                                });
+                            }
+
+
+                            //ph
+                            var $phCountent = $currForm.find('div.pubHolDayContent');
+                            if(data.phDtoList != null && data.phDtoList != '' && data.phDtoList != undefined){
+                                //remove ph div
+                                $phCountent.find('div.pubHolidayDiv').remove();
+                                //add html
+                                $phCountent.find('div.addPhDiv').before(data.phHtml);
+                                //remove first field
+                                $phCountent.find('div.form-group:eq(0)').remove();
+                                //remove first del btn
+                                $phCountent.find('.pubHolidayDel').remove();
+                                //gen multi dropdown
+                                $phCountent.find('select.PubHoliday').each(function () {
+                                    $(this).multiSelect();
+                                });
+                                //fill data
+                                $phCountent.find('div.pubHolidayDiv').each(function (k,v) {
+                                    var $thisDiv = $(this);
+                                    var phData = data.phDtoList[k];
+                                    if(phData == null || phData =='' || phData == undefined){
+                                        return;
+                                    }
+
+
+                                    var selectAllDay = phData.selectAllDay;
+                                    if(typeof(selectAllDay) === 'undefined'){
+                                        selectAllDay = false;
+                                    }
+                                    if(selectAllDay){
+                                        fillWeekly($thisDiv,premisesType,'Ph','','','','',selectAllDay);
+                                    }else{
+                                        var startHHVal = phData.startFromHH;
+                                        if(typeof(startHHVal) === 'undefined'){
+                                            startHHVal = '';
+                                        }
+                                        var startMMVal = phData.startFromMM;
+                                        if(typeof(startMMVal) === 'undefined'){
+                                            startMMVal = '';
+                                        }
+                                        var endHHVal = phData.endToHH;
+                                        if(typeof(endHHVal) === 'undefined'){
+                                            endHHVal = '';
+                                        }
+                                        var endMMVal = phData.endToMM;
+                                        if(typeof(endMMVal) === 'undefined'){
+                                            endMMVal = '';
+                                        }
+                                        fillWeekly($thisDiv,premisesType,'Ph',startHHVal,startMMVal,endHHVal,endMMVal,selectAllDay);
+                                    }
+                                });
+                            }
+                            //event
+                            //remove event div
+                            var $eventContent = $currForm.find('div.eventContent');
+                            if(data.eventDtoList != null && data.eventDtoList != '' && data.eventDtoList != undefined){
+                                $eventContent.find('div.eventDiv').remove();
+                                //add html
+                                $eventContent.find('div.addEventDiv').before(data.eventHtml);
+                                //remove first field
+
+                                //remove first del btn
+                                $eventContent.find('.eventDel').remove();
+                                //fill data
+                                $eventContent.find('div.eventDiv').each(function (k,v) {
+                                    var $thisDiv = $(this);
+                                    var eventData = data.eventDtoList[k];
+                                    if(eventData == null || eventData =='' || eventData == undefined){
+                                        return;
+                                    }
+
+                                    $thisDiv.find('input.Event').val(eventData.eventName);
+                                    $thisDiv.find('input.EventStart').val(eventData.startDateStr);
+                                    $thisDiv.find('input.EventEnd').val(eventData.endDateStr);
+                                });
+                            }
+
+
                             <!--disable this form -->
                             var $premFormOnsite = $premContent.find('div.new-premise-form-on-site');
                             readonlyPartPage($premFormOnsite);
@@ -208,8 +364,19 @@
                             $premContent.find('.removePhBtn').addClass('hidden');
                             $premContent.find('.addOperational').addClass('hidden');
                             $premContent.find('.opDel').addClass('hidden');
+                            $premContent.find('.addWeekly').addClass('hidden');
+                            $premContent.find('.addPubHolDay').addClass('hidden');
+                            $premContent.find('.addEvent').addClass('hidden');
                             //
                             $premContent.find('input[name="chooseExistData"]').val('1');
+                            //disable allday
+                            $premContent.find('.allDay').attr('disabled',true);
+                            $premContent.find('.date_picker').attr('disabled',true);
+                            //add placeHolder disabled style
+                            $premContent.find('.date_picker').addClass('disabled-placeHolder');
+                            $premContent.find('span.multi-select-button').css('border-color','#ededed');
+                            $premContent.find('span.multi-select-button').css('color','#999');
+                            $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                         }
                     },
                     'error':function () {
@@ -227,21 +394,19 @@
             var thisId = $(this).attr('id');
             //alert(postalCode);
             var re=new RegExp('^[0-9]*$');
-            var errMsg = '';
-            if(''== postalCode ){
-                errMsg = 'the postal code could not be null';
-            }else if(postalCode.length != 6){
-                errMsg = 'the postal code length must be 6';
-            }else if(!re.test(postalCode)){
-                errMsg = 'the postal code must be numbers';
-            }
-            if("" != errMsg){
-                $postalCodeEle.find('.postalCodeMsg').html(errMsg);
-                return;
-            }
             var data = {
                 'postalCode':postalCode
             };
+            var premType = '';
+            var prefixName = '';
+            if("conveyance" == thisId){
+                prefixName = 'conveyance';
+            }else if("onSite" == thisId){
+                prefixName = 'site';
+            }else if("offSite" == thisId){
+                prefixName = 'offSite';
+            }
+            showWaiting();
             $.ajax({
                 'url':'${pageContext.request.contextPath}/retrieve-address',
                 'dataType':'json',
@@ -249,28 +414,45 @@
                 'type':'GET',
                 'success':function (data) {
                     if(data == null){
-                        $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
-                        return;
-                    }
-                    var premType = '';
-                    var prefixName = '';
-                    if("conveyance" == thisId){
-                        prefixName = 'conveyance';
-                    }else if("onSite" == thisId){
-                        prefixName = 'site';
-                    }else if("offSite" == thisId){
-                        prefixName = 'offSite';
-                    }
-                    $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
-                    $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
-                    $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
+                        // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                        //show pop
+                        $('#postalCodePop').modal('show');
+                        $premContent.find('.'+prefixName+'BlkNo').val('');
+                        $premContent.find('.'+prefixName+'StreetName').val('');
+                        $premContent.find('.'+prefixName+'BuildingName').val('');
 
-                    $premContent.find('.'+prefixName+'BlkNo').prop('readonly',true);
-                    $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
-                    $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
+                        $premContent.find('.'+prefixName+'BlkNo').prop('readonly',false);
+                        $premContent.find('.'+prefixName+'StreetName').prop('readonly',false);
+                        $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
+
+                        $premContent.find('input[name="retrieveflag"]').val('0');
+                    }else{
+                        $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
+                        $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
+                        $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
+
+                        $premContent.find('.'+prefixName+'BlkNo').prop('readonly',true);
+                        $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
+                        $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
+
+                        $premContent.find('input[name="retrieveflag"]').val('1');
+                    }
+                    dismissWaiting();
                 },
                 'error':function () {
-                    $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                    //$postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+                    //show pop
+                    $('#postalCodePop').modal('show');
+                    $premContent.find('.'+prefixName+'BlkNo').val('');
+                    $premContent.find('.'+prefixName+'StreetName').val('');
+                    $premContent.find('.'+prefixName+'BuildingName').val('');
+
+                    $premContent.find('.'+prefixName+'BlkNo').prop('readonly',false);
+                    $premContent.find('.'+prefixName+'StreetName').prop('readonly',false);
+                    $premContent.find('.'+prefixName+'BuildingName').prop('readonly',false);
+
+                    $premContent.find('input[name="retrieveflag"]').val('0');
+                    dismissWaiting();
                 }
             });
 
@@ -297,23 +479,29 @@
                 removePremises();
                 retrieveAddr();
                 $('.addPubHolDay').unbind('click');
-                addPubHolDay();
                 removePH();
                 otherLic();
                 cl();
                 preperChange();
                 addOperational();
+                addPubHolDayHtml();
+                addWeeklyHtml();
+                addEventHtml();
+                removePh();
+                removeEvent();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy",
-                    autoclose:true
+                    autoclose:true,
+                    todayHighlight:true,
+                    orientation:'bottom'
                 });
                 <!--set Scrollbar -->
-                $("div.premSelect->ul").mCustomScrollbar({
+                /*$("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
                 <!--trigger tooltip -->
                 $("[data-toggle='tooltip']").tooltip();
                 dismissWaiting();
@@ -350,18 +538,54 @@
             $('#isEditHiddenVal').val('1');
             premContent.find('input[name="isPartEdit"]').val('1');
             <!--replace fire issued date -->
-            var fireIssueDate = premContent.find('.fireIssuedDate').val();
-            replaceFireIssueDateHtml(premContent,fireIssueDate);
+            //var fireIssueDate = premContent.find('.fireIssuedDate').val();
+            //replaceFireIssueDateHtml(premContent,fireIssueDate);
             <!--remove ph hidden-->
             premContent.find('.addPubHolDay').removeClass('hidden');
             premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
             <!--remove placeHolder disabled style -->
-            premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
+            premContent.find('.date_picker').removeClass('disabled-placeHolder');
 
             premContent.find('.addOperational').removeClass('hidden');
             premContent.find('.opDel').removeClass('hidden');
             premContent.find('button.addPubHolDay').removeClass('hidden');
             premContent.find('.removePhBtn').removeClass('hidden');
+
+            premContent.find('.weeklyDel').removeClass('hidden');
+            premContent.find('.pubHolidayDel').removeClass('hidden');
+            premContent.find('.eventDel').removeClass('hidden');
+
+            premContent.find('span.multi-select-button').css('border-color','');
+            premContent.find('span.multi-select-button').css('color','');
+            premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
+
+            console.log(premContent.find('.weeklyDiv').length);
+            console.log(premContent.find('.pubHolidayDiv').length);
+            console.log(premContent.find('.eventDiv').length);
+            var premType = premContent.find('input[name="premType"]').val();
+            var premDivName = "";
+            if("ONSITE" == premType){
+                premDivName = 'new-premise-form-on-site';
+            }else if ("CONVEYANCE" == premType) {
+                premDivName = 'new-premise-form-conv';
+            }else if ('OFFSITE' == premType){
+                premDivName = 'new-premise-form-off-site';
+            }
+
+            if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){
+                premContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+            if(premContent.find('.'+premDivName+' .pubHolidayDiv').length < ${phCount}){
+                premContent.find('.addPhDiv').removeClass('hidden');
+            }
+            if(premContent.find('.'+premDivName+' .eventDiv').length < ${eventCount}){
+                premContent.find('.addEventDiv').removeClass('hidden');
+            }
+
+            premContent.find('input.allDay:checked').each(function(){
+                var $allDayDiv = $(this).closest('div.col-md-2');
+                disabeleForAllDay($allDayDiv);
+            });
         });
     }
 
@@ -374,71 +598,9 @@
 
     }
 
-    var addPubHolDay = function () {
-        $('.addPubHolDay').click(function () {
-            showWaiting();
-            var $premContentEle = $(this).closest('div.premContent');
-            var $contentDivEle = $(this).closest('div.form-horizontal');
-            // genPubHolDayFun($premContentEle,$contentDivEle,'Y');
-            var name = $premContentEle.find('.premTypeValue').val();
-            var premVal = $premContentEle.find('input[name="premValue"]').val();
-            // console.log("Name"+name);
-            // console.log("premVal"+premVal);
-            var type = '';
-            if('ONSITE' == name){
-                name = premVal+'onSite';
-                type = 'onSite';
-            }else if('CONVEYANCE' == name){
-                name = premVal+"conveyance";
-                type = 'conveyance';
-            }else if('OFFSITE' == name){
-                name = premVal+"offSite";
-                type = 'offSite';
-            }
-            var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
-            var jsonData={
-                'type':type,
-                'premVal': name,
-                'phLength': currentLength
-            };
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/public-holiday-html',
-                'dataType':'text',
-                'data':jsonData,
-                'type':'GET',
-                'success':function (data) {
-                    if(data == null){
-                        return;
-                    }
-                    <!--use ph mark point -->
-                    $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
-                    <!--add html -->
-                    $contentDivEle.find('div.pubHolidayContent:last').after(data);
-                    <!--init ph mark point -->
-                    $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
-                    <!--change hidden length value -->
-                    var length = $contentDivEle.find('div.pubHolidayContent').length;
-                    $premContentEle.find('.phLength').val(length);
-                    //Prevent duplicate binding
-                    $('.removePhBtn').unbind('click');
-                    removePH();
 
-                    $("div.premSelect->ul").mCustomScrollbar({
-                            advanced:{
-                                updateOnContentResize: true
-                            }
-                        }
-                    );
-                    dismissWaiting();
-                },
-                'error':function () {
-                    dismissWaiting();
-                }
-            });
-        });
-    }
 
-    var genPhHtml = function ($premContentEle,$contentDivEle) {
+    /*var genPhHtml = function ($premContentEle,$contentDivEle) {
         var name = $premContentEle.find('.premTypeValue').val();
         var premVal = $premContentEle.find('input[name="premValue"]').val();
         var type = '';
@@ -480,17 +642,17 @@
                 //remove del
                 $contentDivEle.find('.removePhBtn').remove();
 
-                $("div.premSelect->ul").mCustomScrollbar({
+                /!*$("div.premSelect->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*!/
             },
             'error':function () {
             }
         });
-    }
+    }*/
 
     var removePH = function () {
         $('.removePhBtn').click(function () {
@@ -575,9 +737,7 @@
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.buildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
             $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
-            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
-            //add placeHolder disabled style
-            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+            $premSelect.find('.fireIssuedDate').val(data.certIssuedDtStr);
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
             $premSelect.find('input.other-lic').each(function () {
@@ -619,6 +779,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.conveyanceHciName);
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.conveyanceBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);
@@ -673,6 +834,7 @@
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('offSite' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.offSiteHciName);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.offSiteBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.offSitePostalCode);
             $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.offSiteFloorNo);
@@ -752,6 +914,7 @@
         $('.premTypeValue').each(function (k,v) {
             var checkedType = $(this).val();
             var $premCountEle = $(this).closest('div.premContent');
+            var retrieveFlag = $premCountEle.find('input[name="retrieveflag"]').val();
             if('ONSITE'==checkedType){
                 $premCountEle.find('.onSiteSelect').removeClass('hidden');
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -761,6 +924,12 @@
                 var premSelValue =  $premCountEle.find('.onSiteSelect .premSelect').val();
                 if(premSelValue == "newPremise"){
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
+                    $premCountEle.find('a.retrieveAddr').removeClass('hidden');
+                    if('1' == retrieveFlag){
+                        $premCountEle.find('input[name="onSiteBlkNo"]').prop('readonly',true);
+                        $premCountEle.find('input[name="onSiteStreetName"]').prop('readonly',true);
+                        $premCountEle.find('input[name="onSiteBuildingName"]').prop('readonly',true);
+                    }
                 }else if(premSelValue == "-1"){
 
                 }else{
@@ -772,10 +941,22 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                     $premCountEle.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-                    $premCountEle.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -786,6 +967,12 @@
                 var premSelValue =  $premCountEle.find('.conveyanceSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
+                    $premCountEle.find('a.retrieveAddr').removeClass('hidden');
+                    if('1' == retrieveFlag){
+                        $premCountEle.find('input[name="conveyanceBlkNo"]').prop('readonly',true);
+                        $premCountEle.find('input[name="conveyanceStreetName"]').prop('readonly',true);
+                        $premCountEle.find('input[name="conveyanceBuildingName"]').prop('readonly',true);
+                    }
                 }else if(premSelValue == "-1"){
 
                 }else{
@@ -799,6 +986,20 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -809,6 +1010,12 @@
                 var premSelValue =  $premCountEle.find('.offSiteSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-off-site').removeClass('hidden');
+                    $premCountEle.find('a.retrieveAddr').removeClass('hidden');
+                    if('1' == retrieveFlag){
+                        $premCountEle.find('input[name="offSiteBlkNo"]').prop('readonly',true);
+                        $premCountEle.find('input[name="offSiteStreetName"]').prop('readonly',true);
+                        $premCountEle.find('input[name="offSiteBuildingName"]').prop('readonly',true);
+                    }
                 }else if(premSelValue == "-1"){
 
                 }else{
@@ -822,6 +1029,20 @@
                     $premCountEle.find('.removePhBtn').addClass('hidden');
                     $premCountEle.find('.addOperational').addClass('hidden');
                     $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                 }
 
             }
@@ -841,7 +1062,9 @@
         $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
         $premContent.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
 
     }
@@ -895,12 +1118,12 @@
         var phHtml = currPhForm.find('.pubHolidayContent').get(0).outerHTML;
         currPhForm.find('.pubHolidayContent').remove();
         currPhForm.find('.phFormMarkPoint').after(phHtml);
-        $("div.premSelect->ul").mCustomScrollbar({
+        /*$("div.premSelect->ul").mCustomScrollbar({
                 advanced:{
                     updateOnContentResize: true
                 }
             }
-        );
+        );*/
         //init data
         var data = {};
         var $Ele = currPhForm.find('.pubHolidayContent:eq(0)');
@@ -945,6 +1168,7 @@
     }
 
     var addOperational = function () {
+        $('.addOperational').unbind('click');
         $('.addOperational').click(function () {
             showWaiting();
             var $premContentEle = $(this).closest('div.premContent');
@@ -1006,4 +1230,455 @@
         });
     }
 
+    var addWeeklyHtml = function () {
+        $('.addWeekly').unbind('click');
+        $('.addWeekly').click(function () {
+            showWaiting();
+            var $premContentEle = $(this).closest('div.premContent');
+            var premType = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            var $currPremForm = $(this).closest('div.weeklyContent');
+            var weeklyCount = $currPremForm.find('.weeklyDiv').length;
+            var data = {
+                'premIndex':premVal,
+                'premType':premType,
+                'weeklyCount':weeklyCount
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/operation-weekly-html',
+                'data':data,
+                'dataType':'json',
+                'type':'POST',
+                'success':function (data) {
+                    if(data.resCode == 200){
+                        // console.log(data.resultJson)
+                        $currPremForm.find('div.addWeeklyDiv').before(data.resultJson+'');
+                        var length =  $currPremForm.find('div.weeklyDiv').length;
+                        $premContentEle.find('input[name="weeklyLength"]').val(length);
+
+                        removeWeekly();
+                        clickAllDay();
+                        if(length >= '${weeklyCount}'){
+                            $currPremForm.find('.addWeeklyDiv').addClass('hidden');
+                        }
+                        $currPremForm.find('select.Weekly').each(function () {
+                            $(this).multiSelect();
+                        });
+                    }
+                    dismissWaiting();
+                },
+                'error':function (data) {
+                    dismissWaiting();
+                }
+            });
+
+        });
+    }
+
+    var addPubHolDayHtml = function () {
+        $('.addPubHolDay').unbind('click');
+        $('.addPubHolDay').click(function () {
+            showWaiting();
+            var $premContentEle = $(this).closest('div.premContent');
+            var premType = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            var $currPremForm = $(this).closest('div.pubHolDayContent');
+            var phCount = $currPremForm.find('.pubHolidayDiv').length;
+            var data = {
+                'premIndex':premVal,
+                'premType':premType,
+                'phCount':phCount
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/operation-public-holiday-html',
+                'data':data,
+                'dataType':'json',
+                'type':'POST',
+                'success':function (data) {
+                    if(data.resCode == 200){
+                        // console.log(data.resultJson)
+                        $currPremForm.find('div.addPhDiv').before(data.resultJson+'');
+                        var length =  $currPremForm.find('div.pubHolidayDiv').length;
+                        $premContentEle.find('input[name="phLength"]').val(length);
+
+                        removePh();
+                        clickAllDay();
+                        if(length >= '${phCount}'){
+                            $currPremForm.find('.addPhDiv').addClass('hidden');
+                        }
+                        $currPremForm.find('select.PubHoliday').each(function () {
+                            $(this).multiSelect();
+                        });
+                    }
+                    dismissWaiting();
+                },
+                'error':function (data) {
+                    dismissWaiting();
+                }
+            });
+        });
+    }
+
+
+    var addEventHtml = function () {
+        $('.addEvent').unbind('click');
+        $('.addEvent').click(function () {
+            showWaiting();
+            var $premContentEle = $(this).closest('div.premContent');
+            var premType = $premContentEle.find('.premTypeValue').val();
+            var premVal = $premContentEle.find('input[name="premValue"]').val();
+            var $currPremForm = $(this).closest('div.eventContent');
+            var eventCount = $currPremForm.find('.eventDiv').length;
+            var data = {
+                'premIndex':premVal,
+                'premType':premType,
+                'eventCount':eventCount
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/operation-event-html',
+                'data':data,
+                'dataType':'json',
+                'type':'POST',
+                'success':function (data) {
+                    if(data.resCode == 200){
+                        // console.log(data.resultJson)
+                        $currPremForm.find('div.addEventDiv').before(data.resultJson+'');
+                        var length =  $currPremForm.find('div.eventDiv').length;
+                        $premContentEle.find('.eventLength').val(length);
+                        $('.date_picker').datepicker({
+                            format:"dd/mm/yyyy",
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
+                        });
+                        removeEvent();
+                        if(length >= '${eventCount}'){
+                            $currPremForm.find('.addEventDiv').addClass('hidden');
+                        }
+                    }
+                    dismissWaiting();
+                },
+                'error':function (data) {
+                    dismissWaiting();
+                }
+            });
+
+        });
+    }
+
+    var removeWeekly = function () {
+        $('.weeklyDel').click(function () {
+            var $premContent = $(this).closest('.premContent');
+            var $weeklyContent = $(this).closest('.weeklyContent');
+            $(this).closest('.weeklyDiv').remove();
+            var weeklyLength = $weeklyContent.find('.weeklyDiv').length;
+            $premContent.find('input[name="weeklyLength"]').val(weeklyLength);
+            //reset name
+            var premValue = $premContent.find('.premValue').val();
+            var premType = $premContent.find('.premTypeValue').val();
+            var premTypeVal = getPagePremType(premType);
+            $weeklyContent.find('div.weeklyDiv').each(function (k) {
+                // $(this).find('div.multi-select label->input').attr("name",premValue+premTypeVal+'Weekly'+k);
+                var $thisWeekly = $(this);
+                $thisWeekly.find('.WeeklyStartHH').attr('name',premValue+premTypeVal+'WeeklyStartHH'+k);
+                $thisWeekly.find('.WeeklyStartMM').attr('name',premValue+premTypeVal+'WeeklyStartMM'+k);
+                $thisWeekly.find('.WeeklyEndHH').attr('name',premValue+premTypeVal+'WeeklyEndHH'+k);
+                $thisWeekly.find('.WeeklyEndMM').attr('name',premValue+premTypeVal+'WeeklyEndMM'+k);
+                $thisWeekly.find('div.multi-select').children('div').children('label').each(function (weeklyCount) {
+                    console.log("weeklyCount:"+weeklyCount);
+                    var $thisSelect = $(this);
+                    $thisSelect.find('input').attr('name',premValue+premTypeVal+'Weekly'+k);
+                    $thisSelect.find('input').attr('id',premValue+'Weekly'+k+weeklyCount);
+                    $thisSelect.find('label').attr('for',premValue+'Weekly'+k+weeklyCount);
+                });
+
+            });
+
+            if(weeklyLength < '${weeklyCount}'){
+                $weeklyContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+
+        });
+    }
+
+    var removePh = function () {
+        $('.pubHolidayDel').click(function () {
+            var $premContent = $(this).closest('.premContent');
+            var $phContent = $(this).closest('.pubHolDayContent');
+            $(this).closest('.pubHolidayDiv').remove();
+            var phLength = $phContent.find('.pubHolidayDiv').length;
+            $premContent.find('input[name="phLength"]').val(phLength);
+
+            //reset name
+            var premValue = $premContent.find('.premValue').val();
+            var premType = $premContent.find('.premTypeValue').val();
+            var premTypeVal = getPagePremType(premType);
+            $phContent.find('div.pubHolidayDiv').each(function (k) {
+                var $thisPh = $(this);
+                $thisPh.find('.PhStartHH').attr('name',premValue+premTypeVal+'PhStartHH'+k);
+                $thisPh.find('.PhStartMM').attr('name',premValue+premTypeVal+'PhStartMM'+k);
+                $thisPh.find('.PhEndHH').attr('name',premValue+premTypeVal+'PhEndHH'+k);
+                $thisPh.find('.PhEndMM').attr('name',premValue+premTypeVal+'PhEndMM'+k);
+                $thisPh.find('div.multi-select').children('div').children('label').each(function (phCount) {
+                    var $thisSelect = $(this);
+                    $thisSelect.find('input').attr('name',premValue+premTypeVal+'PubHoliday'+k);
+                    $thisSelect.find('input').attr('id',premValue+'PubHoliday'+k+phCount);
+                    $thisSelect.find('label').attr('for',premValue+'PubHoliday'+k+phCount);
+                });
+            });
+
+            if(phLength < '${phCount}'){
+                $phContent.find('.addPhDiv').removeClass('hidden');
+            }
+
+        });
+    }
+
+    var removeEvent = function () {
+        $('.eventDel').click(function () {
+            var $premContent = $(this).closest('.premContent');
+            var $eventContent = $(this).closest('.eventContent');
+            $(this).closest('.eventDiv').remove();
+            var eventLength = $eventContent.find('.eventDiv').length;
+            $premContent.find('input[name="eventLength"]').val(eventLength);
+
+            //reset name
+            var premValue = $premContent.find('.premValue').val();
+            var premType = $premContent.find('.premTypeValue').val();
+            var premTypeVal = getPagePremType(premType);
+            $eventContent.find('div.eventDiv').each(function (k) {
+                console.log('k'+k);
+                var $thisEvent = $(this);
+                $thisEvent.find('input.Event').attr('name',premValue+premTypeVal+'Event'+k);
+                $thisEvent.find('input.EventStart').attr('name',premValue+premTypeVal+'EventStart'+k);
+                $thisEvent.find('input.EventEnd').attr('name',premValue+premTypeVal+'EventEnd'+k);
+            });
+
+            if(eventLength < '${eventCount}'){
+                $eventContent.find('.addEventDiv').removeClass('hidden');
+            }
+        });
+    }
+
+
+    var genWeeklyHtml = function ($premContentEle,$contentDivEle) {
+        var name = $premContentEle.find('.premTypeValue').val();
+        var premVal = $premContentEle.find('input[name="premValue"]').val();
+        var type = '';
+        if('ONSITE' == name){
+            type = 'onSite';
+        }else if('CONVEYANCE' == name){
+            type = 'conveyance';
+        }else if('OFFSITE' == name){
+            type = 'offSite';
+        }
+
+        var jsonData={
+            'premType':type,
+            'premIndex': premVal,
+            'weeklyCount': '0'
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/operation-weekly-html',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'POST',
+            'success':function (data) {
+                if(data.resCode == '200'){
+                    //remove weekly div
+                    $contentDivEle.find('div.weeklyDiv').remove();
+                    //init html
+                    $contentDivEle.find('div.addWeeklyDiv').before(data.resultJson+'');
+                    $premContentEle.find('input[name="weeklyLength"]').val(1);
+
+                    //remove field name
+                    // $contentDivEle.find('.weeklyDiv:eq(0) .div:eq(0) div.col-md-12:eq(0)').remove();
+                    //console.log($contentDivEle.find('.weeklyDiv:eq(0)').children('div:eq(0)').children('div:eq(0)').html());
+                    $contentDivEle.find('.weeklyDiv:eq(0)').children('div:eq(0)').children('div:eq(0)').remove();
+                    //remove del btn
+                    $contentDivEle.find('.weeklyDel').remove();
+                    clickAllDay();
+                    $contentDivEle.find('select.Weekly').each(function () {
+                        $(this).multiSelect();
+                    });
+                }
+
+
+            },
+            'error':function (data) {
+                //alert('error');
+            }
+        });
+    }
+
+    var genPhHtml = function ($premContentEle,$contentDivEle) {
+        var name = $premContentEle.find('.premTypeValue').val();
+        var premVal = $premContentEle.find('input[name="premValue"]').val();
+        var type = '';
+        if('ONSITE' == name){
+            type = 'onSite';
+        }else if('CONVEYANCE' == name){
+            type = 'conveyance';
+        }else if('OFFSITE' == name){
+            type = 'offSite';
+        }
+
+        var jsonData={
+            'premType':type,
+            'premIndex': premVal,
+            'phCount': 0
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/operation-public-holiday-html',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'POST',
+            'success':function (data) {
+                if(data.resCode == '200'){
+                    //remove weekly div
+                    $contentDivEle.find('div.pubHolidayDiv').remove();
+                    //init html
+                    $contentDivEle.find('div.addPhDiv').before(data.resultJson+'');
+                    $premContentEle.find('input[name="phLength"]').val(1);
+
+                    //remove field name
+                    $contentDivEle.find('.pubHolidayDiv:eq(0) .div:eq(0) .col-md-12:eq(0)').remove();
+                    //remove del btn
+                    $contentDivEle.find('.pubHolidayDel').remove();
+                    clickAllDay();
+                    $contentDivEle.find('select.PubHoliday').each(function () {
+                        $(this).multiSelect();
+                    });
+                }
+
+
+            },
+            'error':function () {
+            }
+        });
+    }
+
+    var genEventHtml = function ($premContentEle,$contentDivEle) {
+        var name = $premContentEle.find('.premTypeValue').val();
+        var premVal = $premContentEle.find('input[name="premValue"]').val();
+        var type = '';
+        if('ONSITE' == name){
+            type = 'onSite';
+        }else if('CONVEYANCE' == name){
+            type = 'conveyance';
+        }else if('OFFSITE' == name){
+            type = 'offSite';
+        }
+
+        var jsonData={
+            'premType':type,
+            'premIndex': premVal,
+            'eventCount': 0
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/operation-event-html',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'POST',
+            'success':function (data) {
+                if(data.resCode == '200'){
+                    //remove weekly div
+                    $contentDivEle.find('div.eventDiv').remove();
+                    //init html
+                    $contentDivEle.find('div.addEventDiv').before(data.resultJson+'');
+                    $premContentEle.find('input[name="eventLength"]').val(1);
+
+                    //remove del btn
+                    $contentDivEle.find('.eventDel').remove();
+                    $('.date_picker').datepicker({
+                        format:"dd/mm/yyyy",
+                        autoclose:true,
+                        todayHighlight:true,
+                        orientation:'bottom'
+                    });
+                }
+
+
+            },
+            'error':function () {
+            }
+        });
+    }
+
+    var getPagePremType = function (premType) {
+        var premTypeVal ='';
+        if('ONSITE' == premType){
+            premTypeVal = 'onSite';
+        }else if('CONVEYANCE' == premType){
+            premTypeVal = 'conveyance';
+        }else if('OFFSITE' == premType){
+            premTypeVal = 'offSite';
+        }else{
+            premTypeVal = premType;
+        }
+        return premTypeVal;
+    }
+
+    var fillWeekly = function($thisDiv,premisesType,prefix,startHHVal,startMMVal,endHHVal,endMMVal,isAllDay) {
+        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').val(startHHVal);
+        var startHH =$thisDiv.find('.'+prefix+'StartHH option[value="' + startHHVal + '"]').html();
+        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').next().find('.current').html(startHH);
+        //
+
+        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').val(startMMVal);
+        var startMM =$thisDiv.find('.'+prefix+'StartMM option[value="' + startMMVal + '"]').html();
+        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').next().find('.current').html(startMM);
+        //
+
+        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').val(endHHVal);
+        var endHH =$thisDiv.find('.'+prefix+'EndHH option[value="' + endHHVal + '"]').html();
+        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').next().find('.current').html(endHH);
+        //
+
+        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').val(endMMVal);
+        var endMM =$thisDiv.find('.'+prefix+'EndMM option[value="' + endMMVal + '"]').html();
+        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').next().find('.current').html(endMM);
+
+        $thisDiv.find('.allDay').attr('checked',isAllDay);
+    }
+
+    var clickAllDay = function () {
+        $('.allDay').unbind('click');
+        $('.allDay').click(function () {
+            var $allDayDiv = $(this).closest('div.col-md-2');
+            if($(this).is(':checked')){
+                disabeleForAllDay($allDayDiv);
+            }else{
+                unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'))
+                unreadonlyPartPage($allDayDiv.prev().find('div.col-md-5'))
+            }
+
+
+
+        });
+    }
+
+    var disabeleForAllDay = function ($allDayDiv) {
+        $allDayDiv.prev().prev().find('div.col-md-5').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
+        $allDayDiv.prev().find('div.col-md-5').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
+        readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'));
+        readonlyPartPage($allDayDiv.prev().find('div.col-md-5'));
+    }
+
+    var genMulti = function(){
+        $('select').each(function () {
+            if($(this).prop('multiple')){
+                console.log('...multiple...');
+                $(this).multiSelect();
+            }
+        });
+    }
 </script>

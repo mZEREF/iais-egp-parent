@@ -260,8 +260,12 @@
         }else if(($(obj).val().length == 3 ) && ($(obj).val().indexOf(".") == 1)){
             try {
                 var s = $(obj).val().split(".");
-                var isN1 = Number.isNaN(s[0]);
-                var isN2 = Number.isNaN(s[1]);
+                if(s.length != 2){
+                    $(obj).val(input);
+                    return;
+                }
+                var isN1 = isNaN(s[0]);
+                var isN2 = isNaN(s[1]);
                 var num =  parseInt(s[0]);
                 var num1 =  parseInt(s[1]);
                 if( !isN1 && num > max){
@@ -271,7 +275,7 @@
                     input = max;
                 }else if( !isN1 && !isN2){
                     isInput = true;
-                    $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" : num1 ) );
+                    $(obj).val((isNaN(num) ? "" : num) +"."+ (isNaN(num1)? "" : num1 ) );
                 }
             }catch (e) {
                 isInput = false;
@@ -279,8 +283,12 @@
         }else if($(obj).val().length == 4 && $(obj).val().indexOf(".") == 1){
             try {
                 var s = $(obj).val().split(".");
-                var isN1 = Number.isNaN(s[0]);
-                var isN2 = Number.isNaN(s[1]);
+                if(s.length != 2){
+                    $(obj).val(input);
+                    return;
+                }
+                var isN1 = isNaN(s[0]);
+                var isN2 = isNaN(s[1]);
                 var num =  parseInt(s[0]);
                 var num1 =  parseInt(s[1]);
                 if( !isN1 && num > 3){
@@ -289,7 +297,7 @@
                     isInput = false;
                 }else if( !isN1 && !isN2){
                     isInput = true;
-                    $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" :( s[1].indexOf("0") == 0 ? "0" + num1 : num1) ) );
+                    $(obj).val((isNaN(num) ? "" : num) +"."+ (isNaN(num1)? "" :( s[1].indexOf("0") == 0 ? "0" + num1 : num1) ) );
                 }
             }catch (e) {
                 isInput = false;
@@ -299,4 +307,18 @@
             $(obj).val(input);
         }
     }
+
+    function isNaN(arg) {
+        if (arg.trim == ""){
+            return true;
+        }
+        argChar = "0123456789";
+        for(var i = 0;i<arg.length;i++){
+            if(argChar.indexOf(arg.substring(i, i + 1)) == -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 </script>

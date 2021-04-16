@@ -114,7 +114,7 @@
                                               <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
                                                 <div class="fileList ">
                                                   <span class="filename server-site" id="140">
-                                                    <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a></u>
+                                                    <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile"><c:out value="${file.fileName}"/></a></u>
                                                   </span>
                                                 </div>
                                               </c:forEach>
@@ -169,9 +169,7 @@
                                               <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
                                                 <div class="fileList ">
                                                   <span class="filename server-site" id="130">
-                                                    <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">
-                                                        ${file.realFileName}
-                                                    </a>
+                                                    <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${file.id}" docName="${file.fileName}"/>
                                                   </span>
                                                 </div>
                                               </c:forEach>

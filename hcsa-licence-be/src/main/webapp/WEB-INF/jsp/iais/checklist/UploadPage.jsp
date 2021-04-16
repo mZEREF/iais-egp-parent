@@ -25,10 +25,21 @@
     font-size: 12px;
   }
 
+  .btn.btn-danger{
+    font-size: 1rem;
+    font-weight: 700;
+    background: white;
+    border: 1px solid #333333;
+    color: black;
+    padding: 5px 15px;
+    text-transform: uppercase;
+    border-radius: 30px;
+  }
+
 </style>
 <div class="main-content">
   <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <br>
 
@@ -50,11 +61,22 @@
             <h2>${switchUploadPage}</h2>
           <div class="document-upload-list">
             <div class="error-msg"></div>
-            <div class="file-upload-gp">
-              <div class="fileNameDisplay"></div>
 
-              <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+            <div class="file-upload-gp">
+                <p>
+                  <span class="fileNameDisplay">
+                  </span>
+                  <span class="existFile delBtn hidden">
+                      <button type="button" class="btn btn-danger">
+                        Delete
+                      </button>
+                  </span>
+                </p>
+              <input id="selectedFile" name="selectedFile" type="file" style="display: none;"  onclick="fileClicked(event)" onchange="fileChanged(event)" aria-label="selectedFile1">
+
+              <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
             </div>
+
           </div>
         </div>
 
@@ -98,7 +120,7 @@
         let maxFileSize = 100;
         let error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         if (error == "N"){
-          $(this).closest('.document-upload-list').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+          $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
           $(".fileNameDisplay").text("");
           $(this).val(null);
         }else{
@@ -112,5 +134,16 @@
 
     $('#docNext').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doUpload");
+    });
+
+    $('#selectedFile').change(function () {
+        $('.existFile').removeClass("hidden")
+    });
+
+    $('.existFile').click(function () {
+      let selectFile = $('#selectedFile');
+      selectFile.val(null);
+      $('.existFile').addClass("hidden");
+      $(".fileNameDisplay").text(null);
     });
 </script>

@@ -63,6 +63,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +107,7 @@ public class RequestForInformationDelegator {
         if(licenceIds.size()==0){
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries");
+                    .append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
             IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
         }
         List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getPremisesByLicIds(licenceIds).getEntity();
@@ -158,7 +159,7 @@ public class RequestForInformationDelegator {
                 }
             }
         }
-
+        licPremisesReqForInfoDtoListSearch.sort(Comparator.comparing(LicPremisesReqForInfoDto::getRequestDate).reversed());
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoListSearch);
 
     }
@@ -341,9 +342,8 @@ public class RequestForInformationDelegator {
             applicantName=orgUserDtoList.get(0).getDisplayName();
         }
         StringBuilder stringBuilder=new StringBuilder();
-        int i=0;
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
-            for ( i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
+            for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
                 stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
@@ -381,22 +381,6 @@ public class RequestForInformationDelegator {
         requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
-        //send message to FE user.
-//        InterMessageDto interMessageDto = new InterMessageDto();
-//        interMessageDto.setMaskParams(mapPrem);
-//        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-//        interMessageDto.setSubject(subject);
-//        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-//        String messageNo = inboxMsgService.getMessageNo();
-//        interMessageDto.setRefNo(messageNo);
-//        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-//        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-//        interMessageDto.setMsgContent(mesContext);
-//        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-//        interMessageDto.setUserId(licenseeId);
-//        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        inboxMsgService.saveInterMessage(interMessageDto);
-//        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
         try {
 
@@ -425,25 +409,33 @@ public class RequestForInformationDelegator {
             //sms
             rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
             subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
-            emailParam.setSubject(subject);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
+            EmailParam smsParam = new EmailParam();
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setQueryCode(licenceNo);
+            smsParam.setReqRefNum(licenceNo);
+            smsParam.setRefId(licenceViewDto.getLicenceDto().getId());
+            smsParam.setSubject(subject);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(smsParam);
             //msg
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(licenceNo);
+            msgParam.setReqRefNum(licenceNo);
             HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
             rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
             subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
-            emailParam.setSubject(subject);
+            msgParam.setSubject(subject);
             emailMap.put("systemLink", url);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
-            emailParam.setTemplateContent(emailMap);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
-            emailParam.setMaskParams(mapPrem);
-            emailParam.setSvcCodeList(svcCode);
-            emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
-            notificationHelper.sendNotification(emailParam);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            msgParam.setMaskParams(mapPrem);
+            msgParam.setSvcCodeList(svcCode);
+            msgParam.setRefId(licenceViewDto.getLicenceDto().getId());
+            notificationHelper.sendNotification(msgParam);
 
         }catch (Exception e){
             log.error(e.getMessage(), e);
@@ -625,9 +617,8 @@ public class RequestForInformationDelegator {
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
-        int i=0;
         if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
-            for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
+            for (int i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
                 stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
@@ -644,22 +635,7 @@ public class RequestForInformationDelegator {
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licPremisesReqForInfoDto.getLicenseeId());
-        //send message to FE user.
-//        InterMessageDto interMessageDto = new InterMessageDto();
-//        interMessageDto.setMaskParams(mapPrem);
-//        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-//        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
-//        interMessageDto.setSubject(subject);
-//        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-//        String messageNo = inboxMsgService.getMessageNo();
-//        interMessageDto.setRefNo(messageNo);
-//        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-//        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-//        interMessageDto.setMsgContent(mesContext);
-//        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-//        interMessageDto.setUserId(licPremisesReqForInfoDto.getLicenseeId());
-//        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        inboxMsgService.saveInterMessage(interMessageDto);
+
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
         if(status.equals(RequestForInformationConstants.RFI_NEW)||status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
             try {
@@ -690,25 +666,33 @@ public class RequestForInformationDelegator {
                 //sms
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
                 subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
-                emailParam.setSubject(subject);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setTemplateContent(emailMap);
+                smsParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+                smsParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+                smsParam.setRefId(licenceViewDto.getLicenceDto().getId());
+                smsParam.setSubject(subject);
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(smsParam);
                 //msg
+                EmailParam msgParam = new EmailParam();
+                msgParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+                msgParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
                 HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
                 List<String> svcCode=IaisCommonUtils.genNewArrayList();
                 svcCode.add(svcDto.getSvcCode());
-                emailMap.put("systemLink", url);
                 rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
                 subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
-                emailParam.setSubject(subject);
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
-                emailParam.setTemplateContent(emailMap);
-                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
-                emailParam.setMaskParams(mapPrem);
-                emailParam.setSvcCodeList(svcCode);
-                emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
-                notificationHelper.sendNotification(emailParam);
+                msgParam.setSubject(subject);
+                emailMap.put("systemLink", url);
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+                msgParam.setTemplateContent(emailMap);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                msgParam.setMaskParams(mapPrem);
+                msgParam.setSvcCodeList(svcCode);
+                msgParam.setRefId(licenceViewDto.getLicenceDto().getId());
+                notificationHelper.sendNotification(msgParam);
 
             }catch (Exception e){
                 log.error(e.getMessage(), e);
@@ -776,7 +760,7 @@ public class RequestForInformationDelegator {
             errMap.put("licenceNo",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence No","field"));
         }else if(licCorrId==null){
             errMap.put("licenceNo","PRF_ERR006");
-            }else {
+        }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList

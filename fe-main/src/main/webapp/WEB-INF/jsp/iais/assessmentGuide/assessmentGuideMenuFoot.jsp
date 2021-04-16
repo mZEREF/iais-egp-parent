@@ -1,4 +1,8 @@
 </div>
+<div class="col-lg-12 col-xs-12" id="commBackBtn" style="padding-left: 20px">
+    <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em
+            class="fa fa-angle-left"></em> Back</a>
+</div>
 </div>
 </div>
 </div>
@@ -11,11 +15,11 @@
 </div>
 <!-- Modal -->
 <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document" style="width: 760px;">
+    <div class="modal-dialog modal-lg" role="document" >
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+<%--            <div class="modal-header">--%>
+<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--            </div>--%>
             <div class="modal-body" style="text-align: center">
                 <div class="row">
                     <div class="col-md-12"><span style="font-size: 2rem;">${LAEM}</span></div>
@@ -32,9 +36,9 @@
 <div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document" style="width: 760px;">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+<%--            <div class="modal-header">--%>
+<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--            </div>--%>
             <div class="modal-body" style="text-align: center">
                 <div class="row">
                     <div class="col-md-12"><span style="font-size: 2rem;">

@@ -17,21 +17,25 @@
 <webui:setLayout name="iais-intranet"/>
 
 
-<div class="main-content">
+<div class="main-content dashboard">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="collapseFlag" value="${param.collapseFlag}">
-            <div class="col-lg-10 col-xs-5">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Audit Trail View</h2>
-                        </div>
-                        <%@ include file="maincontent.jsp"%>
+        <input type="hidden" name="auditId" id="auditId"/>
+
+
+        <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Audit Trail View</h2>
                     </div>
                 </div>
+
+            <%@ include file="maincontent.jsp"%>
             </div>
 
+        </div>
     </form>
 </div>
 

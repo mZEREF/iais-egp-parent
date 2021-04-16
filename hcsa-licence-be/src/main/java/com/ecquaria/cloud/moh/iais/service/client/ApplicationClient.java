@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -41,6 +42,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -393,4 +397,21 @@ public interface ApplicationClient {
     ///application-number-grp-premiese/{appPremcorrId}
     @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
+
+    @GetMapping(value = "/iais-application-group-be/app-grp-pmtStatus/{pmtStatus}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<ApplicationGroupDto>> getApplicationGroupByPmtStatus(@PathVariable("pmtStatus") String pmtStatus);
+
+    @PostMapping(value="/halp-prs/prs-api/getProfessionalDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ProfessionalResponseDto>> getProfessionalDetail(@RequestBody ProfessionalParameterDto professionalParameterDto);
+
+    @PostMapping(value="/halp-prs/prs-api/getDisciplinaryRecord", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DisciplinaryRecordResponseDto>> getDisciplinaryRecord(@RequestBody ProfessionalParameterDto professionalParameterDto);
+    @PostMapping(value = "/iais-application-be/applications-appids",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByAppIds(@RequestBody List<String> appIds);
+    @GetMapping(value = "/iais-application-be/return-rfi-reminder-applications",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getRfiReminder();
+    @GetMapping(value = "/app-svc-key-person-by-appid-type",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnelDtoByAppIdAndPersoonType(@RequestParam("appId") String appId, @RequestParam("psnType") String psnType);
+    @GetMapping(value = "/iais-apppremisescorrelation-be/get-app-premise-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtoById(@RequestParam("id") String id);
 }

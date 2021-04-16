@@ -15,6 +15,10 @@
     .okBtn{
         float: right;margin-left: 5px;
     }
+    td p{
+        word-wrap: break-word;
+        word-break: break-all;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
@@ -84,15 +88,15 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>Message ID</th>
-                                <th>Message Name</th>
-                                <th>Distribution Name</th>
-                                <th>Mode of Delivery</th>
-                                <th>Scheduled Send Date</th>
-                                <th>Actual Send Date</th>
-                                <th>Attachment</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:12%"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:10%"/>
+                                <iais:sortableHeader needSort="false" field="subject" value="Action" style="width:8%"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -111,7 +115,7 @@
                                         <c:set var="massIndex" value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"></c:set>
                                         <tr style="display: table-row;">
                                             <td>
-                                                <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name="editBlast" value="${item.id}"/>"
+                                                <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name='editBlast' value='${item.id}'/>"
                                                     <c:choose>
                                                     <c:when test="${!empty item.actual}">
                                                         data-edit = "0"
@@ -123,8 +127,7 @@
                                                 ></p>
                                             </td>
                                             <td>
-                                                <p><c:out
-                                                        value="${massIndex}"/></p>
+                                                <p><c:out  value="${massIndex}"/></p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
@@ -150,8 +153,15 @@
                                             </td>
                                             <td>
                                                 <p>
-                                                    <a onclick="edit('${massIndex}')">Edit</a>
-                                                    <a onclick="audit('${item.messageId}','${item.mode}')">Audit</a>
+                                                    <c:choose>
+                                                        <c:when test="${!empty item.actual}">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a onclick="edit('${massIndex}')">Edit</a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -176,14 +186,24 @@
                 </div>
             </div>
         </div>
-        <iais:confirm msg="The message cannot be amended as it has been sent out to recipients."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"   needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
         <input hidden id="editBlast" name="editBlast" value="">
+        <input hidden id="msgId" name="msgId" value="">
+        <input hidden id="createby" name="createby" value="">
+        <input hidden id="createDt" name="createDt" value="">
         <input hidden id="mode" name="mode" value="">
+        <input hidden id="fieldName" name="fieldName" value="">
+        <input hidden id="sortType" name="sortType" value="">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='fieldName']").val(sortFieldName);
+        $("[name='sortType']").val(sortType);
+        SOP.Crud.cfxSubmit("mainForm", "search");
+    }
     function addList() {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "create");
@@ -211,11 +231,11 @@
             if(canedit == 1 ){
                 $('#deleteSupport').modal('show');
             }else{
-                $('#support').find("span").eq(1).html("The message cannot be deleted as it has been sent out to recipients.");
+                $('#support').find("span").eq(0).html("The message cannot be deleted as it has been sent out to recipients.");
                 $('#support').modal('show');
             }
         } else {
-            $('#support').find("span").eq(1).html("Please select record for deletion.");
+            $('#support').find("span").eq(0).html("Please select record for deletion.");
             $('#support').modal('show');
         }
     }
@@ -227,7 +247,7 @@
             $("#editBlast").val(id);
             SOP.Crud.cfxSubmit("mainForm", "edit");
         }else{
-            $('#support').find("span").eq(1).html("The message cannot be amended as it has been sent out to recipients.");
+            $('#support').find("span").eq(0).html("The message cannot be amended as it has been sent out to recipients.");
             $('#support').modal('show');
         }
 
@@ -236,14 +256,16 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id,mode) {
-        $("#editBlast").val(id);
+    function audit(id,mode,createby,createDt) {
+        $("#msgId").val(id);
         $("#mode").val(mode);
+        $("#createby").val(createby);
+        $("#createDt").val(createDt);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 
     function jumpToPagechangePage() {
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
     function searchCondition() {
@@ -258,6 +280,7 @@
         $("#modeDelivery option:first").prop("selected", 'selected');
         $("#distributionList option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
+        $("#error_errDate").hide();
     }
 
     $("#modeDelivery").change(function () {
@@ -276,12 +299,12 @@
                 html += data.distributionSelect;
                 html += ' </div>';
                 $("#distributiondiv").html(html);
-                $("div.distributionList->ul").mCustomScrollbar({
+                /*$("div.distributionList->ul").mCustomScrollbar({
                         advanced:{
                             updateOnContentResize: true
                         }
                     }
-                );
+                );*/
             }
         });
     })

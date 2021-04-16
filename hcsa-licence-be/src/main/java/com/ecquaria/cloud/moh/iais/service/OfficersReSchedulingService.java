@@ -4,11 +4,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ public interface OfficersReSchedulingService {
       * @return: List<SelectOption>
       * @Descripation: getInspectorByWorkGroupId
       */
-    List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo);
+    List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo,String userId);
 
     /**
       * @author: shicheng
@@ -41,7 +43,7 @@ public interface OfficersReSchedulingService {
       * @return: void
       * @Descripation: allInspectorFromGroupList
       */
-    List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption);
+    List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption,String userId);
 
     /**
       * @author: shicheng
@@ -50,7 +52,7 @@ public interface OfficersReSchedulingService {
       * @return: List<String>
       * @Descripation: getAppNoByInspectorAndConditions
       */
-    List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto);
+    List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto,String loginId,List<SelectOption> workGroupOption);
 
     /**
       * @author: shicheng
@@ -123,4 +125,69 @@ public interface OfficersReSchedulingService {
       * @Descripation: subtractEndHourByApptDto
       */
     AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/29
+      * @Param: reschedulingOfficerDto
+      * @return: List<ApptAppInfoShowDto>
+      * @Descripation: getReScheduleNewDateInfo
+      */
+    List<ApptAppInfoShowDto> getReScheduleNewDateInfo(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: apptAppInfoShowDtos, reschedulingOfficerDto
+      * @return: List<ApptAppInfoShowDto>
+      * @Descripation: setInfoByDateAndUserIdToSave
+      */
+    List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: reschedulingOfficerDto
+      * @return: void
+      * @Descripation: sendEmailToApplicant
+      */
+    void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/30
+      * @Param: reschedulingOfficerDto, apptReSchAppInfoShowDtos
+      * @return: void
+      * @Descripation: changeInspectorAndDate
+      */
+    String changeInspectorAndDate(ReschedulingOfficerDto reschedulingOfficerDto, List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+
+    void sendReschedulingEmailToInspector(String appNo,String userId) throws IOException;
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: reschedulingOfficerDto
+      * @return: ReschedulingOfficerDto
+      * @Descripation: setNewInspStartDate
+      */
+    ReschedulingOfficerDto setNewInspStartDate(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: apptReSchAppInfoShowDtos
+      * @return: List<String>
+      * @Descripation: getOldApptRefNos
+      */
+    List<String> getOldApptRefNos(List<ApptAppInfoShowDto> apptReSchAppInfoShowDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/8
+      * @Param: cancelApptRefNos
+      * @return: void
+      * @Descripation: confirmAndCancelApptRefNo
+      */
+    void confirmAndCancelApptRefNo(List<String> confirmApptRefNo, List<String> cancelApptRefNos);
 }

@@ -6,7 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.PublicHolidayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,10 @@ import java.util.List;
 public class PublicHolidayServiceImpl implements PublicHolidayService {
 
     @Autowired
-    private PublicHolidayClient publicHolidayClient ;
+    private PublicHolidayClient publicHolidayClient;
+
+    @Autowired
+    private AppointmentClient appointmentClient;
 
     @Override
     @SearchTrack(catalog = "systemAdmin", key = "getHolidayList")
@@ -81,4 +87,72 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
         return publicHolidayClient.getAllYearList().getEntity();
     }
 
+    @Override
+    public List<PublicHolidayDto> getAllActivePubHoliDay() {
+        List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
+        return publicHolidayDtos;
+    }
+
+    @Override
+    public List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays, List<PublicHolidayDto> duplicateDate) {
+        if(IaisCommonUtils.isEmpty(allActivePubHolDays)){
+            return publicHolidayDtos;
+        } else {
+            List<PublicHolidayDto> newPubHolidays = IaisCommonUtils.genNewArrayList();
+            for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
+                PublicHolidayDto phDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);//NOSONAR
+                if(phDto != null){
+                    newPubHolidays.add(phDto);
+                } else if (phDto == null && publicHolidayDto != null) {
+                    duplicateDate.add(publicHolidayDto);
+                }
+            }
+            return newPubHolidays;
+        }
+    }
+
+    @Override
+    public List<String> getDuplicateDateStr(List<PublicHolidayDto> duplicateDates) {
+        List<String> duplicateDateStrList = IaisCommonUtils.genNewArrayList();
+        for(int i = duplicateDates.size() - 1; i >= 0; i--){//NOSONAR
+            PublicHolidayDto publicHolidayDto = duplicateDates.get(i);
+            if(publicHolidayDto != null){
+                Date date = publicHolidayDto.getFromDate();
+                if(date != null){
+                    String duplicateDateStr = Formatter.formatDateTime(date, "dd MMM yyyy");
+                    duplicateDateStrList.add(duplicateDateStr);
+                }
+            }
+        }
+        return duplicateDateStrList;
+    }
+
+    private PublicHolidayDto repeatPubHoliday(List<PublicHolidayDto> allActivePubHolDays, PublicHolidayDto publicHolidayDto) {
+        if(publicHolidayDto != null){
+            Date startDate = publicHolidayDto.getFromDate();
+            String startDateStr;
+            if(startDate != null){
+                startDateStr = Formatter.formatDateTime(startDate, Formatter.DETAIL_DATE_FILE);
+            } else {
+                return null;
+            }
+            for(PublicHolidayDto pubHolDto : allActivePubHolDays){//NOSONAR
+                Date fromDate = pubHolDto.getFromDate();
+                String fromDateStr = "";
+                if(fromDate != null){
+                    fromDateStr = Formatter.formatDateTime(fromDate, Formatter.DETAIL_DATE_FILE);
+                }
+                if(!StringUtil.isEmpty(startDateStr) && StringUtil.isEmpty(fromDateStr)){
+                    return publicHolidayDto;
+                } else if(!StringUtil.isEmpty(startDateStr) && !StringUtil.isEmpty(fromDateStr)){
+                    if(startDateStr.equals(fromDateStr)){
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+        }
+        return publicHolidayDto;
+    }
 }

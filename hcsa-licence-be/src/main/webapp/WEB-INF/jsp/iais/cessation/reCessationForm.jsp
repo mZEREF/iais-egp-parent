@@ -56,7 +56,7 @@
 
                                         <iais:section title="" id="potentialAuditableHCIs">
                                             <iais:row>
-                                                <iais:field value="Effective Date"/>
+                                                <iais:field value="Effective Date" mandatory="true"/>
                                                 <iais:value width="7">
                                                     <iais:datePicker id="effectiveDate"
                                                                      name="effectiveDate"
@@ -69,7 +69,7 @@
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
-                                                <iais:field value="Cessation Reasons"/>
+                                                <iais:field value="Cessation Reasons" mandatory="true"/>
                                                 <iais:value width="7">
                                                     <iais:select name="reason"
                                                                  id="reasonId"
@@ -81,7 +81,7 @@
                                             </iais:row>
                                             <div id="reason" hidden>
                                                 <iais:row>
-                                                    <iais:field value="Others"/>
+                                                    <iais:field value="Others" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" maxLength="200"
                                                                     name="otherReason"
@@ -90,7 +90,7 @@
                                                 </iais:row>
                                             </div>
                                             <iais:row>
-                                                <iais:field value="Patients' Record will be transferred"/>
+                                                <iais:field value="Patients' Record will be transferred" mandatory="true"/>
                                                 <iais:value>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
                                                         <div class="form-check-gp">
@@ -136,7 +136,7 @@
                                             <div id="patYes" hidden>
                                                 <iais:row>
                                                     <iais:field width="7"
-                                                                value="Who will take over your patients' case records?"/>
+                                                                value="Who will take over your patients' case records?" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:select
                                                                 name="patientSelect"
@@ -151,17 +151,45 @@
                                             </div>
                                             <div id="patHciName" hidden>
                                                 <iais:row>
+                                                    <iais:field value="HCI Name / Code" mandatory="true"/>
+                                                    <iais:value width="7">
+                                                        <input type="text" maxLength="100"
+                                                               name="patHciName"
+                                                               onblur="javascript:getHci(this);"
+                                                               id="hciName"
+                                                               value="${appCessHci.patHciName}">
+                                                        <span id="error_patHciName"
+                                                              name="iaisErrorMsg" class="error-msg"></span>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciNamePat" hidden>
+                                                <iais:row>
                                                     <iais:field value="HCI Name"/>
                                                     <iais:value width="7">
-                                                        <iais:input type="text" value="${appCessHci.patHciName}"
-                                                                    maxLength="100"
-                                                                    name="patHciName"></iais:input>
+                                                        <div class="nameLoad"></div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciCodePat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Code"/>
+                                                    <iais:value width="7">
+                                                        <div class="codeLoad"></div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="hciAddressPat" hidden>
+                                                <iais:row>
+                                                    <iais:field value="HCI Address"/>
+                                                    <iais:value width="7">
+                                                        <div class="addressLoad"></div>
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
                                             <div id="patRegNo" hidden>
                                                 <iais:row>
-                                                    <iais:field value="Professional Regn. No."/>
+                                                    <iais:field value="Professional Regn. No." mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" maxLength="20"
                                                                     name="patRegNo"
@@ -169,25 +197,59 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
-                                            <div id="patOthers" hidden>
+                                            <div id="patOthersTakeOver" hidden>
                                                 <iais:row>
-                                                    <iais:field value="Others"/>
+                                                    <iais:field value="Others" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" value="${appCessHci.patOthers}"
                                                                     maxLength="100"
-                                                                    name="patOthers"></iais:input>
+                                                                    name="patOthersTakeOver"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="patOthersMobileNo" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Mobile No." mandatory="true"/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" value="${appCessHci.mobileNo}"
+                                                                    maxLength="8"
+                                                                    name="patOthersMobileNo"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </div>
+                                            <div id="patOthersEmailAddress" hidden>
+                                                <iais:row>
+                                                    <iais:field value="Email Address" mandatory="true"/>
+                                                    <iais:value width="7">
+                                                        <iais:input type="text" value="${appCessHci.emailAddress}"
+                                                                    maxLength="66"
+                                                                    name="patOthersEmailAddress"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
                                             </div>
                                             <div id="patNo" hidden>
                                                 <iais:row>
-                                                    <iais:field value="Reason for no patients' records transfer"/>
+                                                    <iais:field value="Reason for no patients' records transfer" mandatory="true"/>
                                                     <iais:value width="7">
                                                         <iais:input type="text" value="${appCessHci.patNoRemarks}"
                                                                     maxLength="200"
                                                                     name="patNoRemarks"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
+                                            </div>
+                                            <div class="form-group" id="patNoConfirmID"
+                                                 hidden>
+                                                <div class="col-xs-6 col-sm-4 col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" id="patNoConfirm"
+                                                               type="checkbox"
+                                                               name="patNoConfirm"
+                                                               <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
+                                                        <label class="form-check-label" for="patNoConfirm"><span
+                                                                class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
+                                                    </div>
+                                                    <span id="error_patNoConfirm" name="iaisErrorMsg" class="error-msg"></span>
+                                                </div>
                                             </div>
                                         </iais:section>
                                     </div>
@@ -204,9 +266,9 @@
                                     <table class="table-gp tablebox">
                                         <tr style="text-align:center">
                                             <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%">Specified Service Licence No.
+                                            <th style="text-align:center;width: 25%">Special Licensable Service Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%">Specified Service Name</th>
+                                            <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
                                             <th style="text-align:center;width: 25%">Base Service Licence No.</th>
                                             <th style="text-align:center;width: 25%">Base Service Name</th>
                                         </tr>
@@ -269,7 +331,25 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
+             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align: center;">
+                        <div class="row">
+                            <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                        </div>
+                    </div>
+                    <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                        <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
+                                data-dismiss="modal" onclick="cancel()">OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <style>
@@ -338,71 +418,125 @@
 
     function changePatient() {
         if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
+            $("#patOthersTakeOver").show();
             $("#patHciName").hide();
+            $("#hciName").hide();
             $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES005") {
+            $("#patOthersMobileNo").show();
+            $("#patOthersEmailAddress").show();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
+        } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
+            $( "#hciName").trigger('blur');
             $("#patHciName").show();
-            $("#patOthers").hide();
+            $("#hciName").show();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
         } else if ($("#patientSelectId").val() == "CES006") {
             $("#patRegNo").show();
             $("#patHciName").hide();
-            $("#patOthers").hide();
+            $("#hciName").hide();
+            $("#patOthersTakeOver").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
         }
+    }
+
+    function getHci(obj) {
+        var value = $(obj).val();
+        loadHci(value, obj);
+    }
+
+    const loadHci = function (hciNameCode, obj) {
+        const jsonData = {
+            'hciNameCode': hciNameCode,
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/hci-info?stamp='+new Date().getTime(),
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                loadJsp(data,obj);
+            },
+            'error': function (data) {
+                deleteJsp(data,obj);
+            }
+        });
+    };
+
+    const loadJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').parent().next();
+        hciNme.show();
+        var hciCode = hciNme.next();
+        hciCode.show();
+        var hciAddress = hciCode.next();
+        hciAddress.show();
+        hciNme.find('.nameLoad').html(data.hciName);
+        hciCode.find('.codeLoad').html(data.hciCode);
+        hciAddress.find('.addressLoad').html(data.hciAddress);
+    }
+
+    const deleteJsp = function (data, obj) {
+        var hciNme = $(obj).closest('.form-group').next('.form-group');
+        hciNme.hide();
+        var hciCode = hciNme.next();
+        hciCode.hide();
+        var hciAddress = hciCode.next();
+        hciAddress.hide();
     }
 
     function changePatSelect() {
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
+            $("#patNoConfirmID").hide();
         } else if ($('#radioNo').is(':checked')) {
             $("#patNo").show();
             $("#patYes").hide();
             $("#patHciName").hide();
-            $("#patOthers").hide();
+            $("#hciName").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+            $("#hciNamePat").hide();
+            $("#hciCodePat").hide();
+            $("#hciAddressPat").hide();
+            $("#patNoConfirmID").show();
         }
     }
 
     $(document).ready(function () {
-        if ($("#reasonId").val() == "CES001") {
-            $("#reason").show();
-        } else if ($("#reasonId").val() != "CES001") {
-            $("#reason").hide();
-        }
-        if ($('#radioYes').is(':checked')) {
-            $("#patYes").show();
-            $("#patNo").hide();
-        } else if ($('#radioNo').is(':checked')) {
-            $("#patYes").hide();
-            $("#patHciName").hide();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patNo").show();
-        }
-        if ($("#patientSelectId").val() == "CES004") {
-            $("#patOthers").show();
-            $("#patHciName").hide();
-            $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES005") {
-            $("#patHciName").show();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-        } else if ($("#patientSelectId").val() == "CES006") {
-            $("#patRegNo").show();
-            $("#patHciName").hide();
-            $("#patOthers").hide();
-        }
+        changePatient();
+        changeReason();
+        changePatSelect();
     });
 
     $(document).ready(function () {
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
-            $("#patOthers").hide();
+            $("#hciName").hide();
+            $("#patOthersTakeOver").hide();
             $("#patRegNo").hide();
             $("#div").hide();
+        }
+    });
+
+    function cancel() {
+        $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+
+    $(document).ready(function () {
+        if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
+            $('#PRS_SERVICE_DOWN').modal('show');
         }
     });
 

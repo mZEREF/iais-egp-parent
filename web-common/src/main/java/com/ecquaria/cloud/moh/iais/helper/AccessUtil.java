@@ -15,13 +15,18 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
@@ -102,7 +107,11 @@ public class AccessUtil {
 
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
-                loginContext.setCurRoleId(userRoles.get(0));
+                if(RoleConsts.USER_ROLE_BROADCAST.equals(userRoles.get(0)) && userRoles.size() > 1){
+                    loginContext.setCurRoleId(userRoles.get(1));
+                }else{
+                    loginContext.setCurRoleId(userRoles.get(0));
+                }
             }
 
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
@@ -112,12 +121,23 @@ public class AccessUtil {
                 }
             } else if (AppConsts.USER_DOMAIN_INTERNET.equals(orgUser.getUserDomain())) {
                 LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
-                if (lDto != null) {
-                    loginContext.setNricNum(orgUser.getIdNumber());
-                    loginContext.setLicenseeId(lDto.getId());
-                    loginContext.setUenNo(lDto.getUenNo());
-                    loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
+                if (lDto == null) {
+                    LicenseeClient lc = SpringContextHelper.getContext().getBean(LicenseeClient.class);
+                    OrgEicClient orgEicClient = SpringContextHelper.getContext().getBean(OrgEicClient.class);
+                    OrganizationDto organ = orgEicClient.getOrganizationById(orgUser.getOrgId()).getEntity();
+                    if(organ != null && StringUtil.isNotEmpty(organ.getUenNo())){
+                        log.info("=====>>>>> createLicenseeByUenFromAcra corppass");
+                        lc.getEntityByUEN(organ.getUenNo());
+                    }else {
+                        lc.imaginaryLicenseeByOrgId(orgUser.getOrgId());
+                    }
                 }
+                lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
+                loginContext.setNricNum(orgUser.getIdNumber());
+                loginContext.setLicenseeId(lDto.getId());
+                loginContext.setUenNo(lDto.getUenNo());
+                loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
+                log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
             }
         }
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);

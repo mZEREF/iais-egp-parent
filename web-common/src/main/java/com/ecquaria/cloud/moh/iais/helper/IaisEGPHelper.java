@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -64,8 +65,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 
@@ -494,11 +497,14 @@ public final class IaisEGPHelper extends EGPHelper {
      * @author: yichen
      */
     public static Date parseToDate(String val, String pattern) {
-        if(StringUtils.isEmpty(val) || StringUtils.isEmpty(pattern)){
+        if(val == null || StringUtils.isEmpty(pattern)){
             throw new IaisRuntimeException("No has input for String to Date!");
         }
 
         try {
+            if (StringUtil.isEmpty(val)){
+                return null;
+            }
             return FastDateFormat.getInstance(pattern).parse(val);
         } catch (ParseException e) {
             throw new IaisRuntimeException(e.getMessage(), e);
@@ -796,5 +802,26 @@ public final class IaisEGPHelper extends EGPHelper {
         authorization.append("signature=").append("");
         authorization.append("timestamp=").append("System.currentTimeMillis()");
         return authorization.toString();
+    }
+
+    public static void onChangeCheckbox(HttpServletRequest request){
+        String action = ParamUtil.getString(request, "action");
+        String itemId = ParamUtil.getString(request, "itemId");
+        String redisplayName = ParamUtil.getString(request, "forName");
+        String checkboxName = ParamUtil.getString(request, "checkboxName");
+
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, redisplayName);
+
+        set = Optional.ofNullable(set).orElseGet(() -> new LinkedHashSet<>());
+
+        String unMaskVal = MaskUtil.unMaskValue(checkboxName, itemId);
+        if ("checked".equals(action)){
+            set.add(unMaskVal);
+        }else {
+            if (set.contains(unMaskVal)){
+                set.remove(unMaskVal);
+            }
+        }
+        ParamUtil.setSessionAttr(request, redisplayName, set);
     }
 }

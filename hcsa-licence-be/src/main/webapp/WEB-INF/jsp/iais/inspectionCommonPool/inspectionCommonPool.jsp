@@ -16,91 +16,85 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 
 
-<form method="post" id="mainPoolForm" action=<%=process.runtime.continueURL()%>>
-  <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-  <input type="hidden" name="inspectionPoolType" value="">
-  <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
-  <div class="main-content">
-    <div class="row">
-      <div class="col-lg-12 col-xs-12">
-        <div class="center-content">
-          <div class="intranet-content">
-            <div class="bg-title">
-              <h2>
-                <span>Common Pool</span>
-              </h2>
-            </div>
-            <iais:body>
-              <iais:section title="" id = "demoList">
-                <div class="form-horizontal">
-                  <div class="form-group">
-                    <label class="col-xs-12 col-md-4 control-label">Role</label>
-                    <div class="col-xs-8 col-sm-6 col-md-6">
-                      <iais:select name="commonRoleId" cssClass="roleIds" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-10 col-md-12">
-                    <div class="components">
-                      <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
-                         data-target="#commonPool">Filter</a>
-                    </div>
-                  </div>
-                </div>
-                <p></p>
-                <div id="commonPool" class="collapse">
-                  <iais:row>
-                    <iais:field value="Application No."/>
-                    <iais:value width="18">
-                      <input type="text" name="application_no" value="${cPoolSearchParam.filters['application_no']}" />
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Type"/>
-                    <iais:value width="18">
-                      <div id = "appComPoolSelect">
-                        <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+  <form method="post" id="mainPoolForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" name="inspectionPoolType" value="">
+    <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
+    <div class="main-content">
+      <div class="row">
+        <div class="col-lg-12 col-xs-12">
+          <div class="center-content">
+            <div class="intranet-content">
+              <div class="bg-title">
+                <h2>
+                  <span>Common Pool</span>
+                </h2>
+              </div>
+              <iais:body>
+                <iais:section title="" id = "demoList">
+                  <div class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-xs-12 col-md-4 control-label">Role</label>
+                      <div class="col-xs-8 col-sm-6 col-md-6">
+                        <iais:select name="commonRoleId" cssClass="roleIds" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
                       </div>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Code"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_code" value="${cPoolSearchParam.filters['hci_code']}" />
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Name"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_name" value="${cPoolSearchParam.filters['hci_name']}" />
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Address"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_address" value="${cPoolSearchParam.filters['hci_address']}" />
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Date From"/>
-                    <iais:value width="18">
-                      <iais:datePicker id = "sub_date" name = "sub_date" value="${sub_date2}"></iais:datePicker>
-                    </iais:value>
-                  </iais:row>
-                  <iais:action style="text-align:right;">
-                    <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
-                    <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
-                  </iais:action>
-                </div>
-              </iais:section>
-              <h3>
-                <span>Search Results</span>
-              </h3>
-              <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
-              <div class="table-gp">
-                <table class="table application-group">
-                  <thead>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10 col-md-12">
+                      <div class="components">
+                        <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
+                           data-target="#commonPool">Filter</a>
+                      </div>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div id="commonPool" class="collapse">
+                    <iais:row>
+                      <iais:field value="Application No."/>
+                      <iais:value width="18">
+                        <input type="text" name="application_no" value="${cPoolSearchParam.filters['application_no']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="Application Type"/>
+                      <iais:value width="18">
+                        <div id = "appComPoolSelect">
+                          <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+                        </div>
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Code"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_code" value="${cPoolSearchParam.filters['hci_code']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Name"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_name" value="${cPoolSearchParam.filters['hci_name']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Address"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_address" value="${cPoolSearchParam.filters['hci_address']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:action style="text-align:right;">
+                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
+                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
+                    </iais:action>
+                  </div>
+                </iais:section>
+                <h3>
+                  <span>Search Results</span>
+                </h3>
+                <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
+                <div class="table-gp">
+                  <table class="table application-group">
+                    <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
@@ -109,8 +103,8 @@
                       <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                     </tr>
-                  </thead>
-                  <tbody>
+                    </thead>
+                    <tbody>
                     <c:choose>
                       <c:when test="${empty cPoolSearchResult.rows}">
                         <tr>
@@ -141,16 +135,16 @@
                         </c:forEach>
                       </c:otherwise>
                     </c:choose>
-                  </tbody>
-                </table>
-              </div>
-            </iais:body>
+                    </tbody>
+                  </table>
+                </div>
+              </iais:body>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
 </div>
 <script type="text/javascript">
 
@@ -208,53 +202,55 @@
 
     var dividajaxlist = [];
     function commonPoolByGroupId(applicationGroupNo, divid) {
-      if (!isInArray(dividajaxlist,divid)) {
-        dividajaxlist.push(divid);
-        $.post(
-          '/hcsa-licence-web/common-pool/common.do',
-          {groupNo: applicationGroupNo},
-          function (data) {
-            var result = data.result;
-            if('Success' == result){
-              var res = data.ajaxResult;
-              var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                  '<td colspan="6" style="padding: 0px 8px !important;">' +
-                  '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                  '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                  '<thead>' +
-                  '<tr>';
+        if (!isInArray(dividajaxlist,divid)) {
+            dividajaxlist.push(divid);
+            $.post(
+                '/hcsa-licence-web/common-pool/common.do',
+                {groupNo: applicationGroupNo},
+                function (data) {
+                    var result = data.result;
+                    if('Success' == result){
+                        var res = data.ajaxResult;
+                        var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                            '<td colspan="6" style="padding: 0px 8px !important;">' +
+                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<thead>' +
+                            '<tr>';
 
-              html += '<th width="17%">Application No.</th>' +
-                  '<th width="17%">Service</th>' +
-                  '<th width="17%">Application Status</th>' +
-                  '<th width="17%">HCI Code</th>' +
-                  '<th width="32%">HCI Name / Address</th>' +
-                  '</tr>' +
-                  '</thead>' +
-                  '<tbody>';
-              for (var i = 0; i < res.rowCount; i++) {
-                html += '<tr>';
-                  html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
-                      '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                      '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
-                      '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
-                      '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
-                      '</tr>';
-              }
-              html += '</tbody></table></div></td></tr>';
-              $("#advfilter" + divid).after(html);
-              dividlist.push(divid);
-            }
-          }
-        )
-      } else {
-        var display = $('#advfilterson' + divid).css('display');
-        if (display == 'none') {
-          $('#advfilterson' + divid).show();
+                        html += '<th width="15%">Application No.</th>' +
+                            '<th width="15%">Service</th>' +
+                            '<th width="15%">Licence Expiry Date</th>' +
+                            '<th width="15%">Application Status</th>' +
+                            '<th width="15%">HCI Code</th>' +
+                            '<th width="25%">HCI Name / Address</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                        for (var i = 0; i < res.rowCount; i++) {
+                            html += '<tr>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                                '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
+                                '</tr>';
+                        }
+                        html += '</tbody></table></div></td></tr>';
+                        $("#advfilter" + divid).after(html);
+                        dividlist.push(divid);
+                    }
+                }
+            )
         } else {
-          $('#advfilterson' + divid).hide();
+            var display = $('#advfilterson' + divid).css('display');
+            if (display == 'none') {
+                $('#advfilterson' + divid).show();
+            } else {
+                $('#advfilterson' + divid).hide();
+            }
         }
-      }
     }
 </script>
 

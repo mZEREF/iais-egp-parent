@@ -11,11 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import org.springframework.stereotype.Service;
 
@@ -107,11 +107,11 @@ public interface HcsaChklService {
 
     Boolean inActiveItem(String itemId);
 
-    List<ErrorMsgContent> submitUploadItems(List<ItemTemplate> uploadItems);
+    List<ErrorMsgContent> submitUploadItems(List<ChecklistItemExcel> uploadItems);
 
-    List<ErrorMsgContent> updateUploadItems(List<ItemTemplate> updateItems);
+    List<ErrorMsgContent> updateUploadItems(List<ChecklistItemExcel> updateItems);
 
-    List<ConfigExcelItemDto> convertToUploadTemplateByConfig(ChecklistConfigDto config);
+    void convertToUploadTemplateByConfig(List<ChecklistConfigExcel> configExcelList, ChecklistConfigDto config);
 
     String callProceduresGenUUID();
 }

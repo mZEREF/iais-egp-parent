@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -36,6 +37,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="selectCategoryValue" value="">
     <div class="col-lg-12 col-xs-12">
       <div class="bg-title" style="text-align: center;">
         <h2>HCSA Service</h2>
@@ -119,7 +121,7 @@
             <select name="selectCategoryId" >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option value="${categoryDto.desc}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
             <span id="error_serviceCategory" class="error-msg" name="iaisErrorMsg"></span>
@@ -207,7 +209,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
@@ -289,6 +291,16 @@
                   <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                   <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                   <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+              </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                <select name="selectDocPerson">
+                  <option value="">To duplicate for the personnel?</option>
+                  <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
+                  <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
+                  <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
+                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                  <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                </select>
               </div>
               <div class="col-xs-12 col-md-5" style="margin-right: 2%"></div>
               <div class="col-xs-12 col-md-4">
@@ -472,7 +484,7 @@
       <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-      <table border="1px" style="text-align: center" >
+      <table border="1px" style="text-align: center" valign="middle">
         <tr>
           <th style="width: 10% ;height: 40px;text-align: center">Application Type&nbsp;<span class="mandatory">*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory">*</span></th>
@@ -526,6 +538,35 @@
               <p>Inspector</p>
             </c:if>
             <c:if test="${routingStage.stageCode=='INS'}">
+              <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
+                <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
+                  <option value="" >Please Select</option>
+                  <option value="common"
+                          <c:choose>
+                            <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
+                              selected="selected"
+                            </c:when>
+                          </c:choose>
+                  >Common Pool</option>
+                  <option value="round"
+                          <c:choose>
+                            <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
+                              selected="selected"
+                            </c:when>
+                          </c:choose>
+                  >Round Robin</option>
+                  <option value="assign"
+                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
+                  >Supervisor Assign</option>
+                </select>
+                <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
+                  <p>Inspector AO1</p>
+                </c:if>
+                <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
+                  <p>Inspector Lead</p>
+                </c:if>
+              </c:forEach>
+            </c:if>
             <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
           </div>
 
@@ -747,13 +788,14 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC')
+          $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:none");
+            $("select[name='selectCategoryId']").next().attr('class','nice-select');
         }
     });
 
@@ -776,9 +818,9 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Specified Services');
-          $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
-          $("select[name='selectCategoryId']").val('06639A5E-D8FA-E911-BE7B-000C29F371DC')
+            $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
+            $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
+            $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
@@ -955,6 +997,9 @@
 
     $('#Numberfields').keyup(function () {
         let val = $('#Numberfields').val();
+        if(val==''){
+          val='0';
+        }
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
         let number1 = parseInt(jQuery.length);
@@ -990,6 +1035,9 @@
 
     $('#NumberDocument').keyup(function () {
         let val = $('#NumberDocument').val();
+        if(val==''){
+          val='0';
+        }
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
         let number1 = parseInt(jQuery.length);
@@ -997,7 +1045,7 @@
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
                     "            <div class=\"col-xs-12 col-md-12\">\n" +
-                    "           <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
+                    "             <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
                     "              <label class=\"col-xs-12 col-md-5 control-label\" style=\"margin-right: 2%\">Name of Info Field</label>\n" +
                     "              <div class=\"col-xs-12 col-md-2\">\n" +
                     "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
@@ -1011,6 +1059,27 @@
                     "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
                     "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
                     "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <select name=\"selectDocPerson\" style=\"display: none;\">\n" +
+                    "                   <option value=\"\">To duplicate for the personnel?</option>\n" +
+                    "                   <option value=\"PO\">Principal Officer (PO)?</option>\n" +
+                    "                   <option value=\"DPO\">Nominee?</option>\n" +
+                    "                   <option value=\"CGO\">Clinical Governance Officer (CGO)?</option>\n" +
+                    "                   <option value=\"SVCPSN\">Service Personnel ?</option>\n" +
+                    "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +
+                    "                 </select>\n" +
+                    "  <div class=\"nice-select\" tabindex=\"0\">\n"+
+                    "   <span class=\"current\">To duplicate for the personnel?</span>\n"+
+                    "   <ul class=\"list\">\n"+
+                    "     <li data-value=\"\" class=\"option selected\">To duplicate for the personnel?</li>\n"+
+                    "     <li data-value=\"PO\" class=\"option\">Principal Officer (PO)</li>\n"+
+                    "     <li data-value=\"DPO\" class=\"option\">Nominee</li>\n"+
+                     "    <li data-value=\"CGO\" class=\"option\">Clinical Governance Officer (CGO)</li>\n"+
+                    "     <li data-value=\"SVCPSN\" class=\"option\">Service Personnel</li>\n"+
+                    "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+
+                    "   </ul>\n"+
+                    "  </div>\n"+
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");

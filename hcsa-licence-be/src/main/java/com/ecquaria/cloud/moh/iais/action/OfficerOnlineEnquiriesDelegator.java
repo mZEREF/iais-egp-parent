@@ -5,22 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
@@ -38,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -53,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.google.common.collect.ImmutableSet;
 import ecq.commons.sequence.uuid.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +63,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,7 +113,16 @@ public class OfficerOnlineEnquiriesDelegator {
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
-
+    private static final Set<String> appStatuses = ImmutableSet.of(
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_REJECTED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
 
 
     public void start(BaseProcessClass bpc) {
@@ -144,6 +148,14 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
+        ParamUtil.setSessionAttr(request,"isBasic",null);
+        ParamUtil.setSessionAttr(request,"SearchResult", null);
+        ParamUtil.setSessionAttr(request,"SearchParam", null);
+        ParamUtil.setSessionAttr(request,"count", null);
+        ParamUtil.setSessionAttr(request,"licIds", null);
+        ParamUtil.setSessionAttr(request,"licRfiIds", null);
+        ParamUtil.setSessionAttr(request, "kpiInfo", null);
+
         appLicenceParameter.setPageNo(1);
         licenseeParameter.setPageNo(1);
         String p = systemParamConfig.getPagingSize();
@@ -159,7 +171,7 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
 
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"isBasic",true);
+        ParamUtil.setSessionAttr(request,"isBasic",Boolean.TRUE);
         ParamUtil.setSessionAttr(request,"SearchResult", null);
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
         ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
@@ -241,6 +253,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,licesee);
                         reqForInfoSearchListDto.setLicenceId(rfiApplicationQueryDto.getLicenceId());
                         if(rfiApplicationQueryDto.getLicenceId()!=null){
+                            if(reqForInfoSearchListDto.getAppId()==null){
+                                reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+                                reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+                                reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+                            }
                             licenceIds.add(rfiApplicationQueryDto.getLicenceId());
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
                             List<String> addressList1 = IaisCommonUtils.genNewArrayList();
@@ -249,13 +266,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                                 addressList1.add(licAddress);  //NOSONAR
-                                if(appAddress.equals(licAddress)){
+                                if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                 }
                             }
                             reqForInfoSearchListDto.setAddress(addressList1);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
                             reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
@@ -407,10 +424,10 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
                 }
@@ -505,7 +522,7 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"isBasic",false);
+        ParamUtil.setSessionAttr(request,"isBasic",Boolean.FALSE);
         preSelectOption(request);
         ParamUtil.setSessionAttr(request,"SearchResult", null);
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
@@ -564,10 +581,10 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
                     }else
-                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
                     appCount++;
@@ -705,8 +722,34 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!countOld.equals(count)){
                 appParam.setPageNo(1);
             }
-            if(status!=null && status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+            if(status!=null){
+                switch (status){
+                    case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                        break;
+                    case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                        break;
+                    default:
+                }
             }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -747,9 +790,15 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 appParam.addParam("licenseeId",typeStr);
             }
-            QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
             if (appParam != null) {
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (status != null && status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if(appResult.getRowCount()!=0){
@@ -762,6 +811,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,licesee);
                         reqForInfoSearchListDto.setLicenceId(rfiApplicationQueryDto.getLicenceId());
                         if(rfiApplicationQueryDto.getLicenceId()!=null){
+                            if(reqForInfoSearchListDto.getAppId()==null){
+                                reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+                                reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+                                reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+                            }
                             licenceIds.add(rfiApplicationQueryDto.getLicenceId());
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
                             List<String> addressList1 = IaisCommonUtils.genNewArrayList();
@@ -770,13 +824,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                                 addressList1.add(licAddress);  //NOSONAR
-                                if(appAddress.equals(licAddress)){
+                                if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                 }
                             }
                             reqForInfoSearchListDto.setAddress(addressList1);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
                             reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
@@ -829,15 +883,19 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus)&&appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+        if(!StringUtil.isEmpty(appStatus)
+                &&(appStatuses.contains(appStatus)||appStatus.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS))
+        )
+        {
             licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
     }
 
+
     private void rfiApplicationQueryDtoToReqForInfoSearchListDto(ApplicationLicenceQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto,Map<String,String> licesee){
         reqForInfoSearchListDto.setAppId(rfiApplicationQueryDto.getId());
-        String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getApplicationType()}).get(0).getText();
+        String appType= MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getApplicationType());
         reqForInfoSearchListDto.setApplicationType(appType);
         reqForInfoSearchListDto.setAppCorrId(rfiApplicationQueryDto.getAppCorrId());
         reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
@@ -849,53 +907,6 @@ public class OfficerOnlineEnquiriesDelegator {
             reqForInfoSearchListDto.setHciName("-");
         }
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
-        try {
-            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot= fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-
-            if(appPreRecommentdationDtoDateRoot!=null&&appPreRecommentdationDtoDate!=null){
-
-                List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
-                Set<String> appIds=IaisCommonUtils.genNewHashSet();
-                AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
-                if (appPremPreInspectionNcDto != null) {
-                    String ncId = appPremPreInspectionNcDto.getId();
-                    List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                    if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                        ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
-                        complianceHistoryDto.setComplianceTag("Partial");
-                        reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                        complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
-                        complianceHistoryDtos.add(complianceHistoryDto);
-                        appIds.add(rfiApplicationQueryDto.getId());
-                    }
-                } else {
-                    ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
-                    reqForInfoSearchListDto.setLastComplianceHistory("Full");
-                    complianceHistoryDto.setComplianceTag("Full");
-                    complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
-                    complianceHistoryDtos.add(complianceHistoryDto);
-                    appIds.add(rfiApplicationQueryDto.getId());
-
-                }
-                ApplicationDto applicationDto =applicationClient.getApplicationById(rfiApplicationQueryDto.getId()).getEntity();
-                if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null) {
-                    complianceHistoryDtos= onlineEnquiriesService.complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
-                }
-                complianceHistoryDtos.sort(Comparator.comparing(ComplianceHistoryDto::getSortDate));
-                reqForInfoSearchListDto.setComplianceHistoryDtos(complianceHistoryDtos);
-            }else {
-                reqForInfoSearchListDto.setLastComplianceHistory("-");
-                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-            }
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
-            reqForInfoSearchListDto.setLastComplianceHistory("-");
-            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-        }
-
-
-
         reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
@@ -904,7 +915,36 @@ public class OfficerOnlineEnquiriesDelegator {
         addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
 
-        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskScore());
+        if( rfiApplicationQueryDto.getLastIsNc()==null){
+            reqForInfoSearchListDto.setLastComplianceHistory("-");
+            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+        }else {
+            if(rfiApplicationQueryDto.getLastIsNc()==0){
+                reqForInfoSearchListDto.setLastComplianceHistory("Full");
+            }else {
+                reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+            }
+            if(rfiApplicationQueryDto.getSecIsNc()==null){
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+            }else {
+                if(rfiApplicationQueryDto.getSecIsNc()==0){
+                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                }else {
+                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                }
+            }
+        }
+        if(rfiApplicationQueryDto.getRiskScore()==null){
+            reqForInfoSearchListDto.setCurrentRiskTagging("-");
+
+        }else {
+            reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getRiskScore()));
+        }
+
+
+
+
+
         if(rfiApplicationQueryDto.getAppLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getAppLicenseeId());
             reqForInfoSearchListDto.setLicenseeName(licesee.get(rfiApplicationQueryDto.getAppLicenseeId()));
@@ -939,12 +979,14 @@ public class OfficerOnlineEnquiriesDelegator {
             for (String appId : appIds) {
                 String[] appIdSplit=appId.split("\\|");
                 String is = appIdSplit[1];
-                String isActive = appIdSplit[3];
-                if ("1".equals(is)&&"Active".equals(isActive)) {
-                    licIdsSet.add(appIdSplit[2]);
-                }
-                if ("Active".equals(isActive)) {
-                    licRfiIdsSet.add(appIdSplit[2]);
+                if(appIdSplit.length>2){
+                    String isActive = appIdSplit[3];
+                    if ("1".equals(is)&&"Active".equals(isActive)) {
+                        licIdsSet.add(appIdSplit[2]);
+                    }
+                    if ("Active".equals(isActive)) {
+                        licRfiIdsSet.add(appIdSplit[2]);
+                    }
                 }
             }
         }catch (Exception e){
@@ -988,6 +1030,8 @@ public class OfficerOnlineEnquiriesDelegator {
 
     public void preInspReport(BaseProcessClass bpc) {
         log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>OnlineEnquiries");
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
         HttpServletRequest request=bpc.request;
         onlineEnquiriesService.preInspReport(request);
         // 		preAppInfo->OnStepProcess
@@ -1031,10 +1075,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    String status= (String) parm.getFilters().get("appStatus");
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1163,42 +1208,73 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             appLicenceParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter, true);
-            appParam.setPageNo(parm.getPageNo());
-            appParam.setPageSize(parm.getPageSize());
             if (appParam != null) {
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                }
-                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                    List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                    StringBuilder sb=new StringBuilder();
-                    Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                    if ("HIV".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                if(parm!=null){
+                    appParam.setPageNo(parm.getPageNo());
+                    appParam.setPageSize(parm.getPageSize());
+                    if(parm.getFilters()!=null){
+                        String status= (String) parm.getFilters().get("appStatus");
+                        if(status!=null){
+                            switch (status){
+                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                                    break;
+                                default:
                             }
                         }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                        if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                            List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                            StringBuilder sb=new StringBuilder();
+                            Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                            if ("HIV".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
                             }
+                            appParam.addParam("appSubStatus_HIV", sb);
                         }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
                     }
-                    appParam.addParam("appSubStatus_HIV", sb);
                 }
                 if(licenseeIds.size()!=0){
                     String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
@@ -1209,8 +1285,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
+
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
@@ -1223,6 +1306,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto, reqForInfoSearchListDto, licesee);
                         reqForInfoSearchListDto.setLicenceId(rfiApplicationQueryDto.getLicenceId());
                         if(rfiApplicationQueryDto.getLicenceId()!=null){
+                            if(reqForInfoSearchListDto.getAppId()==null){
+                                reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+                                reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+                                reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+                            }
                             licenceIds.add(rfiApplicationQueryDto.getLicenceId());
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
                             List<String> addressList1 = IaisCommonUtils.genNewArrayList();
@@ -1231,13 +1319,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                                 addressList1.add(licAddress);  //NOSONAR
-                                if(appAddress.equals(licAddress)){
+                                if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                 }
                             }
                             reqForInfoSearchListDto.setAddress(addressList1);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
                             reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
@@ -1272,10 +1360,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    String status= (String) parm.getFilters().get("appStatus");
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1404,42 +1493,73 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             appLicenceParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter, true);
-            appParam.setPageNo(parm.getPageNo());
-            appParam.setPageSize(parm.getPageSize());
             if (appParam != null) {
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                }
-                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                    List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                    StringBuilder sb=new StringBuilder();
-                    Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                    if ("HIV".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                if(parm!=null){
+                    appParam.setPageNo(parm.getPageNo());
+                    appParam.setPageSize(parm.getPageSize());
+                    if(parm.getFilters()!=null){
+                        String status= (String) parm.getFilters().get("appStatus");
+                        if(status!=null){
+                            switch (status){
+                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                                    break;
+                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                                    break;
+                                default:
                             }
                         }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                        if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                            List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                            StringBuilder sb=new StringBuilder();
+                            Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                            if ("HIV".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
+                            } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                                sb.append('(');
+                                for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                    if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                        sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                    }
+                                }
+                                sb.append("'1' = '0')");
                             }
+                            appParam.addParam("appSubStatus_HIV", sb);
                         }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
                     }
-                    appParam.addParam("appSubStatus_HIV", sb);
                 }
                 if(licenseeIds.size()!=0){
                     String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
@@ -1450,8 +1570,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult;
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                }
+
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
@@ -1464,6 +1591,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto, reqForInfoSearchListDto, licesee);
                         reqForInfoSearchListDto.setLicenceId(rfiApplicationQueryDto.getLicenceId());
                         if(rfiApplicationQueryDto.getLicenceId()!=null){
+                            if(reqForInfoSearchListDto.getAppId()==null){
+                                reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+                                reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+                                reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+                            }
                             licenceIds.add(rfiApplicationQueryDto.getLicenceId());
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
                             List<String> addressList1 = IaisCommonUtils.genNewArrayList();
@@ -1472,13 +1604,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                                 addressList1.add(licAddress);  //NOSONAR
-                                if(appAddress.equals(licAddress)){
+                                if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                 }
                             }
                             reqForInfoSearchListDto.setAddress(addressList1);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
                             reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
@@ -1494,6 +1626,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         preSelectOption(request);
+
 
     }
 
@@ -1552,10 +1685,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                    String status= (String) parm.getFilters().get("appStatus");
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
                     }else
-                    if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                    if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
                     appCount++;
@@ -1686,39 +1820,68 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchParam appParam = SearchResultHelper.getSearchParam(request, appLicenceParameter, true);
             if (appParam != null) {
                 appParam.setPageNo(0);
-                if (parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
-                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                }
-                if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
-                    List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
-                    StringBuilder sb=new StringBuilder();
-                    Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
-                    if ("HIV".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
+                if(parm!=null&&parm.getFilters()!=null){
+                    String status= (String) parm.getFilters().get("appStatus");
+                    if(status!=null){
+                        switch (status){
+                            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                                break;
+                            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                                break;
+                            default:
                         }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Screening".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
-                    } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
-                        sb.append('(');
-                        for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
-                            if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
-                                sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
-                            }
-                        }
-                        sb.append("'1' = '0')");
                     }
-                    appParam.addParam("appSubStatus_HIV", sb);
+                    if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
+                        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
+                        StringBuilder sb=new StringBuilder();
+                        Object serviceSubTypeName = parm.getFilters().get("serviceSubTypeName");
+                        if ("HIV".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if(hcsaServiceSubTypeDto.getSubtypeName().contains("HIV")){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        } else if ("PIG_Screening".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if("Pre-implantation Genetic Screening".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        } else if ("PIG_Diagnosis".equals(serviceSubTypeName)) {
+                            sb.append('(');
+                            for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto:subTypeNames){
+                                if("Pre-implantation Genetic Diagnosis".equals(hcsaServiceSubTypeDto.getSubtypeName())){
+                                    sb.append(" oev.APP_SCOPE_NAME = '").append(hcsaServiceSubTypeDto.getId()).append("' OR ");
+                                }
+                            }
+                            sb.append("'1' = '0')");
+                        }
+                        appParam.addParam("appSubStatus_HIV", sb);
+                    }
                 }
                 if(licenseeIds.size()!=0){
                     String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
@@ -1729,8 +1892,15 @@ public class OfficerOnlineEnquiriesDelegator {
                     }
                     appParam.addParam("licenseeId",typeStr);
                 }
-                QueryHelp.setMainSql(RFI_QUERY, "appLicenceQuery", appParam);
-                SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
+                SearchResult<ApplicationLicenceQueryDto> appResult ;
+                if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoForCommPoolQuery(appParam);
+                }else {
+                    QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
+                    appResult = requestForInformationService.appLicenceDoQuery(appParam);
+
+                }
                 Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
 
                 if (appResult.getRowCount() != 0) {
@@ -1743,17 +1913,23 @@ public class OfficerOnlineEnquiriesDelegator {
                         rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto, reqForInfoSearchListDto, licesee);
                         reqForInfoSearchListDto.setLicenceId(rfiApplicationQueryDto.getLicenceId());
                         if(rfiApplicationQueryDto.getLicenceId()!=null){
-                            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-                            for (PremisesDto premisesDto : premisesDtoList
-                            ) {
-                                String appAddress = MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(), rfiApplicationQueryDto.getStreetName(), rfiApplicationQueryDto.getBuildingName(), rfiApplicationQueryDto.getFloorNo(), rfiApplicationQueryDto.getUnitNo(), rfiApplicationQueryDto.getPostalCode());
-                                String licAddress = MiscUtil.getAddress(premisesDto.getBlkNo(), premisesDto.getStreetName(), premisesDto.getBuildingName(), premisesDto.getFloorNo(), premisesDto.getUnitNo(), premisesDto.getPostalCode());
-                                if (appAddress.equals(licAddress)) {
-                                    reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
-                                    reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
+                            if(rfiApplicationQueryDto.getId().isEmpty()){
+                                reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getServiceName());
+                                reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getLicHciCode());
+                                reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getLicHciName());
+                                if(rfiApplicationQueryDto.getLicHciName()==null){
+                                    reqForInfoSearchListDto.setHciName("-");
                                 }
+                                reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getLicBlkNo());
+                                reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getLicBuildingName());
+                                reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getLicUnitNo());
+                                reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getLicStreetName());
+                                reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getLicFloorNo());
+                                List<String> addressList = IaisCommonUtils.genNewArrayList();
+                                addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getLicBlkNo(),rfiApplicationQueryDto.getLicStreetName(),rfiApplicationQueryDto.getLicBuildingName(),rfiApplicationQueryDto.getLicFloorNo(),rfiApplicationQueryDto.getLicUnitNo(),rfiApplicationQueryDto.getLicPostalCode()));
+                                reqForInfoSearchListDto.setAddress(addressList);
                             }
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getLicenceStatus()}).get(0).getText();
+                            String licStatus = MasterCodeUtil.getCodeDesc(rfiApplicationQueryDto.getLicenceStatus());
                             reqForInfoSearchListDto.setLicenceStatus(licStatus);
                             reqForInfoSearchListDto.setLicenceNo(rfiApplicationQueryDto.getLicenceNo());
                             reqForInfoSearchListDto.setStartDate(rfiApplicationQueryDto.getStartDate());
@@ -1776,9 +1952,10 @@ public class OfficerOnlineEnquiriesDelegator {
         for (ReqForInfoSearchListDto info:searchListDtoSearchResult.getRows()
         ) {
             try {
-                info.setServiceName(mapIdSvcName.get(info.getServiceName()));
+                if(mapIdSvcName.get(info.getServiceName())!=null){
+                    info.setServiceName(mapIdSvcName.get(info.getServiceName()));
+                }
             }catch (Exception e){
-                info.setServiceName("-");
                 log.debug("ServiceName is null");
             }
             try {

@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -114,18 +116,26 @@ public class InspecAssignTaskDelegator {
             GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-            List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
-            StringBuilder sb = new StringBuilder("(");
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                sb.append(":appCorrId")
-                        .append(i)
-                        .append(',');
+            List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+            int workGroupIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+                workGroupIdsSize = workGroupIds.size();
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
+                for (int i = 0; i < workGroupIds.size(); i++) {
+                    searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                }
+            } else {
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
             }
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParam.addParam("appCorrId_list", inSql);
-            for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            String curRoleId;
+            if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+                curRoleId = loginContext.getCurRoleId();
+            } else {
+                curRoleId = RoleConsts.USER_LEAD;
             }
+            searchParam.addFilter("commonPoolRoleId", curRoleId,true);
 
             QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
@@ -207,12 +217,29 @@ public class InspecAssignTaskDelegator {
             //set fastTrackFlag
             inspecTaskCreAndAssDto = setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
+            //set Edit Hours Flag
+            inspecTaskCreAndAssDto = setEditHoursFlagByAppAndUser(inspecTaskCreAndAssDto, applicationDto);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         }
 
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
+    }
+
+    private InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto) {
+        List<String> appHoursStatusList = IaisCommonUtils.genNewArrayList();
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT);
+        appHoursStatusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+        String appStatus = "";
+        if(applicationDto != null) {
+            appStatus = applicationDto.getStatus();
+        }
+        if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+            inspecTaskCreAndAssDto.setEditHoursFlag(AppConsts.COMMON_POOL);
+        }
+        return inspecTaskCreAndAssDto;
     }
 
     private InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto) {
@@ -351,25 +378,35 @@ public class InspecAssignTaskDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "commonRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        loginContext.setCurRoleId(roleId);
+        if(loginContext != null) {
+            loginContext.setCurRoleId(roleId);
+        }
         if(!StringUtil.isEmpty(roleId)){
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-        List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
-        StringBuilder sb = new StringBuilder("(");
-        for(int i = 0; i < appCorrId_list.size(); i++){
-            sb.append(":appCorrId")
-                    .append(i)
-                    .append(',');
+        List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+        int workGroupIdsSize = 0;
+        if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+            workGroupIdsSize = workGroupIds.size();
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+            }
+        } else {
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
         }
-        String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParam.addParam("appCorrId_list", inSql);
-        for(int i = 0; i < appCorrId_list.size(); i++){
-            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+        String curRoleId;
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
+            curRoleId = loginContext.getCurRoleId();
+        } else {
+            curRoleId = RoleConsts.USER_LEAD;
         }
+        searchParam.addFilter("commonPoolRoleId", curRoleId,true);
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no",application_no,true);
         }

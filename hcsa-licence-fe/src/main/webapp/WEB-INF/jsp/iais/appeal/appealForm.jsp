@@ -13,7 +13,7 @@
 <%@include file="./dashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <div class="container">
-  <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
+  <form id="mainForm" enctype="multipart/form-data" name="mainForm" class="__egovform form-horizontal" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" id="crud_action_additional" value="">
@@ -26,12 +26,15 @@
 
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-        <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+        <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+        <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
+        <input type="hidden" value="${id}" id="licenceId">
+        <input type="hidden" value="${type}" id="parametertype">
         <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
       </div>
     </div>
   </div>
-
+  <div>
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">
         <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
@@ -41,33 +44,6 @@
             <c:forEach items="${selectOptionList}" var="selectOption">
               <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
             </c:forEach>
-           <%-- <c:if test="${rejectEqDay==true}">
-              <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-                <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${feeEqDay==true}">
-              <c:if test="${lateFee==true}">
-                <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-              </c:if>
-            </c:if>
-            <c:if test="${cgoEqDay==true}">
-              <c:if test="${maxCGOnumber==true}">
-                <c:if test="${type=='application'}">
-                  <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-                </c:if>
-              </c:if>
-            </c:if>
-            <c:if test="${nameEqDay==true}">
-              <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-            </c:if>
-            <c:if test="${periodEqDay==true}">
-              <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-            </c:if>
-            <c:if test="${otherEqDay==true}">
-              <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>
-            </c:if>--%>
-             <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -101,7 +77,9 @@
         </div>
 
       </div>
-      </div>
+    </div>
+  </div>
+
     <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
       <%--     <a class="btn  btn-secondary" onclick="deletes()" style="margin-left: 20px;"  >delete</a>--%>
       <%@include file="cgo.jsp"%>
@@ -114,12 +92,11 @@
       </div >
     <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >
 
-      <textarea cols="120" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
+      <textarea cols="120" style="font-size: 20px;width: 100%" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
 
       <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
     </div>
-
 
     <div class="form-group">
   <div >
@@ -129,22 +106,29 @@
       </div>
 
       <div class="col-xs-12">
-        <div class="document-upload-list">
-          <div class="file-upload-gp">
-            <div class="fileContent col-xs-2">
-              ${upFile.originalFilename}
-              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
-              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-
+        <div class="document-upload-list" >
+          <div class="file-upload-gp row" >
+            <div class="fileContent col-xs-5">
+              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  onchange="javascript:doUserRecUploadConfirmFile(event)" type="file" style="display: none;" aria-label="selectedFile1" >
+              <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
             </div>
-            <div class="col-xs-12 col-md-4" >
-              <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
-              <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
-              <input type="text" value="${filename}" style="display: none" id="isFile">
+          </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_selectedFileError"></span>
+          <div class="col-xs-12" >
+            <span  name="selectedFileShowId" id="selectedFileShowId">
+            <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
+              <div id="${pageShowFileDto.fileMapId}">
+                  <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_file${ind.index}"></span>
 
-              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" href="javascript:void(0);">X</a>
-            </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
+                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
+              ReUpload</button>
+              </div>
+
+            </c:forEach>
+            </span>
           </div>
         </div>
         <div class="col-xs-12">
@@ -176,6 +160,7 @@
       <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
     </c:if>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+    <%@ include file="./FeFileCallAjax.jsp" %>
   </form>
 </div>
 <style>
@@ -214,8 +199,7 @@
           $('#othersReason').attr("style","display: none");
       }
       if(  $("input[name='selectHciName']").prop("checked")){
-          $('#proposedHciName').attr("style","display: block");
-      }else {
+          $('#proposedHciName').attr("style","display: block");  }else {
           $('#proposedHciName').attr("style","display: none");
       }
       if(  $('#isFile').val()!=''){
@@ -224,7 +208,6 @@
       }
 
   });
-
 $('#submit').click(function () {
     if("N" == $('#isDelete').val()){
         uploadFileValidate();
@@ -236,18 +219,58 @@ $('#submit').click(function () {
   }
 });
 
-  function doUserRecUploadConfirmFile() {
-    var file = $('#selectedFile').val();
-    file= file.split("\\");
-    $("span[name='fileName']").html(file[file.length-1]);
+  var debug = true;//true: add debug logs when cloning
+  var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
+  if (evenMoreListeners) {
+    var allFleChoosers = $("input[type='file']");
+    addEventListenersTo(allFleChoosers);
+    function addEventListenersTo(fileChooser) {
+      fileChooser.change(function (event) {
+          console.log("file( #" + event.target.id + " ) : " + event.target.value.split("\\").pop());
+    /*  a();*/
 
-    if(file!=''){
-      $('#delete').attr("style","display: inline-block;margin-left: 20px");
-      $('#isDelete').val('Y');
-      $('#error_litterFile_Show').html("");
-      $('#error_file').html("");
+         });
+         fileChooser.click(function (event) { console.log("open( #" + event.target.id + " )") });
+       }
+     }
+
+     function doFileAddEvent() {
+         clearFlagValueFEFile();
+     }
+
+    function link(){
+      var type = $('#parametertype').val();
+      if(type=='application'){
+         var v= $('.appMaskNo').html();
+          showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo="+v);
+      }else {
+          if (type == "licence") {
+              showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohLicenceView?licenceId=" + $('#licenceId').val() + "&appeal=appeal");
+          }
+      }
     }
-    uploadFileValidate();
+     var a=function ajax(){
+         var form = new FormData($("#mainForm")[0]);
+         $.ajax({
+             type:"post",
+             url:"${pageContext.request.contextPath}/ajax-upload-file",
+          data: form,
+          async:true,
+          dataType: "json",
+          processData: false,
+          contentType: false,
+          success: function (data) {
+            var html ='';
+            for(var i=0;i<data.length;i++){
+                html+='<input type="text" value="'+v[i]+'" style="display: none" >';
+            }
+            alert(html);
+          }
+      });
+  }
+  function doUserRecUploadConfirmFile(event) {
+      ajaxCallUploadForMax('mainForm',"selectedFile", true);
+
   }
 
 
@@ -267,7 +290,7 @@ function uploadFileValidate(){
   } else if(error =="N"){
     clearFileFunction();
     flag = false;
-    $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+    $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
     $('#error_file').html("");
   }
   return flag;

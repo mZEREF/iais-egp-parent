@@ -89,7 +89,7 @@
                                                     <iais:row>
                                                         <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks</label>
                                                         <iais:value width="4000">
-                                                            <textarea name="remarks" cols="60" rows="7"
+                                                            <textarea name="Remarks" cols="60" rows="7"
                                                                       maxlength="300"
                                                             >${insEmailDto.remarks}</textarea>
                                                         </iais:value>
@@ -97,14 +97,7 @@
                                                     <iais:row>
                                                         <label class="col-xs-0 col-md-2 control-label col-sm-2">Processing Decision<span class="mandatory">*</span></label>
                                                         <iais:value width="6">
-                                                            <select id="decision_merge_email" name="decision"
-                                                                    onchange="thisTime()">
-                                                                <option value="Select" selected>Please Select
-                                                                </option>
-                                                                <c:forEach items="${appTypeOption}" var="decision">
-                                                                    <option value="${decision.value}">${decision.text}</option>
-                                                                </c:forEach>
-                                                            </select>
+                                                            <iais:select id="decision_merge_email" name="decision" onchange="thisTime()" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
                                                             <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >
                                                                 This field is mandatory
                                                             </span>
@@ -142,7 +135,7 @@
                                                         <button type="button" class="btn btn-secondary"
                                                                 onclick="javascript:doPreview();">Preview
                                                         </button>
-                                                        <button type="button" class="btn btn-primary"
+                                                        <button name="submitBtn" type="button" class="btn btn-primary"
                                                                 onclick="javascript:doSend();">Submit
                                                         </button>
                                                         &nbsp;
@@ -170,7 +163,8 @@
     }
 
     function doSend() {
-        if ($('#decision_merge_email option:selected').val() == "Select") {
+        var f =$('#decision_merge_email option:selected').val();
+        if (f == null || f == "") {
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
         } else {

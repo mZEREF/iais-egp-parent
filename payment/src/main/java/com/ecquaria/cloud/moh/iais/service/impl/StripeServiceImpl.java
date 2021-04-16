@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
@@ -34,10 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -98,7 +96,7 @@ public class StripeServiceImpl implements StripeService {
                     pi
             );
         } catch (StripeException e) {
-            log.info(e.getMessage(),e);
+            log.error(e.getMessage(),e);
         }
         return paymentIntent;
     }
@@ -123,23 +121,39 @@ public class StripeServiceImpl implements StripeService {
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-            }else if(paymentIntent!=null && "canceled".equals(paymentIntent.getStatus())){
+            }else {
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
-            paymentClient.saveHcsaPayment(paymentDto);
         }else{
+            paymentDto = new PaymentDto();
+            paymentDto.setAmount(paymentRequestDto.getAmount());
+            paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
+            paymentDto.setTxnRefNo("TRANS");
+            paymentDto.setInvoiceNo("1234567");
+
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
-                applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+                applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
             }else {
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 //applicationGroupDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
             }
+            paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
+        applicationGroupDto.setPaymentDt(new Date());
+        applicationGroupDto.setPmtRefNo(paymentDto.getReqRefNo());
+        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+        applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+            paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
+        paymentClient.saveHcsaPayment(paymentDto);
         paymentClient.updatePaymentResquset(paymentRequestDto);
-        paymentAppGrpClient.doUpDate(applicationGroupDto);
+
     }
 
     @Override
@@ -206,7 +220,7 @@ public class StripeServiceImpl implements StripeService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ApiResource.RequestMethod method=ApiResource.RequestMethod.POST;
         RequestOptions options=RequestOptions.getDefault();
-        // Accept
+    // Accept
         headers.set("Accept", "application/json");
         // Accept-Charset
         headers.set("Accept-Charset", ApiResource.CHARSET.name());
@@ -299,41 +313,4 @@ public class StripeServiceImpl implements StripeService {
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
         return session;
     }
-    private static com.stripe.net.HttpHeaders buildHeaders(ApiResource.RequestMethod method, RequestOptions options) throws AuthenticationException {
-        Map<String, List<String>> headerMap = new HashMap<String, List<String>>();
-        // Accept
-        headerMap.put("Accept", Arrays.asList("application/json"));
-        // Accept-Charset
-        headerMap.put("Accept-Charset", Arrays.asList(ApiResource.CHARSET.name()));
-        // Authorization
-        String apiKey = options.getApiKey();
-        if (apiKey == null) {
-            throw new AuthenticationException("No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can generate API keys from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        } else if (apiKey.isEmpty()) {
-            throw new AuthenticationException("Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        } else if (StringUtils.containsWhitespace(apiKey)) {
-            throw new AuthenticationException("Your API key is invalid, as it contains whitespace. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", null, null, 0);
-        }
-        headerMap.put("Authorization", Arrays.asList(String.format("Bearer %s", apiKey)));
-        // Stripe-Version
-        if (options.getStripeVersionOverride() != null) {
-            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersionOverride()));
-        } else if (options.getStripeVersion() != null) {
-            headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersion()));
-        } else {
-            throw new IllegalStateException("Either `stripeVersion` or `stripeVersionOverride` value must be set.");
-        }
-        // Stripe-Account
-        if (options.getStripeAccount() != null) {
-            headerMap.put("Stripe-Account", Arrays.asList(options.getStripeAccount()));
-        }
-        // Idempotency-Key
-        if (options.getIdempotencyKey() != null) {
-            headerMap.put("Idempotency-Key", Arrays.asList(options.getIdempotencyKey()));
-        } else if (method == ApiResource.RequestMethod.POST) {
-            headerMap.put("Idempotency-Key", Arrays.asList(UUID.randomUUID().toString()));
-        }
-        return com.stripe.net.HttpHeaders.of(headerMap);
-    }
-
 }

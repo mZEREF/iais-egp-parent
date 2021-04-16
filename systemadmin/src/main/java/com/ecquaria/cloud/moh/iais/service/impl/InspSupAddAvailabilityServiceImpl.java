@@ -179,7 +179,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-            if(ugcDto.getIsLeadForGroup() == 1){
+            if(ugcDto.getIsLeadForGroup() == 1 && AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus())){
                 workGroupIdList.add(ugcDto.getGroupId());
             }
         }
@@ -208,10 +208,12 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         //get Login Id and User Name
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(int i = 0; i < orgUserDtos.size(); i++){
-                userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
-                userIdMap.put(i + "", orgUserDtos.get(i).getId());
-                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getUserId());
-                inspectorOption.add(so);
+                if(orgUserDtos.get(i).getAvailable()) {
+                    userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
+                    userIdMap.put(i + "", orgUserDtos.get(i).getId());
+                    SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getUserId());
+                    inspectorOption.add(so);
+                }
             }
         }
         groupRoleFieldDto.setUserIdMap(userIdMap);

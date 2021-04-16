@@ -160,7 +160,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
-                                sendSms(item,email,mesContext);
+                                sendSms(item,sms,mesContext);
                         }else if(days == (kpi + 1) && kpi > 0){
                             List<OrgUserDto> leaders = taskService.getEmailNotifyLeader(item.getId());
                             log.info(StringUtil.changeForLog("send email to leader:"));
@@ -170,7 +170,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 List<String> sms = IaisCommonUtils.genNewArrayList();
                                 email.add(leader.getEmail());
                                 sms.add(leader.getMobileNo());
-                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+leader.getDisplayName());
+                                String subject = StringUtil.changeForLog("Reminder for "+applicationDto.getApplicationNo()+" processing for "+ item.getUserName());
                                 MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_UNPROCESSED_TASK_2).getEntity();
                                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                 templateContent.put("officer", item.getUserName());
@@ -179,7 +179,7 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
                                 sendEmail(item,email,subject,mesContext);
-                                sendSms(item,email,mesContext);
+                                sendSms(item,sms,mesContext);
                             }
                         }else if(days == sysday){
                             log.info(StringUtil.changeForLog("send email to admin:"));

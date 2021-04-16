@@ -69,176 +69,164 @@
         <div class="col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Role</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
-                                             cssClass="roleIds" value="${curRole}"></iais:select>
+                    <iais:body>
+                        <iais:section title="" id = "demoList">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">Role</label>
+                                    <div class="col-xs-10 col-sm-7 col-md-6">
+                                        <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds"
+                                                     cssClass="roleIds" value="${curRole}"></iais:select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-10 col-md-12">
-                        <div class="components">
-                            <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                               data-target="#searchCondition">Filter</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="searchCondition" class="collapse">
-                    <div class="form-horizontal filter-box">
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">HCI Code</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_code" value="${backendinboxSearchParam.filters['hci_code']}"/>
+                            <div class="row">
+                                <div class="col-xs-10 col-md-12">
+                                    <div class="components">
+                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
+                                           data-target="#beInboxFilter">Filter</a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">HCI Name</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_name" value="${hci_name}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">HCI Address</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_address" value="${hci_address}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Application No.</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="application_no" value="${application_no}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Application Type</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
-                                             firstOption="Please Select"
-                                             value="${backendinboxSearchParam.filters['application_type']}"></iais:select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Application Status</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:select name="application_status" options="appStatusOption"
-                                             cssClass="application_status"
-                                             firstOption="Please Select"
-                                             value="${application_status}"></iais:select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-md-11">
-                                <div class="text-right">
+                            <p></p>
+                            <div id = "beInboxFilter" class="collapse">
+                                <iais:row>
+                                    <iais:field value="Application No."/>
+                                    <iais:value width="18">
+                                        <input type="text" name="application_no" value="${application_no}"/>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Application Type"/>
+                                    <iais:value width="18">
+                                        <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
+                                                     firstOption="Please Select"
+                                                     value="${backendinboxSearchParam.filters['application_type']}"></iais:select>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Application Status"/>
+                                    <iais:value width="18">
+                                        <iais:select name="application_status" options="appStatusOption"
+                                                     cssClass="application_status"
+                                                     firstOption="Please Select"
+                                                     value="${application_status}"></iais:select>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="HCI Code"/>
+                                    <iais:value width="18">
+                                        <input type="text" name="hci_code" value="${backendinboxSearchParam.filters['hci_code']}"/>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="HCI Name"/>
+                                    <iais:value width="18">
+                                        <input type="text" name="hci_name" value="${hci_name}"/>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="HCI Address"/>
+                                    <iais:value width="18">
+                                        <input type="text" name="hci_address" value="${hci_address}"/>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
-                                </div>
+                                </iais:action>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <iais:pagination param="backendinboxSearchParam" result="supTaskSearchResult"/>
-
-            <div class="col-xs-12" style="margin-top: 2.5em;">
-                <div class="components">
-                    <h3>
-                        <span>Search Results</span>
-                    </h3>
-
-
-                    <div class="table-gp">
-                        <table class="table application-group" style="border-collapse:collapse;">
-                            <thead>
-                            <tr>
-                                <th>S/N</th>
-                                <th>Application No.</th>
-                                <th>Application Type</th>
-                                <th>Submission Type</th>
-                                <th>Application Date</th>
-                                <th>Payment Status</th>
-                            </tr>
-                            </thead>
-                            <c:choose>
-                                <c:when test="${empty supTaskSearchResult.rows}">
-                                    <tr>
-                                        <td colspan="6">
-                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="pool" items="${supTaskSearchResult.rows}"
-                                               varStatus="status">
-                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
-                                            <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
-                                            <td><p style="width: 165px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
-                                                                                                                       data-toggle="collapse" aria-expanded="false"
-                                                                                                                       data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
-                                                                                                                       onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
-                                            <td><c:out value="${pool.applicationType}"/></td>
-                                            <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
-                                            <td><c:out value="${pool.submitDate}"/></td>
-                                            <td><c:out value="${pool.paymentstatus}"/></td>
+                        </iais:section>
+                        <h3>
+                            <span>Search Results</span>
+                        </h3>
+                        <iais:pagination param="backendinboxSearchParam" result="supTaskSearchResult"/>
+                        <div class="table-gp">
+                            <table class="table application-group" style="border-collapse:collapse;">
+                                <thead>
+                                <tr>
+                                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
+                                </tr>
+                                </thead>
+                                <c:choose>
+                                    <c:when test="${empty supTaskSearchResult.rows}">
+                                        <tr>
+                                            <td colspan="6">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                            </td>
                                         </tr>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
-                        </table>
-                    </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="pool" items="${supTaskSearchResult.rows}"
+                                                   varStatus="status">
+                                            <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
+                                                <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
+                                                <td><p style="width: 165px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
+                                                                                                                           data-toggle="collapse" aria-expanded="false"
+                                                                                                                           data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
+                                                                                                                           onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
+                                                <td><c:out value="${pool.applicationType}"/></td>
+                                                <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
+                                                <td><c:out value="${pool.submitDate}"/></td>
+                                                <td><c:out value="${pool.paymentstatus}"/></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </table>
+                        </div>
+                        <c:choose>
+                            <c:when test="${\"AO1\".equals(curRole)}">
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-11 col-md-11">
+                                            <div class="text-right">
+                                                <a class="btn btn-primary btn-support"
+                                                   onclick="javascript:approve()">Support</a>
+                                                <a class="btn btn-primary btn-approve"
+                                                   onclick="javascript:aoApprove('ao1approve')">Approve</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:when test="${\"AO2\".equals(curRole)}">
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-11 col-md-11">
+                                            <div class="text-right">
+                                                <a class="btn btn-primary btn-support"
+                                                   onclick="javascript:approve()">Support</a>
+                                                <a class="btn btn-primary btn-approve"
+                                                   onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:when test="${\"AO3\".equals(curRole)}">
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-11 col-md-11">
+                                            <div class="text-right">
+                                                <a class="btn btn-primary btn-approve"
+                                                   onclick="javascript:approve()">Approve</a>
+                                                <a class="btn btn-primary btn-trigger"
+                                                   onclick="javascript:trigger()">Trigger to DMS</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:when>
+                        </c:choose>
+                    </iais:body>
                 </div>
             </div>
-            <c:choose>
-                <c:when test="${\"AO1\".equals(curRole)}">
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-md-11">
-                                <div class="text-right">
-                                    <a class="btn btn-primary btn-support"
-                                       onclick="javascript:approve()">Support</a>
-                                    <a class="btn btn-primary btn-approve"
-                                       onclick="javascript:aoApprove('ao1approve')">Approve</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </c:when>
-                <c:when test="${\"AO2\".equals(curRole)}">
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-md-11">
-                                <div class="text-right">
-                                    <a class="btn btn-primary btn-support"
-                                       onclick="javascript:approve()">Support</a>
-                                    <a class="btn btn-primary btn-approve"
-                                       onclick="javascript:aoApprove('ao2approve')">Approve</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </c:when>
-                <c:when test="${\"AO3\".equals(curRole)}">
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-md-11">
-                                <div class="text-right">
-                                    <a class="btn btn-primary btn-approve"
-                                       onclick="javascript:approve()">Approve</a>
-                                    <a class="btn btn-primary btn-trigger"
-                                       onclick="javascript:trigger()">Trigger to DMS</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </c:when>
-            </c:choose>
         </div>
         <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg=""  needCancel="false" callBack="aocancel()" popupOrder="approveAo" ></iais:confirm>
@@ -265,6 +253,7 @@
         $('input[name="hci_address"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="application_status"]').val("");
+        $("#beInboxFilter .current").text("Please Select");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
@@ -332,12 +321,12 @@
                     html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                 }
 
-                html += '<th>Application No.</th>' +
-                    '<th>Service</th>' +
-                    '<th>Licence Expiry Date</th>' +
-                    '<th>Application Status</th>' +
-                    '<th>HCI Code</th>' +
-                    '<th>HCI Address</th>' +
+                html += '<th width="15%">Application No.</th>' +
+                    '<th width="15%">Service</th>' +
+                    '<th width="15%">Licence Expiry Date</th>' +
+                    '<th width="15%">Application Status</th>' +
+                    '<th width="15%">HCI Code</th>' +
+                    '<th width="25%">HCI Name / Address</th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
@@ -350,10 +339,15 @@
                     } else if (res[i].timeLimitWarning == "amber") {
                         color = "#DD9C00";
                     }
-                    var address = res[i].address;
+                    if(res[i].hciName == null || res[i].hciName == ''){
+                        var address = res[i].address;
+                    }else{
+                        var address = res[i].hciName + ' / ' +res[i].address;
+                    }
+
                     html += '<tr style = "color : ' + color + ';">';
                     if (hastaskList == "true") {
-                        html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res[i].applicationNo+'" data-taskstatus = "'+res[i].status+'" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                     }
                     html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
@@ -444,9 +438,26 @@
 
     function approve() {
         if ($("input:checkbox:checked").length > 0) {
-            $('#action').val('approve');
-            showWaiting();
-            submit('approve');
+            var approveStatus = true;
+            var data ;
+            $("input:checkbox:checked").each(function () {
+                console.log($(this).attr('data-taskstatus'));
+                if ($(this).attr('data-taskstatus') == 'Pending Internal Clarification') {
+                    approveStatus = false;
+                    data = $(this).attr('data-appNo');
+                }
+            });
+
+            console.log(approveStatus);
+            if(!approveStatus){
+                $('#approveAo .modal-body span').html(data+ " You have no access to support.");
+                $('#approveAo').modal('show');
+            }else{
+                $('#action').val('approve');
+                showWaiting();
+                submit('approve');
+            }
+
         } else {
             $('#support').modal('show');
         }

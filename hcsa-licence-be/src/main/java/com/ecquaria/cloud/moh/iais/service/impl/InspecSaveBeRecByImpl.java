@@ -283,19 +283,19 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         List<ProcessFileTrackDto> saveProcessFileTrackDto = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
+            for(File file2:files){
+                //file2 is upload Directory, name is file report id
+                String reportId = file2.getName();
+                if(reportIds.contains(reportId)) {
+                    saveDataDtoAndFile(file2, intranet, submissionId, eventRefNo);
+                }
+            }
             for(ProcessFileTrackDto pDto:processFileTrackDtos){
                 appIds.add(pDto.getRefId());
-                for(File file2:files){
-                    //file2 is upload Directory, name is file report id
-                    String reportId = file2.getName();
-                    if(reportIds.contains(reportId)) {
-                        saveDataDtoAndFile(file2, intranet, submissionId, eventRefNo);
-                        pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
-                        pDto.setAuditTrailDto(intranet);
-                        pDto.setEventRefNo(eventRefNo);
-                        saveProcessFileTrackDto.add(pDto);
-                    }
-                }
+                pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                pDto.setAuditTrailDto(intranet);
+                pDto.setEventRefNo(eventRefNo);
+                saveProcessFileTrackDto.add(pDto);
             }
         }
         StringBuilder strAppIds = new StringBuilder();
@@ -354,6 +354,21 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
+    }
+
+    @Override
+    public Map<String, List<ProcessFileTrackDto>> getProcessFileTrackDtosWithAppId(List<ProcessFileTrackDto> processFileTrackDtos) {
+        Map<String, List<ProcessFileTrackDto>> appIdProFileMap = IaisCommonUtils.genNewHashMap();
+        for(ProcessFileTrackDto processFileTrackDto : processFileTrackDtos){//NOSONAR
+            String appId = processFileTrackDto.getRefId();
+            List<ProcessFileTrackDto> processFileTrackDtoList = appIdProFileMap.get(appId);
+            if(IaisCommonUtils.isEmpty(processFileTrackDtoList)){
+                processFileTrackDtoList = IaisCommonUtils.genNewArrayList();
+            }
+            processFileTrackDtoList.add(processFileTrackDto);
+            appIdProFileMap.put(appId, processFileTrackDtoList);
+        }
+        return appIdProFileMap;
     }
 
     private EventInspRecItemNcDto setAppNoListByCorrIds(EventInspRecItemNcDto eventInspRecItemNcDto) {

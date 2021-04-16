@@ -43,7 +43,7 @@
             <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
           </c:forEach>
           <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Specified Service)</li>
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Service)</li>
           </c:forEach>
         </ul>
         <div class="gray-content-box">
@@ -78,6 +78,9 @@
         </div>
         <h3>Before You Begin</h3>
         <ul class="">
+          <li>
+            <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents needed during the licence application.</p>
+          </li>
           <li>
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
           </li>

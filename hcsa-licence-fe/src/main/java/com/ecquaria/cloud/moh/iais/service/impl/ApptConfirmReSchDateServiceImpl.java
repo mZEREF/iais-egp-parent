@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -14,33 +15,42 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -86,8 +96,10 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private String mailSender;
 
     @Autowired
-    private AppSubmissionService appSubmissionService;
+    private Environment env;
 
+    @Autowired
+    private NotificationHelper notificationHelper;
     @Override
     public String getAppPremCorrIdByAppId(String appId) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.listAppPremisesCorrelation(appId).getEntity().get(0);
@@ -485,7 +497,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
-        log.debug(StringUtil.changeForLog("apptViewDtos debug:========="+apptViewDtos.toString()));
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos= applicationFeClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
@@ -494,20 +505,50 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             String appCorrId=appPremisesCorrelationDto.getId();
             ApplicationDto applicationDto= applicationFeClient.getApplicationById(appId).getEntity();
             ProcessReSchedulingDto processReSchedulingDto;
+            Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
+            for (ApptViewDto appt:apptViewDtos
+                 ) {
+                if(appt.getAppCorrId().equals(appPremisesCorrelationDto.getId())){
+                    map.put(applicationDto.getApplicationNo(),appt.getUserIds());
+                }
+            }
+
             processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId,applicationDto);
+            processReSchedulingDto.setAppNoUserIds(map);
+
             for (ApptViewDto appt:apptViewDtos
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                    ) {
+                         ) {
                         insAppt.setReason(appt.getReason());
+                        insAppt.setEndDate(appt.getSpecificEndDate());
+                        insAppt.setStartDate(appt.getSpecificStartDate());
+                        insAppt.setSpecificInspDate(appt.getInspNewDate());
+                        insAppt.setReschedulingCount(insAppt.getReschedulingCount()+1);
+                        processReSchedulingDto.setSaveDate(appt.getInspNewDate());
+
                     }
                 }
             }
             processReSchedulingDto.setApplicationDto(applicationDto);
             processReSchedulingDto.setCreateFlag(AppConsts.COMMON_POOL);
+            processReSchedulingDto.setSmsDto(new SmsDto());
+            processReSchedulingDto.setEmailDto(new EmailDto());
             //eic update to be status and task
-            comPolReschedulingDate(processReSchedulingDto);
+            ProcessReSchedulingDto processReSchedulingDto1 = comPolReschedulingDate(processReSchedulingDto);
+
+            for (ApptViewDto appt:apptViewDtos
+            ) {
+                if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
+                    try {
+                        sendReschedulingEmailToInspector(processReSchedulingDto1,appt);
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -572,16 +613,15 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     }
 
     @Override
-    public void comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto) {
+    public ProcessReSchedulingDto comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto) {
         ApplicationDto applicationDto = processReSchedulingDto.getApplicationDto();
-        String appStatus = applicationDto.getStatus();
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
         //update appt
         for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
-            apptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+//            apptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList1=processReSchedulingDto.getAppPremisesInspecApptDtoList();
@@ -593,20 +633,30 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             }
             processReSchedulingDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
         }
+        //Exclude a selected date
+        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+        for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
+            cancelRefNo.add(apptDto.getApptRefNo());
+        }
+        //filter
+        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+        cancelRefNo = new ArrayList<>(cancelRefNoSet);
         //update application
-        setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
+        //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
-        setCreateHistoryDto(processReSchedulingDto);
+        //setCreateHistoryDto(processReSchedulingDto);
+        //set some data to update recommendation
+        setRecommendationDto(processReSchedulingDto);
         //set some data to update inspection status
-        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_COMMON_POOL);
+        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         //create task
         createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_COMMON_POOL);
         //save eic record
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "acceptReschedulingDate",
                 "hcsa-licence-web-internet", ProcessReSchedulingDto.class.getName(), JsonUtil.parseToJson(processReSchedulingDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.reSchFeSaveAllData(processReSchedulingDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        ProcessReSchedulingDto processReSchedulingDto1=feEicGatewayClient.reSchFeSaveAllData(processReSchedulingDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
         //get eic record
         eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
         //update eic record status
@@ -615,6 +665,97 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+        ccCalendarStatusEic(apptCalendarStatusDto);
+        return processReSchedulingDto1;
+    }
 
+    @Override
+    public void sendReschedulingEmailToInspector(ProcessReSchedulingDto processReSchedulingDto,ApptViewDto apptViewDto) throws IOException {
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+
+        emailMap.put("InspectorName", apptViewDto.getUserIds().get(0));
+        emailMap.put("DDMMYYYY", Formatter.formatDate(new Date()));
+        emailMap.put("time", Formatter.formatTime(new Date()));
+        emailMap.put("HCI_Name", apptViewDto.getHciName());
+        emailMap.put("HCI_Code", apptViewDto.getHciCode());
+        emailMap.put("premises_address", apptViewDto.getAddress());
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+
+        String emailContent = getEmailContent(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,emailMap);
+        String smsContent = getEmailContent(MsgTemplateConstants. MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP_SMS ,emailMap);
+        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RESCHEDULING_SUCCESSFULLY_TO_INSP,null);
+
+        EmailDto emailDto = new EmailDto();
+        List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+        receiptEmail.addAll(processReSchedulingDto.getEmailDto().getReceipts());
+        List<String> mobile = IaisCommonUtils.genNewArrayList();
+        mobile.addAll(processReSchedulingDto.getSmsDto().getReceipts());
+        emailDto.setReceipts(receiptEmail);
+        emailDto.setContent(emailContent);
+        emailDto.setSubject(emailSubject);
+        emailDto.setSender(this.mailSender);
+        emailDto.setClientQueryCode(apptViewDto.getAppId());
+        emailDto.setReqRefNum(apptViewDto.getAppId());
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), String.class);
+
+        SmsDto smsDto = new SmsDto();
+        smsDto.setSender(mailSender);
+        smsDto.setContent(smsContent);
+        smsDto.setOnlyOfficeHour(false);
+        smsDto.setReceipts(mobile);
+        smsDto.setReqRefNum(apptViewDto.getAppId());
+
+        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), InterMessageDto.class);
+    }
+
+
+
+    private String getEmailContent(String templateId, Map<String, Object> subMap){
+        String mesContext = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    }
+                    //replace num
+                    mesContext = MessageTemplateUtil.replaceNum(mesContext);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return mesContext;
+    }
+
+    private String getEmailSubject(String templateId, Map<String, Object> subMap){
+        String subject = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
+                    }else{
+                        subject = emailTemplateDto.getTemplateName();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return subject;
     }
 }

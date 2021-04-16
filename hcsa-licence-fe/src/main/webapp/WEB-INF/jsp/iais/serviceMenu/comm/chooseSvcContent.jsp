@@ -7,7 +7,7 @@
         </h3>
     </div>
 </div>
-<c:forEach var="errMSg" items="${errList}" >
+<c:forEach var="errMSg" items="${errList}" varStatus="stat" >
     <div class="row">
         <div class="col-xs-12 col-md-3">
         </div>
@@ -15,6 +15,9 @@
             <span class="error-msg">${errMSg}</span>
         </div>
     </div>
+    <c:if test="${!stat.last}">
+        <br/>
+    </c:if>
 </c:forEach>
 <div class="row">
     <div class="col-xs-12 col-md-3">
@@ -49,7 +52,7 @@
                     </div>
                 </c:forEach>
             </div>
-            <p class="assessment-title">Specified Services</p>
+            <p class="assessment-title">Special Licensable Services</p>
             <div class="form-check-gp">
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">

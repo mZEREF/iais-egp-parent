@@ -72,18 +72,18 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-4 col-md-4 control-label"></label>
+                    <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
+                    <label class="col-xs-4 col-md-4 control-label" for="eed">Effective End Date</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <span class="error-msg" style="width: 150%;position: absolute;">${ERR_EED}</span>
+                        <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
                     </div>
                 </iais:value>
             </div>
             <div class="form-group">
                 <iais:value>
-                    <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
-                    <label class="col-xs-4 col-md-4 control-label" for="eed">Effective End Date</label>
+                    <label class="col-xs-4 col-md-4 control-label"></label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
+                        <span class="error-msg" style="width: 150%;position: absolute;">${ERR_EED}</span>
                     </div>
                 </iais:value>
             </div>

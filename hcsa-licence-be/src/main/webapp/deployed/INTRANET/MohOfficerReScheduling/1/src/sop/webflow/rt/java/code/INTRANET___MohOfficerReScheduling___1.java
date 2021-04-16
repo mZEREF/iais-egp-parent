@@ -78,4 +78,19 @@ public class INTRANET___MohOfficerReScheduling___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "mohOfficerReSchedulingSuccess", this);
 	}
 
+	public void mohOfficerReSchedInspDo_OnStepProcess_0() throws Exception {
+	// 		mohOfficerReSchedInspDo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "mohOfficerReSchedInspDo", this);
+	}
+
+	public void mohOfficerReSchedulingAuDo_OnStepProcess_0() throws Exception {
+	// 		mohOfficerReSchedulingAuDo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "mohOfficerReSchedulingAuDo", this);
+	}
+
+	public void mohOfficerReSchedInspVali_OnStepProcess_0() throws Exception {
+	// 		mohOfficerReSchedInspAgain->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "mohOfficerReSchedInspAgain", this);
+	}
+
 }

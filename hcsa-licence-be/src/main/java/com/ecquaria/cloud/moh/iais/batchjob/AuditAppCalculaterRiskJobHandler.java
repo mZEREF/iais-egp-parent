@@ -8,10 +8,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AuditRiskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SearchAuditRiskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
@@ -40,13 +43,15 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
     private GenerateIdClient generateIdClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public ReturnT<String> execute(String s) {
         logAbout("AuditAppCalculaterRiskJobHandler");
         try{
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<String>  statuses= new ArrayList<>(2);
+            List<String>  statuses = new ArrayList<>(2);
             statuses.add( ApplicationConsts.APPLICATION_STATUS_APPROVED);
             // statuses.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
             SearchAuditRiskDto searchAuditRiskDto = new SearchAuditRiskDto();
@@ -68,8 +73,21 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
                    } catch (Exception e) {
                        log.error(e.getMessage(), e);
                    }
+                   sysnAppStatus(auditRiskDto.getApplicationDto());
                }
            }
+           //changeAllAuditTofinal state
+            log.info("-----sysn audit to final state start -----");
+           List< ApplicationDto> applicationDtos = applicationClient.getApplicationsByApplicationTypeAndStatusIn(searchAuditRiskDto).getEntity();
+           if( !IaisCommonUtils.isEmpty(applicationDtos)){
+               for(ApplicationDto applicationDto : applicationDtos){
+                   applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                   applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                   applicationService.updateBEApplicaiton(applicationDto);
+                   applicationService.updateFEApplicaiton(applicationDto);
+               }
+           }
+            log.info("-----sysn audit to final state end -----");
         }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
@@ -78,6 +96,14 @@ public class AuditAppCalculaterRiskJobHandler extends IJobHandler {
         JobLogger.log(StringUtil.changeForLog("---  AuditAppCalculaterRiskJobHandler end----"));
         return ReturnT.SUCCESS;
     }
+    private void sysnAppStatus( ApplicationDto applicationDto){
+        log.info(StringUtil.changeForLog("----- APP NO : " + applicationDto.getApplicationNo() + " is sysn fe start ------"));
+        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        applicationService.updateFEApplicaiton(applicationDto);
+        log.info(StringUtil.changeForLog("----- APP NO : " + applicationDto.getApplicationNo() + " is sysn fe end ------"));
+    }
+
 
     private void logAbout(String methodName){
         log.info(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));

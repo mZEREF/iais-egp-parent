@@ -7,7 +7,7 @@ import java.util.Properties;
 
 @Slf4j
 public class GatewayConfig {
-
+	
 	static Properties properties = new Properties();
 	static{
 		try {
@@ -42,6 +42,12 @@ public class GatewayConfig {
 	public static final String stripePKey = properties.getProperty("stripe.api.pkey");
 
 	public static final String eNetsUmId = properties.getProperty("eNets.api.umid");
+
+	public static final String eNetsJqueryUrl = properties.getProperty("eNets.jquery.js.url");
+
+	public static final String eNetsAppsUrl = properties.getProperty("eNets.apps.js.url");
+
+	public static final String eNetsEnvUrl = properties.getProperty("eNets.env.jsp.url");
 
 	public static final String eNetsKeyId = properties.getProperty("eNets.key.id");
 

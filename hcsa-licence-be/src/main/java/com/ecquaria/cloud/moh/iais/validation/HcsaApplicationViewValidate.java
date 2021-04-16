@@ -45,6 +45,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        String nextStage = ParamUtil.getRequestString(request, "nextStage");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAudit = ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType);
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
@@ -89,7 +90,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         //verified recommendation other dropdown
         //0063971
         if(taskDto != null){
-            checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
+            checkRecommendationOtherDropdown(errMap, recommendationStr, request, applicationType, roleId, taskDto.getTaskKey(), nextStage);
         }
         //DMS recommendation
         String generalErrSix = MessageUtil.replaceMessage("GENERAL_ERR0006","Processing Decision", "field");
@@ -143,9 +144,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         } else {
             //normal flow
-            String nextStage = ParamUtil.getRequestString(request, "nextStage");
             //verify appeal type
-            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+            if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status)){
                 //appeal rfi recommendation is not required
                 appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
             }
@@ -177,6 +177,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             errMap.put("rollBack", MessageUtil.replaceMessage("GENERAL_ERR0006","Route Back To", "field"));
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                        //Prevent duplicate submissions
+                        ApplicationService applicationService = SpringContextHelper.getContext().getBean(ApplicationServiceImpl.class);
+                        Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+                                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                        log.debug(StringUtil.changeForLog("validate the rfiCount is -->:" + rfiCount));
+                        if (!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))) {
+                            if (rfiCount != 0) {
+                                errMap.put("nextStage","GENERAL_ERR0045");
+                            }
+                        }
                         boolean flowFlag = !isAppealType && !isWithdrawal && !isCessation;
                         if(flowFlag){
                             //rfiSelectValue
@@ -276,15 +286,21 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
 
-    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request, String applicationType, String roleId, String taskKey){
+    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request,
+                                                  String applicationType, String roleId, String taskKey, String nextStage){
         boolean isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(request, "isChangePeriodAppealType");
         boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
         boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
         boolean isAsoPso = isPso || isAso;
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
-        boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues);
-        if("other".equals(recommendationStr) || (isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove)){
+        if(StringUtil.isEmpty(appealRecommendationValues)){
+            appealRecommendationValues = ParamUtil.getString(request,"decisionValues");
+        }
+        boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues) || "decisionApproval".equals(appealRecommendationValues);
+        boolean rfiProcessDecFlag = !ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage);
+        boolean rbProcessDecFlag = !ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage);
+        if(rfiProcessDecFlag && (("other".equals(recommendationStr) && !isAppealType) || (rbProcessDecFlag && isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove))){
             if(!isAppealType){
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
                 ParamUtil.setRequestAttr(request,"recommendationStr","other");

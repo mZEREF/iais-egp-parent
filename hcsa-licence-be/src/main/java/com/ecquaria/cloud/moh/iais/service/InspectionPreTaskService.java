@@ -109,11 +109,11 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2020/5/13
-      * @Param: applicationNo
+      * @Param: applicationViewDto, inspectionPreTaskDto
       * @return: InspectionPreTaskDto
       * @Descripation: get history stage with appNo
       */
-    InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto);
+    InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto);
 
     /**
       * @author: shicheng
@@ -123,4 +123,15 @@ public interface InspectionPreTaskService {
       * @Descripation: set Application RFI Info
       */
     ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto);
+
+    int preInspRfiTogether(ApplicationDto applicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/12
+      * @Param: refNo
+      * @return: void
+      * @Descripation: selfAssMtPdfReport
+      */
+    void selfAssMtPdfReport(String refNo);
 }

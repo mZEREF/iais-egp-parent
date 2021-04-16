@@ -70,21 +70,6 @@
                 </td>
               </tr>
 
-              <tr>
-                <td class="col-xs-8">
-                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Preferred Mode of Receiving MedAlert</p>
-                </td>
-                <td>
-                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                    <c:choose>
-                      <c:when test="${appSvcMedAlertPerson.preferredMode=='1'}">Email</c:when>
-                      <c:when test="${appSvcMedAlertPerson.preferredMode=='2'}">SMS</c:when>
-                      <c:when test="${appSvcMedAlertPerson.preferredMode=='3'}">Email  SMS</c:when>
-                    </c:choose>
-                    </p>
-                </td>
-              </tr>
-
             </table>
           </c:forEach>
         </div>

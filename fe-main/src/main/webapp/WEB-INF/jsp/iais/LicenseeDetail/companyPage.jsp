@@ -136,7 +136,7 @@
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary" id="refresh" >Refresh Data</button>
+                                                <button class="btn btn-primary" id="refresh" >Refresh and Save Data</button>
                                             </div>
                                         </div>
                                     </div>

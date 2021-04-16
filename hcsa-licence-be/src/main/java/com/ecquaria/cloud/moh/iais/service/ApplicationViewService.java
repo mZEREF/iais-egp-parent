@@ -39,6 +39,8 @@ public interface ApplicationViewService {
     HcsaSvcRoutingStageDto getStageById(String id);
 
     ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
+    //currentRoleId roback history list remove the currentRoleId.
+    public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId,String currentRoleId);
 
     void clearApprovedHclCodeByExistRejectApp( List<ApplicationDto> saveApplicationDtoList,String appGroupType,ApplicationDto applicationDtoMain);
 }

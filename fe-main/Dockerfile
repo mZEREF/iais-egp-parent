@@ -1,4 +1,4 @@
-FROM 192.168.7.88/library/tomcat:9.0.38-jre8-alpine
+FROM 192.168.7.88/library/tomcat:9.0.40-jre8-alpine
 
 RUN deluser --remove-home egpcloud
 RUN adduser -D -u 1000 iais

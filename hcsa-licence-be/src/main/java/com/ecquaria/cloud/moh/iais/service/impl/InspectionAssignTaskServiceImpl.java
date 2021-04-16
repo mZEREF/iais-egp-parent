@@ -91,6 +91,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -280,14 +281,24 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         List<String> leadNames = IaisCommonUtils.genNewArrayList();
         List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+        StringBuilder leadStrBu = new StringBuilder();
+        Collections.sort(leadIds);
         for (String id : leadIds) {
             for (OrgUserDto oDto : orgUserDtos) {
                 if (id.equals(oDto.getId())) {
                     leadNames.add(oDto.getDisplayName());
+                    if(StringUtil.isEmpty(leadStrBu.toString())) {
+                        leadStrBu.append(oDto.getDisplayName());
+                    } else {
+                        leadStrBu.append(',');
+                        leadStrBu.append(' ');
+                        leadStrBu.append(oDto.getDisplayName());
+                    }
                 }
             }
         }
         inspecTaskCreAndAssDto.setInspectionLeads(leadNames);
+        inspecTaskCreAndAssDto.setGroupLeadersShow(leadStrBu.toString());
     }
 
     @Override
@@ -443,7 +454,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public List<String> getAppCorrIdListByPool(List<TaskDto> commPools) {
         if (IaisCommonUtils.isEmpty(commPools)) {
             List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
-            appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
         Set<String> appCorrIdSet = IaisCommonUtils.genNewHashSet();
@@ -739,7 +749,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         map.put("systemLink", url);
         map.put("address", address);
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_MSG);
         emailParam.setTemplateContent(map);
         emailParam.setMaskParams(maskParams);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);

@@ -1,16 +1,9 @@
 <div class="form-check-gp">
-    <div class="row">
-        <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
+    <p class="form-check-title">Please select the personnel to amend his/her contact information</p>
+    <div class="form-check-label" style="padding-bottom:67px;width: 500px;">
+        <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}" firstOption="Please Select"/>
     </div>
-    <div class="row">
-        <div class="col-xs-12 col-md-5">
-            <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}" firstOption="Please Select"/>
-        </div>
-    </div>
-    <div class="row">
-        <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
-    </div>
-
+    <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
     <iais:pagination  param="amendUpdateContactSearchParam" result="amendUpdateContactSearchResult"/>
     <div class="table-gp">
         <table class="table">
@@ -47,7 +40,7 @@
                                                         Principal Officer
                                                     </c:when>
                                                     <c:when test="${assessList == 'DPO'}">
-                                                        Deputy Principal Officer
+                                                        Nominee
                                                     </c:when>
                                                     <c:when test="${assessList == 'MAP'}">
                                                         MedAlert
@@ -65,7 +58,7 @@
                                                                 Principal Officer
                                                             </c:when>
                                                             <c:when test="${assessList == 'DPO'}">
-                                                                Deputy Principal Officer
+                                                                Nominee
                                                             </c:when>
                                                             <c:when test="${assessList == 'MAP'}">
                                                                 MedAlert
@@ -81,7 +74,7 @@
                                                                 Principal Officer,
                                                             </c:when>
                                                             <c:when test="${assessList == 'DPO'}">
-                                                                Deputy Principal Officer,
+                                                                Nominee,
                                                             </c:when>
                                                             <c:when test="${assessList == 'MAP'}">
                                                                 MedAlert,

@@ -94,11 +94,10 @@ public class InsReportDelegator {
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
-
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus)) {
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus)) {
             appPremisesRecommendationDto = initRecommendation(correlationId, applicationViewDto, bpc);
         }
         String recommendation = appPremisesRecommendationDto.getRecommendation();
@@ -109,7 +108,7 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if (accRecommendationDto != null) {
             String recomDecision = accRecommendationDto.getRecomDecision();
-            if (InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(recomDecision)) {
+            if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT.equals(appStatus)&&InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(recomDecision)) {
                 appPremisesRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
             }
         }
@@ -121,6 +120,8 @@ public class InsReportDelegator {
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
+        String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
+        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
         ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "appType", null);
         ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
@@ -273,27 +274,29 @@ public class InsReportDelegator {
         } else {
             appPremisesRecommendationDto.setRemarks(remarks);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
             appPremisesRecommendationDto.setRecomInDate(licDate);
-            if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                Integer num = Integer.valueOf(number);
-                if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
-                    chrono = AppointmentConstants.RECURRENCE_MONTH ;
-                    num = Integer.valueOf(Integer.parseInt(number) * 12);
+            if(InspectionReportConstants.APPROVED.equals(recommendation)||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
+                appPremisesRecommendationDto.setRecomDecision(recommendation);
+                if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                    Integer num = Integer.valueOf(number);
+                    if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
+                        chrono = AppointmentConstants.RECURRENCE_MONTH ;
+                        num = Integer.valueOf(Integer.parseInt(number) * 12);
+                    }
+                    appPremisesRecommendationDto.setChronoUnit(chrono);
+                    appPremisesRecommendationDto.setRecomInNumber(num);
+                    appPremisesRecommendationDto.setRecommendation(recommendation);
+                } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
+                    String[] splitPeriods = periods.split("\\s+");
+                    String count = splitPeriods[0];
+                    String dateType = splitPeriods[1];
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                    appPremisesRecommendationDto.setChronoUnit(dateType);
+                    appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
+                    appPremisesRecommendationDto.setRecommendation(recommendation);
                 }
-                appPremisesRecommendationDto.setChronoUnit(chrono);
-                appPremisesRecommendationDto.setRecomInNumber(num);
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
-                String[] splitPeriods = periods.split("\\s+");
-                String count = splitPeriods[0];
-                String dateType = splitPeriods[1];
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                appPremisesRecommendationDto.setChronoUnit(dateType);
-                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            } else if (InspectionReportConstants.REJECTED.equals(recommendation)) {
+            }else {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
                 appPremisesRecommendationDto.setRecomInNumber(0);
@@ -347,7 +350,8 @@ public class InsReportDelegator {
                     initRecommendationDto.setRecomInNumber(recomInNumber);
                     initRecommendationDto.setChronoUnit(chronoUnit);
                 }
-            } else if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
+            }
+            if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
                 initRecommendationDto.setPeriod(null);
             }
             initRecommendationDto.setRecommendation(recomDecision);

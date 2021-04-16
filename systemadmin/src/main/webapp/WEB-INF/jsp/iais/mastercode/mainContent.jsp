@@ -16,6 +16,7 @@
                             <span>Search Results</span>
                         </h3>
                         <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
+                        <div class="table-gp">
                         <table class="table">
                             <thead>
                             <tr>
@@ -96,7 +97,17 @@
                                                     <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 </c:if>
                                                 <c:if test="${masterCodeResult.isCentrallyManage == 1}">
-                                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">Delete</button>
+                                                    <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
+                                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">
+                                                        <c:choose>
+                                                            <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">
+                                                                Delete
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Deactivate
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </button>
                                                 </c:if>
                                             </td>
                                         </tr>
@@ -104,13 +115,13 @@
                                         <div class="modal fade" id="deleteModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <div class="modal-title" id="deleteModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                                                    </div>
                                                     <div class="modal-body">
                                                         <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the Delete ?</span></div>
+                                                            <c:set var="nowDate" value="<%=System.currentTimeMillis()%>"/>
+                                                            <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the <c:choose>
+                                                                    <c:when test="${nowDate - masterCodeResult.effectiveStartDate.getTime() < 0}">Delete</c:when>
+                                                                    <c:otherwise>Deactivate</c:otherwise>
+                                                                </c:choose> ?</span></div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -126,6 +137,7 @@
                             </c:choose>
                             </tbody>
                         </table>
+                        </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-12 text-right">
                                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/master-code-file">Download</a>

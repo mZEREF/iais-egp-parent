@@ -1,15 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationTruckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -33,9 +31,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
@@ -66,7 +65,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -133,7 +131,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
-        withdrawnDtoList.forEach(h -> {
+        int maxSeqNum = 0;
+        if (ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR) != null) {
+            maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
+        for (WithdrawnDto h : withdrawnDtoList) {
+            h.setMaxFileIndex(maxSeqNum);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
@@ -143,7 +146,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             AppSubmissionDto newAppSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
-                 ) {
+            ) {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
@@ -176,9 +179,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             recallApplicationDto.setRefNo(refNoList);
             recallApplicationDto.setAppNo(newApplication.getApplicationNo());
             recallApplicationDto.setAppGrpId(oldApplication.getAppGrpId());
-
+            recallApplicationDto.setCharity(charity);
+            recallApplicationDto.setResult(Boolean.FALSE);
             recallApplicationDto.setNewAppId(h.getNewApplicationId());
-            if ( !charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
+            if (!charity&&!StringUtil.isEmpty(oldApplicationGroupDtox.getPayMethod())
                     && !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
                 recallApplicationDto.setNeedReturnFee(true);
             }else{
@@ -206,60 +210,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(),e);
             }
             if (recallApplicationDto.getResult()){
-                ApplicationTruckDto applicationTruckDto = new ApplicationTruckDto();
                 List<ApplicationDto> updateWithdrawApp = IaisCommonUtils.genNewArrayList();
-                oldApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                 newApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                updateWithdrawApp.add(oldApplication);
                 updateWithdrawApp.add(newApplication);
                 applicationFeClient.updateApplicationList(updateWithdrawApp);
-                applicationTruckDto.setApplicationDtoList(updateWithdrawApp);
-                autoApproveApplicationDtoList.add(h);
-                /**
-                 *  SAVE FE APP DATA TO BE
-                 */
-                List<ApplicationGroupDto> applicationGroupDtoList = IaisCommonUtils.genNewArrayList();
-                String newApplicationGroupId = newApplication.getAppGrpId();
-                String oldApplicationGroupId = oldApplication.getAppGrpId();
-                ApplicationGroupDto newApplicationGroupDto = applicationFeClient.getApplicationGroup(newApplicationGroupId).getEntity();
-                ApplicationGroupDto oldApplicationGroupDto = applicationFeClient.getApplicationGroup(oldApplicationGroupId).getEntity();
-                applicationGroupDtoList.add(newApplicationGroupDto);
-                applicationGroupDtoList.add(oldApplicationGroupDto);
-                applicationTruckDto.setApplicationGroupDtoList(applicationGroupDtoList);
-
-                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtoList = IaisCommonUtils.genNewArrayList();
-                AppGrpPremisesEntityDto oldAppGrpPremisesEntityDto = applicationFeClient.getPremisesByAppNo(oldApplication.getApplicationNo()).getEntity();
-                AppGrpPremisesEntityDto newAppGrpPremisesEntityDto = applicationFeClient.getPremisesByAppNo(newApplication.getApplicationNo()).getEntity();
-                appGrpPremisesEntityDtoList.add(newAppGrpPremisesEntityDto);
-                appGrpPremisesEntityDtoList.add(oldAppGrpPremisesEntityDto);
-                applicationTruckDto.setAppGrpPremisesEntityDtoList(appGrpPremisesEntityDtoList);
-
-                List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList1 = IaisCommonUtils.genNewArrayList();
-                AppPremisesCorrelationDto oldAppPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(oldApplication.getApplicationNo()).getEntity();
-                AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(newApplication.getApplicationNo()).getEntity();
-                appPremisesCorrelationDtoList1.add(oldAppPremisesCorrelationDto);
-                appPremisesCorrelationDtoList1.add(newAppPremisesCorrelationDto);
-                applicationTruckDto.setAppPremisesCorrelationDtoList(appPremisesCorrelationDtoList1);
-
-                try {
-                    EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.WithdrawalServiceImpl", "saveWithdrawn",
-                            "hcsa-license-web", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(applicationTruckDto));
-                    String eicRefNo = eicRequestTrackingDto.getRefNo();
-                    feEicGatewayClient.saveApplicationDtosForFe(applicationTruckDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
-                    //get eic record
-                    eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-                    //update eic record status
-                    eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-                    eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                    appEicClient.updateStatus(eicRequestTrackingDtos);
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
-                }
             }
-        });
+        }
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
@@ -270,78 +226,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
                 sendNMS(h,isRfc,charity);
             });
-        }
-        autoApproveApplicationDtoList.forEach(h -> {
-            boolean isRfc = false;
-            ApplicationDto oldApplication = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
-                isRfc = true;
-            }
-            sendWithdrawApproveNMS(h,isRfc,charity);
-        });
-    }
-
-    private void sendWithdrawApproveNMS(WithdrawnDto withdrawnDto,boolean isRfc,boolean charity){
-        Double fee = 0.0;
-        String applicantName = "";
-        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-        AppSubmissionDto appSubmissionDto = applicationFeClient.gainSubmissionDto(withdrawnDto.getApplicationNo()).getEntity();
-        ApplicationDto oldApplicationDto = applicationFeClient.getApplicationById(withdrawnDto.getApplicationId()).getEntity();
-        ApplicationDto newApplicationDto = applicationFeClient.getApplicationById(withdrawnDto.getNewApplicationId()).getEntity();
-        ApplicationGroupDto applicationGroupDto =  applicationFeClient.getApplicationGroup(oldApplicationDto.getAppGrpId()).getEntity();
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicationGroupDto.getSubmitBy()).getEntity();
-        if (appSubmissionDto != null){
-            String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
-            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-            String payMethod = applicationGroupDto.getPayMethod();
-            if (orgUserDto != null){
-                applicantName = orgUserDto.getDisplayName();
-            }
-            applicationDtoList.add(oldApplicationDto);
-            for(ApplicationDto applicationDto1 : applicationDtoList){
-                applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                applicationDto1.setIsCharity(charity);
-            }
-            List<ApplicationDto> applicationDtoList2 = hcsaConfigFeClient.returnFee(applicationDtoList).getEntity();
-            if (!IaisCommonUtils.isEmpty(applicationDtoList2)){
-                fee = applicationDtoList2.get(0).getReturnFee();
-            }
-            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-            msgInfoMap.put("Applicant", applicantName);
-            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldApplicationDto.getApplicationType()));
-            msgInfoMap.put("ApplicationNumber", oldApplicationDto.getApplicationNo());
-            msgInfoMap.put("reqAppNo", oldApplicationDto.getApplicationNo());
-            msgInfoMap.put("S_LName",serviceName);
-            msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-            msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-            if (isRfc || StringUtil.isEmpty(payMethod)){
-                msgInfoMap.put("paymentType","2");
-                msgInfoMap.put("paymentMode","");
-                msgInfoMap.put("returnMount",0.0);
-            }else{
-                msgInfoMap.put("returnMount", fee);
-                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
-                    msgInfoMap.put("paymentType", "0");
-                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
-                }else{
-                    msgInfoMap.put("paymentType", "1");
-                    msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(payMethod));
-                }
-            }
-            msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
-            msgInfoMap.put("systemLink", loginUrl);
-            msgInfoMap.put("emailAddress", systemAddressOne);
-            try {
-                sendInboxMessage(oldApplicationDto, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                EmailParam emailParamSms = sendSms(msgInfoMap, oldApplicationDto, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS);
-                notificationHelper.sendNotification(emailParamSms);
-                EmailParam emailParam = sendNotification(msgInfoMap, oldApplicationDto, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL);
-                notificationHelper.sendNotification(emailParam);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-
         }
     }
 
@@ -373,7 +257,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!isRfc && !StringUtil.isEmpty(payMethod)){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
@@ -383,7 +267,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
                 msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                 msgInfoMap.put("emailAddress",systemAddressOne);
-                msgInfoMap.put("ApplicationDate",Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
+                msgInfoMap.put("ApplicationDate",Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+                msgInfoMap.put("Reminder",systemParamConfig.getPaymentReminder());
                 try {
                     EmailParam emailParam = sendNotification(msgInfoMap,applicationDto,MsgTemplateConstants.TEMPLATE_WITHDRAWAL_EMAIL);
                     notificationHelper.sendNotification(emailParam);
@@ -399,7 +284,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
+        int maxSeqNum = (int) ParamUtil.getSessionAttr(httpRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         withdrawnDtoList.forEach(h -> {
+            h.setMaxFileIndex(maxSeqNum);
             String appId = h.getNewApplicationId();
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
             String originLicenceId = applicationDto.getOriginLicenceId();
@@ -475,6 +362,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     @Override
     public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId) {
         List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationFeClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
+        for (WithdrawApplicationDto withdrawApplicationDto:withdrawApplicationDtoList
+                ) {
+            String appNoMaskId = MaskUtil.maskValue("appNo", withdrawApplicationDto.getApplicationNo());
+            withdrawApplicationDto.setMaskId(appNoMaskId);
+        }
         return withdrawApplicationDtoList;
     }
 
@@ -535,7 +427,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationDto.getApplicationNo());
         emailParam.setSubject(subject);
-        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  end*****************"));
+        log.info(StringUtil.changeForLog("***************** send withdraw application Notification  end *****************"));
         return emailParam;
     }
 

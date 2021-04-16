@@ -12,12 +12,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -112,36 +113,34 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public List<ErrorMsgContent> submitUploadItems(List<ItemTemplate> uploadItems) {
+    public List<ErrorMsgContent> submitUploadItems(List<ChecklistItemExcel> uploadItems) {
         IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
         return iaisApiResult.getEntity();
     }
 
     @Override
-    public List<ErrorMsgContent> updateUploadItems(List<ItemTemplate> updateItems) {
+    public List<ErrorMsgContent> updateUploadItems(List<ChecklistItemExcel> updateItems) {
         IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.updateUploadItems(updateItems).getEntity();
         return iaisApiResult.getEntity();
     }
 
     @Override
-    public List<ConfigExcelItemDto> convertToUploadTemplateByConfig(ChecklistConfigDto config) {
-        List<ConfigExcelItemDto> ret = IaisCommonUtils.genNewArrayList();
-        if (config != null){
+    public void convertToUploadTemplateByConfig(List<ChecklistConfigExcel> configExcelList, ChecklistConfigDto config) {
+        if (Optional.ofNullable(config).isPresent()){
             List<ChecklistSectionDto> section = config.getSectionDtos();
             for (ChecklistSectionDto i : section){
                 List<ChecklistItemDto> item = i.getChecklistItemDtos();
                 for (ChecklistItemDto j : item){
-                    ConfigExcelItemDto excelItemDto = new ConfigExcelItemDto();
+                    ChecklistConfigExcel excelItemDto = new ChecklistConfigExcel();
                     excelItemDto.setChecklistItem(j.getChecklistItem());
                     excelItemDto.setItemDisplayOrder(j.getSectionItemOrder().toString());
                     excelItemDto.setItemId(j.getItemId());
                     excelItemDto.setSectionDisplayOrder(i.getOrder().toString());
                     excelItemDto.setSectionName(i.getSection());
-                    ret.add(excelItemDto);
+                    configExcelList.add(excelItemDto);
                 }
             }
         }
-        return ret;
     }
 
 

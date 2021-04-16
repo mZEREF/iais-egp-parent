@@ -11,19 +11,32 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -36,9 +49,17 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -118,6 +139,8 @@ public class MohIntranetUserDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
+        List<SelectOption> statusOptions = getStatusOption();
+        ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
     }
 
     public void prepareCreate(BaseProcessClass bpc) {
@@ -147,6 +170,33 @@ public class MohIntranetUserDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            int activeTab=0;
+            boolean activeTabAcc=false;
+            boolean activeTabPer=false;
+            boolean activeTabCon=false;
+            for (String errKey:errorMap.keySet()
+            ) {
+                switch (errKey){
+                    case "userId":
+                    case "displayName":
+                    case "accountDeactivateDatetime":
+                    case "accountActivateDatetime":activeTabAcc=true;break;
+                    case "email":
+                    case "mobileNo":
+                    case "officeTelNo":activeTabCon=true;break;
+                    case "firstName":
+                    case "lastName":activeTabPer=true;break;
+                    default:
+                }
+            }
+            if(activeTabAcc){
+                activeTab=1;
+            }else if(activeTabPer){
+                activeTab=2;
+            }else if(activeTabCon){
+                activeTab=3;
+            }
+            ParamUtil.setRequestAttr(bpc.request, "activeTab",activeTab);
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -176,6 +226,8 @@ public class MohIntranetUserDelegator {
                 return;
             }
         }
+        List<SelectOption> statusOptions = getStatusOption();
+        ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
@@ -189,12 +241,38 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        Map<String, String> errorMap = new HashMap<>(34);
         OrgUserDto orgUserDto = prepareEditOrgUserDto(bpc);
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto, "edit");
+        Map<String, String> errorMap  = validationResult.retrieveAll();
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            Map<String, String> validationResultMap = validationResult.retrieveAll();
-            errorMap.putAll(validationResultMap);
+            int activeTab=0;
+            boolean activeTabAcc=false;
+            boolean activeTabPer=false;
+            boolean activeTabCon=false;
+            for (String errKey:errorMap.keySet()
+            ) {
+                switch (errKey){
+                    case "userId":
+                    case "displayName":
+                    case "status":
+                    case "accountDeactivateDatetime":
+                    case "accountActivateDatetime":activeTabAcc=true;break;
+                    case "email":
+                    case "mobileNo":
+                    case "officeTelNo":activeTabCon=true;break;
+                    case "firstName":
+                    case "lastName":activeTabPer=true;break;
+                    default:
+                }
+            }
+            if(activeTabAcc){
+                activeTab=1;
+            }else if(activeTabPer){
+                activeTab=2;
+            }else if(activeTabCon){
+                activeTab=3;
+            }
+            ParamUtil.setRequestAttr(bpc.request, "activeTab",activeTab);
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -224,6 +302,7 @@ public class MohIntranetUserDelegator {
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+            orgUserDto.setAvailable(Boolean.FALSE);
             orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             intranetUserService.updateOrgUser(orgUserDto);
             deleteEgpUser(userId);
@@ -250,7 +329,7 @@ public class MohIntranetUserDelegator {
             }
         }
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
-        List<String> assignRoleOptionFull = IaisCommonUtils.genNewArrayList();
+        Map<String, String> assignRoleOptionFull = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleMap1 = IaisCommonUtils.genNewHashMap();
         Map<String, String> roleNameGroupId = IaisCommonUtils.genNewHashMap();
@@ -258,7 +337,7 @@ public class MohIntranetUserDelegator {
             for (Role role : rolesByDomain) {
                 String roleName = role.getName();//APPROVE 1
                 String assignRoleId = role.getId();//AO1
-                assignRoleOptionFull.add(roleName);
+                assignRoleOptionFull.put(assignRoleId,roleName);
                 roleMap.put(roleName, assignRoleId);
                 roleMap1.put(assignRoleId, roleName);
             }
@@ -267,42 +346,133 @@ public class MohIntranetUserDelegator {
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
         List<String> existRoleIds = IaisCommonUtils.genNewArrayList();
         Map<String, String> roleNameAndIdMap = IaisCommonUtils.genNewHashMap();
-        List<String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewArrayList();
+        Map<String, String> roleIdAndNameMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> alreadyAssignRoleOptionFull = IaisCommonUtils.genNewHashMap();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleId = orgUserRoleDto.getRoleName();
                 String roleNameFull = roleMap1.get(roleId);
                 String assignRoleId = orgUserRoleDto.getId();
-                alreadyAssignRoleOptionFull.add(roleNameFull);
+                alreadyAssignRoleOptionFull.put(roleId,roleNameFull);
                 roleNameAndIdMap.put(roleNameFull, assignRoleId);
+                roleIdAndNameMap.put(assignRoleId, roleNameFull);
                 existRoleIds.add(roleId);
             }
         }
+
+
         List<WorkingGroupDto> workingGroups = intranetUserService.getWorkingGroups();
+        Map<String, String> groupIdAndName = IaisCommonUtils.genNewHashMap();
         List<SelectOption> insGroupOptions = IaisCommonUtils.genNewArrayList();
         List<SelectOption> psoGroupOptions = IaisCommonUtils.genNewArrayList();
         List<SelectOption> ao1GroupOptions = IaisCommonUtils.genNewArrayList();
         for (WorkingGroupDto workingGroupDto : workingGroups) {
             String groupId = workingGroupDto.getId();
+            String maskGroupId = MaskUtil.maskValue("groupId", groupId);
             String groupName = workingGroupDto.getGroupName();
-            roleNameGroupId.put(groupName, groupId);
-            if (groupName.contains("Inspection")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+            groupIdAndName.put(groupId, groupName);
+            roleNameGroupId.put(groupName, maskGroupId);
+            if (groupName.contains("Inspection -")) {
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 insGroupOptions.add(so);
             } else if (groupName.contains("Professional")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 psoGroupOptions.add(so);
             } else if (groupName.contains("Level 1")) {
-                SelectOption so = new SelectOption(groupId, groupName);
+                SelectOption so = new SelectOption(maskGroupId, groupName);
                 ao1GroupOptions.add(so);
             }
         }
-        assignRoleOptionFull.removeAll(alreadyAssignRoleOptionFull);
-        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOptionFull);//Professional Screening  - Nursing Home
-        ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", roleNameAndIdMap);
+
+        //already assign role group
+        List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(userAccId);
+        List<SelectOption> insGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> psoGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> ao1GroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> insLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> psoLeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> ao1LeaderGroupOptionsExist = IaisCommonUtils.genNewArrayList();
+
+        for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupsByUserId) {
+            String groupName = groupIdAndName.get(userGroupCorrelationDto.getGroupId());
+            String maskRoleId = "";
+            if(groupName!=null){
+                if (groupName.contains("Inspection -")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTIOR)&&userGroupCorrelationDto.getIsLeadForGroup()==0){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                insGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                insLeaderGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                    }
+                } else if (groupName.contains("Professional")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO)&&userGroupCorrelationDto.getIsLeadForGroup()==0){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                psoGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_PSO_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                psoLeaderGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                    }
+                } else if (groupName.contains("Level 1")) {
+                    if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1)&&userGroupCorrelationDto.getIsLeadForGroup()==0){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                ao1GroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                        for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                            if(orgUserRoleDto.getRoleName().equals(RoleConsts.USER_ROLE_AO1_LEAD)&&userGroupCorrelationDto.getIsLeadForGroup()==1){
+                                maskRoleId=orgUserRoleDto.getId();
+                                SelectOption so = new SelectOption(maskRoleId, groupName);
+                                ao1LeaderGroupOptionsExist.add(so);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
+        ) {
+            assignRoleOptionFull.remove(e.getKey());
+        }
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
+        ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", sortByKey(roleNameAndIdMap));
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "insGroupOptions", (Serializable) insGroupOptions);
+        ParamUtil.setSessionAttr(bpc.request, "insGroupOptionsExist", (Serializable) insGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "psoGroupOptionsExist", (Serializable) psoGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptionsExist", (Serializable) ao1GroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "insLeaderGroupOptionsExist", (Serializable) insLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "psoLeaderGroupOptionsExist", (Serializable) psoLeaderGroupOptionsExist);
+        ParamUtil.setSessionAttr(bpc.request, "ao1LeaderGroupOptionsExist", (Serializable) ao1LeaderGroupOptionsExist);
         ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
         //key = Professional Screening  - Nursing Home  value = AO1
         ParamUtil.setSessionAttr(bpc.request, "roleNameGroupId", (Serializable) roleNameGroupId);
@@ -315,7 +485,13 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         }
     }
-
+    private Map<String, String> sortByKey(Map<String, String> map) {
+        Map<String, String> result = new LinkedHashMap<>(map.size());
+        map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
     public void addRole(BaseProcessClass bpc) {
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
@@ -325,10 +501,23 @@ public class MohIntranetUserDelegator {
         }
         Map<String, String> roleMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleMap");
         Map<String, String> roleNameGroupId = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleNameGroupId");
-        Map<String, Integer> groupIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupInsIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupInsLeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo1Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo1LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo2Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo2LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo3Ids = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAo3LeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupPsoIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupPsoLeadIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAsoIds = IaisCommonUtils.genNewHashMap();
+        Map<String, Integer> groupAsoLeadIds = IaisCommonUtils.genNewHashMap();
+
+
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
-        List<String> assignRoles = IaisCommonUtils.genNewArrayList();
+        Set<String> assignRoles = IaisCommonUtils.genNewHashSet();
         String[] removeRoles = ParamUtil.getStrings(bpc.request, "removeRole");
         String userAccId = orgUserDto.getId();
         String[] assignRoleOthers = ParamUtil.getStrings(bpc.request, "assignRoleOther");
@@ -340,71 +529,77 @@ public class MohIntranetUserDelegator {
         String assignRolePsoLead = ParamUtil.getString(bpc.request, "assignRolePsoLead");
         //AO1
         if (!StringUtil.isEmpty(assignRoleAo1)) {
-            String ao1GroupSelect = ParamUtil.getString(bpc.request, "ao1GroupSelect");
-            if (!StringUtil.isEmpty(ao1GroupSelect)) {
-                String roleId = roleMap.get(assignRoleAo1);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(ao1GroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(ao1GroupSelect, 0);
+            String[] ao1GroupSelect = ParamUtil.getStrings(bpc.request, "ao1GroupSelect");
+            if (ao1GroupSelect != null) {
+                for (String ao1 : ao1GroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ao1);
+                    String roleId = roleMap.get(assignRoleAo1);
+                    assignRoles.add(roleId);
+                    groupAo1Ids.put(groupId,0);
+
                 }
             }
         }
         //AO1Leader
         if (!StringUtil.isEmpty(assignRoleAo1Lead)) {
-            String ao1GroupLeadSelect = ParamUtil.getString(bpc.request, "ao1GroupLeadSelect");
-            if (!StringUtil.isEmpty(ao1GroupLeadSelect)) {
-                String roleId = roleMap.get(assignRoleAo1Lead);
-                assignRoles.add(roleId);
-                groupIds.put(ao1GroupLeadSelect, 1);
+            String[] ao1GroupLeadSelect = ParamUtil.getStrings(bpc.request, "ao1GroupLeadSelect");
+            if (ao1GroupLeadSelect != null) {
+                for (String ao1Leader : ao1GroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ao1Leader);
+                    String roleId = roleMap.get(assignRoleAo1Lead);
+                    assignRoles.add(roleId);
+                    groupAo1LeadIds.put(groupId, 1);
+                }
             }
         }
         //ins
         if (!StringUtil.isEmpty(assignRoleIns)) {
-            String insGroupSelect = ParamUtil.getString(bpc.request, "insGroupSelect");
-            if (!StringUtil.isEmpty(insGroupSelect)) {
-                String roleId = roleMap.get(assignRoleIns);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(insGroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(insGroupSelect, 0);
+            String[] insGroupSelect = ParamUtil.getStrings(bpc.request, "insGroupSelect");
+            if (insGroupSelect != null) {
+                for (String ins : insGroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", ins);
+                    String roleId = roleMap.get(assignRoleIns);
+                    assignRoles.add(roleId);
+                    groupInsIds.put(groupId,0);
+
                 }
             }
         }
         //insLead
         if (!StringUtil.isEmpty(assignRoleInsLead)) {
-            String insGroupLeadSelect = ParamUtil.getString(bpc.request, "insGroupLeadSelect");
-            if (!StringUtil.isEmpty(insGroupLeadSelect)) {
-                String roleId = roleMap.get(assignRoleInsLead);
-                assignRoles.add(roleId);
-                groupIds.put(insGroupLeadSelect, 1);
+            String[] insGroupLeadSelect = ParamUtil.getStrings(bpc.request, "insGroupLeadSelect");
+            if (insGroupLeadSelect != null) {
+                for (String insLeader : insGroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", insLeader);
+                    String roleId = roleMap.get(assignRoleInsLead);
+                    assignRoles.add(roleId);
+                    groupInsLeadIds.put(groupId, 1);
+                }
             }
         }
         //pso
         if (!StringUtil.isEmpty(assignRolePso)) {
-            String psoGroupSelect = ParamUtil.getString(bpc.request, "psoGroupSelect");
-            if (!StringUtil.isEmpty(psoGroupSelect)) {
-                String roleId = roleMap.get(assignRolePso);
-                assignRoles.add(roleId);
-                Integer integer = groupIds.get(psoGroupSelect);
-                if (integer != null && integer == 1) {
-                    return;
-                } else {
-                    groupIds.put(psoGroupSelect, 0);
+            String[] psoGroupSelect = ParamUtil.getStrings(bpc.request, "psoGroupSelect");
+            if (psoGroupSelect != null) {
+                for (String pso : psoGroupSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", pso);
+                    String roleId = roleMap.get(assignRolePso);
+                    assignRoles.add(roleId);
+                    groupPsoIds.put(groupId,0);
+
                 }
             }
         }
         //psoLead
         if (!StringUtil.isEmpty(assignRolePsoLead)) {
-            String psoGroupLeadSelect = ParamUtil.getString(bpc.request, "psoGroupLeadSelect");
-            if (!StringUtil.isEmpty(psoGroupLeadSelect)) {
-                String roleId = roleMap.get(assignRolePsoLead);
-                assignRoles.add(roleId);
-                groupIds.put(psoGroupLeadSelect, 1);
+            String[] psoGroupLeadSelect = ParamUtil.getStrings(bpc.request, "psoGroupLeadSelect");
+            if (psoGroupLeadSelect != null) {
+                for (String psoLeader : psoGroupLeadSelect) {
+                    String groupId = MaskUtil.unMaskValue("groupId", psoLeader);
+                    String roleId = roleMap.get(assignRolePsoLead);
+                    assignRoles.add(roleId);
+                    groupPsoLeadIds.put(groupId, 1);
+                }
             }
         }
         //others
@@ -414,43 +609,32 @@ public class MohIntranetUserDelegator {
                 assignRoles.add(roleId);
                 if (RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO2_LEAD.equals(roleId)) {
                     String groupName = "Level 2 Approval";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO2.equals(roleId)) {
-                        Integer integer = groupIds.get(groupId);
-                        if (integer != null && integer == 1) {
-                            continue;
-                        } else {
-                            groupIds.put(groupId, 0);
-                        }
+                        groupAo2Ids.put(groupId, 0);
+
                     } else {
-                        groupIds.put(groupId, 1);
+                        groupAo2LeadIds.put(groupId, 1);
                     }
 
                 } else if (RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO3_LEAD.equals(roleId)) {
                     String groupName = "Level 3 Approval";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_AO3.equals(roleId)) {
-                        Integer integer = groupIds.get(groupId);
-                        if (integer != null && integer == 1) {
-                            continue;
-                        } else {
-                            groupIds.put(groupId, 0);
-                        }
+                        groupAo3Ids.put(groupId, 0);
                     } else {
-                        groupIds.put(groupId, 1);
+                        groupAo3LeadIds.put(groupId, 1);
                     }
                 } else if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_ASO_LEAD.equals(roleId)) {
                     String groupName = "Admin Screening officer";
-                    String groupId = roleNameGroupId.get(groupName);
+                    String groupIdMask = roleNameGroupId.get(groupName);
+                    String groupId = MaskUtil.unMaskValue("groupId", groupIdMask);
                     if (RoleConsts.USER_ROLE_ASO.equals(roleId)) {
-                        Integer integer = groupIds.get(groupId);
-                        if (integer != null && integer == 1) {
-                            continue;
-                        } else {
-                            groupIds.put(groupId, 0);
-                        }
+                        groupAsoIds.put(groupId, 0);
                     } else {
-                        groupIds.put(groupId, 1);
+                        groupAsoLeadIds.put(groupId, 1);
                     }
                 }
             }
@@ -459,24 +643,24 @@ public class MohIntranetUserDelegator {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             List<String> roleIds = intranetUserService.getRoleIdByUserId(userAccId);
-            if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_PSO);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_ASO);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO1);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO2);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_AO3);
-            }
-            if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
-                assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
-            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_PSO_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_PSO);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_ASO_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_ASO);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO1_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO1);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO2_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO2);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_AO3_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_AO3);
+//            }
+//            if (assignRoles.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+//                assignRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
+//            }
             assignRoles.removeAll(roleIds);
             for (String roleId : assignRoles) {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
@@ -492,48 +676,140 @@ public class MohIntranetUserDelegator {
                 egpUserRoleDto.setPermission("A");
                 egpUserRoleDtos.add(egpUserRoleDto);
             }
-            intranetUserService.assignRole(orgUserRoleDtos);
+            List<OrgUserRoleDto> orgUserRoleDtoList= intranetUserService.assignRole(orgUserRoleDtos);
             intranetUserService.createEgpRoles(egpUserRoleDtos);
-
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
-            groupIds.forEach((groupId, isLeader) -> {
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(userAccId);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                userGroupCorrelationDto.setGroupId(groupId);
-                userGroupCorrelationDto.setIsLeadForGroup(isLeader);
-                userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                userGroupCorrelationDtos.add(userGroupCorrelationDto);
-            });
+            for (OrgUserRoleDto role:orgUserRoleDtoList
+            ) {
+                switch (role.getRoleName()){
+                    case RoleConsts.USER_ROLE_AO1:
+                        groupAo1Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });
+                        break;
+                    case RoleConsts.USER_ROLE_AO1_LEAD:
+                        groupAo1LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_INSPECTIOR:
+                        groupInsIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_INSPECTION_LEAD:
+                        groupInsLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO2:
+                        groupAo2Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO2_LEAD:
+                        groupAo2LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO3:
+                        groupAo3Ids.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_AO3_LEAD:
+                        groupAo3LeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_ASO:
+                        groupAsoIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_ASO_LEAD:
+                        groupAsoLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_PSO:
+                        groupPsoIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    case RoleConsts.USER_ROLE_PSO_LEAD:
+                        groupPsoLeadIds.forEach((groupId, isLeader) -> {
+                            UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                            userGroupCorrelationDto.setUserRoleId(role.getId());
+                            userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            userGroupCorrelationDto.setGroupId(groupId);
+                            userGroupCorrelationDto.setIsLeadForGroup(isLeader);
+                            userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
+                            userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                        });break;
+                    default:
+                }
+            }
+
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                List<String> groupIdsSearch = IaisCommonUtils.genNewArrayList();
-                ListIterator<UserGroupCorrelationDto> iterator = userGroupCorrelationDtos.listIterator();
-                while (iterator.hasNext()) {
-                    UserGroupCorrelationDto dto = iterator.next();
-                    Integer isLeadForGroup = dto.getIsLeadForGroup();
-                    String groupId = dto.getGroupId();
-                    groupIdsSearch.clear();
-                    groupIdsSearch.add(groupId);
-                    if (isLeadForGroup == 1) {
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch, 0);
-                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            for (UserGroupCorrelationDto groupDto : userGroupCorrelationDtosTemp) {
-                                String id = groupDto.getId();
-                                dto.setId(id);
-                                dto.setIsLeadForGroup(1);
-                            }
-                        }
-                    } else {
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, groupIdsSearch, 1);
-                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            iterator.remove();
-                        }
-                    }
-                }
-                if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                    intranetUserService.addUserGroupId(userGroupCorrelationDtos);
-                }
+                intranetUserService.addUserGroupId(userGroupCorrelationDtos);
             }
         }
         List<String> existRoles = (List<String>) ParamUtil.getSessionAttr(bpc.request, "orgUserRoleDtos");
@@ -551,20 +827,20 @@ public class MohIntranetUserDelegator {
                     String roleName = orgUserRoleDto.getRoleName();
                     removeRole.add(roleName);
                 }
-                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                    String roleName = orgUserRoleDto.getRoleName();
-                    if (!roleName.contains("LEAD")) {
-                        String roleLeader = roleName + "_LEAD";
-                        if (existRoles.contains(roleLeader) && !removeRole.contains(roleLeader)) {
-                            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                            ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
-                            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                            errorMap.put("roleLeader", "USER_ERR019");
-                            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                            return;
-                        }
-                    }
-                }
+//                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+//                    String roleName = orgUserRoleDto.getRoleName();
+//                    if (!roleName.contains("LEAD")) {
+//                        String roleLeader = roleName + "_LEAD";
+//                        if (existRoles.contains(roleLeader) && !removeRole.contains(roleLeader)) {
+//                            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                            ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
+//                            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+//                            errorMap.put("roleLeader", "USER_ERR019");
+//                            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                            return;
+//                        }
+//                    }
+//                }
                 List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 Map<String, List<String>> roleIdGrpIdMap = intranetUserService.getRoleIdGrpIdMap();
                 for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
@@ -576,34 +852,27 @@ public class MohIntranetUserDelegator {
                     if (roleName.contains("LEAD")) {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
-                                dto.setIsLeadForGroup(0);
-                            }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);//NOSONAR
                         }
                     } else {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 0);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp) {
-                                dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                            }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp); //NOSONAR
                         }
-                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
-                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
-                            for (UserGroupCorrelationDto dto : userGroupCorrelationDtosTemp1) {
-                                dto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                            }
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);
-                        }
+//                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
+//                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
+//                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);//NOSONAR
+//                        }
                     }
                 }
-                intranetUserService.removeRole(orgUserRoleDtos);
-                intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
 
-                //remove group
-                if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                    intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                Boolean isSuccessEgp = intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
+                if (isSuccessEgp) {
+                    if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+                        intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                    }
+                    intranetUserService.removeRole(orgUserRoleDtos);
+                    //remove group
                 }
             }
         }
@@ -866,101 +1135,105 @@ public class MohIntranetUserDelegator {
     }
 
     public void saveStatus(BaseProcessClass bpc) {
-        String userId = ParamUtil.getRequestString(bpc.request, "statusUserId");
-        ParamUtil.setRequestAttr(bpc.request, "statusUserId", userId);
-        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("back".equals(actionType)) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        }
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        OrgUserDto orgUserDto;
-        ClientUser clientUser;
-        if (!StringUtil.isEmpty(userId)) {
-            clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
-            orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
-            if (clientUser == null || orgUserDto == null) {
-                errorMap.put("userId", "USER_ERR012");
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                return;
-            } else {
-                String status = orgUserDto.getStatus();
-                if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR004");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
-                    orgUserDto.setEndDateStr(endDate);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR005");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR014");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR005");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                    orgUserDto.setAuditTrailDto(auditTrailDto);
-                    intranetUserService.updateOrgUser(orgUserDto);
-                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-                    intranetUserService.updateEgpUser(clientUser);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-                    return;
-                } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-                    errorMap.put("userId", "USER_ERR016");
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    return;
-                }
-            }
-        } else {
-            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-            return;
-        }
+//        String userId = ParamUtil.getRequestString(bpc.request, "statusUserId");
+//        ParamUtil.setRequestAttr(bpc.request, "statusUserId", userId);
+//        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
+//        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+//        if ("back".equals(actionType)) {
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//            return;
+//        }
+//        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+//        OrgUserDto orgUserDto;
+//        ClientUser clientUser;
+//        if (!StringUtil.isEmpty(userId)) {
+//            clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
+//            orgUserDto = intranetUserService.findIntranetUserByUserId(userId);
+//            if (clientUser == null || orgUserDto == null) {
+//                errorMap.put("userId", "USER_ERR012");
+//                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                return;
+//            } else {
+//                String status = orgUserDto.getStatus();
+//                if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR004");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+//                    orgUserDto.setAvailable(Boolean.FALSE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    String endDate = DateFormatUtils.format(new Date(), "dd/MM/yyyy");
+//                    orgUserDto.setEndDateStr(endDate);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR005");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    orgUserDto.setAvailable(Boolean.TRUE);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR014");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+//                    orgUserDto.setAvailable(Boolean.FALSE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR005");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+//                    orgUserDto.setAvailable(Boolean.TRUE);
+//                    orgUserDto.setAuditTrailDto(auditTrailDto);
+//                    intranetUserService.updateOrgUser(orgUserDto);
+//                    clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+//                    intranetUserService.updateEgpUser(clientUser);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+//                    return;
+//                } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//                    errorMap.put("userId", "USER_ERR016");
+//                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//                    return;
+//                }
+//            }
+//        } else {
+//            errorMap.put("userId", MessageUtil.replaceMessage("GENERAL_ERR0006", "User ID", "field"));
+//            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+//            return;
+//        }
     }
 
     public void doSearch(BaseProcessClass bpc) {
@@ -1028,7 +1301,7 @@ public class MohIntranetUserDelegator {
             orgUserDto.setSalutation(salutation[0]);
         }
         String firstName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_FIRSTNAME);
-        String lastName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_LASTNAME);
+        String lastName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_FIRSTNAME);
         String division = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DIVISION);
         String branch = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_BRANCH);
         String email = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_EMAILADDR);
@@ -1058,7 +1331,7 @@ public class MohIntranetUserDelegator {
         orgUserDto.setRemarks(remarks);
         Date today = new Date();
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-        if(startDate.after(today)){
+        if (startDate != null && startDate.after(today)) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
         }
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
@@ -1075,7 +1348,8 @@ public class MohIntranetUserDelegator {
             orgUserDto.setSalutation(salutation[0]);
         }
         String firstName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
-        String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_LASTNAME);
+        String status = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_STATUS);
+        String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
         String division = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DIVISION);
         String branch = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_BRANCH);
         String email = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_EMAILADDR);
@@ -1091,6 +1365,10 @@ public class MohIntranetUserDelegator {
         }
         orgUserDto.setOrganization(organization);
         orgUserDto.setFirstName(firstName);
+        orgUserDto.setStatus(status);
+        if (!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+            orgUserDto.setAvailable(Boolean.FALSE);
+        }
         orgUserDto.setLastName(lastName);
         orgUserDto.setDisplayName(displayName);
         orgUserDto.setAccountDeactivateDatetime(endDate);
@@ -1101,7 +1379,6 @@ public class MohIntranetUserDelegator {
         orgUserDto.setMobileNo(mobileNo);
         orgUserDto.setOfficeTelNo(officeNo);
         orgUserDto.setRemarks(remarks);
-        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
         return orgUserDto;
     }
@@ -1201,6 +1478,10 @@ public class MohIntranetUserDelegator {
             Element root = document.getRootElement();
             //ele
             list = root.elements();
+            if (list != null) {
+                Element elementCheck = (Element) list.get(0);
+                elementCheck.element("displayName").getText();
+            }
         } catch (Exception e) {
             OrgUserDto orgUserDto = new OrgUserDto();
             orgUserDto.setXmlError("error");
@@ -1299,7 +1580,11 @@ public class MohIntranetUserDelegator {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String xmlError = orgUserDto.getXmlError();
         if (!StringUtil.isEmpty(xmlError)) {
-            errors.add("Please upload correct format.");
+            if ("errorName".equals(xmlError)) {
+                errors.add("The filename should not be more than 100 characters");
+            } else {
+                errors.add("Please upload correct format");
+            }
             return errors;
         }
         String userId = orgUserDto.getUserId();
@@ -1309,72 +1594,72 @@ public class MohIntranetUserDelegator {
                 errors.add(error);
             }
         } else {
-            String error = "User ID is a mandatory field.";
+            String error = "User ID is a mandatory field";
             errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
-            String error = "Display Name is a mandatory field.";
+            String error = "Display Name is a mandatory field";
             errors.add(error);
         }
 
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         String startDateStr = orgUserDto.getStartDateStr();
         if (StringUtil.isEmpty(startDateStr)) {
-            String error = "Account Activation Start is a mandatory field.";
+            String error = "Account Activation Start is a mandatory field";
             errors.add(error);
         }
         if (!StringUtil.isEmpty(startDateStr) && accountActivateDatetime == null) {
-            String error = "Please key in a valid Account Activation Start date.";
+            String error = "Please key in a valid Account Activation Start date";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         String endDateStr = orgUserDto.getEndDateStr();
         if (StringUtil.isEmpty(endDateStr)) {
-            String error = "Account Activation End is a mandatory field.";
+            String error = "Account Activation End is a mandatory field";
             errors.add(error);
         }
         if (!StringUtil.isEmpty(endDateStr) && accountDeactivateDatetime == null) {
-            String error = "Please key in a valid Account Activation End date.";
+            String error = "Please key in a valid Account Activation End date";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                String error = "Account Activation Start cannot be later than Account Activation End.";
+                String error = "Account Activation Start cannot be later than Account Activation End";
                 errors.add(error);
             }
         }
         String lastName = orgUserDto.getLastName();
         if (StringUtil.isEmpty(lastName)) {
-            String error = "Last Name is a mandatory field.";
+            String error = "Last Name is a mandatory field";
             errors.add(error);
         }
         String firstName = orgUserDto.getFirstName();
         if (StringUtil.isEmpty(firstName)) {
-            String error = "First Name is a mandatory field.";
+            String error = "First Name is a mandatory field";
             errors.add(error);
         }
         String email = orgUserDto.getEmail();
         if (StringUtil.isEmpty(email)) {
-            String error = "Email is a mandatory field.";
+            String error = "Email is a mandatory field";
             errors.add(error);
         } else {
             if (!ValidationUtils.isEmail(email)) {
-                String error = "Please key in a valid email address.";
+                String error = "Please key in a valid email address";
                 errors.add(error);
             }
         }
         String mobileNo = orgUserDto.getMobileNo();
         if (!StringUtil.isEmpty(mobileNo)) {
             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                errors.add("Please key in a valid mobile number.");
+                errors.add("Please key in a valid mobile number");
             }
         }
         String officeTelNo = orgUserDto.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
-            if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                errors.add("Please key in a valid office number.");
+            if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
+                errors.add("Please key in a valid office number");
             }
         }
         return errors;
@@ -1385,9 +1670,9 @@ public class MohIntranetUserDelegator {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("CMSTAT001", "Active");
         SelectOption so2 = new SelectOption("OUSTAT005", "Deactivated");
-        SelectOption so3 = new SelectOption("OUSTAT004", "Terminated");
-        SelectOption so4 = new SelectOption("OUSTAT001", "Expired");
-        SelectOption so5 = new SelectOption("OUSTAT002", "Locked");
+        SelectOption so3 = new SelectOption("OUSTAT001", "Expired");
+        SelectOption so4 = new SelectOption("OUSTAT002", "Locked");
+        SelectOption so5 = new SelectOption("OUSTAT004", "Terminated");
         result.add(so1);
         result.add(so2);
         result.add(so3);

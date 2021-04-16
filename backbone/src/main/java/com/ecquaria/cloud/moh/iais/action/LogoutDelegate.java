@@ -44,28 +44,6 @@ public class LogoutDelegate {
             String userid=session_mgmt.getCurrentUserID();
             String sessionId = bpc.request.getSession().getId();
 
-
-            if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
-                userIden.setUserDomain(userdomain);
-                userIden.setId(userid);
-                String event = SOPAuditLogConstants.getLogEvent(
-                        SOPAuditLogConstants.KEY_LOGOUT,
-                        new String[] { userIden.getUserDomain() });
-
-                String eventData = SOPAuditLogConstants.getLogEventData(
-                        SOPAuditLogConstants.KEY_LOGOUT, new String[] { userIden.getUserDomain(),userIden.getId() });
-
-                SOPAuditLog.log(userIden, event, eventData,
-                        SOPAuditLogConstants.MODULE_LOGOUT);
-            }
-
-            bpc.request.getSession().invalidate();
-            Cookie[] cookies = bpc.request.getCookies();
-            if(cookies != null) {
-                Cookie cookie = bpc.request.getCookies()[0];
-                cookie.setMaxAge(0);
-            }
-
             try {
                 //Add audit trail
                 AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -91,7 +69,28 @@ public class LogoutDelegate {
                     AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
                 }
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
+            }
+
+            if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
+                userIden.setUserDomain(userdomain);
+                userIden.setId(userid);
+                String event = SOPAuditLogConstants.getLogEvent(
+                        SOPAuditLogConstants.KEY_LOGOUT,
+                        new String[] { userIden.getUserDomain() });
+
+                String eventData = SOPAuditLogConstants.getLogEventData(
+                        SOPAuditLogConstants.KEY_LOGOUT, new String[] { userIden.getUserDomain(),userIden.getId() });
+
+                SOPAuditLog.log(userIden, event, eventData,
+                        SOPAuditLogConstants.MODULE_LOGOUT);
+            }
+
+            bpc.request.getSession().invalidate();
+            Cookie[] cookies = bpc.request.getCookies();
+            if(cookies != null) {
+                Cookie cookie = bpc.request.getCookies()[0];
+                cookie.setMaxAge(0);
             }
         }
     }

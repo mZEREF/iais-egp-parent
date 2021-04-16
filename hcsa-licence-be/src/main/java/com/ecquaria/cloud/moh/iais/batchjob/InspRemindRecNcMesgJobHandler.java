@@ -7,6 +7,7 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -14,12 +15,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -28,23 +32,29 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +98,14 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     @Autowired
     private SystemBeLicClient systemBeLicClient;
 
+    @Autowired
+    private AppointmentClient appointmentClient;
+
+    @Autowired
+    private InsepctionNcCheckListService insepctionNcCheckListService;
+
+    @Autowired
+    private LicenseeService licenseeService;
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
@@ -103,15 +121,26 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
             log.info(StringUtil.changeForLog("System days = " + days));
             JobLogger.log(StringUtil.changeForLog("System days = " + days));
             AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
+            List<Date> holidays = appointmentClient.getHolidays().getEntity();
             for(ApplicationDto applicationDto : applicationDtos){
                 try {
                     ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();
                     String applicantId = applicationGroupDto.getSubmitBy();
+                    String applicantName;
+                    if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType()) ||
+                            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
+                        String licenseeId = applicationGroupDto.getLicenseeId();
+                        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+                        applicantName = licenseeDto.getName();
+                    }else{
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                        applicantName = orgUserDto.getDisplayName();
+                    }
                     JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(applicationDto.getApplicationNo(), MessageConstants.JOB_REMIND_MSG_KEY_REMIND_RECTIFICATION_EMAIL).getEntity();
                     if (jobRemindMsgTrackingDto2 == null) {
                         log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
                         JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
-                        inspectionDateSendEmail(applicantId, applicationDto);
+                        inspectionDateSendEmail(applicantName, applicationDto, holidays);
                         createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
                     } else {
                         Date createDate = jobRemindMsgTrackingDto2.getCreateTime();
@@ -122,7 +151,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                         JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                         if (nowDays > days) {
-                            inspectionDateSendEmail(applicantId, applicationDto);
+                            inspectionDateSendEmail(applicantName, applicationDto, holidays);
                             jobRemindMsgTrackingDto2.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                             jobRemindMsgTrackingDto2.setAuditTrailDto(intranet);
                             systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto2);
@@ -155,14 +184,22 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
     }
 
-    private void inspectionDateSendEmail(String applicantId, ApplicationDto applicationDto) {
+    private void inspectionDateSendEmail(String applicantName, ApplicationDto applicationDto, List<Date> holidays) {
         String appId = applicationDto.getId();
         String appNo = applicationDto.getApplicationNo();
-        List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appId);
-        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
-        String applicantName = orgUserDto.getDisplayName();
-        Date date = new Date();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+        List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appPremisesCorrelationDto);
+        //get rec date
+        List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);//NOSONAR
+        Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays, nonWorkingDateListByWorkGroupId);
         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        //get url
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
+                MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appNo;
+        String emailUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        maskParams.put("applicationNo", appNo);
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         templateContent.put("applicant", applicantName);
         templateContent.put("date", strDate);
@@ -174,6 +211,8 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         emailParam.setReqRefNum(appNo);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(appNo);
+        emailParam.setMaskParams(maskParams);
+        templateContent.put("systemLink", emailUrl);
         notificationHelper.sendNotification(emailParam);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION_SMS);
@@ -188,8 +227,10 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         msgParam.setTemplateContent(templateContent);
         msgParam.setQueryCode(appNo);
         msgParam.setReqRefNum(appNo);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
         msgParam.setRefId(appNo);
+        msgParam.setMaskParams(maskParams);
+        templateContent.put("systemLink", url);
         //set svc code
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         String serviceId = applicationDto.getServiceId();
@@ -200,9 +241,8 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         notificationHelper.sendNotification(msgParam);
     }
 
-    private List<InspEmailFieldDto> getEmailFieldByAppId(String appId) {
+    private List<InspEmailFieldDto> getEmailFieldByAppId(AppPremisesCorrelationDto appPremisesCorrelationDto) {
         List<InspEmailFieldDto> inspEmailFieldDtos = IaisCommonUtils.genNewArrayList();
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         String appPremCorrId = appPremisesCorrelationDto.getId();
         List<ChecklistConfigDto> checklistConfigDtos = getAllCheckListByAppPremCorrId(appPremCorrId);
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
@@ -242,14 +282,18 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
+        String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
+        }
+        if(StringUtil.isEmpty(findNcs)){
+            findNcs = "";
         }
         if(!IaisCommonUtils.isEmpty(checklistConfigDtos)) {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
@@ -264,13 +308,15 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
         if(adhocChecklistItemDto != null){
             String checkItemId = adhocChecklistItemDto.getItemId();
+            //CR Regulation change -> Question
+            //CR question change -> Findings/NCs
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setRegulation(checklistItemDto.getChecklistItem());
+                inspEmailFieldDto.setQuestion(findNcs);
             } else {
-                inspEmailFieldDto.setRegulation("");
-                inspEmailFieldDto.setQuestion(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setRegulation(adhocChecklistItemDto.getQuestion());
+                inspEmailFieldDto.setQuestion(findNcs);
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
@@ -279,7 +325,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark) {
+                                             String itemId, String beRemark, String findNcs) {
         if(inspEmailFieldDto == null){
             inspEmailFieldDto = new InspEmailFieldDto();
         }
@@ -289,8 +335,10 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
                 String category = getItemCategory(checklistConfigDto);
                 containFlag = true;
                 ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
-                inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
-                inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
+                //CR Regulation change -> Question
+                inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
+                //CR question change -> Findings/NCs
+                inspEmailFieldDto.setQuestion(findNcs);
                 inspEmailFieldDto.setBeNcRemark(beRemark);
                 inspEmailFieldDto.setServiceName(category);
             }

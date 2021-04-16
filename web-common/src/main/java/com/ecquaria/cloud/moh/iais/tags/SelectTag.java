@@ -2,19 +2,18 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import java.util.Collection;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Slf4j
 public class SelectTag extends DivTagSupport {
@@ -28,6 +27,7 @@ public class SelectTag extends DivTagSupport {
     private String filterValue;
     private String onchange;
     private String value;
+    private Collection<String> multiValues;
     private String otherOption;
     private String otherOptionValue = "00";
     private String hidden;
@@ -35,6 +35,7 @@ public class SelectTag extends DivTagSupport {
     private boolean disabled;
     private boolean needMask;
     private boolean needSort;
+    private boolean multiSelect;
 
     public SelectTag() {
         super();
@@ -59,6 +60,8 @@ public class SelectTag extends DivTagSupport {
         setNeedErrorSpan(true);
         setNeedMask(false);
         setNeedSort(false);
+        setMultiSelect(false);
+        setMultiValues(null);
     }
 
     public void setHidden(String hidden) {
@@ -97,6 +100,9 @@ public class SelectTag extends DivTagSupport {
             }
             if (!StringUtil.isEmpty(style)) {
                 html.append(" style=\"").append(style).append('\"');
+            }
+            if (multiSelect) {
+                html.append(" multiple=\"multiple\"");
             }
             if (!StringUtil.isEmpty(onchange)) {
                 html.append(" onchange=\"").append(onchange).append('\"');
@@ -151,21 +157,17 @@ public class SelectTag extends DivTagSupport {
 
         if (sos != null) {
             if (needSort) {
-                TreeMap<String, SelectOption> map = new TreeMap<>();
-                for (SelectOption option : sos) {
-                    if (!StringUtil.isEmpty(option.getValue())) {
-                        map.put(option.getText(), option);
-                    }
-                }
-                sos.clear();
-                for (Map.Entry<String, SelectOption> ent : map.entrySet()) {
-                    sos.add(ent.getValue());
-                }
+                sos.sort(SelectOption::compareTo);
             }
+
             for (SelectOption option : sos) {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
                 String txt = StringUtil.escapeHtml(option.getText());
-                String selected = option.getValue().equals(value) ? " selected" : "";
+                boolean multiChoose = false;
+                if (!IaisCommonUtils.isEmpty(multiValues)) {
+                    multiChoose = multiValues.contains(option.getValue());
+                }
+                String selected = option.getValue().equals(value) || multiChoose ? " selected" : "";
                 html.append("<option value=\"").append(val).append('\"').append(selected).append('>').append(txt).append(ENDOPTION);
             }
         }
@@ -251,5 +253,13 @@ public class SelectTag extends DivTagSupport {
 
     public void setNeedSort(boolean needSort) {
         this.needSort = needSort;
+    }
+
+    public void setMultiSelect(boolean multiSelect) {
+        this.multiSelect = multiSelect;
+    }
+
+    public void setMultiValues(Collection<String> multiValues) {
+        this.multiValues = multiValues;
     }
 }

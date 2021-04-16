@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="java.util.Set" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass proce =

@@ -4,7 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -25,7 +27,15 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -163,4 +173,38 @@ public interface InspectionTaskClient {
     @PostMapping(value = "/iais-inspection/re-sch-datas", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ReschedulingOfficerDto> reScheduleSaveRouteData(@RequestBody ReschedulingOfficerDto reschedulingOfficerDto);
+
+    @PostMapping(value = "/iais-self-assessment-be/self-assessment/report-by-correlation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> selfAssMtPdfReport(@RequestParam(value = "correlationId") String cid);
+
+    @PostMapping(value = "/iais-inspection/re-schedule-date/both-fe-be", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptRequestDto>> reScheduleNewDate(@RequestBody AppointmentDto appointmentDto);
+
+    /**
+     * Inspection appt Draft
+     */
+    @PostMapping(value = "/insp-appt-draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> createAppPremisesInspecApptDto(@RequestBody List<AppPremInspApptDraftDto> appPremInspApptDraftDtos);
+
+    @PutMapping(value = "/insp-appt-draft", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremInspApptDraftDto> updateAppPremisesInspecApptDto(@RequestBody AppPremInspApptDraftDto appPremInspApptDraftDto);
+
+    @GetMapping(value = "/insp-appt-draft/insp-appt-draft/{appNo}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> getInspApptDraftListByAppNo(@PathVariable(name = "appNo") String appNo);
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftByAppNo(@RequestBody List<String> appNoList);
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an-ref",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftByApptRefNo(@RequestBody List<String> apptRefNos);
+
+    @GetMapping(value = "/insp-appt-draft/insp-appt-draft/all", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspApptDraftDto>> getAllInspApptDrafts();
+
+    @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an/{id}",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteInspDateDraftById(@PathVariable(name = "id") String id);
 }

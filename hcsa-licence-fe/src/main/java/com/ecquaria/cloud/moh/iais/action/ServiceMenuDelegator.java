@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -546,6 +547,32 @@ public class ServiceMenuDelegator {
             }
 
         }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(!currentPage.equals(nextstep)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:baseSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            for(HcsaServiceDto hcsaServiceDto:speSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = appSubmissionService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                nextstep = currentPage;
+                err = MessageUtil.getMessageDesc("NEW_ERR0023");
+                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                //set audit
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put(ERROR_ATTR_LIST,err);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            }
+        }
+
 //        appSelectSvcDto.setBaseSvcIds(basecheckedlist);
 //        appSelectSvcDto.setSpecifiedSvcIds(sepcifiedcheckedlist);
         appSelectSvcDto.setBaseSvcDtoList(baseSvcSort);
@@ -556,14 +583,9 @@ public class ServiceMenuDelegator {
         //control switch
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(!currentPage.equals(nextstep)){
-            //note: As long as you select the specified service, you don't go and select align
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
-            String licenseeId = "";
-            if(loginContext!=null){
-                licenseeId  = loginContext.getLicenseeId();
-                newLicensee =  appSubmissionService.isNewLicensee(licenseeId);
-            }
+            //note: As long as you select the specified service, you don't go and select align
+            newLicensee =  appSubmissionService.isNewLicensee(licenseeId);
             appSelectSvcDto.setNewLicensee(newLicensee);
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
@@ -812,6 +834,24 @@ public class ServiceMenuDelegator {
             }
         }
 
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(StringUtil.isEmpty(erroMsg)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = appSubmissionService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                erroMsg = MessageUtil.getMessageDesc("NEW_ERR0023");
+            }
+        }
+
+
         if(StringUtil.isEmpty(erroMsg)){
             //choose existing
             if(chooseExist){
@@ -861,11 +901,11 @@ public class ServiceMenuDelegator {
                     if(chooseExist){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else if(!chooseExist){
-                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                        /*LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
                         String licenseeId = "";
                         if(loginContext!=null){
                             licenseeId = loginContext.getLicenseeId();
-                        }
+                        }*/
                         //new
                         //judge whether had existing licence
                         List<String> chkBase = IaisCommonUtils.genNewArrayList();
@@ -1166,6 +1206,7 @@ public class ServiceMenuDelegator {
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
+            log.debug(StringUtil.changeForLog("control switch service Info:"+JsonUtil.parseToJson(appSvcRelatedInfoDtos)));
         }
         ParamUtil.setRequestAttr(bpc.request,"switch",action);
         log.info(StringUtil.changeForLog("control switch end ..."));

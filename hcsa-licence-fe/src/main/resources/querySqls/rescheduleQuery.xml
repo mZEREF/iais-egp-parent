@@ -9,7 +9,11 @@
                 T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
                 T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,T3.ID APP_GRP_PREM_ID,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
-                CONCAT(case T3.BLK_NO
+                CONCAT(case T3.HCI_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.HCI_NAME end ,
+                  case T3.HCI_NAME
                   when null then null
                   when '' then null
                   else ' '+T3.BLK_NO end ,

@@ -22,10 +22,12 @@ public class EmailParam {
     private String reqRefNum;
     private String refIdType;
     private String refId;
+    private String recipientUserId;
     private JobRemindMsgTrackingDto jobRemindMsgTrackingDto;
     private String subject;
     private String recipientType;
     private String moduleType;
+    private boolean needSendNewLicensee =false;
     private boolean smsOnlyOfficerHour = true;
     private List<String> svcCodeList;
     private HashMap<String, String> maskParams;

@@ -52,12 +52,12 @@
         },
 
         disableButton: function (obj, id) {
-            if ($(obj).attr("checked")){
+            if ($(obj).prop("checked")){
                 $('#' + id).attr("class", "btn btn-primary next");
             }else {
                 $('#' + id).attr("class", "btn btn-primary disabled");
             }
-        }
+        },
     }
 
     $("#crud_search_button").click(function () {
@@ -83,6 +83,7 @@
         $(".form-horizontal .current").text("Please Select")
         $(".form-horizontal input").val("");
         $(".form-horizontal option:first").prop("selected", 'selected').val(null);
+        $(".error-msg").text("");
     })
 
     function jumpToPagechangePage(){
@@ -102,11 +103,9 @@
         document.getElementById("mainForm").submit();
     })
 
-
-
     function jsonToHtmlTable(str, id) {
         if (str == undefined || str == '' ){
-            $("#" + id).html("<span> No Record! </span>")
+            $("#" + id).html("<span> No record found. </span>")
             return
         }
 
@@ -146,13 +145,14 @@
                 }
 
             } catch(e) {
-                console.log('error：'+ str + '!!!'+ e);
+                console.log('error：'+ e);
                 return false;
             }
         }else if (typeof str == 'object'){
             return true
         }
     }
+
 
 
 </script>

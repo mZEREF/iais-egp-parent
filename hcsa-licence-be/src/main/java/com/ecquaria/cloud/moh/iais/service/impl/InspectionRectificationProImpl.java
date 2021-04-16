@@ -17,8 +17,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -59,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -149,6 +153,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private LicenseeService licenseeService;
+
+    @Autowired
+    private AppointmentClient appointmentClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -523,6 +530,45 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
         }
         return checklistItemDto;
+    }
+
+    @Override
+    public FileRepoDto getCheckListFileRealName(FileRepoDto fileRepoDto, String refNo, String status, String checkListFileType) {
+        if(fileRepoDto == null){
+            fileRepoDto = new FileRepoDto();
+        }
+        AppIntranetDocDto appIntranetDocDto = fillUpCheckListGetAppClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(refNo, status, checkListFileType).getEntity();
+        if(appIntranetDocDto != null) {
+            StringBuilder sb = new StringBuilder();
+            String fileName = appIntranetDocDto.getDocName();
+            String fileType = appIntranetDocDto.getDocType();
+            sb.append(fileName);
+            sb.append('.');
+            sb.append(fileType);
+            String fileRealName = sb.toString();
+            fileRepoDto.setRealFileName(fileRealName);
+        } else {
+            fileRepoDto.setRealFileName(fileRepoDto.getFileName());
+        }
+        return fileRepoDto;
+    }
+
+    @Override
+    public List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo) {
+        if(!StringUtil.isEmpty(appNo)){
+            List<TaskDto> taskDtos = organizationClient.getTaskByApplicationNoAndRoleIdAndStatus(appNo, RoleConsts.USER_ROLE_INSPECTIOR, TaskConsts.TASK_STATUS_COMPLETED).getEntity();
+            if(taskDtos != null && taskDtos.size() > 0){
+                TaskDto taskDto = taskDtos.get(0);
+                if(taskDto != null && !StringUtil.isEmpty(taskDto.getWkGrpId())){
+                    WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(taskDto.getWkGrpId()).getEntity();
+                    if(workingGroupDto != null){
+                        List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = appointmentClient.getNonWorkingDateListByWorkGroupId(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY, workingGroupDto.getGroupName()).getEntity();
+                        return nonWorkingDateListByWorkGroupId;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {

@@ -14,7 +14,17 @@
                 <div class="intranet-content">
                     <div class="bg-title">
                         <h2>
-                            <iais:message key="LOLEV_ACK035" escape="true"></iais:message>
+                            <c:if test="${COMPLETED}" >
+                                <iais:message key="LOLEV_ACK039" escape="true" />
+                            </c:if>
+                            <c:if test="${!COMPLETED}">
+                                <c:if test="${LEADER_SEND}" >
+                                    <iais:message key="LOLEV_ACK053" escape="true" />
+                                </c:if>
+                                <c:if test="${!LEADER_SEND}">
+                                    <iais:message key="LOLEV_ACK035" escape="true"/>
+                                </c:if>
+                            </c:if>
                         </h2>
                     </div>
                 </div>

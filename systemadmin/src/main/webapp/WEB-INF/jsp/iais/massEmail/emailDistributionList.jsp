@@ -84,14 +84,14 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <th>Distribution List ID</th>
-                                <th>Distribution Name</th>
-                                <th>Service</th>
-                                <th>Recipients Role</th>
-                                <th>Mode of Delivery</th>
-                                <th>Created Date</th>
-                                <th>Created By</th>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
+                                <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
+                                <iais:sortableHeader needSort="true" field="SERVICE_CODE" value="Service"/>
+                                <iais:sortableHeader needSort="true" field="RECIPIENTS_ROLE" value="Recipients Role"/>
+                                <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery"/>
+                                <iais:sortableHeader needSort="true" field="CREATED_DT" value="Created Date"/>
+                                <iais:sortableHeader needSort="true" field="CREATED_BY" value="Created By"/>
+                                <iais:sortableHeader needSort="false" field="" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -126,7 +126,7 @@
                                                     <p><c:out value="${item.mode}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><fmt:formatDate value="${item.createDt}" pattern="MM/dd/yyyy"/></p>
+                                                    <p><fmt:formatDate value="${item.createDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.createBy}"/></p>
@@ -155,21 +155,14 @@
             </div>
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
-        <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <input hidden id="fieldName" name="fieldName" value="">
+        <input hidden id="sortType" name="sortType" value="">
+        <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#support').find('div.modal-body').find('div.row div').removeClass("col-md-8 col-md-offset-2");
-        $('#support').find('div.modal-body').find('div.row div').css('width','100%');
-        $('#support').find('div.modal-body').find('div.row div').css('padding','0 5% 0 5%');
-        $('#deleteSupport').find('div.modal-body').find('div.row div').removeClass("col-md-8 col-md-offset-2");
-        $('#deleteSupport').find('div.modal-body').find('div.row div').css('width','100%');
-        $('#deleteSupport').find('div.modal-body').find('div.row div').css('padding','0 5% 0 5%');
-    });
-
     function submit(action) {
         $("[name='crud_action_type']").val(action);
         $('#mainForm').submit();
@@ -182,6 +175,14 @@ function addList() {
 function deleteList() {
     checkUse();
 }
+
+
+function sortRecords(sortFieldName, sortType) {
+    $("[name='fieldName']").val(sortFieldName);
+    $("[name='sortType']").val(sortType);
+    submit("search");
+}
+
 function cancel() {
     $('#support').modal('hide');
 }
@@ -209,14 +210,14 @@ function checkUse() {
         },
         success:function(data){
             if(data.res == 'true'){
-                $('#support').find("span").eq(1).html("The distribution list cannot be deleted as it is still in used by other mass email or sms blast.")
+                $('#support').find("span").eq(0).html("The distribution list cannot be deleted as it is still in used by other mass email or sms blast.")
                 $('#support').modal('show');
             }else{
                 if ($("input:checkbox:checked").length > 0) {
                     $('#deleteSupport').modal('show');
-
+                    //alert(1)
                 } else {
-                    $('#support').find("span").eq(1).html("Please select record for deletion.");
+                    $('#support').find("span").eq(0).html("Please select record for deletion.");
                     $('#support').modal('show');
                 }
             }
@@ -239,6 +240,7 @@ function edit(id) {
                 $("#editDistribution").val(id);
                 submit("edit");
             }else{
+
                 $('#support').find("span").eq(1).html("The distribution list cannot be amended as it is still in used by other mass email or sms blast.");
                 $('#support').modal('show');
             }
@@ -247,7 +249,7 @@ function edit(id) {
 
 }
 function jumpToPagechangePage() {
-    submit("search");
+    submit("page");
 }
 function searchResult() {
     submit("search");

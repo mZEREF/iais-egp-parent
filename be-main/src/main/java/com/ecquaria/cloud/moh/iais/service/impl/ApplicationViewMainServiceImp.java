@@ -384,7 +384,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
 
     public List<Role> getRolesByDomain(String domain) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        map.put("userDomain", domain);
+        map.put("userDomains", domain);
         return egpUserMainClient.search(map).getEntity();
     }
 

@@ -7,8 +7,8 @@
 --%>
 <!-- session timeout handling - START -->
 <%
-  int timeout = 29;  // in minute
-  int warning = 24;  // in minute
+  int timeout = 20;  // in minute
+  int warning = 15;  // in minute
 %>
 <div id="timeoutDlg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="timeoutDlg"
      style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit;">
@@ -43,7 +43,9 @@
     function initSessionTimeout() {
         window.clearTimeout(warningDlgIntHook);
         var min = parseInt('<%=warning%>');
+        var logout = parseInt('<%=timeout%>');
         warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
+        window.setTimeout('doLogout();', logout * 60 * 1000, 'JavaScript');
     }
 
     function startCountdown(min) {
@@ -81,7 +83,7 @@
         // call AJAX to extend the current session
         $.ajax({
             type:"GET",
-            url:BASE_CONTEXT_PATH + "/time-out/intranet.extend",
+            url:BASE_CONTEXT_PATH + "/halp-time-out/intranet.extend",
             async: false
         });
         initSessionTimeout();

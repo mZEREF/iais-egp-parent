@@ -7,7 +7,6 @@
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
 <meta name="keywords" content="">
 
 <%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
@@ -27,6 +26,8 @@
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/multipleSelect.css">
+<link rel="stylesheet" href="<%=webroot%>css/multiselectdropdown-styles.css">
+
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/particles.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/app.js"></script>
@@ -41,6 +42,7 @@
 <script type="text/javascript" src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/jquery.multi-select.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
@@ -50,7 +52,12 @@
     $(document).ready(function(){
         $('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
     });
+    function popup(url){
+        window.open(url,"_blank");
+    }
 </script>

@@ -12,6 +12,17 @@
 <%
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
+<style>
+    .backPadding{
+        padding-left: 90px;
+    }
+    @media only screen and (max-width: 767px){
+        .backPadding{
+            padding-left: 20px;
+        }
+    }
+
+    </style>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
@@ -35,85 +46,87 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>ID No.</th>
-                                <th>ID Type</th>
-                                <th>Salutation</th>
-                                <th>Name</th>
-                                <th>Designation</th>
-                                <th>Is Administrator</th>
-                                <th>Is Active</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:choose>
-                                <c:when test="${empty feAdmin}">
-                                    <tr>
-                                        <td colspan="12">
-                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="item"  items="${feAdmin}" varStatus="status">
-                                        <tr style="display: table-row;">
-                                            <%--<td>--%>
-                                                <%--<p><c:out  value="${(status.index + 1) + (feAdminSearchParam.pageNo - 1) * feAdminSearchParam.pageSize}"/></p>--%>
-                                            <%--</td>--%>
-                                            <td>
-                                                <p><c:out value="${item.idNo}"/></p>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ID No.</th>
+                                    <th>ID Type</th>
+                                    <th>Salutation</th>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Is Administrator</th>
+                                    <th>Is Active</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:choose>
+                                    <c:when test="${empty feAdmin}">
+                                        <tr>
+                                            <td colspan="12">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                             </td>
-                                            <td>
-                                                <p><c:out value="${item.idType}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.salutation}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.name}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><iais:code code="${item.designation}"/></p>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${item.role eq 'ORG_ADMIN'}">
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="item"  items="${feAdmin}" varStatus="status">
+                                            <tr style="display: table-row;">
+                                                <%--<td>--%>
+                                                    <%--<p><c:out  value="${(status.index + 1) + (feAdminSearchParam.pageNo - 1) * feAdminSearchParam.pageSize}"/></p>--%>
+                                                <%--</td>--%>
+                                                <td>
+                                                    <p><c:out value="${item.idNo}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.idType}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.salutation}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.name}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><iais:code code="${item.designation}"/></p>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${item.role eq 'ORG_ADMIN'}">
+                                                            <p>Yes</p>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <p>No</p>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td id="active${item.id}">
+                                                    <c:choose>
+                                                    <c:when test="${item.isActive eq '1'}">
                                                         <p>Yes</p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>No</p>
                                                     </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td id="active${item.id}">
-                                                <c:choose>
-                                                <c:when test="${item.isActive eq '1'}">
-                                                    <p>Yes</p>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <p>No</p>
-                                                </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <p><a onclick="edit('userIndex${status.index}')">Edit</a></p>
-                                                <input hidden name="userIndex${status.index}" value="<iais:mask name='userIndex${status.index}' value='${item.id}'></iais:mask>">
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
-                            </tbody>
-                        </table>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <p><a onclick="edit('userIndex${status.index}')">Edit</a></p>
+                                                    <input hidden name="userIndex${status.index}" value="<iais:mask name='userIndex${status.index}' value='${item.id}'></iais:mask>">
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="application-tab-footer">
                             <div class="row">
-                                <div class="col-xs-2 col-sm-2">
-                                    <div><a id="back" style="padding-left: 90px;"><em class="fa fa-angle-left"></em> Back</a></div>
+                                <div class="col-xs-4 col-sm-2">
+                                    <div><a id="back" class="backPadding"><em class="fa fa-angle-left"></em> Back</a></div>
                                 </div>
-                                <div class="col-xs-9 col-md-9">
+                                <div class="col-xs-8 col-md-9">
                                     <div class="text-right">
                                         <button class="btn btn-primary" id="savebtn"
                                                 onclick="javascript:create()">Create</button>

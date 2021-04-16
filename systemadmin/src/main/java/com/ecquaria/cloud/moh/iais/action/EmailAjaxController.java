@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
@@ -10,9 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -132,11 +137,28 @@ public class EmailAjaxController {
         result.put("distributionSelect",distributionSelect);
         return result;
     }
+
+    @RequestMapping(value = "deliveryModeCheck.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> deliveryModeCheck(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, String> result = new HashMap<>();
+        Map<String,String> distributionAttr = IaisCommonUtils.genNewHashMap();
+        distributionAttr.put("class", "deliveryMode");
+        distributionAttr.put("id", "deliveryMode");
+        distributionAttr.put("name", "deliveryMode");
+        distributionAttr.put("style", "display: none;");
+        List<SelectOption> selectOptions = getDeliveyMode(request);
+        doSortSelOption(selectOptions);
+        String deliveryModeSelect = generateDropDownHtml(distributionAttr, selectOptions, "Please Select", null);
+        result.put("deliveryModeSelect",deliveryModeSelect);
+        return result;
+    }
+
     @RequestMapping(value = "distributionEditCheck.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, String> distributionEditCheck(HttpServletRequest request, HttpServletResponse response) {
         String id =  ParamUtil.getMaskedString(request, "editDistribution");
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
         String editCheck = blastManagementListService.blastEditCheck(id);
         result.put("canEdit",editCheck);
         return result;
@@ -150,11 +172,41 @@ public class EmailAjaxController {
         ParamUtil.setSessionAttr(request,"nonWorking",null);
         ParamUtil.setSessionAttr(request,"searchStatus",null);
 
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
         result.put("remove","suc");
         return result;
     }
 
+    @RequestMapping(value = "recoverTextarea" , method = RequestMethod.POST)
+    public @ResponseBody Map<String, String> recoverTextarea(HttpServletRequest request){
+        String email = ParamUtil.getString(request, "email");
+        String mobile = ParamUtil.getString(request, "mobile");
+        List<String> emaillist = getListTextarea(email);
+        List<String> mobilelist = getListTextarea(mobile);
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        List<String> filelist = (List)ParamUtil.getSessionAttr(request,"massEmailFilelist");
+        emaillist.removeAll(filelist);
+        mobilelist.removeAll(filelist);
+        String emailString = StringUtils.join(emaillist, "\r\n");
+        String smsString = StringUtils.join(mobilelist, "\r\n");
+        result.put("mobile",smsString);
+        result.put("email",emailString);
+        return result;
+    }
+
+    private List<String> getListTextarea(String email){
+        List<String> emailAddress = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(email)){
+            List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
+            List<String> commaemaillist = Arrays.asList(email.split("\n"));
+            if(rnemaillist.size() > commaemaillist.size() ){
+                emailAddress = rnemaillist;
+            }else{
+                emailAddress = commaemaillist;
+            }
+        }
+        return new ArrayList<>(emailAddress);
+    }
 
 
     @RequestMapping(value = "checkUse.do", method = RequestMethod.POST)
@@ -213,6 +265,51 @@ public class EmailAjaxController {
         for (DistributionListWebDto item :distributionListDtos
         ) {
             selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+        }
+        return selectOptions;
+    }
+
+
+    private List<SelectOption> getDeliveyMode(HttpServletRequest request){
+        String deliveyMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
+        String email = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_EMAIL;
+        String sms = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS;
+        String msg = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG;
+        String na = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_NA;
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(deliveyMode)){
+            selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+            selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+            selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+            selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+        }else{
+           String naText = MasterCodeUtil.getCodeDesc(na);
+            switch (deliveyMode){
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
+                    selectOptions.add(new SelectOption(na,naText ));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
+                    selectOptions.add(new SelectOption(na,naText));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
+                    selectOptions.add(new SelectOption(na,naText));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    break;
+                case MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                    break;
+                default:
+                    selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                    selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                    selectOptions.add(new SelectOption(na,naText));
+                    selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                    break;
+            }
         }
         return selectOptions;
     }

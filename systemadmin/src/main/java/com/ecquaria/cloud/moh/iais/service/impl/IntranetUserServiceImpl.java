@@ -7,7 +7,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -29,6 +38,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -51,8 +62,18 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public OrgUserDto createIntrenetUser(OrgUserDto orgUserDto) {
+        return intranetUserClient.createIntrenetUser(orgUserDto).getEntity();
+    }
+
+    @Override
     public void createIntranetUsers(List<OrgUserDto> orgUserDtos) {
         intranetUserClient.createOrgUserDtos(orgUserDtos);
+    }
+
+    @Override
+    public List<FeUserDto> getUserListByNricAndIdType(String nric, String idType) {
+        return intranetUserClient.getUserListByNricAndIdType(nric, idType).getEntity();
     }
 
     @Override
@@ -77,6 +98,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public List<LicenseeDto> findLicenseesFe() {
+        return intranetUserClient.findLicenseesFe().getEntity();
+    }
+
+    @Override
     public OrgUserDto findIntranetUserByUserId(String userId) {
         OrgUserDto orgUserDto = null;
         orgUserDto = intranetUserClient.getOrgUserAccountByUserId(userId).getEntity();
@@ -90,6 +116,34 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+    @Override
+    public boolean canUpdateAccount(FeUserDto user, String prevIdNumber) {
+        String idType = user.getIdType();
+        String identityNo = user.getIdentityNo();
+        if (identityNo.equals(prevIdNumber)){
+            return true;
+        }
+
+        String orgId = user.getOrgId();
+        if (user.isCorpPass()){
+            List<OrgUserDto> userList = organizationClient.getUserListByOrganId(orgId).getEntity();
+            if (IaisCommonUtils.isNotEmpty(userList)){
+                for (OrgUserDto i : userList){
+                    if (identityNo.equals(i.getIdentityNo())){
+                        return false;
+                    }
+                }
+            }
+
+        }else {
+            List<FeUserDto> exist = getUserListByNricAndIdType(identityNo, idType);
+            if (IaisCommonUtils.isNotEmpty(exist)){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -123,12 +177,26 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public void removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+    public void removeRoleByAccount(String accountId) {
+        intranetUserClient.removeRoleByAccount(accountId);
+    }
+
+    @Override
+    public Boolean removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+        Boolean flag = Boolean.FALSE;
         if (!IaisCommonUtils.isEmpty(roleIds)) {
             for (String roleId : roleIds) {
-                egpUserClient.deleteUerRoleIds(userDomain, userId, roleId);
+                try {
+                    flag = egpUserClient.deleteUerRoleIds(userDomain, userId, roleId).getEntity();
+                    if (!flag) {
+                        return Boolean.FALSE;
+                    }
+                } catch (Exception e) {
+                    return Boolean.FALSE;
+                }
             }
         }
+        return flag;
     }
 
 
@@ -159,7 +227,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<UserGroupCorrelationDto> getUserGroupCorrelationDtos(String userId, List<String> grpIds,int isLeadForGroup) {
+    public List<UserGroupCorrelationDto> getUserGroupCorrelationDtos(String userId, List<String> grpIds, int isLeadForGroup) {
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(grpIds)) {
             UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
@@ -201,7 +269,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public List<Role> getRolesByDomain(String domain) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        map.put("userDomain", domain);
+        map.put("userDomains", domain);
         return egpUserClient.search(map).getEntity();
     }
 
@@ -296,6 +364,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             Document document = saxReader.read(xmlFile);
             //root
             Element root = document.getRootElement();
+            list = root.elements();
+            if (list != null) {
+                Element elementCheck = (Element) list.get(0);
+                elementCheck.element("roleId").getText();
+            }
             //ele
             list = root.elements();
             log.debug(StringUtil.changeForLog("start kai shi jie xi xml------------"));
@@ -508,5 +581,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 //
 //        }
         return egpUserRoleDtos;
+    }
+
+    @Override
+    public List<OrganizationDto> getUenList() {
+        return intranetUserClient.getUenList().getEntity();
     }
 }

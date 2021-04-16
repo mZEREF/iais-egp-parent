@@ -146,7 +146,7 @@ public class FeAdminManageDelegate {
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
         ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
-        ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "Y");
+        ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
         ParamUtil.setSessionAttr(bpc.request,"title", "Edit");
     }
 
@@ -189,7 +189,7 @@ public class FeAdminManageDelegate {
             }else{
                 feUserDto.setUserId(idNo);
             }
-            feUserDto.setIdType(idType);
+            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setIdentityNo(idNo);
             feUserDto.setDisplayName(name);
             feUserDto.setSalutation(salutation);

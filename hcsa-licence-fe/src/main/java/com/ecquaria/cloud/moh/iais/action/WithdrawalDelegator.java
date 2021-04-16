@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -28,20 +29,21 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
-import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Hc
@@ -67,6 +69,9 @@ public class WithdrawalDelegator {
     @Autowired
     private LicFeInboxClient licFeInboxClient;
 
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
+
     private LoginContext loginContext = null;
 
     private String wdIsValid = IaisEGPConstant.YES;
@@ -75,11 +80,17 @@ public class WithdrawalDelegator {
         loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
+        ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFiles", null);
+        ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFileHashMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
@@ -104,11 +115,7 @@ public class WithdrawalDelegator {
         if ("Y".equals(isDoView)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(withdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawnDto.getPrevAppNo());
-            AppPremisesSpecialDocDto viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
-            if (viewDoc != null){
-                ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",viewDoc.getDocName());
-            }
-
+            getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
             return;
@@ -117,6 +124,9 @@ public class WithdrawalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_WITHDRAWAL, AuditTrailConsts.FUNCTION_WITHDRAWAL);
         if (!StringUtil.isEmpty(rfiWithdrawAppNo)){
             WithdrawnDto withdrawnDto = withdrawalService.getWithdrawAppInfo(rfiWithdrawAppNo);
+            ParamUtil.setSessionAttr(bpc.request,
+                    HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, withdrawnDto.getMaxFileIndex());
+            getFileInfo(withdrawnDto,bpc.request);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawAppNo", rfiWithdrawAppNo);
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "doRfi");
@@ -124,6 +134,42 @@ public class WithdrawalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", null);
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "");
         }
+    }
+
+    private void getFileInfo(WithdrawnDto withdrawnDto, HttpServletRequest request){
+        List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+            if (viewDoc != null && !viewDoc.isEmpty()) {
+                for (int i = 0; i < viewDoc.size(); i++) {
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    String index = viewDoc.get(i).getIndex();
+                    if (StringUtil.isEmpty(index)){
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + i);
+                    }else{
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + index);
+                        pageShowFileDto.setIndex(index);
+                    }
+                    pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
+                    pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
+                    pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
+                    pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
+                    pageShowFileDtos.add(pageShowFileDto);
+                    if (StringUtil.isEmpty(index)){
+                        map.put("selectedFile" + i, null);
+                        pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
+                    }else{
+                        map.put("selectedFile" + index, null);
+                        pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
+                    }
+                }
+                request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
+                request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+            }
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -137,106 +183,99 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
         List<String[]> applicationTandS = new ArrayList<>(43);
-        applicationTandS.add(new String[]{"APTY002","APST007"});
-        applicationTandS.add(new String[]{"APTY002","APST028"});
+        applicationTandS.add(new String[]{"APTY002","APST001"});
         applicationTandS.add(new String[]{"APTY002","APST003"});
         applicationTandS.add(new String[]{"APTY002","APST004"});
-        applicationTandS.add(new String[]{"APTY002","APST001"});
-        applicationTandS.add(new String[]{"APTY002","APST029"});
-        applicationTandS.add(new String[]{"APTY002","APST023"});
-        applicationTandS.add(new String[]{"APTY002","APST024"});
-        applicationTandS.add(new String[]{"APTY002","APST012"});
-        applicationTandS.add(new String[]{"APTY002","APST039"});
+        applicationTandS.add(new String[]{"APTY002","APST007"});
         applicationTandS.add(new String[]{"APTY002","APST011"});
-        applicationTandS.add(new String[]{"APTY002","APST071"});
-        applicationTandS.add(new String[]{"APTY002","APST069"});
-        applicationTandS.add(new String[]{"APTY002","APST040"});
-        applicationTandS.add(new String[]{"APTY002","APST077"});
+        applicationTandS.add(new String[]{"APTY002","APST012"});
         applicationTandS.add(new String[]{"APTY002","APST019"});
-        applicationTandS.add(new String[]{"APTY002","APST031"});
         applicationTandS.add(new String[]{"APTY002","APST020"});
         applicationTandS.add(new String[]{"APTY002","APST021"});
         applicationTandS.add(new String[]{"APTY002","APST022"});
-        applicationTandS.add(new String[]{"APTY002","APST037"});
-        applicationTandS.add(new String[]{"APTY002","APST067"});
+        applicationTandS.add(new String[]{"APTY002","APST023"});
+        applicationTandS.add(new String[]{"APTY002","APST024"});
+        applicationTandS.add(new String[]{"APTY002","APST028"});
+        applicationTandS.add(new String[]{"APTY002","APST029"});
+        applicationTandS.add(new String[]{"APTY002","APST031"});
         applicationTandS.add(new String[]{"APTY002","APST032"});
         applicationTandS.add(new String[]{"APTY002","APST033"});
         applicationTandS.add(new String[]{"APTY002","APST034"});
-        applicationTandS.add(new String[]{"APTY002","APST092"});
-        applicationTandS.add(new String[]{"APTY002","APST001"});
-        applicationTandS.add(new String[]{"APTY002","APST001"});
+        applicationTandS.add(new String[]{"APTY002","APST037"});
+        applicationTandS.add(new String[]{"APTY002","APST039"});
+        applicationTandS.add(new String[]{"APTY002","APST040"});
         applicationTandS.add(new String[]{"APTY002","APST049"});
+        applicationTandS.add(new String[]{"APTY002","APST067"});
+        applicationTandS.add(new String[]{"APTY002","APST069"});
+        applicationTandS.add(new String[]{"APTY002","APST071"});
+        applicationTandS.add(new String[]{"APTY002","APST077"});
+        applicationTandS.add(new String[]{"APTY002","APST092"});
 
-        applicationTandS.add(new String[]{"APTY004","APST007"});
-        applicationTandS.add(new String[]{"APTY004","APST028"});
+        applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST003"});
         applicationTandS.add(new String[]{"APTY004","APST004"});
-        applicationTandS.add(new String[]{"APTY004","APST001"});
-        applicationTandS.add(new String[]{"APTY004","APST029"});
-        applicationTandS.add(new String[]{"APTY004","APST023"});
-        applicationTandS.add(new String[]{"APTY004","APST024"});
-        applicationTandS.add(new String[]{"APTY004","APST012"});
-        applicationTandS.add(new String[]{"APTY004","APST039"});
+        applicationTandS.add(new String[]{"APTY004","APST007"});
         applicationTandS.add(new String[]{"APTY004","APST011"});
-        applicationTandS.add(new String[]{"APTY004","APST004"});
-        applicationTandS.add(new String[]{"APTY004","APST077"});
+        applicationTandS.add(new String[]{"APTY004","APST012"});
         applicationTandS.add(new String[]{"APTY004","APST019"});
-        applicationTandS.add(new String[]{"APTY004","APST031"});
         applicationTandS.add(new String[]{"APTY004","APST020"});
         applicationTandS.add(new String[]{"APTY004","APST021"});
         applicationTandS.add(new String[]{"APTY004","APST022"});
-        applicationTandS.add(new String[]{"APTY004","APST037"});
-        applicationTandS.add(new String[]{"APTY004","APST067"});
+        applicationTandS.add(new String[]{"APTY004","APST023"});
+        applicationTandS.add(new String[]{"APTY004","APST024"});
+        applicationTandS.add(new String[]{"APTY004","APST028"});
+        applicationTandS.add(new String[]{"APTY004","APST029"});
+        applicationTandS.add(new String[]{"APTY004","APST031"});
         applicationTandS.add(new String[]{"APTY004","APST032"});
         applicationTandS.add(new String[]{"APTY004","APST033"});
         applicationTandS.add(new String[]{"APTY004","APST034"});
-        applicationTandS.add(new String[]{"APTY004","APST092"});
-        applicationTandS.add(new String[]{"APTY004","APST001"});
+        applicationTandS.add(new String[]{"APTY004","APST037"});
+        applicationTandS.add(new String[]{"APTY004","APST039"});
         applicationTandS.add(new String[]{"APTY004","APST049"});
+        applicationTandS.add(new String[]{"APTY004","APST067"});
+        applicationTandS.add(new String[]{"APTY004","APST077"});
+        applicationTandS.add(new String[]{"APTY004","APST092"});
 
-        applicationTandS.add(new String[]{"APTY005","APST007"});
-        applicationTandS.add(new String[]{"APTY005","APST028"});
+        applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST003"});
         applicationTandS.add(new String[]{"APTY005","APST004"});
-        applicationTandS.add(new String[]{"APTY005","APST001"});
-        applicationTandS.add(new String[]{"APTY005","APST029"});
-        applicationTandS.add(new String[]{"APTY005","APST023"});
-        applicationTandS.add(new String[]{"APTY005","APST024"});
-        applicationTandS.add(new String[]{"APTY005","APST012"});
-        applicationTandS.add(new String[]{"APTY005","APST039"});
+        applicationTandS.add(new String[]{"APTY005","APST007"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
-        applicationTandS.add(new String[]{"APTY005","APST004"});
-        applicationTandS.add(new String[]{"APTY005","APST077"});
+        applicationTandS.add(new String[]{"APTY005","APST012"});
         applicationTandS.add(new String[]{"APTY005","APST019"});
-        applicationTandS.add(new String[]{"APTY005","APST031"});
         applicationTandS.add(new String[]{"APTY005","APST020"});
         applicationTandS.add(new String[]{"APTY005","APST021"});
         applicationTandS.add(new String[]{"APTY005","APST022"});
-        applicationTandS.add(new String[]{"APTY005","APST037"});
-        applicationTandS.add(new String[]{"APTY005","APST067"});
+        applicationTandS.add(new String[]{"APTY005","APST028"});
+        applicationTandS.add(new String[]{"APTY005","APST029"});
+        applicationTandS.add(new String[]{"APTY005","APST023"});
+        applicationTandS.add(new String[]{"APTY005","APST024"});
+        applicationTandS.add(new String[]{"APTY005","APST031"});
         applicationTandS.add(new String[]{"APTY005","APST032"});
         applicationTandS.add(new String[]{"APTY005","APST033"});
         applicationTandS.add(new String[]{"APTY005","APST034"});
-        applicationTandS.add(new String[]{"APTY005","APST092"});
-        applicationTandS.add(new String[]{"APTY005","APST001"});
+        applicationTandS.add(new String[]{"APTY005","APST037"});
+        applicationTandS.add(new String[]{"APTY005","APST039"});
         applicationTandS.add(new String[]{"APTY005","APST049"});
+        applicationTandS.add(new String[]{"APTY005","APST067"});
+        applicationTandS.add(new String[]{"APTY005","APST077"});
+        applicationTandS.add(new String[]{"APTY005","APST092"});
 
-        applicationTandS.add(new String[]{"APTY001","APST007"});
+        applicationTandS.add(new String[]{"APTY001","APST001"});
         applicationTandS.add(new String[]{"APTY001","APST002"});
-        applicationTandS.add(new String[]{"APTY001","APST012"});
-        applicationTandS.add(new String[]{"APTY001","APST038"});
-        applicationTandS.add(new String[]{"APTY001","APST011"});
-        applicationTandS.add(new String[]{"APTY001","APST023"});
-        applicationTandS.add(new String[]{"APTY001","APST039"});
-        applicationTandS.add(new String[]{"APTY001","APST011"});
         applicationTandS.add(new String[]{"APTY001","APST004"});
-        applicationTandS.add(new String[]{"APTY001","APST067"});
+        applicationTandS.add(new String[]{"APTY001","APST007"});
+        applicationTandS.add(new String[]{"APTY001","APST011"});
+        applicationTandS.add(new String[]{"APTY001","APST012"});
+        applicationTandS.add(new String[]{"APTY001","APST023"});
         applicationTandS.add(new String[]{"APTY001","APST032"});
         applicationTandS.add(new String[]{"APTY001","APST033"});
         applicationTandS.add(new String[]{"APTY001","APST034"});
-        applicationTandS.add(new String[]{"APTY001","APST092"});
-        applicationTandS.add(new String[]{"APTY001","APST001"});
+        applicationTandS.add(new String[]{"APTY001","APST038"});
+        applicationTandS.add(new String[]{"APTY001","APST039"});
         applicationTandS.add(new String[]{"APTY001","APST049"});
+        applicationTandS.add(new String[]{"APTY001","APST067"});
+        applicationTandS.add(new String[]{"APTY001","APST092"});
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
 
@@ -322,18 +361,26 @@ public class WithdrawalDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
+        String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
                 if (withdrawnDto == null){
-                    withdrawnDto = new WithdrawnDto();
+                    withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                    if (withdrawnDto == null){
+                        withdrawnDto = new WithdrawnDto();
+                    }
                 }
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
-                CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+                Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
+                List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
+                List<File> files= IaisCommonUtils.genNewArrayList();
                 if(!StringUtil.isEmpty(appId)){
                     withdrawnDto.setApplicationId(appId);
                 }
@@ -346,34 +393,86 @@ public class WithdrawalDelegator {
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                if (validationResult != null && validationResult.isHasErrors()){
+                    errorMap=validationResult.retrieveAll();
+                }
+                if(map!=null&&!map.isEmpty()){
+                    map.forEach((str, file)->{
+                        if(file!=null){
+                            long length = file.length();
+                            if(length>0){
+                                Long size=length/1024;
+                                files.add(file);
+                                AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                                SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                                String e = str.substring(str.lastIndexOf('e') + 1);
+                                premisesSpecialDocDto.setDocName(file.getName());
+                                String fileMd5 = singeFileUtil.getFileMd5(file);
+                                premisesSpecialDocDto.setMd5Code(fileMd5);
+                                premisesSpecialDocDto.setIndex(e);
+                                premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                                premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                                appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                                PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                                pageShowFileDto.setIndex(e);
+                                pageShowFileDto.setFileName(file.getName());
+                                pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                                pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                                pageShowFileDto.setMd5Code(fileMd5);
+                                pageShowFileDtos.add(pageShowFileDto);
+                            }
+                        }else {
+                            if(pageShowFileHashMap!=null){
+                                PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
+                                String e = str.substring(str.lastIndexOf('e') + 1);
+                                AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                                premisesSpecialDocDto.setIndex(e);
+                                premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                                premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                                premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
+                                premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                                premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                                appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                                pageShowFileDtos.add(pageShowFileDto);
+                            }
+                        }
+                    });
+                }
+
+                List<String> list = comFileRepoClient.saveFileRepo(files);
+                if(list!=null){
+                    ListIterator<String> iterator = list.listIterator();
+                    for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                        String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                        if(fileRepoId==null){
+                            if(iterator.hasNext()){
+                                String next = iterator.next();
+                                pageShowFileDtos.get(j).setFileUploadUrl(next);
+                                appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }
+
+                withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
+                mulReq.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+
                 if(validationResult != null && validationResult.isHasErrors()){
-                    Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    //isValid = IaisEGPConstant.NO;
-                    if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
-                        ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
-                    }else{
-                        withdrawnDto.setAppPremisesSpecialDocDto(null);
-
+                    //isValid = IaisEGPConstant.NO;\
+                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     }
-                    ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     wdIsValid = IaisEGPConstant.NO;
-                }else{
-                    if (commonsMultipartFile != null && commonsMultipartFile.getSize() > 0 ){
-                        String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                        appPremisesSpecialDocDto.setSubmitDt(new Date());
-                        appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                        appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
-                        appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
-                        appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
-                        withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-                        withdrawnDto.setFileRepoId(fileRepoId);
+                }{
+                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                     }
                     withdrawnDtoList.add(withdrawnDto);
                 }
-
             }
         }
         String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");

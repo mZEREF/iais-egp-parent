@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -31,11 +30,15 @@ import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,12 +48,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -73,6 +70,7 @@ public class AppealDelegator {
     private LicFeInboxClient licFeInboxClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
+
     @Autowired
     private GenerateIdClient generateIdClient;
     public void preparetionData(BaseProcessClass bpc) throws Exception {
@@ -132,10 +130,8 @@ public class AppealDelegator {
         bpc. request.setAttribute("crud_action_type","appeal");
     }
     public void ackPage(BaseProcessClass bpc){
-        log.info("-----");
     }
     public void appealFrom(BaseProcessClass bpc){
-        log.info("-----");
     }
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
@@ -227,7 +223,11 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("rejectEqDay");
         bpc.getSession().removeAttribute("periodEqDay");
         bpc.getSession().removeAttribute("selectOptionList");
-        bpc.getSession().removeAttribute("selectOptionList");
+        bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile");
+        bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
+        bpc.getSession().removeAttribute("pageShowFiles");
+        bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         //set upload file config
         setFileConfig(bpc.request);
         log.info("end**************start************");
@@ -339,12 +339,11 @@ public class AppealDelegator {
 
     public static List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        idTypeSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
-        idTypeSelectList.add(idType2);
+
+        List<SelectOption> selectOptionList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+        idTypeSelectList.addAll(selectOptionList);
         return idTypeSelectList;
     }
 

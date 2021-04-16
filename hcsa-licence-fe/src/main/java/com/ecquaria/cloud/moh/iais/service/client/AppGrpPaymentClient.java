@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author weilu
  * @date 12/10/2019 4:58 PM
@@ -23,6 +25,6 @@ public interface AppGrpPaymentClient {
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
     @PostMapping(value = "/iais-payment/payment-request-reqRefNoLike",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
+    FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
 
 }

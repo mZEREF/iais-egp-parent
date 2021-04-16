@@ -196,12 +196,16 @@ p.small-txt {
   font-size: 1.4rem;
 }
 p a {
-  color: #2199E8;
+  color: #147aab;
   text-decoration: underline;
 }
-p a:hover, p a:focus, p a:active {
+p a:hover  {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #ff6600;
+}
+p a:focus, p a:active {
+  text-decoration: none;
+  color: #ff6600;
 }
 p.back {
   margin-bottom: 0;
@@ -214,14 +218,16 @@ p.addmoreOfficer {
 }
 
 a {
-  color: #2199E8;
-}
-a:hover, a:focus, a:active {
-  text-decoration: none;
-  color: #6dc0f8;
+  color: #147aab;
 }
 a:hover {
+  text-decoration: none;
+  color: #333;
   cursor: pointer;
+}
+a:focus, a:active {
+  text-decoration: none;
+  color: #ff6600;
 }
 
 .print i.fa.fa-print {
@@ -386,7 +392,7 @@ header .container .logo-img p {
   margin-bottom: 0;
   color: #00486B;
   display: inline-block;
-  width: 210px;
+  /*width: 210px;*/
   margin-left: 22px;
   padding-left: 22px;
   border-left: 1px solid #A8A8A8;
@@ -1118,7 +1124,7 @@ body.navigation-open {
 }
 
 .gray-content-box {
-  background-color: #F8F8F8;
+  background-color: #fafafa;
   border-radius: 14px;
   padding: 30px;
   margin-bottom: 20px;
@@ -1402,7 +1408,7 @@ footer.footerlogin .footer-link ul li a {
   position: relative;
 }
 footer.footerlogin .footer-link ul li a:hover, footer.footerlogin .footer-link ul li a:focus, footer.footerlogin .footer-link ul li a:active {
-  color: #aaaaaa;
+  color: #ff6600;;
 }
 footer.footerlogin .footer-link ul li:first-child {
   padding-left: 0;
@@ -1466,44 +1472,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
     padding-left: 7px;
   }
 }
-@media only screen and (min-width : 768px) and (max-width : 992px) {
-  footer.footerlogin {
-    position: absolute;
-    top: auto;
-    bottom: 0;
-  }
-  footer.footerlogin .footer-link {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    margin-bottom: 7px;
-  }
-  footer.footerlogin .footer-link ul li {
-    padding-left: 7px;
-    padding-right: 7px;
-  }
-  footer.footerlogin .footer-link ul li a {
-    font-size: 12px;
-    position: relative;
-  }
-  footer.footerlogin .footer-link ul li a:before {
-    content: none;
-  }
-  footer.footerlogin .footer-link ul li:not(:first-child) a:before {
-    content: "";
-    width: 1px;
-    height: 9px;
-    background-color: #DFDFDF;
-    position: absolute;
-    top: 50%;
-    left: -8px;
-    margin-top: -4.5px;
-  }
-  footer.footerlogin .copyright p {
-    text-align: center !important;
-  }
-}
+
 
 @media only screen and (min-width: 768px) and (max-width: 1200px) {
   .navigation-open .footerlogin {
@@ -1545,7 +1514,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   font-family: FontAwesome;
   content: "";
   font-size: 4rem;
-  color: #2199E8;
+  color: #147aab;
   line-height: 20px;
   font-weight: 400;
   vertical-align: middle;
@@ -1584,7 +1553,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   width: 22px;
   height: 22px;
   border: 0;
-  background-color: #82BE40;
+  background-color: #168926;
   color: #fff;
   font-size: 14px;
   display: inline-block;
@@ -1602,7 +1571,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   width: 22px;
   height: 22px;
   border: 0;
-  background-color: #DB3D35;
+  background-color: #c4322b;
   color: #fff;
   font-size: 14px;
   display: inline-block;
@@ -1886,11 +1855,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check .form-check-label a:hover, .form-check .form-check-label a:focus, .form-check .form-check-label a:active {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 .form-check .form-check-label .check-circle {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border: 1px solid #6c6c6c;
   display: inline-block;
   border-radius: 16px;
@@ -1910,14 +1879,14 @@ input[type=number]::-webkit-outer-spin-button {
 .form-check .form-check-label .check-circle:before {
   content: "";
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: transparent;
   top: 50%;
-  margin-top: -4px;
+  margin-top: -5px;
   left: 50%;
-  margin-left: -4px;
-  border-radius: 4px;
+  margin-left: -5px;
+  border-radius: 5px;
 }
 .form-check .form-check-label .check-square {
   width: 18px;
@@ -1944,12 +1913,12 @@ input[type=number]::-webkit-outer-spin-button {
   text-align: center;
   line-height: 16px;
   font-size: 12px;
-  color: white;
+  color: #333;
   opacity: 0;
 }
 .form-check .form-check-label:hover a, .form-check .form-check-label:focus a, .form-check .form-check-label:active a {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 @media only screen and (max-width : 767px) {
   .form-check .form-check-label {
@@ -1970,15 +1939,15 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check input.form-check-input:checked + .form-check-label span.check-circle:before,
 .form-check input.form-check-input:active + .form-check-label span.check-circle:before {
-  background-color: #1989BF;
+  background-color: #147aab;
 }
 .form-check input.form-check-input:checked + .form-check-label span.check-square,
 .form-check input.form-check-input:active + .form-check-label span.check-square {
-  border: 1px solid #1989BF;
+  border: 1px solid #147aab;
 }
 .form-check input.form-check-input:checked + .form-check-label span.check-square:before,
 .form-check input.form-check-input:active + .form-check-label span.check-square:before {
-  color: #1989BF;
+  color: #147aab;
   opacity: 1;
 }
 .form-check input.form-check-input:disabled {
@@ -1989,24 +1958,24 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check input.form-check-input:hover + .form-check-label span.check-circle,
 .form-check input.form-check-input:hover + .form-check-label span.check-square {
-  border: 1px solid #1989BF;
+  border: 1px solid #147aab;
 }
 .form-check input.form-check-input:hover + .form-check-label a {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 .form-check.hover .form-check-label span.check-circle,
 .form-check.hover .form-check-label span.check-square {
-  border: 1px solid #1989BF;
+  border: 1px solid #147aab;
 }
 .form-check.finished span.check-circle, .form-check.active span.check-circle {
-  border: 1px solid #1989BF;
+  border: 1px solid #147aab;
 }
 .form-check.finished span.check-circle:before, .form-check.active span.check-circle:before {
-  background-color: #1989BF;
+  background-color: #147aab;
 }
 .form-check.finished span.check-square, .form-check.active span.check-square {
-  border: 1px solid #1989BF;
+  border: 1px solid #147aab;
 }
 .form-check.finished span.check-square:before, .form-check.active span.check-square:before {
   color: #1989BF;
@@ -2231,7 +2200,7 @@ input[type=number]::-webkit-outer-spin-button {
 .search-wrap .input-group .input-group-btn .btn.buttonsearch {
   padding: 0;
   border: 0;
-  background: #1989BF;
+  background: #147aab;
   width: 52px;
   height: 52px;
   text-align: center;
@@ -2336,8 +2305,8 @@ span.error-msg {
   transform: none;
 }
 .nice-select ul.list li {
-  min-height: 50px;
-  line-height: 50px;
+  min-height: 40px;
+  line-height: 25px;
   font-family: "Open Sans", sans-serif;
   margin-bottom: 0;
 }
@@ -2392,8 +2361,8 @@ span.error-msg {
   -moz-transform: none;
   -ms-transform: none;
   -o-transform: none;
-  transform: none;
-  overflow-y: auto;
+  transform: none; 
+  overflow-y: auto; 
 }
 .nice-select.open:after {
   -webkit-transform: none;
@@ -2545,11 +2514,11 @@ span.error-msg {
   content: none;
 }
 .tab-gp ul.nav.nav-tabs li.active a {
-  background: #1989BF;
+  background: #147aab;
   color: white;
 }
 .tab-gp ul.nav.nav-tabs li.active:after {
-  border-color: #1989BF transparent transparent transparent;
+  border-color: #147aab transparent transparent transparent;
 }
 .tab-gp ul.nav.nav-tabs li:first-child a {
   border-top-left-radius: 14px;
@@ -2750,7 +2719,7 @@ span.error-msg {
   margin-bottom: 17px;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.complete a:before {
-  border: 1px solid #82BE40;
+  border: 1px solid #168926;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.complete a:after {
   content: "";
@@ -2758,7 +2727,7 @@ span.error-msg {
   width: 27px;
   height: 27px;
   border: 2px solid white;
-  background-color: #82BE40;
+  background-color: #168926;
   color: white;
   font-size: 14px;
   font-weight: 400;
@@ -2772,7 +2741,7 @@ span.error-msg {
   margin-left: 5px;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.incomplete a:before {
-  border: 1px solid #DB3D35;
+  border: 1px solid #c4322b;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.incomplete a:after {
   content: "";
@@ -2780,7 +2749,7 @@ span.error-msg {
   width: 27px;
   height: 27px;
   border: 2px solid white;
-  background-color: #DB3D35;
+  background-color: #c4322b;
   color: white;
   font-size: 14px;
   font-weight: 400;
@@ -3014,7 +2983,7 @@ span.error-msg {
   background-color: #1989BF;
 }
 .progress-tracker li.disabled {
-  color: #BFBFBF;
+  color: #6a6a6a;
 }
 @media only screen and (max-width : 767px) {
   .progress-tracker {
@@ -3135,7 +3104,7 @@ span.error-msg {
   font-family: fontawesome;
   margin-left: 10px;
   font-size: 1.4rem;
-  color: #BFBFBF;
+  color: #666;
 }
 .table-gp table.table > thead > tr > th span.desc {
   cursor: pointer;
@@ -3145,7 +3114,7 @@ span.error-msg {
   font-family: fontawesome;
   margin-left: 10px;
   font-size: 1.6rem;
-  color: #2199E8;
+  color: #147aab;
   display: inline-block;
   vertical-align: 3px;
 }
@@ -3157,7 +3126,7 @@ span.error-msg {
   font-family: fontawesome;
   margin-left: 10px;
   font-size: 1.6rem;
-  color: #2199E8;
+  color: #147aab;
   display: inline-block;
   vertical-align: text-bottom;
   line-height: 12px;
@@ -3204,7 +3173,7 @@ span.error-msg {
   content: "";
 }
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:active, .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:focus {
-  color: #2199E8;
+  color: #147aab;
   text-decoration: underline;
 }
 .table-gp table.table > tbody > tr > td[rowspan] {
@@ -3350,7 +3319,7 @@ span.error-msg {
   width: 70%;
 }
 .table-gp .table-footnote p.count {
-  color: #888888;
+  color: #666;
   margin-bottom: 0;
 }
 /********************small table***********************/
@@ -3384,7 +3353,7 @@ span.error-msg {
   font-family: fontawesome;
   margin-left: 10px;
   font-size: 1.6rem;
-  color: #2199E8;
+  color: #147aab;
   display: inline-block;
   vertical-align: 3px;
 }
@@ -3396,7 +3365,7 @@ span.error-msg {
   font-family: fontawesome;
   margin-left: 10px;
   font-size: 1.6rem;
-  color: #2199E8;
+  color: #147aab;
   display: inline-block;
   vertical-align: text-bottom;
   line-height: 12px;
@@ -3597,7 +3566,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   border: 0;
   background-color: white;
   font-size: 1.6rem;
-  color: #1989BF;
+  color: #147aab;
 }
 .nav ul.pagination > li > a i.fa,
 .nav ul.pagination > li span i.fa {
@@ -3623,7 +3592,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .nav ul.pagination > li.active a,
 .nav ul.pagination > li.active span {
-  color: #888888;
+  color: #666;
   pointer-events: none;
 }
 
@@ -3725,16 +3694,11 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   /* IE6-9 */
 }
 .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
-  background: #F38616;
-  /* Old browsers */
-  background: -moz-linear-gradient(left, #F38616 0%, #FBA044 100%);
-  /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, #F38616 0%, #FBA044 100%);
-  /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, #F38616 0%, #FBA044 100%);
-  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#F38616", endColorstr="#FBA044",GradientType=1 );
+  background: #f36416;
+  background: -moz-linear-gradient(left, #f36416 0%, #ec6f13 100%);
+  background: -webkit-linear-gradient(left, #f36416 0%, #ec6f13 100%);
+  background: linear-gradient(to right, #f36416 0%, #ec6f13 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#f36416", endColorstr="#ec6f13",GradientType=1 );
   /* IE6-9 */
 }
 .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
@@ -4336,17 +4300,18 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   text-align: right;
 }
 .withdraw-addmore {
-  background-color: #F8F8F8;
+  background-color: #fafafa;
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 10px;
   border:1px solid #d1d1d1;
 }
 .withdraw-content-box {
-  background-color: #e7f6fd;
+  background-color: #fafafa;
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 10px;
+  border:1px solid #d1d1d1;
 }
 .withdraw-info-gp {
   margin-top: 10px;
@@ -4365,7 +4330,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
   content: "";
   font:normal normal normal 14px/1 FontAwesome;
-  color: #a2d9e7;
+  /*color: #a2d9e7;*/
   font-size: 30px;
   width: 6px;
   height: 6px;
@@ -4627,7 +4592,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 
 .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
   background-color: #454545 !important;
-  width: 6px;
+  width: 2px;
   border-radius: 0;
 }
 .mCSB_scrollTools .mCSB_draggerRail {
@@ -5223,14 +5188,14 @@ table select.form-control.control-input {
 }
 
 .ui-widget-content a {
-  color: #2199E8;
+  color: #147aab;
 }
 .ui-widget-content a:hover, .ui-widget-content a:active {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 .ui-widget-content a:focus {
-  color: #6dc0f8;
+  color: #333;
 }
 
 .control-item-container {
@@ -5288,7 +5253,7 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=radio] + label.control-label a:focus,
 .control-item-container input.control-input[type=radio] + label.control-label a:active {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 .control-item-container input.control-input[type=checkbox] + label.control-label .check-circle,
 .control-item-container input.control-input[type=radio] + label.control-label .check-circle {
@@ -5403,7 +5368,7 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=checkbox]:hover + label.control-label a,
 .control-item-container input.control-input[type=radio]:hover + label.control-label a {
   text-decoration: none;
-  color: #6dc0f8;
+  color: #333;
 }
 .control-item-container input.control-input[type=checkbox]:disabled,
 .control-item-container input.control-input[type=radio]:disabled {
@@ -5436,7 +5401,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button {
 }
 table.control-grid > tbody > tr .repeatable-section-control-button button {
   background: transparent;
-  color: #2199E8;
+  color: #147aab;
   font-size: 16px;
   font-family: "Open Sans", sans-serif;
   font-weight: 300;
@@ -5526,7 +5491,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
   width: 22px;
   height: 22px;
   border: 0;
-  background-color: #DB3D35;
+  background-color: #b01b17;
   color: #fff;
   font-size: 14px;
   display: inline-block;
@@ -5632,3 +5597,85 @@ section.logo img {
 .datepicker {
   z-index:999 !important;
 }
+/************************************/
+/************** DSS Fixes 2 Feb/2021 *************/
+
+.profile-dropdown-mobile {
+  width: 142%;
+  margin-left: -43%;
+}
+
+
+/************** DSS mobile fix**********/
+
+@media only screen and (min-width: 320px) and (max-width: 479px) {
+
+  .profile-dropdown-mobile {
+    width: auto;
+    margin-left: 0;
+  }
+  .center-content {
+    padding: 30px 15px;
+  }
+  table.control-grid.columns1 > tbody > tr > td > .section.control {
+    min-height: auto;
+  }
+
+}
+@media only screen and (min-width : 768px) and (max-width : 992px) {
+  footer.footerlogin {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    padding: 5px 0 5px;
+    text-align: center;
+  }
+  footer.footerlogin .footer-link {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 7px;
+  }
+  footer.footerlogin .footer-link ul li {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  footer.footerlogin .footer-link ul li a {
+    font-size: 12px;
+    position: relative;
+  }
+  footer.footerlogin .footer-link ul li a:before {
+    content: none;
+  }
+  footer.footerlogin .footer-link ul li:not(:first-child) a:before {
+    content: "";
+    width: 1px;
+    height: 9px;
+    background-color: #DFDFDF;
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    margin-top: -4.5px;
+  }
+  footer.footerlogin .copyright p {
+    text-align: center !important;
+  }
+}
+/*@media only screen and (min-device-width: 480px)
+                   and (max-device-width: 640px)
+                   and (orientation: landscape) {
+
+ footer.footerlogin {
+    background: #333333;
+    font-size: 1.2rem;
+    border-top: 0;
+    position: relative;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 1px 0 5px;
+  }
+}*/
+
+
+

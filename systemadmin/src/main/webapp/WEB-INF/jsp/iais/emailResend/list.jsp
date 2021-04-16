@@ -157,6 +157,7 @@
         $(".current").text("Please Select");
         $('input[name="start"]').val("");
         $('input[name="end"]').val("");
+        $("#error_start").hide();
     }
 
 </script>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<roles>
+    <role>
+        <id>AO1</id>
+        <name>Approval Officer 1</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks>11111</remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>AO1_LEAD</id>
+        <name>Approval Officer 1 Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>AO2</id>
+        <name>Approval Officer 2</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>AO2_LEAD</id>
+        <name>Approval Officer 2 Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>AO3</id>
+        <name>Approval Officer 3</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>AO3_LEAD</id>
+        <name>Approval Officer 3 Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>APO</id>
+        <name>Inspector Schedulder</name>
+        <userDomains>cs_hcsa,intranet</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>ASO</id>
+        <name>Admin Screening Officer</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>ASO_LEAD</id>
+        <name>Admin Screening Officer Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>BROADCAST</id>
+        <name>Broadcast</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks>BROADCAST</remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>INSPECTOR</id>
+        <name>Inspector</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>INSPECTOR_LEAD</id>
+        <name>Inspector Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>PSO</id>
+        <name>Professional Screening Officer</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>PSO_LEAD</id>
+        <name>Professional Screening Officer Leader</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>REGULATORY_ANALYTICS</id>
+        <name>Regulatory Analytics</name>
+        <userDomains>cs_hcsa</userDomains>
+        <remarks></remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+    <role>
+        <id>SYSTEM_USER_ADMIN</id>
+        <name>System User Admin</name>
+        <userDomains>cs_hcsa,intranet</userDomains>
+        <remarks>System User Admin</remarks>
+        <tags></tags>
+        <isSystem>E</isSystem>
+    </role>
+</roles>

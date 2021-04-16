@@ -60,7 +60,7 @@
                 <iais:field value="Status:"  />
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                                 firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                                 firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004,DRAFT001" value="${status}"></iais:select>
                 </div>
                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>
@@ -90,6 +90,7 @@
                             <iais:pagination  param="systemParamSearch" result="systemParamSearchResult"/>
                             <div class="components">
                                 <div >
+                                    <div class="table-gp">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -152,6 +153,7 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -184,6 +186,7 @@
         $(".form-horizontal option[text = 'Please Select']").val("selected", "selected");
         $(".form-horizontal").val("");
         $(".form-horizontal .current").text("Please Select");
+        $(".error-msg").text("");
     }
 
     function disable(id){

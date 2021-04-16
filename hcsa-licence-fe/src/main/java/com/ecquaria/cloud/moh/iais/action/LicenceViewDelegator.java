@@ -65,7 +65,10 @@ public class LicenceViewDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
+        String appeal = bpc.request.getParameter("appeal");
+        bpc.request.setAttribute("appeal",appeal);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
     }
@@ -78,13 +81,13 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Licence Details");
         String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
         if(StringUtil.isEmpty(licencId)){
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
         }
         if(!StringUtil.isEmpty(licencId)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licencId);
+            AppSubmissionDto appSubmissionDto = appSubmissionService.viewAppSubmissionDto(licencId);
             if(appSubmissionDto != null){
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
@@ -96,7 +99,8 @@ public class LicenceViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
                         NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
@@ -122,11 +126,27 @@ public class LicenceViewDelegator {
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
                             primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+                            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
                         }
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
+                        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //primary doc add align for dup for prem
+                        NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,appGrpPremisesDtos);
+                        //set primary doc title
+                        Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,appGrpPremisesDtos,appGrpPrimaryDocDtos);
+                        appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
+                        //set dupForPsn attr
+                        NewApplicationHelper.setDupForPersonAttr(bpc.request,appSvcRelatedInfoDto);
+                        //svc doc add align for dup for prem
+                        NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,appGrpPremisesDtos);
+                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //set svc doc title
+                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
+                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+
                         //set service scope info
                         List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                         List<String> svcScopeIdList = IaisCommonUtils.genNewArrayList();
@@ -171,6 +191,7 @@ public class LicenceViewDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }
         }
 

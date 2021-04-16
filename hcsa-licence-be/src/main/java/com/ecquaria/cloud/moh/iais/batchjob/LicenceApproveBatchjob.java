@@ -8,11 +8,55 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.DocumentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
@@ -22,16 +66,38 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +105,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.*;
 
 /**
  * LicenceApproveBatchjob
@@ -150,7 +214,6 @@ public class LicenceApproveBatchjob {
                     GenerateResult generalGenerateResult = null;
                     GenerateResult groupGenerateResult = null;
                     try {
-                        generateUEN(applicationGroupDto);
                         if (groupApplicationLicenceDto != null) {
                             //generate the Group licence
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto, hcsaServiceDtos);
@@ -194,6 +257,9 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
 
+                        generateUEN(eventBusLicenceGroupDtos);
+                        //send uen email
+                        licenceService.sendUenEmail(eventBusLicenceGroupDtos);
                     }
 
                 }
@@ -203,16 +269,36 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
 
-    private void generateUEN(ApplicationGroupDto applicationGroupDto) {
+    private void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         log.info(StringUtil.changeForLog("The generateUen start ..."));
         try{
-            GenerateUENDto generateUENDto = new GenerateUENDto();
             IaisUENDto iaisUENDto = new IaisUENDto();
-            iaisUENDto.setGenerateUENDto(generateUENDto);
-            iaisUENDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
+            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
+                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    SuperLicDto superLicDto = superLicDtos.get(0);
+                    LicenceDto licenceDto = superLicDto.getLicenceDto();
+                    String svcCode = licenceDto.getSvcCode();
+                    String licenseeId = licenceDto.getLicenseeId();
+                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
+                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
+                    iaisUENDto.setLicenseeId(licenseeId);
+                    iaisUENDto.setSvcCode(svcCode);
+                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
+                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
+                    iaisUENDto.setPremises(premisesDto);
+                }else{
+                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+            }
             acraUenBeClient.generateUen(iaisUENDto);
         }catch (Throwable t){
-           log.debug(StringUtil.changeForLog("The Error for Generate UEN -->:"+applicationGroupDto.getGroupNo()));
            log.error(StringUtil.changeForLog( t.getMessage()),t);
         }
         log.info(StringUtil.changeForLog("The generateUen end ..."));
@@ -1023,6 +1109,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;" + appGrpPremisesEntityDtos.size()));
+                //
                 //create lic_premises
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationListDto.getAppPremisesCorrelationDtos();
                 //create LicPremisesScopeDto
@@ -1139,6 +1226,7 @@ public class LicenceApproveBatchjob {
         if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
             for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos) {
                 LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto, LicSvcSpecificPersonnelDto.class);
+                licSvcSpecificPersonnelDto.setAppSvcPsnId(licSvcSpecificPersonnelDto.getId());
                 result.add(licSvcSpecificPersonnelDto);
             }
         }
@@ -1209,6 +1297,7 @@ public class LicenceApproveBatchjob {
         for (AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremisesEntityDtos) {
             PremisesGroupDto premisesGroupDto = new PremisesGroupDto();
             premisesGroupDto.setHasError(false);
+            boolean isNewHciCode = false;
             //premises
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
@@ -1226,10 +1315,12 @@ public class LicenceApproveBatchjob {
                     hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
                 }
                 log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
+                isNewHciCode = true;
                 appGrpPremisesEntityDto.setHciCode(hciCode);
             }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesEntityDto, PremisesDto.class);
             premisesDto.setHciCode(hciCode);
+            premisesDto.setNewHciCode(isNewHciCode);
             premisesDto.setVersion(getVersionByHciCode(hciCode));
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
@@ -1255,8 +1346,36 @@ public class LicenceApproveBatchjob {
                     premisesOperationalUnitDtos.add(premisesOperationalUnitDto);
                 }
             }
+            //weekly
+            List<AppPremOpenPeriodDto> appWeeklyDtos = appGrpPremisesEntityDto.getWeeklyDtos();
+            List<LicPremOpenPeriodDto> licWeeklyDtos = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appWeeklyDtos)){
+                log.info(StringUtil.changeForLog("The licence Generate appWeeklyDtos.size() is -->:"+appWeeklyDtos.size()));
+                for(AppPremOpenPeriodDto appWeeklyDto:appWeeklyDtos){
+                    LicPremOpenPeriodDto licWeeklyDto= MiscUtil.transferEntityDto(appWeeklyDto, LicPremOpenPeriodDto.class);
+                    licWeeklyDto.setId(null);
+                    licWeeklyDto.setPremId(null);
+                    licWeeklyDtos.add(licWeeklyDto);
+                }
+            }
+
+            //event
+            List<AppPremEventPeriodDto> appEventDtos = appGrpPremisesEntityDto.getEventDtos();
+            List<LicPremEventPeriodDto> licEventDtos = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appEventDtos)){
+                log.info(StringUtil.changeForLog("The licence Generate appEventDtos.size() is -->:"+appEventDtos.size()));
+                for(AppPremEventPeriodDto appEventDto:appEventDtos){
+                    LicPremEventPeriodDto licEventDto = MiscUtil.transferEntityDto(appEventDto,LicPremEventPeriodDto.class);
+                    licEventDto.setId(null);
+                    licEventDto.setPremId(null);
+                    licEventDtos.add(licEventDto);
+                }
+            }
+
             premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);
             premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
+            premisesDto.setWeeklyDtos(licWeeklyDtos);
+            premisesDto.setEventDtos(licEventDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
             String premisesId = appGrpPremisesEntityDto.getId();
@@ -1389,6 +1508,7 @@ public class LicenceApproveBatchjob {
             keyPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             //: controller the Organization
             keyPersonnelDto.setOrganizationId(organizationId);
+            keyPersonnelDto.setAppPsnId(keyPersonnelDto.getId());
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
             //create AppGrpPersonnelExtDto
             String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
@@ -1510,6 +1630,7 @@ public class LicenceApproveBatchjob {
                         LicDocumentDto licDocumentDto = new LicDocumentDto();
                         licDocumentDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                         licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_PARIMARY));
+                        licDocumentDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                         //set the old premises Id ,get the releation when the save.
                         if (StringUtil.isEmpty(appGrpPrimaryDocDto.getAppGrpPremId())) {
                             licDocumentDto.setLicPremId(premisesDto.getId());
@@ -1536,6 +1657,11 @@ public class LicenceApproveBatchjob {
                 LicDocumentDto licDocumentDto = new LicDocumentDto();
                 licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
+                licDocumentDto.setAppPersonId(appSvcDocDto.getAppGrpPersonId());
+                licDocumentDto.setSeqNum(appSvcDocDto.getSeqNum());
+                licDocumentDto.setLicPersonType(appSvcDocDto.getPersonType());
+                licDocumentDto.setLicPersonTypeNum(appSvcDocDto.getPersonTypeNum());
+                licDocumentDto.setLicSvcSpePsnId(appSvcDocDto.getAppSvcPersonId());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {

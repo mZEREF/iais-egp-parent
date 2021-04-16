@@ -28,14 +28,14 @@
     <div>
     <br>
       <div onclick="add()" style=" background-color:#E2E2E2 ;padding: 100px;
-	display: inline-block;height: 500px;width: 500px; position: relative;">
+	display: inline-block;height: 500px;width: 500px; position: relative;cursor: pointer">
         <div style=" width: 200px;
     height: 200px;position: absolute;top: 0; left: 0;right: 0;bottom: 0;  margin: auto;text-align: center;
 	line-height: 100px;">Add a new HCSA Module</div>
       </div>
 
       <div onclick="list()" style=" background-color:#E2E2E2 ;padding: 100px;
-	display: inline-block;height: 500px;width: 500px; position: relative;">
+	display: inline-block;height: 500px;width: 500px; position: relative;cursor: pointer">
         <div style=" width: 200px;
     height: 200px;position: absolute;top: 0; left: 0;right: 0;bottom: 0;  margin: auto;text-align: center;
 	  line-height: 100px;">List HCSA Modules</div>

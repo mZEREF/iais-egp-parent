@@ -779,7 +779,19 @@
       <type>java.lang.String</type>
     </attribute>
     <attribute>
+      <name>multiValues</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.util.Collection</type>
+    </attribute>
+    <attribute>
       <name>needSort</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
+    <attribute>
+      <name>multiSelect</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <type>boolean</type>
@@ -1118,6 +1130,33 @@
       <rtexprvalue>false</rtexprvalue>
       <type>boolean</type>
     </attribute>
+    <attribute>
+      <name>needHeader</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
   </tag>
 
+  <tag>
+    <description>Download Link</description>
+    <name>downloadLink</name>
+    <tag-class>com.ecquaria.cloud.moh.iais.tags.DownloadFileTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>fileRepoIdName</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>fileRepoId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>docName</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 </taglib>

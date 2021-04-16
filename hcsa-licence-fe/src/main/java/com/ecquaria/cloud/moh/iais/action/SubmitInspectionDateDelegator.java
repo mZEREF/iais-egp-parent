@@ -54,6 +54,7 @@ public class SubmitInspectionDateDelegator {
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest servletRequest = bpc.request;
 
+        ParamUtil.setRequestAttr(servletRequest,"DashboardTitle","Indicate Preferred Inspection Date");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
         if(appSubmissionDto == null){
             return;
@@ -125,7 +126,7 @@ public class SubmitInspectionDateDelegator {
         if (sDate != null && eDate != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDateSecond(sDate, eDate);
             if (!isAfterDate){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspEndDate", "UC_INSP_ACK019"));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspStartDate", "UC_INSP_ACK019"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }

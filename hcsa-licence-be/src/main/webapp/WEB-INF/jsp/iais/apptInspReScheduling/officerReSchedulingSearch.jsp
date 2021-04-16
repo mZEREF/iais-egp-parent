@@ -49,7 +49,7 @@
                   <iais:row>
                     <iais:field value="Working Group"/>
                     <iais:value width="18">
-                      <iais:select name="reSchInspWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                      <iais:select name="reSchInspWorkGroup" onchange="chooseWorkGroup()" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -117,7 +117,7 @@
                                 </td>
                               </c:if>
                               <td>
-                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Reschedule</button>
+                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Re-schedule</button>
                               </td>
                             </tr>
                           </c:forEach>
@@ -194,6 +194,12 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         officerReSchedulingSubmit('sort');
+    }
+
+    function chooseWorkGroup() {
+      showWaiting();
+      officerReSchedulingSubmit('search');
+
     }
 </script>
 

@@ -25,7 +25,7 @@
                                             <p></p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><div style="font-size: 16px;"><a href="/hcsa-licence-web/eservice/INTERNET/PrintLicenceFe?licId=123123"> <em class="fa fa-print"></em>Print</a></div></p>
+                                            <p class="print"><div style="font-size: 16px;"><a onclick="preview()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div></p>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -62,10 +62,10 @@
                                             </div>
                                             <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
                                                 <div class="row">
-                                                    <div class="col-xs-5">
-                                                        Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
+                                                    <div class="col-md-7"  style="text-align: justify;width: 70%">
+                                                        Please indicate an effective date of change for your licence information to be updated. The date of change will be effected on the indicated date or approval date, whichever is the later date
                                                     </div>
-                                                    <div class="col-xs-7">
+                                                    <div class="col-md-5" style="width: 30%">
                                                         <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
                                                     </div>
                                                 </div>
@@ -121,7 +121,7 @@
                                                         <a class="next btn btn-primary" id = "Next">Submit </a></div>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Make Payment </a></div>
                                                     </c:otherwise>
                                                 </c:choose>
                                         </div>
@@ -144,12 +144,13 @@
 <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
+<%--            <div class="modal-header">--%>
+<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                <div class="modal-title" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--            </div>--%>
+            <div class="modal-body" >
                 <div class="row">
-                    <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                    <div class="col-md-12" ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">

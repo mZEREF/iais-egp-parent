@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -77,6 +76,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -187,6 +187,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         //close self-checklist
         applicationDto.setSelfAssMtFlag(4);
+        //close submit pref insp date
+        applicationDto.setHasSubmitPrefDate(1);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION);
         applicationDto1.setAuditTrailDto(auditTrailDto);
         applicationService.updateFEApplicaiton(applicationDto1);
@@ -402,6 +404,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if(!StringUtil.isEmpty(appRfiDecision)) {
                 map.put("Remarks", remarks);
             }
+            if(!StringUtil.isEmpty(preInspecComments)) {
+                map.put("COMMENTS",preInspecComments);
+            }
             map.put("systemLink", url);
             map.put("TATtime", tatTimeStr);
             map.put("email", systemParamConfig.getSystemAddressOne());
@@ -502,9 +507,16 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         applicationDtos.add(applicationDto);
         String applicationNo = applicationDto.getApplicationNo();
         //routing
-        //get check stage
-        String stageKey = inspectionPreTaskDto.getCheckRbStage();
-        String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(stageKey);
+        //get check stage, role, userId, email stage
+        String checkRbData = inspectionPreTaskDto.getCheckRbStage();
+        String roleId = inspectionPreTaskDto.getStageRoleMap().get(checkRbData);
+        String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbData);
+        String emailStage;
+        if(RoleConsts.USER_ROLE_ASO.equals(roleId)){
+            emailStage = NotificationHelper.RECEIPT_ROLE_ASSIGNED_ASO;
+        } else {
+            emailStage = NotificationHelper.RECEIPT_ROLE_ASSIGNED_PSO;
+        }
         //update task
         List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtos){
@@ -519,8 +531,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         TaskDto compTask = getCompletedTaskByHistory(taskDto, checkUserId);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(compTask != null){
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
-            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
             TaskDto createTask = new TaskDto();
             createTask.setId(null);
             createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -534,9 +544,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setTaskType(compTask.getTaskType());
             createTask.setWkGrpId(compTask.getWkGrpId());
             createTask.setUserId(checkUserId);
-            createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+            createTask.setScore(0);
             createTask.setDateAssigned(new Date());
-            createTask.setRoleId(stageKey);
+            createTask.setRoleId(roleId);
             createTask.setApplicationNo(applicationNo);
             createTask.setAuditTrailDto(auditTrailDto);
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
@@ -554,7 +564,14 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, inspectionPreTaskDto.getReMarks(),
                 InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), compTask.getTaskKey(), null,
-                null, HcsaConsts.ROUTING_STAGE_INS, taskDto.getWkGrpId(), null);
+                null, roleId, taskDto.getWkGrpId(), null);
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
+        //send email
+        try {
+            applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), emailStage, checkUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -565,7 +582,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 int index = 0;
                 for (ApplicationDto applicationDto : applicationDtos) {
-                    if (index <= 1) {
+                    if (index <= 1 && applicationDto != null) {
+                        log.info(StringUtil.changeForLog("insp history application No." + applicationDto.getApplicationNo()));
                         InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
                         String appId = applicationDto.getId();
                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
@@ -597,7 +615,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         //get group premises and address
                         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
                         //get history Hci_code
-                        String hciCode = getHciCodeByFiveField(appGrpPremisesDto, originLicenceId);
+                        String hciCode = getHciCodeByAppPremCorrId(taskRefNo);
                         String hciName = appGrpPremisesDto.getHciName();
                         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
                         inspectionHistoryShowDto.setHciCode(hciCode);
@@ -629,98 +647,40 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         return inspectionHistoryShowDtos;
     }
 
-    private String getHciCodeByFiveField(AppGrpPremisesDto appGrpPremisesDto, String originLicenceId) {
-        String postalCode = appGrpPremisesDto.getPostalCode();
-        String unitNo = appGrpPremisesDto.getUnitNo();
-        String floorNo = appGrpPremisesDto.getFloorNo();
-        String blkNo = appGrpPremisesDto.getBlkNo();
-        String premisesType = appGrpPremisesDto.getPremisesType();
-        String hicCode = "-";
-        List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(originLicenceId).getEntity();
-        if(!IaisCommonUtils.isEmpty(premisesDtos)){
-            for(PremisesDto premisesDto : premisesDtos){
-                if(!StringUtil.isEmpty(premisesType) && premisesType.equals(premisesDto.getPremisesType())){
-                    String premisesStr = null;
-                    String premisesStr2 = null;
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                        String hciName = appGrpPremisesDto.getHciName();
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, hciName);
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getHciName());
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-                        String vehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, vehicleNo);
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), premisesDto.getVehicleNo());
-                    } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-                        premisesStr = splicingAddressInformation(postalCode, unitNo, floorNo, blkNo, "");
-                        premisesStr2 = splicingAddressInformation(premisesDto.getPostalCode(), premisesDto.getUnitNo(), premisesDto.getFloorNo(),
-                                premisesDto.getBlkNo(), "");
-                    }
-                    if(premisesStr != null && premisesStr2 != null) {
-                        if (premisesStr.equals(premisesStr2)) {
-                            hicCode = premisesDto.getHciCode();
-                            return hicCode;
-                        }
+    private String getHciCodeByAppPremCorrId(String taskRefNo) {
+        String hciCode = "-";
+        if(!StringUtil.isEmpty(taskRefNo)){
+            hciCode = hcsaLicenceClient.getHciCodeByCorrId(taskRefNo).getEntity();
+        }
+        return hciCode;
+    }
+
+    @Override
+    public InspectionPreTaskDto getPreInspRbOption(ApplicationViewDto applicationViewDto, InspectionPreTaskDto inspectionPreTaskDto) {
+        List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
+        Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> roleIdMap = IaisCommonUtils.genNewHashMap();
+        //get history to route back
+        if(applicationViewDto != null){
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
+            int index = 0;
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+                if(appPremisesRoutingHistoryDto != null) {
+                    String actionUserId = appPremisesRoutingHistoryDto.getActionby();
+                    if(!StringUtil.isEmpty(actionUserId)) {
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionUserId).getEntity();
+                        SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
+                        preInspRbOption.add(selectOption);
+                        userIdMap.put(index + "", actionUserId);
+                        roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                        index++;
                     }
                 }
             }
         }
-        return hicCode;
-    }
-
-    private String splicingAddressInformation(String postalCode, String unitNo, String floorNo, String blkNo, String last) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if(postalCode == null){
-            postalCode = "";
-        }
-        if(unitNo == null){
-            unitNo = "";
-        }
-        if(floorNo == null){
-            floorNo = "";
-        }
-        if(blkNo == null){
-            blkNo = "";
-        }
-        if(last == null){
-            last = "";
-        }
-        stringBuilder.append(postalCode);
-        stringBuilder.append(unitNo);
-        stringBuilder.append(floorNo);
-        stringBuilder.append(blkNo);
-        stringBuilder.append(last);
-        String premisesStr = stringBuilder.toString();
-        return premisesStr;
-    }
-
-    @Override
-    public InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto) {
-        List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
-        Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
-        //get history
-        AppPremisesRoutingHistoryDto asoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
-        AppPremisesRoutingHistoryDto psoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
-        String asoUserId = asoHistory.getActionby();
-        if(psoHistory != null){
-            String psoUserId = psoHistory.getActionby();
-            OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
-            OrgUserDto pso = organizationClient.retrieveOrgUserAccountById(psoUserId).getEntity();
-            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, aso.getDisplayName() + " (" + RoleConsts.USER_ROLE_ASO + ")");
-            SelectOption psoSo = new SelectOption(RoleConsts.USER_ROLE_PSO, pso.getDisplayName() + " (" + RoleConsts.USER_ROLE_PSO + ")");
-            preInspRbOption.add(asoSo);
-            preInspRbOption.add(psoSo);
-            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
-            userIdMap.put(RoleConsts.USER_ROLE_PSO, psoUserId);
-        } else {
-            OrgUserDto aso = organizationClient.retrieveOrgUserAccountById(asoUserId).getEntity();
-            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, aso.getDisplayName() + " (" + RoleConsts.USER_ROLE_ASO + ")");
-            preInspRbOption.add(asoSo);
-            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
-        }
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
+        inspectionPreTaskDto.setStageRoleMap(roleIdMap);
         return inspectionPreTaskDto;
     }
 
@@ -739,18 +699,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             appEditSelectDto.setPremisesListEdit(true);
             appEditSelectDto.setApplicationId(applicationDto.getId());
             applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-            appEditSelectDto.setServiceEdit(true);
-            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appEditSelectDto.setPoEdit(true);
-            appEditSelectDto.setDocEdit(true);
-            appEditSelectDto.setMedAlertEdit(true);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setApplicationId(applicationDto.getId());
-            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+        }  else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             String applicationNo = applicationDto.getApplicationNo();
             List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
             List<String> list = IaisCommonUtils.genNewArrayList();
@@ -765,6 +714,32 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         return applicationViewDto;
+    }
+
+    @Override
+    public int preInspRfiTogether(ApplicationDto applicationDto) {
+        if(applicationDto != null) {
+            if(!StringUtil.isEmpty(applicationDto.getAppGrpId())) {
+                Integer appRfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
+                        ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                Integer selfRfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationDto.getAppGrpId(),
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+                if(appRfiCount == null){
+                    appRfiCount = 0;
+                }
+                if(selfRfiCount == null){
+                    selfRfiCount = 0;
+                }
+                int allCount = appRfiCount + selfRfiCount;
+                return allCount;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public void selfAssMtPdfReport(String refNo) {
+        inspectionTaskClient.selfAssMtPdfReport(refNo);
     }
 
     private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {
@@ -832,11 +807,24 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 if(!StringUtil.isEmpty(nameStr)) {
                     List<String> leadNameList = IaisCommonUtils.genNewArrayList();
                     String[] leadNameStr = nameStr.split(",");
+                    StringBuilder leadStrBu = new StringBuilder();
                     for(int i = 0; i < leadNameStr.length; i++){
                         String leadName = leadNameStr[i].trim();
                         leadNameList.add(leadName);
+
+                    }
+                    Collections.sort(leadNameList);
+                    for(String strLeadName : leadNameList){//NOSONAR
+                        if(StringUtil.isEmpty(leadStrBu.toString())) {
+                            leadStrBu.append(strLeadName);
+                        } else {
+                            leadStrBu.append(',');
+                            leadStrBu.append(' ');
+                            leadStrBu.append(strLeadName);
+                        }
                     }
                     inspectionHistoryShowDto.setInspLeads(leadNameList);
+                    inspectionHistoryShowDto.setInspLeaderStr(leadStrBu.toString());
                 }
             }
         }

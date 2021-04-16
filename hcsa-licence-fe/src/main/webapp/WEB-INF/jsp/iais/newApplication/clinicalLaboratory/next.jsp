@@ -271,19 +271,11 @@
             $CurrentPsnEle.find('input[name="qualification"]').val('');
         }
         <!--preferredMode -->
-        var preferredMode = data.preferredMode;
-        if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
-            if('3' == preferredMode){
-                $CurrentPsnEle.find('input.preferredMode').prop('checked',true);
-            }else{
-                $CurrentPsnEle.find('input.preferredMode').each(function () {
-                    if(preferredMode == $(this).val()){
-                        $(this).prop('checked',true);
-                    }
-                });
-            }
+        var description = data.description;
+        if(description != null && description !='undefined' && description != ''){
+          $CurrentPsnEle.find('input[name="description"]').val(data.description);
         }else{
-            $CurrentPsnEle.find('input.preferredMode').prop('checked',false);
+          $CurrentPsnEle.find('input[name="description"]').val('');
         }
 
         var isLicPerson = data.licPerson;
@@ -314,6 +306,7 @@
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         }
 
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur');
     }
     <!--cgo,medAlert -->
     var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
@@ -385,8 +378,8 @@
             $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
         }
         //map->mode
-        if(psnEditDto.preferredMode){
-            $cgoPsnEle.find('input[type="checkbox"]').prop('disabled',false);
+        if(psnEditDto.description){
+          $cgoPsnEle.find('input[name="description"]').prop('disabled',false);
         }
 
         //for disabled add style

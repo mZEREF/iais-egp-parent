@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -69,6 +70,9 @@
                                                 <c:if test="${DoDraftConfig == null}">
                                                 <a id = "Back" class="back" ><em class="fa fa-angle-left"></em> Back</a>
                                                 </c:if>
+                                                <c:if test="${RFC_DRAFT_NO!=null}">
+                                                    <a class="back"  id="RFC_BACK"><em class="fa fa-angle-left"></em> Back</a>
+                                                </c:if>
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
@@ -123,6 +127,8 @@
         window.print();
 
     });
-
+    $('#RFC_BACK').click(function (){
+        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
+    });
 
 </script>

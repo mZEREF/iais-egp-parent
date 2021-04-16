@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/InspectionAllotTaskInspectorStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionAllotTaskInspector" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/InspectionAllotTaskInspectorStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionAllotTaskInspector" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorStart" x="10" y="100">
@@ -196,6 +196,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" style="oblique">
    <position>{(1680,550)(1764,628)(532,628)(460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorSuccessPage" style="oblique">
+   <position>{(1440,400)(1396,400)(1396,616)(761,616)(680,560)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

@@ -151,7 +151,7 @@ public class InspectionPreDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
         if(applicationViewDto == null) {
             //get application info show
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo(), taskDto.getRoleId());
             //set Application RFI Info
             applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
         }
@@ -163,8 +163,8 @@ public class InspectionPreDelegator {
         //Audit application doesn't do back and rfi
         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
             if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
-                //set stage and userId map
-                inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationDto.getApplicationNo(), inspectionPreTaskDto);
+                //route back set stage and userId map
+                inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationViewDto, inspectionPreTaskDto);
                 List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
                 inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
                 ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
@@ -220,6 +220,7 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorStep1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStep1 start ...."));
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO);
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
         String processDec = ParamUtil.getRequestString(bpc.request,"selectValue");
@@ -246,10 +247,16 @@ public class InspectionPreDelegator {
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
-            //choose rfi app and don't check app pop-up windows, is error
             //NOSONAR
             if(preInspRfiCheck != null) {
-                validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+                //Request for information cannot be made at the same time
+                int appInspRfiResult = inspectionPreTaskService.preInspRfiTogether(applicationDto);
+                validationResult = validatePreInspRfiTogether(validationResult, appInspRfiResult);
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                if(errorMap == null || errorMap.size() < 1) {
+                    //choose rfi app and don't check app pop-up windows is error
+                    validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+                }
             }
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
@@ -279,6 +286,15 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
     }
 
+    private ValidationResult validatePreInspRfiTogether(ValidationResult validationResult, int appInspRfiResult) {
+        if(appInspRfiResult > 0){
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            errorMap.put("preInspRfiTogether","GENERAL_ERR0045");
+            validationResult.setHasErrors(true);
+        }
+        return validationResult;
+    }
+
     private ValidationResult validateAppRfiCheck(ValidationResult validationResult, List<String> preInspRfiCheck, BaseProcessClass bpc) {
         if(!IaisCommonUtils.isEmpty(preInspRfiCheck)){
             //NOSONAR
@@ -302,6 +318,7 @@ public class InspectionPreDelegator {
             inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
+            inspectionPreTaskDto.setPreInspecComments(preInspecComments);
         } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
             if(!StringUtil.isEmpty(checkRbStage)){
                 String userId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbStage);
@@ -346,13 +363,19 @@ public class InspectionPreDelegator {
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO);
         List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
+        //adhoc Checklist and send email
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
             ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
             fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
+        //set Checklist
         if(inspectionChecklist == null){
             inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto));
+        }
+        //generate self report
+        if(taskDto != null) {
+            inspectionPreTaskService.selfAssMtPdfReport(taskDto.getRefNo());
         }
         inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks(), inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);

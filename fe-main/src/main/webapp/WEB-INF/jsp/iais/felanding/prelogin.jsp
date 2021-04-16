@@ -74,16 +74,16 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="prelogin-title">
-              <h1>Integrated Application and <br class="hidden-xs"> Inspection System (IAIS)</h1>
+              <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
               <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
             </div>
               <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                    </div>
+<%--                    <div class="modal-header">--%>
+<%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--                    </div>--%>
                     <div class="modal-body">
                       <div class="row">
                         <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>
@@ -97,7 +97,7 @@
               </div>
             <div class="prelogin-content">
               <div class="white-content-box login-IAIS" style="height: 274px;">
-                <h3>Login to IAIS</h3>
+                <h3>Login to HALP</h3>
                 <div class="left-content">
                   <ul>
                     <li>
@@ -134,13 +134,11 @@
                 <h3>Healthcare Services Act (HCSA)</h3>
                 <ul>
                   <li>
-                    <p><a href="#">About HCSA</a></p>
+
+                    <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
                   </li>
                   <li>
-                    <p><a href="#">Bill phases &amp; timelines</a></p>
-                  </li>
-                  <li>
-                    <p><a href="#">Services under IAIS today</a></p>
+                    <p><a href="<iais:code code="RELURL002"></iais:code>">Services under HALP today</a></p>
                   </li>
                 </ul>
               </div>

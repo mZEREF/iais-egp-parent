@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -148,4 +149,15 @@ public interface InspectionRectificationProService {
       * @Descripation: getChklItemById
       */
     ChecklistItemDto getChklItemById(String itemId);
+
+    FileRepoDto getCheckListFileRealName(FileRepoDto fileRepoDto, String refNo, String status, String checkListFileType);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/13
+      * @Param: appNo
+      * @return: List<ApptNonWorkingDateDto>
+      * @Descripation: getApptNonWorkingDateByAppNo
+      */
+    List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo);
 }

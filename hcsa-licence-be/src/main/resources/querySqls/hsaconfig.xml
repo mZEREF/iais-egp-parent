@@ -3,7 +3,7 @@
     <sql key = "queryHcsaService" remarks="query hcsa service parameter of checklist">
         <![CDATA[
             select stype.id as service_id, scategory.id as category_id, scategory.name as category_name, stype.name as service_name
-            from iais.dbo.hcsa_service_type stype, iais.dbo.hcsa_service_category scategory where stype.category_id = scategory.id
+            from hcsa_service_type stype, hcsa_service_category scategory where stype.category_id = scategory.id
         ]]>
     </sql>
 
@@ -56,6 +56,7 @@
                 <#if id??> and id = :id</#if>
                 <#if clauseNo??> and charindex(:clauseNo, CLAUSE_NO) > 0  </#if>
                 <#if clause??> and charindex(:clause, CLAUSE) > 0</#if>
+                <#if regulationId??> and ${regulationId} </#if>
         ]]>
 
     </sql>

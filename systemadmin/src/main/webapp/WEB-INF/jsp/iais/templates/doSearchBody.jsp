@@ -36,7 +36,7 @@
                 </div>
             </iais:value>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="deliveryMode">
             <iais:value>
                 <label class="col-xs-4 col-md-4 control-label" for="deliveryMode">Delivery Mode</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">

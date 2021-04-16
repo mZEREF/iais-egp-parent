@@ -21,6 +21,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content" >
+    <%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="pageFrom" value="${param.pageFrom}">

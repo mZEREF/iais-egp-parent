@@ -7,7 +7,13 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,12 +43,16 @@ public interface TaskOrganizationClient {
     FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(@PathVariable(name = "workGroupId") String workGroupId,
                                                                   @PathVariable(name = "status") String staus);
 
+    @RequestMapping(path = "/iais-workgroup/orguseraccountExceptLeader/{workGroupId}/{status}"
+            ,method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupNameExceptLeader(@PathVariable(name = "workGroupId") String workGroupId,
+                                                                  @PathVariable(name = "status") String staus);
+
     @RequestMapping(path = "/iais-task/taskscores/{workGroupId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskScores(@PathVariable(name = "workGroupId") String workGroupId);
 
     @GetMapping(value = "/iais-orgUserRole/user-by-id/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> getUserById(@PathVariable("userId") String userId);
-
     @RequestMapping(path = "/iais-task/commpool/{workGroupId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getCommPoolTaskByWorkGroupId(@PathVariable(name = "workGroupId") String workGroupId);
 
@@ -65,7 +75,7 @@ public interface TaskOrganizationClient {
     FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "appNo") String appNo, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
 
     @RequestMapping(path = "/iais-task/Tasks/date",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date);
+    FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date,@RequestParam(name ="isRouting") boolean isRouting);
 
     @PostMapping(value = "/iais-orgUserRole/user-by-roles", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserByroleId(@RequestBody List<String> roleId);
@@ -83,4 +93,7 @@ public interface TaskOrganizationClient {
 
     @GetMapping(value = "/iais-task/get-rollback-inspector",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getRollBackInspector(@RequestParam("refNo") String refNo);
+
+    @PostMapping(value = "/iais-task/assigned/current-task/inspector-info",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getCurrentTaskAssignedInspectorInfo(@RequestBody Map<String, Object> params);
 }

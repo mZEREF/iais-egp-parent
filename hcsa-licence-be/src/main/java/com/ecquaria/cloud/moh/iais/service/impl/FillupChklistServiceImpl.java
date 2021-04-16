@@ -3,10 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -68,6 +70,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private InspectionTaskClient inspectionTaskClient;
     @Autowired
     private AdhocChecklistService adhocChecklistService;
+    @Autowired
+    private AppointmentClient appointmentClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Override
@@ -981,19 +985,37 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
-        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
-        String workGrpId = "";
-        if( taskDtos  != null && taskDtos.size() >0)
-         workGrpId = taskDtos.get(0).getWkGrpId();
-        String leaderStr = null;
-        List<String> leaders =  organizationClient.getInspectionLead(workGrpId).getEntity();
-        if(!IaisCommonUtils.isEmpty(leaders)){
-            for(String temp:leaders){
-                OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
-                leaderStr = userDto.getDisplayName()+" ";
-            }
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType( taskDto.getRefNo(),InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        if(appPremisesRecommendationDto != null){
+            return appPremisesRecommendationDto.getRecomDecision().replace(",",", ");
         }
-        return leaderStr;
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        if( taskDtos  != null && taskDtos.size() >0){
+             StringBuilder stringBuilder = new StringBuilder();
+             List<String> userNames = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto1 : taskDtos){
+                List<String> leaders =  organizationClient.getInspectionLead( taskDto1.getWkGrpId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(leaders)){
+                    for(String temp:leaders){
+                        OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
+                        if(userDto.getAvailable() != null && userDto.getAvailable() && ! userNames.contains(userDto.getDisplayName())){
+                            userNames.add(userDto.getDisplayName());
+                        }
+                    }
+                }
+            }
+
+            if(!IaisCommonUtils.isEmpty(userNames) && userNames.size() >1){
+                userNames.sort(String::compareTo);
+                for(String userName :  userNames){
+                    stringBuilder.append(userName).append(", ");
+                }
+            }
+
+            String leaderStr = stringBuilder.toString();
+            return StringUtil.isEmpty(leaderStr) ? "" : leaderStr.substring(0,leaderStr.length()-2);
+        }
+         return  "";
     }
 
     @Override
@@ -1270,7 +1292,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
         String otherinspectionofficer = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
         serListDto.setOtherinspectionofficer(otherinspectionofficer);
-        serListDto.setStartMin(startDate);
+        serListDto.setStartTime(startDate);
         serListDto.setEndTime(endDate);
        String [] startDateHHMM = getStringsByHHDD(startDate);
        if(startDateHHMM != null && startDateHHMM.length == 2){
@@ -1425,6 +1447,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     answerForDifDto.setRemark(inspectionCheckListAnswerDto.getRemark());
                     answerForDifDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
                     answerForDifDto.setIsRec(inspectionCheckListAnswerDto.getIsRec());
+                    answerForDifDto.setNcs(inspectionCheckListAnswerDto.getNcs());
                     break;
                 }
             }
@@ -1497,6 +1520,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
+        inspectionCheckQuestionDto.setNcs(answerForDifDto.getNcs());
         return  inspectionCheckQuestionDto;
     }
 
@@ -1504,6 +1528,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         inspectionCheckQuestionDto.setRemark(inspectionCheckListAnswerDto.getRemark());
         inspectionCheckQuestionDto.setChkanswer(inspectionCheckListAnswerDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(inspectionCheckListAnswerDto.getIsRec()));
+        inspectionCheckQuestionDto.setNcs(inspectionCheckListAnswerDto.getNcs());
         return  inspectionCheckQuestionDto;
     }
     @Override
@@ -1586,6 +1611,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                         AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
                         answerForDifDto.setRemark(adhocAnswerDto.getRemark());
                         answerForDifDto.setAnswer(adhocAnswerDto.getAnswer());
+                        answerForDifDto.setNcs(adhocAnswerDto.getNcs());
                         answerForDifDto.setIsRec(adhocAnswerDto.getIsRec());
                     }
                     break;
@@ -1597,6 +1623,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adhocNcCheckItemDto.setRemark(adhocAnswerDto.getRemark());
         adhocNcCheckItemDto.setAdAnswer(adhocAnswerDto.getAnswer());
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
+        adhocNcCheckItemDto.setNcs(adhocAnswerDto.getNcs());
         return  adhocNcCheckItemDto;
     }
 
@@ -1604,6 +1631,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adhocNcCheckItemDto.setRemark(adhocAnswerDto.getRemark());
         adhocNcCheckItemDto.setAdAnswer(adhocAnswerDto.getAnswer());
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
+        adhocNcCheckItemDto.setNcs(adhocAnswerDto.getNcs());
         return  adhocNcCheckItemDto;
     }
 
@@ -1613,24 +1641,29 @@ public class FillupChklistServiceImpl implements FillupChklistService {
          AnswerForDifDto answerForDifDto = adhocAnswerForDifDtos.get(0);
             Boolean recSame = Boolean.TRUE;
             Boolean answerSame = Boolean.TRUE;
-            Boolean reamrkSame = Boolean.TRUE;
+            Boolean remarkSame = Boolean.TRUE;
+            Boolean ncsSame = Boolean.TRUE;
            for(AnswerForDifDto answerForDifDtoCopy :  answerForDifDtoCopys){
-               Boolean isSameSubmit = isSameByStrins(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
-                if( answerSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer())){
+               Boolean isSameSubmit = isSameByStrings(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
+                if(StringUtil.isEmpty( answerForDifDtoCopy.getAnswer()) || (answerSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer(),answerForDifDto.getAnswer()))){
                     answerSame = Boolean.FALSE;
                 }
-               if( recSame && !isSameSubmit &&  !isSameByStrins( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
+               if( recSame && !isSameSubmit &&  !isSameByStrings( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
                    recSame = Boolean.FALSE;
                }
-               if( reamrkSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark())){
-                   reamrkSame = Boolean.FALSE;
+               if( remarkSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark(),answerForDifDto.getAnswer())){
+                   remarkSame = Boolean.FALSE;
+               }
+               if(  ncsSame && !isSameSubmit && !isSameByStrings( answerForDifDtoCopy.getNcs(),answerForDifDto.getNcs(),answerForDifDto.getAnswer())){
+                   ncsSame = Boolean.FALSE;
                }
            }
 
-           if(answerSame && recSame && reamrkSame){
-               answerForSame.setIsRec( answerForDifDto.getIsRec());
+           if(answerSame && recSame && remarkSame && ncsSame){
+               answerForSame.setIsRec(answerForDifDto.getIsRec());
                answerForSame.setAnswer( answerForDifDto.getAnswer());
                answerForSame.setRemark(answerForDifDto.getRemark());
+               answerForSame.setNcs(answerForDifDto.getNcs());
                answerForSame.setSameAnswer(true);
            }else {
                answerForSame.setIsRec( null);
@@ -1641,8 +1674,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
         return answerForSame;
     }
-
-    private Boolean isSameByStrins(String s1,String s2){
+    private Boolean isSameByStrings(String s1,String s2,String answer){
+        if(!"Yes".equalsIgnoreCase(answer)){
+            if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
+                return Boolean.FALSE;
+            }
+        }
+        return isSameByStrings(s1, s2);
+    }
+    private Boolean isSameByStrings(String s1,String s2){
         if(StringUtil.isEmpty(s1)&& StringUtil.isEmpty(s2)){
             return Boolean.TRUE;
         }
@@ -1669,6 +1709,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             answerForDifDtoCopy .setAnswer( answerForDifDto.getAnswer());
             answerForDifDtoCopy .setIsRec( answerForDifDto.getIsRec());
             answerForDifDtoCopy .setSubmitName( answerForDifDto.getSubmitName());
+            answerForDifDtoCopy.setNcs(answerForDifDto.getNcs());
             answerForDifDtoCopys.add(answerForDifDtoCopy);
         }
         return answerForDifDtoCopys;
@@ -1934,5 +1975,100 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 }
             }
         }
+    }
+
+    @Override
+    public String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto, String refNo) {
+        log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile ------------------");
+         setRemark(serListDto,commonDto);
+         setStartTimeAndEndTime(serListDto,refNo);
+         log.info("------------setRemarksAndStartTimeAndEndTimeForCheckList from mobile  end------------------");
+         return  serListDto.getTcuRemark();
+    }
+
+    private void setRemark(InspectionFDtosDto serListDto, InspectionFillCheckListDto commonDto){
+        if(StringUtil.isEmpty(serListDto.getTcuRemark())){
+            log.info("---------get Remarks From mobile -------");
+            Map<String, String> draftRemarkMaps  = commonDto.getDraftRemarkMaps();
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            Map<String, String> remarkMap = IaisCommonUtils.genNewHashMap();
+            if(!IaisCommonUtils.isEmpty(fdtoList)){
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                    if(IaisCommonUtils.isEmpty(draftRemarkMaps) && !IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getDraftRemarkMaps())){
+                        draftRemarkMaps = inspectionFillCheckListDto.getDraftRemarkMaps();
+                    }else if ( !IaisCommonUtils.isEmpty(draftRemarkMaps) && !IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getDraftRemarkMaps())){
+                        for(Map.Entry<String, String> entry: draftRemarkMaps.entrySet()){
+                            String key =  entry.getKey();
+                            String value = entry.getValue();
+                            if(StringUtil.isEmpty(value)){
+                                value = "";
+                            }
+                            StringBuilder  stringBuilderValue = new StringBuilder();
+                            stringBuilderValue.append(value);
+                            for(Map.Entry<String, String> entryIns: inspectionFillCheckListDto.getDraftRemarkMaps().entrySet()){
+                                if(key.equalsIgnoreCase(entryIns.getKey())){
+                                    stringBuilderValue.append(" \n") .append(entryIns.getValue());
+                                }
+                            }
+                            remarkMap.put(key,stringBuilderValue.toString());
+                        }
+                    }
+                }
+            }
+            StringBuilder  stringBuilderRemarks = new StringBuilder();
+            if(!IaisCommonUtils.isEmpty(remarkMap) ){
+                for (String value : remarkMap.values()) {
+                    stringBuilderRemarks.append(value).append(" \n");
+                }
+            } else if(IaisCommonUtils.isEmpty(remarkMap) && !IaisCommonUtils.isEmpty(draftRemarkMaps)){
+                for (String value : draftRemarkMaps.values()) {
+                    stringBuilderRemarks.append(value).append(" \n");
+                }
+            }
+            serListDto.setTcuRemark(stringBuilderRemarks.toString());
+            log.info("---------get Remarks From mobile -------");
+        }
+    }
+
+    private void  setStartTimeAndEndTime(InspectionFDtosDto serListDto,String refNo){
+        if(StringUtil.isEmpty(serListDto.getStartTime()) || StringUtil.isEmpty(serListDto.getEndTime())){
+            AppPremisesInspecApptDto appPremisesInspecApptDto = inspectionTaskClient.getSpecificDtoByAppPremCorrId(refNo).getEntity();
+            if(appPremisesInspecApptDto != null){
+                ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+                cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
+                cancelCalendarDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
+                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
+                    Date startDate = apptUserCalendarDtos.get(0).getTimeSlot();
+                    Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getTimeSlot();
+                    String startDateTime = Formatter.formatDateTime( startDate,"HH : mm");
+                    String endDateDateTime = Formatter.formatDateTime(endDate,"HH : mm");
+                    String [] startDateHHMM = getStringsByHHDD(startDateTime);
+                    if(startDateHHMM != null && startDateHHMM.length == 2){
+                        serListDto.setStartHour(startDateHHMM[0]);
+                        serListDto.setStartMin(startDateHHMM[1]); //NOSONAR
+                        serListDto.setStartTime(startDateTime);
+                    }
+                    String [] endDateHHMM = getStringsByHHDD(endDateDateTime);
+                    if(endDateHHMM != null && endDateHHMM.length == 2){
+                        String endHour = String.valueOf(Integer.parseInt(endDateHHMM[0]) + 1);
+                        serListDto.setEndHour(endHour);
+                        String endMin = endDateHHMM[1]; //NOSONAR
+                        serListDto.setEndMin(endMin);
+                        serListDto.setEndTime( endHour+" : " + endMin);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isBeforeFinishCheckList(String refNo) {
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo,InspectionConstants.RECOM_TYPE_INSP_FINISH_CHECKLIST_BEFORE).getEntity();
+        if(appPreRecommentdationDto != null){
+            return true;
+        }
+        return false;
     }
 }

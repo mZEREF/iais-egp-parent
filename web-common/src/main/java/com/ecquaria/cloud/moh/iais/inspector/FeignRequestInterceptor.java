@@ -29,19 +29,23 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         AuditTrailDto dto = null;
         //when properties {feign.hystrix.enabled} is false , ServletRequestAttributes will be null
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        StringBuilder logInfo = new StringBuilder("FeignRequestInterceptor -- ");
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
+            logInfo.append("Session ID -- ").append(request.getSession().getId());
             if (request != null) {
+                logInfo.append(" request uri -- ").append(request.getRequestURI());
                 dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
             }
         }
-
         if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
         }
 
         if (dto != null) {
             requestTemplate.header("currentAuditTrail", JsonUtil.parseToJson(dto));
+        }else {
         }
+        log.info(StringUtil.changeForLog(logInfo.toString()));
     }
 }

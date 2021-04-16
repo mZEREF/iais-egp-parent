@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
@@ -75,7 +76,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -257,6 +257,28 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
+    public List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto) {
+        String actionButtonFlag = apptInspectionDateDto.getActionButtonFlag();
+        if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
+            Map<String, ApplicationDto> corrAppMap = apptInspectionDateDto.getCorrAppMap();
+            List<String> premCorrIds = apptInspectionDateDto.getRefNo();
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtoList = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(premCorrIds) && corrAppMap != null) {
+                for (String appPremCorrId : premCorrIds) {
+                    ApplicationDto applicationDto = corrAppMap.get(appPremCorrId);
+                    String appNo = applicationDto.getApplicationNo();
+                    List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = inspectionTaskClient.getInspApptDraftListByAppNo(appNo).getEntity();
+                    if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
+                        appPremInspApptDraftDtoList.addAll(appPremInspApptDraftDtos);
+                    }
+                }
+                return appPremInspApptDraftDtoList;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<ApptAppInfoShowDto> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap) {
         List<ApptAppInfoShowDto> apptAppInfoShowDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
@@ -428,6 +450,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         apptInspectionDateDto.setInspectionDateMap(null);
         apptInspectionDateDto.setInspectionDate(null);
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
         return apptInspectionDateDto;
     }
 
@@ -607,6 +630,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
         createFeAppPremisesInspecApptDto(apptInspectionDateDto);
         //cancel or confirm appointment date
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+        if(inspectionDateMap != null) {
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                String refNo = inspDateMap.getKey();
+                cancelRefNo.add(refNo);
+            }
+        }
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         Date inspDate;
         try {
@@ -616,21 +647,21 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             log.error("Error when insp Date ==>", e);
         }
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
+        //cancel draft
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
         //url
-        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + applicationNo;
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
-        createMessage(url, applicationNo, maskParams, map, applicationDtos);
+        //send msg
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
+        createMessage(loginUrl, applicationNo, map, applicationDtos);
         //update app Info and insp Info
-        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
+        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), apptInspectionDateDto.getTaskDto(), inspDate, apptInspectionDateDto);
     }
 
     private void cancelOrConfirmApptDate(ApptCalendarStatusDto apptCalendarStatusDto) {
@@ -699,21 +730,19 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
+        //cancel draft
+        inspectionTaskClient.deleteInspDateDraftByApptRefNo(confirmRefNo);
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
-        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + applicationNo;
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
-        //get service code to send message
-        createMessage(url, applicationNo, maskParams, map, applicationDtos);
+        //send msg
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
+        createMessage(loginUrl, applicationNo, map, applicationDtos);
         //save data to app table
-        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
+        updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), apptInspectionDateDto.getTaskDto(), inspDate, apptInspectionDateDto);
     }
 
     private List<AppPremisesInspecApptDto> setAudiTrailDtoInspAppt(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList, AuditTrailDto currentAuditTrailDto) {
@@ -1098,18 +1127,31 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appEicClient.updateStatus(eicRequestTrackingDtos);
     }
 
-    private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, String inspecStatus, String processDec) {
-        for(TaskDto taskDto : taskDtos) {
-            String refNo = taskDto.getRefNo();
-            ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(refNo);
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING);
+    private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, TaskDto taskDto, Date saveDate, ApptInspectionDateDto apptInspectionDateDto) {
+        for(TaskDto taskDto1 : taskDtos) {
+            String appPremCorrId = taskDto1.getRefNo();
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            //save Inspection date
+            createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
+            //update Inspection status
+            updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+            //Application data
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             applicationService.updateFEApplicaiton(applicationDto1);
-            updateInspectionStatus(refNo, inspecStatus);
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            if (taskDto != null) {
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+            }
         }
         updateTaskDtoList(taskDtos);
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        for (TaskDto taskDto2 : taskDtos) {
+            int score = taskDto2.getScore();
+            TaskDto tDto = createTaskDto(taskDto2, taskDto2.getUserId(), score);
+            taskDtoList.add(tDto);
+        }
+        taskService.createTasks(taskDtoList);
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
@@ -1143,7 +1185,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
         String todayDate = Formatter.formatDateTime(inspecDate, "dd/MM/yyyy");
         String todayTime = Formatter.formatDateTime(inspecDate, "HH:mm:ss");
-        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
+        AppGrpPremisesDto appGrpPremisesDto = getEmailAppGrpPremisesByCorrId(appPremCorrId);
         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
@@ -1167,9 +1209,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             html.append(' ');
             if(!StringUtil.isEmpty(hciName)){
                 html.append(hciName);
-                html.append(", ");
             }
             if(!StringUtil.isEmpty(hciCode)){
+                html.append(", ");
                 html.append(hciCode);
             }
             hciNameCode = html.toString();
@@ -1207,7 +1249,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return map;
     }
 
-    private void createMessage(String url, String appNo, HashMap<String, String> maskParams, Map<String, Object> map, List<ApplicationDto> applicationDtos) {
+    private void createMessage(String url, String appNo, Map<String, Object> map, List<ApplicationDto> applicationDtos) {
         List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
             String serviceId = applicationDto.getServiceId();
@@ -1223,9 +1265,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         emailParam.setTemplateContent(map);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setRefId(appNo);
-        emailParam.setMaskParams(maskParams);
         emailParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(emailParam);
     }
@@ -1234,5 +1275,53 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationViewService.updateApplicaiton(applicationDto);
+    }
+
+    public AppGrpPremisesDto getEmailAppGrpPremisesByCorrId(String appCorrId) {
+        AppGrpPremisesDto appGrpPremisesDto = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+            appGrpPremisesDto.setHciName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciCode())) {
+            appGrpPremisesDto.setHciCode("");
+        }
+        setAddressByPremises(appGrpPremisesDto);
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
+        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            appGrpPremisesDto.setOffSiteBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setOffSiteStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setOffSiteBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setOffSiteFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
+        }
+        return appGrpPremisesDto;
+    }
+
+    private void setAddressByPremises(AppGrpPremisesDto appGrpPremisesDto) {
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())) {
+            appGrpPremisesDto.setBlkNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getStreetName())) {
+            appGrpPremisesDto.setStreetName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())) {
+            appGrpPremisesDto.setBuildingName("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())) {
+            appGrpPremisesDto.setFloorNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())) {
+            appGrpPremisesDto.setUnitNo("");
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())) {
+            appGrpPremisesDto.setPostalCode("");
+        }
     }
 }

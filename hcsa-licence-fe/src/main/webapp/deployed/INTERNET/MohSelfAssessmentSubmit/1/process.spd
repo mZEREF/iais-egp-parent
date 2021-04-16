@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="MohSelfAssessmentSubmit" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohSelfAssessmentSubmit" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -70,6 +70,13 @@
     <JavaCode defClass="" executor="" methodName="viewSelfAssessment_OnStepProcess_0" name="viewSelfAssessment_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="printChecklist" x="1240" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="printChecklist_OnStepProcess_0" name="printChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SelfAssessmentListBefore" stageIndicator="" x="480" y="100">
@@ -85,6 +92,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1200" y="140">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SelfAssessmentPrintPage" stageIndicator="" x="1300" y="530">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -180,6 +193,18 @@
   <SynchronousLink destinationName="/Pages/WebPage/SelfAssessmentActual" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/viewSelfAssessment" style="oblique">
    <position>{(620,390)(760,550)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/printChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(800,260)(1260,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SelfAssessmentPrintPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/printChecklist" style="oblique">
+   <position>{(1260,390)(1320,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/SelfAssessmentPrintPage" style="rectanular">
+   <position>{(1320,550)(1380,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(1380,760)(840,1060)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge4" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="720" y="860">
@@ -196,6 +221,7 @@
    <SwitchCase component="/Steps/AutomaticStep/loadChecklist" value="&quot;loadSelfAssessment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/submitAllSelfAssessment" value="&quot;submitAllSelfAssessment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/viewSelfAssessment" value="&quot;viewSelfAssessment&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/printChecklist" value="&quot;printChecklist&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="780" y="670">
    <Description/>
@@ -203,6 +229,10 @@
    <SwitchCase component="/Merges/Merge/Merge2" value="&quot;doBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/switchNextStep" value="&quot;switchNextStep&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/clearAnswer" value="&quot;clearAnswer&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="1360" y="740">
+   <Description/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;doBack&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

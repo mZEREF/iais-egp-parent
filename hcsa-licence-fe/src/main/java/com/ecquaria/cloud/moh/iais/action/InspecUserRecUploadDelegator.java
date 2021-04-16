@@ -196,6 +196,14 @@ public class InspecUserRecUploadDelegator {
         InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String actionValue = mulReq.getParameter("actionValue");
+        String uploadRemarks = mulReq.getParameter("uploadRemarks");
+        inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
+        if (!StringUtil.isEmpty(uploadRemarks)) {
+            inspecUserRecUploadDto.setRemarksMsg("");
+        } else {
+            String remarksError = mulReq.getParameter("remarksError");
+            inspecUserRecUploadDto = setRemarksMsgByRequest(inspecUserRecUploadDto, remarksError);
+        }
         //get file from page
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         //do validate
@@ -235,20 +243,29 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
 
+    private InspecUserRecUploadDto setRemarksMsgByRequest(InspecUserRecUploadDto inspecUserRecUploadDto, String remarksError) {
+        if(StringUtil.isEmpty(inspecUserRecUploadDto.getRemarksMsg())) {
+            inspecUserRecUploadDto.setRemarksMsg(remarksError);
+        }
+        return inspecUserRecUploadDto;
+    }
+
     private Map<String, String> doValidateByRecFile(InspecUserRecUploadDto inspecUserRecUploadDto, MultipartHttpServletRequest mulReq,
                                                     Map<String, String> errorMap, String actionValue, CommonsMultipartFile file, InspSetMaskValueDto inspSetMaskValueDto) {
         String uploadRemarks = mulReq.getParameter("uploadRemarks");
-        inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         int uploadRemarksLen = uploadRemarks.length();
         String errorKey = "recFile";
 
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
+            inspecUserRecUploadDto.setRemarksMsg("");
+            if(StringUtil.isEmpty(uploadRemarks)) {
+                errorMap.put("remarks", "GENERAL_ERR0006");
+            } else if (300 < uploadRemarksLen) {
+                errorMap.put("remarks", "UC_INSP_ERR011");
+            }
             if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
                 errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Attachments","field"));
                 return errorMap;
-            }
-            if(300 < uploadRemarksLen){
-                errorMap.put("remarks", "UC_INSP_ERR011");
             }
         } else {
             int sysFileSize = inspSetMaskValueDto.getSqlFileSize();

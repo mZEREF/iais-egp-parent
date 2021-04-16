@@ -9,11 +9,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -54,19 +55,20 @@ import java.util.Map;
 
 @Slf4j
 public final class ChecklistHelper {
+    private final static Integer FILE_NAME_LENGTH = 100;
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
-
+        if (file != null){
+            String originalFileName = file.getOriginalFilename();
+            if (!FileUtils.isExcel(originalFileName)){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
+                return true;
+            }
+        }
 
         if (file == null || file.isEmpty()){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0020"));
-            return true;
-        }
-
-        String originalFileName = file.getOriginalFilename();
-        if (!FileUtils.isExcel(originalFileName)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR040"));
             return true;
         }
 
@@ -125,7 +127,7 @@ public final class ChecklistHelper {
             }
         }
 
-        List<ConfigExcelItemDto> allItem = excelTemplate.getExcelTemplate();
+        List<ChecklistConfigExcel> allItem = excelTemplate.getExcelTemplate();
 
         if (IaisCommonUtils.isEmpty(allItem)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR017"));
@@ -268,7 +270,7 @@ public final class ChecklistHelper {
             return;
         }
 
-        Map<String, Object> map = new HashMap(11);
+        Map<String, Object> map = new HashMap(12);
         map.put("OFFICER_NAME", AppConsts.MOH_AGENCY_NAME);
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         map.put("GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
@@ -300,7 +302,7 @@ public final class ChecklistHelper {
             try {
                 MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
                 String subject = msgTemplate.getTemplateName();
-                subject = subject.replace("%s", refNum);
+                subject = MsgUtil.getTemplateMessageByContent(subject, map);
                 String messageContent = msgTemplate.getMessageContent();
                 String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
@@ -310,7 +312,21 @@ public final class ChecklistHelper {
                 emailDto.setSender(mailSender);
                 emailDto.setReceipts(eList);
                 emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-                emailClient.sendNotification(emailDto).getEntity();
+                if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus())) {
+                    emailClient.sendNotification(emailDto).getEntity();
+                }
+                log.info("-----------do send sms for check list change-------------");
+                msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST_SMS);
+                subject = msgTemplate.getTemplateName();
+                SmsDto smsDto = new SmsDto();
+                smsDto.setSender(mailSender);
+                smsDto.setContent(MsgUtil.getTemplateMessageByContent(subject, map));
+                smsDto.setOnlyOfficeHour(true);
+                if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus()) && !StringUtil.isEmpty(orgUserDto.getMobileNo())) {
+                    List<String> recipts = IaisCommonUtils.genNewArrayList();
+                    recipts.add(orgUserDto.getMobileNo());
+                    emailClient.sendSMS( recipts,smsDto,NotificationHelper.RECEIPT_TYPE_SMS_APP).getEntity();
+                }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             } catch (TemplateException e) {

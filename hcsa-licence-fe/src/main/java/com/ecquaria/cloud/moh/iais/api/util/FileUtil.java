@@ -12,8 +12,11 @@
  */
 package com.ecquaria.cloud.moh.iais.api.util;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import ecq.commons.config.Config;
+import com.jcraft.jsch.ChannelSftp;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -30,6 +33,8 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * FileUtil.java
@@ -75,20 +80,39 @@ public class FileUtil {
 			}
 		}
 	}
+	public static boolean writeToFile(String path,String fileName,String data){
+		boolean result = false;
+		if (fileName == null || fileName.trim().length() == 0){
+			return result;
+		}
+		File f = MiscUtil.generateFile(path,fileName);
+		return writeToFileFileByData(f,data);
+	}
 
 	public static boolean writeToFile(String fileName, String data) {
 		boolean result = false;
 		if (fileName == null || fileName.trim().length() == 0){
 			return result;
 		}
-			
-		try {
-			generateFolder(fileName.substring(0, fileName.lastIndexOf(Config.get("sftp.linux.seperator"))));
+
+		/*try {
+			generateFolder(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))));
 		} catch (Exception e) {
 			log.error(StringUtil.changeForLog("generate folder for " + fileName + " error!" + e.getMessage()));
 			log.error(e.getMessage(), e);
-		}
-		File f = new File(fileName);
+		}*/
+		log.info(StringUtil.changeForLog("----------- writeToFile fileName :"+ fileName +"-----------"));
+		String[] fileNames = fileName.split(ConfigHelper.getString("giro.sftp.linux.seperator"));
+		File f = MiscUtil.generateFile(fileName.substring(0, fileName.lastIndexOf(ConfigHelper.getString("giro.sftp.linux.seperator"))),fileNames[fileNames.length-1]);
+		log.info(StringUtil.changeForLog("----- file :" +f.toPath() +" ----------"));
+		log.info(StringUtil.changeForLog("----- file.getAbsolutePath() :" +f.getAbsolutePath() +" ----------"));
+		log.info(StringUtil.changeForLog("----- file.getPath() :" +f.getPath() +" ----------"));
+	    return writeToFileFileByData(f,data);
+	}
+
+	public static boolean  writeToFileFileByData( File f,String data){
+		log.info("---------- writeToFileFileByData start ----------");
+		boolean result = false;
 		if (f.exists()){
 			return result;
 		}else if (f.isDirectory()){
@@ -99,10 +123,11 @@ public class FileUtil {
 				if (f.createNewFile()) {
 					pw = new PrintWriter(f);
 					pw.write(data);
+					pw.flush();
 					result = true;
 				}
 			} catch (Exception e) {
-				log.error(StringUtil.changeForLog("write file for " + fileName + " error!" + e.getMessage()));
+				log.error(StringUtil.changeForLog("write file for " + f.getName() + " error!" + e.getMessage()));
 				log.error(e.getMessage(), e);
 				result = false;
 			} finally {
@@ -111,14 +136,17 @@ public class FileUtil {
 				}
 			}
 		}
+		log.info("---------- writeToFileFileByData end ----------");
 		return result;
 	}
-
 	public static void generateFolder(String folderPath) {
 		File f = new File(folderPath);
 		if (!f.isFile() && !f.exists()) {
-			f.mkdirs();
-			log.info(StringUtil.changeForLog("create folder:" + folderPath));
+			 if(f.mkdirs()){
+				 log.info(StringUtil.changeForLog("create folder:" + folderPath));
+			 }else {
+				 log.info(StringUtil.changeForLog("create folder:" + folderPath + " have failed"));
+			 }
 		}
 	}
 
@@ -196,7 +224,7 @@ public class FileUtil {
 	}
 
 	public static String getFileUrl(String filePath) {
-		return Config.get("file.server.url") + filePath;
+		return ConfigHelper.getString("file.server.url") + filePath;
 	}
 
 	public static boolean copyFile(String source, String target) {
@@ -278,5 +306,67 @@ public class FileUtil {
 	}
 
 	private FileUtil() {
+	}
+
+	public static String getContentByPostfixNotation(String postfixNotation,String downPath, List<String> remoteFileNames) throws Exception{
+		if(IaisCommonUtils.isEmpty(remoteFileNames)){
+			return "";
+		}
+		for(String remoteFileName : remoteFileNames){
+			if(remoteFileName.contains(postfixNotation)){
+				return FileUtil.getString(downPath + remoteFileName);
+			}
+		}
+		return "";
+	}
+
+	public static List<String> getRemoteFileNames(String fileName, String remotePath){
+		File[] files = new File(remotePath).listFiles();
+		if(files == null){
+			return null;
+		}
+		List<String> remoteFileNames = new ArrayList<>(3);
+		for(File file :files) {
+			String sftpName = file.getName();
+			if (sftpName.indexOf(fileName) != -1) {
+				remoteFileNames.add(sftpName);
+			}
+
+			String sftpfullName = sftpName;
+			String[] sftpfullNmaes = sftpName.split("\\.");
+			if (sftpfullNmaes != null && sftpfullNmaes.length > 0) {
+				sftpfullName = sftpfullNmaes[0];
+			}
+			if (fileName.equals(sftpfullName)) {
+				remoteFileNames.clear();
+				remoteFileNames.add(sftpName);
+				break;
+			}
+			//
+		}
+		return remoteFileNames;
+	}
+
+	public static void deleteFilesByFileNames(List<String> fileNames,String downPath){
+		if(!IaisCommonUtils.isEmpty(fileNames)){
+			log.info(StringUtil.changeForLog("------------downpath :" + downPath + "----------------"));
+			File[] files = new File(downPath).listFiles();
+			if(files != null){
+				for(File file :files){
+					for(String fileName : fileNames){
+						if(fileName.equalsIgnoreCase(file.getName())){
+							if(file.isFile()){
+								if(!file.delete()){
+									log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
+								}
+							}
+						}
+					}
+
+				}
+			}else {
+				log.info(StringUtil.changeForLog("------------downpath :" + downPath + " is no files----------------"));
+			}
+		}
 	}
 }

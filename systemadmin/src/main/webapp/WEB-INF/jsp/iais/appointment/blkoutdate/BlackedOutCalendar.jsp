@@ -75,6 +75,12 @@
 
     </iais:section>
 
+
+
+
+
+
+
     <div class="application-tab-footer">
       <div class="row">
         <div class="col-xs-12 col-md-11">
@@ -128,7 +134,28 @@
                             <td><iais:code code="${blackDateAttr.status}"></iais:code></td>
                             <td>
                               <input type="hidden" id="blackDateId" name="blackDateId" value="">
-                              <button type="button"  id="deleteBtnId" name="blackDateId"  onclick="doDelete('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                              <div class="modal fade" id="DeleteTemplateModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+<%--                                    <div class="modal-header">--%>
+<%--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--                                    </div>--%>
+                                    <div class="modal-body">
+                                      <div class="row">
+                                        <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to delete?</span></div>
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                      <button type="button" class="btn btn-primary" onclick="doDelete('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')" >Confirm</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <button type="button"  id="deleteBtnId" name="blackDateId" class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal${status.index}" >Delete</button>
                               <button type="button" id="updateBtnId" name="blackDateId"  onclick="doUpdate('<iais:mask name="blackDateId" value="${blackDateAttr.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
@@ -173,7 +200,7 @@
 
   function doDelete(val){
     $('#blackDateId').val(val);
-      SOP.Crud.cfxSubmit("mainForm", "doDelete");
+    SOP.Crud.cfxSubmit("mainForm", "doDelete");
   }
 
   function doUpdate(val){

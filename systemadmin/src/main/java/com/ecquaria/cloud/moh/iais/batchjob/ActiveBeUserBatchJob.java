@@ -49,7 +49,7 @@ public class ActiveBeUserBatchJob {
             List<OrgUserDto> orgUserDtosInActive = intranetUserClient.searchInActiveBeUser().getEntity();
             if(!IaisCommonUtils.isEmpty(orgUserDtosInActive)){
                 for(OrgUserDto orgUserDto : orgUserDtosInActive){
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
                 }
                 intranetUserService.createIntranetUsers(orgUserDtosInActive);
             }

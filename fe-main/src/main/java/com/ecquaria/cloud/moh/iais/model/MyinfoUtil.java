@@ -14,10 +14,10 @@
 package com.ecquaria.cloud.moh.iais.model;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
 import org.jose4j.jwa.AlgorithmConstraints;
@@ -77,13 +77,13 @@ public class MyinfoUtil {
 						AlgorithmConstraints.ConstraintType.WHITELIST,
 						jwe.getEncryptionMethodHeaderParameter())
 		);
-		String  keyStore = Config.get("myinfo.jwe.priclientkey");
+		String  keyStore = ConfigHelper.getString("myinfo.jwe.priclientkey");
 		jwe.setKey(getPrivateKey(keyStore));
 
 		encipheredData = jwe.getPlaintextString();
 		log.info(StringUtil.changeForLog("Get the payload from the JWE =======>" + encipheredData));
 
-		String  jwskeyStore = Config.get("myinfo.jws.pubclientkey");
+		String  jwskeyStore = ConfigHelper.getString("myinfo.jws.pubclientkey");
 		PublicKey pubKey = getPublicKey(jwskeyStore);
 		// Create a new JsonWebSignature
 		JsonWebSignature jws = new JsonWebSignature();
@@ -129,7 +129,7 @@ public class MyinfoUtil {
 
 	public static String getBaseString( String idNum, List<String> attrs, String clientId, String singpassEserviceId, String txnNo){
 		StringBuilder sb = new StringBuilder();
-			String ipAddress = Config.get("myinfo.ip.address.basestring.gateway");
+			String ipAddress = ConfigHelper.getString("myinfo.ip.address.basestring.gateway");
 			sb.append("GET&").append(ipAddress);
 			String idnum = "/" + idNum + "/";
 			sb.append(idnum);

@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public interface ApplicationService {
       * @Descripation: Hcsa Application Request Information And Send Email
       */
     void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
-    void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto, HashMap<String, String> maskParams,String linkURL) throws Exception;
+    void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto, HashMap<String, String> maskParams,String linkURL,String externalRemarks) throws Exception;
     ApplicationDto getApplicationBytaskId(String ref);
 
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId,String status);
@@ -70,4 +71,10 @@ public interface ApplicationService {
     boolean closeTaskWhenWhAppApprove(String appId);
 
     EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);
+
+    void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception;
+
+    void rollBackInspAo1InspLead(BaseProcessClass bpc, String roleId, String routeBackStatus, String wrkGpId, String userId) throws CloneNotSupportedException;
+
+    void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
 }

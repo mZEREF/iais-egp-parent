@@ -214,9 +214,6 @@ public class MasterCodeDelegator {
                     validationResult.setHasErrors(true);
                 }
             }
-            if (AppConsts.COMMON_STATUS_ACTIVE.equals(masterCodeDto.getStatus())){
-                    validationResult.setHasErrors(true);
-            }
         }
         if (masterCodeDto.getSequence() != null) {
             if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
@@ -252,12 +249,11 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
-                }
+
             }
             if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                 validationResult.setHasErrors(true);
@@ -467,17 +463,17 @@ public class MasterCodeDelegator {
                 Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
                 {
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Category","field");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Category","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Description","field");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Description","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Value","field");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Code Value","field");
                     errItems.add(errMsg);
                     result = true;
                 }else if(masterCodeToExcelDto.getCodeValue().length() >25) {
@@ -488,13 +484,13 @@ public class MasterCodeDelegator {
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Status","field");
                     errItems.add(errMsg);
                     result = true;
                 }
+                String errSequenceMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Sequence","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getSequence())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Sequence","field");
-                    errItems.add(errMsg);
+                    errItems.add(errSequenceMsg);
                     result = true;
                 }else {
                     try{
@@ -508,36 +504,33 @@ public class MasterCodeDelegator {
                             Integer.parseInt(masterCodeToExcelDto.getSequence());
                         }
                     }catch (Exception e){
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(errSequenceMsg);
                         result = true;
                     }
 
 
                 }
+                String errStartDtMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective Start Date","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
-                    errItems.add(errMsg);
+                    errItems.add(errStartDtMsg);
                     result = true;
                 }else{
                     try{
                         codeEffFrom = masterCodeToExcelDto.getEffectiveFrom();
                     }catch (Exception e){
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(errStartDtMsg);
                         result = true;
                     }
                 }
+                String errEndDtMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Effective End Date","field");
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveTo())){
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
-                    errItems.add(errMsg);
+                    errItems.add(errEndDtMsg);
                     result = true;
                 }else{
                     try{
                         codeEffTo = masterCodeToExcelDto.getEffectiveTo();
                     }catch (Exception e){
-                        String errMsg =  MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(errEndDtMsg);
                         result = true;
                     }
                 }
@@ -567,12 +560,12 @@ public class MasterCodeDelegator {
                     if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         if(masterCodeToExcelDto1.getFilterValue() != null){
-                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + masterCodeToExcelDto1.getFilterValue()));
+                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1  ===========> " + masterCodeToExcelDto1.getFilterValue()));
                         }
                         if(masterCodeToExcelDto1.getRemakes() != null) {
-                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + masterCodeToExcelDto1.getRemakes()));
+                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1  ===========> " + masterCodeToExcelDto1.getRemakes()));
                         }
-                        log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + JsonUtil.parseToJson(masterCodeToExcelDto1)));
+                        log.info(StringUtil.changeForLog("masterCodeToExcelDto1  ===========> " + JsonUtil.parseToJson(masterCodeToExcelDto1)));
                         if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
                             String errMsg = MessageUtil.getMessageDesc("MCUPERR006");
                             errItems.add(errMsg);
@@ -590,6 +583,8 @@ public class MasterCodeDelegator {
                         }
                     }
                 }
+                String err0006Msg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -598,16 +593,14 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(err0006Msg);
                         result = true;
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
                     String uploadVersion = masterCodeToExcelDto.getVersion();
                     if( !StringUtil.stringIsFewDecimal(uploadVersion,2)){
-                        String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
-                        errItems.add(errMsg);
+                        errItems.add(err0006Msg);
                         result = true;
                     }else {
                         if(uploadVersion.length() > 4){
@@ -619,7 +612,7 @@ public class MasterCodeDelegator {
                         }else {
                             double inputVer = Double.parseDouble(uploadVersion);
                             if(inputVer >= 10){
-                                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                                String errMsg = MessageUtil.getMessageDesc("MCUPERR010");
                                 errItems.add(errMsg);
                                 result = true;
                             }else {
@@ -639,7 +632,7 @@ public class MasterCodeDelegator {
                         }
                     }
                 }else {
-                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Version","field");
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0046","Version","field");
                     errItems.add(errMsg);
                     result = true;
                 }
@@ -682,6 +675,18 @@ public class MasterCodeDelegator {
         }
     }
 
+    private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
+        String[] split = originalFilename.split("\\.");
+        if (!StringUtil.isEmpty(originalFilename)) {
+            if (split[0].length() > 100) {
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
+                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            }
+        }
+    }
+
     public void checkUploadFile(BaseProcessClass bpc) {
         List<Map<String,List<String>>> errResult = (List<Map<String, List<String>>>) ParamUtil.getSessionAttr(bpc.request,"ERR_RESULT_LIST_MAP");
         if (errResult != null && errResult.size()>0){
@@ -715,6 +720,10 @@ public class MasterCodeDelegator {
         logAboutStart("doDelete");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date);
+        String dateReplace = dateStr.replace(" "," at ");
+        String ackMsg = "";
         if ("doDelete".equals(type)) {
             String masterCodeId = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
@@ -733,6 +742,7 @@ public class MasterCodeDelegator {
                     masterCodeDto.setUpdateAt(new Date());
                     syncMasterCodeList.add(masterCodeDto);
                     masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                    ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
                 } else {
                     masterCodeService.deleteMasterCodeById(masterCodeId);
                     List<MasterCodeDto> syncMasterCodeList = IaisCommonUtils.genNewArrayList();
@@ -740,14 +750,11 @@ public class MasterCodeDelegator {
                     masterCodeDto.setNeedDelete(true);
                     syncMasterCodeList.add(masterCodeDto);
                     masterCodeService.syncMasterCodeFe(syncMasterCodeList);
+                    ackMsg = MessageUtil.replaceMessage("ACKMCM005",dateReplace,"Date");
                 }
                 MasterCodeUtil.refreshCache();
             }
         }
-        Date date = new Date();
-        String dateStr = Formatter.formatDateTime(date);
-        String dateReplace = dateStr.replace(" "," at ");
-        String ackMsg = MessageUtil.replaceMessage("ACKMCM003",dateReplace,"Date");
         ParamUtil.setRequestAttr(request,"DELETE_ACKMSG",ackMsg);
     }
 
@@ -817,11 +824,9 @@ public class MasterCodeDelegator {
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getSequence() != null){
-                if (masterCodeDto.getSequence() == -1){
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2){
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2){
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if (AppConsts.COMMON_STATUS_IACTIVE.equals(masterCodeDto.getStatus())){
@@ -993,11 +998,9 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getSequence() != null) {
-                if (masterCodeDto.getSequence() == -1) {
+                if (masterCodeDto.getSequence() == -1 || masterCodeDto.getSequence() == -2) {
                     errorMap.put("sequence", mcuperrErrMsg8);
-                }
-                if (masterCodeDto.getSequence() == -2) {
-                    errorMap.put("sequence", mcuperrErrMsg8);
+                    masterCodeDto.setSequence(null);
                 }
             }
             if(errorMap != null && errorMap.size() > 0){
@@ -1101,11 +1104,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceEd)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }
@@ -1161,11 +1165,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeCategorySequence)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, "codeCategorySequence") * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, "codeCategorySequence") * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }
@@ -1194,7 +1199,9 @@ public class MasterCodeDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
+        String originalFilename = file.getOriginalFilename();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        fileValidation(request,originalFilename,errorMap);
         if (file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -1211,7 +1218,7 @@ public class MasterCodeDelegator {
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0004");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0022");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;

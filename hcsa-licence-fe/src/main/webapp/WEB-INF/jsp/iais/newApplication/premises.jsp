@@ -124,7 +124,7 @@
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
   <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
-  <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -141,8 +141,9 @@
         </div>
       </div>
     </div>
-  </div>
-<%--  <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>--%>
+  </div>--%>
+  <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
@@ -150,6 +151,7 @@
 <script type="text/javascript">
     var init;
     $(document).ready(function() {
+        $('#postalCodePop').modal('hide');
         cl();
         preperChange();
         $("select[name='onSiteAddressType']").trigger('change');
@@ -186,13 +188,26 @@
 
         otherLic();
 
-        addPubHolDay();
+        addPubHolDayHtml();
 
         removePH();
 
         addOperational();
 
         operationDel();
+
+        addWeeklyHtml();
+
+        addEventHtml();
+
+        removeWeekly();
+
+        removePh();
+
+        removeEvent();
+
+        clickAllDay();
+
         //Binding method
         $('#Back').click(function(){
             showWaiting();
@@ -208,59 +223,28 @@
             $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',$('#selectDraftNo').val());
         });
-<%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
-        <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
-        readonlyPartPage($('div.premises-content'));
-        $('div.premises-content').each(function () {
-            $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-            $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
-            $(this).find('.addOperational').addClass('hidden');
-            $(this).find('.opDel').addClass('hidden');
-            $(this).find('button.addPubHolDay').addClass('hidden');
-            $(this).find('.removePhBtn').addClass('hidden');
-        });
-        </c:if>
 
-        <c:if test="${AppSubmissionDto.needEditController}">
+        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
-            $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-            $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
-            $(this).find('.addOperational').addClass('hidden');
-            $(this).find('.opDel').addClass('hidden');
-            $(this).find('button.addPubHolDay').addClass('hidden');
-            $(this).find('.removePhBtn').addClass('hidden');
+            handlePage($(this));
+
         });
         </c:if>
 
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
           if($("#errorMapIs").val()=='error'){
-              var premContent =$('#mainPrem');
-              <!--hidden edit btn -->
-              premContent.find('.premises-summary-preview').addClass('hidden');
-              <!--unDisabled -->
-              unDisabledPartPage(premContent);
-              unreadonlyPartPage(premContent);
-              premContent.find('.retrieveAddr').removeClass('hidden');
-              $('#isEditHiddenVal').val('1');
-              premContent.find('input[name="isPartEdit"]').val('1');
-              <!--replace fire issued date -->
-              var fireIssueDate = premContent.find('.fireIssuedDate').val();
-              replaceFireIssueDateHtml(premContent,fireIssueDate);
-              <!--remove ph hidden-->
-              premContent.find('.addPubHolDay').removeClass('hidden');
-              premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
-              premContent.find('.addOperational').removeClass('hidden');
-              premContent.find('.opDel').removeClass('hidden');
+              $('.premisesEdit').trigger('click');
           }
         </c:if>
 
+        var mainContent =$('.main-content');
+        mainContent.find('input.allDay:checked').each(function (k) {
+            console.log(k);
+            var $allDayDiv = $(this).closest('div.col-md-2');
+            disabeleForAllDay($allDayDiv);
+        });
 
-        <%--<c:if test="${PageCanEdit}">--%>
-        <%--var $PremEle = $('.premises-content');--%>
-        <%--unreadonlyPartPage($PremEle);--%>
-        <%--</c:if>--%>
-        <!-- init end-->
         init = 1;
     });
 
@@ -308,6 +292,32 @@
       submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
   }
 
+  function postalCodeCon(){
+      $('#postalCodePop').modal('hide');
+    }
+
+  var handlePage = function($Ele){
+      $Ele.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+      $Ele.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+      $Ele.find('.addOperational').addClass('hidden');
+      $Ele.find('.opDel').addClass('hidden');
+      $Ele.find('button.addPubHolDay').addClass('hidden');
+      $Ele.find('.removePhBtn').addClass('hidden');
+      $Ele.find('.weeklyDel').addClass('hidden');
+      $Ele.find('.pubHolidayDel').addClass('hidden');
+      $Ele.find('.eventDel').addClass('hidden');
+      $Ele.find('.addWeeklyDiv').addClass('hidden');
+      $Ele.find('.addPhDiv').addClass('hidden');
+      $Ele.find('.addEventDiv').addClass('hidden');
+      $Ele.find('input.allDay').attr('disabled',true);
+      //for rfi
+      $Ele.find('.date_picker').attr('disabled',true);
+      $Ele.find('.date_picker').addClass('disabled-placeHolder');
+      $Ele.find('a.retrieveAddr').addClass('hidden');
+      $Ele.find('span.multi-select-button').css('border-color','#ededed');
+      $Ele.find('span.multi-select-button').css('color','#999');
+      $Ele.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+  }
 </script>
 
 

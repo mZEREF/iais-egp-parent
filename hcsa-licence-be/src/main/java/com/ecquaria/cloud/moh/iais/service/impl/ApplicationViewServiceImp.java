@@ -3,16 +3,24 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -23,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -31,15 +38,26 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
@@ -65,6 +83,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     LicenceService licenceService;
+    @Autowired
+    private LicenceViewService licenceViewService;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -146,15 +166,68 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId) {
+        return getApplicationViewDtoByCorrId(appCorId,null);
+    }
+
+    @Override
+    public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId,String currentRoleId) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(appCorId);
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        Map<String,Integer> map=new HashMap<>();
+        Map<String,Integer> map1=new HashMap<>();
+        if(applicationDto!=null){
+            AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
+            List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            AtomicInteger i=new AtomicInteger(1);
+            if(appSvcDocDtoLit!=null){
+                appSvcDocDtoLit.forEach((v)->{
+                    String appGrpPersonId = v.getAppGrpPersonId();
+                    if(appGrpPersonId!=null){
+                        Integer integer = map.get(appGrpPersonId);
+                        if(integer==null){
+                            map.put(appGrpPersonId,i.get());
+                            i.getAndIncrement();
+                        }else {
+                            map.put(appGrpPersonId,1);
+                        }
+                        map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
+                    }
+                });
+            }
+        }
+
         List<AppSupDocDto> appSupDocDtos = applicationViewDto.getAppSupDocDtoList();
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFile()));
+                    if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
+                        switch (docTitleList.get(j).getDupForPerson()){
+                            case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;
+                            case "2" :   appSupDocDtos.get(i).setFile("Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "4" :   appSupDocDtos.get(i).setFile("Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "8" :   appSupDocDtos.get(i).setFile("MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                        }
+                    }else if(docTitleList.get(j).getDupForPerson()!=null && "1".equals(docTitleList.get(j).getDupForPrem())){
+                        switch (docTitleList.get(j).getDupForPerson()){
+                            case "1" :   appSupDocDtos.get(i).setFile("Premises 1: Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "2" :   appSupDocDtos.get(i).setFile(" Premises 1: Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "4" :   appSupDocDtos.get(i).setFile("Premises 1: Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "8" :   appSupDocDtos.get(i).setFile("Premises 1: MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                        }
+                    }else if(docTitleList.get(j).getDupForPerson()==null && "1".equals(docTitleList.get(j).getDupForPrem())){
+                        appSupDocDtos.get(i).setFile("Premises 1 :"+docTitleList.get(j).getDocTitle());
+                    }else {
+                        appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                    }
                 }
             }
             for (int j = 0; j <userNameList.size() ; j++) {
@@ -250,6 +323,19 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+        //RollBackHistory remove currentRoleId
+        log.info(StringUtil.changeForLog("The currentRoleId is -->:"+currentRoleId));
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationViewDto.getRollBackHistroyList();
+        List<AppPremisesRoutingHistoryDto> newAppPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(currentRoleId)&&!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
+                if(!currentRoleId.equals(appPremisesRoutingHistoryDto.getRoleId())){
+                    newAppPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The newAppPremisesRoutingHistoryDtos.size() is -->:"+newAppPremisesRoutingHistoryDtos.size()));
+        applicationViewDto.setRollBackHistroyList(newAppPremisesRoutingHistoryDtos);
         return applicationViewDto;
     }
 
@@ -288,8 +374,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     applicationViewDto.setIdTypeSelect(idTypeSelOp);
                 }
                 //file
-                AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                 if(appealSpecialDocDto != null){
+                    Collections.sort(appealSpecialDocDto,(s1,s2)->(s1.getIndex().compareTo(s2.getIndex())));
                     applicationViewDto.setFeAppealSpecialDocDto(appealSpecialDocDto);
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();

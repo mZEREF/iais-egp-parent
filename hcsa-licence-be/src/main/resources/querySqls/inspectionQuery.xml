@@ -32,8 +32,12 @@
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
              JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
              WHERE 1 = 1
-             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+             <#if workGroup_list??> and ${workGroup_list} </#if>
+             <#if commonPoolRoleId??> and T7.ROLE_ID = :commonPoolRoleId </#if>
+             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+             and T7.USER_ID is NULL
             ) T5
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
@@ -47,8 +51,9 @@
 
     <sql key = "supervisorPoolSearch" remarks = "Leader Assign Task For Members">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE FROM
-            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.WRK_GRP_ID FROM
+            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
+            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
@@ -75,12 +80,65 @@
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
              WHERE 1 = 1
-             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+             <#if workGroup_list??> and ${workGroup_list} </#if>
+             <#if roleId_List??> and ${roleId_List} </#if>
+             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
-            <#if appCorId_list??> and CONVERT(NVARCHAR(36), T5.APP_PREM_CORR_ID) IN ${appCorId_list} </#if>
+            <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if commonPoolStatus??> and T5.USER_ID is NULL</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+
+
+    <sql key = "reassignPoolSearch" remarks = "Leader Assign Task For Members">
+        <![CDATA[
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.WRK_GRP_ID FROM
+            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
+            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
+             CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS PREMISE
+             FROM APP_PREMISES_CORRELATION T1
+             JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.USER_ID is NOT NULL
+             WHERE 1 = 1
+             <#if workGroup_list??> and ${workGroup_list} </#if>
+             <#if roleId_List??> and ${roleId_List} </#if>
+             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
@@ -94,10 +152,11 @@
             SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
             FROM TASK T1
             WHERE 1 = 1
-            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.REF_NO) IN ${appCorrId_list} </#if>
+            <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
             <#if workGroupId??> and CONVERT(NVARCHAR(36), T1.WRK_GRP_ID) IN ${workGroupId} </#if>
             <#if userId??> and T1.USER_ID = :userId </#if>
+            <#if reassignFilterAppNo??> and charindex(:reassignFilterAppNo, T1.APPLICATION_NO) >0 </#if>
         ]]>
     </sql>
 
@@ -131,8 +190,10 @@
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
+             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
              WHERE 1 = 1
-             <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
+             <#if curStageId??> and T7.TASK_KEY = :curStageId </#if>
+             <#if taskUserId??> and T7.USER_ID = :taskUserId </#if>
             ) T5
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
@@ -149,9 +210,10 @@
             SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
             FROM TASK T1
             WHERE 1 = 1
-            <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.REF_NO) IN ${appCorrId_list} </#if>
+            <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
             <#if userId??> and T1.USER_ID = :userId </#if>
+            <#if systemPoolFilterAppNo??> and charindex(:systemPoolFilterAppNo, T1.APPLICATION_NO) >0 </#if>
         ]]>
     </sql>
 
@@ -227,10 +289,10 @@
                left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
-               on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               on  t6.INS_GRP_ID = t7.ID left join  (SELECT * FROM licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR (t1.STATUS != 'AUTACPS001'))
             <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
-            <#if postalCode??> and charindex(:postalCode,t5.POSTAL_CODE)!=0 </#if>
+            <#if postalCode??> and t5.POSTAL_CODE like repalcePostalCodeSearch </#if>
             <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>
             <#if premType??> and charindex(:premType,t5.PREMISES_TYPE) != 0 </#if>
             <#if isTcuNeeded??> and t3.IS_TCU_NEEDED = :isTcuNeeded </#if>
@@ -313,7 +375,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               left join  (SELECT * FROM licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001') )    tableall
         ]]>
     </sql>
@@ -371,7 +433,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               left join  (SELECT * FROM hcsal.dbo.licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
+               left join  (SELECT * FROM licence_app_risk_associated_information WHERE STATUS ='CMSTAT001') t8 on t8.LIC_PREMISES_ID = t3.ID
                WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001' ) tableall
                WHERE 1=1
                <#if svcCodes??> and svc_code IN ${svcCodes} </#if>
@@ -387,7 +449,7 @@
                     JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                     JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
-                    <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T2.ID) IN ${appCorrId_list} </#if>
+                    <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 ) T5
             WHERE 1 = 1
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>

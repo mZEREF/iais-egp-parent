@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ResponseForInformationDelegator
@@ -184,7 +185,7 @@ public class ResponseForInformationDelegator {
                 info.setUserReply(userReply);
             }
         }catch (Exception e){
-            log.info(e.getMessage(),e);
+            log.info("no info");
         }
         ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
 
@@ -242,7 +243,13 @@ public class ResponseForInformationDelegator {
                         errMap.put("UploadFile"+doc.getId(),errDocument);
                     }else{
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,fileSize);
-                        //size
+                        //name size
+                        int fileNameLen= Objects.requireNonNull(file.getOriginalFilename()).length();
+                        if(fileNameLen>100){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+                        }
+                        //file size
                         if(!booleanMap.get("fileSize")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
@@ -281,6 +288,10 @@ public class ResponseForInformationDelegator {
                         if(!map.get("fileType")){
                             doc.setPassDocValidate(false);
                             errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                        }
+                        if(filename.length()>100){
+                            doc.setPassDocValidate(false);
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.getMessageDesc("GENERAL_ERR0022"));
                         }
                     }
                 }

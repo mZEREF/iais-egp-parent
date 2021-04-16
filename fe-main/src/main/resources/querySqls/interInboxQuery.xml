@@ -31,6 +31,7 @@
                 application_no,
                 app_grp_id,
                 (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                has_submit_pref_date,
                 app_type,
                 status,
                 service_id,
@@ -56,25 +57,28 @@
             FROM (SELECT
                     app.id,
                     app.application_no,
+                    app.has_submit_pref_date,
                     app.app_grp_id,
                     (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                    (select PMT_STATUS from application_group as ag where ag.ID =  app.APP_GRP_ID) as pmtStatus,
                     app.app_type,
                     app.status,
                     app.service_id,
                     repalceService  as code,
                     app.self_assmt_flag,
                     app.is_fast_tracking,
-                    app.created_dt,
+                    (select CREATED_DT from application_group as ag where ag.ID =  app.APP_GRP_ID) as created_dt,
                     app.version
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
                 on app.APPLICATION_NO = app2.application_no and app.version = app2.version
                 union
                 select
-                    A.ID as id,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
+                    A.ID as id,A.DRAFT_NO AS application_no,1 as has_submit_pref_date,A.app_grp_id,A.licensee_id,'PMTDF001',A.app_type,
+                    (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
                 from
                     app_grp_submission_draft AS A
-                where  A.status = 'CMSTAT001') AS B
+                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B
              WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
              AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
              AND B.STATUS != 'APST074'
@@ -137,8 +141,8 @@
                 JOIN lic_premises lp on lp.LICENCE_ID  = lic.ID
                 JOIN premises p on p.ID  = lp.PREMISES_ID
                 JOIN (
-                	select count(*) as premCount,lp2.LICENCE_ID from hcsal.dbo.lic_premises lp2
-                	JOIN hcsal.dbo.premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
+                	select count(*) as premCount,lp2.LICENCE_ID from lic_premises lp2
+                	JOIN premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
                 )p3 on lic.id = p3.licence_id
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
@@ -167,7 +171,7 @@
                FROM user_account acc
                JOIN organization org ON acc.ORGANIZATION_ID = org.ID
                JOIN user_role role ON acc.ID = role.USER_ACCT_ID
-                where role.STATUS = 'CMSTAT001'
+                where role.STATUS = 'CMSTAT001' and acc.STATUS != 'CMSTAT002'
                 <#if orgid??>AND org.ID = :orgid</#if>
                 <#if roleid??>AND role.ROLE_ID = :roleid</#if>
 
@@ -213,9 +217,9 @@
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
             SELECT DISTINCT T3.ID
-                FROM hcsal.dbo.key_personnel T1
-                join hcsal.dbo.lic_key_personnel T2 on T1.ID = T2.PERSON_ID
-                join hcsal.dbo.licence T3 on t2.LICENCE_ID = t3.ID
+                FROM key_personnel T1
+                join lic_key_personnel T2 on T1.ID = T2.PERSON_ID
+                join licence T3 on t2.LICENCE_ID = t3.ID
                 AND t3.STATUS = 'LICEST001'
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			    <#if idNo??> AND T1.ID_NO =:idNo</#if>

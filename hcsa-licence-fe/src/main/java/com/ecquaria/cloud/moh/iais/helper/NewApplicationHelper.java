@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
@@ -8,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
@@ -16,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -25,9 +28,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -35,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -44,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
@@ -61,6 +68,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +82,7 @@ import java.util.Map;
 
 @Slf4j
 public class NewApplicationHelper {
-    public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId){
+    public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int premCount = 0 ;
         if(appSvcLaboratoryDisciplinesDtos.isEmpty()){
@@ -91,9 +99,27 @@ public class NewApplicationHelper {
                 if(listDtos.isEmpty()){
                     /*   map.put("checkError","NEW_ERR0012");*/
                 }else {
+                    boolean selectOtherScope = selectOtherScope(listDtos);
+                    String err006=MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field");
+                    if(selectOtherScope){
+                        boolean selectOtherChildrenScope = false;
+                        //check children scope is selected
+                        List<String> childrenConfigIdList = getOtherScopeChildrenIdList(hcsaSvcSubtypeOrSubsumedDtos);
+                        if(!IaisCommonUtils.isEmpty(childrenConfigIdList)){
+                            for(AppSvcChckListDto appSvcChckListDto:listDtos){
+                                if(childrenConfigIdList.contains(appSvcChckListDto.getChkLstConfId())){
+                                    selectOtherChildrenScope = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!selectOtherChildrenScope){
+                            map.put("otherScopeError"+premCount,err006);
+                        }
+                    }
                     for(int i=0;i<listDtos.size();i++){
                         if(NewApplicationConstant.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                            map.put("pleaseIndicateError"+premCount,MessageUtil.replaceMessage("GENERAL_ERR0006",NewApplicationConstant.PLEASEINDICATE,"field"));
+                            map.put("pleaseIndicateError"+premCount,err006);
                         }
 
                         String parentName = listDtos.get(i).getParentName();
@@ -208,7 +234,7 @@ public class NewApplicationHelper {
                         String general_err0041=repLength("ID No.","9");
                         errMap.put("idNo" + i, general_err0041);
                     }
-                    if("FIN".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -222,7 +248,7 @@ public class NewApplicationHelper {
                             }
                         }
                     }
-                    if("NRIC".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -295,8 +321,8 @@ public class NewApplicationHelper {
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        SelectOption idType1 = new SelectOption(OrganizationConstants.ID_TYPE_NRIC, "NRIC");
+        SelectOption idType2 = new SelectOption(OrganizationConstants.ID_TYPE_FIN, "FIN");
         idTypeSelectList.add(idType2);
         idTypeSelectList.add(idType1);
         return idTypeSelectList;
@@ -362,7 +388,10 @@ public class NewApplicationHelper {
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || rfi != null){
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                Object sessionAttr = ParamUtil.getSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                if(sessionAttr==null){
+                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                }
             }
         }
         return appSubmissionDto;
@@ -424,7 +453,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("ID No.","9");
                             oneErrorMap.put("poNRICFIN" + poIndex, general_err0041);
                         }
-                        if("FIN".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
                                 oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
@@ -436,7 +465,7 @@ public class NewApplicationHelper {
                                 }
                             }
                         }
-                        if("NRIC".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
                                 oneErrorMap.put("poNRICFIN"+poIndex,"RFC_ERR0012");
@@ -477,7 +506,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("officeTelNo" + poIndex, general_err0041);
                         }
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                             oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
@@ -543,7 +572,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("Office Telephone No.","8");
                             oneErrorMap.put("deputyofficeTelNo" + dpoIndex, general_err0041);
                         }
-                        if(!officeTelNo.matches("^[6][0-9]{7}$")){
+                        if(!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)){
                             oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                         }
                     }
@@ -554,7 +583,7 @@ public class NewApplicationHelper {
                             String general_err0041=repLength("ID No.","9");
                             oneErrorMap.put("deputyIdNo" + dpoIndex, general_err0041);
                         }
-                        if("FIN".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
                             boolean b = SgNoValidator.validateFin(idNo);
                             if(!b){
                                 oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
@@ -566,7 +595,7 @@ public class NewApplicationHelper {
                                 }
                             }
                         }
-                        if("NRIC".equals(idType)){
+                        if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
                             boolean b1 = SgNoValidator.validateNric(idNo);
                             if(!b1){
                                 oneErrorMap.put("deputyIdNo"+dpoIndex,"RFC_ERR0012");
@@ -714,9 +743,7 @@ public class NewApplicationHelper {
                 sBuffer.append("<span class=\"current\">").append(sortSelOptionList.get(0).getText()).append("</span>");
             }
         }
-        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
+        sBuffer.append("<ul class=\"list\">");
 
         if(!StringUtil.isEmpty(checkedVal)){
             for(SelectOption kv:sortSelOptionList){
@@ -741,19 +768,7 @@ public class NewApplicationHelper {
                 }
             }
         }
-
-        sBuffer.append("</div>")
-                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
-                .append("<div class=\"mCSB_draggerContainer\">")
-                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
-                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
-                .append("</div>")
-                .append("</div>")
-                .append("<div class=\"mCSB_draggerRail\"></div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</ul>")
+        sBuffer.append("</ul>")
                 .append("</div>");
         return sBuffer.toString();
     }
@@ -803,69 +818,30 @@ public class NewApplicationHelper {
         if(appGrpPremisesDto == null){
             return appGrpPremisesDto;
         }
-        String premType = appGrpPremisesDto.getPremisesType();
-        Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-        Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-        if(!StringUtil.isEmpty(wrkTimeFrom)){
-            LocalTime localTimeFrom = wrkTimeFrom.toLocalTime();
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                appGrpPremisesDto.setOffSiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOffSiteStartMM(String.valueOf(localTimeFrom.getMinute()));
+        List<OperationHoursReloadDto> weeklyDtos = appGrpPremisesDto.getWeeklyDtoList();
+        if(!IaisCommonUtils.isEmpty(weeklyDtos)){
+            for(OperationHoursReloadDto weeklyDto:weeklyDtos){
+                setReloadTime(weeklyDto);
             }
         }
-        if(!StringUtil.isEmpty(wrkTimeTo)){
-            LocalTime localTimeTo = wrkTimeTo.toLocalTime();
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
-            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                appGrpPremisesDto.setOffSiteEndHH(String.valueOf(localTimeTo.getHour()));
-                appGrpPremisesDto.setOffSiteEndMM(String.valueOf(localTimeTo.getMinute()));
-            }
 
+        List<OperationHoursReloadDto> phDtos = appGrpPremisesDto.getPhDtoList();
+        if(!IaisCommonUtils.isEmpty(phDtos)){
+            for(OperationHoursReloadDto phDto:phDtos){
+                setReloadTime(phDto);
+            }
         }
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
-            for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
-                if(appPremPhOpenPeriod.getPhDate() != null){
-                    appPremPhOpenPeriod.setPhDateStr(appPremPhOpenPeriod.getPhDate());
+
+        List<AppPremEventPeriodDto> eventDtos = appGrpPremisesDto.getEventDtoList();
+        if(!IaisCommonUtils.isEmpty(eventDtos)){
+            for(AppPremEventPeriodDto eventDto:eventDtos){
+                Date start = eventDto.getStartDate();
+                if(start != null){
+                    eventDto.setStartDateStr(Formatter.formatDate(start));
                 }
-                Time start = appPremPhOpenPeriod.getStartFrom();
-                Time end = appPremPhOpenPeriod.getEndTo();
-                if(!StringUtil.isEmpty(start)){
-                    LocalTime localTimeStart = start.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOffSiteStartFromHH(String.valueOf(localTimeStart.getHour()));
-                        appPremPhOpenPeriod.setOffSiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
-                    }
-                }
-                if(!StringUtil.isEmpty(end)){
-                    LocalTime localTimeEnd = end.toLocalTime();
-                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
-                        appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
-                        appPremPhOpenPeriod.setOffSiteEndToHH(String.valueOf(localTimeEnd.getHour()));
-                        appPremPhOpenPeriod.setOffSiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
-                    }
+                Date end = eventDto.getEndDate();
+                if(end != null){
+                    eventDto.setEndDateStr(Formatter.formatDate(end));
                 }
             }
         }
@@ -950,7 +926,7 @@ public class NewApplicationHelper {
                     for(AppSvcPrincipalOfficersDto appSvcMedAlertPsnDto:appSvcMedAlertPsnDtos) {
                         AppSvcPrincipalOfficersDto psnDto = psnMap.get(appSvcMedAlertPsnDto.getIdNo());
                         if(psnDto != null){
-                            psnDto.setPreferredMode(appSvcMedAlertPsnDto.getPreferredMode());
+
                         }else{
                             psnDto = appSvcMedAlertPsnDto;
                         }
@@ -1020,7 +996,7 @@ public class NewApplicationHelper {
                         String general_err0041=repLength("ID No.","9");
                         errMap.put("idNo" + i, general_err0041);
                     }
-                    if("FIN".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
                         if(!b){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -1032,7 +1008,7 @@ public class NewApplicationHelper {
                             }
                         }
                     }
-                    if("NRIC".equals(idTyp)){
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
                             errMap.put("idNo"+i,"RFC_ERR0012");
@@ -1090,10 +1066,6 @@ public class NewApplicationHelper {
                     }
                 }
 
-                String preferredMode = medAlertPsnDtos.get(i).getPreferredMode();
-                if(StringUtil.isEmpty(preferredMode)){
-                    errMap.put("preferredModeVal"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Preferred Mode of Receiving MedAlert ","field"));
-                }
 
             }
 
@@ -1196,7 +1168,17 @@ public class NewApplicationHelper {
                         log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
                     SelectOption sp = new SelectOption("other", "Others");
-                    specialityOpts.add(sp);
+                    boolean flag=false;
+                    for(SelectOption selectOption : specialityOpts){
+                        String value = selectOption.getValue();
+                        if("other".equals(value)){
+                            flag=true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        specialityOpts.add(sp);
+                    }
                     person.setSpcOptList(specialityOpts);
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
@@ -1213,7 +1195,7 @@ public class NewApplicationHelper {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                 }
                 //person.setLicPerson(true);
                 //for person dtos
@@ -1247,7 +1229,7 @@ public class NewApplicationHelper {
             if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
                 continue;
             }
-            String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
+            String personMapKey = NewApplicationHelper.getPersonKey(psnDto.getIdType(),psnDto.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
             AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
@@ -1323,7 +1305,17 @@ public class NewApplicationHelper {
                         log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
                     SelectOption otherSp = new SelectOption("other", "Others");
-                    specialityOpts.add(otherSp);
+                    boolean flag=false;
+                    for(SelectOption selectOption : specialityOpts){
+                        String value = selectOption.getValue();
+                        if("other".equals(value)){
+                            flag=true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        specialityOpts.add(otherSp);
+                    }
                     person.setSpcOptList(specialityOpts);
 
                     boolean canMatch = false;
@@ -1350,7 +1342,7 @@ public class NewApplicationHelper {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                 }
                 //person.setLicPerson(true);
                 //for person dtos
@@ -1447,7 +1439,7 @@ public class NewApplicationHelper {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
-                        person.setPreferredMode(psnDto.getPreferredMode());
+
                     }
 
                     person.setLicPerson(true);
@@ -1462,7 +1454,7 @@ public class NewApplicationHelper {
         //user account
         if(!IaisCommonUtils.isEmpty(feUserDtos)){
             for(FeUserDto feUserDto:feUserDtos){
-                String idType = MasterCodeUtil.getCodeDesc(feUserDto.getIdType());
+                String idType = feUserDto.getIdType();
                 String idNo = feUserDto.getIdNumber();
                 if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)){
                     continue;
@@ -1530,7 +1522,7 @@ public class NewApplicationHelper {
                     AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
 
 //                    person.setDesignation(psnDto.getDesignation());
-                    person.setPreferredMode(psnDto.getPreferredMode());
+
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
@@ -1690,7 +1682,7 @@ public class NewApplicationHelper {
         Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k,v)->{
             AppSvcPersonDto personDto = v.getPersonDto();
-            SelectOption sp = new SelectOption(k,personDto.getName()+", "+personDto.getIdNo()+" ("+personDto.getIdType()+")");
+            SelectOption sp = new SelectOption(k,personDto.getName()+", "+personDto.getIdNo()+" ("+MasterCodeUtil.getCodeDesc(personDto.getIdType())+")");
             personList.add(sp);
         });
         //sort
@@ -1720,17 +1712,27 @@ public class NewApplicationHelper {
     }
 
     public static void setTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = getTimeHourList();
+        List<SelectOption> timeMinList = getTimeMinList();
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+
+    }
+
+    public static List<SelectOption> getTimeHourList(){
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 24;i++){
             timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
+        return timeHourList;
+    }
+
+    public static List<SelectOption> getTimeMinList(){
         List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i< 60;i++){
             timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
         }
-        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
-        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
-
+        return timeMinList;
     }
 
     public static void setPremSelect(HttpServletRequest request,Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
@@ -1793,7 +1795,7 @@ public class NewApplicationHelper {
                         String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
                         if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
                             appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -1810,7 +1812,12 @@ public class NewApplicationHelper {
                                 appSvcDocDto.setPremisesVal("");
                                 appSvcDocDto.setPremisesType("");
                             }
-                            break;
+                            String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                            if(!StringUtil.isEmpty(dupForPerson)){
+                                appSvcDocDto.setDupForPerson(dupForPerson);
+                                appSvcDocDto.setPersonType(getPsnType(dupForPerson));
+                            }
+                            //break;
                         }
                     }
                 }
@@ -2067,12 +2074,13 @@ public class NewApplicationHelper {
                 }
             }
             //confirm with mingde , person_ext field can edit anytime
-            appPsnEditDto.setPreferredMode(true);
+            appPsnEditDto.setDesignation(true);
             appPsnEditDto.setSubSpeciality(true);
             appPsnEditDto.setSpecialityOther(true);
             appPsnEditDto.setSpeciality(true);
             appPsnEditDto.setProfRegNo(true);
             appPsnEditDto.setProfessionType(true);
+
             if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
                 appPsnEditDto.setIdType(true);
                 appPsnEditDto.setIdNo(true);
@@ -2163,8 +2171,17 @@ public class NewApplicationHelper {
         return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
     }
 
-    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request){
-        return ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO) == null?new AppSubmissionDto(): (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request,String appType){
+        AppSubmissionDto appSubmissionDto  = null;
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,"oldRenewAppSubmissionDto");
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        }
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
+        return appSubmissionDto;
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto appGrpPremisesDto){
@@ -2175,10 +2192,10 @@ public class NewApplicationHelper {
                 premisesHciPre = appGrpPremisesDto.getHciName() + appGrpPremisesDto.getPostalCode() + appGrpPremisesDto.getBlkNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getFloorNo() + appGrpPremisesDto.getUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getConveyancePostalCode() + appGrpPremisesDto.getConveyanceBlockNo();
+                premisesHciPre = appGrpPremisesDto.getConveyanceHciName() + appGrpPremisesDto.getConveyanceVehicleNo() + appGrpPremisesDto.getConveyancePostalCode() + appGrpPremisesDto.getConveyanceBlockNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getConveyanceFloorNo() + appGrpPremisesDto.getConveyanceUnitNo());
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-                premisesHciPre = appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
+                premisesHciPre = appGrpPremisesDto.getOffSiteHciName() + appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getOffSiteFloorNo() + appGrpPremisesDto.getOffSiteUnitNo());
             }
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
@@ -2198,9 +2215,9 @@ public class NewApplicationHelper {
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName() +premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName() +premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
             List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();
@@ -2243,22 +2260,22 @@ public class NewApplicationHelper {
         return url;
     }
 
-    public static AppGrpPrimaryDocDto getAppGrpprimaryDocDto(String docId,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+    public static List<AppGrpPrimaryDocDto> getAppGrpprimaryDocDto(String docId,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(docId)){
             for(AppGrpPrimaryDocDto docDto:appGrpPrimaryDocDtos){
                 if(docDto.getSvcComDocId().equals(docId)){
-                    appGrpPrimaryDocDto = docDto;
-                    break;
+                    appGrpPrimaryDocDtoList.add(docDto);
                 }
             }
         }
-        return appGrpPrimaryDocDto;
+        return appGrpPrimaryDocDtoList;
     }
 
     public static AppGrpPrimaryDocDto genEmptyPrimaryDocDto(String docConfigId){
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
         appGrpPrimaryDocDto.setSvcComDocId(docConfigId);
+        appGrpPrimaryDocDto.setSeqNum(-1);
         return appGrpPrimaryDocDto;
     }
 
@@ -2298,67 +2315,79 @@ public class NewApplicationHelper {
         }
     }
 
-    public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<HcsaSvcDocConfigDto> premSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos, List<AppGrpPremisesDto> appGrpPremisesDtos,Map<String, String> errorMap) {
+    public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos, AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, String> errorMap) {
 
         String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
         if(!IaisCommonUtils.isEmpty(svcDocConfigDtos)){
+            int i = 0;
+            String suffix = "Error";
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
-                String errKey = hcsaSvcDocConfigDto.getId()+"selectedFile";
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                String configId = hcsaSvcDocConfigDto.getId();
+                String errKey = i+ "svcDoc"+ appSvcRelatedInfoDto.getServiceCode();
                 Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
+                i++;
+                if(!isMandatory){
+                    continue;
+                }
                 boolean mandatoryFlag;
                 if(isMandatory){
                     mandatoryFlag = false;
                 }else{
                     mandatoryFlag = true;
                 }
-                if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-
-                } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                        String svcDocId = appSvcDocDto.getSvcDocId();
-                        if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
-                            mandatoryFlag = true;
-                            break;
+                if (IaisCommonUtils.isEmpty(appSvcDocDtos)) {
+                    appSvcDocDtos = IaisCommonUtils.genNewArrayList();
+                }
+                if("0".equals(dupForPrem)){
+                    if(StringUtil.isEmpty(dupForPerson)){
+                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                            String svcDocId = appSvcDocDto.getSvcDocId();
+                            if (hcsaSvcDocConfigDto.getId().equals(svcDocId)) {
+                                mandatoryFlag = true;
+                                break;
+                            }
+                        }
+                        if (!mandatoryFlag) {
+                            errorMap.put(errKey+suffix, err006);
+                        }
+                    }else{
+                        List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+                        for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                            String psnIndexNo = psnDto.getCgoIndexNo();
+                            AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
+                            if(appSvcDocDto == null){
+                                String specErrKey = errKey + psnIndexNo +suffix;
+                                errorMap.put(specErrKey, err006);
+                            }
                         }
                     }
-                }
-                if (!mandatoryFlag) {
-                    errorMap.put(errKey, err006);
-                }
-            }
-        }
-
-        if(!IaisCommonUtils.isEmpty(premSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                String premType = appGrpPremisesDto.getPremisesType();
-                for (HcsaSvcDocConfigDto premHcasDocConfig : premSvcDocConfigDtos) {
-                    String errKey = "prem" + premHcasDocConfig.getId()+ premIndexNo;
-                    Boolean isMandatory = premHcasDocConfig.getIsMandatory();
-                    boolean mandatoryFlag;
-                    if(isMandatory){
-                        mandatoryFlag = false;
-                    }else{
-                        mandatoryFlag = true;
-                    }
-                    if (isMandatory && IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-
-                    } else if (isMandatory && !IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                            String docPremVal = appSvcDocDto.getPremisesVal();
-                            String docPremType = appSvcDocDto.getPremisesType();
-                            if (!StringUtil.isEmpty(docPremVal) && !StringUtil.isEmpty(docPremType)) {
-                                if (docPremVal.equals(premIndexNo) && docPremType.equals(premType)) {
-                                    mandatoryFlag = true;
-                                    break;
+                }else if("1".equals(dupForPrem)){
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                            if(StringUtil.isEmpty(dupForPerson)){
+                                AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,premIndexNo,appGrpPremisesDto.getPremisesType(),"");
+                                if(appSvcDocDto == null){
+                                    String specErrKey = errKey + premIndexNo + suffix;
+                                    errorMap.put(specErrKey, err006);
+                                }
+                            }else{
+                                List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+                                for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
+                                    String psnIndexNo = psnDto.getCgoIndexNo();
+                                    AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),psnIndexNo);
+                                    if(appSvcDocDto == null){
+                                            String specErrKey = errKey + premIndexNo + psnIndexNo +suffix;
+                                        errorMap.put(specErrKey, err006);
+                                    }
                                 }
                             }
                         }
                     }
-                    if (!mandatoryFlag) {
-                        errorMap.put(errKey, err006);
-                    }
                 }
+
             }
         }
     }
@@ -2496,7 +2525,357 @@ public class NewApplicationHelper {
         }
     }
 
+    public static String generateMultipleDropDown(Map<String, String> pageAttr, List<SelectOption> selectOptionList, String firestOption, List<String> checkValList){
+        StringBuilder result = new StringBuilder();
+        if(!IaisCommonUtils.isEmpty(selectOptionList) && !IaisCommonUtils.isEmpty(pageAttr)){
+            String id = pageAttr.get("id");
+            if(StringUtil.isEmpty(id)){
+                id = "";
+            }
+            result.append("<div class=\"row\"><div class=\"col-md-12 multi-select\">")
+                    .append("<div style=\"height: 200px; border: 1px solid darkgrey;overflow: scroll\" id=\"")
+                    .append(id)
+                    .append("Clear\">");
+            int i = 0;
+            for(SelectOption sp:selectOptionList){
+                String alignId = pageAttr.get("name") + i;
+                result.append("<label class=\"checkbox-custom check-primary\" style=\"margin-left: 2px\">")
+                        .append("<input value=\"")
+                        .append(sp.getValue())
+                        .append('\"');
+                for(Map.Entry<String, String> entry : pageAttr.entrySet()){
+                    result.append(entry.getKey())
+                            .append("=\"");
+                            if("id".equals(entry.getKey())){
+                                result.append(alignId)
+                                        .append('\"');
+                            }else{
+                                result.append(entry.getValue())
+                                        .append('\"');
+                            }
+                }
+                result.append("type=\"checkbox\">")
+                        .append(" <label for=\"")
+                        .append(alignId)
+                        .append("\">")
+                        .append("<span>")
+                        .append(sp.getText())
+                        .append("</span>")
+                        .append("</label>")
+                        .append("</label><br>");
+                i++;
+            }
+            result.append("</div></div></div>");
+        }
 
+        return result.toString();
+    }
+
+    public static List<SelectOption> genWorkingDaySp(){
+        List<SelectOption> workingDaySp = IaisCommonUtils.genNewArrayList();
+        SelectOption sp1 = new SelectOption("Mon","Monday");
+        SelectOption sp2 = new SelectOption("Tue","Tuesday");
+        SelectOption sp3 = new SelectOption("Wed","Wednesday");
+        SelectOption sp4 = new SelectOption("Thu","Thursday");
+        SelectOption sp5 = new SelectOption("Fri","Friday");
+        SelectOption sp6 = new SelectOption("Sat","Saturday");
+        SelectOption sp7 = new SelectOption("Sun","Sunday");
+        workingDaySp.add(sp1);
+        workingDaySp.add(sp2);
+        workingDaySp.add(sp3);
+        workingDaySp.add(sp4);
+        workingDaySp.add(sp5);
+        workingDaySp.add(sp6);
+        workingDaySp.add(sp7);
+        return workingDaySp;
+    }
+
+    public static boolean psnDoPartValidate(String idType,String idNo,String name){
+        boolean result = true;
+        if(StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)){
+            result = false;
+        }else{
+            if(idNo.length() > 9){
+                result = false;
+            }
+            if(OrganizationConstants.ID_TYPE_FIN.equals(idType)){
+                boolean b = SgNoValidator.validateFin(idNo);
+                if(!b){
+                    result = false;
+                }
+            }
+            if(OrganizationConstants.ID_TYPE_NRIC.equals(idType)){
+                boolean b1 = SgNoValidator.validateNric(idNo);
+                if(!b1){
+                    result = false;
+                }
+            }
+
+        }
+        return result;
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getPsnByDupForPerson(AppSvcRelatedInfoDto appSvcRelatedInfoDto,String dupForPerson){
+        List<AppSvcPrincipalOfficersDto> psnDtoList = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> svcPsnDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        switch(dupForPerson){
+            case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                List<AppSvcCgoDto> cgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                psnDtoList = NewApplicationHelper.transferCgoToPsnDtoList(cgoDtos);
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_PO:
+                if(!IaisCommonUtils.isEmpty(svcPsnDtoList)){
+                    for(AppSvcPrincipalOfficersDto svcPsnDto:svcPsnDtoList){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(svcPsnDto.getPsnType())){
+                            psnDtoList.add(svcPsnDto);
+                        }
+                    }
+                }
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                if(!IaisCommonUtils.isEmpty(svcPsnDtoList)){
+                    for(AppSvcPrincipalOfficersDto svcPsnDto:svcPsnDtoList){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(svcPsnDto.getPsnType())){
+                            psnDtoList.add(svcPsnDto);
+                        }
+                    }
+                }
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList())){
+                    psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                }
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                if(!IaisCommonUtils.isEmpty(spDtos)){
+                    for(AppSvcPersonnelDto spDto:spDtos){
+                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                        psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
+                        psnDtoList.add(psnDto);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return psnDtoList;
+    }
+
+
+    public static Map<String,List<AppGrpPrimaryDocDto>> genPrimaryDocReloadMap (List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
+        Map<String,List<AppGrpPrimaryDocDto>> reloadMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos) {
+                String configId = hcsaSvcDocConfigDto.getId();
+                String configTitle = hcsaSvcDocConfigDto.getDocTitle();
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                if("0".equals(dupForPrem)){
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,"");
+                    setPrimaryDocDisplayTitle(appGrpPrimaryDocDtos1,configTitle);
+                    reloadMap.put(configId,appGrpPrimaryDocDtos1);
+                }else if("1".equals(dupForPrem)){
+                    int premCount = 1;
+                    String premTitleTemplate = "Premises ${premCount}: ${configTitle}";
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo());
+                        String displayTitle = premTitleTemplate.replace("${premCount}",String.valueOf(premCount)).replace("${configTitle}",configTitle);
+                        setPrimaryDocDisplayTitle(appGrpPrimaryDocDtos1,displayTitle);
+                        reloadMap.put(appGrpPremisesDto.getPremisesIndexNo()+configId,appGrpPrimaryDocDtos1);
+                        premCount++;
+                    }
+                }
+            }
+        }
+        //do sort
+        if(!IaisCommonUtils.isEmpty(reloadMap)){
+            reloadMap.forEach((k,v)->{
+                if(v != null && v.size() > 1){
+                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                }
+            });
+        }
+
+        return reloadMap;
+    }
+
+    public static Map<String,List<AppSvcDocDto>> genSvcDocReloadMap(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        Map<String,List<AppSvcDocDto>> reloadMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && appSvcRelatedInfoDto != null && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos) {
+                String configId = hcsaSvcDocConfigDto.getId();
+                String configTitle = hcsaSvcDocConfigDto.getDocTitle();
+                String dupForPrem = hcsaSvcDocConfigDto.getDupForPrem();
+                String dupForPerson = hcsaSvcDocConfigDto.getDupForPerson();
+                if("0".equals(dupForPrem)){
+                    setSvcDocDisplayTitle(dupForPrem,0,"",dupForPerson,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto,reloadMap);
+                }else if("1".equals(dupForPrem)){
+                    int premCount = 1;
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        setSvcDocDisplayTitle(dupForPrem,premCount,appGrpPremisesDto.getPremisesIndexNo(),dupForPerson,configId,configTitle,appSvcDocDtos,appSvcRelatedInfoDto,reloadMap);
+                        premCount++;
+                    }
+                }
+            }
+        }
+        //do sort
+        if(!IaisCommonUtils.isEmpty(reloadMap)){
+            reloadMap.forEach((k,v)->{
+                if(v != null && v.size() > 1){
+                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+                }
+            });
+        }
+        return reloadMap;
+    }
+    //for single premises
+    public static void addPremAlignForPrimaryDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos){
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(HcsaSvcDocConfigDto config:hcsaSvcDocConfigDtos){
+                if("1".equals(config.getDupForPrem())){
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = NewApplicationHelper.getAppGrpprimaryDocDto(config.getId(),appGrpPrimaryDocDtos);
+                    if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList) && appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
+                        String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                        String premType = appGrpPremisesDtos.get(0).getPremisesType();
+                        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+                            appGrpPrimaryDocDto.setPremisessName(premIndex);
+                            appGrpPrimaryDocDto.setPremisessType(premType);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //for single premises
+    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos){
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(HcsaSvcDocConfigDto config:hcsaSvcDocConfigDtos){
+                if("1".equals(config.getDupForPrem())){
+                    List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,config.getId());
+                    if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
+                        String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                        String premType = appGrpPremisesDtos.get(0).getPremisesType();
+                        for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
+                            appSvcDocDto.setPremisesType(premType);
+                            appSvcDocDto.setPremisesVal(premIndex);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void setDupForPersonAttr(HttpServletRequest request,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        if(appSvcRelatedInfoDto != null){
+            ParamUtil.setRequestAttr(request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+            List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+            assignPoDpoDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),principalOfficersDtos,deputyPrincipalOfficersDtos);
+            ParamUtil.setRequestAttr(request, "ReloadPrincipalOfficers", principalOfficersDtos);
+            ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+            ParamUtil.setRequestAttr(request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
+            ParamUtil.setRequestAttr(request,"AppSvcPersonnelDtoList",appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+        }
+    }
+
+    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
+        StringBuilder sBuffer = new StringBuilder(100);
+        sBuffer.append("<select multiple=\"multiple\" ");
+        for(Map.Entry<String, String> entry : attrMap.entrySet()){
+//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey())
+                    .append("=\"")
+                    .append(entry.getValue())
+                    .append('\"');
+        }
+        sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+            sBuffer.append("<option value=\"\">")
+                    .append(firestOption)
+                    .append("</option>");
+        }
+        for(SelectOption sp:selectOptionList){
+            if(!IaisCommonUtils.isEmpty(checkedVals)){
+                if(checkedVals.contains(sp.getValue())){
+//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option selected=\"selected\" value=\"")
+                            .append(sp.getValue())
+                            .append("\">")
+                            .append(sp.getText())
+                            .append("</option>");
+                }else{
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
+            }
+        }
+        sBuffer.append("</select>");
+        return sBuffer.toString();
+    }
+
+    public static String getPsnType(String dupForPerson){
+        String psnType = "common";
+        if(!StringUtil.isEmpty(dupForPerson)){
+            switch(dupForPerson){
+                case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_CGO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_PO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_PO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_DPO;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_MAP;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return psnType;
+    }
+
+    public static List<AppSvcDocDto> getSvcDocumentByParams(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndex,String psnIndex){
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)){
+            appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psnIndex);
+        }
+        return appSvcDocDtoList;
+    }
+
+    public static HcsaSvcDocConfigDto getHcsaSvcDocConfigDtoById(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, String id){
+        HcsaSvcDocConfigDto result = null;
+        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(id)){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
+                if(id.equals(hcsaSvcDocConfigDto.getId())){
+                    result = hcsaSvcDocConfigDto;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static void assignPoDpoDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, List<AppSvcPrincipalOfficersDto> principalOfficersDtos, List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }
+            }
+        }
+    }
+    
     //=============================================================================
     //private method
     //=============================================================================
@@ -2684,7 +3063,7 @@ public class NewApplicationHelper {
         psnDto.setMobileNo(appSvcCgoDto.getMobileNo());
         psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
         psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
-        psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
+
         psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
         psnDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
         psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
@@ -2735,10 +3114,7 @@ public class NewApplicationHelper {
                 //sync other field
                 String officeTelNo = selPerson.getOfficeTelNo();
                 appSvcCgoDto.setOfficeTelNo(officeTelNo);
-                String preferredMode = selPerson.getPreferredMode();
-                if(!StringUtil.isEmpty(preferredMode)){
-                    appSvcCgoDto.setPreferredMode(preferredMode);
-                }
+
                 //
                 appSvcCgoDto.setNeedSpcOptList(selPerson.isNeedSpcOptList());
                 List<SelectOption> spcOptList = selPerson.getSpcOptList();
@@ -2784,10 +3160,7 @@ public class NewApplicationHelper {
                 }else if(!StringUtil.isEmpty(preferredMode)){
                     person.setPreferredMode(preferredMode);
                 }*/
-                String preferredMode = selPerson.getPreferredMode();
-                if(!StringUtil.isEmpty(preferredMode)){
-                    person.setPreferredMode(preferredMode);
-                }
+
                 //sync other field
                 String designation = selPerson.getDesignation();
                 String professionType = selPerson.getProfessionType();
@@ -2859,30 +3232,7 @@ public class NewApplicationHelper {
         return result;
     }
 
-    private static boolean psnDoPartValidate(String idType,String idNo,String name){
-        boolean result = true;
-        if(StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)){
-            result = false;
-        }else{
-            if(idNo.length() > 9){
-                result = false;
-            }
-            if("FIN".equals(idType)){
-                boolean b = SgNoValidator.validateFin(idNo);
-                if(!b){
-                    result = false;
-                }
-            }
-            if("NRIC".equals(idType)){
-                boolean b1 = SgNoValidator.validateNric(idNo);
-                if(!b1){
-                    result = false;
-                }
-            }
 
-        }
-        return result;
-    }
 
     private static String[] removeArrIndex(String[] arrs, int index) {
         if (arrs == null) {
@@ -2921,6 +3271,27 @@ public class NewApplicationHelper {
             }
         }
         return appSvcPersonExtDto;
+    }
+
+    private static void setReloadTime(OperationHoursReloadDto operationHoursReloadDto){
+        List<String> selectValList = operationHoursReloadDto.getSelectValList();
+        if(!IaisCommonUtils.isEmpty(selectValList)){
+            String [] selectArr = (String[]) selectValList.toArray(new String[selectValList.size()]);
+            String phSelect = ParamUtil.StringsToString(selectArr);
+            operationHoursReloadDto.setSelectVal(phSelect);
+        }
+        Time startTime = operationHoursReloadDto.getStartFrom();
+        Time endTime = operationHoursReloadDto.getEndTo();
+        if(startTime != null){
+            LocalTime localTimeStart = startTime.toLocalTime();
+            operationHoursReloadDto.setStartFromHH(String.valueOf(localTimeStart.getHour()));
+            operationHoursReloadDto.setStartFromMM(String.valueOf(localTimeStart.getMinute()));
+        }
+        if(endTime != null){
+            LocalTime localTimeStart = endTime.toLocalTime();
+            operationHoursReloadDto.setEndToHH(String.valueOf(localTimeStart.getHour()));
+            operationHoursReloadDto.setEndToMM(String.valueOf(localTimeStart.getMinute()));
+        }
     }
 
 /*
@@ -2966,4 +3337,305 @@ public class NewApplicationHelper {
         Long size=4*1024*1024L;
         return validateFile(file,list,size);
     }
+
+    public static void validatePH(Map<String,String> errorMap,AppSubmissionDto appSubmissionDto){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList!=null){
+            for(int i=0;i<appGrpPremisesDtoList.size();i++){
+                String premisesType = appGrpPremisesDtoList.get(i).getPremisesType();
+                String s="";
+                if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+                    s="conveyance";
+                }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+                    s="onSite";
+                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
+                    s="offSite";
+                }
+                List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
+                List<OperationHoursReloadDto> phDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
+                List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDtoList.get(i).getEventDtoList();
+                validate(phDtoList,errorMap,i,s+"PubHoliday");
+                validate(weeklyDtoList,errorMap,i,s+"Weekly");
+                validateEvent(eventDtoList,errorMap,i,s+"Event");
+            }
+        }
+    }
+    public static void validate(List<OperationHoursReloadDto> list,Map<String,String> errorMap,int index,String errorId){
+        if(list==null) {
+            return;
+        }
+        for(int i=0;i< list.size();i++){
+            for(int j=i+1;j< list.size() &&i!=j ;j++){
+                List<String> selectValList = list.get(i).getSelectValList();
+                List<String> selectValList1 = list.get(j).getSelectValList();
+                if(selectValList==null || selectValList1==null){
+                    continue;
+                }
+                boolean disjoint = Collections.disjoint(selectValList, selectValList1);
+                if(disjoint){
+                    continue;
+                }
+                boolean selectAllDay = list.get(i).isSelectAllDay();
+                boolean selectAllDay1 = list.get(j).isSelectAllDay();
+                String errMsg=MessageUtil.getMessageDesc("NEW_ERR0021");
+                if(selectAllDay ||selectAllDay1){
+                    errorMap.put(errorId+index+j,errMsg);
+                    continue;
+                }
+                int time = getTime(list.get(i).getEndToHH(), list.get(i).getEndToMM());
+                int   time1 = getTime(list.get(j).getStartFromHH(), list.get(j).getStartFromMM());
+                if(time>=time1){
+                    errorMap.put(errorId+index+j,errMsg);
+                }
+            }
+        }
+    }
+
+    public static int getTime(String hh,String mm){
+        try {
+            int i = Integer.parseInt(hh);
+            int i1 = Integer.parseInt(mm);
+            return i*60+i1;
+        }catch (NumberFormatException e){
+            return 0;
+        }
+    }
+    public static void validateEvent(List<AppPremEventPeriodDto> appPremEventPeriodDtoList,Map<String,String> map,int index,String errorId){
+        if(appPremEventPeriodDtoList==null){
+            return;
+        }
+        for(int i=0;i<appPremEventPeriodDtoList.size();i++){
+            for(int j=i+1;j<appPremEventPeriodDtoList.size()&&i!=j;j++){
+                String eventName = appPremEventPeriodDtoList.get(i).getEventName();
+                String eventName1 = appPremEventPeriodDtoList.get(j).getEventName();
+                if(!StringUtil.isEmpty(eventName) && !StringUtil.isEmpty(eventName1)){
+                    if(!eventName.equals(eventName1)){
+                        continue;
+                    }
+                    Date endDate = appPremEventPeriodDtoList.get(i).getEndDate();
+                    Date startDate = appPremEventPeriodDtoList.get(j).getStartDate();
+                    if(endDate != null && startDate != null){
+                        if(endDate.after(startDate)||endDate.compareTo(startDate)==0){
+                            map.put(errorId+index+j,MessageUtil.getMessageDesc("NEW_ERR0021"));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList){
+        List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
+        HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;
+        if(!IaisCommonUtils.isEmpty(scopeConfigDtoList)){
+            for(HcsaSvcSubtypeOrSubsumedDto scopeConfigDto:scopeConfigDtoList){
+                if(NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(scopeConfigDto.getName())){
+                    otherScopeConfigDto = scopeConfigDto;
+                    break;
+                }
+            }
+            if(otherScopeConfigDto != null){
+                List<HcsaSvcSubtypeOrSubsumedDto> otherScopeChildrenDtoList = otherScopeConfigDto.getList();
+                if(!IaisCommonUtils.isEmpty(otherScopeChildrenDtoList)){
+                    for(HcsaSvcSubtypeOrSubsumedDto otherScopeChildrenDto:otherScopeChildrenDtoList){
+                        otherScopeChildrenList.add(otherScopeChildrenDto.getId());
+                    }
+                }
+
+            }
+        }
+        return otherScopeChildrenList;
+    }
+
+    private static  boolean selectOtherScope(List<AppSvcChckListDto> appSvcChckListDtos){
+        boolean flag = false;
+        if(!IaisCommonUtils.isEmpty(appSvcChckListDtos)){
+            for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtos){
+                if(NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(appSvcChckListDto.getChkName())){
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    private static AppSvcDocDto getSvcDtoByConfigIdAndPsnIndexNo(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndexNo,String premType,String psnIndexNo){
+        AppSvcDocDto appSvcDocDto = null;
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            for(AppSvcDocDto appSvcDocDto1:appSvcDocDtos){
+                String currConfigId = appSvcDocDto1.getSvcDocId();
+                String cuurPremIndex = appSvcDocDto1.getPremisesVal();
+                if(StringUtil.isEmpty(cuurPremIndex)){
+                    cuurPremIndex = "";
+                }
+                String currPsnIndex = appSvcDocDto1.getPsnIndexNo();
+                if(StringUtil.isEmpty(currPsnIndex)){
+                    currPsnIndex = "";
+                }
+                String currPremType = appSvcDocDto1.getPremisesType();
+                if(StringUtil.isEmpty(currPremType)){
+                    currPremType = "";
+                }
+                if(currConfigId.equals(configId)
+                        && cuurPremIndex.equals(premIndexNo)
+                        && currPsnIndex.equals(psnIndexNo)
+                        && currPremType.equals(premType)){
+                    appSvcDocDto = appSvcDocDto1;
+                    break;
+                }
+            }
+        }
+
+        return appSvcDocDto;
+    }
+
+    private static List<AppGrpPrimaryDocDto> getAppGrpPrimaryDocDtoByConfigId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String configId,String premIndex){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !StringUtil.isEmpty(configId)){
+            if(StringUtil.isEmpty(premIndex)){
+                premIndex = "";
+            }
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                String currPremIndex = appGrpPrimaryDocDto.getPremisessName();
+                if(StringUtil.isEmpty(currPremIndex)){
+                    currPremIndex ="";
+                }
+                if(!StringUtil.isEmpty(appGrpPrimaryDocDto.getFileRepoId()) && configId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && premIndex.equals(currPremIndex)){
+                    appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                }
+            }
+        }
+        return appGrpPrimaryDocDtoList;
+    }
+
+    private static void setPrimaryDocDisplayTitle(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,String displayTitle){
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && !StringUtil.isEmpty(displayTitle)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                appGrpPrimaryDocDto.setDisplayTitle(displayTitle);
+            }
+        }
+    }
+
+    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos,String configId,String premIndex,String psnIndex){
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)){
+            if(StringUtil.isEmpty(premIndex)){
+                premIndex = "";
+            }
+            if(StringUtil.isEmpty(psnIndex)){
+                psnIndex = "";
+            }
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                String currPremIndex = appSvcDocDto.getPremisesVal();
+                if(StringUtil.isEmpty(currPremIndex)){
+                    currPremIndex = "";
+                }
+                String currPsnIndex = appSvcDocDto.getPsnIndexNo();
+                if(StringUtil.isEmpty(currPsnIndex)){
+                    currPsnIndex = "";
+                }
+                if(configId.equals(appSvcDocDto.getSvcDocId()) && premIndex.equals(currPremIndex) && psnIndex.equals(currPsnIndex)){
+                    appSvcDocDtoList.add(appSvcDocDto);
+                }
+            }
+        }
+        return appSvcDocDtoList;
+    }
+
+    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos,String configId){
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)){
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                if(configId.equals(appSvcDocDto.getSvcDocId())){
+                    appSvcDocDtoList.add(appSvcDocDto);
+                }
+            }
+        }
+        return appSvcDocDtoList;
+    }
+
+    private static void setSvcDocDisplayTitle(List<AppSvcDocDto> appSvcDocDtos,String displayTitle){
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(displayTitle)){
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                appSvcDocDto.setDisplayTitle(displayTitle);
+            }
+        }
+    }
+
+    private static String getDupForPersonName(String dupForPerson){
+        String psnName = "";
+        switch(dupForPerson){
+            case ApplicationConsts.DUP_FOR_PERSON_CGO:
+                psnName = "Clinical Governance Officer";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_PO:
+                psnName = "Principal Officer";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_DPO:
+                psnName = "Nominee";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_MAP:
+                psnName = "MedAlert Person";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+                psnName = "Service Personnel";
+                break;
+            default:
+                break;
+        }
+        return psnName;
+    }
+
+    private static void setSvcDocDisplayTitle(String dupForPrem,int premCount,String premIndex,String dupForPerson,
+                                              String configId,String configTitle,List<AppSvcDocDto> appSvcDocDtos,
+                                              AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String,List<AppSvcDocDto>> reloadMap){
+        String titleTemplate = "${prem}${psn}"+configTitle;
+        String reloadKey;
+        if("1".equals(dupForPrem)){
+            titleTemplate = titleTemplate.replace("${prem}","Premises "+premCount+": ");
+            reloadKey = premIndex + configId;
+        }else{
+            titleTemplate = titleTemplate.replace("${prem}","");
+            reloadKey = configId;
+        }
+
+        if(StringUtil.isEmpty(dupForPerson)){
+            List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,"");
+            titleTemplate = titleTemplate.replace("${psn}","");
+            setSvcDocDisplayTitle(appSvcDocDtoList,titleTemplate);
+            reloadMap.put(reloadKey,appSvcDocDtoList);
+        }else{
+            String psnName = getDupForPersonName(dupForPerson);
+            List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
+            int psnCount = 1;
+            for(AppSvcPrincipalOfficersDto psn:psnList){
+                String psnIndex = psn.getCgoIndexNo();
+                String displayTitle = titleTemplate.replace("${psn}",psnName+" "+psnCount+": ");
+                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psnIndex);
+                setSvcDocDisplayTitle(appSvcDocDtoList,displayTitle);
+                reloadMap.put(reloadKey+psnIndex,appSvcDocDtoList);
+                psnCount++;
+            }
+        }
+
+    }
+
+
+
+
+    private static int getManDatoryCountByPsnType(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, String psnType){
+        int mandatoryCount = 0;
+        if(!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtos)){
+            for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtos){
+                if(hcsaSvcPersonnelDto.getPsnType().equals(psnType)){
+                    mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                    break;
+                }
+            }
+        }
+        return  mandatoryCount;
+    }
+
+
 }

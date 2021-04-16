@@ -5,7 +5,7 @@
   Time: 14:13
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -26,7 +26,7 @@
         <div class="bg-title">
             <c:choose>
                 <c:when test="${isUpdate eq 'Y'}">
-                    <h2>Update Regulation</h2>
+                    <h2>Amend Regulation</h2>
                 </c:when>
                 <c:otherwise>
                     <h2>Create Regulation</h2>
@@ -40,7 +40,7 @@
             <div class="form-group">
                 <iais:field value="Regulation Clause Number" required="true"/>
                 <div class="col-xs-5 col-md-3" >
-                    <input type="text" name="regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
+                    <input type="text" name="edit_regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
                     <span id="error_clauseNo" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="form-group">
                 <iais:field value="Regulations" required="true" />
                 <div class="col-xs-5 col-md-3" >
-                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause" maxlength="8000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
+                    <textarea cols="70" rows="7" name="edit_regulationClause" id="regulationClause" maxlength="8000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
                     <span id="error_clause" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

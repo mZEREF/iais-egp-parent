@@ -7,9 +7,8 @@
 <%@ page import="sop.i18n.MultiLangUtil" %>
 
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/reset.js"></script>
-<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-migrate.1.4.1.js"></script>
-<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-migrate.3.0.0.js"></script>
+<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-upgrade-patch.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.cookie.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.dimensions.js"></script>
 <script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/jquery.positionBy.js"></script>

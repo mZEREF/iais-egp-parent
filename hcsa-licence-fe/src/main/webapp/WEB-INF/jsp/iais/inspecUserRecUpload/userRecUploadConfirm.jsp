@@ -25,6 +25,8 @@
       <input type="hidden" id="actionValue" name="actionValue" value="">
       <input type="hidden" id="maxFileSize" name="maxFileSize" value="${inspSetMaskValueDto.sqlFileSize}">
       <input type="hidden" id="fileId" name="fileId" value="">
+      <input type="hidden" id="remarksError" name="remarksError" value="">
+      <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
       <div class="main-content">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
@@ -38,12 +40,14 @@
                         <tr align="center">
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
+                          <th>Remarks</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                           <td><c:out value="${inspecUserRecUploadDto.checkClause}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.checkQuestion}"/></td>
+                          <td><c:out value="${inspecUserRecUploadDto.appPremisesPreInspectionNcItemDto.beRemarks}"/></td>
                         </tr>
                         </tbody>
                       </table>
@@ -60,16 +64,16 @@
                           <li><span>The maximum file size for each upload is <c:out value="${inspSetMaskValueDto.sqlFileSize}"/>MB.</span></li>
                           <li><span>Acceptable file formats are <c:out value="${recFileTypeHint}"/>.</span></li>
                         </ul>
-                        <iais:row>
-                          <iais:value width="7">
+                        <div class="form-group">
+                          <div class="col-sm-7 col-md-8 col-xs-10">
                             <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
                             <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
                             <c:if test="${empty inspecUserRecUploadDto.fileRepoDtos}">
                               &nbsp;<label>No files selected.</label>
                             </c:if>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
-                          </iais:value>
-                        </iais:row>
+                          </div>
+                        </div>
                       </div>
                       <div class="row">
                         <div class="col-md-4">
@@ -80,10 +84,8 @@
                         <iais:value width="300">
                           <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
                             <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile" varStatus="status">
-                              <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
-                                  ${recFile.realFileName}
-                              </a>
-                              &nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')"><em class="fa fa-times"></em></button>
+                              <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${recFile.id}" docName="${recFile.realFileName}"/>
+                              &nbsp;<button type="button" class="btn btn-secondary btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')">Delete</button>
                               <br><br>
                             </c:forEach>
                           </c:if>
@@ -92,13 +94,14 @@
                     </c:if>
                     <div class="row">
                       <div class="col-md-4">
-                        <h3 style="margin-bottom: 0px;border-bottom: 0px solid;">Remarks</h3>
+                        <h3 style="margin-bottom: 0px;border-bottom: 0px solid;">Remarks<span style="color: red"> *</span></h3>
                       </div>
                     </div>
                     <iais:row>
                       <div class="col-sm-7 col-md-6 col-xs-10" style="">
                         <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
                         <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
+                        <span class="error-msg"><c:out value="${inspecUserRecUploadDto.remarksMsg}"></c:out></span>
                       </div>
                     </iais:row>
                     <iais:action >
@@ -138,6 +141,8 @@
 
     function doUserRecUploadConfirmDel(fileId) {
         showWaiting();
+        let remarksError = $("#error_remarks").text();
+        $("#remarksError").val(remarksError);
         $("#actionValue").val('delete');
         $("#fileId").val(fileId);
         userRecUploadConfirmSubmit('delete');
@@ -153,9 +158,11 @@
         var maxFileSize = $("#maxFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, "recFileUpload");
         if (error == "N"){
-            $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $('#error_recFile').html($("#fileMaxMBMessage").val());
             dismissWaiting();
         } else {
+            let remarksError = $("#error_remarks").text();
+            $("#remarksError").val(remarksError);
             $("#actionValue").val('add');
             userRecUploadConfirmSubmit('add');
         }

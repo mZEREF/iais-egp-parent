@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author guyin
@@ -35,8 +33,6 @@ public class DistributionListServiceImpl implements DistributionListService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient ;
 
-    @Autowired
-    private OrganizationClient organizationClient;
     @Override
     @SearchTrack(catalog = "systemAdmin", key = "queryMassDistributionList")
     public SearchResult<DistributionListDto> distributionList(SearchParam searchParam) {
@@ -46,16 +42,8 @@ public class DistributionListServiceImpl implements DistributionListService {
              ) {
             userIdList.add(item.getCreateBy());
         }
-        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
-        Map<String , String > userNameList = IaisCommonUtils.genNewHashMap();
-        for (OrgUserDto item :userList
-             ) {
-            userNameList.put(item.getId(),item.getDisplayName());
-        }
         for (DistributionListDto item:distributionListDtoSearchResult.getRows()
              ) {
-            String name = userNameList.get(item.getCreateBy());
-            item.setCreateBy(name);
             if (HcsaServiceCacheHelper.getServiceByCode(item.getService()) != null){
                 item.setService(HcsaServiceCacheHelper.getServiceByCode(item.getService()).getSvcName());
             }

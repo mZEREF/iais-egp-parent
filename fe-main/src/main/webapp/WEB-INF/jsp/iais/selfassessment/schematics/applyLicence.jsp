@@ -45,7 +45,7 @@
                     </div>
                 </c:forEach>
             </div>
-            <p class="assessment-title">Special Services</p>
+            <p class="assessment-title">Special Licensable Services</p>
             <div class="form-check-gp">
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">

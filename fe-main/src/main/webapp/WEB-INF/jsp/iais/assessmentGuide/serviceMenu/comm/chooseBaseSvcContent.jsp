@@ -7,12 +7,27 @@
         </c:if>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <c:if test="${!empty chooseBaseErr2}">
+            <span class="error-msg">${chooseBaseErr2}</span>
+        </c:if>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-xs-12 col-md-7">
         <div class="row">
             <div class="col-xs12 col-md-12" style="font-size: 16px;">
-                Below are your existing base service licences. Select an existing base service prescribed as underlying to the special licensable service if applicable. Else, please add a new base service accordingly.
+                <c:choose>
+                    <c:when test="${noExistBaseLic}">
+                        An underlying service licence is required for your selected special licensable healthcare service. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
+                    </c:when>
+                    <c:otherwise>
+                        The following are your existing underlying service licences. Please select the relevant underlying service(s) that supports your special licensable healthcare service:
+                    </c:otherwise>
+                </c:choose>
+
             </div>
         </div>
     </div>
@@ -125,7 +140,7 @@
             </c:forEach>
             <div class="row">
                 <div class="col-xs-12 col-md-12">
-                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a href="<iais:code code="URL001"/>">Learn more</a>
+                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a target="_blank" href="<iais:code code="URL001"/>">Learn more</a>
                 </div>
             </div>
         </div>

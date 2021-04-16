@@ -20,21 +20,27 @@
     <div class = "container">
         <form id = "mainForm" name="mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
             <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-            <input type="hidden" name="tabIndex" value="<iais:mask name="tabIndex" value="${requestScope.tabIndex}"/>">
-            <input type="hidden" name="prevTabIndex" value="<iais:mask name="prevTabIndex" value="${requestScope.prevTabIndex}"/>">
+            <input type="hidden" name="tagIndex" value="<iais:mask name="tagIndex" value="${tagIndex}"/>">
+            <input type="hidden" name="prevTagIndex" value="<iais:mask name="prevTagIndex" value="${prevTagIndex}"/>">
             <input type="hidden" name="selfAssessmentCorrId" value="${param.selfAssessmentCorrId}"/>
+            <div id="printContent">
             <%@ include file="/WEB-INF/jsp/iais/common/selfassessmentQuestion.jsp" %>
-                <iais:action style="text-align:left;">
-                    <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
-                </iais:action>
+            </div>
+                <div class="print-hidden-flag">
+                    <iais:action style="text-align:left;">
+                        <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
+                    </iais:action>
 
-            <td>
-                    <div class="text-right text-center-mobile">
-                        <a class="btn btn-secondary <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="clearButtonId" href="javascript:void(0);">Clear</a>
-                        <a class="btn btn-primary next <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="submitButtonId" href="javascript:void(0);">Submit</a>
-                    </div>
-                </td>
-                <br>
+                    <td>
+                        <div class="text-right text-center-mobile">
+                            <a class="btn btn-secondary <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="clearButtonId" href="javascript:void(0);">Clear</a>
+                            <a class="btn btn-primary next <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="submitButtonId" href="javascript:void(0);">Submit</a>
+                        </div>
+                    </td>
+
+                    <br>
+
+                </div>
         </form>
     </div>
 </div>
@@ -44,26 +50,14 @@
 
 <script>
     function draftAnswer(value, key){
-        /*var action = $('#mainForm').attr("action");*/
-        var tabIndex = $("[name='tabIndex']").val();
         $("[name ="+key+ "]").val(value);
-        /*$.post(
-            action,
-            {
-                tabIndex:tabIndex,
-                [key]:value,
-                crud_action_type: 'draftItem',
-            },
-
-        )
-        async: false*/
     }
 
     function switchNextStep(index){
-        $("[name='tabIndex']").val(index);
+        $("[name='tagIndex']").val(index);
         $("[name='crud_action_type']").val("switchNextStep");
-        var mainForm = document.getElementById('mainForm');
-        mainForm.submit();;
+        let mainForm = document.getElementById('mainForm');
+        mainForm.submit();
     }
 
     function doSubmit(){
@@ -71,14 +65,17 @@
     }
 
     clearButtonId.onclick = (function () {
-        var tabIndex = $("[name='tabIndex']").val();
+        let tagIndex = $("[name='tagIndex']").val();
         /*$("input[type='radio']").removeAttr('checked');*/
         //clear answer with current tab
-        SOP.Crud.cfxSubmit("mainForm", "clearAnswer", tabIndex);
+        SOP.Crud.cfxSubmit("mainForm", "clearAnswer", tagIndex);
     });
 
     submitButtonId.onclick = (function () {
         SOP.Crud.cfxSubmit("mainForm", "draftItem");
     });
+
+
+
 
 </script>

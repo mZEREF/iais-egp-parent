@@ -2,9 +2,11 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -38,9 +40,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -103,6 +103,9 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", null);
         ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "isLeader", Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
     }
 
     /**
@@ -116,12 +119,11 @@ public class InspecReassignTaskDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionSubPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         //First search
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if (searchResult == null) {
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
             PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
             poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.COMMON_POOL, poolRoleCheckDto);
-            List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
             if (IaisCommonUtils.isEmpty(workGroupIds)) {
                 workGroupIds = inspectionService.getWorkIdsByLogin(loginContext);
             }
@@ -130,29 +132,58 @@ public class InspecReassignTaskDelegator {
                 groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             }
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext);
+            List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, null);
             //get Members Option
             groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
-            List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
+            if(groupRoleFieldDto!=null){
+                List<SelectOption> memberOption = groupRoleFieldDto.getMemberOption();
+                ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) memberOption);
+            }
             List<SelectOption> superPoolRoleIds = poolRoleCheckDto.getRoleOptions();
-            StringBuilder sb = new StringBuilder("(");
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                sb.append(":appCorrId")
-                        .append(i)
-                        .append(',');
+            int workGroupIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+                workGroupIdsSize = workGroupIds.size();
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
+                for (int i = 0; i < workGroupIds.size(); i++) {
+                    searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+                }
+            } else {
+                String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+                searchParam.addParam("workGroup_list", workGroupId);
             }
-            String inSql = sb.substring(0, sb.length() - 1) + ")";
-            searchParam.addParam("appCorrId_list", inSql);
-            for (int i = 0; i < appCorrId_list.size(); i++) {
-                searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+            if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+                List<String> roleIdList = new ArrayList<>(2);
+                String curRoleId = loginContext.getCurRoleId();
+                roleIdList.add(curRoleId);
+                roleIdList.add(curRoleId.replace(RoleConsts.USER_LEAD, ""));
+                String roleId = SqlHelper.constructInCondition("T7.ROLE_ID", roleIdList.size());
+                searchParam.addParam("roleId_List", roleId);
+                for (int i = 0; i < roleIdList.size(); i++) {
+                    searchParam.addFilter("T7.ROLE_ID" + i, roleIdList.get(i));
+                }
+            } else {
+                String roleId = SqlHelper.constructInCondition("T7.ROLE_ID", 0);
+                searchParam.addParam("roleId_List", roleId);
             }
-            QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
+            //Distinguish between leaders and not leaders
+            String userId = distinguishLeaderByLogInfo(loginContext);
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("taskUserId", userId,true);
+                ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "memberId", null);
+            }
+            searchParam.addParam("reassignStatus", "reassignStatus");
+            QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
             searchResult = inspectionService.getSupPoolByParam(searchParam);
-            searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
-            ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
+            searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
+            List<InspectionSubPoolQueryDto> reassignPool = searchResult.getRows();
+            List<TaskDto> taskDtos = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
+            ParamUtil.setSessionAttr(bpc.request, "taskDtos", (Serializable) taskDtos);
+            ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) reassignPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
-            ParamUtil.setSessionAttr(bpc.request, "memberOption", (Serializable) groupRoleFieldDto.getMemberOption());
             ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", (Serializable) superPoolRoleIds);
@@ -160,6 +191,17 @@ public class InspecReassignTaskDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+    }
+
+    private String distinguishLeaderByLogInfo(LoginContext loginContext) {
+        String userId = "";
+        if(loginContext != null){
+            String curRole = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(curRole) && !curRole.contains(RoleConsts.USER_LEAD)){
+                userId = loginContext.getUserId();
+            }
+        }
+        return userId;
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc) {
@@ -211,8 +253,8 @@ public class InspecReassignTaskDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "supervisorRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        loginContext.setCurRoleId(roleId);
         if (!StringUtil.isEmpty(roleId)) {
+            loginContext.setCurRoleId(roleId);
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
@@ -221,47 +263,64 @@ public class InspecReassignTaskDelegator {
         List<String> workGroupIds = inspectionService.getWorkIdsByLogin(loginContext);
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //get userId
-        String memberValue = "";
-        if (!StringUtil.isEmpty(userIdKey)) {
+        if(!StringUtil.isEmpty(userIdKey)) {
             Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
             String userId = userIdMap.get(userIdKey);
             groupRoleFieldDto.setCheckUser(userIdKey);
             //get task ref_no by uerId
-            memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("taskUserId", userId,true);
+            }
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         } else {
-            ParamUtil.setSessionAttr(bpc.request, "memberId", null);
+            //Distinguish between leaders and not leaders
+            String userId = distinguishLeaderByLogInfo(loginContext);
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("taskUserId", userId,true);
+                ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "memberId", null);
+            }
         }
-        List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
-        List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
-        StringBuilder sb = new StringBuilder("(");
-        for (int i = 0; i < appCorrId_list.size(); i++) {
-            sb.append(":appCorrId")
-                    .append(i)
-                    .append(',');
+        //filter task pool by status
+        if(!StringUtil.isEmpty(application_status)) {
+            //Filter the Common Pool Task in another place
+            if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
+                searchParam.addFilter("application_status", application_status, true);
+            } else {//Filter the Common Pool Task
+                searchParam.addParam("commonPoolStatus", "commonPoolStatus");
+            }
         }
-        String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParam.addParam("appCorrId_list", inSql);
-        for (int i = 0; i < appCorrId_list.size(); i++) {
-            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+        int workGroupIdsSize = 0;
+        if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+            workGroupIdsSize = workGroupIds.size();
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+            }
+        } else {
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
+        }
+        if(loginContext != null && !StringUtil.isEmpty(roleId)) {
+            List<String> roleIdList = new ArrayList<>(2);
+            roleIdList.add(roleId);
+            roleIdList.add(roleId.replace(RoleConsts.USER_LEAD, ""));
+            String roleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", roleIdList.size());
+            searchParam.addParam("roleId_List", roleIdStr);
+            for (int i = 0; i < roleIdList.size(); i++) {
+                searchParam.addFilter("T7.ROLE_ID" + i, roleIdList.get(i));
+            }
+        } else {
+            String roleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", 0);
+            searchParam.addParam("roleId_List", roleIdStr);
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
-        }
-        String[] appCorIdStrs;
-        if (!(StringUtil.isEmpty(memberValue))) {
-            appCorIdStrs = memberValue.split(",");
-            StringBuilder sb2 = new StringBuilder("(");
-            for (int i = 0; i < appCorIdStrs.length; i++) {
-                sb2.append(":appCorId")
-                        .append(i)
-                        .append(',');
-            }
-            String inSql2 = sb2.substring(0, sb2.length() - 1) + ")";
-            searchParam.addParam("appCorId_list", inSql2);
-            for (int i = 0; i < appCorIdStrs.length; i++) {
-                searchParam.addFilter("appCorId" + i, appCorIdStrs[i]);
-            }
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if (!StringUtil.isEmpty(application_type)) {
             searchParam.addFilter("application_type", application_type, true);
@@ -278,27 +337,27 @@ public class InspecReassignTaskDelegator {
         if (!StringUtil.isEmpty(hci_address)) {
             searchParam.addFilter("hci_address", hci_address, true);
         }
-        ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }
 
     private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds, LoginContext loginContext) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(workGroupIds)) {
+        if (IaisCommonUtils.isEmpty(workGroupIds) || loginContext == null) {
             return null;
         }
         String loginUserId = loginContext.getUserId();
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-        Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupLeadByUserId(loginContext.getUserId()).getEntity();
+        Integer isLeadForGroup = 0;
+        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
+            isLeadForGroup = 1;
+        }
         String curRole = loginContext.getCurRoleId();
         if (1 == isLeadForGroup) {
             for (String workGrpId : workGroupIds) {
-                List<TaskDto> supervisorPoolByGroupWordId = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
+                List<TaskDto> supervisorPoolByGroupWordId = inspectionService.getReassignPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : supervisorPoolByGroupWordId) {
-                    if (curRole.equals(tDto.getRoleId())) {
-                        taskDtoList.add(tDto);
-                    }
+                    taskDtoList.add(tDto);
                 }
             }
         } else {
@@ -312,7 +371,6 @@ public class InspecReassignTaskDelegator {
                 }
             }
         }
-
         return taskDtoList;
     }
 
@@ -349,11 +407,10 @@ public class InspecReassignTaskDelegator {
     public void inspectionSupSearchQuery1(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        List<TaskDto> superPool = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "superPool");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
+        QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
-        searchResult = inspectionService.getGroupLeadName(searchResult, loginContext, superPool);
+        searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
 
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
@@ -413,7 +470,7 @@ public class InspecReassignTaskDelegator {
                     groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
                 }
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("inspectorCheck",MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(), "field"));
+                errorMap.put("inspectorCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(), "field"));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
@@ -474,7 +531,7 @@ public class InspecReassignTaskDelegator {
     public void inspectionSupSearchSuccess(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchSuccess start ...."));
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
-        List<TaskDto> superPool = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "superPool");
+        List<TaskDto> superPool = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "taskDtos");
         String reassignRemarks = inspectionTaskPoolListDto.getReassignRemarks();
         inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, reassignRemarks);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);

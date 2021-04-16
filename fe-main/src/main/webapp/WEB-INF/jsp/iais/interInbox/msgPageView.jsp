@@ -60,6 +60,7 @@
         }
     }
     function submit(action) {
+        showWaiting();
         $("[name='msg_action_type']").val(action);
         $("#msgForm").submit();
     }
@@ -113,7 +114,11 @@
     });
 
     $('#confirmArchive').click(function () {
-        submit('msgDoArchive');
+        $('#doArchiveModal').modal('hide');
+        setTimeout(function (){
+            submit('msgDoArchive');
+        }, 1000);
+
     });
 
     function toMsgPage() {

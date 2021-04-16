@@ -60,16 +60,15 @@
     </div>
 </div>
   <input type="hidden" id="reasult" value="${delete}" >
-    <input type="hidden" id="deleteFile" value="${deleteFile}" >
   </form>
 </div>
-
+<iais:confirm msg="${deleteFile}" needCancel="false"  callBack="cancel()" popupOrder="deleteFile"></iais:confirm>
 <script type="text/javascript">
   $(document).ready(function () {
       if($('#reasult').val()=='fail'){
-          alert($('#deleteFile').val());
+          $('#deleteFile').modal("show");
       }else if($('#reasult').val()=='success'){
-          alert("delete success");
+        $('#deleteFile').modal("show");
       }
 
   });
@@ -83,5 +82,9 @@
    function  back() {
        SOP.Crud.cfxSubmit("mainForm","back");
    }
+  function cancel() {
+    $('#deleteFile').modal("hide");
+  }
+
 </script>
 </>

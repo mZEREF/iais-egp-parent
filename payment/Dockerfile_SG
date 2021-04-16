@@ -1,4 +1,4 @@
-FROM hub.ecquaria.com:8150/ecq/tomcat:9.0.38-jre8-alpine
+FROM hub.ecquaria.com:8150/ecq/tomcat:9.0.40-jre8-alpine
 
 RUN deluser --remove-home egpcloud
 RUN adduser -D -u 1000 iais
@@ -11,7 +11,7 @@ COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 
-COPY --chown=iais:iais target/payment-web /usr/local/tomcat/webapps/payment-web
+COPY --chown=iais:iais target/egov /usr/local/tomcat/webapps/egov
 
 COPY --chown=iais:iais docker/run.sh /run.sh
 COPY --chown=iais:iais docker/admin.json /admin.json

@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -263,6 +264,14 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
     }
 
+
+    public FeignResponseEntity<List> genInspApptRescheduleDate(AppointmentDto appointmentDto,
+                                                     String date, String authorization, String dateSec,
+                                                     String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/appt-reschedule-action", HttpMethod.POST, appointmentDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
+    }
+
     public FeignResponseEntity<Void> saveApplicationDtosForFe(ApplicationTruckDto applicationTruckDto,
                                                                           String date, String authorization, String dateSec,
                                                                           String authorizationSec) {
@@ -270,4 +279,12 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
     }
 
+    public FeignResponseEntity<PostCodeDto> getPostalCode(String postalCode) {
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+        params.put("postalCode", postalCode);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/postal-code", HttpMethod.GET, params, MediaType.APPLICATION_JSON,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization(), PostCodeDto.class);
+    }
 }

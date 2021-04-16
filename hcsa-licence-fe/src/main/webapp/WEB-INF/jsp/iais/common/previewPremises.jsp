@@ -60,7 +60,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>HCI Name</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.hciName}</span></p>
@@ -163,150 +163,179 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offTelNo}</span></p>
                                 </div>
                             </div>
-                            <div class="row">
+                            <%--<div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (Start)</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.onsiteStartHH.length()>1}">
-                                                ${appGrpPremDto.onsiteStartHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.onsiteStartHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.onsiteStartMM.length()>1}">
-                                                ${appGrpPremDto.onsiteStartMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.onsiteStartMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (End)</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.onsiteEndHH.length()>1}">
-                                                ${appGrpPremDto.onsiteEndHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.onsiteEndHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.onsiteEndMM.length()>1}">
-                                                ${appGrpPremDto.onsiteEndMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.onsiteEndMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>Start</span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>End</span></p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>All day</span></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
+                            <!--weekly -->
                             <c:choose>
-                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
+                                <c:when test="${appGrpPremDto.weeklyDtoList.size()>0}">
+                                    <c:set var="weeklySize" value="${appGrpPremDto.weeklyDtoList.size()-1}"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:set var="phLength" value="0"/>
+                                    <c:set var="weeklySize" value="0"/>
                                 </c:otherwise>
                             </c:choose>
-                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
-                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                 <c:when test="${empty appPremPhOpenPeriod}">
+                            <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
+                                <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
 
-                                                 </c:when>
-                                                 <c:when test="${appPremPhOpenPeriod.onsiteStartFromHH.length()>1}">
-                                                     ${appPremPhOpenPeriod.onsiteStartFromHH}
-                                                 </c:when>
-                                                 <c:otherwise>
-                                                     0${appPremPhOpenPeriod.onsiteStartFromHH}
-                                                 </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                            :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteStartFromMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteStartFromMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteStartFromMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
+                                <c:if test="${!stat.first}">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
+                                        </div>
                                     </div>
-                                </div>
+                                </c:if>
+
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:forEach var="weeklyName" items="${weeklyDto.transferNameForWeekly()}" varStatus="weeklyStat">
+                                                    <c:out value="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                                                </c:forEach>
+                                            </span>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteEndToHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteEndToHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteEndToHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.onsiteEndToMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.onsiteEndToMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.onsiteEndToMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${weeklyDto.startFromHH}"/>:<c:out value="${weeklyDto.startFromMM}"/></span></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${weeklyDto.endToHH}"/>:<c:out value="${weeklyDto.endToMM}"/></span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check <c:if test="${weeklyDto.selectAllDay}">active</c:if>">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </c:forEach>
+                            <!--ph -->
+                            <c:choose>
+                                <c:when test="${appGrpPremDto.phDtoList.size()>0}">
+                                    <c:set var="phSize" value="${appGrpPremDto.phDtoList.size()-1}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="phSize" value="0"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach begin="0" end="${phSize}" step="1" varStatus="stat">
+                                <c:set var="phDto" value="${appGrpPremDto.phDtoList[stat.index]}"/>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:forEach var="weeklyName" items="${phDto.selectValList}" varStatus="weeklyStat">
+                                                    <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                                                </c:forEach>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${phDto.startFromHH}"/>:<c:out value="${phDto.startFromMM}"/></span></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${phDto.endToHH}"/>:<c:out value="${phDto.endToMM}"/></span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check <c:if test="${weeklyDto.selectAllDay}">active</c:if>">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+
+                            <!--event -->
+                            <c:choose>
+                                <c:when test="${appGrpPremDto.eventDtoList.size()>0}">
+                                    <c:set var="eventSize" value="${appGrpPremDto.eventDtoList.size()-1}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="eventSize" value="0"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach begin="0" end="${eventSize}" step="1" varStatus="stat">
+                                <c:set var="eventDto" value="${appGrpPremDto.eventDtoList[stat.index]}"/>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${eventDto.eventName}"/>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.startDateStr}"/></span></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.endDateStr}"/></span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>--%>
                         </c:if>
 
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceHciName}</span></p>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Vehicle No.</span></p>
@@ -385,149 +414,17 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceBuildingName}</span></p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (Start)</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.conStartHH.length()>1}">
-                                                ${appGrpPremDto.conStartHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.conStartHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.conStartMM.length()>1}">
-                                                ${appGrpPremDto.conStartMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.conStartMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (End)</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.conEndHH.length()>1}">
-                                                ${appGrpPremDto.conEndHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.conEndHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.conEndMM.length()>1}">
-                                                ${appGrpPremDto.conEndMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.conEndMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
-                                </div>
-                            </div>
-                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
-                            <c:choose>
-                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:set var="phLength" value="0"/>
-                                </c:otherwise>
-                            </c:choose>
-                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
-                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.convStartFromHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.convStartFromHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.convStartFromHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.convStartFromMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.convStartFromMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.convStartFromMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.convEndToHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.convEndToHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.convEndToHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.convEndToMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.convEndToMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.convEndToMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
-                                    </div>
-                                </div>
-                            </c:forEach>
                         </c:if>
 
                         <c:if test="${'OFFSITE'==appGrpPremDto.premisesType}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteHciName}</span></p>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>
@@ -598,147 +495,287 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteBuildingName}</span></p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (Start)</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.offSiteStartHH.length()>1}">
-                                                ${appGrpPremDto.offSiteStartHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.offSiteStartHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.offSiteStartMM.length()>1}">
-                                                ${appGrpPremDto.offSiteStartMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.offSiteStartMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (End)</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.offSiteEndHH.length()>1}">
-                                                ${appGrpPremDto.offSiteEndHH}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.offSiteEndHH}
-                                            </c:otherwise>
-                                        </c:choose>
-                                        :
-                                        <c:choose>
-                                            <c:when test="${appGrpPremDto.offSiteEndMM.length()>1}">
-                                                ${appGrpPremDto.offSiteEndMM}
-                                            </c:when>
-                                            <c:otherwise>
-                                                0${appGrpPremDto.offSiteEndMM}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </span></p>
-                                </div>
-                            </div>
-                            <%--<c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">--%>
-                            <c:choose>
-                                <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
-                                    <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:set var="phLength" value="0"/>
-                                </c:otherwise>
-                            </c:choose>
-                            <c:forEach begin="0" end="${phLength}" step="1" varStatus="statu">
-                                <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (Start)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.offSiteStartFromHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.offSiteStartFromHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.offSiteStartFromHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.offSiteStartFromMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.offSiteStartFromMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.offSiteStartFromMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday Operating Hours (End)</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.offSiteEndToHH.length()>1}">
-                                                    ${appPremPhOpenPeriod.offSiteEndToHH}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.offSiteEndToHH}
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <c:if test="${!empty appPremPhOpenPeriod}">
-                                                :
-                                            </c:if>
-                                            <c:choose>
-                                                <c:when test="${empty appPremPhOpenPeriod}">
-
-                                                </c:when>
-                                                <c:when test="${appPremPhOpenPeriod.offSiteEndToMM.length()>1}">
-                                                    ${appPremPhOpenPeriod.offSiteEndToMM}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    0${appPremPhOpenPeriod.offSiteEndToMM}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span></p>
-                                    </div>
-                                </div>
-                            </c:forEach>
                         </c:if>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Start</span></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>End</span></p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>All day</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--weekly -->
+                        <c:choose>
+                            <c:when test="${appGrpPremDto.weeklyDtoList.size()>0}">
+                                <c:set var="weeklySize" value="${appGrpPremDto.weeklyDtoList.size()-1}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="weeklySize" value="0"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:forEach begin="0" end="${weeklySize}" step="1" varStatus="stat">
+                            <c:set var="weeklyDto" value="${appGrpPremDto.weeklyDtoList[stat.index]}"/>
+
+                            <%--<c:if test="${!stat.first}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Weekly</span></p>
+                                    </div>
+                                </div>
+                            </c:if>--%>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
+                                                    <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                                                </c:forEach>
+                                            </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                    <c:if test="${!weeklyDto.selectAllDay}">
+                                                        <c:if test="${weeklyDto.startFromHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.startFromHH.length()>1}">
+                                                                    ${weeklyDto.startFromHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.startFromHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                        <c:if test="${!weeklyDto.selectAllDay && (weeklyDto.startFromHH != null || weeklyDto.startFromMM != null)}">
+                                                            :
+                                                        </c:if>
+                                                        <c:if test="${weeklyDto.startFromMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.startFromMM.length()>1}">
+                                                                    ${weeklyDto.startFromMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.startFromMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                    </c:if>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                    <c:if test="${!weeklyDto.selectAllDay}">
+                                                        <c:if test="${weeklyDto.endToHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.endToHH.length()>1}">
+                                                                    ${weeklyDto.endToHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.endToHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                        <c:if test="${!weeklyDto.selectAllDay && (weeklyDto.endToHH != null || weeklyDto.endToMM != null)}">
+                                                            :
+                                                        </c:if>
+                                                        <c:if test="${weeklyDto.endToMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${weeklyDto.endToMM.length()>1}">
+                                                                    ${weeklyDto.endToMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${weeklyDto.endToMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                    </c:if>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <c:if test="${weeklyDto.selectAllDay}">
+                                                <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                        <!--ph -->
+                        <c:choose>
+                            <c:when test="${appGrpPremDto.phDtoList.size()>0}">
+                                <c:set var="phSize" value="${appGrpPremDto.phDtoList.size()-1}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="phSize" value="0"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:forEach begin="0" end="${phSize}" step="1" varStatus="stat">
+                            <c:set var="phDto" value="${appGrpPremDto.phDtoList[stat.index]}"/>
+                            <c:if test="${stat.first}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
+                                    </div>
+                                </div>
+                            </c:if>
+
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:forEach var="weeklyName" items="${phDto.selectValList}" varStatus="weeklyStat">
+                                                    <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                                                </c:forEach>
+                                            </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                    <c:if test="${!phDto.selectAllDay}">
+                                                        <c:if test="${phDto.startFromHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.startFromHH.length()>1}">
+                                                                    ${phDto.startFromHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.startFromHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                        <c:if test="${phDto.startFromHH != null || phDto.startFromMM != null}">
+                                                            :
+                                                        </c:if>
+                                                        <c:if test="${phDto.startFromMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.startFromMM.length()>1}">
+                                                                    ${phDto.startFromMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.startFromMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                    </c:if>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                                <span>
+                                                    <c:if test="${!phDto.selectAllDay}">
+                                                        <c:if test="${phDto.endToHH != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.endToHH.length()>1}">
+                                                                    ${phDto.endToHH}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.endToHH}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                        <c:if test="${phDto.endToHH != null || phDto.endToMM != null}">
+                                                            :
+                                                        </c:if>
+                                                        <c:if test="${phDto.endToMM != null}">
+                                                            <c:choose>
+                                                                <c:when test="${phDto.endToMM.length()>1}">
+                                                                    ${phDto.endToMM}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    0${phDto.endToMM}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:if>
+                                                    </c:if>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <c:if test="${phDto.selectAllDay}">
+                                                <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+
+                        <!--event -->
+                        <c:choose>
+                            <c:when test="${appGrpPremDto.eventDtoList.size()>0}">
+                                <c:set var="eventSize" value="${appGrpPremDto.eventDtoList.size()-1}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="eventSize" value="0"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:forEach begin="0" end="${eventSize}" step="1" varStatus="stat">
+                            <c:set var="eventDto" value="${appGrpPremDto.eventDtoList[stat.index]}"/>
+                            <c:if test="${stat.first}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
+                                    </div>
+                                </div>
+                            </c:if>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${eventDto.eventName}"/>
+                                            </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.startDateStr}"/></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.endDateStr}"/></span></p>
+                                        </div>
+                                        <div class="col-md-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </c:forEach>

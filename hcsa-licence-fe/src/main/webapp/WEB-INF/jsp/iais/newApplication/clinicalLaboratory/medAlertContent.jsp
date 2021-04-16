@@ -7,7 +7,9 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
     <div class="col-xs-12">
-        <h2>MedAlert Person</h2>
+        <p style="font-weight: 600;font-size: 2.2rem">MedAlert Person</p>
+        <p>MedAlert Person is the person appointed to receive the medical alert notification and circulars issued by MOH.</p>
+        <hr>
         <div class="row">
             <c:if test="${AppSubmissionDto.needEditController }">
                 <c:set var="isClickEdit" value="false"/>
@@ -43,6 +45,8 @@
                 <c:set var="pageLength" value="${mandatoryCount}"/>
             </c:otherwise>
         </c:choose>
+        <c:set var="editControl" value="${(!empty AppSvcMedAlertPsn && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+        <c:if test="${pageLength >0 && editControl}">
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
             <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[status.index]}"/>
             <div class="medAlertContent">
@@ -75,14 +79,14 @@
                                 <div class="col-sm-10">
                                     <label class="control-font-label">
                                         <c:if test="${!empty medAlertPsn.name && !empty medAlertPsn.idNo && !empty medAlertPsn.idType}">
-                                            ${medAlertPsn.name}, ${medAlertPsn.idNo} (${medAlertPsn.idType})
+                                            ${medAlertPsn.name}, ${medAlertPsn.idNo} (<iais:code code="${medAlertPsn.idType}"/>)
                                         </c:if>
                                     </label>
                                 </div>
                                 <div class="col-sm-2 text-right">
                                     <div class="edit-content">
                                         <c:if test="${'true' == canEdit}">
-                                            <label class="control-font-label"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                            <label class="control-font-label"><a class="edit mapEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
                                         </c:if>
                                     </div>
                                 </div>
@@ -116,12 +120,12 @@
                                     <label  class="control-label control-set-font control-font-label">Name</label>
                                     <span class="mandatory">*</span>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3 col-xs-3">
                                     <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${medAlertPsn.salutation}" firstOption="Please Select"></iais:select>
                                     <span class="error-msg" id="error_salutation${status.index}" name="iaisErrorMsg"></span>
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 col-xs-4">
                                     <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                                     <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
@@ -136,13 +140,13 @@
                                         <span class="mandatory">*</span>
                                     </label>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3 col-xs-3">
                                     <div class="">
-                                        <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" options="IdTypeSelect"></iais:select>
+                                        <iais:select cssClass="idType idTypeSel"  name="idType" needSort="false" value="${medAlertPsn.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                         <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 col-xs-4">
                                     <iais:input cssClass="idNoVal" maxLength="9" type="text" name="idNo" value="${medAlertPsn.idNo}"></iais:input>
                                     <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
                                 </div>
@@ -188,46 +192,52 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                   <%-- <div class="row">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Preferred Mode of Receiving MedAlert</label>
+                                    <label  class="control-label control-set-font control-font-label">Description</label>
                                     <span class="mandatory">*</span>
                                 </div>
-                                <div class="col-sm-3 control-label formtext col-md-7 preferredModeDiv">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="EmailCheckbox" type="checkbox" name="preferredMode${status.index}" value = "1" aria-invalid="false" <c:if test="${'1' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if> >
-                                                <label class="form-check-label" for="EmailCheckbox"><span class="check-square"></span>Email</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="SMSCheckbox" type="checkbox" name="preferredMode${status.index}" value = "2" aria-invalid="false" <c:if test="${'2' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if>>
-                                                <label class="form-check-label" for="SMSCheckbox"><span class="check-square"></span>SMS</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="error-msg" id="error_preferredModeVal${status.index}" name="iaisErrorMsg"></span>
+                                <div class="col-sm-4 col-md-7">
+                                    <iais:input maxLength="66" type="text" name="description" value="${medAlertPsn.description}"></iais:input>
+                                    <span class="error-msg" id="error_descriptionModeVal${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>--%>
                 </div>
                 <br/>
             </div>
         </c:forEach>
+        </c:if>
         <c:if test="${requestInformationConfig==null}">
-            <c:choose>
+            <%--<c:choose>
                 <c:when test="${!empty AppSvcMedAlertPsn}">
                     <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
                 </c:when>
                 <c:otherwise>
-                    <c:set var="mapDtoLength" value="1"/>
+                    <c:set var="mapDtoLength" value="0"/>
+                </c:otherwise>
+            </c:choose>--%>
+
+            <c:choose>
+                <c:when test="${!empty AppSvcMedAlertPsn }">
+                    <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:choose>
+                        <c:when test="${AppSubmissionDto.needEditController}">
+                            <c:set var="mapDtoLength" value="0"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="mapDtoLength" value="${mapHcsaSvcPersonnel.mandatoryCount}"/>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
+
+
             <c:set var="needAddPsn" value="true"/>
             <c:choose>
                 <c:when test="${mapHcsaSvcPersonnel.status =='CMSTAT003'}">
@@ -253,7 +263,7 @@
     </div>
 </div>
 
-
+<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>
     var init;
     $(function () {
@@ -310,6 +320,9 @@
         //doEdit();
         //init end
         init =1;
+        if($("#errorMapIs").val()=='error'){
+            $('.edit').trigger('click');
+        }
     })
 
 
@@ -367,7 +380,7 @@
     var addMAP = function(){
         $('#addMapBtn').click(function () {
             showWaiting();
-            var hasNumber = $('.medAlertContent').size() - 1;
+            var hasNumber = $('.medAlertContent').length - 1;
             console.log("hasNumber" + hasNumber);
             $.ajax({
                 url:'${pageContext.request.contextPath}/med-alert-person-html',
@@ -390,16 +403,19 @@
 
                         retrieveData();
                         <!--set Scrollbar -->
-                        $("div.assignSel->ul").mCustomScrollbar({
+                        /*$("div.assignSel->ul").mCustomScrollbar({
                                 advanced:{
                                     updateOnContentResize: true
                                 }
                             }
-                        );
+                        );*/
                         //hidden add more
                         var psnLength = $('.medAlertContent').length-1;
                         if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
                             $('#addPsnDiv').addClass('hidden');
+                        }
+                        if(psnLength <='${mapHcsaSvcPersonnel.mandatoryCount}'){
+                            $('.medAlertContent:last .mapDelBtn').remove();
                         }
                         //get data from page
                         $('#isEditHiddenVal').val('1');
@@ -425,11 +441,11 @@
         $contentEle.find('div.nice-select').removeClass('disabled');
         $contentEle.find('input[type="text"]').css('border-color','');
         $contentEle.find('input[type="text"]').css('color','');
-        $contentEle.find('.preferredMode').prop('disabled',false);
+        $contentEle.find('.description').prop('disabled',false);
         //get data from page
         $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         var mapSelectVal = $contentEle.find('select[name="assignSel"]').val();
-        if('-1' != mapSelectVal){
+        if('-1' != mapSelectVal && '' != mapSelectVal){
             $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         }
         $('#isEditHiddenVal').val('1');
@@ -512,17 +528,9 @@
             $mapContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
         }
 
-        var preferredMode = data.preferredMode;
-        if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
-            if('3' == preferredMode){
-                $mapContentEle.find('input.preferredMode').prop('checked',true);
-            }else{
-                $mapContentEle.find('input.preferredMode').each(function () {
-                    if(preferredMode == $(this).val()){
-                        $(this).prop('checked',true);
-                    }
-                });
-            }
+        var description = data.description;
+        if(description != null && description !='undefined' && description != ''){
+            $mapContentEle.find('input[name="description"]').val(data.description);
         }
 
 

@@ -129,14 +129,14 @@ SFTP_CREDENTIALS = [
 
 // used by Katalon Runtime Engine
 KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
-    credentialsId: '80b49081-93ca-48cf-96ec-e53b988902ba',
+    credentialsId: '0bfbaa23-a895-48ce-b367-8a91cad331ec',
     variable: 'KATALON_OFFLINE_LICENSE')
 ]
 
 // Destination directory when we do `git clone`.
 CHECKOUT_DIRECTORY_AUTOMATED_TESTING="checkouts-at"
 
-// Specify the Gitlab URL used by the project -- note the use of single quote.
+//Specify the Gitlab URL used by the project -- note the use of single quote.
 PROJECT_GITLAB_URL_AUTOMATED_TESTING =
     'https://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais/iais-qa.git'
 
@@ -144,8 +144,8 @@ configurePipeline()
 
 try{
     node{
-        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container
-        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment
+        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container 
+        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment 
         // variable.
         def dockerArgs = [
             "--entrypoint=''",
@@ -207,17 +207,6 @@ try{
         return
     }
 
-    node{
-        docker.withServer(DOCKER_URL){
-            withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-                releaseDockerImages()
-                createAndUploadVerificationPackage()
-                waitForVerifier()
-                createAndUploadDeploymentPackage()
-            }
-        }
-    }
-
     currentBuild.result = 'SUCCESS'
 }
 catch(err){
@@ -254,9 +243,9 @@ def configurePipeline(){
                 string(
                     defaultValue: '',
                     description: '''\
-                    Since we will need to transport commits over to the other side, this tag
-                    provides some sort of a baseline (or a hint) that would be given to Git in
-                    order for it to decide which commits to include (in an attempt to save the
+                    Since we will need to transport commits over to the other side, this tag 
+                    provides some sort of a baseline (or a hint) that would be given to Git in 
+                    order for it to decide which commits to include (in an attempt to save the 
                     payload size).
 
                     Please note that this field is optional.
@@ -364,8 +353,8 @@ def sonarqube(){
                         mvn \
                             --no-transfer-progress \
                             -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -Dsonar.projectKey=iais-iais-egp-rel \
-                            -Dsonar.projectName=iais-iais-egp-rel \
+                            -Dsonar.projectKey=iais-iais-egp-sit \
+                            -Dsonar.projectName=iais-iais-egp-sit \
                             -P sg-nexus \
                             -s settings.xml \
                             sonar:sonar
@@ -620,7 +609,7 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-intranet.zip \\
                             /scripts/deploy-to-eds.sh
-
+                            
                         fi
                     """
 
@@ -632,9 +621,9 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-internet.zip \\
                             /scripts/deploy-to-eds.sh
-
+                            
                         fi
-
+                        
                     """
                 }
             }
@@ -700,29 +689,16 @@ def createVerificationPackage(){
                 git config --global user.email "mohiais@nowhere.com"
                 git config --global user.name "moh-iais"
 
-                (
-                    cd ${CHECKOUT_DIRECTORY}
+                cd ${CHECKOUT_DIRECTORY}
 
-                    if [[ -z ${BASELINE_TAG} ]]; then
-                        git bundle create iais-egp.bundle ${TAG_TO_BUILD}                    
-                    else
-                        git bundle create iais-egp.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
-                    fi
+                if [[ -z ${BASELINE_TAG} ]]; then 
+                    git bundle create iais-egp.bundle ${TAG_TO_BUILD}
+                    
+                else
+                    git bundle create iais-egp.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
+                fi
 
-                    mv iais-egp.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
-                )
-
-                (
-                    cd ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING}
-
-                    if [[ -z ${BASELINE_TAG} ]]; then
-                        git bundle create iais-qa.bundle ${TAG_TO_BUILD}                    
-                    else
-                        git bundle create iais-qa.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
-                    fi
-
-                    mv iais-qa.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
-                )
+                mv iais-egp.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
             """
         }
 
@@ -954,14 +930,14 @@ def createTransferPackage(){
                 sh """
                     tar -cf "$ARCHIVE_2" -C "\$(dirname "$ARCHIVE_1")" "\$(basename "$ARCHIVE_1")"
                     tar -rf "$ARCHIVE_2" -C "\$(dirname "$SIGNATURE_FROM_VERIFIER")" "\$(basename "$SIGNATURE_FROM_VERIFIER")"
-
+    
                     openssl rand -hex "$SYMMETRIC_KEY_SIZE" > "$SYMMETRIC_KEY"
                     openssl rand -hex "$INITIALIZATION_VECTOR_SIZE" > "$INITIALIZATION_VECTOR"
-
+    
                     openssl enc -e "$SYMMETRIC_KEY_ALGO" -K "\$(cat $SYMMETRIC_KEY)" -iv "\$(cat $INITIALIZATION_VECTOR)" -in "$ARCHIVE_2" -out "$ARCHIVE_3"
-
+    
                     openssl rsautl -encrypt -inkey "$RECEIVER_PUBLIC_KEY" -pubin -in "$SYMMETRIC_KEY" -out "$SYMMETRIC_KEY_ENCRYPTED"
-
+    
                     tar -cf "$ARCHIVE_4" -C "\$(dirname "$ARCHIVE_3")" "\$(basename "$ARCHIVE_3")"
                     tar -rf "$ARCHIVE_4" -C "\$(dirname "$SYMMETRIC_KEY_ENCRYPTED")" "\$(basename "$SYMMETRIC_KEY_ENCRYPTED")"
                     tar -rf "$ARCHIVE_4" -C "\$(dirname "$INITIALIZATION_VECTOR")" "\$(basename "$INITIALIZATION_VECTOR")"
@@ -1019,9 +995,9 @@ def uploadTransferPackageToSFTP(){
             .inside(dockerArgs.join(" ")){
                 sh """
                     echo \"$BATCH_FILE_CONTENTS\" > \"$BATCH_FILE\"
-
+    
                     cat $BATCH_FILE
-
+    
                     cat \"$BATCH_FILE\" | sshpass -e sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
                 """
             }

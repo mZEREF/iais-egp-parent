@@ -89,4 +89,8 @@ public interface FillupChklistService {
     void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos,String deconflict);
 
     void setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(AdhocNcCheckItemDto  adhocNcCheckItemDto, List<AnswerForDifDto> answerForDifDtos,String deconflict);
+
+    String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto,InspectionFillCheckListDto commonDto,String refNo);
+
+    boolean isBeforeFinishCheckList(String refNo);
 }

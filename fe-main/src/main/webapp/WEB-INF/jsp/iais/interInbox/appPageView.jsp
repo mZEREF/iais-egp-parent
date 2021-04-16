@@ -73,6 +73,7 @@
         $("#appStatusSelect option:first").prop("selected", 'selected').val("");
         $("#appServiceType option:first").prop("selected", 'selected').val("");
         $("#clearBody .current").text("All");
+        $(".error-msg").text("")
     }
 
     function jumpToPagechangePage() {
@@ -85,6 +86,16 @@
         submit('appSort');
     }
     $(function () {
+        $(".appDoSelectActive").find('ul li').each(function (k,v) {
+            if($(this).data('value') == 'Inspection'){
+                $(this).css('padding-bottom','18px');
+            }
+
+            if($(this).data('value') == 'Make Payment'){
+                $(this).css('padding-bottom','18px');
+            }
+        });
+
         if ('${appIsAppealed}') {
             $('#isAppealModal').modal('show');
         }
@@ -156,6 +167,14 @@
             $("[name='action_grp_value']").val(appGrpId);
             $("[name='action_self_value']").val(appSelfFlag);
             submit("doInspection");
+        }
+
+        if ("Make Payment" == action) {
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            $("[name='action_grp_value']").val(appGrpId);
+            $("[name='action_self_value']").val('appMakePayment');
+            submit("appDoRecall");
         }
     });
 

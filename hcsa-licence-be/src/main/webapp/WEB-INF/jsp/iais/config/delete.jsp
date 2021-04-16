@@ -79,7 +79,7 @@
             <select name="selectCategoryId" disabled >
               <option value="">Please Select</option>
               <c:forEach items="${categoryDtos}" var="categoryDto">
-                <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                <option  <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
               </c:forEach>
             </select>
           </div>
@@ -164,7 +164,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
             <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
@@ -233,6 +233,16 @@
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+              </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                <select disabled>
+                  <option value="">To duplicate for the personnel?</option>
+                  <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
+                  <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
+                  <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
+                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                  <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                </select>
               </div>
             </div>
           </div>
@@ -425,7 +435,7 @@
                       </c:if>
                     </div>
 
-                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%" >
+                    <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%;text-align:left" >
                       <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
 
                       <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
@@ -446,6 +456,7 @@
                       </c:if>
                       <c:if test="${routingStage.stageCode=='INS'}">
                         <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
+
                           <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
                             <option value="" >Please Select</option>
                             <option value="common"
@@ -608,7 +619,8 @@
       <div class="col-lg-12 col-xs-12">
         <iais:action style="text-align:center;">
           <a class="btn btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
-          <button class="btn btn-secondary" id="deleteConfirm" value="${hcsaServiceDto.id}" onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
+          <a class="btn btn-secondary"data-toggle="modal" style="color: #ff0000" data-target= "#deleteConfirmYesOrNo">CONFIRM DELETE</a>
+          <input type="hidden" id="deleteConfirm" value="${hcsaServiceDto.id}">
         </iais:action>
         <div class="bg-title" style="text-align: center">
           <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
@@ -621,7 +633,7 @@
 </div>
 <%@ include file="configRepeatJs.jsp" %>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
-
+<iais:confirm msg="Are you sure to delete ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="deleteConfirmYesOrNo()" callBack="cancelDelete()" popupOrder="deleteConfirmYesOrNo" ></iais:confirm>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
@@ -691,17 +703,14 @@
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
 
     }
-
-    function confirmDelete(obj) {
-        var r=confirm("Are you sure to delete!");
-        if(r==true){
-            SOP.Crud.cfxSubmit("mainForm","delete",$(obj).val(),"");
-        }else {
-
-            SOP.Crud.cfxSubmit("mainForm","delete","","");
-        }
-
+    function deleteConfirmYesOrNo(){
+      var val = $('#deleteConfirm').val();
+      SOP.Crud.cfxSubmit("mainForm","delete",val,"");
     }
+    function cancelDelete(){
+      SOP.Crud.cfxSubmit("mainForm","delete","","");
+    }
+
     function displays() {
         $('#cancel').modal('hide');
     }

@@ -37,7 +37,7 @@ public class OnlineApptEicClientFallback implements OnlineApptEicClient {
     }
 
     @Override
-    public FeignResponseEntity<Map<String, String>> saveEicTrack(EicRequestTrackingDto eicRequestTrackingDto) {
+    public FeignResponseEntity<EicRequestTrackingDto> saveEicTrack(EicRequestTrackingDto eicRequestTrackingDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

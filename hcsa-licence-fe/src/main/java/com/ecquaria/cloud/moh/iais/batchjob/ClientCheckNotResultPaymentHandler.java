@@ -7,15 +7,17 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +34,8 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
     ApplicationFeClient applicationFeClient;
     @Autowired
     AppGrpPaymentClient appGrpPaymentClient;
+    @Autowired
+    private ServiceConfigService serviceConfigService;
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
@@ -42,13 +46,20 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
                 try {
-                    PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getPmtRefNo()).getEntity();
-                    if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
-                        paymentDto.setAuditTrailDto(auditTrailDto);
-                        appGrp.setPmtRefNo(paymentDto.getReqRefNo());
-                        appGrp.setPaymentDt(paymentDto.getTxnDt());
-                        appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                        applicationFeClient.doPaymentUpDate(appGrp).getEntity();
+                    List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                    if(paymentRequestDtos!=null){
+                        for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                        ) {
+                            if("success".equals(paymentRequestDto.getStatus())){
+                                appGrp.setPmtRefNo(paymentRequestDto.getReqRefNo());
+                                appGrp.setPaymentDt(new Date());
+                                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                                appGrp.setPayMethod(paymentRequestDto.getPayMethod());
+                            }
+                        }
+                    }
+                    if(appGrp.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+                        serviceConfigService.updatePaymentStatus(appGrp);
                     }
                 }catch (Exception e){
                     log.info(e.getMessage(),e);

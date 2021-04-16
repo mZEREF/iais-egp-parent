@@ -24,6 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author ShiCheng_Xu
+ */
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentClientFallback.class)
 public interface AppointmentClient {
@@ -34,8 +37,8 @@ public interface AppointmentClient {
     @GetMapping(value = "/blacked-out-date/{shortName}")
     FeignResponseEntity<List<ApptBlackoutDateDto>> getAllByShortName(@PathVariable("shortName") String shortName);
 
-    @GetMapping(value = "/non-working-data/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApptNonWorkingDateDto>> getNonWorkingDateListByWorkGroupId(@PathVariable(name = "groupId") String groupId);
+    @GetMapping(value = "/iais-appointment/non-working-data/{clientId}/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptNonWorkingDateDto>> getNonWorkingDateListByWorkGroupId(@PathVariable(name = "clientId") String iaisClientKey, @PathVariable(name = "groupId") String groupId);
 
     @PostMapping(value = "/iais-appointment/appt-nonavac", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApptNonAvailabilityDateDto> createNonAvailability(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
@@ -76,5 +79,4 @@ public interface AppointmentClient {
 
     @PutMapping(value = "/iais-appointment/appt-calendar-refno-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatus(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
-
 }

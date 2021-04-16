@@ -109,7 +109,7 @@ public class InboxServiceImpl implements InboxService {
         SearchResult<InboxAppQueryDto> inboxAppQueryDtoSearchResult = appInboxClient.searchResultFromApp(searchParam).getEntity();
         List<InboxAppQueryDto> inboxAppQueryDtoList = inboxAppQueryDtoSearchResult.getRows();
         for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
-            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus())){
+            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_DRAFT_PENDING.equals(inboxAppQueryDto.getStatus())){
                 ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
                 String draftServiceCode = applicationDraftDto.getServiceCode();
                 if (!draftServiceCode.isEmpty()){
@@ -325,15 +325,10 @@ public class InboxServiceImpl implements InboxService {
             return errorMap;
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         if(!IaisCommonUtils.isEmpty(apps)){
             for(ApplicationDto app : apps){
-                if(!(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_DELETED.equals(app.getStatus()))
-                        && !(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(app.getStatus()))){
+                if(!finalStatusList.contains(app.getStatus())){
                     errorMap.put("errorMessage1","This application is performing the renew process");
                 }
             }
@@ -345,7 +340,7 @@ public class InboxServiceImpl implements InboxService {
             errorMap.put("errorMessage2",errorMsg);
         }
         //Verify whether the new licence is generated
-        LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
+        LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
         if(entity != null){
             String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
             errorMap.put("errorMessage2",errorMsg);
@@ -517,4 +512,8 @@ public class InboxServiceImpl implements InboxService {
         return feUserClient.getLicenseeById(licenseeId).getEntity();
     }
 
+    @Override
+    public List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId, String status) {
+        return appInboxClient.getDraftByLicAppIdAndStatus(licAppId,status).getEntity();
+    }
 }

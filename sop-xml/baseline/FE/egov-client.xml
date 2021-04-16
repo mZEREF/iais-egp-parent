@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<clients>
+    <client>
+        <regId>1</regId>
+        <regName>moh</regName>
+        <regAgency>hcsa</regAgency>
+        <signType>MD5</signType>
+        <secureKey>C23ADFBFEFB70D5E7426C25DDB8F341E11D868A24442BD4DA11835A802AD17D2</secureKey>
+        <description>des</description>
+        <startDate></startDate>
+        <endDate></endDate>
+        <status>Active</status>
+        <createdDate>2020-07-21 13:27:31</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>2020-09-24 08:58:49</updatedDate>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+        <paymentregistrymechanism>
+            <id>6</id>
+            <regName>moh</regName>
+            <mechName>Baiduri</mechName>
+            <createdUserId>egovadmin</createdUserId>
+            <createdUserDomain>egovadmin</createdUserDomain>
+            <createdDate>2020-07-21 13:27:31</createdDate>
+            <updatedUserId></updatedUserId>
+            <updatedUserDomain></updatedUserDomain>
+            <updatedDate>2020-09-24 08:58:49</updatedDate>
+        </paymentregistrymechanism>
+    </client>
+    <client>
+        <regId>2</regId>
+        <regName>moh_stripe</regName>
+        <regAgency>hcsa</regAgency>
+        <signType>MD5</signType>
+        <secureKey>7C82DCDFEB75F2487B542A7E7F87C48CA97CAA2F0D35F5BD399CC0C163ED6A42</secureKey>
+        <description>des</description>
+        <startDate></startDate>
+        <endDate></endDate>
+        <status>Active</status>
+        <createdDate>2020-09-24 08:51:21</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>2020-09-24 08:51:21</updatedDate>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+        <paymentregistrymechanism>
+            <id>4</id>
+            <regName>moh_stripe</regName>
+            <mechName>Stripe</mechName>
+            <createdUserId>egovadmin</createdUserId>
+            <createdUserDomain>egovadmin</createdUserDomain>
+            <createdDate>2020-09-24 08:51:21</createdDate>
+            <updatedUserId>egovadmin</updatedUserId>
+            <updatedUserDomain>egovadmin</updatedUserDomain>
+            <updatedDate>2020-09-24 08:51:21</updatedDate>
+        </paymentregistrymechanism>
+    </client>
+    <client>
+        <regId>4</regId>
+        <regName>moh_eNets</regName>
+        <regAgency>hcsa</regAgency>
+        <signType>MD5</signType>
+        <secureKey>24E9BE05FF7015AFDA7D9DC9B17D3F4E55D5D811493B43174AF3985FBFA03DB7</secureKey>
+        <description>des</description>
+        <startDate></startDate>
+        <endDate></endDate>
+        <status>Active</status>
+        <createdDate>2020-10-14 10:21:50</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>2020-10-14 10:21:50</updatedDate>
+        <updatedUserDomain></updatedUserDomain>
+        <updatedUserId></updatedUserId>
+        <paymentregistrymechanism>
+            <id>7</id>
+            <regName>moh_eNets</regName>
+            <mechName>eNets</mechName>
+            <createdUserId>egovadmin</createdUserId>
+            <createdUserDomain>egovadmin</createdUserDomain>
+            <createdDate>2020-10-14 10:21:50</createdDate>
+            <updatedUserId></updatedUserId>
+            <updatedUserDomain></updatedUserDomain>
+            <updatedDate>2020-10-14 10:21:50</updatedDate>
+        </paymentregistrymechanism>
+    </client>
+</clients>

@@ -53,7 +53,7 @@ public final class FileUtils {
 
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
         response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("applicatoin/octet-stream");
+        response.setContentType("application/octet-stream");
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
         ops.write(fileData);
         ops.close();
@@ -150,6 +150,13 @@ public final class FileUtils {
         return false;
     }
 
+    public static boolean fileNameLimitBy(String fileName, int limitLength){
+        if (StringUtil.isNotEmpty(fileName) && fileName.length() > limitLength){
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isExcel(String originalFileName){
         if (originalFileName.endsWith("." + EXCEL_TYPE_XSSF)){
             return true;
@@ -184,5 +191,26 @@ public final class FileUtils {
             }
         }
         return stringBuffer.toString();
+    }
+
+    public static  String  getFileTypeMessage(String type){
+        String[] fileTypelist = type.split(",");
+        if(fileTypelist.length >5) {
+            StringBuilder stringBiff = new StringBuilder();
+            stringBiff.append("<br/>");
+            for(int indexlist = 0;indexlist <fileTypelist.length; indexlist++){
+                if(indexlist== fileTypelist.length-1){
+                    stringBiff .append( fileTypelist[indexlist]);
+                }  else if(indexlist >0 && indexlist %5 == 0) {
+                    stringBiff .append(fileTypelist[indexlist]).append(",<br/>");
+
+                }else {
+                    stringBiff.append(fileTypelist[indexlist]).append(',') ;
+                }
+            }
+            return stringBiff.toString();
+        }else {
+            return "<br/>" + type;
+        }
     }
 }

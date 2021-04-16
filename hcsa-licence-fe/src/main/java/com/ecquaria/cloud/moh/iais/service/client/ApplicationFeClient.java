@@ -37,6 +37,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,9 +50,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -304,7 +303,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam("applicationNo") String applicationNo);
 
     @GetMapping(value = "/iais-application/app-grp-premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName,@RequestParam("licencessId") String licencessId);
+    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName,@RequestParam("licencessId") String licencessId,@RequestParam("premType") String premType);
     @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
     @GetMapping(value = "/appeal/application-withdrawal-by-app-id")
@@ -320,7 +319,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
     @GetMapping(value = "/iais-application/application-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationByCorrId(@RequestParam("corrId")String corrId);
-    @GetMapping(value = "/all-appGrpDto-paying")
+    @GetMapping(value = "/iais-application/all-appGrpDto-paying")
     FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpDtoPaying();
     @DeleteMapping(value = "/iais-submission/draft-by-numbers",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteDraftNUmber(@RequestBody List<String> draftNumbers);
@@ -346,22 +345,32 @@ public interface ApplicationFeClient {
     @PostMapping(path = "/iais-submission/requestForInformation-withdrawal", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveRfcWithdrawSubmission(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
     @GetMapping(value = "/iais-application/max-version-primary-com-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId);
+    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimaryComDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "seqNum")String seqNum);
     @GetMapping(value = "/iais-application/max-version-svc-com-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId);
+    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcComDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "seqNum")String seqNum);
 
     @GetMapping(value = "/iais-application/max-version-primary-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo);
-    @GetMapping(value = "/iais-application/max-version-svc-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestParam(name = "appGrpId")String appGrpId, @RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo);
+    FeignResponseEntity<AppGrpPrimaryDocDto> getMaxVersionPrimarySpecDoc(@RequestParam(name = "appGrpId")String appGrpId,@RequestParam(name = "configDocId")String configDocId,@RequestParam(name = "appNo")String appNo,@RequestParam(name = "seqNum")String seqNum);
+    @PostMapping(value = "/iais-application/max-version-svc-spec-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcDocDto> getMaxVersionSvcSpecDoc(@RequestBody AppSvcDocDto appSvcDocDto,@RequestParam(name = "appNo")String appNo);
     @GetMapping(value = "/appeal/app-special-doc-group-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByGroupId(@RequestParam("groupId") String groupId);
     @GetMapping(value = "/appeal/app-special-doc-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppliSpecialDocDto> getAppliSpecialDocDtoByCorrId(@RequestParam("corrId") String corrId);
+    FeignResponseEntity<List<AppliSpecialDocDto>> getAppliSpecialDocDtoByCorrId(@RequestParam("corrId") String corrId);
     @GetMapping(value = "/iais-submission/appSubmissionDto/{appGrpNo}",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppGrpNo(@PathVariable("appGrpNo") String appGrpNo);
     @PutMapping(path="/iais-application/app-grp-pmt-status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto);
     @GetMapping(value = "/hcsa-app-common/app-grp-appNo/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(@PathVariable("appNo") String appNo);
+    @GetMapping(value = "/iais-application/max-seq-num-primary-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPrimaryDocDto>> getMaxSeqNumPrimaryDocList(@RequestParam("appGrpId")String appGrpId);
+    @GetMapping(value = "/iais-application/max-seq-num-svc-doc",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcDocDto>> getMaxSeqNumSvcDocList(@RequestParam("appGrpId")String appGrpId);
+    @PutMapping(value = "/iais-submission/draft/{draftNo}/{status}")
+    FeignResponseEntity<String> updateDraftStatus(@PathVariable("draftNo")String draftNo, @PathVariable("status")String status);
+    @PostMapping(value = "/iais-submission/draft-by-svc-codes",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftListBySvcCodeAndStatus(@RequestBody List<String> svcCodeList, @RequestParam("licenseeId")String licenseeId, @RequestParam("status")String status,@RequestParam("appType")String appType);
+    @GetMapping(value = "/iais-application/app-group-misc/grp-id/misc-type",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGroupMiscDto> getAppGroupMiscDtoByGrpIdAndTypeAndStatus(@RequestParam("appGrpId")String appGrpId, @RequestParam("miscType")String miscType, @RequestParam("status")String status);
 }

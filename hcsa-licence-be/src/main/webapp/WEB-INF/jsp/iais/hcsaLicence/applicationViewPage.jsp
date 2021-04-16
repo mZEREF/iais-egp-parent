@@ -261,7 +261,8 @@
                                                                         </c:if>
 
                                                                         <%--application type == appeal --%>
-                                                                        <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
+                                                                        <div id="appealRecommendationDiv">
+                                                                            <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
                                                                             <div id="appealRecommendation">
                                                                                 <iais:row>
                                                                                     <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
@@ -275,7 +276,7 @@
                                                                                                              value="${selectAppealRecommendationValue}"></iais:select>
                                                                                             </c:when>
                                                                                             <c:otherwise>
-                                                                                                <p>${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
+                                                                                                <p id = "appealRecommenValueShow">${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
                                                                                             </c:otherwise>
                                                                                         </c:choose>
                                                                                     </iais:value>
@@ -300,8 +301,10 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
+                                                                        </div>
 
-                                                                        <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
+                                                                        <div id="normalRecommendationDiv">
+                                                                            <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
                                                                             <iais:row>
                                                                                 <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
                                                                                 <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
@@ -321,6 +324,8 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
+                                                                        </div>
+
                                                                         <div id="recommendationOtherDropdown">
                                                                             <iais:row>
                                                                                 <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
@@ -460,6 +465,7 @@
         DMSCheck();
         checkRecommendationOtherDropdown();
         checkInspectionShow();
+        checkRecomendationOtherShow();
         //route back
         routeBackCheck();
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}'){
@@ -468,8 +474,15 @@
             $('.fastTrack').addClass('hidden');
         }
         appealAoFillBack();
+        checkDms();
+        recommendationRemoveRequired();
     });
-
+    function recommendationRemoveRequired() {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
+        $('#recommendationFieldTrue').addClass('hidden');
+        $('#recommendationFieldFalse').removeClass('hidden');
+        }
+    }
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');
@@ -509,11 +522,15 @@
 
     //check DMS decision value
     $("[name='decisionValues']").change(function selectChange() {
+        checkDms();
+    });
+
+    function checkDms() {
         var isRequestForChange = $('#isRequestForChange').val();
         if(isRequestForChange != 'Y'){
             checkRecommendationDMS();
         }
-    });
+    }
 
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
@@ -641,24 +658,41 @@
 
     function check(){
         var selectValue = $("[name='nextStage']").val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        var appealRecommenValueShow = $('#appealRecommenValueShow').text();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
+            let recommenVal = $('#recommendation').val();
+            let appealRecommenVal = $('#appealRecommendationValues').val();
+            if('other' == recommenVal || (('appealApprove' == appealRecommenVal || 'Approve' == appealRecommenValueShow) && isChangePeriodAppealType == 'true')){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+            } else {
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
+            checkAppealPso();
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
+            $('#appealRecommendationDiv').addClass('hidden');
+            $('#normalRecommendationDiv').addClass('hidden');
+            $('#recommendationOtherDropdown').addClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
@@ -666,24 +700,31 @@
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         }
     }
 
     //recommendation
     $("[name='recommendation']").change(function selectChange() {
+        checkRecomendationOtherShow();
+    });
+
+    function checkRecomendationOtherShow(){
         var recommendation = $("[name='recommendation']").val();
         if('other' == recommendation){
             $('#recommendationOtherDropdown').removeClass('hidden');
         }else{
             $('#recommendationOtherDropdown').addClass('hidden');
         }
-    });
+    }
 
     function checkRecommendationOtherDropdown(){
         var recommendation = $("[name='recommendation']").val();
         var appealRecommendation = $("[name='appealRecommendationValues']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
-        if('other' == recommendation || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
+        var isAppealType = $('#isAppealType').val();
+        if((('other' == recommendation) && !isAppealType) || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
             if('${applicationViewDto.applicationDto.status}' != 'APST014'){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             }
@@ -697,6 +738,8 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        var appealRecommenValueShow = $('#appealRecommenValueShow').text();
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -705,7 +748,15 @@
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
-
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
+            let recommenVal = $('#recommendation').val();
+            let appealRecommenVal = $('#appealRecommendationValues').val();
+            if('other' == recommenVal || (('appealApprove' == appealRecommenVal || 'Approve' == appealRecommenValueShow) && isChangePeriodAppealType == 'true')){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+            } else {
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         } else if (selectValue == "PROCRB") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#rollBackDropdown').removeClass('hidden');
@@ -714,6 +765,9 @@
             $('#comments').addClass('hidden');
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
+            checkAppealPso();
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
@@ -725,6 +779,9 @@
             $('#appealRecommendationFalse').removeClass('hidden');
             $('#recommendationFieldTrue').addClass('hidden');
             $('#recommendationFieldFalse').removeClass('hidden');
+            $('#appealRecommendationDiv').addClass('hidden');
+            $('#normalRecommendationDiv').addClass('hidden');
+            $('#recommendationOtherDropdown').addClass('hidden');
         } else {
             $("#chooseInspectionBox").addClass('hidden');
             $('#comments').addClass('hidden');
@@ -734,6 +791,8 @@
             $('#appealRecommendationFalse').addClass('hidden');
             $('#appealRecommendationTrue').removeClass('hidden');
             $('#rfiSelect').hide();
+            $('#appealRecommendationDiv').removeClass('hidden');
+            $('#normalRecommendationDiv').removeClass('hidden');
         }
     });
 
@@ -779,7 +838,19 @@
         }
     }
 
+    $('#rollBack').change(function selectRollBackChange() {
+        checkAppealPso();
+    });
 
+    function checkAppealPso(){
+        if('${applicationViewDto.applicationDto.status}' == 'APST012'){
+            $('#appealRecommendationTrue').addClass('hidden');
+            $('#appealRecommendationFalse').removeClass('hidden');
+        }else{
+            $('#appealRecommendationTrue').removeClass('hidden');
+            $('#appealRecommendationFalse').addClass('hidden');
+        }
+    }
 
 
     $('#verifiedDropdown').change(function verifiedChange() {

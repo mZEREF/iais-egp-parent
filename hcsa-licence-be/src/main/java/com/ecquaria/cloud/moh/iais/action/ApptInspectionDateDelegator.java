@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppPremInspApptDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -66,6 +67,7 @@ public class ApptInspectionDateDelegator {
      * @throws
      */
     public void apptInspectionDateStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
         String taskId = "";
         try{
             taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
@@ -82,7 +84,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
-        log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_ONLINE_APPOINTMENT);
     }
 
     /**
@@ -98,6 +100,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
     }
 
     /**
@@ -114,9 +117,12 @@ public class ApptInspectionDateDelegator {
         if(apptInspectionDateDto == null){
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
-            apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
+            //set application info show
+            apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
+            //get inspection appt draft
+            List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_ONLINE_APPOINTMENT);
+            ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", (Serializable) appPremInspApptDraftDtos);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);
@@ -152,8 +158,7 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateSpec(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        //cancel System date
-        apptInspectionDateDto = apptInspectionDateService.cancelSystemDateBySpecStep(apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
@@ -178,7 +183,6 @@ public class ApptInspectionDateDelegator {
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
-            apptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request, "apptBackShow", InspectionConstants.SWITCH_ACTION_BACK);
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
@@ -286,6 +290,7 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
+                ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
             }
         }
         apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);

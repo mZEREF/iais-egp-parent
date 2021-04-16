@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -151,6 +152,57 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, null);
+
+        String inbox_ack016 = MessageUtil.getMessageDesc("INBOX_ACK016");
+        String inbox_ack017 = MessageUtil.getMessageDesc("INBOX_ACK017");
+        String inbox_ack018 = MessageUtil.getMessageDesc("INBOX_ACK018");
+        String inbox_ack019 = MessageUtil.getMessageDesc("INBOX_ACK019");
+        String inbox_ack020 = MessageUtil.getMessageDesc("INBOX_ACK020");
+        String inbox_ack021 = MessageUtil.getMessageDesc("INBOX_ACK021");
+        String inbox_ack022 = MessageUtil.getMessageDesc("INBOX_ACK022");
+        String inbox_ack023 = MessageUtil.getMessageDesc("INBOX_ACK023");
+        String inbox_ack024 = MessageUtil.getMessageDesc("INBOX_ACK024");
+        String self_ack001 = MessageUtil.getMessageDesc("SELF_ACK001");
+        String self_ack002 = MessageUtil.getMessageDesc("SELF_ACK002");
+        String self_ack003 = MessageUtil.getMessageDesc("SELF_ACK003");
+        String self_ack004 = MessageUtil.getMessageDesc("SELF_ACK004");
+        String self_ack005 = MessageUtil.getMessageDesc("SELF_ACK005");
+        String self_ack006 = MessageUtil.getMessageDesc("SELF_ACK006");
+        String self_ack007 = MessageUtil.getMessageDesc("SELF_ACK007");
+        String self_ack008 = MessageUtil.getMessageDesc("SELF_ACK008");
+        String self_ack009 = MessageUtil.getMessageDesc("SELF_ACK009");
+        String self_ack010 = MessageUtil.getMessageDesc("SELF_ACK010");
+        String self_ack011 = MessageUtil.getMessageDesc("SELF_ACK011");
+        String self_ack012 = MessageUtil.getMessageDesc("SELF_ACK012");
+        String self_ack013 = MessageUtil.getMessageDesc("SELF_ACK013");
+        String self_ack014 = MessageUtil.getMessageDesc("SELF_ACK014");
+        String self_ack015 = MessageUtil.getMessageDesc("SELF_ACK015");
+
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack016",inbox_ack016);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack017",inbox_ack017);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack018",inbox_ack018);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack019",inbox_ack019);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack020",inbox_ack020);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack021",inbox_ack021);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack022",inbox_ack022);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack023",inbox_ack023);
+        ParamUtil.setSessionAttr(bpc.request,"inbox_ack024",inbox_ack024);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack001",self_ack001);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack002",self_ack002);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack003",self_ack003);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack004",self_ack004);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack005",self_ack005);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack006",self_ack006);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack007",self_ack007);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack008",self_ack008);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack009",self_ack009);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack010",self_ack010);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack011",self_ack011);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack012",self_ack012);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack013",self_ack013);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack014",self_ack014);
+        ParamUtil.setSessionAttr(bpc.request,"self_ack015",self_ack015);
+
     }
 
     public void perDate(BaseProcessClass bpc) {
@@ -392,6 +444,23 @@ public class HalpAssessmentGuideDelegator {
             }
         }
 
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(StringUtil.isEmpty(erroMsg)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = assessmentGuideService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                ParamUtil.setRequestAttr(bpc.request,"chooseBaseErr2",MessageUtil.getMessageDesc("NEW_ERR0023"));
+            }
+        }
+
         if(StringUtil.isEmpty(erroMsg)){
             //choose existing
             if(chooseExist){
@@ -438,11 +507,11 @@ public class HalpAssessmentGuideDelegator {
                     if(chooseExist){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else if(!chooseExist){
-                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                        /*LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
                         String licenseeId = "";
                         if(loginContext!=null){
                             licenseeId = loginContext.getLicenseeId();
-                        }
+                        }*/
                         //new
                         //judge whether had existing licence
                         List<String> chkBase = IaisCommonUtils.genNewArrayList();
@@ -905,6 +974,33 @@ public class HalpAssessmentGuideDelegator {
             }
 
         }
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
+        //
+        if(!currentPage.equals(nextstep)){
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:baseSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            for(HcsaServiceDto hcsaServiceDto:speSvcSort){
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = assessmentGuideService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
+                nextstep = currentPage;
+                err = MessageUtil.getMessageDesc("NEW_ERR0023");
+                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                //set audit
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put(ERROR_ATTR_LIST,err);
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            }
+        }
+
 //        appSelectSvcDto.setBaseSvcIds(basecheckedlist);
 //        appSelectSvcDto.setSpecifiedSvcIds(sepcifiedcheckedlist);
         appSelectSvcDto.setBaseSvcDtoList(baseSvcSort);
@@ -915,11 +1011,8 @@ public class HalpAssessmentGuideDelegator {
         //control switch
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(!currentPage.equals(nextstep)){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
-            if(loginContext!=null){
-                newLicensee =  assessmentGuideService.isNewLicensee(loginContext.getLicenseeId());
-            }
+            newLicensee =  assessmentGuideService.isNewLicensee(licenseeId);
             appSelectSvcDto.setNewLicensee(newLicensee);
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
@@ -1659,7 +1752,7 @@ public class HalpAssessmentGuideDelegator {
                     idNos.add(idNo);
                     String idType = dto.getIdType();
                     String name = dto.getName();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + idType + ")");
+                    SelectOption s = new SelectOption(idType + "," + idNo, name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")");
                     selectOptions.add(s);
                 }
             }
@@ -2270,9 +2363,9 @@ public class HalpAssessmentGuideDelegator {
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-                premisesHciPre = premisesDto.getPostalCode() + premisesDto.getBlkNo();
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
             List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();

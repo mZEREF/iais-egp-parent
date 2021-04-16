@@ -66,6 +66,7 @@ public class TemplatesDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        String deliveyMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,MsgTemplateConstants.MSG_SEARCH_PARAM,
                 MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,false);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
@@ -106,8 +107,14 @@ public class TemplatesDelegator {
         ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
         List<SelectOption> messageTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_TYPE);
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
-        List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
-        ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+
+        if (StringUtil.isEmpty(deliveyMode)){
+            List<SelectOption> deliveryModeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DELIVERY_MODE);
+            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+        }else{
+            List<SelectOption> deliveyModeList = getDeliveyMode(deliveyMode);
+            ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveyModeList);
+        }
 
         List<SelectOption> msgProcessList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_PROCESS);
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
@@ -360,9 +367,38 @@ public class TemplatesDelegator {
         msgTemplateDto.setMessageContent(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_CONTENT));
         msgTemplateDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
         msgTemplateDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
+    }
 
-
-
+    private List<SelectOption> getDeliveyMode(String deliveyMode){
+        String email = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_EMAIL;
+        String sms = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_SMS;
+        String msg = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_MSG;
+        String na = MsgTemplateConstants.MSG_TEMPLETE_DELIVERY_MODE_NA;
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        switch (deliveyMode){
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_BANNER_ALERT:
+//                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+//                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
+//                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+//                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_SCHEDULED_MAINTENANCE:
+                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_LETTER:
+                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                break;
+            case MsgTemplateConstants.MSG_TEMPLATE_TYPE_NOTIFICATION:
+                selectOptions.add(new SelectOption(email,MasterCodeUtil.getCodeDesc(email)));
+                selectOptions.add(new SelectOption(msg,MasterCodeUtil.getCodeDesc(msg)));
+                selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
+                break;
+            default:
+                selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
+                break;
+        }
+        return selectOptions;
     }
 
 }

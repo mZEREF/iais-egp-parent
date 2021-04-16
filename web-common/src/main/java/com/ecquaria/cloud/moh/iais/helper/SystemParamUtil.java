@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -10,7 +9,7 @@ import org.springframework.context.ApplicationContext;
  * @Date:2020/9/18
  */
 
-@Slf4j
+
 public class SystemParamUtil {
     private SystemParamUtil(){}
 

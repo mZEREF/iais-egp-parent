@@ -24,4 +24,29 @@ public interface PublicHolidayService {
     PublicHolidayDto publicHolidayByDis(String phCode,int year);
     List<String> getScheduleInCalender(String groupName);
     List<String> getAllYearList();
+    /**
+      * @author: shicheng
+      * @Date 2021/2/25
+      * @return: List<PublicHolidayDto>
+      * @Descripation: get all public holiday by status
+      */
+    List<PublicHolidayDto> getAllActivePubHoliDay();
+
+    /**
+      * @author: shicheng
+      * @Date 2021/2/25
+      * @Param: publicHolidayDtos, allActivePubHolDays
+      * @return: List<PublicHolidayDto>
+      * @Descripation: filter holidays(To prevent the repeat)
+      */
+    List<PublicHolidayDto> filterPreventDays(List<PublicHolidayDto> publicHolidayDtos, List<PublicHolidayDto> allActivePubHolDays, List<PublicHolidayDto> duplicateDate);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/3/2
+      * @Param: duplicateDate
+      * @return: List<String>
+      * @Descripation: get Duplicate Date Str
+      */
+    List<String> getDuplicateDateStr(List<PublicHolidayDto> duplicateDate);
 }

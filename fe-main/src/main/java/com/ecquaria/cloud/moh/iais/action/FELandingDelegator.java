@@ -7,9 +7,12 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
+import sop.webflow.process5.ProcessCacheHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +50,10 @@ public class FELandingDelegator {
 	public void preload(BaseProcessClass bpc){
 		ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, null);
 		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-		if (lc != null && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
+		String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+		UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+		if (us != null && lc != null && "Active".equals(us.getStatus())
+				&& AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");

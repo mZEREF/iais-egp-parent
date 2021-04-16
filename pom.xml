@@ -13,20 +13,23 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>20.04.0-PATCH1</version>
+        <version>20.04.1</version>
     </parent>
 
     <properties>
         <revision>0.1</revision>
-        <engine-version>20.04.0-PATCH1</engine-version>
+        <engine-version>20.04.1</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
-        <jacoco.version>0.8.5</jacoco.version>
+        <jacoco.version>0.8.6</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <jacoco.out.ut.file>jacoco-ut.exec</jacoco.out.ut.file>
         <sonar.jacoco.reportPaths>${project.build.directory}/${jacoco.out.ut.file}</sonar.jacoco.reportPaths>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
 
     <modules>
@@ -45,11 +48,6 @@
         <dependencies>
             <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
             <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.8.2</version>
-            </dependency>
-            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.6</version>
@@ -67,18 +65,18 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-config</artifactId>
-                <version>2.2.2.RELEASE</version>
+                <version>2.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-bus-amqp</artifactId>
-                <version>2.2.1.RELEASE</version>
+                <version>2.2.3.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-stream-rabbit -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
-                <version>3.0.3.RELEASE</version>
+                <version>3.0.8.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.sf.oval/oval -->
             <dependency>
@@ -97,13 +95,18 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-bus</artifactId>
-                <version>2.2.1.RELEASE</version>
+                <version>2.2.3.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.owasp.antisamy/antisamy -->
             <dependency>
                 <groupId>org.owasp.antisamy</groupId>
                 <artifactId>antisamy</artifactId>
                 <version>1.5.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>1.8</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -126,7 +129,7 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.4</version>
+                <version>0.41</version>
             </dependency>
             <dependency>
                 <groupId>com.ncs.secureconnect</groupId>
@@ -141,7 +144,7 @@
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.80</version>
+                <version>0.81</version>
             </dependency>
 
             <dependency>
@@ -184,7 +187,7 @@
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>
-                <version>0.24</version>
+                <version>0.25</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -208,6 +211,12 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>ecj</artifactId>
+                    <groupId>org.eclipse.jdt</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!--  must be on the classpath  -->
@@ -226,6 +235,17 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <includeEmptyDirectories>true</includeEmptyDirectories>
+                    <dependentWarExcludes>
+                        WEB-INF/lib/jsr305-3.0.1.jar
+                    </dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>

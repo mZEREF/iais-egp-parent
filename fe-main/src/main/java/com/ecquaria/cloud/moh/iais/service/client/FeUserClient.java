@@ -51,6 +51,8 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-internet-user/user-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
+    @GetMapping(path = "/iais-internet-user/user-admin-account-orgid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FeUserDto>> getAdminAccountByOrgId(@RequestParam(value = "orgId")String orgId);
 
     @PostMapping(path = "/iais-internet-user/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> createHalpAccount(@RequestBody OrganizationDto organizationDto);
@@ -64,8 +66,8 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-licensee/licensee-by-id/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
-    @GetMapping(path = "/iais-internet-user/check-uen-issue-date/")
-    FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
+    @GetMapping(path = "/iais-internet-user/validate-singpass")
+    FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
 
     @GetMapping(path = "/iais-licensee/getLicenseeNoUen",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeDto>> getLicenseeNoUen();
@@ -75,4 +77,9 @@ public interface FeUserClient {
 
     @GetMapping(path = "/iais-internet-user/not-exist/user-account/in/{orgId}")
     FeignResponseEntity<Boolean> isNotExistUserAccount(@PathVariable("orgId") String orgId);
+
+    @GetMapping(path = "/iais-internet-user/uen-track/{uen}/{nricNumber}/permit-status/{isPermit}")
+    FeignResponseEntity<Void> setPermitLoginStatusInUenTrack(@PathVariable("uen") String uen,
+                                                             @PathVariable("nricNumber") String nricNumber,
+                                                             @PathVariable("isPermit") Boolean isPermit);
 }

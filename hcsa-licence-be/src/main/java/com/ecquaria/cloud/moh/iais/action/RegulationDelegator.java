@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
@@ -43,10 +44,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -66,7 +68,10 @@ public class RegulationDelegator {
             .clz(RegulationQueryDto.class)
             .searchAttr(HcsaRegulationConstants.PARAM_SEARCH)
             .resultAttr(HcsaRegulationConstants.PARAM_RESULT)
-            .sortField("id").build();
+            .sortFieldToMap("status", SearchParam.ASCENDING)
+            .sortFieldToMap("id", SearchParam.ASCENDING).build();
+
+    private static final String REGULATION_CHECK_BOX_REDISPLAY = "regulation_item_CheckboxReDisplay";
 
     /**
      * @AutoStep: startStep
@@ -78,6 +83,7 @@ public class RegulationDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CHECKLIST_MANAGEMENT,  AuditTrailConsts.FUNCTION_CHECKLIST_REGULATION);
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", null);
 
+        ParamUtil.setSessionAttr(bpc.request, REGULATION_CHECK_BOX_REDISPLAY, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaRegulationConstants.PARAM_SEARCH, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
@@ -93,15 +99,10 @@ public class RegulationDelegator {
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         RegulationQueryDto regulation = new RegulationQueryDto();
-
         String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
-
         regulation.setClauseNo(clause);
         regulation.setClause(desc);
-
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(regulation, "search");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -113,11 +114,11 @@ public class RegulationDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        if(!StringUtil.isEmpty(clause)){
+        if(StringUtil.isNotEmpty(clause)){
             searchParam.addFilter("clauseNo", clause, true);
         }
 
-        if(!StringUtil.isEmpty(desc)){
+        if(StringUtil.isNotEmpty(desc)){
             searchParam.addFilter("clause", desc, true);
         }
     }
@@ -131,13 +132,9 @@ public class RegulationDelegator {
      */
     public void preLoad(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
         QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
-
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
-
         ParamUtil.setSessionAttr(bpc.request, "regulationAttr", null);
         ParamUtil.setSessionAttr(request, HcsaRegulationConstants.PARAM_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, HcsaRegulationConstants.PARAM_RESULT, searchResult);
@@ -151,14 +148,14 @@ public class RegulationDelegator {
      */
     public void doDelete(BaseProcessClass bpc){
         String regulationId = ParamUtil.getMaskedString(bpc.request, "regulationId");
-        if (!StringUtils.isEmpty(regulationId)){
+        if (StringUtils.isNotEmpty(regulationId)){
             boolean deleteSuccess = regulationService.deleteRegulation(regulationId);
-            if (!deleteSuccess){
+            if (deleteSuccess){
+                AuditTrailHelper.callSaveAuditTrailByOperation(AuditTrailConsts.OPERATION_INACTIVE_RECORD);
+            }else {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customValidation",
                         "CHKL_ERR025"));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            }else {
-                AuditTrailHelper.callSaveAuditTrailByOperation(AuditTrailConsts.OPERATION_INACTIVE_RECORD);
             }
 
         }
@@ -220,7 +217,6 @@ public class RegulationDelegator {
     public void step2(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-
         String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
     }
@@ -234,22 +230,19 @@ public class RegulationDelegator {
     public void submitUpload(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        MultipartFile file = mulReq.getFile("selectedFile");
-
-        boolean fileHasError = ChecklistHelper.validateFile(request, file);
+        MultipartFile mulReqFile = mulReq.getFile("selectedFile");
+        boolean fileHasError = ChecklistHelper.validateFile(request, mulReqFile);
         if (fileHasError){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
-        File toFile = FileUtils.multipartFileToFile(file);
+        File file = FileUtils.multipartFileToFile(mulReqFile);
         try {
-            List<HcsaChklSvcRegulationDto> reglList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
+            List<HcsaChklSvcRegulationDto> reglList = FileUtils.transformToJavaBean(file, HcsaChklSvcRegulationDto.class);
             reglList.forEach(i -> i.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto()));
             List<ErrorMsgContent> errorMsgContentList = regulationService.submitUploadRegulation(reglList);
-
-            FileUtils.deleteTempFile(toFile);
-
+            FileUtils.deleteTempFile(file);
             ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
@@ -270,10 +263,9 @@ public class RegulationDelegator {
     public void preUpdate(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", "Y");
         String regulationId = ParamUtil.getMaskedString(bpc.request, "regulationId");
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, filterParameter);
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
-        if (searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())){
+        if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())){
             List<RegulationQueryDto> allRegulation = searchResult.getRows();
             Optional<RegulationQueryDto> regulation = allRegulation.stream().filter(i -> i.getId().equals(regulationId)).findFirst();
             if (regulation.isPresent()){
@@ -297,7 +289,6 @@ public class RegulationDelegator {
     public void preCreate(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request, "isUpdate", "N");
         ParamUtil.setSessionAttr(bpc.request, "regulationAttr", null);
-
     }
 
 
@@ -309,14 +300,10 @@ public class RegulationDelegator {
      */
     public void doCreateOrUpdate(BaseProcessClass bpc){
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-
-        String clauseNo = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
-        String clause = ParamUtil.getString(bpc.request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+        String clauseNo = ParamUtil.getString(bpc.request, "edit_regulationClauseNo");
+        String clause = ParamUtil.getString(bpc.request, "edit_regulationClause");
         HcsaChklSvcRegulationDto regulation = (HcsaChklSvcRegulationDto) ParamUtil.getSessionAttr(bpc.request, "regulationAttr");
-        if (regulation == null){
-            regulation = new HcsaChklSvcRegulationDto();
-        }
-
+        regulation = Optional.ofNullable(regulation).orElseGet(() -> new HcsaChklSvcRegulationDto());
         regulation.setClauseNo(clauseNo);
         regulation.setClause(clause);
         regulation.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -342,15 +329,13 @@ public class RegulationDelegator {
             }
 
             if (apiResult != null && apiResult.isHasError()){
-                if (apiResult.getErrorCode().equals(IaisApiStatusCode.DUPLICATE_RECORD.getStatusCode())){
+                if (IaisApiStatusCode.DUPLICATE_RECORD.getStatusCode().equals(apiResult.getErrorCode())){
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage", "CHKL_ERR007"));
                 }
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-
                 return;
             }
         }
-
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
@@ -359,34 +344,42 @@ public class RegulationDelegator {
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
 
-        File file = null;
+        List<RegulationQueryDto> list = IaisCommonUtils.genNewArrayList();
+        LinkedHashSet<String> set = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, REGULATION_CHECK_BOX_REDISPLAY);
+        if (Optional.ofNullable(set).isPresent()){
+            SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
+            String idStr = SqlHelper.constructInCondition("ID", set.size());
+            searchParam.addParam("regulationId", idStr);
+            int indx = 0;
+            for (String checked : set){
+                searchParam.addFilter("ID"+indx, checked);
+                indx++;
+            }
 
-        SearchResult searchResult =  regulationService.searchRegulation(searchParam);
-        if (searchResult != null){
-            List<RegulationQueryDto> regulationResult = searchResult.getRows();
+            QueryHelp.setMainSql("hcsaconfig", "regulationQuery", searchParam);
+            SearchResult searchResult =  regulationService.searchRegulation(searchParam);
 
-            try {
-                file = ExcelWriter.writerToExcel(regulationResult, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
-            } catch (Exception  e) {
-                log.error("=======>fileHandler error >>>>>", e);
+            if (Optional.ofNullable(searchResult).isPresent() && Optional.ofNullable(searchResult.getRows()).isPresent()){
+                list = searchResult.getRows();
             }
         }
 
-        if(file != null){
-            try {
-                FileUtils.writeFileResponseContent(response, file);
+        File file = null;
+        try {
+            file = ExcelWriter.writerToExcel(list, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
+            FileUtils.writeFileResponseContent(response, file);
+        } catch (Exception  e) {
+            log.error("=======>fileHandler error >>>>>", e);
+        }finally {
+            if (file != null){
                 FileUtils.deleteTempFile(file);
-            } catch (IOException e) {
-                log.debug(e.getMessage());
             }
         }
 
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
-
     }
 
 }

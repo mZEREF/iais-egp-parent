@@ -33,7 +33,7 @@
             <iais:row>
                 <iais:field value="Service Name"/>
                 <iais:value width="8">
-                    <iais:multipleSelect name="svcName" selectValue="${auditSystemPotentialDtoForSearch.svcNameSelect}" options="activeHCIServiceNames"></iais:multipleSelect>
+                    <iais:select name="svcName" options="activeHCIServiceNames" multiSelect="true" multiValues="${auditSystemPotentialDtoForSearch.svcNameSelectList}"/>
                 </iais:value>
             </iais:row>
 
@@ -48,7 +48,7 @@
             <iais:row>
                 <iais:field value="Last Inspection done before(Start)"/>
                 <iais:value width="8">
-                    <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}"/>
+                    <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}" needErrorSpan="false"/>
                     <span id="error_inspectionStartDate" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -74,7 +74,7 @@
             <iais:row>
                 <iais:field value="HSCA Service Code"/>
                 <iais:value width="8">
-                    <iais:multipleSelect name="hclSCode" selectValue="${auditSystemPotentialDtoForSearch.svcNameCodeSelect}" options="activeHCIServiceCodes"></iais:multipleSelect>
+                    <iais:select name="hclSCode" options="activeHCIServiceCodes" multiSelect="true" multiValues="${auditSystemPotentialDtoForSearch.svcNameCodeSelectList}"/>
                 </iais:value>
             </iais:row>
 
@@ -132,16 +132,21 @@
     }
 
     function doClear() {
-        $("#svcNameClear label input[type='checkbox']").removeAttr('checked');
+        $("#svcNameClear label input[type='checkbox']").prop('checked',false);
         $("#postcode").val("");
         $("#inspectionStartDate").val("");
         $("#inspectionEndDate").val("");
         clearSelectFiled('complianceLastResult');
-        $("#hclSCodeClear label input[type='checkbox']").removeAttr('checked');
+        $("#hclSCodeClear label input[type='checkbox']").prop('checked',false);
         clearSelectFiled('hclCode');
         clearSelectFiled('premType');
         clearSelectFiled('riskType');
         $("#clearFiterForSearch .current").text("Please Select");
+        $("#error_inspectionStartDate").html("");
+        $("#clearFiterForSearch input[type='checkbox']").prop('checked', false);
+        $("#clearFiterForSearch .multi-select-button").html("-- Select --");
+        $("#svcName option").prop('selected',false);
+        $("#hclSCode option").prop('selected',false);
     }
 
     function  clearSelectFiled(id) {

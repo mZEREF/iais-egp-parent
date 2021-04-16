@@ -26,7 +26,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> getRolesByDomain(String domain) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        map.put("userDomain", domain);
+        map.put("userDomains", domain);
         return egpUserCommonClient.search(map).getEntity();
     }
 

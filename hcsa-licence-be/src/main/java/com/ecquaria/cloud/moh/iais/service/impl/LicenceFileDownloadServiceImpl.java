@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -152,6 +154,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    HcsaApplicationDelegator newApplicationDelegator;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -348,8 +353,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 count= fileInputStream.read(size);
                             }
                             Long l = System.currentTimeMillis();
-                            fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId,l);
-                            saveFileRepo( fileName,groupPath,submissionId,l);
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+                            if(Boolean.TRUE.equals(aBoolean)){
+                                saveFileRepo( fileName,groupPath,submissionId,l);
+                            }
+                           saveFileRepo( fileName,groupPath,submissionId,l);
+
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
                         }finally {
@@ -516,6 +525,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(listApplicationDto);
         withdrow(requestForInfList);
         withdrow(cessionOrwith);
+        boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
+        if(b){
+           return Boolean.FALSE;
+        }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
@@ -536,6 +549,37 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         return Boolean.TRUE;
 
+    }
+    public boolean withdrowAppToBe(List<ApplicationDto> applicationDtos,ApplicationListFileDto applicationListDto,ProcessFileTrackDto processFileTrackDto){
+        if(applicationDtos==null || applicationDtos.isEmpty()){
+            return false;
+        }
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+                return false;
+            }
+        }
+        List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
+        log.info("----start withdrowAppToBe-----");
+        if(appPremiseMiscEntities!=null && !appPremiseMiscEntities.isEmpty()){
+            log.info("---- appPremiseMiscEntities is not null ----start withdrowAppToBe-----");
+            List<String> list=new ArrayList<>(appPremiseMiscEntities.size());
+            for(AppPremiseMiscDto appPremiseMiscDto : appPremiseMiscEntities){
+                String relateRecId = appPremiseMiscDto.getRelateRecId();
+                if(!StringUtil.isEmpty(relateRecId)){
+                    list.add(relateRecId);
+                }
+            }
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(list)));
+            List<ApplicationDto> entity = applicationClient.getApplicationDtoByAppIds(list).getEntity();
+            if(entity.isEmpty()){
+                processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+                applicationClient.updateProcessFileTrack(processFileTrackDto);
+                return true;
+            }
+        }
+        log.info("---- end ----start withdrowAppToBe-----");
+        return false;
     }
 
     private List<ApplicationDto> withdrow(List<ApplicationDto> applicationDtos){
@@ -592,21 +636,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(f.isFile()){
                     try {
                         FileRepoDto fileRepoDto = new FileRepoDto();
-
-                        fileRepoDto.setId(f.getName());
+                        String name = f.getName();//file_id
+                        fileRepoDto.setId(name);
                         fileRepoDto.setAuditTrailDto(intranet);
-                        String s = f.getName().replaceAll("-", "");
                         //not use generateFile function.this have floder name have dian
-                        File file1 = new File(file.getPath()+File.separator, s);
-                        flag=f.renameTo(file1);
-                        fileRepoDto.setFileName(s);
+                        fileRepoDto.setFileName(name);
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
                         eventDto.setFileRepoList(fileRepoDtos);
                         flag=true;
                         log.info(StringUtil.changeForLog(f.getPath()+"file path------"));
-
+                        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(fileRepoDto)+"fileRepoDto------"));
                     }catch (Exception e){
                         log.info(StringUtil.changeForLog(e+e.getMessage()+"--------error- save file"));
                         continue;
@@ -656,7 +697,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             taskDtoList.add(newTaskDto);
                             //create history
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),appStatus,
+                                    createAppPremisesRoutingHistory(applicationDto,appStatus,
                                             taskDto.getTaskKey(),null,taskDto.getRoleId(),auditTrailDto);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                             rollBackApplicationDtos.add(applicationDto);
@@ -683,16 +724,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
         return  result;
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(ApplicationDto applicationDto, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
+        ApplicationGroupDto entity = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
-                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(entity==null ?  AppConsts.USER_ID_SYSTEM:entity.getSubmitBy() == null ?
+                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
         appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
@@ -765,6 +807,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
                 }
                 if(!IaisCommonUtils.isEmpty(taskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos1){
+                        appPremisesRoutingHistoryDto.setWrkGrpId(null);
+                    }
                     appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
                 }
             }
@@ -838,8 +884,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             /**
              * Send Email
              */
-            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
             log.info("Send Withdraw 003 Email");
+            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
             if (applicationDtoList != null && applicationDtoList.size() > 0){
                 applicationDtoList.forEach(h -> {
                     if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(h.getApplicationType())
@@ -881,7 +927,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             msgInfoMap.put("S_LName", serviceName);
                             msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             try {
-                                sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
+                                newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
+                                newApplicationDelegator.sendInboxMessage(h,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
+                                newApplicationDelegator.sendSMS(h,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
                             } catch (IOException | TemplateException e) {
                                 log.error(e.getMessage(), e);
                             }
@@ -894,24 +942,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
     }
 
-    private void sendEmail(String templateId, Map<String, Object> msgInfoMap, ApplicationDto applicationDto) throws IOException, TemplateException {
-        EmailParam emailParam = new EmailParam();
-        log.info("Send Withdraw 003 Email start send Email");
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(templateId).getEntity();
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-        map.put("ApplicationNumber", applicationDto.getApplicationNo());
-        String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
-        emailParam.setTemplateContent(msgInfoMap);
-        emailParam.setTemplateId(templateId);
-        emailParam.setReqRefNum(applicationDto.getApplicationNo());
-        emailParam.setQueryCode(applicationDto.getApplicationNo());
-        emailParam.setRefId(applicationDto.getApplicationNo());
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setSubject(subject);
-        notificationHelper.sendNotification(emailParam);
-        log.info("Send Withdraw 003 Email end send Email");
-    }
 
     private void  moveFile(File file){
         String name = file.getName();
@@ -1015,7 +1045,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(application.getStatus())){
                         cession++;
                         applicationDtoList.add(application);
-                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())||ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE.equals(application.getStatus())){
                         cession++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
                             ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
@@ -1112,14 +1142,19 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             } catch (IOException |TemplateException e) {
                                 log.info(e.getMessage(),e);
                             }
-                            emailParam.setSubject(subject);
+                            EmailParam smsParam = new EmailParam();
+                            smsParam.setQueryCode(application.getApplicationNo());
+                            smsParam.setReqRefNum(application.getApplicationNo());
+                            smsParam.setRefId(application.getApplicationNo());
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setSubject(subject);
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
                             emailMap.put("ApplicationNumber", application.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                             log.info("start send sms start");
-                            notificationHelper.sendNotification(emailParam);
+                            notificationHelper.sendNotification(smsParam);
                             log.info("start send sms end");
                         }
 
@@ -1218,6 +1253,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info(StringUtil.changeForLog("----"+routingTaskOneUserForSubmisison));
             if(routingTaskOneUserForSubmisison!=null&&routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos()!=null){
                 log.info(StringUtil.changeForLog("----"+JsonUtil.parseToJson(routingTaskOneUserForSubmisison)));
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos1 = routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos();
+                for(AppPremisesRoutingHistoryDto v : appPremisesRoutingHistoryDtos1){
+                    v.setWrkGrpId(null);
+                }
                 appPremisesRoutingHistoryDtos.addAll(routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos());
             }
         }

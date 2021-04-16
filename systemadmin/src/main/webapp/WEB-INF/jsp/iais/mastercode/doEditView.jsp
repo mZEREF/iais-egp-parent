@@ -112,32 +112,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="doEdit('${MasterCodeDto.masterCodeId}')">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Modal End-->
+                    <iais:confirm msg="Do you confirm the modification ?" needCancel="true" callBack="doEdit('${MasterCodeDto.masterCodeId}')" popupOrder="myModal" yesBtnDesc="Continue" needEscapHtml="false" needFungDuoJi="true"></iais:confirm>
                 </div>
             </div>
         </div>
-    </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+    </form>
 </div>
 
 <script>

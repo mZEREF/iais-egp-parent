@@ -38,9 +38,6 @@ import java.util.Map;
     @PostMapping(value = "/iais-cessation/list-cessation-licIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getlicIdToCessation(@RequestBody List<String> licIds);
 
-    @GetMapping(value = "/iais-cessation/listHciName",produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> listHciNames();
-
     @GetMapping(value = "/iais-cessation/isCeasedResult",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isCeased(@RequestParam("licId") String licId);
 

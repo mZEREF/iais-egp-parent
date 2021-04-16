@@ -20,19 +20,27 @@
                         </div>
                         <div class="tab-gp dashboard-tab">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="active" role="presentation"><a href="#tabAccount" aria-controls="tabAccount" role="tab" data-toggle="tab">Account Information</a></li>
-                                <li class="complete" role="presentation"><a href="#tabPersonal" aria-controls="tabPersonal" role="tab" data-toggle="tab">Personal Information</a></li>
-                                <li class="complete" role="presentation"><a href="#tabContact" aria-controls="tabContact" role="tab" data-toggle="tab">Contact Information</a></li>
+                                <li class="<c:if test="${activeTab==1 || activeTab==null}">active</c:if> <c:if test="${activeTab!=1 && activeTab!=null}">complete</c:if> " role="presentation"><a href="#tabAccount" aria-controls="tabAccount"
+                                                                                                                                                                                                  role="tab" data-toggle="tab">Account
+                                    Information</a></li>
+                                <li class="<c:if test="${activeTab!=2}">complete</c:if> <c:if test="${activeTab==2}">active</c:if>" role="presentation"><a href="#tabPersonal"
+                                                                                                                                                           aria-controls="tabPersonal" role="tab"
+                                                                                                                                                           data-toggle="tab">Personal Information</a>
+                                </li>
+                                <li class="<c:if test="${activeTab!=3}">complete</c:if> <c:if test="${activeTab==3}">active</c:if>" role="presentation"><a href="#tabContact"
+                                                                                                                                                           aria-controls="tabContact" role="tab"
+                                                                                                                                                           data-toggle="tab">Contact Information</a>
+                                </li>
                             </ul>
                         </div>
                         <br/><br/>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabAccount" role="tabAccount">
+                            <div class="tab-pane <c:if test="${activeTab==1}">active</c:if> <c:if test="${activeTab==null}">active</c:if>" id="tabAccount" role="tabAccount">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="userId" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}" disabled>
+                                            <input id="userId" style="border-color: rgb(237, 237, 237); color: rgb(153, 153, 153);" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}" disabled>
                                             <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
@@ -65,6 +73,15 @@
                                         </iais:value>
                                     </div>
                                 <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="endDate">Status:<span style="color:red">*</span></label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <iais:select id="status" options="statusOptions" firstOption="Please Select" name="status" value="${orgUserDto.status}"/>
+                                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
@@ -73,7 +90,7 @@
                                     </iais:value>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabPersonal" role="tabPersonal">
+                            <div class="tab-pane <c:if test="${activeTab==2}">active</c:if>" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
                                     <iais:value>
@@ -83,20 +100,20 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="firstName" maxlength="9" type="text" name="firstName" value="${orgUserDto.firstName}">
+                                            <input id="firstName" minlength="10" maxlength="66" type="text" name="firstName" value="${orgUserDto.firstName}">
                                             <span id="error_firstName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group hidden">
                                     <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="lastName" type="text"  maxlength="9" name="lastName" value="${orgUserDto.lastName}">
+                                            <input id="lastName" type="text"  minlength="10" maxlength="66" name="lastName" value="${orgUserDto.lastName}">
                                             <span id="error_lastName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div>
@@ -127,7 +144,7 @@
                                     </iais:value>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabContact" role="tabContact">
+                            <div class="tab-pane <c:if test="${activeTab==3}">active</c:if>" id="tabContact" role="tabContact">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
                                     <iais:value>
@@ -178,11 +195,11 @@
                      style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>
-                            </div>
+<%--                            <div class="modal-header">--%>
+<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
+<%--                                        aria-hidden="true">&times;</span></button>--%>
+<%--                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--                            </div>--%>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12"><span style="font-size: 2rem">Do you confirm the modification ?</span>

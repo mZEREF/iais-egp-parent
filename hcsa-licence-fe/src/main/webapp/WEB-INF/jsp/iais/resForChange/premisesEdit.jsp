@@ -32,7 +32,7 @@
                 <div class="row premContent">
                   <div class="col-xs-12" style="margin-top:3%;">
                     <div>
-                      <h2>${PremisesListQueryDto.premisesType}:${PremisesListQueryDto.address}</h2>
+                      <h2>${PremisesListQueryDto.premisesType}:&nbsp;${PremisesListQueryDto.address}</h2>
                     </div>
                   </div>
                 </div>
@@ -72,12 +72,13 @@
     <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          </div>
-          <div class="modal-body" style="text-align: center;">
+<%--          <div class="modal-header">--%>
+<%--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
+<%--          </div>--%>
+          <div class="modal-body" >
             <div class="row">
-              <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+              <div class="col-md-12 " ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
             </div>
           </div>
           <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -88,16 +89,16 @@
       </div>
     </div>
     <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
-    <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+   <%-- <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>
+            <h4 class="modal-title">Confirmation Box</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body" style="text-align: center;">
             <div class="row">
-              <div class=""><span style="font-size: 2rem;">${newAppPopUpMsg}</span></div>
+              <div class=""><span style="font-size: 16px;">${newAppPopUpMsg}</span></div>
             </div>
           </div>
           <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -105,8 +106,8 @@
           </div>
         </div>
       </div>
-    </div>
-  <%--  <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>--%>
+    </div>--%>
+    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
     <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
     <%--Validation Field--%>
@@ -130,8 +131,11 @@
   </div>--%>
   <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
   <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
+  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
+  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+  <input type="hidden" id="eqHciNameChange" value="${eqHciCode}">
 </form>
 
 
@@ -139,6 +143,7 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
+        $('#postalCodePop').modal('hide');
         if($('#RFC_ERROR_NO_CHANGE').val()!=''){
             $('#rfc_ERROR').modal('show');
         }
@@ -161,7 +166,13 @@
         doEdit();
         addOperational();
         operationDel();
-        addPubHolDay();
+        addPubHolDayHtml();
+        addWeeklyHtml();
+        addEventHtml();
+        removeWeekly();
+        removePh();
+        removeEvent();
+        clickAllDay();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
@@ -172,7 +183,21 @@
           $PremEle.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
         </c:if>
         <!-- init end-->
+        //68744
+        $('.premSelect').addClass('disabled');
+
+
+        var mainContent =$('.main-content');
+        mainContent.find('input.allDay:checked').each(function (k) {
+            console.log(k);
+            var $allDayDiv = $(this).closest('div.col-md-2');
+            disabeleForAllDay($allDayDiv);
+        });
         init = 1;
+        if($("#errorMapIs").val()=='error' ){
+            $('.premisesEdit').trigger('click');
+        }
+
     });
 
     function cancel(){
@@ -199,7 +224,9 @@
         <!--add disabled bg color-->
         $Ele.find('input[type="text"]').css('border-color','#ededed');
         $Ele.find('input[type="text"]').css('color','#999');
-        $Ele.find('.date_picker').unbind();
+        //$Ele.find('.date_picker').unbind();
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',true);
     }
 
     function unreadonlyPartPage($Ele) {
@@ -213,8 +240,12 @@
         $Ele.find('input[type="text"]').css('color','');
         $Ele.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
-            autoclose:true
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
         });
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
     var unbindAllTabs = function () {
@@ -244,6 +275,11 @@
         $Ele.find('div.nice-select').removeClass('disabled');
         $Ele.find('input[type="text"]').css('border-color','');
         $Ele.find('input[type="text"]').css('color','');
+        <!--multi -->
+        $Ele.find('div.multi-select input').prop('disabled',false);
     }
 
+    function postalCodeCon(){
+        $('#postalCodePop').modal('hide');
+    }
 </script>

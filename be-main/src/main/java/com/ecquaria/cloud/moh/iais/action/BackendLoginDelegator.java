@@ -16,21 +16,28 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.security.AuthenticationConfig;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
+import com.ecquaria.cloud.usersession.client.UserSessionService;
+import com.ecquaria.cloudfeign.FeignException;
+import ecq.commons.exception.BaseException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+import sop.webflow.process5.ProcessCacheHelper;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -52,8 +59,9 @@ public class BackendLoginDelegator {
 
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
-        if(loginContext!=null){
+        String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+        UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if(loginContext!=null && us != null && "Active".equals(us.getStatus())){
             if(loginContext.getUserDomain().equals(IntranetUserConstant.DOMAIN_INTRANET)){
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
             }else {
@@ -68,7 +76,8 @@ public class BackendLoginDelegator {
     public void preLogin(BaseProcessClass bpc){
     }
 
-    public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public void doLogin(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,
+                        FeignException, BaseException {
         if (fakeLogin) {
             HttpServletRequest request = bpc.request;
             JwtVerify verifier = new JwtVerify();
@@ -81,7 +90,7 @@ public class BackendLoginDelegator {
         }
     }
 
-    public void doLogin(String userId, HttpServletRequest request) {
+    public void doLogin(String userId, HttpServletRequest request) throws FeignException, BaseException {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OrgUserDto orgUserDto = null;
         try {
@@ -108,6 +117,16 @@ public class BackendLoginDelegator {
         user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
         user.setId(orgUserDto.getUserId());
 
+        String conInfo = AuthenticationConfig.getConcurrentUserSession();
+        if (AuthenticationConfig.VALUE_CONCURRENT_USER_SESSION_CLOSE_OLD.equals(conInfo)) {
+            List<UserSession> usesses = UserSessionService.getInstance()
+                    .retrieveActiveSessionByUserDomainAndUserId(user.getUserDomain(), user.getId());
+            if (usesses != null && usesses.size() > 0) {
+                for (UserSession us : usesses) {
+                    UserSessionUtil.killUserSession(us.getSessionId());
+                }
+            }
+        }
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
 
@@ -129,7 +148,7 @@ public class BackendLoginDelegator {
         OrgUserDto orgUserDto= (OrgUserDto) ParamUtil.getSessionAttr(request,"orgUserDto");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)) {
+        if (orgUserDto==null||orgUserDto.getUserDomain().equals(AppConsts.USER_DOMAIN_INTERNET)||!orgUserDto.getStatus().equals(IntranetUserConstant.COMMON_STATUS_ACTIVE)) {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(request, null, userId, "LOGIN_ERR001");
             // End Audit Trail -- End

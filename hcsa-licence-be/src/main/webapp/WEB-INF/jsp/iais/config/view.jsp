@@ -73,7 +73,7 @@
               <select name="selectCategoryId" disabled>
                 <option value="">Please Select</option>
                 <c:forEach items="${categoryDtos}" var="categoryDto">
-                  <option value="${categoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
+                  <option  <c:if test="${hcsaServiceDto.categoryId==categoryDto.id}">selected</c:if>>${categoryDto.name}</option>
                 </c:forEach>
               </select>
             </div>
@@ -113,7 +113,7 @@
         <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-7 control-label" >Base Service Subsumed Under&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
+            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@
         <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-7 control-label" >Pre-requisite Base Service&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
+            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
         </div>
       </div>
@@ -151,7 +151,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label">Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label">Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
@@ -225,6 +225,16 @@
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
                 <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+              </div>
+              <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
+                <select  disabled>
+                  <option value="">To duplicate for the personnel?</option>
+                  <option <c:if test="${doc.dupForPerson=='PO'}">selected</c:if> value="PO">Principal Officer (PO)</option>
+                  <option <c:if test="${doc.dupForPerson=='DPO'}">selected</c:if> value="DPO">Nominee</option>
+                  <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
+                  <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
+                  <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                </select>
               </div>
             </div>
           </div>
@@ -384,7 +394,7 @@
 
       <div class="form-group" style="display: none" id="${routingStages.key}">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px" >
-          <table border="1px" style="text-align: center" >
+          <table border="1px" style="text-align: center" valign="middle">
             <tr>
               <th style="width: 10% ;height: 40px;text-align: center"> Application Type&nbsp;<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
@@ -409,7 +419,7 @@
                     </c:if>
                   </div>
 
-                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
                     <select  disabled name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Please Select</option>
                       <option value="common"
@@ -422,38 +432,40 @@
                       <option value="assign" <c:if test="${routingStage.routingSchemeName=='assign'}">selected="selected" </c:if>
                       >Supervisor Assign</option>
 
-                    </select
+                    </select>
                     <c:if test="${routingStage.stageCode=='INS'}">
                       <p>Inspector</p>
                     </c:if>
                     <c:if test="${routingStage.stageCode=='INS'}">
                       <c:forEach items="${routingStage.hcsaSvcSpeRoutingSchemeDtos}" var="hcsaSvcSpeRoutingSchemeDto">
-                        <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
-                          <option value="" >Please Select</option>
-                          <option value="common"
-                                  <c:choose>
-                                    <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
-                                      selected="selected"
-                                    </c:when>
-                                  </c:choose>
-                          >Common Pool</option>
-                          <option value="round"
-                                  <c:choose>
-                                    <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
-                                      selected="selected"
-                                    </c:when>
-                                  </c:choose>
-                          >Round Robin</option>
-                          <option value="assign"
-                                  <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
-                          >Supervisor Assign</option>
-                        </select>
-                        <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
-                          <p>Inspector AO1</p>
-                        </c:if>
-                        <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
-                          <p>Inspector Lead</p>
-                        </c:if>
+                        <div style="margin-top: 1%">
+                          <select  disabled name="RoutingScheme${routingStage.stageCode}${routingStages.key}${hcsaSvcSpeRoutingSchemeDto.insOder}"  >
+                            <option value="" >Please Select</option>
+                            <option value="common"
+                                    <c:choose>
+                                      <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='common'}">
+                                        selected="selected"
+                                      </c:when>
+                                    </c:choose>
+                            >Common Pool</option>
+                            <option value="round"
+                                    <c:choose>
+                                      <c:when test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='round'}">
+                                        selected="selected"
+                                      </c:when>
+                                    </c:choose>
+                            >Round Robin</option>
+                            <option value="assign"
+                                    <c:if test="${hcsaSvcSpeRoutingSchemeDto.schemeType=='assign'}">selected="selected" </c:if>
+                            >Supervisor Assign</option>
+                          </select>
+                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==0}">
+                            <p>Inspector AO1</p>
+                          </c:if>
+                          <c:if test="${hcsaSvcSpeRoutingSchemeDto.insOder==1}">
+                            <p>Inspector Lead</p>
+                          </c:if>
+                        </div>
                       </c:forEach>
                     </c:if>
                   </div>

@@ -13,6 +13,7 @@
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+        <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <c:choose>
             <c:when test="${!empty rfi_already_err}">
@@ -115,20 +116,40 @@
                                         <div class="document-upload-list">
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
-                                                <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
-                                                       aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
-                                                                                    href="javascript:void(0);">Upload</a>
-                                                <div id="delFile" style="margin-top: 13px;color: #1F92FF;" <c:if test="${empty rfiWithdrawDto.appPremisesSpecialDocDto.docName}">hidden</c:if>>
-                                                    <strong id="fileName">${rfiWithdrawDto.appPremisesSpecialDocDto.docName}</strong>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                                            class="fa fa-times"></em></button>
-                                                </div>
+                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                                <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
+                                                           varStatus="ind">
+                                                  <div id="${withdrawPageShowFile.fileMapId}">
+                                                      <span name="fileName"
+                                                            style="font-size: 14px;color: #2199E8;text-align: center">
+                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${withdrawPageShowFile.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
+                                                         title="Download"
+                                                         class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="file${ind.index}"></span>
+                                                      <span class="error-msg" name="iaisErrorMsg"
+                                                            id="error_${configIndex}error"></span>
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
+                                                    Delete</button>  <button type="button"
+                                                                             class="btn btn-secondary btn-sm"
+                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
+                                                  ReUpload</button>
+                                                  </div>
+                                                </c:forEach>
+                                                </span>
+                                                <input id="selectedFile" name="selectedFile"
+                                                       class="selectedFile commDoc"
+                                                       type="file" style="display: none;"
+                                                       aria-label="selectedFile1"
+                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                    class="btn btn-file-upload btn-secondary"
+                                                    onclick="doFileAddEvent()">Upload</a>
                                             </div>
                                             <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                                            <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -145,8 +166,9 @@
             </div>
             </c:otherwise>
         </c:choose>
+        <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+        <%@ include file="../appeal/FeFileCallAjax.jsp" %>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
     $(function () {
@@ -173,34 +195,34 @@
         $("#mainForm").submit();
     }
 
+    function doFileAddEvent() {
+        clearFlagValueFEFile();
+    }
 
-    $("#selectedFile").change(function () {
+    function doUserRecUploadConfirmFile(event) {
+        ajaxCallUploadForMax('mainForm', "selectedFile",true);
+    }
+
+    function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+        console.log(configFileSize)
+        var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
-        }else{
+        } else if(error == "E"){
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        }else {
             $("#selectedFile").val("");
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
-    });
-
-    function deleteWdFile() {
-        // document.getElementById("withdrawFile").files[0] = null;
-        let wdfile = $("#selectedFile");
-        wdfile.val("");
-        $("#delFile").attr("hidden", "hidden");
     }
 
-    // $(".delete-withdraw").click(function () {
-    //     console.log("delete withdraw app");
-    //     $(this).parent().parent().parent().parent().remove();
-    // });
     function deleteWithdraw(it){
         console.log("delete withdraw app");
         $(it).parent().parent().parent().parent().parent().remove();
@@ -233,6 +255,7 @@
     });
 
     function doSubmit() {
+        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");

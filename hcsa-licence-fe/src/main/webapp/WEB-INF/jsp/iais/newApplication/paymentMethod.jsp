@@ -20,9 +20,11 @@
 </div>
 <div class="col-xs-12">
     <div class="col-xs-3">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" width="66" height="35" alt="GIRO">
+        <%--<img src="/hcsa-licence-web/img/Mastercard.svg" width="66" height="25" alt="GIRO">--%>
+        <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="GIRO">
         &nbsp;
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="66" height="35" alt="GIRO">
+        <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
+        <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="GIRO">
     </div>
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
@@ -35,7 +37,7 @@
     </c:if>
 </div>
 <div class="col-xs-12">
-    <div class="col-xs-3">
+    <div class="col-xs-12">
         <c:choose>
             <c:when test="${'APTY004' == AppSubmissionDto.appType}">
                 <span name="iaisErrorMsg" id="error_payMethod" class="error-msg"></span>
@@ -60,6 +62,9 @@
 <%--        </c:otherwise>--%>
 <%--    </c:choose>--%>
     <div class="col-xs-12 col-sm-6">
+        <c:if test="${('APTY002' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType ) && requestInformationConfig == null}">
+            <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
+        </c:if>
     </div>
     <div class="col-xs-12 col-sm-6">
         <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>

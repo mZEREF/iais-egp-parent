@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<paymentMechanisms>
+    <paymentMechanism>
+        <mechId>1</mechId>
+        <mechName>Baiduri</mechName>
+        <mechDesc>Baiduri Payment</mechDesc>
+        <minAmount>1.0</minAmount>
+        <maxAmount>1111110.0</maxAmount>
+        <mechStatus>active</mechStatus>
+        <mechType>sync</mechType>
+        <paymentImplClass>com.ecquaria.egp.core.payment.runtime.PaymentBaiduriProxy</paymentImplClass>
+        <createdDate>Mon Dec 23 21:27:39 SGT 2019</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>Mon Dec 23 21:27:39 SGT 2019</updatedDate>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+    </paymentMechanism>
+    <paymentMechanism>
+        <mechId>4</mechId>
+        <mechName>eNets</mechName>
+        <mechDesc>eNets Payment</mechDesc>
+        <minAmount>1.0</minAmount>
+        <maxAmount>99900.0</maxAmount>
+        <mechStatus>active</mechStatus>
+        <mechType>sync</mechType>
+        <paymentImplClass>com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy</paymentImplClass>
+        <createdDate>Wed Oct 14 10:16:28 SGT 2020</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>Wed Oct 14 10:16:28 SGT 2020</updatedDate>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+    </paymentMechanism>
+    <paymentMechanism>
+        <mechId>3</mechId>
+        <mechName>Stripe</mechName>
+        <mechDesc>Stripe Payment</mechDesc>
+        <minAmount>1.0</minAmount>
+        <maxAmount>1.111111111E10</maxAmount>
+        <mechStatus>active</mechStatus>
+        <mechType>sync</mechType>
+        <paymentImplClass>com.ecquaria.egp.core.payment.runtime.PaymentStripeProxy</paymentImplClass>
+        <createdDate>Tue Sep 01 09:01:53 SGT 2020</createdDate>
+        <createdUserDomain>egovadmin</createdUserDomain>
+        <createdUserId>egovadmin</createdUserId>
+        <updatedDate>Tue Sep 01 09:01:53 SGT 2020</updatedDate>
+        <updatedUserDomain>egovadmin</updatedUserDomain>
+        <updatedUserId>egovadmin</updatedUserId>
+    </paymentMechanism>
+</paymentMechanisms>

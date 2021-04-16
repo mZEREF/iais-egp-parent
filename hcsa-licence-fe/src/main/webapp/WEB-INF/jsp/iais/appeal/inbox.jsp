@@ -18,6 +18,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
+    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
 
     <div class="form-group">
       <div class="col-xs-12 col-md-10" style="margin-left: 2%">
@@ -26,7 +27,10 @@
 
       <div  class="col-xs-12 col-md-10">
         <div class="col-xs-12 col-md-6" style="margin-left: 1%">
-          <input type="text" name="appealingFor" disabled  value="${appealNo}" >
+          <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
+          <span class="appMaskNo" style="display: none"><iais:mask name="appNo" value="${appealNo}"/></span>
+          <input type="hidden" value="${id}" id="licenceId">
+          <input type="hidden" value="${type}" id="parametertype">
           <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
         </div>
       </div>
@@ -41,22 +45,6 @@
             <c:forEach items="${selectOptionList}" var="selectOption">
               <option value="${selectOption.value}" <c:if test="${appPremiseMiscDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
             </c:forEach>
-           <%-- <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
-              <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
-            </c:if>
-            <c:if test="${lateFee==true}">
-              <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-            </c:if>
-            <c:if test="${maxCGOnumber==true}">
-              <c:if test="${type=='application'}">
-                <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
-              </c:if>
-            </c:if>
-
-            <c:if test="${type=='application'}"><option value="MS008" <c:if test="${appPremiseMiscDto.reason=='MS008'}">selected="selected"</c:if>>Appeal against use of restricted words in HCI Name</option></c:if>
-            <c:if test="${type=='licence'}"> <option value="MS004" <c:if test="${appPremiseMiscDto.reason=='MS004'}">selected="selected"</c:if>>Appeal for change of licence period</option></c:if>
-            <option value="MS007" <c:if test="${appPremiseMiscDto.reason=='MS007'}">selected="selected"</c:if>>Others</option>--%>
-            <%--<option value="MS006" <c:if test="${appPremiseMiscDto.reason=='MS006'}">selected="selected"</c:if>>Appeal against revocation</option>--%>
           </select>
 
           <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
@@ -120,16 +108,21 @@
           <div class="col-xs-12" style="margin-bottom: 20px;">
             <div class="document-upload-list">
               <div class="file-upload-gp">
-                <div class="fileContent">
+                <div class="fileContent ">
                   ${upFile.originalFilename}
                 </div>
                 <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                <div class="col-xs-12 col-md-4" style="margin-left: 1%">
+                <div class="col-xs-12 col-md-4" style="margin-left: 1%" >
+                  <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
+                    <div id="${pageShowFileDto.fileMapId}">
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileReportIdForAppeal}"/>&fileRepoName=${filename}" title="Download" class="downloadFile">${filename}</a></span>
-                  <input type="text" disabled value="Y" style="display: none" name="isDelete" id="isDelete">
-                  <input type="text" disabled value="${filename}" style="display: none" id="isFile">
+                  <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a></span>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_file${ind.index}"></span>
+
+                    </div>
+
+                  </c:forEach>
                 </div>
               </div>
             </div>
@@ -197,9 +190,19 @@
 
 
     });
-
+    function link(){
+        var type = $('#parametertype').val();
+        if(type=='application'){
+            var v= $('.appMaskNo').html();
+            showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohFeApplicationView?appNo="+v);
+        }else {
+            if (type == "licence") {
+                showPopupWindow("${pageContext.request.contextPath}/eservice/INTERNET/MohLicenceView?licenceId=" + $('#licenceId').val() + "&appeal=appeal");
+            }
+        }
+    }
     $('#Back').click(function (){
-      location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request)%>?initPage=initApp";
+      location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
 
     });
     $('#submit').click(function () {
@@ -241,7 +244,7 @@
         } else if(error =="N"){
             clearFileFunction();
             flag = false;
-            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $('#error_file').html("");
         }
         return flag;

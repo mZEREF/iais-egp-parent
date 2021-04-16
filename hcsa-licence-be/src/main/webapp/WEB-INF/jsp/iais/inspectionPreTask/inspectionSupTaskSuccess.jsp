@@ -23,7 +23,7 @@
             </c:choose>
           </div>
         </div>
-        <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
+        <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/MohInspectionSupSearch"><em class="fa fa-angle-left"></em> Back</a></span></div>
       </div>
     </div>
   </div>

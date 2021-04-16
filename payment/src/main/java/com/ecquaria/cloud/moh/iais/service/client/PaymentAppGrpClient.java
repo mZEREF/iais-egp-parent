@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback = PaymentAppGrpClientFallBack.class)
 public interface PaymentAppGrpClient {
+    @PutMapping(path="/iais-application/payment-app-grp", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> doPaymentUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
     @PutMapping(value = "/iais-application/app-grp-by-no",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> paymentUpDateByGrpNo(@RequestBody String groupNo);
     @PutMapping(path="/iais-application/app-grp", consumes = MediaType.APPLICATION_JSON_VALUE)

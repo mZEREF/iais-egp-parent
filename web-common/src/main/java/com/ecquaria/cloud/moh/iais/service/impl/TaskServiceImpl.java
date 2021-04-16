@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -131,6 +128,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("The getRoutingTask scheme is -->:"+scheme));
             String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String userId = null;
+            boolean isSystemAdmin = false;
             if(taskScoreDto != null){
                 userId = taskScoreDto.getUserId();
             }else{
@@ -154,12 +152,14 @@ public class TaskServiceImpl implements TaskService {
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                             userId = orgUserDtos.get(0).getId();
+                            isSystemAdmin = true;
                             log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
                             sendNoteToAdm(applicationDto.getApplicationNo(),correlationId,orgUserDtos.get(0));
                         }
                     }
                     break;
             }
+            log.info(StringUtil.changeForLog("The getRoutingTask isSystemAdmin is -->:"+isSystemAdmin));
             log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:"+taskType));
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
             log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
@@ -172,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
             }
              result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                     correlationId,workGroupId,
+                     correlationId,isSystemAdmin?null:workGroupId,
                     userId, assignDate,score,TaskUrl,roleId,
                      IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
@@ -186,6 +186,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
         return taskOrganizationClient.getUsersByWorkGroupName(workGroupId,status).getEntity();
+    }
+
+    @Override
+    public List<OrgUserDto> getUsersByWorkGroupIdExceptLeader(String workGroupId, String status) {
+        return taskOrganizationClient.getUsersByWorkGroupNameExceptLeader(workGroupId,status).getEntity();
     }
 
     @Override
@@ -224,6 +229,7 @@ public class TaskServiceImpl implements TaskService {
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 OrgUserDto orgUserDto = null;
+                boolean isSystemAdmin = false;
                 switch (scheme){
                     case TaskConsts.TASK_SCHEME_TYPE_COMMON :
                         userId = null;
@@ -241,10 +247,12 @@ public class TaskServiceImpl implements TaskService {
                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
                                 orgUserDto = orgUserDtos.get(0);
                                 userId = orgUserDto.getId();
+                                isSystemAdmin = true;
                             }
                         }
                         break;
                 }
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison isSystemAdmin is -->:"+isSystemAdmin));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskType is -->:"+taskType));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison assignDate is -->:"+assignDate));
@@ -260,7 +268,7 @@ public class TaskServiceImpl implements TaskService {
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
                             TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                                    appPremisesCorrelationDto.getId(),workGroupId,
+                                    appPremisesCorrelationDto.getId(),isSystemAdmin?null:workGroupId,
                                     userId, assignDate,score,TaskUrl,roleId,
                                     auditTrailDto);
                             taskDtos.add(taskDto);
@@ -271,7 +279,7 @@ public class TaskServiceImpl implements TaskService {
                             //create history
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
+                                    createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
                                             stageId,null,createHistoryRoleId,auditTrailDto);
                             appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
@@ -404,14 +412,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
+        return getUserIdForWorkGroup(workGroupId,null);
+    }
+
+    @Override
+    public TaskDto getUserIdForWorkGroup(String workGroupId,String excpetUserId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
         TaskDto result = null;
         if(StringUtil.isEmpty(workGroupId)){
             return result;
         }
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup workGroupId is -->:"+workGroupId));
-        List<OrgUserDto> orgUserDtos = getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
-        orgUserDtos = removeUnavailableUser(orgUserDtos);
+        List<OrgUserDto> orgUserDtos = getUsersByWorkGroupIdExceptLeader(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+        orgUserDtos = removeUnavailableUser(orgUserDtos,excpetUserId);
         List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
         result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);
         if(result != null && StringUtil.isEmpty(result.getWkGrpId())){
@@ -421,8 +434,6 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
-
-
     @Override
     public Set<String> getInspectiors(String appNo , String processUrl, String roleId) {
         Set<String> entity = taskOrganizationClient.getInspectors(appNo, processUrl, roleId).getEntity();
@@ -430,8 +441,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getTaskDtoByDate(String date) {
-        return taskOrganizationClient.getTaskDtoByDate(date).getEntity();
+    public List<TaskDto> getTaskDtoByDate(String roundDate,boolean isRouting) {
+        return taskOrganizationClient.getTaskDtoByDate(roundDate,isRouting).getEntity();
     }
 
     @Override
@@ -519,17 +530,18 @@ public class TaskServiceImpl implements TaskService {
 
     private boolean checkTaskAppStatus(String status,String correlationId){
         boolean flag = true;
+        boolean inspectionFlowOver = true;
         boolean pendingRfi = ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status);
         log.debug(StringUtil.changeForLog("checkTaskAppStatus pendingRfi : " + pendingRfi));
         AppInspectionStatusDto inspectionStatusDto = hcsaAppClient.getAppInspectionStatusByPremId(correlationId).getEntity();
         //in inspection && not the end
-        boolean inInspection = (inspectionStatusDto != null) && !InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inInspection));
+        if(inspectionStatusDto != null){
+            inspectionFlowOver = InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
+        }
+        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inspectionFlowOver));
         log.debug(StringUtil.changeForLog("checkTaskAppStatus status : " + status));
         log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + correlationId));
-        if(pendingRfi || inInspection){
-            flag = false;
-        }
+        flag = !pendingRfi && inspectionFlowOver;
         log.debug(StringUtil.changeForLog("checkTaskAppStatus flag : " + flag));
         return flag;
     }
@@ -594,28 +606,33 @@ public class TaskServiceImpl implements TaskService {
     private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
         return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(ApplicationDto applicationDto, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
                                                                          AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        ApplicationGroupDto entity = hcsaAppClient.getAppGrpById(applicationDto.getAppGrpId()).getEntity();
+        appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(auditTrailDto == null ?
-                AppConsts.USER_ID_SYSTEM : auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(entity==null? AppConsts.USER_ID_SYSTEM: entity.getSubmitBy() == null ?
+                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
     }
-    private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos){
+    private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos,String excpetUserId){
         log.debug(StringUtil.changeForLog("the do removeUnavailableUser start ...."));
         List<OrgUserDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
             log.debug(StringUtil.changeForLog("the do removeUnavailableUser orgUserDtos.size() -->:"+orgUserDtos.size()));
             for (OrgUserDto orgUserDto : orgUserDtos){
                 if(orgUserDto.getAvailable()){
-                    result.add(orgUserDto);
+                    if(StringUtil.isEmpty(excpetUserId)||!excpetUserId.equals(orgUserDto.getId())){
+                        result.add(orgUserDto);
+                    }else{
+                        log.debug(StringUtil.changeForLog("This user id is the excpetUserId -->:"+excpetUserId));
+                    }
                 }else{
                     log.debug(StringUtil.changeForLog("the do removeUnavailableUser is not Available-->:"+orgUserDto.getUserId()));
                 }

@@ -20,7 +20,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-
+    <input type="hidden" name="doSubmitAction" id="doSubmitAction" value="">
     <input id="nowTabIn" name="nowTabIn" value="${nowTabIn == null ? 'Combined' : nowTabIn}" type="hidden">
     <input id="nowComTabIn" name="nowComTabIn" value="${nowComTabIn == null ? 'General' : nowComTabIn}" type="hidden">
     <div class="main-content">
@@ -70,14 +70,13 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div style="float:left">
-                                        <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
-                                    </div>
+                                    <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+                                    <div style="float:right">
                                     <c:if test="${(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status) && nowTabIn == inspectorUserFinishChecklistId}">
-                                        <div style="float:right">
+                                        <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
                                             <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
-                                        </div>
                                     </c:if>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -91,6 +90,13 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
+        showWaiting();
+        $("#doSubmitAction").val("next");
+        SOP.Crud.cfxSubmit("mainForm", "back");
+    }
+    function doBackToMain(){
+        showWaiting();
+        $("#doSubmitAction").val("");
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function showCheckBox(str,indexIns){

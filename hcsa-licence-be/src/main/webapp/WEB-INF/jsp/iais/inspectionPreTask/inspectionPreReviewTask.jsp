@@ -99,7 +99,7 @@
                                   <c:choose>
                                     <c:when test="${empty inspectionHistoryShowDtos}">
                                       <tr>
-                                        <td colspan="12" align="center">
+                                        <td colspan="12" align="left">
                                           <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                           <!--No Record!!-->
                                         </td>
@@ -125,7 +125,7 @@
                                           <td>
                                             <c:if test="${!empty inspHistory.inspLeads}">
                                               <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
-                                                <c:out value="${inspLead}"/>
+                                                <c:out value="${inspLead}"/><br>
                                               </c:forEach>
                                             </c:if>
                                             <c:if test="${empty inspHistory.inspLeads}">
@@ -208,6 +208,7 @@
                                     </p>
                                   </c:forEach>
                                   <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiCheck"></span>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiTogether"></span>
                                 </c:if>
                               </iais:value>
                             </iais:row>

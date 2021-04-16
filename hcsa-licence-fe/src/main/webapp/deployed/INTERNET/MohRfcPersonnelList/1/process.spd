@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcPersonnelList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcPersonnelList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="-60" y="80">
@@ -65,18 +65,18 @@
     <JavaCode defClass="" executor="" methodName="preparePayment_OnStepProcess_0" name="preparePayment_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="780" y="200">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="jumpBank_OnStepProcess_0" name="jumpBank_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="dash" x="1130" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="dash" x="1200" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="dash_OnStepProcess_0" name="dash_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="paymentSwitch" x="770" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_1" name="controlSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -93,13 +93,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="950" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="1020" y="200">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="780" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="780" y="400">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -163,13 +163,22 @@
    <position>{(720,570)(780,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/payment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePayment" style="oblique">
-   <position>{(780,570)(800,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Pages/WebPage/payment" style="oblique">
-   <position>{(800,380)(970,380)}</position>
+   <position>{(780,570)(800,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/dash" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
-   <position>{(970,380)(1150,380)}</position>
+   <position>{(1040,220)(1220,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(800,200)(660,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(800,200)(1040,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/paymentSwitch" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/payment" style="rectanular">
+   <position>{(800,420)(790,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/paymentSwitch" style="rectanular">
+   <position>{(790,310)(800,200)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -186,6 +195,11 @@
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;valid&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePayment" value="&quot;bank&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="psnSwitch" name="Switch2" x="780" y="180">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;back&quot;"/>
+   <SwitchCase component="/Pages/WebPage/ack" value="&quot;next&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
