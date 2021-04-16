@@ -2172,8 +2172,11 @@ public class NewApplicationHelper {
     }
 
     public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request,String appType){
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         AppSubmissionDto appSubmissionDto  = null;
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+        if(isRfi){
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,"oldRenewAppSubmissionDto");
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
