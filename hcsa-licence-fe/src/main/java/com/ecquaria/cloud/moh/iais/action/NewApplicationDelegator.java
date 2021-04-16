@@ -2504,6 +2504,9 @@ public class NewApplicationDelegator {
                 NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             }
+            if(!StringUtil.isEmpty(noNeedPayment)){
+                ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+            }
         }else {
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);

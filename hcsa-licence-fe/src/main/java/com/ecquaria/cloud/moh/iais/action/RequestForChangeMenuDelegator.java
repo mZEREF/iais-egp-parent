@@ -1894,6 +1894,9 @@ public class RequestForChangeMenuDelegator {
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
                 return;
             }
+            if(!StringUtil.isEmpty(noNeedPayment)){
+                ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+            }
         } else {
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
