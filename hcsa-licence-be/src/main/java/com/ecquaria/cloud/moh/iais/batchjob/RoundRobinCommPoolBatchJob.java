@@ -892,7 +892,7 @@ public class RoundRobinCommPoolBatchJob {
         log.info("------------->  Send Withdraw 003 Email");
         String officerName = "";
         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-        if (officerName != null){
+        if (orgUserDto != null&&orgUserDto.getUserId()!=null){
             officerName = orgUserDto.getUserId();
         }
         log.info("------------->  Send Withdraw 003 Email  officerName {}",officerName);
