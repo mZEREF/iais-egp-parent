@@ -40,7 +40,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <iais:value width="11">
-                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" disabled = "true" readonly/>
+                                        <p><c:out value="${inter_user_attr.uenNo}"></c:out></p>
                                         <input name="organizationId" id="organizationId" type="text" value="${organizationId}" hidden/>
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
