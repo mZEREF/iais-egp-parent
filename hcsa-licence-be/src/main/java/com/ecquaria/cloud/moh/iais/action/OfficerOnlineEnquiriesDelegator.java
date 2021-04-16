@@ -122,7 +122,9 @@ public class OfficerOnlineEnquiriesDelegator {
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS
+    );
 
 
     public void start(BaseProcessClass bpc) {
@@ -424,9 +426,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", status);
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
@@ -581,9 +580,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", status);
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
@@ -748,6 +744,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
                         appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
                         break;
+                    case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                        appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
+                        break;
                     default:
                 }
             }
@@ -883,8 +882,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus)
-                &&(appStatuses.contains(appStatus)||appStatus.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS))
+        if(!StringUtil.isEmpty(appStatus) &&(appStatuses.contains(appStatus))
         )
         {
             licParam.getFilters().put("appStatus",appStatus);
@@ -1076,9 +1074,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1240,7 +1235,10 @@ public class OfficerOnlineEnquiriesDelegator {
                                 case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
                                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
                                     break;
-                                default:
+                                case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
+                                    break;
+                                    default:
                             }
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
@@ -1361,9 +1359,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1524,6 +1519,9 @@ public class OfficerOnlineEnquiriesDelegator {
                                     break;
                                 case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
                                     appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                                    break;
+                                case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                                    appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
                                     break;
                                 default:
                             }
@@ -1686,9 +1684,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1847,6 +1842,9 @@ public class OfficerOnlineEnquiriesDelegator {
                                 break;
                             case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
                                 appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                                break;
+                            case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
                                 break;
                             default:
                         }
