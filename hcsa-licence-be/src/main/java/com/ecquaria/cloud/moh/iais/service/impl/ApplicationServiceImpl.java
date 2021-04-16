@@ -846,6 +846,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public boolean isWithdrawReturnFee(String appNo) {
+        boolean result = false;
+        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo,ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
+        if (appReturnFeeDto == null){
+            result = true;
+        }
+        return result;
+    }
+
+    @Override
     public boolean closeTaskWhenWhAppApprove(String appId) {
         boolean result = false;
         AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
