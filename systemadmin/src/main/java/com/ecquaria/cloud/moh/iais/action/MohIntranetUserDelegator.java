@@ -1500,8 +1500,8 @@ public class MohIntranetUserDelegator {
                     String endDateStr = element.element("accountActivationEnd").getText();
                     Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
                     String salutation = element.element("salutation").getText();
-                    String firstName = element.element("firstName").getText();
-                    String lastName = element.element("lastName").getText();
+                    String firstName = element.element("name").getText();
+                    String lastName = element.element("name").getText();
                     String organization = element.element("organization").getText();
                     String division = element.element("division").getText();
                     String branchUnit = element.element("branchUnit").getText();
