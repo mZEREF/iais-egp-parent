@@ -51,6 +51,8 @@ public class SortableHeaderTag extends DivTagSupport {
         sb.append("<th class=");
         if(needSort){
             sb.append("\"sorting\" ");
+        }else {
+            sb.append("\"");
         }
         if(!StringUtil.isEmpty(style)){
             sb.append("style=\"").append(style).append("\" >");
