@@ -83,7 +83,7 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private GiroDeductionClient giroDeductionClient;
     private final static String CSV="csv";
-
+    //PMT12 PMT13 PMT11
     private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
@@ -302,6 +302,7 @@ public class GiroDeductionBeDelegator {
                     continue;
                 }
                 String payment_status = record.get("Payment Status");
+                payment_status = encryptionPayment(payment_status);
                 map.put(s,payment_status);
             }
         }catch (Exception e){
@@ -387,7 +388,7 @@ public class GiroDeductionBeDelegator {
             rows.forEach(v->{
                 try {
                     printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
-                    ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
+                    ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
                     integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -412,6 +413,22 @@ public class GiroDeductionBeDelegator {
 
     }
 
+    private String decryptPayment(String payment){
+        switch (payment){
+            case "FAIL": return "Failed";
+            case "CMSTAT001":return "Successful";
+            case "PDNG":return "Pending";
+            default:return payment;
+        }
+    }
+    private String encryptionPayment(String payment){
+        switch (payment){
+            case "Failed": return "FAIL";
+            case "Successful":return "CMSTAT001";
+            case "Pending":return "PDNG";
+            default:return payment;
+        }
+    }
     private void updateDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> giroDeductionDtoList){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

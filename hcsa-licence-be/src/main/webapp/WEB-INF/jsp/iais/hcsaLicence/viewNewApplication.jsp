@@ -2037,7 +2037,12 @@
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().find('.' + newValClass);
+            var newEle='';
+            if($(this).prev().find('.'+newValClass).length>0){
+                newEle = $(this).prev().find('.'+newValClass);
+            }else {
+                newEle = $(this).parent().prev().find('.' + newValClass);
+            }
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if ($('#oldAppSubmissionDto').val() == 'false') {
                 if (oldVal.length > 0 || newVal.length > 0) {
