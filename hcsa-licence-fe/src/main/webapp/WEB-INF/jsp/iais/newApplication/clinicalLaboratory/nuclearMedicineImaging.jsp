@@ -44,7 +44,7 @@
                     </c:if>
                   </c:forEach>
                   <c:choose>
-                    <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+                    <c:when test="${'true' != isClickEdit}">
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     </c:when>
                     <c:otherwise>
