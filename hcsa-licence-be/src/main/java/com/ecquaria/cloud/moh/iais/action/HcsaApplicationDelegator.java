@@ -1829,7 +1829,7 @@ public class HcsaApplicationDelegator {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-
+        ApplicationGroupDto appGroupDtoView = applicationViewDto.getApplicationGroupDto();
         AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
@@ -2283,6 +2283,18 @@ public class HcsaApplicationDelegator {
                     HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
                 //close submit pref insp date
                 broadcastApplicationDto.getApplicationDto().setHasSubmitPrefDate(1);
+            }
+        }
+        //if Giro payment fail
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+        ) {
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(appGroupDtoView.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus())) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
+                }
             }
         }
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
