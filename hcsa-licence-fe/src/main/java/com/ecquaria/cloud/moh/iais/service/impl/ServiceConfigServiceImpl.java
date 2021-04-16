@@ -693,7 +693,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         inputHeaderDto.setSenderName(senderName);
         return inputHeaderDto;
     }
-    private String getGiroAccountByGroupNo(String groupNo){
+
+    @Override
+    public String getGiroAccountByGroupNo(String groupNo){
         ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(groupNo+"-01").getEntity();
         if( applicationGroupDto == null){
             return "";

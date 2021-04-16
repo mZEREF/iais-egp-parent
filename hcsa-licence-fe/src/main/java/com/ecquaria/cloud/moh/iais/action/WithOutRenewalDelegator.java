@@ -1577,7 +1577,13 @@ public class WithOutRenewalDelegator {
                 appSubmissionDtos.get(0).setTotalAmountGroup(a);
             }
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDtos.get(0),loginContext.getUserName());
+            try {
+                //renew
+                sendEmail(bpc.request,appSubmissionDtos);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                log.error(StringUtil.changeForLog("send email error"));
+            }
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
@@ -1950,8 +1956,8 @@ public class WithOutRenewalDelegator {
                 //GIRO payment method
                 paymentMethodName = "GIRO";
                 map.put("usualDeduction","next 7 working days");
-                OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDtos.get(0).getLicenseeId()).getEntity();
-                map.put("accountNumber",entity.getAcctNo());
+                //OrgGiroAccountInfoDto entity = organizationLienceseeClient.getGiroAccByLicenseeId(appSubmissionDtos.get(0).getLicenseeId()).getEntity();
+                map.put("accountNumber", serviceConfigService.getGiroAccountByGroupNo(groupNo));
                 map.put("paymentMethod", paymentMethodName);
             }
             try {

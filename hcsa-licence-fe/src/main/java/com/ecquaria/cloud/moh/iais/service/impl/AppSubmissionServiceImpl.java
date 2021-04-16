@@ -234,7 +234,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
                 templateContent.put("paymentMethod", paymentMethodName);
-                templateContent.put("paymentAmount", appSubmissionDto.getAmountStr());
+                templateContent.put("paymentAmount", appSubmissionDto.getTotalAmountGroup() == null ?  appSubmissionDto.getAmountStr() : String.valueOf(appSubmissionDto.getTotalAmountGroup()));
                 String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
                 templateContent.put("MOH_AGENCY_NAME",syName);
                 EmailParam emailParam = new EmailParam();
