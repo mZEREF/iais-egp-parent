@@ -656,12 +656,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     private ReschedulingOfficerDto getShowDraftDateTimeStringList(AppPremInspApptDraftDto appPremInspApptDraftDto, ReschedulingOfficerDto reschedulingOfficerDto) {
         if(reschedulingOfficerDto != null){
-            List<String> newInspDates;
-            if(IaisCommonUtils.isEmpty(reschedulingOfficerDto.getNewInspDates())){//NOSONAR
-                newInspDates = IaisCommonUtils.genNewArrayList();
-            } else {
-                newInspDates = reschedulingOfficerDto.getNewInspDates();
-            }
+            List<String> newInspDates = IaisCommonUtils.genNewArrayList();
             if(appPremInspApptDraftDto != null) {
                 String inspStartDate = apptDateToStringShow(appPremInspApptDraftDto.getStartDate());
                 String inspEndDate = apptDateToStringShow(appPremInspApptDraftDto.getEndDate());
