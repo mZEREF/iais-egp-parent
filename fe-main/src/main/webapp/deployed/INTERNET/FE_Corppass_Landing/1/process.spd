@@ -23,7 +23,7 @@
     <JavaCode defClass="" executor="" methodName="ban_OnStepProcess_0" name="ban_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="validateKeyAppointment" x="840" y="70">
+  <AutomaticStep defClass="" executor="" icon="" name="validateKeyAppointment" x="920" y="70">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -69,7 +69,7 @@
     <JavaCode defClass="" executor="" methodName="validatePwd_OnStepProcess_0" name="validatePwd_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="receiveEntityFormEDH" x="1100" y="490">
+  <AutomaticStep defClass="" executor="" icon="" name="receiveEntityFormEDH" x="770" y="70">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -115,7 +115,7 @@
    <position>{(1410,500)(1410,660)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/validateKeyAppointment" style="oblique">
-   <position>{(860,90)(1170,90)}</position>
+   <position>{(940,90)(1170,90)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/StopStep/Step4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ban" style="oblique">
    <position>{(1410,660)(1410,800)}</position>
@@ -127,7 +127,7 @@
    <position>{(760,510)(720,670)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/entityDeclares" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(760,510)(766,89)(1380,90)}</position>
+   <position>{(760,510)(755,88)(1380,90)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/corppassCallBack" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step3" style="oblique">
    <position>{(150,90)(250,90)}</position>
@@ -150,9 +150,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/validatePwd" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/corppassCallBack" style="oblique">
    <position>{(250,90)(380,90)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/validateKeyAppointment" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(600,90)(860,90)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/loginUser" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
    <position>{(600,90)(490,270)}</position>
   </SynchronousLink>
@@ -171,21 +168,24 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond6" style="rectanular">
    <position>{(500,90)(600,90)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/receiveEntityFormEDH" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(1410,500)(1120,510)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/receiveEntityFormEDH" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(600,90)(790,90)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/receiveEntityFormEDH" style="rectanular">
-   <position>{(1120,510)(920,510)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validateKeyAppointment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/receiveEntityFormEDH" style="oblique">
+   <position>{(790,90)(940,90)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/receiveEntityFormEDH" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(1170,90)(1120,510)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(1410,500)(920,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(1170,90)(1169,508)(920,510)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/entityDeclares" componentIfTrue="/Steps/AutomaticStep/receiveEntityFormEDH" defClass="" executor="" icon="" leftOperand="isKeyAppointment" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1150" y="70">
+  <Condition componentIfFalse="/Pages/WebPage/entityDeclares" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isKeyAppointment" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1150" y="70">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/ban" componentIfTrue="/Steps/AutomaticStep/receiveEntityFormEDH" defClass="" executor="" icon="" leftOperand="isDeclare" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1390" y="480">
+  <Condition componentIfFalse="/Steps/AutomaticStep/ban" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isDeclare" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1390" y="480">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="740" y="780">
@@ -194,7 +194,7 @@
   <Condition componentIfFalse="/Pages/WebPage/Page1" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isAdminRole" name="Cond5" operator="=" rightOperand="&quot;Y&quot;" x="470" y="410">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/validateKeyAppointment" componentIfTrue="/Steps/AutomaticStep/loginUser" defClass="" executor="" icon="" leftOperand="accountExists" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="580" y="70">
+  <Condition componentIfFalse="/Steps/AutomaticStep/receiveEntityFormEDH" componentIfTrue="/Steps/AutomaticStep/loginUser" defClass="" executor="" icon="" leftOperand="accountExists" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="580" y="70">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Conditions/Condition/Cond3" componentIfTrue="/Pages/WebPage/loginerror" defClass="" executor="" icon="" leftOperand="pwdError" name="Cond6" operator="=" rightOperand="&quot;Y&quot;" x="480" y="70">
