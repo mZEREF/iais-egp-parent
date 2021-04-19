@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -395,7 +396,7 @@ public class MohHcsaBeDashboardDelegator {
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type",application_type,true);
         }
-        if(!StringUtil.isEmpty(application_status) && !("common".equals(actionValue))) {
+        if(!StringUtil.isEmpty(application_status) && !(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue))) {
             //Filter the Common Pool Task in another place
             if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                 searchParam.addFilter("application_status", application_status, true);
@@ -459,7 +460,7 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         String dashActionValue = (String) ParamUtil.getSessionAttr(bpc.request, "dashActionValue");
-        if("common".equals(dashActionValue)) {
+        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(dashActionValue)) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
             SearchResult<DashComPoolQueryDto> searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
