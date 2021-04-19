@@ -6,6 +6,17 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+.form-check .form-check-text {
+color: #333333;
+font-size: 1.6rem;
+font-weight: 400;
+position: relative;
+padding-left: 0px;
+min-width: 16px;
+min-height: 16px;
+}
+</style>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp" %>
 <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
@@ -28,16 +39,16 @@
                         <div class="form-check">
                             <input class="form-check-input amendType" id="amend-licensee" type="radio" name="amendType" <c:if test="${AmendTypeValue == '0'}">checked="checked"</c:if>
                                    value="0"/>
-                            <label class="form-check-label"><span for="amend-licensee" class="check-circle"></span>Change
-                                of Licensee</label>
+                            <label class="form-check-label"><span for="amend-licensee" class="check-circle"></span></label>
+                            <label class="form-check-text">Change of Licensee</label>
                         </div>
                     </div>
                     <div class="col-xs-12">
                         <div class="form-check">
                             <input class="form-check-input amendType" id="amend-licence" type="radio" name="amendType" <c:if test="${AmendTypeValue == '1'}">checked="checked"</c:if>
                                    value="1"/>
-                            <label class="form-check-label"><span for="amend-licence" class="check-circle"></span>Change
-                                of Licence Information</label>
+                            <label class="form-check-label"><span for="amend-licence" class="check-circle"></span></label>
+                            <label class="form-check-text">Change of Licence Information</label>
                         </div>
                     </div>
                 </div>
