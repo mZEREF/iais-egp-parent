@@ -16,11 +16,11 @@
                  <div class="col-xs-12">
                          <iais:section title="">
                                  <iais:row>
-                                     <iais:field value="Licence No."></iais:field>
+                                     <iais:field width="7" value="Licence No."></iais:field>
                                      <iais:value width="10"><p>${prepareTranfer.licenceNo}</p></iais:value>
                                  </iais:row>
                                  <iais:row>
-                                     <iais:field value="Service Name"></iais:field>
+                                     <iais:field width="7" value="Service Name"></iais:field>
                                      <iais:value width="10"><p>${prepareTranfer.serviceName}</p></iais:value>
                                  </iais:row>
                            <c:if test="${prepareTranfer.groupLic}">
