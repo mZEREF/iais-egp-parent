@@ -76,6 +76,7 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
+                        cloneUploadFile();
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
@@ -113,5 +114,10 @@
             return "N";
         }
         return "Y";
+    }
+    function cloneUploadFile() {
+        var fileId= '#selectedFile';
+        $(fileId).after( $( fileId).clone().val(""));
+        $(fileId).remove();
     }
 </script>
