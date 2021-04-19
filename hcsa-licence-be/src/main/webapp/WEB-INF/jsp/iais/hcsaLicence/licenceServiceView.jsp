@@ -7,7 +7,7 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-blank"/>
+<webui:setLayout name="iais-intranet-blank"/>
 <style>
   *{
     font-size: 16px;
@@ -113,16 +113,31 @@
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().find('.' + newValClass);
+            var newEle='';
+            if($(this).parent().children('.'+newValClass).length>0){
+                 newEle = $(this).parent().children('.'+newValClass);
+            }else {
+                newEle = $(this).parent().prev().find('.' + newValClass);
+            }
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if($('#oldAppSubmissionDto').val()=='false'){
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();
-                        var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                        var newHtml ;
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            newHtml= $(this).parent().children('.' + newValClass).html();
+                        }else {
+                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
+                        }
                         var oldHtml=$(this).html();
                         $(this).html(newHtml);
-                        $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            $(this).parent().children('.' + newValClass).html(oldHtml);
+                        }else {
+                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        }
+
                         $(this).attr("class","newVal compareTdStyle");
                     } else if(oldVal.length > 0 && newVal.length <= 0){
                         $(this).hide();
