@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -46,6 +49,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Autowired
     private MohHcsaBeDashboardService mohHcsaBeDashboardService;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private InspectionMainAssignTaskService inspectionMainAssignTaskService;
@@ -80,13 +86,15 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             for(int i = 0; i < appCorrId_list.size(); i++){
                 searchParam.addFilter("T2.ID" + i, appCorrId_list.get(i));
             }
-            //filter
+            //filter work groups
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTaskAjax", searchParam);
             SearchResult<DashComPoolAjaxQueryDto> ajaxResult = getCommonAjaxResultByParam(searchParam);
             //set other data
             List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
-            dashComPoolAjaxQueryDtos = setComPoolAjaxDataToShow(dashComPoolAjaxQueryDtos);
+            dashComPoolAjaxQueryDtos = setComPoolAjaxDataToShow(dashComPoolAjaxQueryDtos, loginContext);
             ajaxResult.setRows(dashComPoolAjaxQueryDtos);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
@@ -95,7 +103,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         }
     }
 
-    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos) {
+    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos, LoginContext loginContext) {
+        Set<String> workGropIds = IaisCommonUtils.genNewHashSet();
+        if(loginContext != null && !IaisCommonUtils.isEmpty(loginContext.getWrkGrpIds())) {
+            workGropIds = loginContext.getWrkGrpIds();
+        }
         if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)){
             for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos){
                 //get hciName / address
@@ -112,8 +124,13 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashComPoolAjaxQueryDto.getServiceId()).getEntity();;
                 dashComPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
                 dashComPoolAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
-                String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
-                dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
+                //task is current work
+                TaskDto taskDto = taskService.getTaskById(dashComPoolAjaxQueryDto.getTaskId());
+                if(workGropIds.contains(taskDto.getWkGrpId())) {
+                    //set mask task Id
+                    String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
+                    dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
+                }
                 //application
                 ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashComPoolAjaxQueryDto.getApplicationNo()).getEntity();
                 //get license date
