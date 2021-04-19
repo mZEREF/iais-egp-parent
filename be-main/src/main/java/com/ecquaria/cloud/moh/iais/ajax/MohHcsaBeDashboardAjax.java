@@ -2,11 +2,13 @@ package com.ecquaria.cloud.moh.iais.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -51,10 +53,33 @@ public class MohHcsaBeDashboardAjax {
     private InspectionTaskMainClient inspectionTaskMainClient;
 
     @Autowired
-    private InspEmailService inspEmailService;
+    private TaskService taskService;
 
-    @Autowired
-    TaskService taskService;
+    @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String actionValue = ParamUtil.getRequestString(request, "switchAction");
+        String groupNo = MaskUtil.unMaskValue("appGroupNo", request.getParameter("groupNo"));
+        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(actionValue)) {
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(actionValue)) {
+
+        }
+        return map;
+    }
 
     @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
     public @ResponseBody
