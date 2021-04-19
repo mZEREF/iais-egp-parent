@@ -481,23 +481,47 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public void receiveEntityFormEDH(FeUserDto user) {
         log.info("receiveEntityFormEDH START");
         try {
-            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+            String entityJson = licenseeClient.getEntityInfoByUEN("T18LP0001A").getEntity();
             if (StringUtil.isNotEmpty(entityJson)){
                 log.info("receiveEntityFormEDH entityJson {}", entityJson);
+                user.setAcraGetEntityJsonStr(entityJson);
                 JSONObject object = new JSONObject(entityJson);
-                JSONArray jsonArray = object.getJSONArray("licences");
-                if (Optional.ofNullable(jsonArray).isPresent()){
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        JSONObject acraLicensee = jsonObject.getJSONObject("licensee");
-                        String nric = acraLicensee.getJSONObject("id-no").getString("value");
-                        if (user.getIdentityNo().equals(nric)){
-                            log.info("writeInfoFromEDH START................. {}", nric);
-                            String licenseeName = acraLicensee.getJSONObject("name").getString("value");
-                            user.setDisplayName(licenseeName);
+                if (Optional.ofNullable(object).isPresent()){
+                    JSONArray licences = object.getJSONArray("licences");
+                    if (Optional.ofNullable(licences).isPresent()){
+                        for (int i = 0; i < licences.length(); i++) {
+                            JSONObject licence = licences.getJSONObject(i);
+                            JSONObject acraLicensee = licence.getJSONObject("licensee");
+                            String nric = acraLicensee.getJSONObject("id-no").getString("value");
+                            if (user.getIdentityNo().equals(nric)){
+                                log.info("writeInfoFromEDH START................. {}", nric);
+                                String licenseeName = acraLicensee.getJSONObject("name").getString("value");
+                                user.setDisplayName(licenseeName);
+                                break;
+                            }
+                        }
+                    }
+
+                    JSONArray appointments = object.getJSONArray("appointments");
+                    if (Optional.ofNullable(appointments).isPresent()){
+                        for (int i = 0; i < appointments.length(); i++) {
+                            JSONObject appointment = appointments.getJSONObject(i);
+                            JSONObject appointedPerson = appointment.getJSONObject("appointed-person");
+                            if (Optional.ofNullable(appointedPerson).isPresent()){
+                                JSONObject idNo = appointedPerson.getJSONObject("id-no");
+                                if (Optional.ofNullable(idNo).isPresent()){
+                                    String ido = idNo.getString("value");
+                                    if (user.getIdNumber().equals(ido)){
+                                        log.info("========>>>>>>>>> key appointment true");
+                                        user.setKeyAppointment(true);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
