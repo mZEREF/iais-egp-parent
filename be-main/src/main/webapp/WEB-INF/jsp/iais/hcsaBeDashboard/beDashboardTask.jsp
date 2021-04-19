@@ -73,7 +73,7 @@
     <input type="hidden" id="action" name="action" value="">
     <input type="hidden" id="switchAction" name="switchAction" value="${dashActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
-    <input type="hidden" id="inspector_name" name="inspector_name" value="">
+    <input type="hidden" id="dashTaskId" name="dashTaskId" value="">
     <div class="col-xs-12">
       <div class="center-content">
         <div class="intranet-content">
@@ -333,8 +333,9 @@
         )
     }
 
-    function doDashboardTaskOrShow() {
+    function doDashboardTaskOrShow(taskId) {
         showWaiting();
+        $("#dashTaskId").val(taskId);
         intraDashboardSubmit('page');
     }
 

@@ -1,12 +1,17 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -27,7 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -64,7 +71,9 @@ public class MohHcsaBeDashboardAjax {
         String groupNo = request.getParameter("groupNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) {
-            beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, actionValue);
+            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, actionValue);
+            //set url
+            map = setDashComPoolUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(actionValue)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue)) {
@@ -79,6 +88,37 @@ public class MohHcsaBeDashboardAjax {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(actionValue)) {
 
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashComPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        if(map != null) {
+            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)) {
+                    Set<String> workGroupIds = IaisCommonUtils.genNewHashSet();
+                    if (loginContext != null && !IaisCommonUtils.isEmpty(loginContext.getWrkGrpIds())) {
+                        workGroupIds = loginContext.getWrkGrpIds();
+                    }
+                    for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos) {
+                        //task is current work
+                        TaskDto taskDto = taskService.getTaskById(dashComPoolAjaxQueryDto.getTaskId());
+                        //set mask task Id
+                        String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
+                        if (workGroupIds.contains(taskDto.getWkGrpId())) {
+                            dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
+                            dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.YES);
+                        } else {
+                            //todo: url
+                            String dashUrl = generateProcessUrl(maskId, request, maskId);
+                            dashComPoolAjaxQueryDto.setDashTaskUrl(dashUrl);
+                            dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.NO);
+                        }
+                    }
+                }
+            }
         }
         return map;
     }
@@ -152,5 +192,22 @@ public class MohHcsaBeDashboardAjax {
             flag = true;
         }
         return flag;
+    }
+
+
+    private String generateProcessUrl(String url, HttpServletRequest request, String taskMaskId) {
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(request.getServerName());
+        if (!url.startsWith("/")) {
+            sb.append('/');
+        }
+        sb.append(url);
+        if (url.indexOf('?') >= 0) {
+            sb.append('&');
+        } else {
+            sb.append('?');
+        }
+        sb.append("taskId=").append(taskMaskId);
+        return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
     }
 }

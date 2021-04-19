@@ -17,5 +17,5 @@ public interface BeDashboardAjaxService {
       * @return: void
       * @Descripation: Common Pool Dropdown
       */
-    void getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue);
+    Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue);
 }
