@@ -114,8 +114,8 @@
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
             var newEle='';
-            if($(this).prev().find('.'+newValClass).length>0){
-                 newEle = $(this).prev().find('.'+newValClass);
+            if($(this).parent().children('.'+newValClass).length>0){
+                 newEle = $(this).parent().children('.'+newValClass);
             }else {
                 newEle = $(this).parent().prev().find('.' + newValClass);
             }
@@ -124,10 +124,20 @@
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();
-                        var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                        var newHtml ;
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            newHtml= $(this).parent().children('.' + newValClass).html();
+                        }else {
+                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
+                        }
                         var oldHtml=$(this).html();
                         $(this).html(newHtml);
-                        $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            $(this).parent().children('.' + newValClass).html(oldHtml);
+                        }else {
+                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        }
+
                         $(this).attr("class","newVal compareTdStyle");
                     } else if(oldVal.length > 0 && newVal.length <= 0){
                         $(this).hide();
