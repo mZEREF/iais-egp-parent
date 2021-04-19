@@ -317,13 +317,6 @@
                     '<tbody>';
                 for (var i = 0; i < res.length; i++) {
                     var color = "black";
-                    if (res[i].timeLimitWarning == "black") {
-                        color = "black";
-                    } else if (res[i].timeLimitWarning == "red") {
-                        color = "red";
-                    } else if (res[i].timeLimitWarning == "amber") {
-                        color = "#DD9C00";
-                    }
                     if(res[i].hciName == null || res[i].hciName == ''){
                         var address = res[i].address;
                     }else{

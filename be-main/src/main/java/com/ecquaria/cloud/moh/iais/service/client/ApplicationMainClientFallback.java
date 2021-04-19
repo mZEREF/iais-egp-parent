@@ -22,7 +22,6 @@ import java.util.Map;
  */
 public class ApplicationMainClientFallback implements ApplicationMainClient{
 
-
     @Override
     public FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(String correlationId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -145,6 +144,22 @@ public class ApplicationMainClientFallback implements ApplicationMainClient{
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(List<ApplicationDto> applicationDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ApplicationGroupDto> getAppGrpByNo(String appGroupNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupId(String appGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

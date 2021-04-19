@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -81,4 +82,7 @@ public interface InspectionTaskMainClient {
 
     @PostMapping(value = "/iais-inspection/dash-common-pool")
     FeignResponseEntity<SearchResult<DashComPoolQueryDto>> searchDashComPoolResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-common-pool/drop")
+    FeignResponseEntity<SearchResult<DashComPoolAjaxQueryDto>> searchDashComPoolDropResult(@RequestBody SearchParam searchParam);
 }

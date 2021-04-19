@@ -1,18 +1,19 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class MohHcsaBeDashboardAjax {
     private InspectionMainAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
+    private BeDashboardAjaxService beDashboardAjaxService;
 
     @Autowired
     private HcsaConfigMainClient hcsaConfigClient;
@@ -60,9 +61,10 @@ public class MohHcsaBeDashboardAjax {
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String actionValue = ParamUtil.getRequestString(request, "switchAction");
-        String groupNo = MaskUtil.unMaskValue("appGroupNo", request.getParameter("groupNo"));
+        String groupNo = request.getParameter("groupNo");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) {
-
+            beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, actionValue);
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(actionValue)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue)) {
