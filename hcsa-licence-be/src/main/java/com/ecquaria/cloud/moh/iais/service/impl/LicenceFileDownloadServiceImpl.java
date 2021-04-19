@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -18,8 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -35,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -48,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -59,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
@@ -67,7 +61,6 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -881,64 +874,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ProcessFileTrackDto processFileTrackDto = applicationNewAndRequstDto.getProcessFileTrackDto();
             processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SEND_TSAK_SUCCESS);
             applicationClient.updateProcessFileTrack(processFileTrackDto);
-            /**
-             * Send Email
-             */
-            log.info("Send Withdraw 003 Email");
-            List<ApplicationDto> applicationDtoList = applicationNewAndRequstDto.getCessionOrWith();
-            if (applicationDtoList != null && applicationDtoList.size() > 0){
-                applicationDtoList.forEach(h -> {
-                    if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(h.getApplicationType())
-                            && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(h.getStatus())) {
-                        String officerName = "";
-                        String applicationNo = h.getApplicationNo();
-                        String applicationGrpId = h.getAppGrpId();
-                        String applicationType = h.getApplicationType();
-                        String serviceId = h.getServiceId();
-                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationGrpId);
-                        try {
-                            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(h.getApplicationNo()).getEntity();
-                            if (appPremisesRoutingHistoryDtoList != null && appPremisesRoutingHistoryDtoList.size() > 0) {
-                                for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
-                                    String actionBy = appPremisesRoutingHistoryDto.getActionby();
-                                    log.info(StringUtil.changeForLog("Send Withdraw 003 Email actionBy  ---->  " + actionBy));
-                                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionBy).getEntity();
-                                    if (orgUserDto != null && (!appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_ADMIN)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_USER)
-                                            && !appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_ORG_DIRECTOR))) {
-                                        officerName = orgUserDto.getDisplayName();
-                                    }
-                                }
-                            }
-                            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(h.getId()).getEntity();
-                            AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
-                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                            msgInfoMap.put("systemLink", loginUrl);
-                            msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType));
-                            msgInfoMap.put("ApplicationNumber", applicationNo);
-                            msgInfoMap.put("HCIName", appGrpPremisesDto.getHciName());
-                            msgInfoMap.put("Address", appGrpPremisesDto.getAddress());
-                            msgInfoMap.put("Applicant", officerName);
-                            msgInfoMap.put("submissionDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
-                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                            msgInfoMap.put("S_LName", serviceName);
-                            msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                            try {
-                                newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, h);
-                                newApplicationDelegator.sendInboxMessage(h,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
-                                newApplicationDelegator.sendSMS(h,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
-                            } catch (IOException | TemplateException e) {
-                                log.error(e.getMessage(), e);
-                            }
-                        } catch (Exception e) {
-                            log.info(e.getMessage(), e);
-                        }
-                    }
-                });
-            }
         }
     }
 

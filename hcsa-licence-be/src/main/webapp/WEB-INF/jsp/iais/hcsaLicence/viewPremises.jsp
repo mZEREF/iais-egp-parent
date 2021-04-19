@@ -418,7 +418,7 @@
                                     <div class="col-md-6">
                                         <div class="col-md-4"><span>Start</span></div>
                                         <div class="col-md-4"><span>End</span></div>
-                                        <div class="col-md-4"><span>All day</span></div>
+                                        <div class="col-md-4"><span>24 Hours</span></div>
                                     </div>
                                   </div>
                                   <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">

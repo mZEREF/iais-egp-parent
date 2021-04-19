@@ -139,6 +139,7 @@ public class MohIntranetUserDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
+        ParamUtil.setRequestAttr(bpc.request,"PERSONAL_PROFILE", true);
         List<SelectOption> statusOptions = getStatusOption();
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
     }
@@ -459,7 +460,7 @@ public class MohIntranetUserDelegator {
         }
 
         for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
-        ) {
+             ) {
             assignRoleOptionFull.remove(e.getKey());
         }
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
@@ -681,7 +682,7 @@ public class MohIntranetUserDelegator {
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
             for (OrgUserRoleDto role:orgUserRoleDtoList
-            ) {
+                 ) {
                 switch (role.getRoleName()){
                     case RoleConsts.USER_ROLE_AO1:
                         groupAo1Ids.forEach((groupId, isLeader) -> {

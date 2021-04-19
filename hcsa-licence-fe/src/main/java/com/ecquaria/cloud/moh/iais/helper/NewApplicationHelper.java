@@ -2878,7 +2878,19 @@ public class NewApplicationHelper {
             }
         }
     }
-    
+
+    public static Map<String,String> psnMandatoryValidate(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList, String psnType, Map<String,String> errMap,int psnLength,String errName,String psnName){
+        int mandatoryCount = getManDatoryCountByPsnType(hcsaSvcPersonnelList,psnType);
+        if(psnLength < mandatoryCount){
+            String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",psnName);
+            mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}",String.valueOf(mandatoryCount));
+            errMap.put(errName,mandatoryErrMsg);
+        }
+        return errMap;
+    }
+
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -3640,5 +3652,24 @@ public class NewApplicationHelper {
         return  mandatoryCount;
     }
 
-
+    public static List<SelectOption> getReasonOption() {
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workload");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
+    public static List<SelectOption> getPatientsOption() {
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn. No.");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
 }

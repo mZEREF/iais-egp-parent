@@ -18,10 +18,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @Author: Hc
@@ -135,7 +136,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppAlignLicQueryDto>> getAppAlignLicQueryDto(String licenseeId, String svcNameStr) {
+    public FeignResponseEntity<List<AppAlignLicQueryDto>> getAppAlignLicQueryDto(String licenseeId, String svcNameStr, String premTypeStr) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

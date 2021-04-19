@@ -57,9 +57,13 @@ public class AppReturnFeeRefundJobHandler extends IJobHandler {
             for (AppReturnFeeDto appreturn:saveReturnFeeDtos
             ) {
                 ApplicationDto applicationDto=applicationClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
-                ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
-                    saveReturnFeeDtosStripe.add(appreturn);
+                try {
+                    ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                    if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                        saveReturnFeeDtosStripe.add(appreturn);
+                    }
+                }catch (Exception e){
+                    log.error("applicationGroupDto is error;appGrpId is {}",applicationDto.getAppGrpId());
                 }
             }
             List<PaymentRequestDto> paymentRequestDtos= applicationService.eicFeStripeRefund(saveReturnFeeDtosStripe);

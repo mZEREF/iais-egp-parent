@@ -184,7 +184,7 @@
                             </div>
                         </div>
                             <iais:action>
-                                <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                                <a style="margin-left: 0%" class="back <c:if test="${PERSONAL_PROFILE}">hidden</c:if>" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                                 <a style="margin-left: 90%" class="btn btn-primary" data-toggle="modal" data-target= "#editUser">SUBMIT</a>
                             </iais:action>
                     </div>

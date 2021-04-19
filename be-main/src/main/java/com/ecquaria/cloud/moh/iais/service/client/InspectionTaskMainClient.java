@@ -2,12 +2,19 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -72,4 +79,10 @@ public interface InspectionTaskMainClient {
     @GetMapping(path = "/application-be/RescomDto/{appPremId}/{recomType}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(@PathVariable(value ="appPremId" ) String appPremId, @PathVariable(value ="recomType" ) String recomType);
+
+    @PostMapping(value = "/iais-inspection/dash-common-pool")
+    FeignResponseEntity<SearchResult<DashComPoolQueryDto>> searchDashComPoolResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-common-pool/drop")
+    FeignResponseEntity<SearchResult<DashComPoolAjaxQueryDto>> searchDashComPoolDropResult(@RequestBody SearchParam searchParam);
 }

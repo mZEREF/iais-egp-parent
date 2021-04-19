@@ -37,5 +37,4 @@ public interface RequestForInformationService {
     boolean download(ProcessFileTrackDto processFileTrackDto , String fileName,String groupPath,String submissionId);
     void delete();
     void reminderRfiJob();
-
 }

@@ -177,6 +177,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", null);
         ParamUtil.setSessionAttr(bpc.request, "requestInformationConfig", null);
+        ParamUtil.setSessionAttr(bpc.request, "rfc_eqHciCode", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
@@ -780,7 +781,7 @@ public class WithOutRenewalDelegator {
                                 int hciNameChange;
                                 if (groupLic) {
                                     AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
-                                    boolean b = NewApplicationDelegator.compareHciName(oldAppGrpPremisesDto, appGrpPremisesDtoList.get(i));
+                                    boolean b = EqRequestForChangeSubmitResultChange.compareHciName(oldAppGrpPremisesDto, appGrpPremisesDtoList.get(i));
                                     hciNameChange=appGrpPremisesDtoList.get(i).getHciNameChanged();
                                     boolean eqHciNameChange=EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i),oldAppGrpPremisesDto);
                                     if(eqHciNameChange){
@@ -804,7 +805,7 @@ public class WithOutRenewalDelegator {
                                     if(eqHciNameChange){
                                         hciNameChange=0;
                                     }
-                                    boolean b = NewApplicationDelegator.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
+                                    boolean b = EqRequestForChangeSubmitResultChange.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
                                     List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAppPremisesOperationalUnitDtos();
                                     eqUnitDto = EqRequestForChangeSubmitResultChange.eqOperationalUnitDtoList(appPremisesOperationalUnitDtos1, appPremisesOperationalUnitDtos);
                                     amendmentFeeDto.setChangeInHCIName(!b);
@@ -1703,6 +1704,9 @@ public class WithOutRenewalDelegator {
                         appSubmissionDto.setAppGrpNo(null);
                         appSubmissionDto.setAppGrpId(null);
                         requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                    }
+                    if(appSubmissionDtos.size()==1){
+                        appSubmissionDtos.get(0).setAppEditSelectDto(null);
                     }
                 }
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);

@@ -88,7 +88,11 @@ public class HcsaRiskLeadershipConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
-        hcsaRiskLeaderShipService.saveDto(leaderShowDto);
+        if(hcsaRiskLeaderShipService.compareVersionsForRiskLeaderShip(leaderShowDto,hcsaRiskLeaderShipService.getLeaderShowDto())){
+            hcsaRiskLeaderShipService.saveDto(leaderShowDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

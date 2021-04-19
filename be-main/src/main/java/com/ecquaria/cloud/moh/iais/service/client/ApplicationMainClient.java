@@ -63,4 +63,10 @@ public interface ApplicationMainClient {
 
     @PutMapping(value = "/iais-application-be/cessation-application",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> updateCessationApplications(@RequestBody List<ApplicationDto> applicationDtos);
+
+    @GetMapping(value = "/iais-application-group-be/app-group-one/{appGroupNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> getAppGrpByNo(@PathVariable("appGroupNo") String appGroupNo);
+
+    @GetMapping(value = "/iais-application-be/prem-corr-list/{appGroupId}")
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupId(@PathVariable(name = "appGroupId") String appGroupId);
 }

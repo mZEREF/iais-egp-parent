@@ -336,10 +336,12 @@ public class HalpAssessmentGuideDelegator {
         Set<String> baseSvcCodes = IaisCommonUtils.genNewHashSet();
         Set<String> premHcis = IaisCommonUtils.genNewHashSet();
         List<String> newSpeBaseSvcNames = IaisCommonUtils.genNewArrayList();
+        List<String> speSvcIdList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(speSvcDtoList)){
             Map<String,List<AppAlignLicQueryDto>> baseLicMap = (Map<String, List<AppAlignLicQueryDto>>) ParamUtil.getSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP);
             //reload
             for(HcsaServiceDto speServiceDto:speSvcDtoList){
+                speSvcIdList.add(speServiceDto.getId());
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto;
                 AppSvcRelatedInfoDto baseReloadDto;
                 //specified svc
@@ -532,7 +534,20 @@ public class HalpAssessmentGuideDelegator {
                             allBaseId.add(hcsaServiceDto.getId());
                         }
                         allBaseId.removeAll(chkBase);
-                        SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId);
+                        //get prem type intersection
+                        List<String> allChekSvcIdList = IaisCommonUtils.genNewArrayList();
+                        speSvcIdList.forEach(svcId->{
+                            if(!allChekSvcIdList.contains(svcId)){
+                                allChekSvcIdList.add(svcId);
+                            }
+                        });
+                        chkBase.forEach(svcId->{
+                            if(!allChekSvcIdList.contains(svcId)){
+                                allChekSvcIdList.add(svcId);
+                            }
+                        });
+                        Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(allChekSvcIdList);
+                        SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
                         //filter pending and existing data
                         List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                         //pagination
@@ -717,10 +732,12 @@ public class HalpAssessmentGuideDelegator {
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  assessmentGuideService.getActiveSvcCorrelation();
         List<HcsaServiceDto> specSvcDtos = appSelectSvcDto.getSpeSvcDtoList();
         List<HcsaServiceDto> baseSvcDtoList = IaisCommonUtils.genNewArrayList();
+        Set<String> allChkSvcIds = IaisCommonUtils.genNewHashSet();
         for(HcsaServiceDto hcsaServiceDto:specSvcDtos){
             List<HcsaServiceDto> baseServiceDtos = getBaseBySpc(hcsaServiceCorrelationDtoList,hcsaServiceDto.getId());
             baseSvcDtoList.addAll(baseServiceDtos);
             baseAndSpcSvcMap.put(hcsaServiceDto.getSvcCode(),baseServiceDtos);
+            allChkSvcIds.add(hcsaServiceDto.getId());
         }
         ParamUtil.setSessionAttr(bpc.request,BASEANDSPCSVCMAP, (Serializable) baseAndSpcSvcMap);
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
@@ -728,6 +745,7 @@ public class HalpAssessmentGuideDelegator {
         Map<String,List<AppAlignLicQueryDto>> svcPremises = IaisCommonUtils.genNewHashMap();
         for(HcsaServiceDto hcsaServiceDto:baseSvcDtoList){
             svcNameList.add(hcsaServiceDto.getSvcName());
+            allChkSvcIds.add(hcsaServiceDto.getId());
 //            List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
             //commPremises.put(hcsaServiceDto.getSvcName(),appAlignLicQueryDtos);
         }
@@ -736,7 +754,10 @@ public class HalpAssessmentGuideDelegator {
         if(loginContext != null){
             licenseeId = loginContext.getLicenseeId();
         }
-        List<AppAlignLicQueryDto> appAlignLicQueryDtos = assessmentGuideService.getAppAlignLicQueryDto(licenseeId,svcNameList);
+        List<String> allChkSvcIdList = transferToList(allChkSvcIds);
+        Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(allChkSvcIdList);
+        log.debug("premises Type size {}",premisesTypeList.size());
+        List<AppAlignLicQueryDto> appAlignLicQueryDtos = assessmentGuideService.getAppAlignLicQueryDto(licenseeId,svcNameList,transferToList(premisesTypeList));
         List<String> pendAndLicPremHci = assessmentGuideService.getHciFromPendAppAndLic(licenseeId,specSvcDtos);
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
@@ -1083,7 +1104,9 @@ public class HalpAssessmentGuideDelegator {
                         chkBase.add(baseId);
                     }
                     allBaseId.removeAll(chkBase);
-                    SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId);
+                    //get prem type intersection
+                    Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkBase);
+                    SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
                     //filter pending and existing data
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                     //pagination
@@ -2294,7 +2317,7 @@ public class HalpAssessmentGuideDelegator {
         return paginationHandler;
     }
 
-    private SearchResult<MenuLicenceDto> getLicPremInfo(List<String> excludeChkBase,String licenseeId){
+    private SearchResult<MenuLicenceDto> getLicPremInfo(List<String> excludeChkBase,String licenseeId,Set<String> premisesTypeList){
         if(StringUtil.isEmpty(licenseeId)){
             return null;
         }
@@ -2320,6 +2343,26 @@ public class HalpAssessmentGuideDelegator {
         }else{
             String serName = "('')";
             searchParam.addParam("serName", serName);
+        }
+        //add premType filter
+        if(!IaisCommonUtils.isEmpty(premisesTypeList)){
+            int i = 0;
+            StringBuilder premTypeItem = new StringBuilder("(");
+            for(String premisesType:premisesTypeList){
+                premTypeItem.append(":premType").append(i).append(',');
+                i++;
+            }
+            String premTypeItemStr = premTypeItem.substring(0, premTypeItem.length() - 1) + ")";
+            searchParam.addParam("premTypeList", premTypeItemStr);
+            i = 0;
+            for(String premisesType:premisesTypeList){
+                searchParam.addFilter("premType" + i, premisesType);
+                i ++;
+            }
+        }else{
+            String premType = "('')";
+            searchParam.addParam("premTypeList", premType);
+            log.debug(StringUtil.changeForLog("No intersection data ..."));
         }
         searchParam.addFilter("licenseeId",licenseeId,true);
         QueryHelp.setMainSql("interInboxQuery", "getLicenceBySerName",searchParam);
@@ -2376,5 +2419,15 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         return premisesHciList;
+    }
+
+    private List<String> transferToList(Set<String> targetSet){
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(targetSet)){
+            targetSet.forEach(val->{
+                result.add(val);
+            });
+        }
+        return result;
     }
 }

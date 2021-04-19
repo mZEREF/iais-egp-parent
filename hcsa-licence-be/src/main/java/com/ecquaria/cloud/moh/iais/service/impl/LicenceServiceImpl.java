@@ -633,7 +633,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public void sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto,  ApplicationDto applicationDto,String licenceNo,
-                                            List<String> svcCodeList)  {
+                                             List<String> svcCodeList)  {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
@@ -811,14 +811,14 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     private void sendRenewalAppApproveNotification(String applicantName,
-                                                   String applicationTypeShow,
-                                                   String applicationNo,
-                                                   String appDate,
-                                                   String licenceNo,
-                                                   List<String> svcCodeList,
-                                                   String loginUrl,
-                                                   String MohName,
-                                                   AppPremisesRecommendationDto inspectionRecommendation){
+                                               String applicationTypeShow,
+                                               String applicationNo,
+                                               String appDate,
+                                               String licenceNo,
+                                               List<String> svcCodeList,
+                                               String loginUrl,
+                                               String MohName,
+                                               AppPremisesRecommendationDto inspectionRecommendation){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);

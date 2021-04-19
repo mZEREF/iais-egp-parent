@@ -117,8 +117,11 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
-        hcsaRiskLicenceTenureSerice.saveDto(showDto);
-
+        if(hcsaRiskLicenceTenureSerice.compareVersionsForRiskLicenceTenure(showDto, hcsaRiskLicenceTenureSerice.getTenShowDto())){
+            hcsaRiskLicenceTenureSerice.saveDto(showDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

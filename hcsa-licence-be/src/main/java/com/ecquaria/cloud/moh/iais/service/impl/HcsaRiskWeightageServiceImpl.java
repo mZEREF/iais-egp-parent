@@ -215,4 +215,27 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         }
         return weightageLeastVersionList;
     }
+
+    @Override
+    public boolean compareVersionsForRiskWeightage(HcsaRiskWeightageShowDto needSaveDto, HcsaRiskWeightageShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getWeightageDtoList())){
+            return false;
+        }else {
+            if(dbSearchDto == null || IaisCommonUtils.isEmpty(dbSearchDto.getWeightageDtoList())){
+                return true;
+            }
+            List<HcsaRiskWeightageDto> weightageDtoList = needSaveDto.getWeightageDtoList();
+            List<HcsaRiskWeightageDto> weightageDtoListDb = dbSearchDto.getWeightageDtoList();
+            for(HcsaRiskWeightageDto hcsaRiskWeightageDto : weightageDtoList){
+                for(HcsaRiskWeightageDto hcsaRiskWeightageDtoDb : weightageDtoListDb){
+                    if(hcsaRiskWeightageDto.getServiceCode().equalsIgnoreCase(hcsaRiskWeightageDtoDb.getServiceCode())){
+                        if( !hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskWeightageDto.getVersion(),hcsaRiskWeightageDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

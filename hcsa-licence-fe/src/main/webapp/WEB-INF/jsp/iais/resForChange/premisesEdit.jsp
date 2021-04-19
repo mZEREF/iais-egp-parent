@@ -135,7 +135,7 @@
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-  <input type="hidden" id="eqHciNameChange" value="${eqHciCode}">
+  <input type="hidden" id="eqHciNameChange" name="eqHciNameChange" value="${eqHciCode}">
 </form>
 
 
@@ -197,7 +197,16 @@
         if($("#errorMapIs").val()=='error' ){
             $('.premisesEdit').trigger('click');
         }
-
+        if($('#eqHciNameChange').val()=='false'){
+            $("input[name='isPartEdit']").val('1');
+            $("input[name='chooseExistData']").val('1');
+            $('.premSelect').removeClass('disabled');
+            $('.premisesEdit').addClass('hidden');
+        }else  if($('#eqHciNameChange').val()=='true'){
+            $('.premisesEdit').removeClass('hidden');
+            $("input[name='isPartEdit']").val('0');
+            $("input[name='chooseExistData']").val('0');
+        }
     });
 
     function cancel(){

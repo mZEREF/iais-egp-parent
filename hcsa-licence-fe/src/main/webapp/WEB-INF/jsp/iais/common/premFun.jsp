@@ -149,6 +149,10 @@
                     var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
                     genEventHtml($premContent,$eventHtml);
                 }
+                //if Moving to new address need value from page 68859
+                $("input[name='isPartEdit']").val('1');
+                $("input[name='isEdit']").val('1');
+                $("input[name='chooseExistData']").val('0');
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -195,8 +199,12 @@
                             return;
                         }
                         if(premisesType != ''){
+
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
+                            var eqHciCode= data.eqHciCode;
+                            $("input[name='isEdit']").val('1');
+
                             //copy ph form
                             //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
@@ -377,6 +385,12 @@
                             $premContent.find('span.multi-select-button').css('border-color','#ededed');
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+                            if(eqHciCode=='true'){
+                                $('.premisesEdit').trigger('click');
+                                $("input[name='isPartEdit']").val('0');
+                                $("input[name='chooseExistData']").val('0');
+                                return;
+                            }
                         }
                     },
                     'error':function () {

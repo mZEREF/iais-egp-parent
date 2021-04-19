@@ -421,7 +421,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
                     <c:set var="weeklyList" value="${appGrpPremisesDto.weeklyDtoList}"/>
@@ -574,7 +574,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -724,7 +724,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -953,7 +953,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
 
@@ -1107,7 +1107,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1257,7 +1257,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1480,7 +1480,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
 
@@ -1634,7 +1634,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1784,7 +1784,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 

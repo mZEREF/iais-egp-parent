@@ -141,7 +141,9 @@ public class InspectorCalendarDelegator {
 		String userName = loginContext.getUserName();
 		List<WorkingGroupQueryDto> workingGroupQueryList = getWorkingGroupList(request, userId);
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-		initCurrentGroupResult(request, workingGroupQueryList, searchParam, userName);
+		if(workingGroupQueryList!=null){
+			initCurrentGroupResult(request, workingGroupQueryList, searchParam, userName);
+		}
 		SearchResult<InspectorCalendarQueryDto> calendarSearchResult = appointmentService.queryInspectorCalendar(searchParam);
 		setYearDrop(request, calendarSearchResult);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
@@ -164,9 +166,9 @@ public class InspectorCalendarDelegator {
 			searchParam.addFilter(AppointmentConstants.USER_NAME_ATTR, currentUserName, true);
 		}
 
-		String sqlStr = SqlHelper.constructInCondition("T1.GROUP_SHORT_NAME", workingGroupQueryList.size());
-		searchParam.addParam("wrkGroupList", sqlStr);
 		if( !IaisCommonUtils.isEmpty(workingGroupQueryList)){
+			String sqlStr = SqlHelper.constructInCondition("T1.GROUP_SHORT_NAME", workingGroupQueryList.size());
+			searchParam.addParam("wrkGroupList", sqlStr);
 			int indx = 0;
 			for (WorkingGroupQueryDto i : workingGroupQueryList){
 				searchParam.addFilter("T1.GROUP_SHORT_NAME"+indx, i.getGroupName());

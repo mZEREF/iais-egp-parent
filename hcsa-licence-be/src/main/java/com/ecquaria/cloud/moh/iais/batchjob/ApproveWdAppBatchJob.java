@@ -199,7 +199,6 @@ public class ApproveWdAppBatchJob {
     }
 
     private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto, Double returnFee){
-        JobLogger.log(StringUtil.changeForLog("The withdraw Application Return fee function "));
         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
         appReturnFeeDto.setStatus("paying");
         appReturnFeeDto.setTriggerCount(0);

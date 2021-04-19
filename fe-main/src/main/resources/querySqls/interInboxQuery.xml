@@ -263,6 +263,7 @@
           where T1.status in ('LICEST001')
           <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
           <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+          <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
         ]]>
     </sql>
 </sqls>

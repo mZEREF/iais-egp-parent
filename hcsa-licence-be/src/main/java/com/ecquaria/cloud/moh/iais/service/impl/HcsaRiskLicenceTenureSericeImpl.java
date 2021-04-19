@@ -248,4 +248,27 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         }
        return ltDto;
     }
+
+    @Override
+    public boolean compareVersionsForRiskLicenceTenure(LicenceTenShowDto needSaveDto, LicenceTenShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getLicenceTenureDtoList())){
+            return false;
+        }else {
+            if(dbSearchDto == null || IaisCommonUtils.isEmpty(dbSearchDto.getLicenceTenureDtoList())){
+                return true;
+            }
+            List<HcsaRiskLicenceTenureDto> licenceTenureDtoList = needSaveDto.getLicenceTenureDtoList();
+            List<HcsaRiskLicenceTenureDto> licenceTenureDtoListDb = dbSearchDto.getLicenceTenureDtoList();
+            for(HcsaRiskLicenceTenureDto hcsaRiskLicenceTenureDto : licenceTenureDtoList){
+                for(HcsaRiskLicenceTenureDto hcsaRiskLicenceTenureDtoDb : licenceTenureDtoListDb){
+                    if(hcsaRiskLicenceTenureDto.getSvcCode().equalsIgnoreCase(hcsaRiskLicenceTenureDtoDb.getSvcCode())){
+                        if(!hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskLicenceTenureDto.getVersion(),hcsaRiskLicenceTenureDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

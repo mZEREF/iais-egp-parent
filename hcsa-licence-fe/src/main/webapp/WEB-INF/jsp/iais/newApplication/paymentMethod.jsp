@@ -1,17 +1,18 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <h2>Payment Method</h2>
+<input type="hidden" name="reloadPayMethod" value="${reloadPaymentMethod}"/>
 <div class="col-xs-12">
     <div class="col-xs-3">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE002">
+        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE002">
         <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE002"/></label>
     </div>
     <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE003">
+        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
         <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-xs-3">
-            <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PMDE001">
+            <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
             <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
         </div>
     </c:if>
@@ -21,10 +22,10 @@
 <div class="col-xs-12">
     <div class="col-xs-3">
         <%--<img src="/hcsa-licence-web/img/Mastercard.svg" width="66" height="25" alt="GIRO">--%>
-        <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="GIRO">
+        <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="CARD">
         &nbsp;
         <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
-        <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="GIRO">
+        <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="CARD">
     </div>
     <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
@@ -72,5 +73,12 @@
 </div>
 
 <%--<p class="visible-xs visible-sm table-row-title">Proceed</p>--%>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        var reloadPaymentMethod = $('input[name="reloadPayMethod"]').val();
+        if(reloadPaymentMethod != null || reloadPaymentMethod != ''){
+            $('.paymentInput[value="'+reloadPaymentMethod+'"]').prop('checked',true);
+        }
+    });
+</script>
 

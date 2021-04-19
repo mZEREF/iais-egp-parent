@@ -8,7 +8,7 @@
                 <c:if test="${!empty svcSecMap.document}">incompleted </c:if>
             </c:when>
         </c:choose>" id="headingOne" role="tab">
-        <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapseOne${documentIndex}" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
+        <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapseOne${documentIndex}" aria-expanded="true" aria-controls="collapseOne" name="printControlNameForApp">Primary Documents</a></h4>
     </div>
     <div class="panel-collapse collapse " id="collapseOne${documentIndex}" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">

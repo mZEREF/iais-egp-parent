@@ -43,4 +43,7 @@ public interface LicenceClient {
 
     @PostMapping(value = "/hcsa-licence/licence-orgId-corrId/savePostInsGroupDto",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostInsGroupDto> savePostInsGroupDto(@RequestBody PostInsGroupDto postInsGroupDto);
+
+    @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
 }

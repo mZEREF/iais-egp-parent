@@ -760,7 +760,7 @@ public class RequestForInformationDelegator {
             errMap.put("licenceNo",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence No","field"));
         }else if(licCorrId==null){
             errMap.put("licenceNo","PRF_ERR006");
-        }else {
+            }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList

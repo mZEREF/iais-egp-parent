@@ -163,7 +163,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span>End</span></p>
                                         </div>
                                         <div class="col-md-3">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>All day</span></p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>24 Hours</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -456,7 +456,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span>End</span></p>
                                         </div>
                                         <div class="col-md-3">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>All day</span></p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>24 Hours</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -743,7 +743,7 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span>End</span></p>
                                         </div>
                                         <div class="col-md-3">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>All day</span></p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span>24 Hours</span></p>
                                         </div>
                                     </div>
                                 </div>

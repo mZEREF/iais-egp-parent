@@ -40,12 +40,9 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -101,8 +98,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     ApplicationClient applicationClient;
     @Autowired
-    AppPremisesCorrClient appPremisesCorrClient;
-    @Autowired
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     FileRepoClient fileRepoClient;
@@ -116,10 +111,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private LicEicClient licEicClient;
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    LicInspNcEmailService licInspNcEmailService;
-    @Autowired
-    EmailClient emailClient;
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -196,6 +187,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
             ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
+            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO,
             ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
     };

@@ -55,6 +55,7 @@ public class InspDateDraftRegularDelHandler extends IJobHandler {
 
     public void removeInspDateDraftByConfigValue (int hours){
         List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = inspectionTaskClient.getAllInspApptDrafts().getEntity();
+        Date today = new Date();
         if(!IaisCommonUtils.isEmpty(appPremInspApptDraftDtos)) {
             for(AppPremInspApptDraftDto appPremInspApptDraftDto : appPremInspApptDraftDtos) {
                 if(appPremInspApptDraftDto != null) {
@@ -62,7 +63,6 @@ public class InspDateDraftRegularDelHandler extends IJobHandler {
                         log.info(StringUtil.changeForLog("Remove InspDate Draft Application No. = " + appPremInspApptDraftDto.getApplicationNo()));
                         JobLogger.log(StringUtil.changeForLog("Remove InspDate Draft Application No. = " + appPremInspApptDraftDto.getApplicationNo()));
                         Date createDate = appPremInspApptDraftDto.getCreateTime();
-                        Date today = new Date();
                         long diffMs = today.getTime() - createDate.getTime();
                         long diffHours = diffMs / (1000 * 60 * 60);
                         long hoursLong = hours;

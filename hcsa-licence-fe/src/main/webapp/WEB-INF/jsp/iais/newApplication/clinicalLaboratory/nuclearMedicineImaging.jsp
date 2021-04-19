@@ -32,6 +32,9 @@
                   </c:when>
                 </c:choose>
               </div>
+              <p>
+                <span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span>
+              </p>
               <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
               <div class="personnel-edit">
                 <c:if test="${AppSubmissionDto.needEditController }">
@@ -280,6 +283,9 @@
       </div>
     </div>
   </div>
+</div>
+<div style="display: none;">
+  <select id="nice_select_effect"></select>
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>

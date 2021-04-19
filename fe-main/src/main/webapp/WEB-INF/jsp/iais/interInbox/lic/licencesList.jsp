@@ -9,8 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
-                            by Licence No. or Part of:</label>
+                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by Licence No.</label>
                         <div class="col-xs-9 col-md-9">
                             <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
                                    value="${param.licNoPath}">
@@ -151,17 +150,9 @@
                                         <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${licenceQuery.status == 'LICEST001' || licenceQuery.status == 'LICEST007'}">
-                                                <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
-                                                <input type="hidden" name="licenId${status.index}"
-                                                       value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <p href="#">${licenceQuery.licenceNo}</p>
-                                                <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                        <input type="hidden" name="licenId${status.index}"
+                                               value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>

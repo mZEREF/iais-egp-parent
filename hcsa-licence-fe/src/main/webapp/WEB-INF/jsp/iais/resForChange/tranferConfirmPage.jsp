@@ -17,16 +17,16 @@
       <div class="col-xs-12">
         <iais:section title="">
           <iais:row>
-            <iais:field value="Licence No."></iais:field>
+            <iais:field width="7" value="Licence No."></iais:field>
             <iais:value width="10"><p>${prepareTranfer.licenceNo}</p></iais:value>
           </iais:row>
           <iais:row>
-            <iais:field value="Service Name"></iais:field>
+            <iais:field width="7" value="Service Name"></iais:field>
             <iais:value width="10"><p>${prepareTranfer.serviceName}</p></iais:value>
           </iais:row>
           <c:if test="${prepareTranfer.groupLic}">
           <iais:row>
-            <iais:field value="Select Premises"></iais:field>
+            <iais:field width="7" value="Select Premises"></iais:field>
             <iais:value width="10">
               <p>
               <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
@@ -41,7 +41,7 @@
           </iais:row>
           </c:if>
           <iais:row>
-          <iais:field value="UEN of Licensee to transfer licence to"></iais:field>
+          <iais:field width="7" value="UEN of Licensee to transfer licence to"></iais:field>
           <iais:value width="10">
             <p>
               <input type="text" name="UEN" value="${UEN}" maxlength="10" disabled>
@@ -50,7 +50,7 @@
           </iais:value>
         </iais:row>
          <iais:row>
-            <iais:field value="Reason for licence transfer"></iais:field>
+            <iais:field width="7" value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
               <p>
                 <textarea  name="reason" maxlength="300" cols="45" >${reason}</textarea>
@@ -59,7 +59,7 @@
             </iais:value>
          </iais:row>
           <iais:row>
-            <iais:field value="Email address of transferee" mandatory="true"></iais:field>
+            <iais:field width="7" value="Email address of transferee" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
                 <input type="text" name="email" value="${email}" maxlength="66">
@@ -68,7 +68,7 @@
             </iais:value>
           </iais:row>
           <iais:row>
-            <iais:field value="Letter of Undertaking" mandatory="true"></iais:field>
+            <iais:field width="7" value="Letter of Undertaking" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
               <div class="file-upload-gp">

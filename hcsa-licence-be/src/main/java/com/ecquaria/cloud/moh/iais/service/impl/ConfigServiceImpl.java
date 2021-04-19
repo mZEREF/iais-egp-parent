@@ -102,6 +102,10 @@ public class ConfigServiceImpl implements ConfigService {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    private volatile List<HcsaServiceCategoryDto> list;
+
+    private volatile   List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -554,22 +558,22 @@ public class ConfigServiceImpl implements ConfigService {
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
         }else if(svcCode.length()>3){
-
+            errorMap.put("svcCode","Illegal operation");
         }
         if (StringUtil.isEmpty(svcName)) {
             errorMap.put("svcName", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Name","field"));
         }else  if(svcName.length()>100){
-
+            errorMap.put("svcName","Illegal operation");
         }
         if (StringUtil.isEmpty(svcDisplayDesc)) {
             errorMap.put("svcDisplayDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Display Description","field"));
         }else if(svcDisplayDesc.length()>255){
-
+            errorMap.put("svcDisplayDesc","Illegal operation");
         }
         if (StringUtil.isEmpty(svcDesc)) {
             errorMap.put("svcDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Description","field"));
         }else if(svcDesc.length()>255){
-
+            errorMap.put("svcDesc","Illegal operation");
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
@@ -725,7 +729,7 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
         }else if(numberDocument.length()>2){
-
+            errorMap.put("NumberDocument","Illegal operation");
         }else if(!numberDocument.matches("^[0-9]+$")){
             errorMap.put("NumberDocument","GENERAL_ERR0002");
         }
@@ -733,7 +737,7 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(numberfields)){
             errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
         }else if(numberfields.length()>2){
-
+            errorMap.put("Numberfields","Illegal operation");
         }else if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","GENERAL_ERR0002");
         }
@@ -747,7 +751,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("serviceDoc"+i,Name_of_Info_Field);
                 }else if(docTitle.length()>255){
-
+                    errorMap.put("serviceDoc","Illegal operation");
                 }else {
                     if(stringBuilder.toString().contains(docTitle)){
                         errorMap.put("serviceDoc"+i,"SC_ERR011");
@@ -764,7 +768,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("commonDoc"+i,Name_of_Info_Field); //NOSONAR
                 }else if(docTitle.length()>255){
-                    errorMap.put("commonDoc"+i,"SC_ERR011"); //NOSONAR
+                    errorMap.put("commonDoc","Illegal operation"); //NOSONAR
                 }else {
                     if(stringBuilder.toString().contains(docTitle)){
 
@@ -951,19 +955,25 @@ public class ConfigServiceImpl implements ConfigService {
     }
     @Override
     public List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-        for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
-            String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
-            try {
-                if (Integer.parseInt(stageOrder) % 100 != 0) {
-                    hcsaSvcRoutingStageDtos.remove(i);
-                    i--;
-                }
-            } catch (Exception e) {
+        if(this.hcsaSvcRoutingStageDtos==null){
+            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+            for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
+                String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+                try {
+                    if (Integer.parseInt(stageOrder) % 100 != 0) {
+                        hcsaSvcRoutingStageDtos.remove(i);
+                        i--;
+                    }
+                } catch (Exception e) {
 
+                }
             }
+            this.hcsaSvcRoutingStageDtos=hcsaSvcRoutingStageDtos;
+            return hcsaSvcRoutingStageDtos;
+        }else {
+            return this.hcsaSvcRoutingStageDtos;
         }
-        return hcsaSvcRoutingStageDtos;
+
     }
 
     private List<WorkingGroupDto> getWorkingGroup() {
@@ -1036,9 +1046,14 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-
-        List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-        return hcsaServiceCategoryDtos;
+        if(list==null){
+            //this config cannot change,so need init once
+            List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+            list=hcsaServiceCategoryDtos;
+            return hcsaServiceCategoryDtos;
+        }else {
+            return list;
+        }
     }
     @Override
     public Map<String,String> getMaskHcsaServiceCategory(){

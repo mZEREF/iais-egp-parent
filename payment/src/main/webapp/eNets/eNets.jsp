@@ -18,6 +18,7 @@
 <input type="hidden" id="keyId" name="keyId" value='${API_KEY}'>
 <input type="hidden" id="hmac" name="hmac" value='${newHMAC}'>
 <input type="hidden" id="failUrl" name="failUrl" value='${failUrl}'>
+<input type="hidden" id="timeoutNets" value="${timeout}"/>
 
 <div id="anotherSection">
     <fieldset>
@@ -31,8 +32,9 @@
         var txnReq = $('#txnReq').val();
         var keyId = $('#keyId').val();
         var hmac = $('#hmac').val();
+        var timeout = $('#timeoutNets').val();
         sendPayLoad(txnReq,hmac ,keyId );
-        window.setTimeout(goPyBack, 60000);
+        window.setTimeout(goPyBack, timeout);
     }
 </script>
 </body>

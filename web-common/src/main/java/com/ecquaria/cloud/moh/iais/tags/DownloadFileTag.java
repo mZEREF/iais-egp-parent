@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,13 +23,13 @@ public class DownloadFileTag extends TagSupport {
     private String fileRepoId;
     private String docName;
 
-    public DownloadFileTag() throws JspException {
+    public DownloadFileTag()  {
         super();
         init();
     }
 
     // resets local state
-    private void init() throws JspException {
+    private void init()  {
         setFileRepoIdName(null);
     }
 
@@ -38,11 +37,7 @@ public class DownloadFileTag extends TagSupport {
     @Override
     public void release() {
         super.release();
-        try {
-            init();
-        } catch (JspException e) {
-            log.info(e.getMessage(),e);
-        }
+        init();
     }
 
     @Override

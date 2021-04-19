@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 
 
 public class SystemParamUtil {
-    private SystemParamUtil(){}
 
     public static int getFileMaxLimit(){
        ApplicationContext applicationContext = SpringContextHelper.getContext();

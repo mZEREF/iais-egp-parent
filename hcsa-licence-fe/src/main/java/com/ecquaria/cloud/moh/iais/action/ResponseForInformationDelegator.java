@@ -95,6 +95,8 @@ public class ResponseForInformationDelegator {
         String licenseeId = (String) ParamUtil.getSessionAttr(request,"licenseeId");
         List<LicPremisesReqForInfoDto> reqForInfoSearchListDtos=responseForInformationService.searchLicPreRfiBylicenseeId(licenseeId);
         ParamUtil.setRequestAttr(request,"reqForInfoSearchList",reqForInfoSearchListDtos);
+        ParamUtil.setRequestAttr(request,"DashboardTitle","Adhoc Request For Information");
+
         // 		preRFI->OnStepProcess
     }
 

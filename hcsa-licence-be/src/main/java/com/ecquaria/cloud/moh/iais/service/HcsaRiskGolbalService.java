@@ -17,4 +17,5 @@ public interface HcsaRiskGolbalService {
     List<SelectOption> PreOrPostOp();
     void setGolShowDto(GobalRiskTotalDto fin, String maxLic, String doLast, String autoreop, String newinpTypeOps, String newPreOrPostOps, String renewinpTypeOps, String renewPreOrPostOps, String instartdate, String inEndDate);
     void saveDto(GolbalRiskShowDto golbalShowDto);
+    boolean compareVersionsForGolbalRisk(GolbalRiskShowDto  needSaveDto,GolbalRiskShowDto dbSearchDto);
 }

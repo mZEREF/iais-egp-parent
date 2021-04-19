@@ -286,9 +286,9 @@ public class HcsaApplicationDelegator {
     private void dealWithDoc(ApplicationViewDto applicationViewDto){
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
         if(appSupDocDtoList!=null){
-            for(AppSupDocDto v : appSupDocDtoList){
+           for(AppSupDocDto v : appSupDocDtoList){
 
-            }
+           }
         }
     }
     /**
@@ -2287,13 +2287,13 @@ public class HcsaApplicationDelegator {
         }
         //if Giro payment fail
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
-                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+            ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
         ) {
             if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
                 if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(appGroupDtoView.getPmtStatus()) ||
-                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
-                        ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
+                    ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
+                    ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
                 }
             }
@@ -2310,7 +2310,7 @@ public class HcsaApplicationDelegator {
         if (withdrawApplicationDto != null) {
             /**
              * Send Withdrawal Application Email
-             14      */
+       14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
                 boolean isCharity = false;
                 String applicantName = "";
@@ -2816,7 +2816,7 @@ public class HcsaApplicationDelegator {
                     (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_PSO.equals(roleId))
-            ) {
+                    ) {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
             subStageId = HcsaConsts.ROUTING_STAGE_POT;
