@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -100,6 +101,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private AppEicClient appEicClient;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
 
@@ -863,6 +867,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(appGroupNo+"-01").getEntity();
                 applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL);
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appSubmissionService.sendEmailForGiroFailAndSMSAndMessage(applicationGroupDto);
                 applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 //data sysn
                 try{
