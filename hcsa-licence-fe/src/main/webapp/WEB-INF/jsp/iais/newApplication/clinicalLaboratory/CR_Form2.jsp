@@ -239,7 +239,8 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
+                                                                            <div></div>
+                                                                            <div class="col-sm-5 col-md-3 col-xs-12"
                                                                                  id="salutation${suffix}">
                                                                                 <iais:select cssClass="salutationSel"
                                                                                              name="salutation"
@@ -250,7 +251,7 @@
                                                                                       name="iaisErrorMsg"
                                                                                       id="error_salutation${status.index}"></span>
                                                                             </div>
-                                                                            <div class="col-sm-3 col-md-4 col-xs-4"
+                                                                            <div class="col-sm-3 col-md-4 col-xs-12"
                                                                                  id="name${suffix}">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="66"
@@ -278,7 +279,8 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
+                                                                            <div></div>
+                                                                            <div class="col-sm-5 col-md-3 col-xs-12"
                                                                                  id="idType${suffix}">
                                                                                 <div class="">
                                                                                     <iais:select cssClass="idTypeSel"
@@ -292,7 +294,7 @@
                                                                                           id="error_idTyp${status.index}"></span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-4 col-xs-4">
+                                                                            <div class="col-sm-5 col-md-4 col-xs-12">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="9"
                                                                                                 type="text" name="idNo"
