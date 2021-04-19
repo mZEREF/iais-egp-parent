@@ -37,7 +37,7 @@
 
             <tr>
                 <td>
-                    <label class="col-xs-0 col-md-5 control-label">Name</label>
+                    <label class="col-xs-0 col-md-5 control-label">Professional Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <input type="text" name="name" value="${param.name}" maxlength="66">
                         <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
