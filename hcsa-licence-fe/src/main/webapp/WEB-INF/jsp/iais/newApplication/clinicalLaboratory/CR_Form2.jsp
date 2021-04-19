@@ -239,9 +239,9 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div></div>
                                                                             <div class="col-sm-5 col-md-3 col-xs-12"
                                                                                  id="salutation${suffix}">
+                                                                                <div>
                                                                                 <iais:select cssClass="salutationSel"
                                                                                              name="salutation"
                                                                                              codeCategory="CATE_ID_SALUTATION"
@@ -250,6 +250,7 @@
                                                                                 <span class="error-msg"
                                                                                       name="iaisErrorMsg"
                                                                                       id="error_salutation${status.index}"></span>
+                                                                                </div>
                                                                             </div>
                                                                             <div class="col-sm-3 col-md-4 col-xs-12"
                                                                                  id="name${suffix}">
