@@ -74,7 +74,7 @@
                                                     <a class="back"  id="RFC_BACK"><em class="fa fa-angle-left"></em> Back</a>
                                                 </c:if>
                                             </div>
-                                            <div class="col-xs-12 col-sm-3">
+                                            <div class="col-xs-12 col-sm-9">
                                                 <div class="button-group">
                                                     <a class="btn btn-secondary" id="rfcPrint" href="javascript:void(0);">Print</a>
                                                 </div>
