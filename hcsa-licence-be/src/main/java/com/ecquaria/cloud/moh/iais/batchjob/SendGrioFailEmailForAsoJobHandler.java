@@ -115,6 +115,10 @@ public class SendGrioFailEmailForAsoJobHandler extends IJobHandler {
             log.info(StringUtil.changeForLog("sendGrioFailEmailForAso"));
             notificationHelper.sendNotification(emailParam);
             //send sms
+            emailParam = new EmailParam();
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(applicationGroupDto.getGroupNo());
+            emailParam.setReqRefNum(applicationGroupDto.getGroupNo());
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_002_SMS);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
             emailParam.setSubject(smsSubject);

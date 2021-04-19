@@ -37,12 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -55,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -80,6 +76,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -166,7 +163,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private RequestForChangeServiceImpl requestForChangeService;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
-
+    @Autowired
+    private LicenseeService licenseeService;
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -377,9 +375,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void sendEmailForGiroAccountAndSMSAndMessage(AppSubmissionDto appSubmissionDto, String applicantName) {
+    public void sendEmailForGiroFailAndSMSAndMessage( ApplicationGroupDto applicationGroupDto) {
         try{
-            ApplicationDto applicationDto =  appSubmissionDto.getApplicationDtos().get(0);
+            log.info(StringUtil.changeForLog("---------applicationGroupDto appgroupno : " + applicationGroupDto.getGroupNo() +" sendEmailForGiroFailAndSMSAndMessage start ----------"));
+            AppSubmissionDto appSubmissionDto =appSubmissionService.getAppSubmissionDto(applicationGroupDto.getGroupNo()+"-01");
+            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+            if(IaisCommonUtils.isEmpty(applicationDtos)){
+                applicationDtos = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo()).getEntity();
+                appSubmissionDto.setApplicationDtos(applicationDtos);
+            }
+            ApplicationDto applicationDto =  applicationDtos.get(0);
             String applicationType =  MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             int index = 0;
             StringBuilder stringBuilderAPPNum = new StringBuilder();
@@ -397,18 +402,20 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
             subMap.put("ApplicationType", applicationTypeShow);
             subMap.put("ApplicationNumber", applicationNumber);
-            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,subMap);
-            String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,subMap);
-            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG,subMap);
+            String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL,subMap);
+            String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_006_SMS ,subMap);
+            String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_MSG,subMap);
             log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
             log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
             log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-            templateContent.put("ApplicantName", applicantName);
+
+            templateContent.put("ApplicantName", getApplicantName(applicationGroupDto));
             templateContent.put("ApplicationType",  applicationType);
             templateContent.put("ApplicationNumber", applicationNumber);
-            //todo need create new giro account time
-            templateContent.put("DDMMYYYY", Formatter.formatDateTime(new Date()));
+            templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+            long time = new Date().getTime() + 1000 * 60 * 60 * 24 *7L;
+            templateContent.put("monthOfGiro",Formatter.formatDateTime(new Date(time)));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
             String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
             templateContent.put("MOH_AGENCY_NAME",syName);
@@ -452,6 +459,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             log.info("send app sumbit email fail");
+        }
+    }
+
+    private String getApplicantName(ApplicationGroupDto applicationGroupDto){
+        String applicantId = applicationGroupDto.getSubmitBy();
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationGroupDto.getAppType()) ||
+                ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationGroupDto.getAppType())) {
+            String licenseeId = applicationGroupDto.getLicenseeId();
+            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+            return licenseeDto.getName() == null ? "" :licenseeDto.getName();
+        }else{
+            OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicantId).getEntity();
+           return orgUserDto.getDisplayName() == null ? "" : orgUserDto.getDisplayName();
         }
     }
 
