@@ -40,22 +40,6 @@ public class ActiveBeUserBatchJob {
     }
 
     public void jobExecute(){
-        //90 days inactive users
-        List<String> inActiveUserIds= trailClient.getLastLoginInfoAllUserBe().getEntity();
-        if(!IaisCommonUtils.isEmpty(inActiveUserIds)){
-            for (String userId:inActiveUserIds
-            ) {
-                try {
-                    OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                    if(intranetUserByUserId!=null){
-                        intranetUserByUserId.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
-                        intranetUserService.updateOrgUser(intranetUserByUserId);
-                    }
-                }catch (Exception e){
-                    log.error("not found user id {}",userId);
-                }
-            }
-        }
 
         List<OrgUserDto> orgUserDtosActive = intranetUserClient.searchActiveBeUser().getEntity();
         List<OrgUserDto> orgUserDtosInActive = intranetUserClient.searchInActiveBeUser().getEntity();
@@ -74,6 +58,23 @@ public class ActiveBeUserBatchJob {
             }
         }catch (Exception e){
             log.error(e.getMessage());
+        }
+
+        //90 days inactive users
+        List<String> inActiveUserIds= trailClient.getLastLoginInfoAllUserBe().getEntity();
+        if(!IaisCommonUtils.isEmpty(inActiveUserIds)){
+            for (String userId:inActiveUserIds
+            ) {
+                try {
+                    OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                    if(intranetUserByUserId!=null){
+                        intranetUserByUserId.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+                        intranetUserService.updateOrgUser(intranetUserByUserId);
+                    }
+                }catch (Exception e){
+                    log.error("not found user id {}",userId);
+                }
+            }
         }
 
     }
