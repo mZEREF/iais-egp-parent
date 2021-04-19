@@ -180,7 +180,7 @@
                                                                                                    data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
                                                                                                    onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><c:out value="${pool.applicationType}"/></td>
-                        <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
+                        <td><c:out value="${pool.submissionType}"/></td>
                         <td><c:out value="${pool.submitDate}"/></td>
                         <td><c:out value="${pool.paymentstatus}"/></td>
                       </tr>
@@ -283,71 +283,62 @@
     })
 
     function groupAjax(applicationGroupNo, divid) {
-        console.log("groupajax")
         dividajaxlist.push(divid);
         $.post(
             '/main-web/backend/appGroup.do',
-            {groupno: applicationGroupNo},
-            function (data, status) {
-                console.log("ajax start")
-                var serviceName = data.serviceName;
-                var res = data.ajaxResult;
-                var url = data.appNoUrl;
-                var taskList = data.taskList;
-                var hastaskList = data.hastaskList;
-                var html = '';
-                html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                    '<td colspan="6" style="padding: 0px 8px !important;">' +
-                    '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                    '<thead>' +
-                    '<tr>';
-                if (hastaskList == "true") {
-                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                }
+            {groupNo: applicationGroupNo},
+            function (data) {
+                /*var hastaskList = data.hastaskList;*/
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="6" style="padding: 0px 8px !important;">' +
+                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<thead>' +
+                        '<tr>';
+                    /*if (hastaskList == "true") {
+                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }*/
 
-                html += '<th width="15%">Application No.</th>' +
-                    '<th width="15%">Service</th>' +
-                    '<th width="15%">Licence Expiry Date</th>' +
-                    '<th width="15%">Application Status</th>' +
-                    '<th width="15%">HCI Code</th>' +
-                    '<th width="25%">HCI Name / Address</th>' +
-                    '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
-                for (var i = 0; i < res.length; i++) {
-                    var color = "black";
-                    if(res[i].hciName == null || res[i].hciName == ''){
-                        var address = res[i].address;
-                    }else{
-                        var address = res[i].hciName + ' / ' +res[i].address;
-                    }
+                    html += '<th width="15%">Application No.</th>' +
+                        '<th width="15%">Service</th>' +
+                        '<th width="15%">Licence Expiry Date</th>' +
+                        '<th width="15%">Application Status</th>' +
+                        '<th width="15%">HCI Code</th>' +
+                        '<th width="25%">HCI Name / Address</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.rowCount; i++) {
+                        html += '<tr>';
+                        let canDoTask = res.rows[i].canDoTask;
+                        if('1' == canDoTask) {
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        } else {
 
-                    html += '<tr style = "color : ' + color + ';">';
-                    if (hastaskList == "true") {
-                        html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res[i].applicationNo+'" data-taskstatus = "'+res[i].status+'" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        }
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
+                            '</tr>';
                     }
-                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + taskList[res[i].refNo] + '" class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
-                        '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
-                        '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
-                        '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
-                        '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
-                        '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
-                        '</tr>';
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
                 }
-                html += '</tbody></table></div></td></tr>';
-                console.log(dividajaxlist)
-                console.log(divid)
-                console.log("ajax end")
-                $('#advfilter' + divid).after(html);
             }
         )
     }
 
+    function doDashboardTaskOrShow() {
+        showWaiting();
+        intraDashboardSubmit('page');
+    }
+
     function getAppByGroupId(applicationGroupNo, divid) {
-        console.log("getAppByGroupId")
-        console.log(dividajaxlist)
-        console.log(divid)
         if (!isInArray(dividajaxlist,divid)) {
             groupAjax(applicationGroupNo, divid);
         } else {

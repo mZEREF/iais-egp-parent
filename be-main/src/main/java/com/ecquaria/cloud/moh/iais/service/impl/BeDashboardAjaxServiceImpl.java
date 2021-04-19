@@ -130,6 +130,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                     //set mask task Id
                     String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
                     dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
+                    dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.YES);
+                } else {
+                    dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.NO);
                 }
                 //application
                 ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashComPoolAjaxQueryDto.getApplicationNo()).getEntity();
