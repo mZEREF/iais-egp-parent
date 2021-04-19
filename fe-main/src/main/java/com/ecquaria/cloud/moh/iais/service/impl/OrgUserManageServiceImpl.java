@@ -481,7 +481,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public void receiveEntityFormEDH(FeUserDto user) {
         log.info("receiveEntityFormEDH START");
         try {
-            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+            String entityJson = licenseeClient.getEntityInfoByUEN("T18LP0001A").getEntity();
             if (StringUtil.isNotEmpty(entityJson)){
                 log.info("receiveEntityFormEDH entityJson {}", entityJson);
                 user.setAcraGetEntityJsonStr(entityJson);
