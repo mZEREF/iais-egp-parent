@@ -23,12 +23,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardSupportService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
@@ -60,6 +63,7 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -80,6 +84,9 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private BeDashboardSupportService beDashboardSupportService;
+
+    @Autowired
+    private InspectionMainAssignTaskService inspectionMainAssignTaskService;
 
     @Autowired
     private ApplicationViewMainService applicationViewService;
@@ -124,6 +131,7 @@ public class MohHcsaBeDashboardDelegator {
         ParamUtil.setSessionAttr(bpc.request, "dashActionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
     }
 
     /**
@@ -418,6 +426,86 @@ public class MohHcsaBeDashboardDelegator {
             searchParam.addFilter("hci_address", hci_address,true);
         }
         return searchParam;
+    }
+
+    /**
+     * StartStep: hcsaBeDashboardComAssign
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaBeDashboardComAssign(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardComAssign start ...."));
+        String taskId = getDashTaskIdByBpc(bpc);
+        if(!StringUtil.isEmpty(taskId)) {
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+            TaskDto taskDto = taskService.getTaskById(taskId);
+            String appCorrelationId = taskDto.getRefNo();
+            if(!StringUtil.isEmpty(appCorrelationId)){
+                ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrelationId);
+                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+                inspecTaskCreAndAssDto.setTaskId(taskId);
+                inspecTaskCreAndAssDto.setTaskDto(taskDto);
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto.isFastTracking()){
+                    inspecTaskCreAndAssDto.setFastTrackCheck(AppConsts.TRUE);
+                }
+                //set fastTrackFlag
+                inspecTaskCreAndAssDto = inspectionMainAssignTaskService.setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
+                inspecTaskCreAndAssDto = inspectionMainAssignTaskService.getInspecTaskCreAndAssDto(applicationDto, loginContext, inspecTaskCreAndAssDto);
+                //set Edit Hours Flag
+                inspecTaskCreAndAssDto = inspectionMainAssignTaskService.setEditHoursFlagByAppAndUser(inspecTaskCreAndAssDto, applicationDto);
+                ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+                ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            }
+        }
+    }
+
+    private String getDashTaskIdByBpc(BaseProcessClass bpc) {
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return taskId;
+            }
+        }
+        return taskId;
+    }
+
+    /**
+     * StartStep: hcsaBeDashboardComVali
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaBeDashboardComVali(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardComVali start ...."));
+    }
+
+    /**
+     * StartStep: hcsaBeDashboardComConfirm
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaBeDashboardComConfirm(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardComConfirm start ...."));
+    }
+
+    /**
+     * StartStep: hcsaBeDashboardComDo
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaBeDashboardComDo(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaBeDashboardComDo start ...."));
     }
 
     /**

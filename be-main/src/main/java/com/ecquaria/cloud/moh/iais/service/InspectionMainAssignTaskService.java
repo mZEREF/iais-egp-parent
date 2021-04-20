@@ -1,23 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 /**
  * @author Shicheng
  * @date 2019/11/22 10:19
  **/
 public interface InspectionMainAssignTaskService {
-
-    /**
-      * @author: shicheng
-      * @Date 2019/12/5
-      * @Param: applicationNo
-      * @return: ApplicationViewDto
-      * @Descripation: search ApplicationViewDto By Application No
-      */
-    ApplicationViewDto searchByAppNo(String applicationNo);
 
     HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId);
 
@@ -40,4 +33,31 @@ public interface InspectionMainAssignTaskService {
      * @Descripation: getAddress
      */
     String getAddress(AppGrpPremisesDto appGrpPremisesDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: inspecTaskCreAndAssDto, applicationDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: setFastTrackFlag
+      */
+    InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: getInspecTaskCreAndAssDto
+      */
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(ApplicationDto applicationDto, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: inspecTaskCreAndAssDto, applicationDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: setEditHoursFlagByAppAndUser
+      */
+    InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
 }
