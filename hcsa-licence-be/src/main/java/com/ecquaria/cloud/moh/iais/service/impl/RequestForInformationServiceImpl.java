@@ -597,6 +597,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
         String applicantName=licenseeDto.getName();
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
