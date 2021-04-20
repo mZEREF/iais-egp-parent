@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -147,10 +148,35 @@ public class GiroDeductionBeDelegator {
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
         //init loading request ==null
-        String param = (String)bpc.request.getAttribute("param");
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);;
-        if("Y".equals(param)){
-            searchParam=(SearchParam)bpc.request.getAttribute("searchParam");
+        HttpServletRequest request = determineType(bpc.request);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+        String transactionId = request.getParameter("transactionId");
+        String bankAccountNo = request.getParameter("bankAccountNo");
+        String group_no = request.getParameter("applicationNo");
+        String paymentRefNo = request.getParameter("paymentRefNo");
+        String paymentAmount = request.getParameter("paymentAmount");
+        String paymentDescription = request.getParameter("paymentDescription");
+        String hci_name = request.getParameter("hci_name");
+        if(!StringUtil.isEmpty(group_no)){
+            searchParam.addFilter("groupNo",group_no,true);
+        }
+        if(!StringUtil.isEmpty(paymentDescription)){
+            searchParam.addFilter("desc",paymentDescription,true);
+        }
+        if(!StringUtil.isEmpty(paymentAmount)){
+            searchParam.addFilter("amount",paymentAmount,true);
+        }
+        if(!StringUtil.isEmpty(bankAccountNo)){
+            searchParam.addFilter("acctNo",bankAccountNo,true);
+        }
+        if(!StringUtil.isEmpty(hci_name)){
+            searchParam.addFilter("hciName",hci_name,true);
+        }
+        if(!StringUtil.isEmpty(paymentRefNo)){
+            searchParam.addFilter("refNo",paymentRefNo,true);
+        }
+        if(!StringUtil.isEmpty(transactionId)){
+            searchParam.addFilter("invoiceNo",transactionId,true);
         }
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -166,6 +192,13 @@ public class GiroDeductionBeDelegator {
         }
     }
 
+    private HttpServletRequest determineType(HttpServletRequest request){
+        HttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        if(multipartHttpServletRequest!=null){
+            return multipartHttpServletRequest;
+        }
+        return request;
+    }
     /**
      * StartStep: beGiroDeductionStep
      *
@@ -177,30 +210,6 @@ public class GiroDeductionBeDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String beGiroDeductionType =request.getParameter("beGiroDeductionType");
         bpc.request.setAttribute("beGiroDeductionType",beGiroDeductionType);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
-        String txnRefNo = request.getParameter("txnRefNo");
-        String bankAccountNo = request.getParameter("bankAccountNo");
-        String group_no = request.getParameter("applicationNo");
-        String paymentAmount = request.getParameter("paymentAmount");
-        String hci_name = request.getParameter("hci_name");
-        if(!StringUtil.isEmpty(group_no)){
-            searchParam.addFilter("groupNo",group_no.trim(),true);
-        }
-
-        if(!StringUtil.isEmpty(paymentAmount)){
-            searchParam.addFilter("amount",paymentAmount.trim(),true);
-        }
-        if(!StringUtil.isEmpty(bankAccountNo)){
-            searchParam.addFilter("acctNo",bankAccountNo.trim(),true);
-        }
-        if(!StringUtil.isEmpty(hci_name)){
-            searchParam.addFilter("hciName",hci_name.trim(),true);
-        }
-        if(!StringUtil.isEmpty(txnRefNo)){
-            searchParam.addFilter("txnRefNo",txnRefNo.trim(),true);
-        }
-        bpc.request.setAttribute("searchParam",searchParam);
-        bpc.request.setAttribute("param","Y");
     }
 
     /**
@@ -303,6 +312,10 @@ public class GiroDeductionBeDelegator {
                 }
                 String payment_status = record.get("Payment Status");
                 payment_status = encryptionPayment(payment_status);
+                if(payment_status.equals(record.get("Payment Status"))){
+                    bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+                    return;
+                }
                 map.put(s,payment_status);
             }
         }catch (Exception e){
@@ -318,10 +331,6 @@ public class GiroDeductionBeDelegator {
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
             giroDeductionDto.setAppGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
-           /* if(v.equals(decryptPayment(v))){
-                bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
-                return;
-            }*/
             giroDeductionDtoList.add(giroDeductionDto);
         });
         if (!giroDeductionDtoList.isEmpty()){
@@ -329,7 +338,7 @@ public class GiroDeductionBeDelegator {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
-            String general_ack021 = "{num} records were updated.";
+            String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
                 general_ack021=general_ack021.replace("were","was");
@@ -369,7 +378,7 @@ public class GiroDeductionBeDelegator {
         List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);*/
+       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
         beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),

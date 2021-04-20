@@ -441,7 +441,6 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${weeklyDto.startFrom}">
                                               <c:if test="${weeklyDto.selectAllDay}">
                                               </c:if>
@@ -449,8 +448,6 @@
                                                 <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                               </c:if>
@@ -458,11 +455,10 @@
                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
 
                                         </div>
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
+
                                             <span class="newVal" attr="${weeklyDto.endTo}">
                                               <c:if test="${weeklyDto.selectAllDay}">
 
@@ -471,8 +467,6 @@
                                                 <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}">
                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
 
@@ -481,7 +475,6 @@
                                                  <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}" pattern="HH : mm"/>
                                                </c:if>
                                             </span>
-                                          </div>
                                         </div>
                                         <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
