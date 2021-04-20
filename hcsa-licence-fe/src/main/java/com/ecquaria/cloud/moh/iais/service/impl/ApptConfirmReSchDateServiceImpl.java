@@ -703,9 +703,11 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         String gatewayUrl = env.getProperty("iais.inter.gateway.url");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), String.class);
+        if(receiptEmail.size()!=0){
+            IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization(), String.class);
+        }
 
         SmsDto smsDto = new SmsDto();
         smsDto.setSender(mailSender);
@@ -713,10 +715,11 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         smsDto.setOnlyOfficeHour(false);
         smsDto.setReceipts(mobile);
         smsDto.setReqRefNum(apptViewDto.getAppId());
-
-        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), InterMessageDto.class);
+        if(mobile.size()!=0){
+            IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
+                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization(), InterMessageDto.class);
+        }
     }
 
 

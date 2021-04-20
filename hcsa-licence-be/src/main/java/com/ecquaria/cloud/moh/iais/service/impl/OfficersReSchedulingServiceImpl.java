@@ -876,7 +876,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         emailDto.setSender(this.mailSender);
         emailDto.setClientQueryCode(appNo);
         emailDto.setReqRefNum(appNo);
-        emailSmsClient.sendEmail(emailDto, null);
+        if(orgUserDto.getEmail()!=null){
+            emailSmsClient.sendEmail(emailDto, null);
+        }
 
         SmsDto smsDto = new SmsDto();
         smsDto.setSender(mailSender);
@@ -884,8 +886,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         smsDto.setOnlyOfficeHour(false);
         smsDto.setReceipts(mobile);
         smsDto.setReqRefNum(appNo);
-
-        emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
+        if(orgUserDto.getMobileNo()!=null){
+            emailHistoryCommonClient.sendSMS(mobile, smsDto, appNo);
+        }
     }
 
     @Override
