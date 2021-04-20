@@ -37,7 +37,7 @@
 
             <tr>
                 <td>
-                    <label class="col-xs-0 col-md-5 control-label">Name</label>
+                    <label class="col-xs-0 col-md-5 control-label">Professional Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <input type="text" name="name" value="${param.name}" maxlength="66">
                         <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
@@ -159,7 +159,7 @@
                                         <iais:sortableHeader style="padding-bottom:15px" needSort="false" field="index"
                                                              value="S/N"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="name"
-                                                             value="Name"></iais:sortableHeader>
+                                                             value="Professional Name"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="prof_reg_no"
                                                              value="Professional Regn. No."></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="practice_location"

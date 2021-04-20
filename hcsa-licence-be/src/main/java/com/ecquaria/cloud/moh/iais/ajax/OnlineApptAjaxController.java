@@ -284,6 +284,7 @@ public class OnlineApptAjaxController {
                     map.put("buttonFlag", AppConsts.FALSE);
                     map.put("specButtonFlag", AppConsts.TRUE);
                     map.put("inspDateList", null);
+                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                 }
             } else {
                 map.put("buttonFlag", AppConsts.FALSE);

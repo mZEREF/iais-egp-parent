@@ -34,6 +34,8 @@ public interface ApplicationViewMainService {
 
     ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
 
+    ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId,String currentRoleId);
+
     HcsaServiceDto getHcsaServiceDtoById(String id);
 
     List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList);

@@ -318,6 +318,10 @@ public class GiroDeductionBeDelegator {
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
             giroDeductionDto.setAppGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
+           /* if(v.equals(decryptPayment(v))){
+                bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+                return;
+            }*/
             giroDeductionDtoList.add(giroDeductionDto);
         });
         if (!giroDeductionDtoList.isEmpty()){

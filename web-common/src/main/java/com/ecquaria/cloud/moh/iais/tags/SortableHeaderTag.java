@@ -48,11 +48,9 @@ public class SortableHeaderTag extends DivTagSupport {
             setParam( "searchParam");
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("<th class=");
+        sb.append("<th ");
         if(needSort){
-            sb.append("\"sorting\" ");
-        }else {
-            sb.append("\"");
+            sb.append(" class=\"sorting\" ");
         }
         if(!StringUtil.isEmpty(style)){
             sb.append("style=\"").append(style).append("\" >");

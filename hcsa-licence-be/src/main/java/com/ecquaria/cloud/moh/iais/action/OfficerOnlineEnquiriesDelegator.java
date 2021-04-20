@@ -123,7 +123,8 @@ public class OfficerOnlineEnquiriesDelegator {
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
-            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
+            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
     );
 
 
@@ -719,36 +720,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 appParam.setPageNo(1);
             }
             if(status!=null){
-                switch (status){
-                    case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                        break;
-                    case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
-                        appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
-                        break;
-                    default:
-                }
+                setSearchParamAppStatus(status,appParam);
             }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -845,6 +817,42 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
         // 		doSearchLicence->OnStepProcess
+    }
+
+    private void setSearchParamAppStatus(String status,SearchParam appParam ){
+        switch (status){
+            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                break;
+            case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
+                break;
+            case ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO:
+                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT03' )");
+                break;
+            default:
+        }
     }
 
     private void setSearchParamDate(HttpServletRequest request, String uenNo, String appSubDate, String appSubToDate, String licStaDate, String licStaToDate, String licExpDate, String licExpToDate,String svcSubType, SearchParam licParam) throws ParseException {
@@ -1210,36 +1218,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters()!=null){
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
-                            switch (status){
-                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                    break;
-                                case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
-                                    break;
-                                    default:
-                            }
+                            setSearchParamAppStatus(status,appParam);
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1495,36 +1474,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters()!=null){
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
-                            switch (status){
-                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                    break;
-                                case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
-                                    break;
-                                default:
-                            }
+                            setSearchParamAppStatus(status,appParam);
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1818,36 +1768,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(parm!=null&&parm.getFilters()!=null){
                     String status= (String) parm.getFilters().get("appStatus");
                     if(status!=null){
-                        switch (status){
-                            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                break;
-                            case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
-                                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
-                                break;
-                            default:
-                        }
+                        setSearchParamAppStatus(status,appParam);
                     }
                     if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                         List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();

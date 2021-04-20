@@ -28,11 +28,9 @@ import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
 
@@ -165,7 +163,7 @@ public class FECorppassLandingDelegator {
     public void validateKeyAppointment(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
-        boolean isKeyPerson = orgUserManageService.isKeyAppointment(userSession.getUenNo());
+        boolean isKeyPerson = userSession.isKeyAppointment();
         if (isKeyPerson){
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
             ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
@@ -285,8 +283,11 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void receiveEntityFormEDH(BaseProcessClass bpc){
+        log.info("receiveEntityFormEDH Start...........");
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         orgUserManageService.receiveEntityFormEDH(userSession);
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
+        log.info("receiveEntityFormEDH END...........");
     }
 }

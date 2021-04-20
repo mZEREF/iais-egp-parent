@@ -3,7 +3,7 @@
     <sql key = "assignCommonTask" remarks = "Search Common Pool Task By Application Group">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
-            (SELECT DISTINCT T4.ID, T4.GROUP_NO, T4.PMT_STATUS, T1.ID AS APP_PREM_CORRID, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+            (SELECT T4.ID, T4.GROUP_NO, T4.PMT_STATUS, T1.ID AS APP_PREM_CORRID, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
@@ -52,8 +52,8 @@
     <sql key = "supervisorPoolSearch" remarks = "Leader Assign Task For Members">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.WRK_GRP_ID FROM
-            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
-            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
+            (SELECT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
+             T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
@@ -102,8 +102,8 @@
     <sql key = "reassignPoolSearch" remarks = "Leader Assign Task For Members">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.WRK_GRP_ID FROM
-            (SELECT DISTINCT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
-            T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
+            (SELECT T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS,
+             T3.HCI_CODE, T3.HCI_NAME, T7.USER_ID, T7.WRK_GRP_ID,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
@@ -163,7 +163,7 @@
     <sql key = "systemGroupPoolSearch" remarks = "System User Task By Group">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.APP_TYPE, T5.PMT_STATUS FROM
-            (SELECT DISTINCT T4.PMT_STATUS, T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
+            (SELECT T4.PMT_STATUS, T4.ID, T1.ID AS APP_PREM_CORR_ID, T4.GROUP_NO, T2.APPLICATION_NO, T4.APP_TYPE, T2.STATUS, T3.HCI_CODE, T3.HCI_NAME,
              CONCAT(T3.BLK_NO ,
                case T3.STREET_NAME
                   when null then null
