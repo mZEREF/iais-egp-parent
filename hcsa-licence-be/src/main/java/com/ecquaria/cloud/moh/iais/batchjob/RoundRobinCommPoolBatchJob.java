@@ -857,7 +857,7 @@ public class RoundRobinCommPoolBatchJob {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(status);
-        appPremisesRoutingHistoryDto.setActionby("49CD8912-790B-EA11-BE7D-000C29F371DC");
+        appPremisesRoutingHistoryDto.setActionby(AppConsts.USER_ID_SYSTEM);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setRoleId(roleId);

@@ -780,7 +780,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
             log.info(StringUtil.changeForLog(requestForInfList.size()+"requestForInfList size"));
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listNewApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listNewApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,true);
         //for reqeust for information
         TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
         //
@@ -1184,7 +1184,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 list.add(taskDto);
             }
             applicationDtoList.add(applicationDto);
-            TaskHistoryDto routingTaskOneUserForSubmisison = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList, entity.get(0).getStageId(), entity.get(0).getStageCode(), auditTrailDto,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+            TaskHistoryDto routingTaskOneUserForSubmisison = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList, entity.get(0).getStageId(), entity.get(0).getStageCode(), auditTrailDto,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,true);
             log.info(StringUtil.changeForLog("----"+routingTaskOneUserForSubmisison));
             if(routingTaskOneUserForSubmisison!=null&&routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos()!=null){
                 log.info(StringUtil.changeForLog("----"+JsonUtil.parseToJson(routingTaskOneUserForSubmisison)));
