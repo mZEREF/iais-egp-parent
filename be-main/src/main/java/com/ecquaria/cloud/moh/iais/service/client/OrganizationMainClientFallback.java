@@ -10,8 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 /**
  * @author Wenkang
@@ -205,6 +206,14 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
 
     @Override
     public FeignResponseEntity<Void> patchWorkingGrpForRoles(String body) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> getInspectionLead(String workGroupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
