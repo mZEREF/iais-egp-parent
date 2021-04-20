@@ -187,7 +187,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
             ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
-            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO,
             ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
     };
