@@ -30,6 +30,7 @@
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
         <c:set var="offSite" value="OFFSITE" ></c:set>
+        <c:set var="easMts" value="EASMTS" ></c:set>
         <input type="hidden" name="chooseExistData" value="0"/>
         <input type="hidden" name="isPartEdit" value="0"/>
         <input type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
@@ -136,15 +137,18 @@
                     <div class="col-xs-12">
                         <span class="premise-type ack-font-16">
                             <strong>
-                              <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="On-site: "/>
-                              </c:if>
-                              <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Conveyance: "/>
-                              </c:if>
-                              <c:if test="${'OFFSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Off-site: "/>
-                              </c:if>
+                                <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
+                                    <c:out value="On-site: "/>
+                                </c:if>
+                                <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+                                    <c:out value="Conveyance: "/>
+                                </c:if>
+                                <c:if test="${'OFFSITE' == appGrpPremisesDto.premisesType}">
+                                    <c:out value="Off-site: "/>
+                                </c:if>
+                                <c:if test="${'EASMTS' == appGrpPremisesDto.premisesType}">
+                                    <c:out value="Conveyance: "/>
+                                </c:if>
                             </strong>
                         </span>
                             <span class="premise-address ack-font-16">
@@ -165,41 +169,49 @@
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
-                    <c:forEach var="premisesType" items="${premisesType}">
+                    <c:forEach var="premType" items="${premisesType}">
                         <c:choose>
-                            <c:when test="${'ONSITE' == premisesType}">
+                            <c:when test="${'ONSITE' == premType}">
                                 <c:set var="className" value="onSite"/>
                             </c:when>
-                            <c:when test="${'CONVEYANCE' == premisesType}">
+                            <c:when test="${'CONVEYANCE' == premType}">
                                 <c:set var="className" value="conveyance" />
                             </c:when>
-                            <c:when test="${'OFFSITE' == premisesType }">
+                            <c:when test="${'OFFSITE' == premType }">
                                 <c:set var="className" value="offSite" />
+                            </c:when>
+                            <c:when test="${'EASMTS' == premType }">
+                                <c:set var="className" value="easMts" />
                             </c:when>
                         </c:choose>
                         <div class="col-xs-5"
                              <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
                              <c:if test="${'conveyance'==className}">style="width: 27%;"</c:if>
-                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if> >
+                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if>
+                             <c:if test="${'easMts'==className}">style="width: 30%;"</c:if> >
                             <div class="form-check">
-                                <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
-                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
+                                <c:if test="${appGrpPremisesDto.premisesType!=premType}">
+                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premType}" aria-invalid="false">
                                 </c:if>
-                                <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
-                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
+                                <c:if test="${appGrpPremisesDto.premisesType==premType}">
+                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premType}"  aria-invalid="false">
                                 </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
-                                    <c:if test="${premisesType == onSite}">
+                                    <c:if test="${premType == onSite}">
                                         <c:out value="On-site" /><br/>
                                         <span>(at a fixed address)</span>
                                     </c:if>
-                                    <c:if test="${premisesType == conv}">
+                                    <c:if test="${premType == conv}">
                                         <c:out value="Conveyance" /><br/>
                                         <span>(in a mobile clinic / ambulance)</span>
                                     </c:if>
-                                    <c:if test="${premisesType == offSite}">
+                                    <c:if test="${premType == offSite}">
                                         <c:out value="Off-site" /><br/>
                                         <span>(as tele-medicine)</span>
+                                    </c:if>
+                                    <c:if test="${premType == easMts}">
+                                        <c:out value="Conveyance" /><br/>
+                                        <span>(in a mobile clinic / ambulance)</span>
                                     </c:if>
                                 </label>
                             </div>
@@ -247,6 +259,19 @@
                             </c:when>
                             <c:otherwise>
                                 <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" needSort="false"  value=""></iais:select>
+                            </c:otherwise>
+                        </c:choose>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="easMtsSelect hidden">
+                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
+                        <c:choose>
+                            <c:when test="${appGrpPremisesDto.premisesType == easMts}">
+                                <iais:select cssClass="premSelect" id="easMtsSel" name="easMtsSelect"  options="easMtsPremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:select cssClass="premSelect" id="easMtsSel" name="easMtsSelect"  options="easMtsPremSel" needSort="false"  value=""></iais:select>
                             </c:otherwise>
                         </c:choose>
                     </iais:value>
@@ -392,13 +417,13 @@
                     <iais:row cssClass="other-lic-content">
                         <iais:field value="Are you co-locating with another licensee? " mandatory="true" width="12" style="width:34%;"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
-                            <input type="hidden" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
+                            <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
                             <div class="form-check col-sm-3">
-                                <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
+                                <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                             </div>
                             <div class="form-check col-sm-3">
-                                <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
+                                <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
                             <div class="col-sm-12">
@@ -1889,7 +1914,159 @@
 
                 </div>
             </div>
+            <c:set var="easOrMts" value="true" />
+            <!--todo: -->
+            <%--<c:forEach var="service" items="${hcsaServiceDtoList}">
+                <c:if test="${'true' == easOrMts && 'EAS' != service.svcCode && 'MTS' != service.svcCode}">
+                    <c:set var="easOrMts" value="false" />
+                </c:if>
+            </c:forEach>--%>
+            <c:if test="${'true' == easOrMts}">
+                <div class="new-premise-form-eas-mts hidden">
+                    <div class="form-horizontal">
+                        <iais:row>
+                            <iais:field value="Name of HCI " mandatory="true" width="11"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input cssClass="hciName" maxLength="100" type="text" name="easMtsHciName" value="${appGrpPremisesDto.easMtsHciName}"></iais:input>
+                                <span  class="error-msg"  name="iaisErrorMsg" id="error_easMtsHciName${status.index}"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row cssClass="postalCodeDiv">
+                            <iais:field value="Postal Code " mandatory="true" width="12"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input maxLength="6" cssClass="postalCode" type="text" name="easMtsPostalCode"  value="${appGrpPremisesDto.easMtsPostalCode}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPostalCode${status.index}"></span>
+                            </iais:value>
+                            <div class="col-xs-7 col-sm-6 col-md-3">
+                                <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>" id="easMts">Retrieve your address</a></p>
+                            </div>
 
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Address Type " mandatory="true" width="12"/>
+                            <iais:value id="easMtsAddrType${premValue}" width="11" cssClass="col-md-5">
+                                <iais:select name="easMtsAddrType" cssClass="easMtsAddressType" id="easMtsAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.easMtsAddressType}"></iais:select>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsAddressType${status.index}"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Block / House No." width="12"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input maxLength="10" cssClass="easMtsBlkNo" type="text" name="easMtsBlkNo" id="easMtsBlkNo" value="${appGrpPremisesDto.easMtsBlockNo}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBlockNo${status.index}"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Floor / Unit No." width="12"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                <div class="row">
+                                    <iais:value cssClass="col-xs-12 col-md-5 ">
+                                        <iais:input maxLength="3" type="text" name="easMtsFloorNo" id="easMtsFloorNo" value="${appGrpPremisesDto.easMtsFloorNo}"></iais:input>
+                                        <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsFloorNo${status.index}"></span>
+                                    </iais:value>
+                                    <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                    <iais:value cssClass="col-xs-12 col-md-5 ">
+                                        <iais:input maxLength="5" type="text" name="easMtsUnitNo"  value="${appGrpPremisesDto.easMtsUnitNo}"></iais:input>
+                                        <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsUnitNo${status.index}"></span>
+                                    </iais:value>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                        <div class="operationDivGroup">
+                            <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                                <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                                    <div class="operationDiv">
+                                        <iais:row>
+                                            <iais:field value="" width="12"/>
+                                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                                <div class="row">
+                                                    <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                        <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}easMtsFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
+                                                    </iais:value>
+                                                    <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                                    <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                        <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}easMtsUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                                    </iais:value>
+                                                </div>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                            </iais:value>
+                                            <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                                <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                            </div>
+                                            <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                                <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                            </div>
+                                        </iais:row>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
+                            <!--prem operational -->
+                            <iais:row cssClass="addOpDiv">
+                                <iais:field value="" width="12"/>
+                                <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                    <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                                </iais:value>
+                            </iais:row>
+                        </div>
+                        <iais:row>
+                            <iais:field value="Street Name " mandatory="true" width="10"/>
+                            <iais:value width="10" cssClass="col-xs-7 col-sm-7 col-md-7 ">
+                                <iais:input maxLength="32" cssClass="easMtsStreetName" type="text" name="easMtsStreetName"  value="${appGrpPremisesDto.easMtsStreetName}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsStreetName${status.index}"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Building Name " width="12"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input maxLength="66" cssClass="easMtsBuildingName" type="text" name="easMtsBuildingName" id="easMtsBuildingName" value="${appGrpPremisesDto.easMtsBuildingName}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBuildingName${status.index}"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="For public/in-house use only? " mandatory="true" width="12"/>
+                            <iais:value width="11" cssClass="col-md-7" style="margin-left:-1%;">
+                                <input type="hidden" name="easMtsUseOnlyVal" value="${appGrpPremisesDto.easMtsUseOnly}"/>
+                                <div class="form-check col-sm-4">
+                                    <input <c:if test="${'UOT001'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT001" aria-invalid="false">
+                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                                </div>
+                                <div class="form-check col-sm-6">
+                                    <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT001" aria-invalid="false">
+                                    <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Public email " mandatory="true" width="12"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Public Hotline " mandatory="true" width="12"/>
+                            <iais:value width="11" cssClass="col-md-5">
+                                <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"></iais:input>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row cssClass="other-lic-content co-location-div">
+                            <iais:field value="Are you co-locating with another licensee? " mandatory="true" width="12" style="width:34%;"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
+                                <input type="hidden" class="co-location-val" name="easMtsCoLocationVal" value="${appGrpPremisesDto.easMtsCoLocation}"/>
+                                <div class="form-check col-sm-3">
+                                    <input <c:if test="${'1'==appGrpPremisesDto.easMtsCoLocation}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="easMtsCoLocation${status.index}" value = "1" aria-invalid="false">
+                                    <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+                                </div>
+                                <div class="form-check col-sm-3">
+                                    <input <c:if test="${'0'==appGrpPremisesDto.easMtsCoLocation}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="easMtsCoLocation${status.index}" value = "0" aria-invalid="false">
+                                    <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
 </c:forEach>

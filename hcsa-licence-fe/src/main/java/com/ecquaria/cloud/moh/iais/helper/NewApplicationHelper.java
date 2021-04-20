@@ -1744,6 +1744,8 @@ public class NewApplicationHelper {
         List<SelectOption> premisesSelect = getPremisesSel(appType);
         List<SelectOption> conveyancePremSel = getPremisesSel(appType);
         List<SelectOption> offSitePremSel = getPremisesSel(appType);
+        List<SelectOption> easAndMtsPremSel = getPremisesSel(appType);
+
         List<SelectOption> existingOnsitePrem = IaisCommonUtils.genNewArrayList();
         List<SelectOption> existingConvPrem = IaisCommonUtils.genNewArrayList();
         List<SelectOption> existingOffsitePrem = IaisCommonUtils.genNewArrayList();
@@ -1769,6 +1771,7 @@ public class NewApplicationHelper {
         ParamUtil.setSessionAttr(request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(request, "conveyancePremSel", (Serializable) conveyancePremSel);
         ParamUtil.setSessionAttr(request, "offSitePremSel", (Serializable) offSitePremSel);
+        ParamUtil.setSessionAttr(request,"easMtsPremSel", (Serializable) easAndMtsPremSel);
     }
 
     public static void doSortSelOption(List<SelectOption> selectOptions){
@@ -2890,6 +2893,19 @@ public class NewApplicationHelper {
         return errMap;
     }
 
+    public static boolean isMultiPremService(List<HcsaServiceDto> hcsaServiceDtos){
+        boolean flag = true;
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                String svcCode = hcsaServiceDto.getSvcCode();
+                if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)){
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
 
     //=============================================================================
     //private method

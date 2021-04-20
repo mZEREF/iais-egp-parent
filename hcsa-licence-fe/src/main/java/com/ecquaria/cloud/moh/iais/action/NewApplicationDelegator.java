@@ -374,8 +374,8 @@ public class NewApplicationDelegator {
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
                 //remove premise info when pending premises hci same
-                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-                List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtos);
+//                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+                List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtoList);
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
 
                 } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
@@ -533,6 +533,8 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"phCount",systemParamConfig.getPhCount());
         ParamUtil.setRequestAttr(bpc.request,"eventCount",systemParamConfig.getEventCount());
         ParamUtil.setRequestAttr(bpc.request,"postalCodeAckMsg",MessageUtil.getMessageDesc("NEW_ACK016"));
+        //single premises service
+        ParamUtil.setRequestAttr(bpc.request,"isMultiPremService",NewApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
         //
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||
@@ -3559,11 +3561,16 @@ public class NewApplicationDelegator {
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         Object requestInformationConfig = ParamUtil.getSessionAttr(request, REQUESTINFORMATIONCONFIG);
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
+        boolean isMultiPremService = NewApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         int count = 0;
         String[] premisesType = ParamUtil.getStrings(request, "premType");
         String[] hciName = ParamUtil.getStrings(request, "onSiteHciName");
         if (premisesType != null) {
             count = premisesType.length;
+        }
+        if(!isMultiPremService){
+            count = 1;
         }
         String[] premisesIndexNo = ParamUtil.getStrings(request, "premisesIndexNo");
         String[] rfiCanEdit = ParamUtil.getStrings(request,"rfiCanEdit");
@@ -4053,6 +4060,122 @@ public class NewApplicationDelegator {
                         appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType[i])){
+                String easMtsHciName = ParamUtil.getString(request, "easMtsHciName");
+                String easMtsPremisesSelect = ParamUtil.getString(request, "easMtsSelect");
+                String easMtsPostalCode = ParamUtil.getString(request, "easMtsPostalCode");
+                String easMtsBlkNo = ParamUtil.getString(request, "easMtsBlkNo");
+                String easMtsStreetName = ParamUtil.getString(request, "easMtsStreetName");
+                String easMtsFloorNo = ParamUtil.getString(request, "easMtsFloorNo");
+                String easMtsUnitNo = ParamUtil.getString(request, "easMtsUnitNo");
+                String easMtsBuildingName = ParamUtil.getString(request, "easMtsBuildingName");
+                String easMtsAddressType = ParamUtil.getString(request, "easMtsAddrType");
+                String easMtsUseOnly = ParamUtil.getString(request, "easMtsUseOnlyVal");
+                String easMtsPubEmail = ParamUtil.getString(request, "easMtsPubEmail");
+                String easMtsPubHotline = ParamUtil.getString(request, "easMtsPubHotline");
+                String easMtsCoLocation = ParamUtil.getString(request, "easMtsCoLocationVal");
+                appGrpPremisesDto.setEasMtsHciName(easMtsHciName);
+                appGrpPremisesDto.setPremisesSelect(easMtsPremisesSelect);
+                appGrpPremisesDto.setEasMtsPostalCode(easMtsPostalCode);
+                appGrpPremisesDto.setEasMtsAddressType(easMtsAddressType);
+                appGrpPremisesDto.setEasMtsBlockNo(easMtsBlkNo);
+                appGrpPremisesDto.setEasMtsFloorNo(easMtsFloorNo);
+                appGrpPremisesDto.setEasMtsUnitNo(easMtsUnitNo);
+                appGrpPremisesDto.setEasMtsStreetName(easMtsStreetName);
+                appGrpPremisesDto.setEasMtsBuildingName(easMtsBuildingName);
+                appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
+                appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
+                appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
+                appGrpPremisesDto.setEasMtsCoLocation(easMtsCoLocation);
+
+                //weekly
+                String premVal = premValue[i];
+                for(int j = 0;j<weeklyLength;j++){
+                    OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
+                    String[] weeklyVal = ParamUtil.getStrings(request,genPageName(premVal,"easMtsWeekly",j));
+                    String allDay = ParamUtil.getString(request,genPageName(premVal,"easMtsWeeklyAllDay",j));
+                    //reload
+                    String weeklySelect = ParamUtil.StringsToString(weeklyVal);
+                    weeklyDto.setSelectVal(weeklySelect);
+                    if(weeklyVal != null){
+                        List<String> selectValList = Arrays.asList(weeklyVal);
+                        weeklyDto.setSelectValList(selectValList);
+                    }
+                    if(AppConsts.TRUE.equals(allDay)){
+                        weeklyDto.setSelectAllDay(true);
+                    }else{
+                        String weeklyStartHH = ParamUtil.getString(request,genPageName(premVal,"easMtsWeeklyStartHH",j));
+                        String weeklyStartMM = ParamUtil.getString(request,genPageName(premVal,"easMtsWeeklyStartMM",j));
+                        String weeklyEndHH = ParamUtil.getString(request,genPageName(premVal,"easMtsWeeklyEndHH",j));
+                        String weeklyEndMM = ParamUtil.getString(request,genPageName(premVal,"easMtsWeeklyEndMM",j));
+                        weeklyDto.setStartFromHH(weeklyStartHH);
+                        weeklyDto.setStartFromMM(weeklyStartMM);
+                        weeklyDto.setEndToHH(weeklyEndHH);
+                        weeklyDto.setEndToMM(weeklyEndMM);
+                    }
+                    weeklyDtoList.add(weeklyDto);
+                }
+                //ph
+                for(int j = 0;j < phLength;j++){
+                    OperationHoursReloadDto phDto = new OperationHoursReloadDto();
+                    String[] phVal = ParamUtil.getStrings(request,genPageName(premVal,"easMtsPubHoliday",j));
+                    String allDay = ParamUtil.getString(request,genPageName(premVal,"easMtsPhAllDay",j));
+                    //reload
+                    String phSelect = ParamUtil.StringsToString(phVal);
+                    phDto.setSelectVal(phSelect);
+                    if(phSelect != null){
+                        List<String> selectValList = Arrays.asList(phVal);
+                        phDto.setSelectValList(selectValList);
+                    }
+                    if(AppConsts.TRUE.equals(allDay)){
+                        phDto.setSelectAllDay(true);
+                        phDtoList.add(phDto);
+                    }else{
+                        String phStartHH = ParamUtil.getString(request,genPageName(premVal,"easMtsPhStartHH",j));
+                        String phStartMM = ParamUtil.getString(request,genPageName(premVal,"easMtsPhStartMM",j));
+                        String phEndHH = ParamUtil.getString(request,genPageName(premVal,"easMtsPhEndHH",j));
+                        String phEndMM = ParamUtil.getString(request,genPageName(premVal,"easMtsPhEndMM",j));
+                        phDto.setStartFromHH(phStartHH);
+                        phDto.setStartFromMM(phStartMM);
+                        phDto.setEndToHH(phEndHH);
+                        phDto.setEndToMM(phEndMM);
+                        if(phLength >1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(phStartMM) || !StringUtil.isEmpty(phEndHH)|| !StringUtil.isEmpty(phEndMM)){
+                            phDtoList.add(phDto);
+                        }
+                    }
+
+                }
+                //event
+                for(int j = 0;j < eventLength;j++){
+                    AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
+                    String eventName = ParamUtil.getString(request,genPageName(premVal,"easMtsEvent",j));
+                    String eventStartStr = ParamUtil.getString(request,genPageName(premVal,"easMtsEventStart",j));
+                    Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
+                    String eventEndStr = ParamUtil.getString(request,genPageName(premVal,"easMtsEventEnd",j));
+                    Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
+                    appPremEventPeriodDto.setEventName(eventName);
+                    appPremEventPeriodDto.setStartDate(eventStart);
+                    appPremEventPeriodDto.setStartDateStr(eventStartStr);
+                    appPremEventPeriodDto.setEndDate(eventEnd);
+                    appPremEventPeriodDto.setEndDateStr(eventEndStr);
+                    if(eventLength >1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(eventEndStr)){
+                        eventList.add(appPremEventPeriodDto);
+                    }
+                }
+                if(opLength > 0){
+                    for(int j=0;j<opLength;j++){
+                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+                        String opFloorNoName = premValue[i] + "easMtsFloorNo" + j;
+                        String opUnitNoName = premValue[i] + "easMtsUnitNo" + j;
+
+                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        operationalUnitDto.setFloorNo(opFloorNo);
+                        operationalUnitDto.setUnitNo(opUnitNo);
+                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
+                    }
+                }
+
             }
             //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);

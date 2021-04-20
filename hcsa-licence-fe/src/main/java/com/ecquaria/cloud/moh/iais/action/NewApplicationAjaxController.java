@@ -1028,6 +1028,8 @@ public class NewApplicationAjaxController {
             premTypeStr = "conveyance";
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
             premTypeStr = "offSite";
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)){
+            premTypeStr = "easMts";
         }
         String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
         sql = sql.replace("${premType}", premTypeStr);

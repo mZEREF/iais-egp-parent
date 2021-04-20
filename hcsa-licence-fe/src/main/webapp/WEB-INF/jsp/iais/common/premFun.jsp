@@ -10,9 +10,11 @@
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
+                $premSelect.find('.easMtsSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-eas-mts').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
 
@@ -22,9 +24,11 @@
                 $premSelect.find('.conveyanceSelect').removeClass('hidden');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
+                $premSelect.find('.easMtsSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-eas-mts').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
             }else if('OFFSITE' == checkedType){
@@ -32,12 +36,27 @@
                 $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
+                $premSelect.find('.easMtsSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').removeClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-eas-mts').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
+
+            }else if('EASMTS' == checkedType){
+                $premSelect.find('.premisesIndexNo').val('');
+                $premSelect.find('.onSiteSelect').addClass('hidden');
+                $premSelect.find('.conveyanceSelect').addClass('hidden');
+                $premSelect.find('.offSiteSelect').addClass('hidden');
+                $premSelect.find('.easMtsSelect').removeClass('hidden');
+                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-eas-mts').addClass('hidden');
+
+                $premSelctDivEle.find('.premTypeValue').val(checkedType);
 
             }
 
@@ -91,6 +110,8 @@
                 premDivName = 'new-premise-form-conv';
             }else if ('offSiteSel' == thisId){
                 premDivName = 'new-premise-form-off-site';
+            }else if('easMtsSel' == thisId){
+                premDivName = 'new-premise-form-eas-mts';
             }
             // initPhForm(premDivName,$premContent);
             if("newPremise" == premSelectVal){
@@ -100,6 +121,7 @@
                     $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-eas-mts').addClass('hidden');
                     var data = {};
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
@@ -118,6 +140,7 @@
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-eas-mts').addClass('hidden');
                     var data = {};
                     fillForm('conveyance',data,$premContent);
                     setAddress('conveyance',data,$premContent);
@@ -134,6 +157,7 @@
                 }else if('offSiteSel' == thisId){
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-eas-mts').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').removeClass('hidden');
                     var data = {};
                     fillForm('offSite',data,$premContent);
@@ -148,6 +172,14 @@
                     //gen event html
                     var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
                     genEventHtml($premContent,$eventHtml);
+                }else if('easMtsSel' == thisId){
+                    $premContent.find('.new-premise-form-conv').addClass('hidden');
+                    $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-eas-mts').removeClass('hidden');
+                    var data = {};
+                    fillForm('easMtsSel',data,$premContent);
+                    setAddress('easMtsSel',data,$premContent);
                 }
                 //if Moving to new address need value from page 68859
                 $("input[name='isPartEdit']").val('1');
@@ -160,9 +192,11 @@
                 fillForm('onSite',data,$premContent);
                 fillForm('conveyance',data,$premContent);
                 fillForm('offSite',data,$premContent);
+                fillForm('easMtsSel',data,$premContent);
                 setAddress('onSite',data,$premContent);
                 setAddress('conveyance',data,$premContent);
                 setAddress('offSite',data,$premContent);
+                setAddress('easMtsSel',data,$premContent);
             }else{
                 <!--choose already exist premises -->
                 var premisesType = '';
@@ -419,6 +453,8 @@
                 prefixName = 'site';
             }else if("offSite" == thisId){
                 prefixName = 'offSite';
+            }else if('easMts' == thisId){
+                prefixName = 'easMts';
             }
             showWaiting();
             $.ajax({
@@ -494,7 +530,7 @@
                 retrieveAddr();
                 $('.addPubHolDay').unbind('click');
                 removePH();
-                otherLic();
+                coLocation();
                 cl();
                 preperChange();
                 addOperational();
@@ -603,11 +639,12 @@
         });
     }
 
-    var otherLic = function () {
-        $('.other-lic').click(function () {
+    var coLocation = function () {
+        $('.co-location').unbind('click');
+        $('.co-location').click(function () {
             var val = $(this).val();
-            var $otherLicEle = $(this).closest('div.other-lic-content');
-            $otherLicEle.find('input[name="onSiteIsOtherLic"]').val(val);
+            var $coLocationEle = $(this).closest('div.co-location-div');
+            $coLocationEle.find('input.co-location-val').val(val);
         });
 
     }
@@ -734,6 +771,8 @@
             $AddrEle.find('select[name="offSiteAddressType"]').val(addrVal);
             var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
             $AddrEle.find('select[name="offSiteAddrType"]').next().find('.current').html(addressVal);
+        }else if('easMtsSel' == premisesType){
+            //todo
         }
     }
 
@@ -900,7 +939,31 @@
             $premSelect.find('select[name="'+premisesType+'EndMM"]').val(endMMVal);
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
+        }else if('easMtsSel' == premisesType){
+            $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.easMtsHciName);
+            $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.easMtsBlockNo);
+            $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.easMtsPostalCode);
+            $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.easMtsFloorNo);
+            $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.easMtsUnitNo);
+            $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.easMtsBuildingName);
+            $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.easMtsStreetName);
+            $premSelect.find('input[name="'+premisesType+'easMtsBuildingName"]').val(data.easMtsBuildingName);
+            $premSelect.find('input[name="'+premisesType+'easMtsPubEmail"]').val(data.easMtsPubEmail);
+            $premSelect.find('input[name="'+premisesType+'easMtsPubHotline"]').val(data.easMtsPubHotline);
+
+            //co-location
+
+            //use type
+
         }
+    }
+
+    var useType = function () {
+        $('.useType').unbind('click')
+        $('.useType').click(function () {
+            var thisVal = $(this).val();
+            $(this).closest('div.premContent').find('input[name="easMtsUseOnlyVal"]').val(thisVal);
+        });
     }
 
     var fillPhForm = function (premisesType,phList,$Ele) {
@@ -935,6 +998,8 @@
                 $premCountEle.find('.offSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-conv').addClass('hidden');
                 $premCountEle.find('.new-premise-form-off-site').addClass('hidden');
+                $premCountEle.find('.easMtsSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-eas-mts').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.onSiteSelect .premSelect').val();
                 if(premSelValue == "newPremise"){
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
@@ -978,6 +1043,8 @@
                 $premCountEle.find('.offSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
                 $premCountEle.find('.new-premise-form-off-site').addClass('hidden');
+                $premCountEle.find('.easMtsSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-eas-mts').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.conveyanceSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
@@ -1021,6 +1088,8 @@
                 $premCountEle.find('.offSiteSelect').removeClass('hidden');
                 $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
                 $premCountEle.find('.new-premise-form-conv').addClass('hidden');
+                $premCountEle.find('.easMtsSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-eas-mts').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.offSiteSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-off-site').removeClass('hidden');
@@ -1036,6 +1105,52 @@
                     $premCountEle.find('.new-premise-form-off-site').removeClass('hidden');
                     <!--disable this form -->
                     var $premFormConveyance = $premCountEle.find('div.new-premise-form-off-site');
+                    readonlyPartPage($premFormConveyance);
+                    <!--hidden btn -->
+                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
+                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
+                    $premCountEle.find('.removePhBtn').addClass('hidden');
+                    $premCountEle.find('.addOperational').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.opDel').addClass('hidden');
+                    $premCountEle.find('.addWeeklyDiv').addClass('hidden');
+                    $premCountEle.find('.addPhDiv').addClass('hidden');
+                    $premCountEle.find('.addEventDiv').addClass('hidden');
+                    $premCountEle.find('input.allDay').attr('disabled',true);
+                    $premCountEle.find('.weeklyDel').addClass('hidden');
+                    $premCountEle.find('.pubHolidayDel').addClass('hidden');
+                    $premCountEle.find('.eventDel').addClass('hidden');
+                    $premCountEle.find('.date_picker').attr('disabled',true);
+                    //add placeHolder disabled style
+                    $premCountEle.find('.date_picker').addClass('disabled-placeHolder');
+                    $premCountEle.find('span.multi-select-button').css('border-color','#ededed');
+                    $premCountEle.find('span.multi-select-button').css('color','#999');
+                    $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+                }
+
+            }else if('EASMTS' == checkedType){
+                $premCountEle.find('.conveyanceSelect').addClass('hidden');
+                $premCountEle.find('.onSiteSelect').addClass('hidden');
+                $premCountEle.find('.offSiteSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
+                $premCountEle.find('.new-premise-form-conv').addClass('hidden');
+                $premCountEle.find('.easMtsSelect').removeClass('hidden');
+                $premCountEle.find('.new-premise-form-eas-mts').addClass('hidden');
+                var premSelValue =  $premCountEle.find('.easMtsSelect .premSelect').val();
+                if(premSelValue =="newPremise"){
+                    $premCountEle.find('.new-premise-form-eas-mts').removeClass('hidden');
+                    $premCountEle.find('a.retrieveAddr').removeClass('hidden');
+                    if('1' == retrieveFlag){
+                        $premCountEle.find('input[name="easMtsBlkNo"]').prop('readonly',true);
+                        $premCountEle.find('input[name="easMtsStreetName"]').prop('readonly',true);
+                        $premCountEle.find('input[name="easMtsBuildingName"]').prop('readonly',true);
+                    }
+                }else if(premSelValue == "-1"){
+
+                }else{
+                    $premCountEle.find('.new-premise-form-eas-mts').removeClass('hidden');
+                    <!--disable this form -->
+                    var $premFormConveyance = $premCountEle.find('div.new-premise-form-eas-mts');
                     readonlyPartPage($premFormConveyance);
                     <!--hidden btn -->
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
@@ -1234,6 +1349,8 @@
                 premTypeVal = 'conveyance';
             }else if('OFFSITE' == premType){
                 premTypeVal = 'offSite';
+            }else if('EASMTS' == premType){
+                premTypeVal = 'easMts';
             }
             $operationDivGroup.find('div.operationDiv').each(function (k,v) {
                 $(this).find('input.floorNo').attr("name",premValue+premTypeVal+'FloorNo'+k);

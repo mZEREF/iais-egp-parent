@@ -65,7 +65,7 @@
                 <div class="row">
                   <div class="col-xs-12" id="addPremBody" hidden>
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly}">
+                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly && isMultiPremService}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -187,7 +187,7 @@
 
         doEdit();
 
-        otherLic();
+        coLocation();
 
         addPubHolDayHtml();
 
@@ -208,6 +208,8 @@
         removeEvent();
 
         clickAllDay();
+
+        useType();
 
         //Binding method
         $('#Back').click(function(){
