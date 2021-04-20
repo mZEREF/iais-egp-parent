@@ -937,6 +937,20 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         log.info(StringUtil.changeForLog(submissionId));
+        //if Giro payment fail
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+        ) {
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(applicationGroupDto.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(applicationGroupDto.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(applicationGroupDto.getPmtStatus())) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
+                }
+            }
+        }
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
