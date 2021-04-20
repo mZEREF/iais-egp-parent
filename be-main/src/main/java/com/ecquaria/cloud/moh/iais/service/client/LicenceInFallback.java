@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +14,6 @@ import java.util.List;
 
 @Component
 public class LicenceInFallback implements LicenceClient {
-
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicenceByAppId(String appId) {
@@ -71,6 +71,14 @@ public class LicenceInFallback implements LicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<LicPremisesAuditDto> getLicPremisesAuditDtoByLicIdAndHCICode(String licId, String HCICode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
     @Override
     public FeignResponseEntity<PostInsGroupDto> getPostInsGroupDto(String licId, String corrId) {
@@ -90,6 +98,14 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicDtoById(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicenceDto> getLicenceDtoById(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
