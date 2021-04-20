@@ -1,5 +1,5 @@
 // List of email recipients.
-EMAILS_TO_NOTIFY = 'tanweijie@toppanecquaria.com, zamri@toppanecquaria.com'
+EMAILS_TO_NOTIFY = 'zamri@toppanecquaria.com'
 
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // DOCKER_TLS_CREDENTIALS_ID =
@@ -54,7 +54,7 @@ GITLAB_URLS = [:]
 GITLAB_URLS['iais-egp'] = 'http://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais-gdc/iais-egp.git'
 GITLAB_URLS['iais-qa'] = 'http://${GIT_USERNAME}:${GIT_PASSWORD}@hub.ecquaria.com/gitlab/moh-iais-gdc/iais-qa.git'
 
-MAVEN_LOCAL_REPO = '/var/jenkins_home/.m2_for_moh_iais'
+MAVEN_LOCAL_REPO = '/var/jenkins_home/.m2_for_moh_iais_egp_mock_gdc'
 
 // will be populated from the transfer bundle
 TAG_TO_BUILD = ''
@@ -347,7 +347,7 @@ def updateMavenDependencies(){
             cd
             if [[ -f ${m2_tar} ]]; then
                 cd ${MAVEN_LOCAL_REPO}
-                tar -xf ${m2_tar} --strip=3
+                tar -xf ${m2_tar} --strip=7
             fi
         """
     }
