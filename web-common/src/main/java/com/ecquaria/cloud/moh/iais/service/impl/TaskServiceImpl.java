@@ -182,7 +182,6 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
-
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
         return taskOrganizationClient.getUsersByWorkGroupName(workGroupId,status).getEntity();
@@ -198,9 +197,12 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
     }
 
-
     @Override
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId) throws FeignException {
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId) throws FeignException{
+        return getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto,createHistoryRoleId,false);
+    }
+    @Override
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,boolean isFEActionBy) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
         log.info(StringUtil.changeForLog("---------------"+ JsonUtil.parseToJson(applicationDtos) +"--------"+stageId));
         TaskHistoryDto result = new TaskHistoryDto();
@@ -280,7 +282,7 @@ public class TaskServiceImpl implements TaskService {
                             log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationDto.getId()));
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                                     createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
-                                            stageId,null,createHistoryRoleId,auditTrailDto);
+                                            stageId,null,createHistoryRoleId,auditTrailDto,isFEActionBy);
                             appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                         }
@@ -608,15 +610,26 @@ public class TaskServiceImpl implements TaskService {
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(ApplicationDto applicationDto, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
-                                                                         AuditTrailDto auditTrailDto){
+                                                                         AuditTrailDto auditTrailDto,boolean isFEActionBy){
+        log.info(StringUtil.changeForLog("The isFEActionBy is -->:"+isFEActionBy));
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        ApplicationGroupDto entity = hcsaAppClient.getAppGrpById(applicationDto.getAppGrpId()).getEntity();
+        String actionBy = AppConsts.USER_ID_SYSTEM;
+        if(isFEActionBy){
+            ApplicationGroupDto entity = hcsaAppClient.getAppGrpById(applicationDto.getAppGrpId()).getEntity();
+            if(entity!=null && !StringUtil.isEmpty(entity.getSubmitBy())){
+                actionBy =  entity.getSubmitBy();
+            }
+        }else{
+            if(auditTrailDto != null && StringUtil.isEmpty(auditTrailDto.getMohUserGuid())){
+                actionBy = auditTrailDto.getMohUserGuid();
+            }
+        }
+        log.info(StringUtil.changeForLog("The actionBy is -->:"+actionBy));
         appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(entity==null? AppConsts.USER_ID_SYSTEM: entity.getSubmitBy() == null ?
-                AppConsts.USER_ID_SYSTEM : entity.getSubmitBy());
+        appPremisesRoutingHistoryDto.setActionby(actionBy);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
