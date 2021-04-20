@@ -39,9 +39,9 @@
 
 </head>
 <body>
-<div class="wrapper">
-		<jsp:include page="header.jsp" flush="true"/>
-	<layout:insertAttribute name="body" ignore="true" />
+<jsp:include page="header.jsp" flush="true"/>
+<div class="">
+	<layout:insertAttribute name="body"  ignore="true" />
 </div>
 <br class="clear"/>
 <jsp:include page="footer.jsp" />
