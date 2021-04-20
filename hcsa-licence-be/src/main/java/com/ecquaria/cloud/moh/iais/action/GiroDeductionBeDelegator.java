@@ -329,7 +329,7 @@ public class GiroDeductionBeDelegator {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
-            String general_ack021 = "{num} records were updated.";
+            String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
                 general_ack021=general_ack021.replace("were","was");
