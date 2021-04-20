@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -521,23 +522,24 @@ public class ApplicationServiceImpl implements ApplicationService {
                 }
             }
 
-            emailParam.setTemplateContent(templateContent);
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
             if (IaisCommonUtils.isNotEmpty(appList)){
                 ApplicationDto applicationDto = appList.get(0);
                 if (StringUtil.isNotEmpty(noticeId)){
-                    emailParam.setTemplateId(noticeId);
-                    emailParam.setRefId(applicationDto.getApplicationNo());
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    notificationHelper.sendNotification(emailParam);
+                    EmailParam smsParam = MiscUtil.transferEntityDto(emailParam, EmailParam.class);
+                    smsParam.setTemplateId(noticeId);
+                    smsParam.setRefId(applicationDto.getApplicationNo());
+                    smsParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(smsParam);
                 }
 
                 if (StringUtil.isNotEmpty(smsId)){
-                    emailParam.setTemplateId(smsId);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(emailParam);
+                    EmailParam msgParam = MiscUtil.transferEntityDto(emailParam, EmailParam.class);
+                    msgParam.setTemplateId(smsId);
+                    msgParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(msgParam);
                 }
             }
 
