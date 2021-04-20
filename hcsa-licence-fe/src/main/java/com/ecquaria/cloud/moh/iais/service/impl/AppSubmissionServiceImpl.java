@@ -399,8 +399,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             String applicationNumber = stringBuilderAPPNum.toString();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
-            subMap.put("ApplicationType", applicationTypeShow);
+            subMap.put("ApplicationType", applicationType);
             subMap.put("ApplicationNumber", applicationNumber);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL,subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_006_SMS ,subMap);
@@ -415,12 +414,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             templateContent.put("ApplicationNumber", applicationNumber);
             templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
             long time = new Date().getTime() + 1000 * 60 * 60 * 24 *7L;
-            templateContent.put("monthOfGiro",Formatter.formatDateTime(new Date(time)));
+            templateContent.put("monthOfGiro",Formatter.formatDateTime(new Date(time),Formatter.DATE));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
             String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
             templateContent.put("MOH_AGENCY_NAME",syName);
             EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_EMAIL);
             emailParam.setTemplateContent(templateContent);
             emailParam.setSubject(emailSubject);
             emailParam.setQueryCode(applicationDto.getApplicationNo());
@@ -430,7 +429,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             notificationHelper.sendNotification(emailParam);
 
             EmailParam smsParam = new EmailParam();
-            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_SMS);
             smsParam.setSubject(smsSubject);
             smsParam.setQueryCode(applicationDto.getApplicationNo());
             smsParam.setReqRefNum(applicationDto.getApplicationNo());
@@ -439,7 +438,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             notificationHelper.sendNotification(smsParam);
 
             EmailParam msgParam = new EmailParam();
-            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_006_MSG);
             msgParam.setTemplateContent(templateContent);
             msgParam.setSubject(messageSubject);
             msgParam.setQueryCode(applicationDto.getApplicationNo());
