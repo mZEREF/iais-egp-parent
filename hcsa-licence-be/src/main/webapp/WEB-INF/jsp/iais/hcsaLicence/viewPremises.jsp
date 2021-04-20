@@ -466,7 +466,6 @@
                                                 <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                            <br>
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}">
                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
 
