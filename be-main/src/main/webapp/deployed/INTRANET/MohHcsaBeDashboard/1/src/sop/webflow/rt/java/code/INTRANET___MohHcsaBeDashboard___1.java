@@ -94,4 +94,24 @@ public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardQuery", this); 
 	}
 
+	public void hcsaBeDashboardComAssign_OnStepProcess_0() throws Exception {
+	// 		hcsaBeDashboardComAssign->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComAssign", this); 
+	}
+
+	public void hcsaBeDashboardComVali_OnStepProcess_0() throws Exception {
+	// 		hcsaBeDashboardComVali->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComVali", this); 
+	}
+
+	public void hcsaBeDashboardComConfirm_OnStepProcess_0() throws Exception {
+	// 		hcsaBeDashboardComConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComConfirm", this); 
+	}
+
+	public void hcsaBeDashboardComDo_OnStepProcess_0() throws Exception {
+	// 		hcsaBeDashboardComDo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComDo", this); 
+	}
+
 }
