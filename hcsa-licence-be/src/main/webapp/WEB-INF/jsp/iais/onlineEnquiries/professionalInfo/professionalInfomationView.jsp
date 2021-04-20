@@ -159,7 +159,7 @@
                                         <iais:sortableHeader style="padding-bottom:15px" needSort="false" field="index"
                                                              value="S/N"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="name"
-                                                             value="Name"></iais:sortableHeader>
+                                                             value="Professional Name"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="prof_reg_no"
                                                              value="Professional Regn. No."></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="practice_location"
