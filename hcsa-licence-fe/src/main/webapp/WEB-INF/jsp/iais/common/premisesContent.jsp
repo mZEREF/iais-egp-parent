@@ -1915,12 +1915,11 @@
                 </div>
             </div>
             <c:set var="easOrMts" value="true" />
-            <!--todo: -->
-            <%--<c:forEach var="service" items="${hcsaServiceDtoList}">
+            <c:forEach var="service" items="${hcsaServiceDtoList}">
                 <c:if test="${'true' == easOrMts && 'EAS' != service.svcCode && 'MTS' != service.svcCode}">
                     <c:set var="easOrMts" value="false" />
                 </c:if>
-            </c:forEach>--%>
+            </c:forEach>
             <c:if test="${'true' == easOrMts}">
                 <div class="new-premise-form-eas-mts hidden">
                     <div class="form-horizontal">
