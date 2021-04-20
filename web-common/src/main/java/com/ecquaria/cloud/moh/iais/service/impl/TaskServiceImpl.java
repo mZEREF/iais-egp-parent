@@ -620,7 +620,7 @@ public class TaskServiceImpl implements TaskService {
                 actionBy =  entity.getSubmitBy();
             }
         }else{
-            if(auditTrailDto != null && StringUtil.isEmpty(auditTrailDto.getMohUserGuid())){
+            if(auditTrailDto != null && !StringUtil.isEmpty(auditTrailDto.getMohUserGuid())){
                 actionBy = auditTrailDto.getMohUserGuid();
             }
         }
