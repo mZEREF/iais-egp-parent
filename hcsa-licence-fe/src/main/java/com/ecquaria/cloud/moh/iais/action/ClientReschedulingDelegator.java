@@ -390,7 +390,7 @@ public class ClientReschedulingDelegator {
             if(!StringUtil.isEmpty(inspStartDate)&&!StringUtil.isEmpty(inspToDate)){
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(inspStDate);
-                cal.add(Calendar.DAY_OF_MONTH, 3);
+                cal.add(Calendar.DAY_OF_MONTH, 2);
                 String inspStartDate_3 = Formatter.formatDateTime(cal.getTime(), SystemAdminBaseConstants.DATE_FORMAT);
                 if( inspStartDate_3.compareTo(inspToDate)>0){
                     errMap.put("newDate" + appId,MessageUtil.getMessageDesc("OAPPT_ERR013"));

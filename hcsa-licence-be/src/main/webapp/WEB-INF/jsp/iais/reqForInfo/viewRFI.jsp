@@ -112,29 +112,26 @@
                                         </c:if>
 
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}"
-                                                       var="rfiDoc">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
+                                                       var="rfiMultiFile">
                                                 <iais:row>
                                                     <div class="col-sm-7 col-md-11 col-xs-10">
                                                         <div class="pop-up">
                                                             <div class="pop-up-body">
-
                                                                 <div class="field control-label formtext">
-                                                                    <label>${rfiDoc.title}</label>
+                                                                    <label>${rfiMultiFile.value.get(0).title}</label>
                                                                 </div>
-                                                                <span class="fileType"
-                                                                      style="display:none">Document1</span><span
-                                                                    class="fileFilter"
-                                                                    style="display:none">png</span><span
-                                                                    class="fileMandatory"
-                                                                    style="display:none">Yes</span>
                                                                 <div class="control ">
                                                                     <div class="fileList ">
-                                                                    <span class="filename server-site" id="130">
-                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"
-                                                                           title="Download"
-                                                                           class="downloadFile">${rfiDoc.docName}<c:if
-                                                                                test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
+                                                                    <span class="filename server-site" >
+                                                                        <c:forEach items="${rfiMultiFile.value}"
+                                                                                   var="rfiDoc">
+                                                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"
+                                                                               title="Download"
+                                                                               class="downloadFile">${rfiDoc.docName}<c:if
+                                                                                    test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
+                                                                            <br>
+                                                                        </c:forEach>
                                                                     </span>
                                                                     </div>
                                                                 </div>
@@ -171,11 +168,11 @@
      style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-<%--            <div class="modal-header">--%>
-<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
-<%--                        aria-hidden="true">&times;</span></button>--%>
-<%--                <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
-<%--            </div>--%>
+            <%--            <div class="modal-header">--%>
+            <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
+            <%--                        aria-hidden="true">&times;</span></button>--%>
+            <%--                <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+            <%--            </div>--%>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to extend the due date?</span>

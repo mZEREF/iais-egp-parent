@@ -304,18 +304,21 @@ public class RequestForInformationDelegator {
 
         boolean isNeedDoc=false;
         List<LicPremisesReqForInfoDocDto> licPremisesReqForInfoDocDtos=IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(reqType)&&"documents".equals(reqType)) {
+        if(!StringUtil.isEmpty(reqType)&&"documents".equals(reqType)&&docTitle!=null) {
             isNeedDoc = true;
+            int seqNum=1;
             for(String docTi :docTitle){
                 LicPremisesReqForInfoDocDto licPremisesReqForInfoDocDto1=new LicPremisesReqForInfoDocDto();
                 licPremisesReqForInfoDocDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 licPremisesReqForInfoDocDto1.setTitle(docTi);
                 licPremisesReqForInfoDocDto1.setDocName("");
+                licPremisesReqForInfoDocDto1.setSeqNum(seqNum);
                 licPremisesReqForInfoDocDtos.add(licPremisesReqForInfoDocDto1);
+                seqNum++;
             }
         }
         List<LicPremisesReqForInfoReplyDto> licPremisesReqForInfoReplyDtos=IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)) {
+        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)&&infoTitle!=null) {
 
             for(String infoTi :infoTitle){
                 LicPremisesReqForInfoReplyDto licPremisesReqForInfoReplyDto=new LicPremisesReqForInfoReplyDto();
@@ -760,7 +763,7 @@ public class RequestForInformationDelegator {
             errMap.put("licenceNo",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence No","field"));
         }else if(licCorrId==null){
             errMap.put("licenceNo","PRF_ERR006");
-            }else {
+        }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
@@ -832,84 +835,4 @@ public class RequestForInformationDelegator {
         return sql;
     }
 
-    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
-        StringBuilder sBuffer = new StringBuilder();
-        sBuffer.append("<select ");
-        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\" ");
-        }
-        sBuffer.append(" >");
-        if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<option value=\"\">").append(firestOption).append("</option>");
-        }
-        for(SelectOption sp:selectOptionList){
-            if(!StringUtil.isEmpty(checkedVal)){
-                if(checkedVal.equals(sp.getValue())){
-                    sBuffer.append("<option selected=\"selected\" value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-                }else{
-                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-                }
-            }else{
-                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
-            }
-        }
-        sBuffer.append("</select>");
-        String classNameValue = premisesOnSiteAttr.get("class");
-        String className = "premSelect";
-        if(!StringUtil.isEmpty(classNameValue)){
-            className =  classNameValue;
-        }
-        sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
-        if(!StringUtil.isEmpty(checkedVal)){
-            sBuffer.append("<span selected=\"selected\" class=\"current\">").append(checkedVal).append("</span>");
-        }else{
-            if(!StringUtil.isEmpty(firestOption)){
-                sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
-            }else{
-                sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
-            }
-        }
-        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
-
-        if(!StringUtil.isEmpty(checkedVal)){
-            for(SelectOption kv:selectOptionList){
-                if(checkedVal.equals(kv.getValue())){
-                    sBuffer.append("<li selected=\"selected\" data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
-                }else{
-                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-                }
-            }
-        }else if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"\" class=\"option selected\">").append(firestOption).append("</li>");
-            for(SelectOption kv:selectOptionList){
-                sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-            }
-        }else{
-            for(int i = 0;i<selectOptionList.size();i++){
-                SelectOption kv = selectOptionList.get(i);
-                if(i == 0){
-                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
-                }else{
-                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
-                }
-            }
-        }
-
-        sBuffer.append("</div>")
-                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
-                .append("<div class=\"mCSB_draggerContainer\">")
-                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
-                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
-                .append("</div>")
-                .append("</div>")
-                .append("<div class=\"mCSB_draggerRail\"></div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</div>")
-                .append("</ul>")
-                .append("</div>");
-        return sBuffer.toString();
-    }
 }
