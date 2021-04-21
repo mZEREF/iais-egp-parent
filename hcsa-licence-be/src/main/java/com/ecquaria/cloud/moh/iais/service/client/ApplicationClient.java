@@ -414,4 +414,6 @@ public interface ApplicationClient {
     FeignResponseEntity<List<AppSvcKeyPersonnelDto>> getAppSvcKeyPersonnelDtoByAppIdAndPersoonType(@RequestParam("appId") String appId, @RequestParam("psnType") String psnType);
     @GetMapping(value = "/iais-apppremisescorrelation-be/get-app-premise-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtoById(@RequestParam("id") String id);
+    @PutMapping(value = "/iais-application-group-be/update-be-group-status",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> updateBeGroupStatus(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
 }

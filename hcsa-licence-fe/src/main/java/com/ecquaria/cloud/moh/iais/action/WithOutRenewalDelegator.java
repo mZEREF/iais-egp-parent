@@ -1166,7 +1166,6 @@ public class WithOutRenewalDelegator {
         }
         //set group no.
         bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
-        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         /*    ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);*/
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
@@ -1567,6 +1566,7 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
             }
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
+            log.info("start giro payment======>appGrpId :"+appGrpId);
             if(appSubmissionDtos.size() > 1){
                 Double a = 0.0;
                 for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {

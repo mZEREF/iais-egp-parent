@@ -84,8 +84,11 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private GiroDeductionClient giroDeductionClient;
     private final static String CSV="csv";
-    //PMT12 PMT13 PMT11
-    private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
+
+    protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
+/*
+    protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
+*/
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -338,6 +341,8 @@ public class GiroDeductionBeDelegator {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            //update group status
+
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
@@ -428,17 +433,17 @@ public class GiroDeductionBeDelegator {
 
     private String decryptPayment(String payment){
         switch (payment){
-            case "FAIL": return "Failed";
-            case "CMSTAT001":return "Successful";
-            case "PDNG":return "Pending";
+            case "PMT09": return "Failed";
+            case "PMT01":return "Successful";
+            case "PMT03":return "Pending";
             default:return payment;
         }
     }
     private String encryptionPayment(String payment){
         switch (payment){
-            case "Failed": return "FAIL";
-            case "Successful":return "CMSTAT001";
-            case "Pending":return "PDNG";
+            case "Failed": return "PMT09";
+            case "Successful":return "PMT01";
+            case "Pending":return "PMT03";
             default:return payment;
         }
     }

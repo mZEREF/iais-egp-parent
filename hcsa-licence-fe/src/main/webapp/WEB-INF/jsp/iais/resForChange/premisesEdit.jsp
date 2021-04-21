@@ -162,7 +162,7 @@
         cl();
         preperChange();
         retrieveAddr();
-        otherLic();
+        coLocation();
         doEdit();
         addOperational();
         operationDel();
