@@ -21,6 +21,12 @@
     .radio-disabled{
         border-color: #999999 !important;
     }
+    input[type=checkbox] {
+        -ms-transform: scale(2,2); /* IE */
+        -moz-transform: scale(2,2); /* FireFox */
+        -webkit-transform: scale(2,2); /* Safari and Chrome */
+        -o-transform: scale(2,2); /* Opera */
+    }
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -844,7 +850,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1377,7 +1383,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1904,7 +1910,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 

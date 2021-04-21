@@ -132,7 +132,7 @@ public class ResponseForInformationDelegator {
                                 file.setDocName(licDoc.getDocName());
                                 file.setDocSize(String.valueOf(licDoc.getDocSize()));
                                 file.setData(serviceConfigService.downloadFile(licDoc.getFileRepoId()));
-                                licDoc.setPassDocValidate(true);
+                               // licDoc.setPassDocValidate(true);
                                 attachmentDtos.add(file);
                             }
                         }

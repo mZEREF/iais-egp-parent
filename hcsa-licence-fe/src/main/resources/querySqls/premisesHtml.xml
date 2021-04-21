@@ -279,7 +279,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -345,7 +345,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -387,7 +387,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -564,7 +564,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -630,7 +630,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -672,7 +672,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -841,7 +841,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -907,7 +907,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -949,7 +949,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
