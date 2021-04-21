@@ -186,8 +186,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
-            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO,
+//            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
             ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
     };
@@ -597,6 +596,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
         String applicantName=licenseeDto.getName();
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);

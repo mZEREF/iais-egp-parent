@@ -246,7 +246,8 @@ public class RetriggerGiroPaymentDelegator {
                 List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
                 RenewDto renewDto = new RenewDto();
                 List<AppSubmissionDto> renewSubmisonDtos = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         String applicationType = appSvcRelatedInfoDto.getApplicationType();
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
@@ -255,6 +256,9 @@ public class RetriggerGiroPaymentDelegator {
                         oneSvcSubmisonDto.setAppSvcRelatedInfoDtoList(oneSvcRelateInfoDto);
                         oneSvcSubmisonDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                         oneSvcSubmisonDto.setLicenceId(appSvcRelatedInfoDto.getOriginLicenceId());
+                        //set one premises
+                        List<AppGrpPremisesDto> onePremisesDto = getOnePremisesListById(appGrpPremisesDtos,appSvcRelatedInfoDto.getAlignPremisesId());
+                        oneSvcSubmisonDto.setAppGrpPremisesDtoList(onePremisesDto);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                             rfcAppSubmissionDtos.add(oneSvcSubmisonDto);
                         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
@@ -457,6 +461,19 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
 
         log.info(StringUtil.changeForLog("the preAck end ...."));
+    }
+
+    private List<AppGrpPremisesDto> getOnePremisesListById(List<AppGrpPremisesDto> targetDtoList, String premisesId){
+        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(targetDtoList) && !StringUtil.isEmpty(premisesId)){
+            for(AppGrpPremisesDto appGrpPremisesDto:targetDtoList){
+                if(appGrpPremisesDto.getId().equals(premisesId)){
+                    appGrpPremisesDtos.add(appGrpPremisesDto);
+                    break;
+                }
+            }
+        }
+        return appGrpPremisesDtos;
     }
 
 }
