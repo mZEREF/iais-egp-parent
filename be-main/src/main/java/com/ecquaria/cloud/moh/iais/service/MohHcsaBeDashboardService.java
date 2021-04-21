@@ -24,13 +24,13 @@ public interface MohHcsaBeDashboardService {
                                                               String roleId);
 
     /**
-      * @author: shicheng
-      * @Date 2021/4/15
-      * @Param: SearchParam, loginContext, actionValue
-      * @return: List<String>
-      * @Descripation: setPoolScopeByCurRoleId
-      */
-    List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String actionValue, List<String> workGroupIds);
+     * @author: shicheng
+     * @Date 2021/4/15
+     * @Param: SearchParam, loginContext, actionValue
+     * @return: List<String>
+     * @Descripation: setPoolScopeByCurRoleId
+     */
+    List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String switchAction, List<String> workGroupIds);
 
     SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam);
 

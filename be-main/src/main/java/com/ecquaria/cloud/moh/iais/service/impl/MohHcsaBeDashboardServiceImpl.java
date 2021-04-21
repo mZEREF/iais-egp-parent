@@ -46,7 +46,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
-                                                                         TaskDto taskDto, String userId, String remarks, String subStage) {
+                                                                        TaskDto taskDto, String userId, String remarks, String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
@@ -74,8 +74,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Override
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                      String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
-                                                                      String roleId){
+                                                                     String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
+                                                                     String roleId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -92,12 +92,12 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
-    public List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String actionValue, List<String> workGroupIds) {
+    public List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String switchAction, List<String> workGroupIds) {
         if(loginContext != null) {
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
                 if (curRoleId.contains(RoleConsts.USER_LEAD) &&
-                    !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
+                        !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
                     //for ASO / PSO / Inspector lead
 
                 } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
@@ -111,7 +111,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                         curRoleId = RoleConsts.USER_LEAD;
                     }
                     searchParam.addFilter("dashRoleId", curRoleId,true);
-                    if(!("common".equals(actionValue))) {
+                    if(!("common".equals(switchAction))) {
                         searchParam.addFilter("officerId", loginContext.getUserId(), true);
                     } else {
                         Set<String> wrkGrpIds = loginContext.getWrkGrpIds();
