@@ -2032,7 +2032,7 @@
                                     <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
                                 </div>
                                 <div class="form-check col-sm-6">
-                                    <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT001" aria-invalid="false">
+                                    <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT002" aria-invalid="false">
                                     <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
                                 </div>
                             </iais:value>
