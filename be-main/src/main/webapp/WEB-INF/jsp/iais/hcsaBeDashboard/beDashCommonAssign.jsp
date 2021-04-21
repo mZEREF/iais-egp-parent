@@ -24,7 +24,7 @@
   <form method="post" id="beDashCommonAssignForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
-    <input type="hidden" id="switchAction" name="switchAction" value="${dashActionValue}">
+    <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <div class="main-content">
       <div class="row">
@@ -107,7 +107,8 @@
                         </c:if>
                         <c:if test="${!inspecTaskCreAndAssDto.fastTrackCheckFlag}">
                           <input type="checkbox" value="true" name="fastTrackCommon"
-                                 <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
+                            <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>
+                          />
                         </c:if>
                       </div>
                     </div>
@@ -179,6 +180,7 @@
     function intraDashComAssignBack() {
         showWaiting();
         let switchAction = $('#switchAction').val();
+        $("[name='actionValue']").val('back');
         intraDashComAssignSubmit(switchAction);
     }
 

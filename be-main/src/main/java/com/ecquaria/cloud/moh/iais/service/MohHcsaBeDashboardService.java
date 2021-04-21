@@ -30,7 +30,7 @@ public interface MohHcsaBeDashboardService {
       * @return: List<String>
       * @Descripation: setPoolScopeByCurRoleId
       */
-    List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String actionValue, List<String> workGroupIds);
+    List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String switchAction, List<String> workGroupIds);
 
     SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam);
 

@@ -92,7 +92,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
-    public List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String actionValue, List<String> workGroupIds) {
+    public List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String switchAction, List<String> workGroupIds) {
         if(loginContext != null) {
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
@@ -111,7 +111,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                         curRoleId = RoleConsts.USER_LEAD;
                     }
                     searchParam.addFilter("dashRoleId", curRoleId,true);
-                    if(!("common".equals(actionValue))) {
+                    if(!("common".equals(switchAction))) {
                         searchParam.addFilter("officerId", loginContext.getUserId(), true);
                     } else {
                         Set<String> wrkGrpIds = loginContext.getWrkGrpIds();

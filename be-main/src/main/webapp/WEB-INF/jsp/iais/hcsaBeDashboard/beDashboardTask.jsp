@@ -71,7 +71,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
     <input type="hidden" id="action" name="action" value="">
-    <input type="hidden" id="switchAction" name="switchAction" value="${dashActionValue}">
+    <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
     <input type="hidden" id="dashTaskId" name="dashTaskId" value="">
     <div class="col-xs-12">
@@ -278,8 +278,8 @@
 
     $("#searchBtn").click(function () {
         showWaiting();
-        let actionValue = $('#switchAction').val();
-        intraDashboardSubmit(actionValue);
+        let dashSwitchActionValue = $('#switchAction').val();
+        intraDashboardSubmit(dashSwitchActionValue);
     })
 
     function groupAjax(applicationGroupNo, divid) {
@@ -337,9 +337,9 @@
 
     function doDashboardTaskOrShow(taskId) {
         showWaiting();
-        let actionValue = $('#switchAction').val();
+        let dashSwitchActionValue = $('#switchAction').val();
         $("#dashTaskId").val(taskId);
-        if('common' == actionValue) {
+        if('common' == dashSwitchActionValue) {
             intraDashboardSubmit('comassign');
         }
     }
@@ -480,8 +480,8 @@
 
     function chooseCurRole() {
         showWaiting();
-        let actionValue = $('#switchAction').val();
-        intraDashboardSubmit(actionValue);
+        let dashSwitchActionValue = $('#dashSwitchActionValue').val();
+        intraDashboardSubmit(dashSwitchActionValue);
     }
 
     function isInArray(arr,value){
