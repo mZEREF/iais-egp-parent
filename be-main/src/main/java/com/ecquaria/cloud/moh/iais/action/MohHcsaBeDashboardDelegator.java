@@ -134,6 +134,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardStart(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, "dashActionValue", null);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
@@ -454,6 +455,7 @@ public class MohHcsaBeDashboardDelegator {
         if(!StringUtil.isEmpty(taskId)) {
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+            ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", null);
             TaskDto taskDto = taskService.getTaskById(taskId);
             String appCorrelationId = taskDto.getRefNo();
             if(!StringUtil.isEmpty(appCorrelationId)){
@@ -504,7 +506,7 @@ public class MohHcsaBeDashboardDelegator {
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(InspectionConstants.SWITCH_ACTION_CONFIRM.equals(actionValue)){
+        if(BeDashboardConstant.SWITCH_ACTION_COMMON_CONFIRM.equals(actionValue)){
             inspecTaskCreAndAssDto = getValueFromPage(bpc);
             if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())){
                 ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto, AppConsts.COMMON_POOL);
@@ -520,7 +522,7 @@ public class MohHcsaBeDashboardDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
-        } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)){
+        } else if(BeDashboardConstant.SWITCH_ACTION_BACK.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.FALSE);
@@ -567,6 +569,15 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardComDo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardComDo start ...."));
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String saveFlag = inspectionMainAssignTaskService.routingTaskByCommonPool(applicationViewDto, inspecTaskCreAndAssDto, internalRemarks, loginContext);
+        if(AppConsts.FAIL.equals(saveFlag)){
+            ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
+        }
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**

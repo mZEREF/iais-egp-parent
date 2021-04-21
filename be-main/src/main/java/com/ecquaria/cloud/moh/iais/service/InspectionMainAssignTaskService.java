@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -60,4 +61,13 @@ public interface InspectionMainAssignTaskService {
       * @Descripation: setEditHoursFlagByAppAndUser
       */
     InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/21
+      * @Param: inspecTaskCreAndAssDto, internalRemarks, loginContext
+      * @return: save flag
+      * @Descripation: routingTaskByCommonPool
+      */
+    String routingTaskByCommonPool(ApplicationViewDto applicationViewDto, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
 }
