@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,20 +85,31 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) throws IOException, TemplateException{
         log.info(StringUtil.changeForLog("AcraNotifySingPassJobHandler start..." ));
         //90days
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        Date today = calendar.getTime();
         int firReminder = systemParamConfig.getSingpassCeasedReminderFir();
-        List<LicenseeDto> licenseeDtoList90 = organizationClient.getLicenseeDtoOvertime(String.valueOf(firReminder)).getEntity();
+        calendar.add(Calendar.MONTH, - firReminder);
+        Date firReminderDate = calendar.getTime();
+        List<LicenseeDto> licenseeDtoList90 = organizationClient.getLicenseeDtoOvertime(String.valueOf(DateUtil.daysBetween(today, firReminderDate))).getEntity();
         for (LicenseeDto item: licenseeDtoList90) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_002_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_002_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_002_MSG);
         }
         //60days
         int secReminder = systemParamConfig.getSingpassCeasedReminderSec();
-        List<LicenseeDto> licenseeDtoList60 = organizationClient.getLicenseeDtoOvertime(String.valueOf(secReminder)).getEntity();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, - secReminder);
+        Date secReminderDate = calendar.getTime();
+        List<LicenseeDto> licenseeDtoList60 = organizationClient.getLicenseeDtoOvertime(String.valueOf(DateUtil.daysBetween(today, secReminderDate))).getEntity();
         for (LicenseeDto item: licenseeDtoList60) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_003_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_003_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_003_MSG);
         }
         //30days
         int thirdReminder = systemParamConfig.getSingpassCeasedReminderThird();
-        List<LicenseeDto> licenseeDtoList30 = organizationClient.getLicenseeDtoOvertime(String.valueOf(thirdReminder)).getEntity();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, - thirdReminder);
+        Date thirdReminderDate = calendar.getTime();
+        List<LicenseeDto> licenseeDtoList30 = organizationClient.getLicenseeDtoOvertime(String.valueOf(DateUtil.daysBetween(today, thirdReminderDate))).getEntity();
         for (LicenseeDto item: licenseeDtoList30) {
             sendEmail(item, MsgTemplateConstants.MSG_TEMPLATE_UEN_004_EMAIL,MsgTemplateConstants.MSG_TEMPLATE_UEN_004_SMS,MsgTemplateConstants.MSG_TEMPLATE_UEN_004_MSG);
         }
