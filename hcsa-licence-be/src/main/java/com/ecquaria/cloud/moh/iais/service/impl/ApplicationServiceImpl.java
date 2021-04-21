@@ -522,6 +522,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 }
             }
 
+            emailParam.setTemplateContent(templateContent);
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
