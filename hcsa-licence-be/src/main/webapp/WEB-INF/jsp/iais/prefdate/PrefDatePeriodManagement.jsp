@@ -92,6 +92,7 @@
                                     <span>Search Results</span>
                                 </h3>
                                 <iais:pagination param="prefPeriodSearch" result="prefPeriodResult"/>
+                                <div class="table-gp">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -147,6 +148,7 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
+                                </div>
                                     <div class="table-footnote">
                                         <div class="row">
                                             <div class="col-xs-6 col-md-8 text-right">

@@ -100,6 +100,7 @@
             <div class="col-xs-12">
               <div class="components">
                 <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
+                <div class="table-gp">
                   <table class="table">
                     <thead>
                     <tr>
@@ -166,6 +167,7 @@
                     </c:choose>
                     </tbody>
                   </table>
+                </div>
 
               </div>
             </div>
