@@ -112,29 +112,26 @@
                                         </c:if>
 
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}"
-                                                       var="rfiDoc">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
+                                                       var="rfiMultiFile">
                                                 <iais:row>
                                                     <div class="col-sm-7 col-md-11 col-xs-10">
                                                         <div class="pop-up">
                                                             <div class="pop-up-body">
-
                                                                 <div class="field control-label formtext">
-                                                                    <label>${rfiDoc.title}</label>
+                                                                    <label>${rfiMultiFile.value.get(0).title}</label>
                                                                 </div>
-                                                                <span class="fileType"
-                                                                      style="display:none">Document1</span><span
-                                                                    class="fileFilter"
-                                                                    style="display:none">png</span><span
-                                                                    class="fileMandatory"
-                                                                    style="display:none">Yes</span>
                                                                 <div class="control ">
                                                                     <div class="fileList ">
-                                                                    <span class="filename server-site" id="130">
-                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"
-                                                                           title="Download"
-                                                                           class="downloadFile">${rfiDoc.docName}<c:if
-                                                                                test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
+                                                                    <span class="filename server-site" >
+                                                                        <c:forEach items="${rfiMultiFile.value}"
+                                                                                   var="rfiDoc">
+                                                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"
+                                                                               title="Download"
+                                                                               class="downloadFile">${rfiDoc.docName}<c:if
+                                                                                    test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
+                                                                            <br>
+                                                                        </c:forEach>
                                                                     </span>
                                                                     </div>
                                                                 </div>
