@@ -71,7 +71,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
     <input type="hidden" id="action" name="action" value="">
-    <input type="hidden" id="switchAction" name="switchAction" value="${dashActionValue}">
+    <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
     <input type="hidden" id="dashTaskId" name="dashTaskId" value="">
     <div class="col-xs-12">
@@ -278,14 +278,14 @@
 
     $("#searchBtn").click(function () {
         showWaiting();
-        let actionValue = $('#switchAction').val();
-        intraDashboardSubmit(actionValue);
+        let dashSwitchActionValue = $('#switchAction').val();
+        intraDashboardSubmit(dashSwitchActionValue);
     })
 
     function groupAjax(applicationGroupNo, divid) {
         dividajaxlist.push(divid);
         $.post(
-            '/main-web/backend/appGroup.do',
+            '/main-web//hcsa/intranet/dashboard/appGroup.do',
             {groupNo: applicationGroupNo},
             function (data) {
                 /*var hastaskList = data.hastaskList;*/
@@ -316,8 +316,10 @@
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        } else if ('2' == canDoTask) {
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="' + res.rows[i].dashTaskUrl + '">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else {
-
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
@@ -335,22 +337,41 @@
 
     function doDashboardTaskOrShow(taskId) {
         showWaiting();
+        let dashSwitchActionValue = $('#switchAction').val();
         $("#dashTaskId").val(taskId);
-        intraDashboardSubmit('page');
+        if('common' == dashSwitchActionValue) {
+            intraDashboardSubmit('comassign');
+        }
+    }
+
+    function dashboardAppViewShow(appPremCorrId) {
+        showWaiting();
+        $.post(
+            '/main-web/hcsa/intranet/dashboard/applicationView.show',
+            {appPremCorrId: appPremCorrId},
+            function (data) {
+                let dashAppShowFlag = data.dashAppShowFlag;
+                if ('SUCCESS' == dashAppShowFlag) {
+                    window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
+                    dismissWaiting();
+                } else {
+                    dismissWaiting();
+                }
+            }
+        )
+        dismissWaiting();
     }
 
     function getAppByGroupId(applicationGroupNo, divid) {
         if (!isInArray(dividajaxlist,divid)) {
             groupAjax(applicationGroupNo, divid);
         } else {
-            console.log("show or hide")
             var display = $('#advfilterson' + divid).css('display');
             if (display == 'none') {
                 $('#advfilterson' + divid).show();
             } else {
                 $('#advfilterson' + divid).hide();
             }
-
         }
     }
 
@@ -459,8 +480,8 @@
 
     function chooseCurRole() {
         showWaiting();
-        let actionValue = $('#switchAction').val();
-        intraDashboardSubmit(actionValue);
+        let dashSwitchActionValue = $('#dashSwitchActionValue').val();
+        intraDashboardSubmit(dashSwitchActionValue);
     }
 
     function isInArray(arr,value){
