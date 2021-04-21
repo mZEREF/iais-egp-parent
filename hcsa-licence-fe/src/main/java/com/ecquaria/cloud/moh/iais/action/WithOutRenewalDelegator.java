@@ -1929,9 +1929,14 @@ public class WithOutRenewalDelegator {
              if(appNoIndex == 2){
                 temp = "has";
             }
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDtos.get(0).getServiceName());
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-            svcCodeList.add(hcsaServiceDto.getSvcCode());
+            for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+                if( !StringUtil.isEmpty(hcsaServiceDto.getSvcCode()) && !svcCodeList.contains(hcsaServiceDto.getSvcCode())){
+                    svcCodeList.add(hcsaServiceDto.getSvcCode());
+                }
+            }
+
             String amountStr = (String)ParamUtil.getSessionAttr(request, "totalStr");
             String applicationNumber = stringBuilderAPPNum.toString();
             log.info(StringUtil.changeForLog("send renewal application notification application no : " + appNo));
