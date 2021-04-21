@@ -126,7 +126,7 @@
                             <td><c:out value="${pool.txnRefNo}"/></td>
                             <td><iais:code code="${pool.acctNo}"/></td>
                             <td>
-                              ${pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_PENDING ? "Pending" : (pool.pmtStatus == GrioConsts.GIRO_PAY_STATUS_FAILED ? "Failed" : (pool.pmtStatus == AppConsts.COMMON_STATUS_ACTIVE ? "Success" : ""))}</td>
+                              <iais:code code="$${pool.pmtStatus}"/></td>
                             <td><iais:code code="$${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
