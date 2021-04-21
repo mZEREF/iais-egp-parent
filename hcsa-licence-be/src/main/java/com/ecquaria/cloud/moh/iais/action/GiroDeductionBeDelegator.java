@@ -427,17 +427,17 @@ public class GiroDeductionBeDelegator {
 
     private String decryptPayment(String payment){
         switch (payment){
-            case "FAIL": return "Failed";
-            case "CMSTAT001":return "Successful";
-            case "PDNG":return "Pending";
+            case "PMT09": return "Failed";
+            case "PMT01":return "Successful";
+            case "PMT03":return "Pending";
             default:return payment;
         }
     }
     private String encryptionPayment(String payment){
         switch (payment){
-            case "Failed": return "FAIL";
-            case "Successful":return "CMSTAT001";
-            case "Pending":return "PDNG";
+            case "Failed": return "PMT09";
+            case "Successful":return "PMT01";
+            case "Pending":return "PMT03";
             default:return payment;
         }
     }
