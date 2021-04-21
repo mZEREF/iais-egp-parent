@@ -1942,7 +1942,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         if ($('#beEicGatewayClient').val() != '') {
-            alert($('#beEicGatewayClient').val());
+            $('#PRS_SERVICE_DOWN').modal('show');
         }
         var svcId = "";
         <c:if test="${rfi=='rfi'}">
