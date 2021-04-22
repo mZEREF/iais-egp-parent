@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
@@ -15,9 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
@@ -46,10 +47,10 @@ import java.util.Set;
 public class MohHcsaBeDashboardAjax {
 
     @Autowired
-    private InspectionMainService inspectionService;
+    private InspectionMainAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private InspectionMainAssignTaskService inspectionAssignTaskService;
+    private ApplicationViewMainService applicationViewMainService;
 
     @Autowired
     private BeDashboardAjaxService beDashboardAjaxService;
@@ -67,32 +68,37 @@ public class MohHcsaBeDashboardAjax {
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String actionValue = ParamUtil.getRequestString(request, "switchAction");
+        String switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
         String groupNo = request.getParameter("groupNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) {
-            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, actionValue);
+        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
+            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction);
             //set url
             map = setDashComPoolUrl(map, request, loginContext);
-        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
 
         }
         return map;
     }
 
     private Map<String, Object> setDashComPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Common Pool Current Role =====" + loginContext.getCurRoleId()));
+            roleId = loginContext.getCurRoleId();
+        }
         if(map != null) {
             SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
             if(ajaxResult != null) {
@@ -107,14 +113,11 @@ public class MohHcsaBeDashboardAjax {
                         TaskDto taskDto = taskService.getTaskById(dashComPoolAjaxQueryDto.getTaskId());
                         //set mask task Id
                         String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
-                        if (workGroupIds.contains(taskDto.getWkGrpId())) {
+                        if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
                             dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
-                            dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.YES);
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_COMMON_POOL_DO);
                         } else {
-                            //todo: url
-                            String dashUrl = generateProcessUrl(maskId, request, maskId);
-                            dashComPoolAjaxQueryDto.setDashTaskUrl(dashUrl);
-                            dashComPoolAjaxQueryDto.setCanDoTask(AppConsts.NO);
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                         }
                     }
                 }
@@ -126,10 +129,26 @@ public class MohHcsaBeDashboardAjax {
     @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(1);
         String taskId = ParamUtil.getMaskedString(request, "taskId");
         String res = inspectionAssignTaskService.taskRead(taskId);
         map.put("res",res);
+        return map;
+    }
+
+    @RequestMapping(value = "applicationView.show", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> dashApplicationView(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>(1);
+        String appPremCorrId = request.getParameter("appPremCorrId");
+        try {
+            ApplicationViewDto applicationViewDto = applicationViewMainService.getApplicationViewDtoByCorrId(appPremCorrId);
+            map.put("dashAppShowFlag", AppConsts.SUCCESS);
+            ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
+        } catch (Exception e) {
+            map.put("dashAppShowFlag", AppConsts.FAIL);
+            log.error(e.getMessage(), e);
+        }
         return map;
     }
 

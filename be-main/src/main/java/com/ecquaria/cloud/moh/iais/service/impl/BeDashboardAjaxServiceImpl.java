@@ -85,14 +85,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             }
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
-            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
+            workGroupIds = mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTaskAjax", searchParam);
             SearchResult<DashComPoolAjaxQueryDto> ajaxResult = getCommonAjaxResultByParam(searchParam);
             //set other data
-            List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
-            dashComPoolAjaxQueryDtos = setComPoolAjaxDataToShow(dashComPoolAjaxQueryDtos, loginContext);
-            ajaxResult.setRows(dashComPoolAjaxQueryDtos);
+            setComPoolAjaxDataToShow(ajaxResult.getRows(), loginContext);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
