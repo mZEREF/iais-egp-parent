@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -62,6 +63,11 @@ public class FePrintViewDelegator {
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
                     appSubmissionDtoList.addAll(appSubmissionDtos);
                 }
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO);
+            if(appSubmissionDto != null){
+                appSubmissionDtoList.add(appSubmissionDto);
             }
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);

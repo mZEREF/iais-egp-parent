@@ -124,8 +124,9 @@
     });
 
     $('#rfcPrint').click(function () {
-        window.print();
-
+        // window.print();
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY005",request)%>';
+        window.open(url,'_blank');
     });
     $('#RFC_BACK').click(function (){
         location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
