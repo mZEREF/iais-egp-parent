@@ -2469,6 +2469,7 @@ public class NewApplicationDelegator {
         }
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
+        appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
