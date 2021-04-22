@@ -104,7 +104,7 @@
                                                     </div>
                                                 </iais:row>
                                                 <iais:row>
-                                                    <iais:value width="18">
+                                                    <div class="col-sm-7 col-md-12 col-xs-10">
                                                         <div class="document-upload-gp ">
                                                             <div class="document-upload-list">
                                                                 <div class="file-upload-gp">
@@ -128,7 +128,7 @@
                                                             <span name="iaisErrorMsg" class="error-msg" id="error_UploadFile${configIndex}"></span>
                                                         </div>
                                                         <br/>
-                                                    </iais:value>
+                                                    </div>
                                                 </iais:row>
                                             </c:forEach>
 
@@ -175,20 +175,19 @@
 
     function fileChangedLocal(obj, event) {
         var maxFileSize = $('#sysFileSize').val();
+        var configIndex =$('input[name="uploadKey"]').val();
+        var fileId= '#error_UploadFile'+configIndex;
         console.log('maxFileSize : '+maxFileSize);
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         console.log(error)
         if (error == "N"){
-            $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
+            $(fileId).html($("#fileMaxMBMessage").val());
             $("#selectedFile").val('');
-            $(".filename").html("");
         }else if(error == "Y"){
             if("Y" == validateAllFileSize()){
                 callAjaxUploadFile();
-                $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
-                $(this).closest('.document-upload-list').find('.error-msg').html('');
             }else{
-                $(this).closest('.document-upload-list').find('.error-msg').html($("#fileMaxMBMessage").val());
+                $(fileId).html($("#fileMaxMBMessage").val());
                 $("#selectedFile").val('');
             }
         }
