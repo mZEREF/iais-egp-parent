@@ -329,7 +329,6 @@
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';
-                    alert('advfilter' + divid);
                     $('#advfilter' + divid).after(html);
                 }
             }
