@@ -132,7 +132,7 @@ public class ResponseForInformationDelegator {
                                 file.setDocName(licDoc.getDocName());
                                 file.setDocSize(String.valueOf(licDoc.getDocSize()));
                                 file.setData(serviceConfigService.downloadFile(licDoc.getFileRepoId()));
-                                licDoc.setPassDocValidate(true);
+                                // licDoc.setPassDocValidate(true);
                                 attachmentDtos.add(file);
                             }
                         }
@@ -197,6 +197,13 @@ public class ResponseForInformationDelegator {
                         docDto.setFileRepoId(fileRepoGuid);
                         docDto.setTitle(docs.getValue().get(0).getTitle());
                         list.add(docDto);
+                    }
+                    if(list.isEmpty()){
+                        LicPremisesReqForInfoDocDto licDoc=docs.getValue().get(0);
+                        licDoc.setDocSize(null);
+                        licDoc.setDocName("");
+                        licDoc.setFileRepoId(null);
+                        list.add(licDoc);
                     }
                     docs.setValue(list);
                     licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().addAll(list);
@@ -271,9 +278,9 @@ public class ResponseForInformationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
 
-        if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
+        if(licPremisesReqForInfoDto.isNeedDocument()){
             for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> docs:licPremisesReqForInfoDto.getLicPremisesReqForInfoMultiFileDto().entrySet()){
-                if( docs.getValue().get(0).getDocName()==null){
+                if( StringUtil.isEmpty(docs.getValue().get(0).getDocName())){
                     errMap.put("UploadFile"+docs.getKey(),errDocument);
                 }
             }
