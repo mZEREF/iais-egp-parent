@@ -126,8 +126,8 @@
                             <td><c:out value="${pool.txnRefNo}"/></td>
                             <td><iais:code code="${pool.acctNo}"/></td>
                             <td>
-                              <iais:code code="$${pool.pmtStatus}"/></td>
-                            <td><iais:code code="$${pool.amount}"/></td>
+                                ${pool.pmtStatus == 'PMT03' ? "Pending" : (pool.pmtStatus == 'PMT09' ? "Failed" : (pool.pmtStatus == 'PMT01' ? "Success" : ""))}</td>
+                            <td><iais:code code="${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>

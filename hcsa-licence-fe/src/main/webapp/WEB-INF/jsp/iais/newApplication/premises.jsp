@@ -235,11 +235,7 @@
         });
         </c:if>
 
-        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-          if($("#errorMapIs").val()=='error'){
-              $('.premisesEdit').trigger('click');
-          }
-        </c:if>
+
 
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
@@ -260,6 +256,12 @@
             $("input[name='chooseExistData']").val('0');
             $('.premisesEdit').removeClass('hidden');
         }
+        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
+        if($("#errorMapIs").val()=='error'){
+            $('.premisesEdit').trigger('click');
+            $('.premisesEdit').addClass('hidden');
+        }
+        </c:if>
     });
 
 

@@ -2471,6 +2471,7 @@ public class NewApplicationDelegator {
         }
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
+        appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
@@ -3069,6 +3070,7 @@ public class NewApplicationDelegator {
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+        log.info("======ackPageAppSubmissionDto=====>"+ackPageAppSubmissionDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
         String draftNo = "";
@@ -3094,10 +3096,12 @@ public class NewApplicationDelegator {
                                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                             }
                             String grpId = entity.get(0).getAppGrpId();
+                            log.info("grpId=====>"+grpId);
                             ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
                             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
+                            log.info("====applicationGroupDto==>"+JsonUtil.parseToJson(applicationGroupDto));
                             applicationFeClient.saveApplicationDtos(entity);
+                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                         }
                     }else if(0.0==amount && !autoRfc){
                         String appGrpNo = appSubmissionDto1.getAppGrpNo();
@@ -3109,8 +3113,8 @@ public class NewApplicationDelegator {
                             String grpId = entity.get(0).getAppGrpId();
                             ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
                             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                             applicationFeClient.saveApplicationDtos(entity);
+                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                         }
 
                     }
