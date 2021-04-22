@@ -374,6 +374,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardKpi(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardKpi start ...."));
         SearchParam searchParam = getSearchParam(bpc, true, null);
+        String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
     }
 
     /**

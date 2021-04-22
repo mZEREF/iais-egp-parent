@@ -68,26 +68,26 @@ public class MohHcsaBeDashboardAjax {
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String actionValue = ParamUtil.getRequestString(request, "switchAction");
+        String switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
         String groupNo = request.getParameter("groupNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) {
-            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, actionValue);
+        if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
+            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction);
             //set url
             map = setDashComPoolUrl(map, request, loginContext);
-        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(actionValue)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
 
         }
         return map;

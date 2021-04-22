@@ -175,14 +175,14 @@
                                varStatus="status">
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
-                        <td><p style="width: 165px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
+                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
                                                                                                    data-toggle="collapse" aria-expanded="false"
                                                                                                    data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
-                                                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
-                        <td><c:out value="${pool.applicationType}"/></td>
+                                                                                                   onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
+                        <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
-                        <td><c:out value="${pool.submitDate}"/></td>
-                        <td><c:out value="${pool.paymentstatus}"/></td>
+                        <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><iais:code code="${pool.paymentStatus}"/></td>
                       </tr>
                     </c:forEach>
                   </c:otherwise>
@@ -285,7 +285,7 @@
     function groupAjax(applicationGroupNo, divid) {
         dividajaxlist.push(divid);
         $.post(
-            '/main-web//hcsa/intranet/dashboard/appGroup.do',
+            '/main-web/hcsa/intranet/dashboard/appGroup.do',
             {groupNo: applicationGroupNo},
             function (data) {
                 /*var hastaskList = data.hastaskList;*/
@@ -329,6 +329,7 @@
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';
+                    alert('advfilter' + divid);
                     $('#advfilter' + divid).after(html);
                 }
             }
