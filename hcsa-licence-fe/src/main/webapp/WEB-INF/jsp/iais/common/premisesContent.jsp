@@ -420,7 +420,7 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
-                    <iais:row cssClass="other-lic-content">
+                    <iais:row cssClass="other-lic-content co-location-div">
                         <iais:field value="Are you co-locating with another licensee? " mandatory="true" width="12" style="width:34%;"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
                             <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
