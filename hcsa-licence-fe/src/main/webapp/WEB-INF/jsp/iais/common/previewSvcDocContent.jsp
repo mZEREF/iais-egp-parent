@@ -11,6 +11,9 @@
             <div class="fileList">
                 <span class="filename server-site" id="130">
                     <c:choose>
+                        <c:when test="${!empty printFlag}">
+                            ${svcDoc.docName}
+                        </c:when>
                         <c:when test="${empty svcDoc.fileRepoId}">
                             ${svcDoc.docName}
                         </c:when>

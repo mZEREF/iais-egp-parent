@@ -5,20 +5,22 @@
 </style>
 <div class="panel panel-default">
     <div class="panel-heading
-        <c:choose>
-            <c:when test="${!FirstView}">
-                <c:if test="${coMap.premises=='premises'}">completed </c:if> <c:if test="${coMap.premises==''}">incompleted </c:if>
-            </c:when>
-            <c:when test="${needShowErr}">
-                <c:if test="${!empty svcSecMap.premiss}">incompleted </c:if>
-            </c:when>
-        </c:choose>
+        <c:if test="${empty printView}">
+            <c:choose>
+                <c:when test="${!FirstView}">
+                    <c:if test="${coMap.premises=='premises'}">completed </c:if> <c:if test="${coMap.premises==''}">incompleted </c:if>
+                </c:when>
+                <c:when test="${needShowErr}">
+                    <c:if test="${!empty svcSecMap.premiss}">incompleted </c:if>
+                </c:when>
+            </c:choose>
+        </c:if>
         " id="headingPremise" role="tab">
-        <h4 class="panel-title"><a role="button" class="collapse collapsed" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Premises</a></h4>
+        <h4 class="panel-title"><a role="button" class="collapse collapsed a-panel-collapse" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Premises</a></h4>
     </div>
-    <div class="panel-collapse collapse" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
+    <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">
-            <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit}">
+            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit) && empty printView}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"

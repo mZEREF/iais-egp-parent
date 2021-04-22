@@ -270,7 +270,9 @@
     });
 
     function preview(){
-        window.print();
+        // window.print();
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        window.open(url,'_blank');
     };
 
     function saveDraft() {
