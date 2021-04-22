@@ -2031,8 +2031,13 @@ public class HalpAssessmentGuideDelegator {
         }
     }
 
-    public void subDateMoh(BaseProcessClass bpc) {
-
+    public void subDateMoh(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(InboxConst.URL_MAIN_WEB_MODULE+"IaisSubmissionData");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
     public void resumeSort(BaseProcessClass bpc) {
