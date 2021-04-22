@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -108,4 +109,14 @@ public class EicGatewayFeMainClient {
         stringBuffer.append(gateWayUrl).append("/v1/myinfo-server/").append(myInfoPath).append("/v2/person-basic/{uinfin}/");
         return  IaisCommonUtils.callEicGatewayWithHeaderParam(stringBuffer.toString(),HttpMethod.GET,params,httpHeaders,String.class);
     }
+
+
+    public FeignResponseEntity<LaboratoryDevelopTestDto> syncLaboratoryDevelopTestFormFe(LaboratoryDevelopTestDto laboratoryDevelopTestDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "v1/ldt-sync", HttpMethod.POST, laboratoryDevelopTestDto,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), LaboratoryDevelopTestDto.class);
+    }
+
 }

@@ -15,7 +15,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.netflix.discovery.converters.Auto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -33,6 +35,9 @@ public class IaisSubmissionDataDelegator {
 
     @Autowired
     private LicenceInboxClient inboxClient;
+
+    @Autowired
+    private EicGatewayFeMainClient eicGatewayFeMainClient;
 
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -70,6 +75,7 @@ public class IaisSubmissionDataDelegator {
             return;
         }
         LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
+        eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
     }
 
