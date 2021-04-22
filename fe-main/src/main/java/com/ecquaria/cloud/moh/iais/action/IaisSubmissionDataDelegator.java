@@ -75,7 +75,11 @@ public class IaisSubmissionDataDelegator {
             return;
         }
         LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
-        eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
+        try{
+            eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
     }
 
