@@ -84,7 +84,7 @@ public class WriteMultipartFileAjaxController {
                     //type
                     if(!map.get("fileType")){
                         doc.setPassDocValidate(false);
-                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType");
+                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC, DOCX, PDF, JPG, PNG, GIF, TIFF","fileType");
                     }
                     if(filename.length()>100){
                         doc.setPassDocValidate(false);
