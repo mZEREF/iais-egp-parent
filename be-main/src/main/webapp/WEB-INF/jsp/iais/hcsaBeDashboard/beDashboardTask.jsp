@@ -73,7 +73,7 @@
     <input type="hidden" id="action" name="action" value="">
     <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
     <input type="hidden" id="chkIdList" name="chkIdList" value="">
-    <input type="hidden" id="dashTaskId" name="dashTaskId" value="">
+    <input type="hidden" id="taskId" name="taskId" value="">
     <div class="col-xs-12">
       <div class="center-content">
         <div class="intranet-content">
@@ -113,15 +113,17 @@
                                  value="${dashSearchParam.filters['application_type']}"></iais:select>
                   </iais:value>
                 </iais:row>
-                <iais:row>
-                  <iais:field value="Application Status"/>
-                  <iais:value width="18">
-                    <iais:select name="application_status" options="appStatusOption"
-                                 cssClass="application_status"
-                                 firstOption="Please Select"
-                                 value="${dashSearchParam.filters['application_status']}"></iais:select>
-                  </iais:value>
-                </iais:row>
+                <c:if test="${'common' ne dashSwitchActionValue}">
+                  <iais:row>
+                    <iais:field value="Application Status"/>
+                    <iais:value width="18">
+                      <iais:select name="application_status" options="appStatusOption"
+                                   cssClass="application_status"
+                                   firstOption="Please Select"
+                                   value="${dashSearchParam.filters['application_status']}"></iais:select>
+                    </iais:value>
+                  </iais:row>
+                </c:if>
                 <iais:row>
                   <iais:field value="HCI Code"/>
                   <iais:value width="18">
@@ -315,7 +317,7 @@
                         html += '<tr>';
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else if ('2' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="' + res.rows[i].dashTaskUrl + '">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else {
@@ -329,7 +331,6 @@
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';
-                    alert('advfilter' + divid);
                     $('#advfilter' + divid).after(html);
                 }
             }
@@ -339,7 +340,7 @@
     function doDashboardTaskOrShow(taskId) {
         showWaiting();
         let dashSwitchActionValue = $('#switchAction').val();
-        $("#dashTaskId").val(taskId);
+        $("#taskId").val(taskId);
         if('common' == dashSwitchActionValue) {
             intraDashboardSubmit('comassign');
         }

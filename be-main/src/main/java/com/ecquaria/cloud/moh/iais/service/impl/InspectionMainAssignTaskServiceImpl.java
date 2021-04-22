@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -365,6 +367,38 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             inspecTaskCreAndAssDto.setEditHoursFlag(AppConsts.COMMON_POOL);
         }
         return inspecTaskCreAndAssDto;
+    }
+
+    @Override
+    public GroupRoleFieldDto getGroupRoleField(LoginContext loginContext) {
+        GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
+        String curRole = loginContext.getCurRoleId();
+        String otherRole;
+        String leadRole;
+        String groupLeadName = "";
+        String groupMemBerName = "";
+        if (curRole.contains(RoleConsts.USER_LEAD)) {
+            leadRole = curRole;
+            otherRole = curRole.replaceFirst(RoleConsts.USER_LEAD, "");
+        } else {
+            leadRole = curRole + RoleConsts.USER_LEAD;
+            otherRole = curRole;
+        }
+        if (!StringUtil.isEmpty(leadRole)) {
+            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(leadRole)) {
+                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
+            } else if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
+                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_BROADCAST_LEAD);
+            } else {
+                groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
+            }
+        }
+        if (!StringUtil.isEmpty(otherRole)) {
+            groupMemBerName = MasterCodeUtil.getCodeDesc(otherRole);
+        }
+        groupRoleFieldDto.setGroupLeadName(groupLeadName);
+        groupRoleFieldDto.setGroupMemBerName(groupMemBerName);
+        return groupRoleFieldDto;
     }
 
     @Override

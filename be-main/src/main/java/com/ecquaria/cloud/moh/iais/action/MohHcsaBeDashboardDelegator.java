@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -140,6 +141,7 @@ public class MohHcsaBeDashboardDelegator {
         ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
         ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
     }
 
     /**
@@ -457,6 +459,7 @@ public class MohHcsaBeDashboardDelegator {
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
             ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", null);
+            ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
             TaskDto taskDto = taskService.getTaskById(taskId);
             String appCorrelationId = taskDto.getRefNo();
             if(!StringUtil.isEmpty(appCorrelationId)){
@@ -464,6 +467,8 @@ public class MohHcsaBeDashboardDelegator {
                 InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
                 inspecTaskCreAndAssDto.setTaskId(taskId);
                 inspecTaskCreAndAssDto.setTaskDto(taskDto);
+                //set role field
+                GroupRoleFieldDto groupRoleFieldDto = inspectionMainAssignTaskService.getGroupRoleField(loginContext);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 if(applicationDto.isFastTracking()){
                     inspecTaskCreAndAssDto.setFastTrackCheck(AppConsts.TRUE);
@@ -475,6 +480,7 @@ public class MohHcsaBeDashboardDelegator {
                 inspecTaskCreAndAssDto = inspectionMainAssignTaskService.setEditHoursFlagByAppAndUser(inspecTaskCreAndAssDto, applicationDto);
                 ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
                 ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+                ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             }
         }
     }

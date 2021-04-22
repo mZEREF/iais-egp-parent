@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 /**
@@ -70,4 +71,13 @@ public interface InspectionMainAssignTaskService {
       * @Descripation: routingTaskByCommonPool
       */
     String routingTaskByCommonPool(ApplicationViewDto applicationViewDto, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
+
+    /**
+     * @author: shicheng
+     * @Date 2020/3/20
+     * @Param: loginContext
+     * @return: GroupRoleFieldDto
+     * @Descripation: get Group Role Field
+     */
+    GroupRoleFieldDto getGroupRoleField(LoginContext loginContext);
 }
