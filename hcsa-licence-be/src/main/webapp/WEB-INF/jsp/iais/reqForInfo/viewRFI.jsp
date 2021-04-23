@@ -125,11 +125,8 @@
                                                                     <div class="fileList ">
                                                                     <span class="filename server-site" >
                                                                         <c:forEach items="${rfiMultiFile.value}"
-                                                                                   var="rfiDoc">
-                                                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"
-                                                                               title="Download"
-                                                                               class="downloadFile">${rfiDoc.docName}<c:if
-                                                                                    test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
+                                                                                   var="rfiDoc" varStatus="docStatus">
+                                                                            <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${rfiDoc.id}" docName="${rfiDoc.docName}"/>
                                                                             <br>
                                                                         </c:forEach>
                                                                     </span>

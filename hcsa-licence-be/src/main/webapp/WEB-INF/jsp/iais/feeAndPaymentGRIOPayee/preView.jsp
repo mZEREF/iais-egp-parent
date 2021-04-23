@@ -104,7 +104,7 @@
                                                         <c:forEach var="attachmentDto" items="${giroAcctFileDto.attachmentDtos}"
                                                                    varStatus="docStatus">
                                                             <p class="fileList">
-                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${attachmentDto.id}"/>&fileRepoName=${attachmentDto.docName}">${attachmentDto.docName}</a>
+                                                                <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${attachmentDto.id}" docName="${attachmentDto.docName}"/>
                                                                 <br>
                                                             </p>
                                                         </c:forEach>
