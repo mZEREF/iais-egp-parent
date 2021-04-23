@@ -344,17 +344,7 @@ public class RequestForInformationDelegator {
         if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
             applicantName=orgUserDtoList.get(0).getDisplayName();
         }
-        StringBuilder stringBuilder=new StringBuilder();
-        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
-            for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
-            }
-        }
-        if(licPremisesReqForInfoDto1.isNeedDocument()){
-            for (int j=0;j<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
-            }
-        }
+        StringBuilder stringBuilder=requestForInformationService.setEmailAppend(licPremisesReqForInfoDto1, !StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;
@@ -619,17 +609,7 @@ public class RequestForInformationDelegator {
             applicantName=orgUserDtoList.get(0).getDisplayName();
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder=new StringBuilder();
-        if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
-            for (int i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
-            }
-        }
-        if(licPremisesReqForInfoDto.isNeedDocument()){
-            for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
-            }
-        }
+        StringBuilder stringBuilder=requestForInformationService.setEmailAppend(licPremisesReqForInfoDto, !StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licPremisesReqForInfoDto.getLicenseeId();

@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -585,6 +586,45 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             log.error(e.getMessage(),e);
         }
     }
+
+    @Override
+    public StringBuilder setEmailAppend(LicPremisesReqForInfoDto licPremisesReqForInfoDto,boolean reqTypeInfo) {
+        StringBuilder stringBuilder=new StringBuilder();
+        if(reqTypeInfo){
+            for (int i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            }
+        }
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+
+            int seqNum=1;
+            for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                if(doc.getSeqNum()==null){
+                    doc.setSeqNum(seqNum);
+                }
+                seqNum++;
+            }
+            Map<Integer,List<LicPremisesReqForInfoDocDto>> licPremisesReqForInfoMultiFileDto=IaisCommonUtils.genNewHashMap();
+            for (int i=1;i<seqNum;i++){
+                List<LicPremisesReqForInfoDocDto> docs=IaisCommonUtils.genNewArrayList();
+                for (LicPremisesReqForInfoDocDto docDto:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
+                ) {
+                    if(docDto.getSeqNum().equals(i)){
+                        docs.add(docDto);
+                    }
+                }
+                if(!docs.isEmpty()){
+                    licPremisesReqForInfoMultiFileDto.put(i,docs);
+                }
+            }
+            for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> multiFileDto:licPremisesReqForInfoMultiFileDto.entrySet()
+                 ) {
+                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(multiFileDto.getValue().get(0).getTitle()).append("</p>");
+            }
+        }
+        return stringBuilder;
+    }
+
     private void sendEmail(ApplicationDto applicationDto, String time) throws Exception{
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
@@ -669,18 +709,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             applicantName=orgUserDtoList.get(0).getDisplayName();
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder=new StringBuilder();
-        int i=0;
-        if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
-            for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
-            }
-        }
-        if(licPremisesReqForInfoDto.isNeedDocument()){
-            for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
-            }
-        }
+        StringBuilder stringBuilder=setEmailAppend(licPremisesReqForInfoDto,!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licPremisesReqForInfoDto.getLicenseeId();
