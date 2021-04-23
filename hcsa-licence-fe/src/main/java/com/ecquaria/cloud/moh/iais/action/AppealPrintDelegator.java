@@ -4,6 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -24,6 +27,7 @@ public class AppealPrintDelegator {
 
     public void prepareData(BaseProcessClass bpc){
         log.info("------>prepareData start<------");
+
         bpc.request.setAttribute("crud_action_type","appeal");
         Map<String, File> map = (Map<String, File>) bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
         Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)bpc.request.getSession().getAttribute("pageShowFileHashMap");
@@ -66,6 +70,23 @@ public class AppealPrintDelegator {
         }
         Collections.sort(pageShowFileDtos,(s1, s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
         bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+        String fromWhichPage = "";
+        fromWhichPage = ParamUtil.getString(bpc.request,"whichPage");
+        if ("wdPage".equals(fromWhichPage)){
+            WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+            if (withdrawnDto == null){
+                withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                if (withdrawnDto != null){
+                    String withdrawnReason = withdrawnDto.getWithdrawnReason();
+                    String codeDesc = MasterCodeUtil.getCodeDesc(withdrawnReason);
+                    withdrawnDto.setWithdrawnReason(codeDesc);
+                    ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
+                }
+            }
+            bpc.request.setAttribute("crud_action_type","wdPrint");
+        }else{
+            bpc.request.setAttribute("crud_action_type","appeal");
+        }
     }
     public void start(BaseProcessClass bpc){
         log.info("------>mohAppealPrint start<------");

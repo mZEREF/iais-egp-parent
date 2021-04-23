@@ -17,6 +17,7 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="navigation-gp">
+            <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
                     <div class="internet-content">
@@ -346,6 +347,9 @@
         });
         $("[name='withdraw_app_list']").val(appNoList);
         submit("withdrawalStep");
+    }
+    function printWDPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
     }
 
     function toApplicationView(appMaskNo, appNo) {
