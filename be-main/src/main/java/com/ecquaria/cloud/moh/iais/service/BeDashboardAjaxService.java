@@ -11,11 +11,11 @@ import java.util.Map;
 public interface BeDashboardAjaxService {
 
     /**
-      * @author: shicheng
-      * @Date 2021/4/19
-      * @Param: groupNo, loginContext, map
-      * @return: void
-      * @Descripation: Common Pool Dropdown
-      */
-    Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue);
+     * @author: shicheng
+     * @Date 2021/4/19
+     * @Param: groupNo, loginContext, map
+     * @return: void
+     * @Descripation: Common Pool Dropdown
+     */
+    Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo);
 }

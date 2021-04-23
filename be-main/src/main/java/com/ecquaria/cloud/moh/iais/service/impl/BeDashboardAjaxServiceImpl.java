@@ -66,7 +66,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     private InspectionTaskMainClient inspectionTaskMainClient;
 
     @Override
-    public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue) {
+    public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashComPoolAjaxQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -82,6 +82,10 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             searchParam.addParam("appCorrId_list", appPremCorrId);
             for(int i = 0; i < appCorrId_list.size(); i++){
                 searchParam.addFilter("T2.ID" + i, appCorrId_list.get(i));
+            }
+            //filter appNo
+            if(!StringUtil.isEmpty(dashFilterAppNo)){
+                searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
