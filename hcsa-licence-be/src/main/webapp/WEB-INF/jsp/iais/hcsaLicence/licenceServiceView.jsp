@@ -32,8 +32,7 @@
       <%@include file="viewPremises.jsp"%>
     </c:otherwise>
   </c:choose>
-  <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
-       style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+  <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body" style="text-align: center;">
@@ -42,9 +41,7 @@
           </div>
         </div>
         <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                  data-dismiss="modal" onclick="cancel()">OK
-          </button>
+          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
         </div>
       </div>
     </div>
