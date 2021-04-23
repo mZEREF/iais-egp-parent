@@ -126,14 +126,14 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
                 List<ApplicationGroupDto> applicationGroup = applicationClient.getApplicationGroupByLicensee(licenseeDto.getId()).getEntity();
                 if (IaisCommonUtils.isNotEmpty(applicationGroup)){
                     for (ApplicationGroupDto group : applicationGroup){
-                        sendEachApplication(group, organization.getUenNo(), applicantName, emailId, smsId, msgId);
+                        sendEachApplication(licenseeDto, group, organization.getUenNo(), applicantName, emailId, smsId, msgId);
                     }
                 }
             }
         }
     }
 
-    private void sendEachApplication(ApplicationGroupDto applicationGroup, String uen, String applicantName, String emailId,String smsId,String msgId){
+    private void sendEachApplication(LicenseeDto licenseeDto, ApplicationGroupDto applicationGroup, String uen, String applicantName, String emailId,String smsId,String msgId){
         String emailSubject = getEmailSubject(emailId,null);
         String smsSubject = getEmailSubject(smsId ,null);
         String messageSubject = getEmailSubject(msgId,null);
@@ -189,9 +189,14 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
                     String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                     StringBuilder hrefStr = new StringBuilder();
                     hrefStr.append("<a href=\"").append(loginUrl).append("\">HALP</a>");
+
                     templateContent.put("HALP", hrefStr.toString());
                     templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
                     templateContent.put("telNo", systemParamConfig.getSystemPhoneNumber());
+
+                    if (Optional.ofNullable(licenseeDto.getSingpassExpiredDate()).isPresent()){
+                        templateContent.put("GraceDate", DateUtil.formatDate(licenseeDto.getSingpassExpiredDate()));
+                    }
 
                     emailParam.setTemplateId(emailId);
                     emailParam.setTemplateContent(templateContent);
