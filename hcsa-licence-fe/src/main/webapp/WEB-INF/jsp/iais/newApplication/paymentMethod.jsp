@@ -51,6 +51,12 @@
 </div>
 
 <div class="row">
+    <div class="col-xs-12 col-md-12">
+        <iais:message key="NEW_ACK017" escape="false"/>
+    </div>
+</div>
+
+<div class="row">
 <%--    <c:choose>--%>
 <%--        <c:when test="${'APTY004' == AppSubmissionDto.appType}">--%>
 <%--            <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">--%>
