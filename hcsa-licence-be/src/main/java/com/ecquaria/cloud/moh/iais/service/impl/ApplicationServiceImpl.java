@@ -360,8 +360,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private void sendChecklistReminder(String queryCode, String emailId, String noticeId, String smsId, List<SelfAssMtEmailDto> allAssLt){
-        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (SelfAssMtEmailDto i : allAssLt) {
+            Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             String reqRefNum;
             String refType;
             String msgReqRefNum;
