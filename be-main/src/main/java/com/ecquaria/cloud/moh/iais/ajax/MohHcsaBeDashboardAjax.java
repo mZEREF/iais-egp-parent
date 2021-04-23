@@ -69,10 +69,11 @@ public class MohHcsaBeDashboardAjax {
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
+        String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         String groupNo = request.getParameter("groupNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
-            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction);
+            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction, dashFilterAppNo);
             //set url
             map = setDashComPoolUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {

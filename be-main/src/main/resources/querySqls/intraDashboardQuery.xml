@@ -62,6 +62,7 @@
                 ) T5
             JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID
             WHERE 1 = 1
+            <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>

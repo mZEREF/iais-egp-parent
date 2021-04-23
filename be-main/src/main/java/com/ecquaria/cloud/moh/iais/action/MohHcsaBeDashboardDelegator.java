@@ -375,8 +375,16 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardKpi(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardKpi start ...."));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         SearchParam searchParam = getSearchParam(bpc, true, null);
         String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
+        //set form value
+        searchParam = setFilterByDashForm(searchParam, bpc.request, switchAction);
+        //get work groups
+        List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+        mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
+        ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
     }
 
     /**
