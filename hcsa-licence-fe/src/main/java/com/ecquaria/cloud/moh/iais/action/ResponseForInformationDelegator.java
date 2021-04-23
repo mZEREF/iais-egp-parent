@@ -150,6 +150,10 @@ public class ResponseForInformationDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) licPremisesReqForInfoDto.getLicPremisesReqForInfoMultiFileDto());
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
+        if(CSRF!=null){
+            ParamUtil.setSessionAttr(request,"replaceCsrf",CSRF);
+        }
         // 		doRFI->OnStepProcess
     }
 
