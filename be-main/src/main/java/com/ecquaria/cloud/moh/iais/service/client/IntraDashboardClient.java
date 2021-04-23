@@ -21,6 +21,6 @@ public interface IntraDashboardClient {
     @PostMapping(value = "/halp-intra-dash/dash-kpi-pool")
     FeignResponseEntity<SearchResult<DashKpiPoolQuery>> searchDashKpiPoolResult(@RequestBody SearchParam searchParam);
 
-    @PostMapping(value = "/dash-kpi-pool/drop")
+    @PostMapping(value = "/halp-intra-dash/dash-kpi-pool/drop")
     FeignResponseEntity<SearchResult<DashKpiPoolAjaxQuery>> searchDashKpiPoolDropResult(@RequestBody SearchParam searchParam);
 }
