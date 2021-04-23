@@ -526,6 +526,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
                         insAppt.setStartDate(appt.getSpecificStartDate());
                         insAppt.setSpecificInspDate(appt.getInspNewDate());
                         insAppt.setReschedulingCount(insAppt.getReschedulingCount()+1);
+                        insAppt.setApptRefNo(appt.getApptRefNo());
                         processReSchedulingDto.setSaveDate(appt.getInspNewDate());
 
                     }

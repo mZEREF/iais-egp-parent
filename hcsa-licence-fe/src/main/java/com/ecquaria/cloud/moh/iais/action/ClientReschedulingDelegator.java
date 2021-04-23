@@ -473,17 +473,18 @@ public class ClientReschedulingDelegator {
                                 userIds.add(uc.getLoginUserId());
                             }
                             apptViewDtos.get(id).setUserIds(userIds);
+                            apptViewDtos.get(id).setApptRefNo(result.get(0).getApptRefNo());
                         }else {
                             apptViewDtos.get(id).setInspNewDate(null);
                             apptViewDtos.get(id).setUserIds(null);
+                            apptViewDtos.get(id).setApptRefNo(null);
                             errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),OAPPT_ERR012Msg);
-
                         }
                     }else {
                         apptViewDtos.get(id).setInspNewDate(null);
                         apptViewDtos.get(id).setUserIds(null);
                         errMap.put("inspDate" + apptViewDtos.get(id).getAppId(),OAPPT_ERR012Msg);
-
+                        apptViewDtos.get(id).setApptRefNo(null);
                     }
                 }
             }

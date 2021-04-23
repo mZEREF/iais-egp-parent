@@ -113,7 +113,7 @@
                                                                         <c:forEach var="file" items="${fileList}" varStatus="fileStat">
                                                                             <c:if test="${not empty file.docName }">
                                                                                 <p class="fileList">
-                                                                                    <iais:downloadLink fileRepoIdName="fileRo${fileStat.index}" fileRepoId="${file.id}" docName="${file.docName}"/>
+                                                                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}">${file.docName}</a>
                                                                                     &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button><input hidden name='fileSize' value='${file.docSize}'/></p>
                                                                             </c:if>
                                                                         </c:forEach>
@@ -182,6 +182,7 @@
         console.log(error)
         if (error == "N"){
             $(fileId).html($("#fileMaxMBMessage").val());
+            callAjaxShowFile();
             $("#selectedFile").val('');
         }
     }
@@ -221,6 +222,31 @@
         $.ajax({
             type: "post",
             url:  "${pageContext.request.contextPath}/uploadRfiFromFile",
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            dataType: "text",
+            success: function (data) {
+                $(fileId).html(data);
+            },
+            error: function (msg) {
+                $("#selectedFile").val('');
+                dismissWaiting();
+            }
+        });
+    }
+
+    function callAjaxShowFile(){
+        var formData = new FormData($("#mainForm")[0]);
+
+
+        var configIndex =$('input[name="uploadKey"]').val();
+        var fileId= '#uploadFileBox'+configIndex;
+        console.log('uploadFileBox : ' + fileId);
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/showRfiFromFile",
             data: formData,
             async:true,
             processData: false,

@@ -118,6 +118,17 @@ public class WriteMultipartFileAjaxController {
         return data;
     }
 
+    @RequestMapping(value = "/showRfiFromFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
+    public @ResponseBody String showInternalFile(HttpServletRequest request,@RequestParam("uploadKey") String configIndex) {
+        String data = "";
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"rfiFileDto"+configIndex);
+        if(blastManagementDto != null){
+            String errUploadFile="";
+            data = setHtmlValue(request,blastManagementDto.getAttachmentDtos(),errUploadFile,configIndex);
+        }
+        return data;
+    }
+
     @RequestMapping(value = "/deleteGiroFromFile", method = RequestMethod.POST)
     @ResponseBody
     public String deleteInternalFile(HttpServletRequest request){
@@ -194,7 +205,7 @@ public class WriteMultipartFileAjaxController {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"rfiFileDto"+configIndex);
         if(blastManagementDto != null&&blastManagementDto.getAttachmentDtos()!=null){
             for (AttachmentDto att:blastManagementDto.getAttachmentDtos()
-                 ) {
+            ) {
                 if(att.getId().equals(fileRepoId)){
                     byte[] fileData =att.getData();
                     if(fileData != null){
