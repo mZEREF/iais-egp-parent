@@ -87,6 +87,7 @@ public class AppealPrintDelegator {
         }else{
             bpc.request.setAttribute("crud_action_type","appeal");
         }
+        String remarks = bpc.request.getParameter("remarks");
     }
     public void start(BaseProcessClass bpc){
         log.info("------>mohAppealPrint start<------");
