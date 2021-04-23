@@ -183,50 +183,9 @@
         if (error == "N"){
             $(fileId).html($("#fileMaxMBMessage").val());
             $("#selectedFile").val('');
-        }else if(error == "Y"){
-            if("Y" == validateAllFileSize()){
-                callAjaxUploadFile();
-            }else{
-                $(fileId).html($("#fileMaxMBMessage").val());
-                $("#selectedFile").val('');
-            }
         }
     }
 
-    function validateAllFileSize(){
-        var maxSize = $('#sysFileSize').val();
-        var fileSize = (Math.floor(getAllFileSize() / 1024));
-        console.log('all file size : ' + fileSize);
-        if(fileSize >= maxSize){
-            return "N";
-            console.log('validate all fileSize flag : N');
-        }
-        console.log('validate all fileSize flag : Y');
-        return "Y";
-    }
-
-    function getAllFileSize(){
-        var allSize = 0;
-        $('input[name="fileSize"]').each(function(){
-            allSize += Math.round($(this).val());
-        });
-        var fileId= '#selectedFile';
-        var fileV = $(fileId).val();
-        var file = $(fileId).get(0).files[0];
-        console.log(fileV)
-        console.log(file)
-        console.log(file.size / (1024))
-        var currentFileSize = 0;
-        if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            currentFileSize = 0;
-        }else{
-            currentFileSize = Math.round(file.size / (1024)) + Math.round(allSize);
-            console.log('test currentFileSize1 : ' + currentFileSize);
-        }
-        console.log('currentFileSize2 : ' + currentFileSize);
-        console.log('all size : ' + allSize);
-        return currentFileSize;
-    }
 
     function writeMessageDeleteFile(deleteWriteMessageFileId,configIndex){
         showWaiting();
@@ -246,7 +205,8 @@
                 dismissWaiting();
             },
             error: function (msg) {
-                alert("error");
+                $("#selectedFile").val('');
+                dismissWaiting();
             }
         });
     }
@@ -270,7 +230,8 @@
                 $(fileId).html(data);
             },
             error: function (msg) {
-                alert("error");
+                $("#selectedFile").val('');
+                dismissWaiting();
             }
         });
     }
