@@ -1,3 +1,4 @@
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
   <div id="wizard-page-title"></div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -275,7 +276,7 @@
 <%--      </div>--%>
       <div class="modal-body" style="text-align: center;">
         <div class="row">
-          <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+          <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
         </div>
       </div>
       <div class="row " style="margin-top: 5%;margin-bottom: 5%">

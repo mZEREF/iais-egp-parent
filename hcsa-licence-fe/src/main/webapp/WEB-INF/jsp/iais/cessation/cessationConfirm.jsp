@@ -4,6 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-internet"/>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
@@ -384,7 +385,7 @@
           <div class="modal-content">
             <div class="modal-body" style="text-align: center;">
               <div class="row">
-                <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
               </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">
