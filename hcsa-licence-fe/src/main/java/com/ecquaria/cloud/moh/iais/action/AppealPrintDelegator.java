@@ -13,9 +13,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class AppealPrintDelegator {
 
     public void prepareData(BaseProcessClass bpc){
-
+        log.info("------>prepareData start<------");
+        bpc.request.setAttribute("crud_action_type","appeal");
     }
     public void start(BaseProcessClass bpc){
-
+        log.info("------>mohAppealPrint start<------");
     }
 }

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-internet"/>
 
@@ -224,12 +225,8 @@ $('#submit').click(function () {
   }
 });
   $("#print-review").click(function () {
-      var oldstr = document.body.innerHTML;
-      var newstr =document.getElementById('div_print').innerHTML;
-      document.body.innerHTML = newstr;
-      window.print();
-      document.body.innerHTML = oldstr;
-      return false;
+      var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohAppealPrint/1/",request)%>';
+      window.open(url,'_blank');
   })
   var debug = true;//true: add debug logs when cloning
   var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)
