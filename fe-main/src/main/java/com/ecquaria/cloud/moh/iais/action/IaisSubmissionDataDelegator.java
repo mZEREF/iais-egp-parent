@@ -25,9 +25,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Delegator("submissionDataDelegator")
 @Slf4j
@@ -46,9 +45,12 @@ public class IaisSubmissionDataDelegator {
             List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId).getEntity();
             List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
             if (entity != null){
-                for (AppGrpPremisesDto appGrpPremisesDto:entity
+                ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getPremisesSelect))), ArrayList::new));
+                for (AppGrpPremisesDto appGrpPremisesDto:collect
                      ) {
-                    String hciName = appGrpPremisesDto.getPremisesSelect();
+                    String hciName = appGrpPremisesDto.getAddress();
                     String hciCode = appGrpPremisesDto.getHciCode();
                     if (!StringUtil.isEmpty(hciName)){
                         SelectOption selectOption = new SelectOption(hciCode,hciName);
