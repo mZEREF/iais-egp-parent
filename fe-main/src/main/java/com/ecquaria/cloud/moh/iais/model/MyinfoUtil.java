@@ -17,6 +17,9 @@ package com.ecquaria.cloud.moh.iais.model;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.jwt.SignatureUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
@@ -30,7 +33,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 /**
@@ -159,6 +165,38 @@ public class MyinfoUtil {
 			sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
 			sb.append("\",apex_l2_eg_version=\"1.0\"");
 		return sb.toString();
+	}
+
+	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl){
+		StringBuilder sb = new StringBuilder();
+		if( !IaisCommonUtils.isEmpty(attrs)){
+			for (int i = 0; i < attrs.size(); i++) {
+				if (i == (attrs.size() - 1)) {
+					sb.append(attrs.get(i));
+				} else {
+					sb.append(attrs.get(i)).append(',');
+				}
+			}
+		}
+		String attribute = sb.toString();
+		String timestamp = String.valueOf(new Date().getTime());
+		String nonceValue = timestamp + ThreadLocalRandom.current().nextLong(1000, 9999);
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
+		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","SHA256withRSA");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", appId);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "SHA256withRSA");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
 }

@@ -15,4 +15,8 @@ public interface MyInfoClient {
     ResponseEntity<String> searchDataByIdNumber(@RequestHeader("Authorization") String authorization, @PathVariable(name = "uinfin") String idNumber,
                                                 @RequestParam(name = "attributes") String[] attrs, @RequestParam(name = "clientId") String clientId,
                                                 @RequestParam(name = "singpassEserviceId") String singPassEServiceId, @RequestParam(name = "txnNo", required = false) String txnNo);
+
+    @GetMapping(value = "/person/{uinfin}/",consumes = "application/jose",produces="application/jose")
+    ResponseEntity<String> searchByIdNumber(@RequestHeader("Authorization") String authorization, @PathVariable(name = "uinfin") String idNumber,
+                                                @RequestParam(name = "attributes") String[] attrs);
 }
