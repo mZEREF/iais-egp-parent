@@ -60,7 +60,7 @@
                                             </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Date LDT was made or will be made availabe" width="11" required="true"/>
+                                        <iais:field value="Date LDT was made or will be made available" width="11" required="true"/>
                                             <iais:value width="11">
                                                 <iais:datePicker id="ldtDate" name="ldtDate" value="${param.ldtDate}"></iais:datePicker>
                                                 <span class="error-msg" name="errorMsg" id="error_ldtDate"></span>
