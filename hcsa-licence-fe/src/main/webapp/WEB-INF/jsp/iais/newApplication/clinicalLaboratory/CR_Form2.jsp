@@ -1,3 +1,4 @@
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <style>
     table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
         margin-bottom: 15px;
@@ -617,7 +618,7 @@
 <%--            </div>--%>
             <div class="modal-body" style="text-align: center;">
                 <div class="row">
-                    <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                    <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">

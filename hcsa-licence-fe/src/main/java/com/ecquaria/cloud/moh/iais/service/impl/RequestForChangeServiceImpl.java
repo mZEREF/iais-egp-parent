@@ -65,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.validate.impl.ValidateEasmts;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -129,7 +130,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     AppSubmissionService appSubmissionService;
-
+    @Autowired
+    private ValidateEasmts validateEasmts;
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
         return licenceClient.getPremises(licenseeId).getEntity();
@@ -1358,9 +1360,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 needAppendMsg = true;
                             }
                         }
+                    }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
+                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i);
                     }
-
-
                 } else {
                     //premiseSelect = organization hci code
 

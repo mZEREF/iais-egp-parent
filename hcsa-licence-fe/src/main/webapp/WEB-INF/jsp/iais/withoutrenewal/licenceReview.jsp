@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -141,11 +142,9 @@
                                 <div class="col-xs-12 col-sm-8">
                                     <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <c:if test="${isSingle == 'Y'}">
-                                    <div class="col-xs-12 col-sm-1">
-                                        <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
-                                    </div>
-                                </c:if>
+                                <div class="col-xs-12 col-sm-1">
+                                    <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+                                </div>
                                 <div class="col-xs-12 col-sm-3">
                                     <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Make Payment</a></div>
                                     <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
@@ -279,7 +278,9 @@
     });
 
     $("#print-review").click(function () {
-        window.print();
+       // window.print();
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY004",request)%>';
+        window.open(url,'_blank');
     })
 
 

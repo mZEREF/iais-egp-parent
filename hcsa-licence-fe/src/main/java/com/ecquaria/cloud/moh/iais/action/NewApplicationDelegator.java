@@ -3008,6 +3008,9 @@ public class NewApplicationDelegator {
                 //sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
+                if (ackPageAppSubmissionDto != null && ackPageAppSubmissionDto.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, ackPageAppSubmissionDto.get(0).getPaymentMethod());
+                }
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
