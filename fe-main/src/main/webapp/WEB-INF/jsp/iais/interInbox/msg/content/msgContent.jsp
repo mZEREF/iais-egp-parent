@@ -9,7 +9,7 @@
                         <div class="panel panel-info">
                             <h3 class="panel-heading">Message Content</h3>
                             <div class="panel-body">
-                                <c:out value="${IAIS_MSG_CONTENT}"></c:out>
+                                <c:out value="${IAIS_MSG_CONTENT}" escapeXml="false"></c:out>
                             </div>
                         </div>
                         <div class="row" style="margin-top: 1.5%">
