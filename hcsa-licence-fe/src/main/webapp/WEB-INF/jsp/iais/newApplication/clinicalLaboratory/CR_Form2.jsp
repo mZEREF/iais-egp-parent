@@ -833,6 +833,7 @@
 
     function aaa(obj){
         var no = $(obj).val();
+        var $CurrentPsnEle = $(obj).closest('table.assignContent');
         var jsonData = {
             'prgNo': no
         };
@@ -844,18 +845,29 @@
             'success': function (data) {
                 if(data.regno==null){
                     $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo($CurrentPsnEle);
                     return;
                 }
                 if (data.name == null) {
+                    clearPrsInfo($CurrentPsnEle);
                     return;
                 }
                 loading(data,obj);
             },
             'error': function () {
+                clearPrsInfo($CurrentPsnEle);
             }
         });
     }
 
+    var clearPrsInfo = function ($CurrentPsnEle) {
+        var dropdownVal = '-1';
+        $CurrentPsnEle.find('select[name="specialty"]').val(dropdownVal);
+        var specialtyDisplayVal = $CurrentPsnEle.find('option[value="' + dropdownVal + '"]').html();
+        $CurrentPsnEle.find('select[name="specialty"]').next().find('.current').html(specialtyDisplayVal);
+        $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
+        $CurrentPsnEle.find('input[name="qualification"]').val('');
+    };
 
     const loading = function (data,obj) {
         var specialtyHtml = $("select[name='specialty']").val();
