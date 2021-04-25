@@ -1620,6 +1620,55 @@ public class NewApplicationHelper {
         return specialtySelectList;
     }
 
+    public static List<SelectOption> genEasMtsSpecialtySelectList(String svcCode){
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
+        specialtySelectList.add(new SelectOption("-1", "Please Select"));
+        if(!StringUtil.isEmpty(svcCode)){
+            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(svcCode)){
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_NO_SPECIALTY, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_NO_SPECIALTY)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_EMERGENCY_MEDICINE, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_EMERGENCY_MEDICINE)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_GENERAL_SURGERY, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_GENERAL_SURGERY)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_ANAESTHESIA, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_ANAESTHESIA)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_INTENSIVE_CARE, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_INTENSIVE_CARE)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS)));
+
+            }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)){
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_NO_SPECIALTY, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_NO_SPECIALTY)));
+                specialtySelectList.add(new SelectOption(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS)));
+            }
+        }
+        return specialtySelectList;
+    }
+
+    public static List<SelectOption> genEasMtsDesignationSelectList(List<HcsaServiceDto> hcsaServiceDtos){
+        List<SelectOption> designationSelectList = IaisCommonUtils.genNewArrayList();
+        designationSelectList.add(new SelectOption("-1", "Please Select"));
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            boolean hasEasSvc = false;
+            boolean hasMtsSvc = false;
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                    hasEasSvc = true;
+                }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                    hasMtsSvc = true;
+                }
+            }
+            SelectOption sp1 = new SelectOption(ApplicationConsts.EAS_MTS_DESIGNATION_ONLY_EAS, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_DESIGNATION_ONLY_EAS));
+            SelectOption sp2 = new SelectOption(ApplicationConsts.EAS_MTS_DESIGNATION_ONLY_MTS, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_DESIGNATION_ONLY_MTS));
+            SelectOption sp3 = new SelectOption(ApplicationConsts.EAS_MTS_DESIGNATION_EAS_AND_MTS, MasterCodeUtil.getCodeDesc(ApplicationConsts.EAS_MTS_DESIGNATION_EAS_AND_MTS));
+            if(hasEasSvc && hasMtsSvc){
+                designationSelectList.add(sp1);
+                designationSelectList.add(sp2);
+                designationSelectList.add(sp3);
+            }else if(hasEasSvc){
+                designationSelectList.add(sp1);
+            }else if(hasMtsSvc){
+                designationSelectList.add(sp2);
+            }
+        }
+        return designationSelectList;
+    }
+
     //todo: change this mode
     public static List<SelectOption> getAllSpecialtySelList(){
         List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();

@@ -97,6 +97,22 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_AUDIT_TRAIL_OPERATION_TYPE       = "6BB07B6A-F168-EA11-BE82-000C29F371DC";
     public static final String CATE_ID_MOH_RELATED_URLS                 = "B61C07F8-ACED-EA11-8B79-000C293F0C99";
     public static final String CATE_ID_DAY_NAMES                        = "D50DAB67-347A-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_PROFESSION_BOARD                 = "ED29FF07-7FA1-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_EAS_MTS_SPECIALTY                = "6DC1ED79-08A4-EB11-8B7F-000C29FD17F9";
+
+    //charges
+    public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY     = "E6C7DED1-D5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_AIRWAY_AND_VENTILATION_EQUIPMENT_CHARGES_TYPE    = "1E1A2D13-DAA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_INTRAVENOUS_EQUIPMENT_CHARGES_TYPE               = "89706AEC-DBA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_CARDIAC_EQUIPMENT_CHARGES_TYPE                   = "1F7D8F70-DCA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_IMMOBILISATION_DEVICE_CHARGES_TYPE               = "24777D7F-DDA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_TRAUMA_SUPPLIES_OR_EQUIPMENT_CHARGES_TYPE        = "1AFA016A-F4A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE         = "BC3A0435-F5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MEDICATIONS_CHARGES_TYPE                         = "A721D57E-F5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MISCELLANEOUS_CHARGES_TYPE                       = "5ADA2A9A-F6A3-EB11-8B7F-000C29FD17F9";
+
+
     /**
      * @description: refresh the master codes into cache
      *

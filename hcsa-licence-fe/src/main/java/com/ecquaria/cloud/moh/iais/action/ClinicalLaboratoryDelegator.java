@@ -14,12 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -30,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -57,6 +60,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -113,7 +117,12 @@ public class ClinicalLaboratoryDelegator {
     public static final String ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String RELOADSVCDOC = "ReloadSvcDoc";
     public static final String SERVICEPERSONNELTYPE = "ServicePersonnelType";
-
+    public static final String VEHICLEDTOLIST = "vehicleDtoList";
+    public static final String VEHICLECONFIGDTO = "vehicleConfigDto";
+    public static final String CLINICALDIRECTORDTOLIST = "clinicalDirectorDtoList";
+    public static final String CLINICALDIRECTORCONFIG = "clinicalDirectorConfig";
+    public static final String EASMTSSPECIALTYSELECTLIST = "easMtsSpecialtySelectList";
+    public static final String EASMTSDESIGNATIONSELECTLIST = "easMtsDesignationSelectList";
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
@@ -1759,6 +1768,117 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
 
+    /**
+     * StartStep: prePareVehicles
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prePareVehicles(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prePareVehicles start ..."));
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //vehicle config
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_VEHICLES);
+        if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            ParamUtil.setRequestAttr(bpc.request, VEHICLECONFIGDTO, hcsaSvcPersonnelDto);
+        }
+
+        List<AppSvcVehicleDto> appSvcVehicleDtos = currSvcInfoDto.getAppSvcVehicleDtoList();
+        ParamUtil.setRequestAttr(bpc.request,VEHICLEDTOLIST,appSvcVehicleDtos);
+
+
+        log.debug(StringUtil.changeForLog("prePareVehicles end ..."));
+    }
+
+    /**
+     * StartStep: doVehicles
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doVehicles(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("doVehicles start ..."));
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //retrieve date from page
+        List<AppSvcVehicleDto> appSvcVehicleDtos = genAppSvcVehicleDto(bpc.request);
+        currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
+        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        log.debug(StringUtil.changeForLog("doVehicles end ..."));
+    }
+
+    /**
+     * StartStep: prePareClinicalDirector
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prePareClinicalDirector(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prePareClinicalDirector start ..."));
+
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //vehicle config
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+        if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            ParamUtil.setRequestAttr(bpc.request, CLINICALDIRECTORCONFIG, hcsaSvcPersonnelDto);
+        }
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = currSvcInfoDto.getAppSvcClinicalDirectorDtoList();
+        ParamUtil.setRequestAttr(bpc.request,CLINICALDIRECTORDTOLIST,appSvcClinicalDirectorDtos);
+        List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
+        ParamUtil.setRequestAttr(bpc.request,EASMTSSPECIALTYSELECTLIST,easMtsSpecialtySelectList);
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
+        ParamUtil.setRequestAttr(bpc.request,EASMTSDESIGNATIONSELECTLIST,easMtsDesignationSelectList);
+
+
+        log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
+    }
+
+    /**
+     * StartStep: doClinicalDirector
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doClinicalDirector(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("doClinicalDirector start ..."));
+
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //retrieve date from page
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = genAppSvcClinicalDirectorDto(bpc.request);
+        currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
+        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+
+        log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
+    }
+
+    /**
+     * StartStep: prePareCharges
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prePareCharges(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prePareCharges start ..."));
+        log.debug(StringUtil.changeForLog("prePareCharges end ..."));
+    }
+
+    /**
+     * StartStep: doCharges
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doCharges(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("doCharges start ..."));
+        log.debug(StringUtil.changeForLog("doCharges end ..."));
+    }
     //=============================================================================
     //private method
     //=============================================================================
@@ -2311,6 +2431,103 @@ public class ClinicalLaboratoryDelegator {
         return appSvcCgoDtoList;
     }
 
+    private List<AppSvcVehicleDto> genAppSvcVehicleDto(HttpServletRequest request){
+        List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+        int vehicleLength = ParamUtil.getInt(request,"vehiclesLength");
+        for(int i = 0; i < vehicleLength ; i++){
+            String vehicleName = ParamUtil.getString(request,"vehicleName"+i);
+            String chassisNum = ParamUtil.getString(request,"chassisNum"+i);
+            String engineNum = ParamUtil.getString(request,"engineNum"+i);
+            AppSvcVehicleDto appSvcVehicleDto = new AppSvcVehicleDto();
+            appSvcVehicleDto.setVehicleName(vehicleName);
+            appSvcVehicleDto.setChassisNum(chassisNum);
+            appSvcVehicleDto.setEngineNum(engineNum);
+            appSvcVehicleDtos.add(appSvcVehicleDto);
+        }
+        return appSvcVehicleDtos;
+    }
+
+    private List<AppSvcClinicalDirectorDto> genAppSvcClinicalDirectorDto(HttpServletRequest request){
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
+        int cdLength = ParamUtil.getInt(request,"cdLength");
+        for(int i = 0; i < cdLength ; i++){
+            String professionBoard = ParamUtil.getString(request,"professionBoard"+i);
+            String profRegNo = ParamUtil.getString(request,"profRegNo"+i);
+            String name = ParamUtil.getString(request,"name"+i);
+            String salutation = ParamUtil.getString(request,"salutation"+i);
+            String idType = ParamUtil.getString(request,"idType"+i);
+            String idNo = ParamUtil.getString(request,"idNo"+i);
+            String designation = ParamUtil.getString(request,"designation"+i);
+            String specialty = ParamUtil.getString(request,"specialty"+i);
+            String otherSpecialty = ParamUtil.getString(request,"otherSpecialty"+i);
+            String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
+            String typeOfCurrRegi = ParamUtil.getString(request,"typeOfCurrRegi"+i);
+            String currRegiDateStr = ParamUtil.getString(request,"currRegiDate"+i);
+            String praCerEndDateStr = ParamUtil.getString(request,"praCerEndDate"+i);
+            String typeOfRegister = ParamUtil.getString(request,"typeOfRegister"+i);
+            String relevantExperience = ParamUtil.getString(request,"relevantExperience"+i);
+            String holdCerByEMS = ParamUtil.getString(request,"holdCerByEMS"+i);
+            String aclsExpiryDateStr = ParamUtil.getString(request,"aclsExpiryDate"+i);
+            String bclsExpiryDateStr = ParamUtil.getString(request,"bclsExpiryDate"+i);
+            String mobileNo = ParamUtil.getString(request,"mobileNo"+i);
+            String emailAddr = ParamUtil.getString(request,"emailAddr"+i);
+            String noRegWithProfBoard = ParamUtil.getString(request,"noRegWithProfBoardVal"+i);
+            String transportYear = ParamUtil.getString(request,"transportYear"+i);
+
+            AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = new AppSvcClinicalDirectorDto();
+            appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
+            appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
+            appSvcClinicalDirectorDto.setName(name);
+            appSvcClinicalDirectorDto.setSalutation(salutation);
+            appSvcClinicalDirectorDto.setIdType(idType);
+            appSvcClinicalDirectorDto.setIdNo(idNo);
+            appSvcClinicalDirectorDto.setDesignation(designation);
+            appSvcClinicalDirectorDto.setSpecialty(specialty);
+            if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
+                appSvcClinicalDirectorDto.setOtherSpecialty(otherSpecialty);
+            }else{
+                appSvcClinicalDirectorDto.setOtherSpecialty(null);
+            }
+            appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
+            appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
+            appSvcClinicalDirectorDto.setMobileNo(mobileNo);
+            appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
+            appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
+            appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
+
+
+            //date pick
+            appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
+            appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
+            appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
+            appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
+            appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
+
+            Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+            Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
+            Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
+            Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
+            Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
+            appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
+            appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
+            appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
+            appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
+            appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
+
+            if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
+                if(AppConsts.YES.equals(noRegWithProfBoard)){
+                    appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
+                }else{
+                    appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
+                }
+                appSvcClinicalDirectorDto.setTransportYear(transportYear);
+            }
+            appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
+        }
+
+        return appSvcClinicalDirectorDtos;
+    }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
         log.info(StringUtil.changeForLog("genAppSvcPrincipalOfficersDto start ...."));

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
@@ -37,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1160,6 +1162,98 @@ public class NewApplicationAjaxController {
             ops.close();
             ops.flush();
         }
+    }
+
+    @PostMapping(value = "/vehicle-html")
+    public @ResponseBody AjaxResDto generateVehicleHtml(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the generateVehicleHtml start ...."));
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int vehicleLength = ParamUtil.getInt(request,"vehicleLength");
+
+        String vehicleHtml = SqlMap.INSTANCE.getSql("vehicle", "generateVehicleHtml").getSqlStr();
+        vehicleHtml = vehicleHtml.replace("${vehicleLength}",String.valueOf(vehicleLength+1));
+        vehicleHtml = vehicleHtml.replace("${vehicleSuffix}",String.valueOf(vehicleLength));
+
+        ajaxResDto.setResultJson(vehicleHtml);
+
+        log.debug(StringUtil.changeForLog("the generateVehicleHtml end ...."));
+        return ajaxResDto;
+
+    }
+
+    @PostMapping(value = "/clinical-director-html")
+    public @ResponseBody AjaxResDto generateClinicalDirectorHtml(HttpServletRequest request) throws IOException, TemplateException {
+        log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml start ...."));
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int cdLength = ParamUtil.getInt(request,"cdLength");
+        //proBoardSel
+        List<SelectOption> proBoardSel = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSION_BOARD);
+        Map<String, String> proBoardAttr = IaisCommonUtils.genNewHashMap();
+        proBoardAttr.put("class", "professionBoard");
+        proBoardAttr.put("name", "professionBoard"+cdLength);
+        proBoardAttr.put("style", "display: none;");
+        String proBoardSelectStr = NewApplicationHelper.generateDropDownHtml(proBoardAttr, proBoardSel, NewApplicationDelegator.FIRESTOPTION, null);
+
+        //salutation
+        List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
+        salutationAttr.put("class", "salutation");
+        salutationAttr.put("name", "salutation"+cdLength);
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        //ID Type
+        List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+        Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
+        idTypeAttr.put("class", "idType");
+        idTypeAttr.put("name", "idType"+cdLength);
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        //Designation
+        List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
+        designationAttr.put("class", "designation");
+        designationAttr.put("name", "designation"+cdLength);
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        //specialty
+        List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
+        Map<String, String> easMtsSpecialtyAttr = IaisCommonUtils.genNewHashMap();
+        easMtsSpecialtyAttr.put("class", "specialty");
+        easMtsSpecialtyAttr.put("name", "specialty"+cdLength);
+        easMtsSpecialtyAttr.put("style", "display: none;");
+        String easMtsSpecialtySelStr = NewApplicationHelper.generateDropDownHtml(easMtsSpecialtyAttr, easMtsSpecialtySelectList, null, null);
+
+        String aclsOrBcls = "";
+        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(currSvcCode)){
+            aclsOrBcls = "ACLS";
+        }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
+            aclsOrBcls = "BCLS and AED";
+        }
+        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("svcCode",currSvcCode);
+        paramMap.put("cdLength",cdLength+1);
+        paramMap.put("cdSuffix",cdLength);
+        paramMap.put("proBoardSel",proBoardSelectStr);
+        paramMap.put("salutationSel",salutationSelectStr);
+        paramMap.put("idTypeSel",idTypeSelectStr);
+        paramMap.put("designationSel",designationSelectStr);
+        paramMap.put("aclsOrBcls",aclsOrBcls);
+        paramMap.put("specialtySel",easMtsSpecialtySelStr);
+
+        String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml",paramMap);
+        ajaxResDto.setResultJson(clinicalDirectorHtml);
+
+        log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml end ...."));
+        return ajaxResDto;
+
     }
     //=============================================================================
     //private method
