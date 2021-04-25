@@ -184,6 +184,8 @@
             $(fileId).html($("#fileMaxMBMessage").val());
             callAjaxShowFile();
             $("#selectedFile").val('');
+        }else if(error == "Y"){
+            callAjaxUploadFile();
         }
     }
 
