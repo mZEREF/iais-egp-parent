@@ -258,8 +258,6 @@ public class LicenceApproveBatchjob {
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
 
                         generateUEN(eventBusLicenceGroupDtos);
-                        //send uen email
-                        licenceService.sendUenEmail(eventBusLicenceGroupDtos);
                     }
 
                 }
