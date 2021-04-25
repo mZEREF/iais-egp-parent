@@ -123,6 +123,36 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "doMedAlertPerson", this);
 	}
 
+	public void prePareVehicles_OnStepProcess_0() throws Exception {
+	// 		PrePareVehicles->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePareVehicles", this);
+	}
+
+	public void prePareClinicalDirector_OnStepProcess_0() throws Exception {
+	// 		PrePareClinicalDirector->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePareClinicalDirector", this);
+	}
+
+	public void prePareCharges_OnStepProcess_0() throws Exception {
+	// 		PrePareCharges->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePareCharges", this);
+	}
+
+	public void doVehicles_OnStepProcess_0() throws Exception {
+	// 		doVehicles->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doVehicles", this);
+	}
+
+	public void doClinicalDirector_OnStepProcess_0() throws Exception {
+	// 		doClinicalDirector->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doClinicalDirector", this);
+	}
+
+	public void doCharges_OnStepProcess_0() throws Exception {
+	// 		doCharges->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCharges", this);
+	}
+
 	
 
 }
