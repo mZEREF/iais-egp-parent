@@ -70,6 +70,7 @@ public class AppealPrintDelegator {
         }
         Collections.sort(pageShowFileDtos,(s1, s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
         bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+
         String fromWhichPage = "";
         fromWhichPage = ParamUtil.getString(bpc.request,"whichPage");
         if ("wdPage".equals(fromWhichPage)){
@@ -84,7 +85,10 @@ public class AppealPrintDelegator {
                 }
             }
             bpc.request.setAttribute("crud_action_type","wdPrint");
-        }else{
+        }else if ("cessPage".equals(fromWhichPage)){
+
+        }
+        else{
             bpc.request.setAttribute("crud_action_type","appeal");
         }
         String remarks = bpc.request.getParameter("remarks");

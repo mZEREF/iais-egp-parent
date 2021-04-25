@@ -30,6 +30,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="printCessPage" stageIndicator="" x="680" y="340">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -45,6 +51,9 @@
   <SynchronousLink destinationName="/Pages/WebPage/printWDpage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(480,120)(690,240)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/printCessPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(480,120)(700,360)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -52,6 +61,7 @@
    <Description/>
    <SwitchCase component="/Pages/WebPage/Page1" value=""/>
    <SwitchCase component="/Pages/WebPage/printWDpage" value="&quot;wdPrint&quot;"/>
+   <SwitchCase component="/Pages/WebPage/printCessPage" value="&quot;cessPrint&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
