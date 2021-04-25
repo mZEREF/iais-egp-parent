@@ -782,7 +782,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
                 appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
