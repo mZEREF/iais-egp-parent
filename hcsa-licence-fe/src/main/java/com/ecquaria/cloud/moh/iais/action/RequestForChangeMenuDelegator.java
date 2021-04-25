@@ -1429,7 +1429,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtos.get(0).setTotalAmountGroup(a);
             }
             try {
-                if (appSubmissionDtos != null && appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                     requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
                 }
             } catch (Exception e) {

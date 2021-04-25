@@ -1566,7 +1566,7 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
             }
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
-            log.info("start giro payment======>appGrpId :"+appGrpId);
+            log.info("start giro payment======>appGrpId {}"+appGrpId);
             if(appSubmissionDtos.size() > 1){
                 Double a = 0.0;
                 for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {

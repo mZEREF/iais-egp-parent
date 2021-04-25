@@ -144,8 +144,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private     String sharedPath;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private SystemBeLicClient systemClient;
 
 
     private final String[] appType=new String[]{
@@ -322,7 +320,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     map.put("fileName",name);
                     map.put("filePath",relPath);
 
-                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                    ProcessFileTrackDto processFileTrackDto = systemBeLicClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
                         try (InputStream is= Files.newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
@@ -490,7 +488,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
-        systemClient.updateProcessFileTrack(processFileTrackDto);
+        systemBeLicClient.updateProcessFileTrack(processFileTrackDto);
 
     }
 

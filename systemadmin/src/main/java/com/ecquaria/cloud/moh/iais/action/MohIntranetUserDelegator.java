@@ -139,7 +139,7 @@ public class MohIntranetUserDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
-        ParamUtil.setRequestAttr(bpc.request,"PERSONAL_PROFILE", true);
+        ParamUtil.setRequestAttr(bpc.request,"PERSONAL_PROFILE", Boolean.TRUE);
         List<SelectOption> statusOptions = getStatusOption();
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
     }

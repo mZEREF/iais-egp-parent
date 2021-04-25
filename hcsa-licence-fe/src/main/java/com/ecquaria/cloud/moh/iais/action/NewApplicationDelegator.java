@@ -3073,7 +3073,7 @@ public class NewApplicationDelegator {
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-        log.info("======ackPageAppSubmissionDto=====>"+ackPageAppSubmissionDto);
+        log.info("======ackPageAppSubmissionDto=====> {}"+ackPageAppSubmissionDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
         String draftNo = "";
@@ -3099,10 +3099,10 @@ public class NewApplicationDelegator {
                                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                             }
                             String grpId = entity.get(0).getAppGrpId();
-                            log.info("grpId=====>"+grpId);
+                            log.info("grpId=====> {}"+grpId);
                             ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
                             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            log.info("====applicationGroupDto==>"+JsonUtil.parseToJson(applicationGroupDto));
+                            log.info("====applicationGroupDto==> {}"+JsonUtil.parseToJson(applicationGroupDto));
                             applicationFeClient.saveApplicationDtos(entity);
                             applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                         }

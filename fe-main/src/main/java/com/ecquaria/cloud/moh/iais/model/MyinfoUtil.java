@@ -28,9 +28,7 @@ import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
 
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
@@ -167,7 +165,7 @@ public class MyinfoUtil {
 		return sb.toString();
 	}
 
-	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl){
+	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl) throws NoSuchAlgorithmException {
 		StringBuilder sb = new StringBuilder();
 		if( !IaisCommonUtils.isEmpty(attrs)){
 			for (int i = 0; i < attrs.size(); i++) {
@@ -180,7 +178,8 @@ public class MyinfoUtil {
 		}
 		String attribute = sb.toString();
 		String timestamp = String.valueOf(new Date().getTime());
-		String nonceValue = timestamp + ThreadLocalRandom.current().nextLong(1000, 9999);
+		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		String nonceValue = timestamp +	(secureRandom.nextInt(9000) + 1000);
 		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.APP_ID + "=", appId);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);

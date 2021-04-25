@@ -35,9 +35,8 @@ import java.util.Map;
 @Delegator("fePrintViewDelegator")
 @Slf4j
 public class FePrintViewDelegator {
-    private final String SESSION_VIEW_SUBMISSONS = "viewSubmissons";
-    private final String ATTR_PRINT_VIEW = "printView";
-
+    private final static String SESSION_VIEW_SUBMISSONS = "viewSubmissons";
+    private final static  String ATTR_PRINT_VIEW = "printView";
     @Autowired
     AppSubmissionService appSubmissionService;
     @Autowired
