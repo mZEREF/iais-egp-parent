@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -195,7 +196,7 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
                     templateContent.put("telNo", systemParamConfig.getSystemPhoneNumber());
 
                     if (Optional.ofNullable(licenseeDto.getSingpassExpiredDate()).isPresent()){
-                        templateContent.put("GraceDate", DateUtil.formatDate(licenseeDto.getSingpassExpiredDate()));
+                        templateContent.put("GraceDate", Formatter.formatDate(licenseeDto.getSingpassExpiredDate()));
                     }
 
                     emailParam.setTemplateId(emailId);
