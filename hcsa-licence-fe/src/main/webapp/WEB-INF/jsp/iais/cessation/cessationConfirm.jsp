@@ -13,6 +13,7 @@
 <%@include file="../cessation/head.jsp" %>
 <div class="main-content">
   <div class="container">
+    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
@@ -505,6 +506,10 @@
             }
         }
     });
+
+    function printWDPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessPage",'_blank');
+    }
 
     $(document).ready(function () {
         $('input[type="text"]').css('border-color', '#ededed');

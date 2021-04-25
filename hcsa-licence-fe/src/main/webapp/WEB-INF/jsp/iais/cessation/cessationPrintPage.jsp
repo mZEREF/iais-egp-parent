@@ -5,12 +5,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
-<webui:setLayout name="iais-internet"/>
+<webui:setLayout name="iais-blank"/>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<%@include file="../cessation/head.jsp" %>
 <div class="main-content">
     <div class="container">
         <div class="row">
@@ -24,23 +23,21 @@
                             <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
                             <div class="col-lg-12 col-xs-12 cesform-box">
                                 <div class="row">
-                                    <div class="license-info-box">
-                                        <div class="col-lg-6 col-xs-12">
-                                            <div class="license-info">
-                                                <p class="lic-no">Licence Number</p>
-                                                <h4><c:out value="${appCess.licenceNo}"/></h4>
-                                            </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="license-info">
+                                            <p class="lic-no">Licence Number</p>
+                                            <h4><c:out value="${appCess.licenceNo}"/></h4>
                                         </div>
-                                        <div class="col-lg-6 col-xs-12">
-                                            <div class="license-info">
-                                                <p class="serv-name">Service Name</p>
-                                                <h4><c:out value="${appCess.svcName}"/></h4>
-                                            </div>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="license-info">
+                                            <p class="serv-name">Service Name</p>
+                                            <h4><c:out value="${appCess.svcName}"/></h4>
                                         </div>
                                     </div>
                                     <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid">
                                         <div class="col-lg-12 col-xs-12">
-                                            <div class="table-gp tablebox">
+                                            <div class="">
                                                 <div class="topheader">
                                                     <c:if test="${appCessHci.hciName==null}">
                                                         <h4><c:out value="${appCessHci.hciCode}"/></h4>
@@ -407,120 +404,13 @@
 </style>
 <script type="text/javascript">
 
-    function confirmSubmit(action) {
-        showWaiting();
-        $("[name='crud_action_type']").val(action);
-        $("#mainForm").submit();
-    }
-
-    function confirmBack(action) {
-        $("[name='crud_action_type']").val(action);
-        $("#mainForm").submit();
-    }
-
-    function changeReasonCessFe() {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($("#" + i + "reasonId" + j).val() == "CES001") {
-                    $("#" + i + "reason" + j).show();
-                } else {
-                    $("#" + i + "reason" + j).hide();
-                }
-            }
-        }
-    }
-
-    function changePatientCessFe() {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
-                    $("#" + i + "patOthersTakeOver" + j).show();
-                    $("#" + i + "patOthersMobileNo" + j).show();
-                    $("#" + i + "patOthersEmailAddress" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005" && $('#' + i + 'radioYes' + j).is(':checked')) {
-                    $("#" + i + "patHciName" + j).show();
-                    $("#" + i + "hciName" + j).show();
-                    $("#" + i + "patOthersTakeOver" + j).hide();
-                    $("#" + i + "patOthersMobileNo" + j).hide();
-                    $("#" + i + "patOthersEmailAddress" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "hciNamePat" + j).show();
-                    $("#" + i + "hciCodePat" + j).show();
-                    $("#" + i + "hciAddressPat" + j).show();
-                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
-                    $("#" + i + "patRegNo" + j).show();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthersTakeOver" + j).hide();
-                    $("#" + i + "patOthersMobileNo" + j).hide();
-                    $("#" + i + "patOthersEmailAddress" + j).hide();
-                }
-            }
-        }
-    }
-
-    function changePatSelectCessFe() {
-        changePatientCessFe();
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($('#' + i + 'radioYes' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).show();
-                    $("#" + i + "patNo" + j).hide();
-                    $("#" + i + "patNoConfirmID" + j).hide();
-                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patNo" + j).show();
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthersTakeOver" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "patOthersMobileNo" + j).hide();
-                    $("#" + i + "patOthersEmailAddress" + j).hide();
-                    $("#" + i + "patNoConfirmID" + j).show();
-                }
-            }
-        }
-    }
-
     $(document).ready(function () {
-        changeReasonCessFe();
-        changePatientCessFe();
-        changePatSelectCessFe();
-    });
+        doPrint();
 
-    $(document).ready(function () {
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthersTakeOver" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "div" + j).hide();
-                }
-            }
-        }
     });
-
-    $(document).ready(function () {
-        $('input[type="text"]').css('border-color', '#ededed');
-        $('input[type="text"]').css('color', '#999');
-        for (var i = 1; i < 8; i++) {
-            for (var j = 1; j < 8; j++) {
-                if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patYes" + j).hide();
-                    $("#" + i + "patHciName" + j).hide();
-                    $("#" + i + "hciName" + j).hide();
-                    $("#" + i + "patOthersTakeOver" + j).hide();
-                    $("#" + i + "patRegNo" + j).hide();
-                    $("#" + i + "div" + j).hide();
-                }
-            }
-        }
-    });
-
+    var doPrint = function () {
+        $('a').prop('disabled',true);
+        window.print();
+        window.close();
+    }
 </script>
