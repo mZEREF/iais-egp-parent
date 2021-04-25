@@ -53,6 +53,8 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.moh.iais.validate.impl.ValidateClincalDirector;
+import com.ecquaria.cloud.moh.iais.validate.impl.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +100,10 @@ public class ClinicalLaboratoryDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    @Autowired
+    private ValidateVehicle validateVehicle;
+    @Autowired
+    private ValidateClincalDirector validateClincalDirector;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     @Value("${iais.hmac.keyId}")
@@ -1807,6 +1813,25 @@ public class ClinicalLaboratoryDelegator {
         currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        Map<String,String> map=new HashMap<>();
+        if("next".equals(crud_action_type)){
+            validateVehicle.doValidateVehicles(map,appSvcVehicleDtos);
+        }
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+        if (map.isEmpty() && allChecked.isEmpty()) {
+            coMap.put("information", "information");
+        } else {
+            coMap.put("information", "");
+        }
+        bpc.request.getSession().setAttribute("coMap", coMap);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);
+        }
+
     }
 
     /**
@@ -1856,6 +1881,16 @@ public class ClinicalLaboratoryDelegator {
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
 
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        Map<String,String> map=new HashMap<>(17);
+        if("next".equals(crud_action_type)){
+            validateClincalDirector.doValidateClincalDirector(map,appSvcClinicalDirectorDtos);
+        }
+
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CLINICAL_DIRECTOR);
+        }
     }
 
     /**

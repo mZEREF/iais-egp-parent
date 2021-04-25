@@ -17,7 +17,9 @@ public class HcsaLicenceFeConstant {
     public static final String DOCUMENTS                      = "SVST005";
     public static final String NUCLEARMEDICINEIMAGING         = "SVST006";
     public static final String MEDALERT_PERSON                = "SVST007";
-
+    public static final String VEHICLES                       = "SVST008";
+    public static final String CLINICAL_DIRECTOR              = "SVST009";
+    public static final String CHARGES                        = "SVST010";
     public static final String DASHBOARDTITLE = "DashboardTitle";
 
 }

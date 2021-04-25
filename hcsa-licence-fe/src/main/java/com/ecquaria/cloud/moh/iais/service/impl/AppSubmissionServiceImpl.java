@@ -23,13 +23,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
@@ -101,6 +104,7 @@ import sop.webflow.rt.api.Process;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1623,58 +1627,29 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
             String psnType = hcsaSvcPersonnelDto.getPsnType();
             int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-            if ("PO".equals(psnType)) {
+            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                if (appSvcPrincipalOfficersDtoList == null) {
-                    if (mandatoryCount > 0) {
-                        errorMap.put("error", "PO");
-                        sB.append(serviceId);
-                        log.info("PO null");
-                    }
-                } else if (appSvcPrincipalOfficersDtoList.size() < mandatoryCount) {
-                    errorMap.put("error", "PO");
-                    sB.append(serviceId);
-                    log.info("PO mandatoryCount");
-                }
-            } else if ("SVCPSN".equals(psnType)) {
+                validatePersonMandatoryCount(Collections.singletonList(appSvcPrincipalOfficersDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_PO,mandatoryCount,serviceId,sB);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                if (appSvcPersonnelDtoList == null) {
-                    if (mandatoryCount > 0) {
-                        errorMap.put("error", "SVCPSN");
-                        sB.append(serviceId);
-                        log.info("SVCPSN null");
-                    }
-                } else if (appSvcPersonnelDtoList.size() < mandatoryCount) {
-                    errorMap.put("error", "SVCPSN");
-                    sB.append(serviceId);
-                    log.info("SVCPSN mandatoryCount");
-                }
-            } else if ("CGO".equals(psnType)) {
+                validatePersonMandatoryCount(Collections.singletonList(appSvcPersonnelDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,mandatoryCount,serviceId,sB);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
                 List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-                if (appSvcCgoDtoList == null) {
-                    if (mandatoryCount > 0) {
-                        errorMap.put("error", "CGO");
-                        sB.append(serviceId);
-                        log.info("CGO null");
-                    }
-                } else if (appSvcCgoDtoList.size() < mandatoryCount) {
-                    errorMap.put("error", "CGO");
-                    sB.append(serviceId);
-                    log.info("CGO mandatoryCount");
-                }
-            } else if ("MAP".equals(psnType)) {
+                validatePersonMandatoryCount(Collections.singletonList(appSvcCgoDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,mandatoryCount,serviceId,sB);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
                 List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-                if (appSvcMedAlertPersonList == null) {
-                    if (mandatoryCount > 0) {
-                        errorMap.put("error", "MAP");
-                        sB.append(serviceId);
-                        log.info("MAP null");
-                    }
-                } else if (appSvcMedAlertPersonList.size() < mandatoryCount) {
-                    errorMap.put("error", "MAP");
-                    sB.append(serviceId);
-                    log.info("MAP mandatoryCount");
-                }
+                validatePersonMandatoryCount(Collections.singletonList(appSvcMedAlertPersonList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,mandatoryCount,serviceId,sB);
+            }else if(ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)){
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = dto.getAppSvcVehicleDtoList();
+                validatePersonMandatoryCount(Collections.singletonList(appSvcVehicleDtoList),errorMap,ApplicationConsts.PERSONNEL_VEHICLES,mandatoryCount,serviceId,sB);
+            }else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+                List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
+                validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList),errorMap,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,mandatoryCount,serviceId,sB);
+            }else if(ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)){
+
+
+            }else if(ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)){
+
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
@@ -1738,6 +1713,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return errorMap;
     }
 
+    private void  validatePersonMandatoryCount(List<Object> list,Map<String,String> map,String type,Integer mandatoryCount,String serviceId,StringBuilder sB){
+        if (list == null) {
+            if (mandatoryCount > 0) {
+                map.put("error"+type, type);
+                sB.append(serviceId);
+                log.info(type+" null");
+            }
+        } else if (list.size() < mandatoryCount) {
+            map.put("error"+type, type);
+            sB.append(serviceId);
+            log.info(type+" mandatoryCount");
+        }
+    }
     @Override
     public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setIsPassValidate) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));

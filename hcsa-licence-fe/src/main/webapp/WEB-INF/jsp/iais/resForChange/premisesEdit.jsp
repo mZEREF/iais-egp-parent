@@ -177,6 +177,7 @@
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
+        $("select[name='easMtsAddrType']").trigger('change');
         premSelect();
         <c:if test="${PageCanEdit}">
           var $PremEle = $('#mainPrem');

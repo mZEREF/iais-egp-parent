@@ -1253,7 +1253,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     addrTypeFlag = false;
                                     errorMap.put("offSiteUnitNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
                                 }else if(appGrpPremisesDtoList.get(i).getOffSiteUnitNo().length() > 5){
-                                    String general_err0041=NewApplicationHelper.repLength("Floor No.","5");
+                                    String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
                                     errorMap.put("offSiteUnitNo" + i, general_err0041);
                                 }
                             }
@@ -1361,7 +1361,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
-                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i);
+                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i,masterCodeDto);
                     }
                 } else {
                     //premiseSelect = organization hci code
