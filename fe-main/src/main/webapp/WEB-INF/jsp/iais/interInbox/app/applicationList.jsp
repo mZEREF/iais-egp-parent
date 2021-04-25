@@ -168,7 +168,8 @@
                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
                                         <c:when test="${app.applicationType == 'APTY002' || app.applicationType == 'APTY004' || app.applicationType == 'APTY005'}">
-                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status =='APST075' ||  app.status == 'APST050'}">
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006'
+                                                       || app.status =='APST075' ||  app.status == 'APST050'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                         <option value="Appeal">Appeal</option>
@@ -178,6 +179,12 @@
                                                         <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
                                                             <option value="Make Payment">Make Payment</option>
                                                         </c:if>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Make Payment">Make Payment</option>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST008'}">
@@ -202,9 +209,6 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                        <option value="Make Payment">Make Payment</option>
-                                                    </c:if>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -229,9 +233,6 @@
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
-                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                        <option value="Make Payment">Make Payment</option>
-                                                    </c:if>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -240,9 +241,6 @@
                                                     <option value="" selected>Select</option>
                                                     <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
-                                                    </c:if>
-                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                        <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Continue">Continue</option>
                                                 </select>
@@ -262,12 +260,15 @@
                                                 <c:if test="${app.canInspection}">
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                 </c:if>
-                                                <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                    <option value="Make Payment">Make Payment</option>
-                                                </c:if>
                                             </select>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY001'}">
+                                            <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Make Payment">Make Payment</option>
+                                                </select>
+                                            </c:if>
                                             <c:if test="${app.status == 'APST008'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -275,7 +276,7 @@
                                                     <option value="Delete">Delete</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST032'}">
+                                            <c:if test="${app.status == 'APST032' || (app.pmtStatus == 'PMT06' || app.status == 'APST084')}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <c:if test="${app.canInspection}">
@@ -311,9 +312,6 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                        <option value="Make Payment">Make Payment</option>
-                                                    </c:if>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -337,6 +335,12 @@
                                                     <option>N/A</option>
                                                 </select>
                                             </c:if>
+                                            <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Make Payment">Make Payment</option>
+                                                </select>
+                                            </c:if>
                                             <c:if test="${app.status == 'APST032'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -346,9 +350,6 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
-                                                    <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
-                                                        <option value="Make Payment">Make Payment</option>
-                                                    </c:if>
                                                     <option value="Withdraw">Withdraw</option>
                                                 </select>
                                             </c:if>
@@ -356,7 +357,8 @@
                                         <c:when test="${app.applicationType == 'APTY008'}">
                                             <c:if test="${app.status == 'APST005'||app.status == 'APST075'
                                                       || app.status == 'APST076' || app.status == 'APST050'
-                                                      || app.status == 'APST011' || app.status == 'APST007'}">
+                                                      || app.status == 'APST011' || app.status == 'APST007'
+                                                      || (app.pmtStatus == 'PMT06' || app.status == 'APST084')}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
