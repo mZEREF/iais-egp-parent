@@ -1896,6 +1896,13 @@ public class RequestForChangeMenuDelegator {
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+                try{
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         } else {
             appSubmissionDto.setAppGrpNo(null);
