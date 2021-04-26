@@ -123,4 +123,7 @@ public interface OrganizationMainClient {
     @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
     FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
                                                                         @PathVariable(name = "roleId") String roleId);
+
+    @GetMapping(value = "/iais-workgroup/work-group-by-group-domain", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(@RequestParam("uerDomain") String uerDomain);
 }
