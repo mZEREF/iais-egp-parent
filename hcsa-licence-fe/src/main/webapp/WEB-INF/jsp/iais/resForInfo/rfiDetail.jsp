@@ -176,16 +176,16 @@
     function fileChangedLocal(obj, event) {
         var maxFileSize = $('#sysFileSize').val();
         var configIndex =$('input[name="uploadKey"]').val();
-        var fileId= '#error_UploadFile'+configIndex;
+        var fileErrorId= '#error_UploadFile'+configIndex;
         console.log('maxFileSize : '+maxFileSize);
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
         console.log(error)
         if (error == "N"){
-            $(fileId).html($("#fileMaxMBMessage").val());
-            callAjaxShowFile();
+            $(fileErrorId).html($("#fileMaxMBMessage").val());
             $("#selectedFile").val('');
         }else if(error == "Y"){
             callAjaxUploadFile();
+            $(fileErrorId).html('');
         }
     }
 
@@ -195,6 +195,7 @@
         console.log('deleteWriteMessageFileId : ' + deleteWriteMessageFileId);
         console.log('configIndex : ' + configIndex);
         var fileId= '#uploadFileBox'+configIndex;
+        var fileErrorId= '#error_UploadFile'+configIndex;
 
         $.ajax({
             type: "post",
@@ -205,10 +206,12 @@
             dataType: "text",
             success: function (data) {
                 $(fileId).html(data);
+                $(fileErrorId).html('');
                 dismissWaiting();
             },
             error: function (msg) {
                 $("#selectedFile").val('');
+                $(fileErrorId).html('');
                 dismissWaiting();
             }
         });
@@ -220,6 +223,7 @@
 
         var configIndex =$('input[name="uploadKey"]').val();
         var fileId= '#uploadFileBox'+configIndex;
+        var fileErrorId= '#error_UploadFile'+configIndex;
         console.log('uploadFileBox : ' + fileId);
         $.ajax({
             type: "post",
@@ -231,38 +235,40 @@
             dataType: "text",
             success: function (data) {
                 $(fileId).html(data);
+                $(fileErrorId).html('');
             },
             error: function (msg) {
                 $("#selectedFile").val('');
+                $(fileErrorId).html('');
                 dismissWaiting();
             }
         });
     }
 
-    function callAjaxShowFile(){
-        var formData = new FormData($("#mainForm")[0]);
+    <%--function callAjaxShowFile(){--%>
+    <%--    var formData = new FormData($("#mainForm")[0]);--%>
 
 
-        var configIndex =$('input[name="uploadKey"]').val();
-        var fileId= '#uploadFileBox'+configIndex;
-        console.log('uploadFileBox : ' + fileId);
-        $.ajax({
-            type: "post",
-            url:  "${pageContext.request.contextPath}/showRfiFromFile",
-            data: formData,
-            async:true,
-            processData: false,
-            contentType: false,
-            dataType: "text",
-            success: function (data) {
-                $(fileId).html(data);
-            },
-            error: function (msg) {
-                $("#selectedFile").val('');
-                dismissWaiting();
-            }
-        });
-    }
+    <%--    var configIndex =$('input[name="uploadKey"]').val();--%>
+    <%--    var fileId= '#uploadFileBox'+configIndex;--%>
+    <%--    console.log('uploadFileBox : ' + fileId);--%>
+    <%--    $.ajax({--%>
+    <%--        type: "post",--%>
+    <%--        url:  "${pageContext.request.contextPath}/showRfiFromFile",--%>
+    <%--        data: formData,--%>
+    <%--        async:true,--%>
+    <%--        processData: false,--%>
+    <%--        contentType: false,--%>
+    <%--        dataType: "text",--%>
+    <%--        success: function (data) {--%>
+    <%--            $(fileId).html(data);--%>
+    <%--        },--%>
+    <%--        error: function (msg) {--%>
+    <%--            $("#selectedFile").val('');--%>
+    <%--            dismissWaiting();--%>
+    <%--        }--%>
+    <%--    });--%>
+    <%--}--%>
 
 </script>
 
