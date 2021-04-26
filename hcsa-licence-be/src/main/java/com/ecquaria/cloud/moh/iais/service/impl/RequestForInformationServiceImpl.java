@@ -692,7 +692,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         emailMap.put("systemLink", url);
         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
         msgParam.setTemplateContent(emailMap);
-        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setMaskParams(mapPrem);
         msgParam.setSvcCodeList(svcCode);
         msgParam.setRefId(applicationDto.getApplicationNo());
@@ -771,7 +771,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             emailMap.put("systemLink", url);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
             msgParam.setTemplateContent(emailMap);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             msgParam.setMaskParams(mapPrem);
             msgParam.setSvcCodeList(svcCode);
             msgParam.setRefId(licenceViewDto.getLicenceDto().getId());
