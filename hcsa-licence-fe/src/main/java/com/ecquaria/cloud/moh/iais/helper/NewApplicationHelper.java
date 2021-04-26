@@ -2835,9 +2835,12 @@ public class NewApplicationHelper {
         }
     }
 
-    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
+    public static String genMutilSelectOpHtml(Map<String,String> attrMap, List<SelectOption> selectOptionList, String firestOption, List<String> checkedVals, boolean multiSelect){
         StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<select multiple=\"multiple\" ");
+        sBuffer.append("<select ");
+        if(multiSelect){
+            sBuffer.append("multiple=\"multiple\" ");
+        }
         for(Map.Entry<String, String> entry : attrMap.entrySet()){
 //            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
             sBuffer.append(entry.getKey())
