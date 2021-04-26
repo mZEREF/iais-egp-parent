@@ -181,7 +181,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         for(String workGroupId : workGroupIds){
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             String workGroupName = workingGroupDto.getGroupName();
-            if(workGroupName.contains("Inspection")){
+            if(workGroupName.contains("Inspection") && !workGroupName.contains("Approval")){
                 workGroupNames.add(workGroupName);
                 workGroupMap.put(workGroupName, workGroupId);
             }

@@ -246,7 +246,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!StringUtil.isEmpty(workGroupId)) {
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             String workGroupName = workingGroupDto.getGroupName();
-            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
+            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection") && !workGroupName.contains("Approval")) {
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
                 if (appPremisesRecommendationDto == null) {
                     List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();

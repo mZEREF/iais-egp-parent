@@ -167,7 +167,7 @@ public class InspectionServiceImpl implements InspectionService {
                     if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus())) {
                         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
                         String groupName = workingGroupDto.getGroupName();
-                        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) && (groupName.contains("Inspection"))) {
+                        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) && (groupName.contains("Inspection") && !groupName.contains("Approval"))) {
                             workGroupIdList.add(ugcDto.getGroupId());
                             continue;
                         }
@@ -443,7 +443,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
             String groupName = workingGroupDto.getGroupName();
-            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection") && !groupName.contains("Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }

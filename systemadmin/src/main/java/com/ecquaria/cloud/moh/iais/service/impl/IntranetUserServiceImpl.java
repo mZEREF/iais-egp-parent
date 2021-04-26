@@ -38,8 +38,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -297,7 +295,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         for (WorkingGroupDto workingGroupDto : workingGroups) {
             String groupId = workingGroupDto.getId();
             String groupName = workingGroupDto.getGroupName();
-            if (groupName.contains("Inspection")) {
+            if (groupName.contains("Inspection") && !groupName.contains("Approval")) {
                 inspection.add(groupId);
                 inspectionLeader.add(groupId);
             } else if (groupName.contains("Professional")) {
