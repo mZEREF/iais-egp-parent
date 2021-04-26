@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeMainEmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
@@ -76,6 +77,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Value("${iais.current.domain}")
     private String currentDomain;
+
+    @Autowired
+    private FeMainEmailHelper feMainEmailHelper;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
