@@ -438,15 +438,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public Boolean isKeyAppointment(String uen) {
-        JwtEncoder encoder = new JwtEncoder();
-        Claims claims = Jwts.claims();
-        claims.put("uen", uen);
-        //edhClient.receiveEDHEntity(jwtt, uen);
-        return Boolean.FALSE;
-    }
-
-    @Override
     public List<LicenseeDto> getLicenseeByOrgId(String orgId){
         return feAdminClient.getLicenseeByOrgId(orgId).getEntity();
     }
@@ -472,9 +463,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return feUserClient.validatePwd(feUserDto).getEntity();
     }
 
+
     @Override
-    public void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit) {
-        feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
+    public void setSingPassAutoCeased(String uen, String nricNumber) {
+        boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, false).getEntity();
+        if (autoCeased){
+            //send email
+        }
     }
 
     @Override

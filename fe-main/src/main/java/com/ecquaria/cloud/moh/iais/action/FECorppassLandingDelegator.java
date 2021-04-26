@@ -193,7 +193,7 @@ public class FECorppassLandingDelegator {
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "Y");
             FeLoginHelper.initUserInfo(bpc.request, userSession);
             //issue 68766
-            orgUserManageService.setPermitLoginStatusInUenTrack(uen, identityNo, false);
+            orgUserManageService.setSingPassAutoCeased(uen, identityNo);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");
