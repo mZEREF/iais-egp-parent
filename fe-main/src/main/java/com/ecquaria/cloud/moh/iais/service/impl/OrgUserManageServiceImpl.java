@@ -467,8 +467,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void setSingPassAutoCeased(String uen, String nricNumber) {
         boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, false).getEntity();
-        if (autoCeased){
+        if (autoCeased) {
             //send email
+            feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nricNumber);
         }
     }
 
