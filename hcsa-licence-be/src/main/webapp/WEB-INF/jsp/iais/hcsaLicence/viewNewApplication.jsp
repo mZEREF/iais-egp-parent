@@ -1889,9 +1889,8 @@
                         <div class="col-xs-6">
                           <c:if test="${sinage.docSize!=null}">
                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
-                                      value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download"
-                                       class="downloadFile">${sinage.docName}</a> <c:out value="(${sinage.docSize} KB)"/>
+                                <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${sinage.fileRepoId}" docName="${sinage.docName}"/>
+                                <c:out value="(${sinage.docSize} KB)"/>
                                    </span>
                           </c:if>
                           <c:if test="${sinage.docSize==null}">
@@ -1906,10 +1905,7 @@
                                   <span class="oldVal "
                                         attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
                                         style="display: none">
-                                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"  value="${oldSvcDoc[inx.index].fileRepoId}"/>&fileRepoName=${oldSvcDoc[inx.index].docName}"
-                                     title="Download" class="downloadFile">
-                                      ${oldSvcDoc[inx.index].docName}
-                                  </a>
+                                    <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldSvcDoc[inx.index].fileRepoId}" docName="${oldSvcDoc[inx.index].docName}"/>
                                   <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
                                 </span>
                           </c:if>
