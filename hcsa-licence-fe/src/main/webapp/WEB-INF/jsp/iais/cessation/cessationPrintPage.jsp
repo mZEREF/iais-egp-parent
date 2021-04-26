@@ -404,10 +404,109 @@
 </style>
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        doPrint();
+    function changeReasonCessFe() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "reasonId" + j).val() == "CES001") {
+                    $("#" + i + "reason" + j).show();
+                } else {
+                    $("#" + i + "reason" + j).hide();
+                }
+            }
+        }
+    }
 
+    function changePatientCessFe() {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
+                    $("#" + i + "patOthersTakeOver" + j).show();
+                    $("#" + i + "patOthersMobileNo" + j).show();
+                    $("#" + i + "patOthersEmailAddress" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES005" && $('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patHciName" + j).show();
+                    $("#" + i + "hciName" + j).show();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "hciNamePat" + j).show();
+                    $("#" + i + "hciCodePat" + j).show();
+                    $("#" + i + "hciAddressPat" + j).show();
+                } else if ($("#" + i + "patientSelectId" + j).val() == "CES006") {
+                    $("#" + i + "patRegNo" + j).show();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                }
+            }
+        }
+    }
+
+    function changePatSelectCessFe() {
+        changePatientCessFe();
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioYes' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).show();
+                    $("#" + i + "patNo" + j).hide();
+                    $("#" + i + "patNoConfirmID" + j).hide();
+                } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patNo" + j).show();
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "patOthersMobileNo" + j).hide();
+                    $("#" + i + "patOthersEmailAddress" + j).hide();
+                    $("#" + i + "patNoConfirmID" + j).show();
+                }
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        changeReasonCessFe();
+        changePatientCessFe();
+        changePatSelectCessFe();
+
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
+                }
+            }
+        }
+
+        $('input[type="text"]').css('border-color', '#ededed');
+        $('input[type="text"]').css('color', '#999');
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "hciName" + j).hide();
+                    $("#" + i + "patOthersTakeOver" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
+                }
+            }
+        }
+        doPrint();
     });
+
+
     var doPrint = function () {
         $('a').prop('disabled',true);
         window.print();

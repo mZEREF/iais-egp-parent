@@ -345,13 +345,98 @@
     }
 </style>
 <script type="text/javascript">
-    $(document).ready(function () {
-        doPrint();
 
+    function changeReasonCessFe() {
+
+        if ($("#reasonId").val() == "CES001") {
+            $("#reason").show();
+        } else {
+            $("#reason").hide();
+        }
+    }
+
+    function changePatientCessFe() {
+        if ($("#patientSelectId").val() == "CES004") {
+            $("#patOthers").show();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthersMobileNo").show();
+            $("#patOthersEmailAddress").show();
+            $("#patRegNo").hide();
+        } else if ($("#patientSelectId").val() == "CES005"&&$('#radioYes').is(':checked')) {
+            $("#patHciName").show();
+            $("#hciName").show();
+            $("#patOthers").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+            $("#patRegNo").hide();
+            $("#hciNamePat").show();
+            $("#hciCodePat").show();
+            $("#hciAddressPat").show();
+        } else if ($("#patientSelectId").val() == "CES006") {
+            $("#patRegNo").show();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthers").hide();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+
+        }
+    }
+
+    function changePatSelectCessFe() {
+        changePatientCessFe();
+        if ($('#radioYes').is(':checked')) {
+            $("#patYes").show();
+            $("#patNo").hide();
+            $("#patNoConfirmID").hide();
+        } else if ($('#radioNo').is(':checked')) {
+            $("#patNo").show();
+            $("#patYes").hide();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthers").hide();
+            $("#patRegNo").hide();
+            $("#patNoConfirmID").show();
+            $("#patOthersMobileNo").hide();
+            $("#patOthersEmailAddress").hide();
+        }
+    }
+
+    $(document).ready(function () {
+        changeReasonCessFe();
+        changePatientCessFe();
+        changePatSelectCessFe();
+
+        if ($('#radioNo').is(':checked')) {
+            $("#patYes").hide();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthers").hide();
+            $("#patRegNo").hide();
+            $("#div").hide();
+        }
+
+        $('input[type="text"]').css('border-color', '#ededed');
+        $('input[type="text"]').css('color', '#999');
+        if ($('#radioNo').is(':checked')) {
+            $("#patYes").hide();
+            $("#patHciName").hide();
+            $("#hciName").hide();
+            $("#patOthers").hide();
+            $("#patRegNo").hide();
+            $("#div").hide();
+        }
+
+
+        doPrint();
     });
+
     var doPrint = function () {
         $('a').prop('disabled',true);
         window.print();
         window.close();
     }
+
+
 </script>

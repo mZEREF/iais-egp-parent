@@ -1,6 +1,6 @@
 <div class="main-content">
   <div class="container">
-    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printCSPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
@@ -382,7 +382,7 @@
         }
     }
 
-    function printWDPDF(){
+    function printCSPDF(){
         window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessViewPage",'_blank');
     }
 
