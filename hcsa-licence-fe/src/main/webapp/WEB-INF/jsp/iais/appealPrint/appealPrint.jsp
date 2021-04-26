@@ -136,23 +136,6 @@
           </div>
         </div>
       </div>
-
-      <br>
-      <br> <br> <br>
-      <div >
-        <div class="row">
-          <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
-            <div class="text-right text-center-mobile">
-              <div class="col-xs-12 col-sm-1">
-                <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
-              </div>
-              <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
-              <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
-              <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </form>
 </div>
@@ -161,8 +144,42 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-        doPrint();
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
+        var reason= $('#reasonSelect option:selected').val();
+        if("MS003"==reason){
+            $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
 
+        }else  {
+            $('#cgo').attr("style" ,"display: none");
+
+        }
+        if("MS008"==reason){
+            $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
+
+        }else {
+            $('#selectHciNameAppeal').attr("style","display: none");
+        }
+        if("MS004"==reason){
+            $('#licenceYear').attr("style","display: block;margin-top: 20px");
+        }else {
+            $('#licenceYear').attr("style","display: none");
+        }
+        if("MS007"==reason){
+            $('#othersReason').attr("style","display: block");
+        }else {
+            $('#othersReason').attr("style","display: none");
+        }
+        if(  $("input[name='selectHciName']").prop("checked")){
+            $('#proposedHciName').attr("style","display: block");  }else {
+            $('#proposedHciName').attr("style","display: none");
+        }
+        if(  $('#isFile').val()!=''){
+            $('#delete').attr("style","display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+        }
+      doPrint();
     });
     var doPrint = function () {
         $('a').prop('disabled',true);

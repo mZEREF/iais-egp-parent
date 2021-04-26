@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
+import com.ecquaria.cloud.moh.iais.validate.abstractValidate.AbstractValidate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2021/4/23 13:18
  */
 @Component
-public class ValidateEasmts implements ValidateFlow {
+public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Override
     public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto) {
         String easMtsHciName = appGrpPremisesDto.getEasMtsHciName();
@@ -148,5 +149,10 @@ public class ValidateEasmts implements ValidateFlow {
             String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
             map.put(errorName.get(2)+index,general_err0041);
         }
+    }
+
+    @Override
+    public Map<String, String> validate(Object o,Integer index) {
+        return super.validate(o,index);
     }
 }

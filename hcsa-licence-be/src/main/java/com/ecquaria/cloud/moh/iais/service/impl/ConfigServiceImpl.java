@@ -955,25 +955,26 @@ public class ConfigServiceImpl implements ConfigService {
     }
     @Override
     public List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
-        if(this.hcsaSvcRoutingStageDtos==null){
-            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-            for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
-                String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
-                try {
-                    if (Integer.parseInt(stageOrder) % 100 != 0) {
-                        hcsaSvcRoutingStageDtos.remove(i);
-                        i--;
+        synchronized (this){
+            if(this.hcsaSvcRoutingStageDtos==null){
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+                for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
+                    String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+                    try {
+                        if (Integer.parseInt(stageOrder) % 100 != 0) {
+                            hcsaSvcRoutingStageDtos.remove(i);
+                            i--;
+                        }
+                    } catch (Exception e) {
+
                     }
-                } catch (Exception e) {
-
                 }
+                this.hcsaSvcRoutingStageDtos=hcsaSvcRoutingStageDtos;
+                return hcsaSvcRoutingStageDtos;
+            }else {
+                return this.hcsaSvcRoutingStageDtos;
             }
-            this.hcsaSvcRoutingStageDtos=hcsaSvcRoutingStageDtos;
-            return hcsaSvcRoutingStageDtos;
-        }else {
-            return this.hcsaSvcRoutingStageDtos;
         }
-
     }
 
     private List<WorkingGroupDto> getWorkingGroup() {
@@ -1046,13 +1047,15 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if(list==null){
-            //this config cannot change,so need init once
-            List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-            list=hcsaServiceCategoryDtos;
-            return hcsaServiceCategoryDtos;
-        }else {
-            return list;
+        synchronized (this){
+            if(list==null){
+                //this config cannot change,so need init once
+                List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+                list=hcsaServiceCategoryDtos;
+                return hcsaServiceCategoryDtos;
+            }else {
+                return list;
+            }
         }
     }
     @Override

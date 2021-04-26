@@ -81,14 +81,16 @@
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
                 }
+                dismissWaiting();
             },
             error: function (msg) {
                 //alert("error");
+                dismissWaiting();
             }
           });
         }
 
-        dismissWaiting();
+
     }
     
     function clearFlagValueFEFile() {

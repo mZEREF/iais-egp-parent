@@ -1456,7 +1456,7 @@ public class AppealServiceImpl implements AppealService {
         }
         Collections.sort(pageShowFileDtos,(s1,s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
         request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-        request.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
+        request.getSession().setAttribute("appPremiseMiscDto", appPremiseMiscDto);
         ApplicationDto entity = applicationFeClient.getApplicationByCorrId(appPremCorreId).getEntity();
         if (entity != null) {
             AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(entity.getAppGrpId(),

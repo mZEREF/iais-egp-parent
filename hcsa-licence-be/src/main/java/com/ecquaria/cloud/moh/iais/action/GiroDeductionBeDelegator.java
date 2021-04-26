@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
@@ -83,6 +84,8 @@ public class GiroDeductionBeDelegator {
     private GiroDeductionBeService giroDeductionBeService;
     @Autowired
     private GiroDeductionClient giroDeductionClient;
+    @Autowired
+    private ApplicationClient applicationClient;
     private final static String CSV="csv";
 
     protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
@@ -332,11 +335,16 @@ public class GiroDeductionBeDelegator {
             return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
+        List<ApplicationGroupDto> applicationGroupDtos=new ArrayList<>(map.size());
         map.forEach((k,v)->{
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
+            ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
             giroDeductionDto.setAppGroupNo(k);
+            applicationGroupDto.setGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
+            applicationGroupDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
+            applicationGroupDtos.add(applicationGroupDto);
         });
         if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -344,7 +352,7 @@ public class GiroDeductionBeDelegator {
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
             //update group status
-
+            applicationClient.updateBeGroupStatus(applicationGroupDtos);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
@@ -390,7 +398,6 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-
         ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 

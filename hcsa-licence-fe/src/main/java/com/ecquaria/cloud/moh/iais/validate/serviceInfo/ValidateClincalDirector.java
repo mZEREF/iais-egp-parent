@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.validate.impl;
+package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
