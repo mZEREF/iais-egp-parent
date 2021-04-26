@@ -31,7 +31,7 @@
     <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
     <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
 </ul>
-<div class="tab-nav-mobile visible-xs visible-sm">
+<div class="tab-nav-mobile visible-xs visible-sm" style="overflow:hidden">
     <div class="swiper-wrapper" role="tablist">
         <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Premises</a></div>
         <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
