@@ -2285,6 +2285,21 @@ public class NewApplicationHelper {
         return premisesHciList;
     }
 
+    public static AppGrpPremisesDto getAppGrpPremisesDto(List<AppGrpPremisesDto> appGrpPremisesDtos, String premIndexNo, String premType){
+        AppGrpPremisesDto appGrpPremisesDto = null;
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(AppGrpPremisesDto appGrpPremisesDto1:appGrpPremisesDtos){
+                String currPremIndexNo = StringUtil.nullToEmptyStr(appGrpPremisesDto1.getPremisesIndexNo());
+                String currPremType = StringUtil.nullToEmpty(appGrpPremisesDto1.getPremisesType());
+                if(currPremIndexNo.equals(premIndexNo) && currPremType.equals(premType)){
+                    appGrpPremisesDto = appGrpPremisesDto1;
+                    break;
+                }
+            }
+        }
+        return appGrpPremisesDto;
+    }
+
     public static void setAudiErrMap(boolean isRfi, String appType, Map<String,String> errMap, String appNo,String licenceNo){
         if(isRfi){
             ApplicationDto applicationDto = new ApplicationDto();
