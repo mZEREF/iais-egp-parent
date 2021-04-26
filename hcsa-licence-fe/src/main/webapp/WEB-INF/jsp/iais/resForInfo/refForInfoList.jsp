@@ -25,10 +25,7 @@
                 <div class="components">
                     <div class="tab-gp">
                         <div class="tab-content">
-                            <h3>
-                                <span>Request For Information</span>
-                            </h3>
-                            <br><br>
+                            <br>
                             <table class="table">
                                 <thead>
                                 <tr align="center">
