@@ -2507,6 +2507,16 @@ public class NewApplicationDelegator {
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+                try{
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        List<AppSubmissionDto> appSubmissionDtos =IaisCommonUtils.genNewArrayList();
+                        appSubmissionDtos.add(appSubmissionDto);
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
+
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         }else {
             appSubmissionDto.setId(null);
