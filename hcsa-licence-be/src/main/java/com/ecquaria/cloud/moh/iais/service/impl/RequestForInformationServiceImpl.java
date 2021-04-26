@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -570,8 +571,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     case 2:reminderMaxDay=reminderMax3Day;break;
                     default:reminderMaxDay="0";
                 }
-                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
-                if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
+                String parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal1.getTime());
+                String newDt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                if(parse1.compareTo(newDt)<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                     try {
                         reminder(rfi);
                     }catch (Exception e){
