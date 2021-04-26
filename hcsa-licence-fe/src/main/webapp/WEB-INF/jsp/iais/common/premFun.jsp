@@ -1800,8 +1800,20 @@
             var defaultVal =$(this).find('select option[value=""]').html();
             $(this).find('select').next().children('.current').html(defaultVal);
         });
+        $allDayDiv.prev().prev().find('div.col-md-4').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
+        $allDayDiv.prev().find('div.col-md-4').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
         readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'));
         readonlyPartPage($allDayDiv.prev().find('div.col-md-5'));
+        readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'));
+        readonlyPartPage($allDayDiv.prev().find('div.col-md-4'));
     }
 
     var genMulti = function(){
