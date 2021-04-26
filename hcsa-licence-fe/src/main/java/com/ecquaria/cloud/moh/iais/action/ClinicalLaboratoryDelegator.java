@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -53,6 +55,8 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.moh.iais.validate.impl.ValidateClincalDirector;
+import com.ecquaria.cloud.moh.iais.validate.impl.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +103,10 @@ public class ClinicalLaboratoryDelegator {
     @Autowired
     private AppSubmissionService appSubmissionService;
     @Autowired
+    private ValidateVehicle validateVehicle;
+    @Autowired
+    private ValidateClincalDirector validateClincalDirector;
+    @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -123,6 +131,10 @@ public class ClinicalLaboratoryDelegator {
     public static final String CLINICALDIRECTORCONFIG = "clinicalDirectorConfig";
     public static final String EASMTSSPECIALTYSELECTLIST = "easMtsSpecialtySelectList";
     public static final String EASMTSDESIGNATIONSELECTLIST = "easMtsDesignationSelectList";
+    public static final String GENERALCHARGESDTOLIST = "generalChargesDtoList";
+    public static final String GENERALCHARGESCONFIG = "generalChargesConfig";
+    public static final String OTHERCHARGESDTOLIST = "otherChargesDtoList";
+    public static final String OTHERCHARGESCONFIG = "otherChargesConfig";
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
@@ -1807,6 +1819,25 @@ public class ClinicalLaboratoryDelegator {
         currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        Map<String,String> map=new HashMap<>();
+        if("next".equals(crud_action_type)){
+            validateVehicle.doValidateVehicles(map,appSvcVehicleDtos);
+        }
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+        if (map.isEmpty() && allChecked.isEmpty()) {
+            coMap.put("information", "information");
+        } else {
+            coMap.put("information", "");
+        }
+        bpc.request.getSession().setAttribute("coMap", coMap);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);
+        }
+
     }
 
     /**
@@ -1856,6 +1887,16 @@ public class ClinicalLaboratoryDelegator {
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
 
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        Map<String,String> map=new HashMap<>(17);
+        if("next".equals(crud_action_type)){
+            validateClincalDirector.doValidateClincalDirector(map,appSvcClinicalDirectorDtos);
+        }
+
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CLINICAL_DIRECTOR);
+        }
     }
 
     /**
@@ -1866,6 +1907,27 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prePareCharges(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prePareCharges start ..."));
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //general charges config
+        List<HcsaSvcPersonnelDto> generalChargesDtos = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_CHARGES);
+        if (generalChargesDtos != null && generalChargesDtos.size() > 0) {
+            HcsaSvcPersonnelDto generalChargesDto = generalChargesDtos.get(0);
+            ParamUtil.setRequestAttr(bpc.request, GENERALCHARGESCONFIG, generalChargesDto);
+        }
+        //other charges config
+        List<HcsaSvcPersonnelDto> otherChargesDtos = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_CHARGES);
+        if (otherChargesDtos != null && otherChargesDtos.size() > 0) {
+            HcsaSvcPersonnelDto otherChargesDto = otherChargesDtos.get(0);
+            ParamUtil.setRequestAttr(bpc.request, OTHERCHARGESCONFIG, otherChargesDto);
+        }
+
+        AppSvcChargesPageDto appSvcChargesPageDto = currSvcInfoDto.getAppSvcChargesPageDto();
+        if(appSvcChargesPageDto != null){
+            ParamUtil.setRequestAttr(bpc.request,GENERALCHARGESDTOLIST,appSvcChargesPageDto.getGeneralChargesDtos());
+            ParamUtil.setRequestAttr(bpc.request,OTHERCHARGESDTOLIST,appSvcChargesPageDto.getOtherChargesDtos());
+        }
+
         log.debug(StringUtil.changeForLog("prePareCharges end ..."));
     }
 
@@ -1877,6 +1939,14 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doCharges(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doCharges start ..."));
+
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        //retrieve date from page
+        AppSvcChargesPageDto appSvcClinicalDirectorDto = genAppSvcChargesDto(bpc.request);
+        currSvcInfoDto.setAppSvcChargesPageDto(appSvcClinicalDirectorDto);
+        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+
         log.debug(StringUtil.changeForLog("doCharges end ..."));
     }
     //=============================================================================
@@ -2527,6 +2597,45 @@ public class ClinicalLaboratoryDelegator {
         }
 
         return appSvcClinicalDirectorDtos;
+    }
+
+    private AppSvcChargesPageDto genAppSvcChargesDto(HttpServletRequest request){
+        AppSvcChargesPageDto appSvcChargesPageDto = new AppSvcChargesPageDto();
+        List<AppSvcChargesDto> generalChargesDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcChargesDto> otherChargesDtos = IaisCommonUtils.genNewArrayList();
+        int generalChargeLength = ParamUtil.getInt(request,"generalChargeLength");
+        for(int i = 0; i < generalChargeLength ; i++){
+            String chargesType = ParamUtil.getString(request,"chargesType"+i);
+            String minAmount = ParamUtil.getString(request,"minAmount"+i);
+            String maxAmount = ParamUtil.getString(request,"maxAmount"+i);
+            String remarks = ParamUtil.getString(request,"remarks"+i);
+
+            AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
+            appSvcChargesDto.setChargesType(chargesType);
+            appSvcChargesDto.setMinAmount(minAmount);
+            appSvcChargesDto.setMaxAmount(maxAmount);
+            appSvcChargesDto.setRemarks(remarks);
+            generalChargesDtos.add(appSvcChargesDto);
+        }
+        int otherChargeLength = ParamUtil.getInt(request,"otherChargeLength");
+        for(int i = 0; i < otherChargeLength ; i++){
+            String otherChargesCategory = ParamUtil.getString(request,"otherChargesCategory"+i);
+            String otherChargesType = ParamUtil.getString(request,"otherChargesType"+i);
+            String otherAmountMin = ParamUtil.getString(request,"otherAmountMin"+i);
+            String otherAmountMax = ParamUtil.getString(request,"otherAmountMax"+i);
+            String otherRemarks = ParamUtil.getString(request,"otherRemarks"+i);
+
+            AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
+            appSvcChargesDto.setChargesCategory(otherChargesCategory);
+            appSvcChargesDto.setChargesType(otherChargesType);
+            appSvcChargesDto.setMinAmount(otherAmountMin);
+            appSvcChargesDto.setMaxAmount(otherAmountMax);
+            appSvcChargesDto.setRemarks(otherRemarks);
+            otherChargesDtos.add(appSvcChargesDto);
+        }
+        appSvcChargesPageDto.setGeneralChargesDtos(generalChargesDtos);
+        appSvcChargesPageDto.setOtherChargesDtos(otherChargesDtos);
+        return appSvcChargesPageDto;
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {

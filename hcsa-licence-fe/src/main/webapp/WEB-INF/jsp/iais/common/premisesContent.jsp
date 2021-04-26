@@ -480,7 +480,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -553,7 +553,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -636,7 +636,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -709,7 +709,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1013,7 +1013,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1086,7 +1086,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1169,7 +1169,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1242,7 +1242,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1540,7 +1540,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1613,7 +1613,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1696,7 +1696,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1769,7 +1769,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -2041,18 +2041,23 @@
                                     <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT002" aria-invalid="false">
                                     <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
                                 </div>
+                                <div class="col-sm-12">
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsUseOnly${status.index}"></span>
+                                </div>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Public email " mandatory="true" width="12"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubEmail${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Public Hotline " mandatory="true" width="12"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"></iais:input>
+                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubHotline${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="other-lic-content co-location-div">
@@ -2066,6 +2071,9 @@
                                 <div class="form-check col-sm-3">
                                     <input <c:if test="${'0'==appGrpPremisesDto.easMtsCoLocation}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="easMtsCoLocation${status.index}" value = "0" aria-invalid="false">
                                     <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsCoLocation${status.index}"></span>
                                 </div>
                             </iais:value>
                         </iais:row>
@@ -2107,6 +2115,19 @@
         });
 
         $("select[name='offSiteAddrType']").change(function () {
+            if('ADDTY001'==$( this).val()){
+                if( $(this).parent().parent().next().children("label").children().length<1){
+                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                }
+            }else if('ADDTY002'==$( this).val()) {
+                $(this).parent().parent().next().children("label").children().remove();
+                $(this).parent().parent().next().next().children("label").children().remove();
+                $(this).parent().parent().next().next().next().children("label").children().remove();
+            }
+        });
+        $("select[name='easMtsAddrType']").change(function (){
             if('ADDTY001'==$( this).val()){
                 if( $(this).parent().parent().next().children("label").children().length<1){
                     $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");

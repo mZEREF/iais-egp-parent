@@ -126,7 +126,7 @@
                                                                     <span class="filename server-site" >
                                                                         <c:forEach items="${rfiMultiFile.value}"
                                                                                    var="rfiDoc" varStatus="docStatus">
-                                                                            <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${rfiDoc.id}" docName="${rfiDoc.docName}"/>
+                                                                            <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${rfiDoc.fileRepoId}" docName="${rfiDoc.docName}"/>
                                                                             <br>
                                                                         </c:forEach>
                                                                     </span>

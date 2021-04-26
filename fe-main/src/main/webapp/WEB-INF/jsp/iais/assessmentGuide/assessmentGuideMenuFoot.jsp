@@ -133,7 +133,8 @@
     }
     function deleteAmendDraft() {
         $('#isNeedDelete').val('delete');
-        doLicAmend();
+        guideSubmit("amend1_1","main");
+        // doLicAmend();
     }
 
     function guideSubmit(guideAction,toWhere){

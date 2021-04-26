@@ -3211,7 +3211,7 @@ public class HcsaApplicationDelegator {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             String originLicenceId = applicationDto.getOriginLicenceId();
             if (!StringUtil.isEmpty(originLicenceId)) {
-              /*  AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
+                AppLastInsGroup appLastInsGroup = applicationClient.getAppLastInsGroup(applicationViewDto).getEntity();
                 boolean recomTypeLastIns = appLastInsGroup.isRecomTypeLastIns();
                 flag = recomTypeLastIns;
                 boolean saveRecomTypeForLastIns = appLastInsGroup.isSaveRecomTypeForLastIns();
@@ -3222,7 +3222,7 @@ public class HcsaApplicationDelegator {
                     applicationViewDto.setVerified(routingStage);
                     ParamUtil.setSessionAttr(request, "verifiedValues", (Serializable) routingStage);
                 }
-                ParamUtil.setSessionAttr(request, "AppLastInsGroup", appLastInsGroup);*/
+                ParamUtil.setSessionAttr(request, "AppLastInsGroup", appLastInsGroup);
             }
         }
         return flag;

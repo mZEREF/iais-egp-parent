@@ -21,7 +21,7 @@
                                                                               aria-controls="tabAck" role="tab"
                                                                               data-toggle="tab">Ackownledgement</a></li>
                             </ul>
-                            <div class="tab-nav-mobile visible-xs visible-sm">
+                            <div class="tab-nav-mobile visible-xs visible-sm" style="overflow:hidden">
                                 <div class="swiper-wrapper" role="tablist">
                                     <div class="swiper-slide"><a href="#tabIns" aria-controls="tabIns" role="tab"
                                                                  data-toggle="tab">Instructions</a></div>

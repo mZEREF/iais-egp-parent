@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -50,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -60,7 +58,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -136,7 +133,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -877,6 +873,21 @@ public class NewApplicationDelegator {
                 NewApplicationHelper.removePremiseEmptyAlignInfo(appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
+            //update address
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+               for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                   List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                   if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
+                       for(AppSvcLaboratoryDisciplinesDto laboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
+                           AppGrpPremisesDto appGrpPremisesDto = NewApplicationHelper.getAppGrpPremisesDto(appGrpPremisesDtoList,laboratoryDisciplinesDto.getPremiseVal(),laboratoryDisciplinesDto.getPremiseType());
+                           if(appGrpPremisesDto != null){
+                               laboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                           }
+                       }
+                   }
+               }
+            }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
@@ -1548,6 +1559,12 @@ public class NewApplicationDelegator {
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
+
+
+                    ParamUtil.setSessionAttr(bpc.request, "reasonOptionPrint", (Serializable) reasonOption);
+                    ParamUtil.setSessionAttr(bpc.request, "patientsOptionPrint", (Serializable) patientsOption);
+                    ParamUtil.setRequestAttr(bpc.request, "applicationDtoPrint", applicationDto);
+                    ParamUtil.setSessionAttr(bpc.request, "confirmPrintDtos", (Serializable) appCessLicDtos);
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
@@ -2509,6 +2526,16 @@ public class NewApplicationDelegator {
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+                try{
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        List<AppSubmissionDto> appSubmissionDtos =IaisCommonUtils.genNewArrayList();
+                        appSubmissionDtos.add(appSubmissionDto);
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
+
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         }else {
             appSubmissionDto.setId(null);
@@ -3073,7 +3100,7 @@ public class NewApplicationDelegator {
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
-        log.info("======ackPageAppSubmissionDto=====>"+ackPageAppSubmissionDto);
+        log.info("======ackPageAppSubmissionDto=====> {}"+ackPageAppSubmissionDto);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
         String draftNo = "";
@@ -3099,10 +3126,10 @@ public class NewApplicationDelegator {
                                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                             }
                             String grpId = entity.get(0).getAppGrpId();
-                            log.info("grpId=====>"+grpId);
+                            log.info("grpId=====> {}"+grpId);
                             ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
                             applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            log.info("====applicationGroupDto==>"+JsonUtil.parseToJson(applicationGroupDto));
+                            log.info("====applicationGroupDto==> {}"+JsonUtil.parseToJson(applicationGroupDto));
                             applicationFeClient.saveApplicationDtos(entity);
                             applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                         }

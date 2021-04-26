@@ -782,7 +782,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
                 appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1429,7 +1429,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtos.get(0).setTotalAmountGroup(a);
             }
             try {
-                if (appSubmissionDtos != null && appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                     requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
                 }
             } catch (Exception e) {
@@ -1896,6 +1896,13 @@ public class RequestForChangeMenuDelegator {
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+                try{
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         } else {
             appSubmissionDto.setAppGrpNo(null);

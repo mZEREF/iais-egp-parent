@@ -30,6 +30,7 @@
                 id,
                 application_no,
                 app_grp_id,
+                '' as pmtStatus,
                 (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
                 has_submit_pref_date,
                 app_type,

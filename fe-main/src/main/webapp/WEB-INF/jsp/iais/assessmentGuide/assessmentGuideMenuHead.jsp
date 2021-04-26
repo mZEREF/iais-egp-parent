@@ -46,6 +46,7 @@
         <input type="hidden" name="guide_action_type" id="guide_action_type"/>
         <input type="hidden" name="guide_action_value" id="guide_action_value"/>
         <input type="hidden" name="crud_action_type_form"/>
+        <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete"/>
         <div class="main-content">
             <div class="row">
                 <div class="col-xs-12">

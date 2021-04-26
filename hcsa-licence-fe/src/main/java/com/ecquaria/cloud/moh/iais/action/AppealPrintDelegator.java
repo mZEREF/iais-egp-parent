@@ -39,6 +39,10 @@ public class AppealPrintDelegator {
             printWithdrawPage(bpc);
         }else if ("cessPage".equals(fromWhichPage)){
             printCessation(bpc);
+        }else if("cessViewPage".equals(fromWhichPage)){
+            printViewCessation(bpc);
+        }else if("relatePage".equals(fromWhichPage)){
+            printViewRelateInfo(bpc);
         }
         else{
                 printApplePage(bpc);
@@ -111,5 +115,13 @@ public class AppealPrintDelegator {
 
     private void printCessation(BaseProcessClass bpc){
         bpc.request.setAttribute("crud_action_type","cessPrint");
+    }
+
+    private void printViewCessation(BaseProcessClass bpc){
+        bpc.request.setAttribute("crud_action_type","cessViewPage");
+    }
+
+    private void printViewRelateInfo(BaseProcessClass bpc){
+        bpc.request.setAttribute("crud_action_type","relatePrint");
     }
 }

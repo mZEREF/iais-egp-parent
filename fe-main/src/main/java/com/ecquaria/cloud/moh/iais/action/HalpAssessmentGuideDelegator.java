@@ -1626,8 +1626,28 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
-    public void amendLic1_1(BaseProcessClass bpc) {
+    public void amendLic1_1(BaseProcessClass bpc) throws IOException {
         log.info("****start ******");
+        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+//        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if(!StringUtil.isEmpty(licIdValue)){
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }
+        }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);

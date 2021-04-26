@@ -880,7 +880,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private void  moveFile(File file){
         String name = file.getName();
-        log.info("file name is ===>"+name);
+        log.info("file name is ===> {}"+name);
         File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
         try (OutputStream fileOutputStream=Files.newOutputStream(Paths.get( moveFile.getPath()));
              InputStream fileInputStream=Files.newInputStream(file.toPath())) {

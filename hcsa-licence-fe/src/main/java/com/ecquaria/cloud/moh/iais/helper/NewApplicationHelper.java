@@ -2285,6 +2285,21 @@ public class NewApplicationHelper {
         return premisesHciList;
     }
 
+    public static AppGrpPremisesDto getAppGrpPremisesDto(List<AppGrpPremisesDto> appGrpPremisesDtos, String premIndexNo, String premType){
+        AppGrpPremisesDto appGrpPremisesDto = null;
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(AppGrpPremisesDto appGrpPremisesDto1:appGrpPremisesDtos){
+                String currPremIndexNo = StringUtil.nullToEmptyStr(appGrpPremisesDto1.getPremisesIndexNo());
+                String currPremType = StringUtil.nullToEmpty(appGrpPremisesDto1.getPremisesType());
+                if(currPremIndexNo.equals(premIndexNo) && currPremType.equals(premType)){
+                    appGrpPremisesDto = appGrpPremisesDto1;
+                    break;
+                }
+            }
+        }
+        return appGrpPremisesDto;
+    }
+
     public static void setAudiErrMap(boolean isRfi, String appType, Map<String,String> errMap, String appNo,String licenceNo){
         if(isRfi){
             ApplicationDto applicationDto = new ApplicationDto();
@@ -2835,9 +2850,12 @@ public class NewApplicationHelper {
         }
     }
 
-    public static String genMutilSelectOpHtml(Map<String,String> attrMap,List<SelectOption> selectOptionList,String firestOption,List<String> checkedVals){
+    public static String genMutilSelectOpHtml(Map<String,String> attrMap, List<SelectOption> selectOptionList, String firestOption, List<String> checkedVals, boolean multiSelect){
         StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<select multiple=\"multiple\" ");
+        sBuffer.append("<select ");
+        if(multiSelect){
+            sBuffer.append("multiple=\"multiple\" ");
+        }
         for(Map.Entry<String, String> entry : attrMap.entrySet()){
 //            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
             sBuffer.append(entry.getKey())

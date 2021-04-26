@@ -158,6 +158,7 @@
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
+        $("select[name='easMtsAddrType']").trigger('change');
         <!-- init start-->
         init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){
