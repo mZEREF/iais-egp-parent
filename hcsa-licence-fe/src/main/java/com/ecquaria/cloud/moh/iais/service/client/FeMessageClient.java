@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = FeMessageClientFallback.class)
 public interface FeMessageClient {
     @PostMapping(path = "/iais-inter-inbox/message", consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
@@ -25,4 +27,8 @@ public interface FeMessageClient {
     FeignResponseEntity<InterMessageDto> getInterMessageById(@PathVariable(value = "msgId") String msgId);
     @GetMapping(value = "/iais-inter-inbox/inter-message-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InterMessageDto> getInterMessageBySubjectLike(@RequestParam("subject") String subject,@RequestParam("status") String status);
+
+    @GetMapping(value = "/iais-inter-inbox/inter-msgIds-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getInterMsgIdsBySubjectLike(@RequestParam("subject") String subject, @RequestParam("status") String status);
+
 }

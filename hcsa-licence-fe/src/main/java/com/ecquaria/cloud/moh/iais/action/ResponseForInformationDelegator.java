@@ -254,8 +254,19 @@ public class ResponseForInformationDelegator {
         responseForInformationService.compressFile(licPremisesReqForInfoDto1.getId());
         log.info("------------------- compressFile  end --------------");
         ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",null);
-        String messageId= (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+        String subject= "Ad-hoc, ";
+        subject=subject+licPremisesReqForInfoDto1.getLicenceNo();
+        List<String> messageIds1=messageClient.getInterMsgIdsBySubjectLike(subject,MessageConstants.MESSAGE_STATUS_UNRESPONSE).getEntity();
+        List<String> messageIds2=messageClient.getInterMsgIdsBySubjectLike(subject,MessageConstants.MESSAGE_STATUS_UNREAD).getEntity();
+        List<String> messageIds=IaisCommonUtils.genNewArrayList();
+        messageIds.addAll(messageIds1);
+        messageIds.addAll(messageIds2);
+        if(messageIds.size()!=0){
+            for (String msgId:messageIds
+            ) {
+                messageClient.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+            }
+        }
 
         // 		doSubmit->OnStepProcess
     }
