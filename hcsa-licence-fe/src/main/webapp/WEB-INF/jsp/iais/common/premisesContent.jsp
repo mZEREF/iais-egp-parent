@@ -21,6 +21,12 @@
     .radio-disabled{
         border-color: #999999 !important;
     }
+    input[type=checkbox] {
+        -ms-transform: scale(2,2); /* IE */
+        -moz-transform: scale(2,2); /* FireFox */
+        -webkit-transform: scale(2,2); /* Safari and Chrome */
+        -o-transform: scale(2,2); /* Opera */
+    }
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
