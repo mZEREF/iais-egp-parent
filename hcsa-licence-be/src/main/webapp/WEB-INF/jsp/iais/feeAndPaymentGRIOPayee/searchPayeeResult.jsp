@@ -155,7 +155,7 @@
                                                                         <td>
                                                                             <c:forEach items="${pool.giroAccountFormDocDtoList}"
                                                                                        var="giroDoc" varStatus="docStatus">
-                                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${giroDoc.fileRepoId}"/>&fileRepoName=${giroDoc.docName}">${giroDoc.docName}</a>
+                                                                                <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${giroDoc.fileRepoId}" docName="${giroDoc.docName}"/>
                                                                                 <br>
                                                                             </c:forEach>
                                                                         </td>
