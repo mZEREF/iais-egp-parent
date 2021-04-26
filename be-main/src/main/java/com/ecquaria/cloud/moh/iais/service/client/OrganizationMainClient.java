@@ -119,4 +119,8 @@ public interface OrganizationMainClient {
 
     @PutMapping(value = "/iais-task/u-a-task", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<TaskDto> updateTaskForAssign(@RequestBody TaskDto taskDto);
+
+    @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
+    FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
+                                                                        @PathVariable(name = "roleId") String roleId);
 }

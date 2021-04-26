@@ -235,4 +235,12 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(String workGroupId, String roleId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
