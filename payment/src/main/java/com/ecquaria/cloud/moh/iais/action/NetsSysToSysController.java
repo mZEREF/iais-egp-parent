@@ -23,12 +23,12 @@ import java.io.IOException;
 @Slf4j
 public class NetsSysToSysController {
 
-    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value =
+    @RequestMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, value =
             "/s2sTxnEnd", method = RequestMethod.POST)
     public ResponseEntity<Void> receiveS2STxnEnd(@RequestBody String txnRes,
                                                  HttpServletRequest request, HttpServletResponse response) throws IOException {
         String sessionId= request.getParameter("reqNo");
-        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/payment-web/eservice/INTERNET/Payment";
+        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/eservice/INTERNET/Payment";
         StringBuilder bud = new StringBuilder();
         bud.append(url).append("?reqNo=").append(sessionId);
         String header =  request.getParameter("hmac");
