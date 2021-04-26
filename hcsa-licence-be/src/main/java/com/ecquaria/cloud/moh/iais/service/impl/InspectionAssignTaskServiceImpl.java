@@ -246,7 +246,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!StringUtil.isEmpty(workGroupId)) {
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             String workGroupName = workingGroupDto.getGroupName();
-            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
+            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection") && !workGroupName.contains("Approval")) {
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
                 if (appPremisesRecommendationDto == null) {
                     List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();
@@ -481,7 +481,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
-                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+                                          String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -576,7 +576,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                       ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
+                                         ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
