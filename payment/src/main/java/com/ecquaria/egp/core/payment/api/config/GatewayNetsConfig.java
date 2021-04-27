@@ -56,6 +56,10 @@ public class GatewayNetsConfig {
 
 	public static final String timeout = properties.getProperty("eNets.payment.timeout.ms");
 
+	public static final String b2sUrl = properties.getProperty("eNets.b2s.jsp.url");
+
+	public static final String s2sUrl = properties.getProperty("eNets.s2s.api.url");
+
 	public static final String dtLong                  = "yyyyMMddHHmmss";
     
     public static final String simple                  = "yyyy-MM-dd HH:mm:ss";
