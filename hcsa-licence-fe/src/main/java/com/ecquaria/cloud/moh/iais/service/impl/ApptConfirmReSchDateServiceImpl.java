@@ -507,7 +507,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ProcessReSchedulingDto processReSchedulingDto;
             Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
             for (ApptViewDto appt:apptViewDtos
-                 ) {
+            ) {
                 if(appt.getAppCorrId().equals(appPremisesCorrelationDto.getId())){
                     map.put(applicationDto.getApplicationNo(),appt.getUserIds());
                 }
@@ -515,12 +515,22 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
             processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId,applicationDto);
             processReSchedulingDto.setAppNoUserIds(map);
-
+            //Exclude a selected date
+            List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+            for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
+                cancelRefNo.add(apptDto.getApptRefNo());
+            }
+            Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+            cancelRefNo = new ArrayList<>(cancelRefNoSet);
+            ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+            apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+            ccCalendarStatusEic(apptCalendarStatusDto);
             for (ApptViewDto appt:apptViewDtos
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                         ) {
+                    ) {
                         insAppt.setReason(appt.getReason());
                         insAppt.setEndDate(appt.getSpecificEndDate());
                         insAppt.setStartDate(appt.getSpecificStartDate());
@@ -634,14 +644,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             }
             processReSchedulingDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
         }
-        //Exclude a selected date
-        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
-        for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
-            cancelRefNo.add(apptDto.getApptRefNo());
-        }
-        //filter
-        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
-        cancelRefNo = new ArrayList<>(cancelRefNoSet);
+
         //update application
         //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
@@ -666,10 +669,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
-        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
-        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
-        ccCalendarStatusEic(apptCalendarStatusDto);
         return processReSchedulingDto1;
     }
 
