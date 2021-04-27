@@ -27,6 +27,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -119,7 +120,7 @@ public class AdhocWriteMultipartFileAjaxController {
     }
 
     @RequestMapping(value = "/showRfiFromFile",  method = RequestMethod.POST)
-    public @ResponseBody String showInternalFile(HttpServletRequest request) {
+    public @ResponseBody String showInternalFile(HttpServletRequest request) throws UnsupportedEncodingException {
         String data = "";
         String configIndex = request.getParameter("showIndex");
 
@@ -133,7 +134,7 @@ public class AdhocWriteMultipartFileAjaxController {
 
     @RequestMapping(value = "/deleteGiroFromFile", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteInternalFile(HttpServletRequest request){
+    public String deleteInternalFile(HttpServletRequest request) throws UnsupportedEncodingException {
         String data = "";
         String deleteWriteMessageFileId = request.getParameter("deleteWriteMessageFileId");
         String configIndex = request.getParameter("configIndex");
@@ -161,7 +162,7 @@ public class AdhocWriteMultipartFileAjaxController {
         return result;
     }
 
-    private String setHtmlValue(HttpServletRequest request,List<AttachmentDto> attachmentDtoList,String errUploadFile,String configIndex){
+    private String setHtmlValue(HttpServletRequest request,List<AttachmentDto> attachmentDtoList,String errUploadFile,String configIndex) throws UnsupportedEncodingException {
         StringBuilder data = new StringBuilder();
         int i=0;
         if(!IaisCommonUtils.isEmpty(attachmentDtoList)){
@@ -172,7 +173,7 @@ public class AdhocWriteMultipartFileAjaxController {
                 }else {
                     CSRF= (String) ParamUtil.getSessionAttr(request,"replaceCsrf");
                 }
-                String urls="/hcsa-licence-web/download-giro-file?filerepo=fileRo"+i+"&OWASP_CSRFTOKEN=replaceCsrf"+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+temp.getDocName();
+                String urls="/hcsa-licence-web/download-rfi-file?configIndex="+configIndex+"&filerepo=fileRo"+i+"&OWASP_CSRFTOKEN=replaceCsrf"+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+URLEncoder.encode(temp.getDocName(), StandardCharsets.UTF_8.toString());
                 String box = "<p class='fileList'>" +
                         "<a href=\""+urls.replace("replaceCsrf",CSRF)+"\">"+temp.getDocName()+"</a>" +
                         "&emsp;<button name='fileDeleteButton' value='" +
@@ -195,7 +196,7 @@ public class AdhocWriteMultipartFileAjaxController {
         return data.toString();
     }
 
-    @GetMapping(value = "/download-giro-file")
+    @GetMapping(value = "/download-rfi-file")
     public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("file-repo start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
