@@ -1951,6 +1951,15 @@ public class NewApplicationHelper {
             AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
+            }else{
+                personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+                if(personMap != null){
+                    AppSvcPersonAndExtDto personAndExtDto = personMap.get(personKey);
+                    AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto,svcCode,true);
+                    if (personDto != null) {
+                        appSvcPrincipalOfficersDto = personDto;
+                    }
+                }
             }
         }
         return appSvcPrincipalOfficersDto;
