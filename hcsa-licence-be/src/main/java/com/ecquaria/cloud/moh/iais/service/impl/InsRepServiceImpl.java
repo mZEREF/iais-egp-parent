@@ -1052,7 +1052,7 @@ public class InsRepServiceImpl implements InsRepService {
                 WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
                 if (entity != null) {
                     String groupDomain = entity.getGroupDomain();
-                    if ("hcsa".equals(groupDomain)) {
+                    if (groupDomain.contains("hcsa")) {
                         workId = entity.getId();
                         break;
                     }
