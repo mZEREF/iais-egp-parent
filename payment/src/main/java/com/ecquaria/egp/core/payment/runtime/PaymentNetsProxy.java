@@ -322,7 +322,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 //			log.info(ex.getMessage(),ex);
 //		}
 
-		String response = "payment success";
+		String response = "payment "+status;
 		setPaymentResponse(response);
 
 		//if(txnResObj.getMsg().get)

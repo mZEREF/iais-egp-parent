@@ -222,8 +222,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			}
 		}
 
-		String response = "payment success";
-		setPaymentResponse(response);
+
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";
 		if(paymentIntent!=null){
@@ -234,6 +233,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 				default:status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
 		}
+		String response = "payment "+status;
+		setPaymentResponse(response);
 		setPaymentTransStatus(status);
 
 		PaymentDto paymentDto = new PaymentDto();
