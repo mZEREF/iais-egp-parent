@@ -74,7 +74,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);
-			fields.put("vpc_ReturnURL",AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
+			fields.put("vpc_ReturnURL",fields.get("vpc_ReturnURL"));
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);

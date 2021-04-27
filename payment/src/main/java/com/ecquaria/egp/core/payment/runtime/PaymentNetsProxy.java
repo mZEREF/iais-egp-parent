@@ -78,7 +78,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);
-			fields.put("vpc_ReturnURL",AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
+			fields.put("vpc_ReturnURL",fields.get("vpc_ReturnURL"));
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
@@ -101,9 +101,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String b2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+GatewayNetsConfig.b2sUrl+"?reqNo="+reqNo;
+		String b2sUrl= GatewayNetsConfig.b2sUrl+"?reqNo="+reqNo;
 		//String b2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+"/egov/s2sTxnEnd?reqNo="+reqNo;
-		String s2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+GatewayNetsConfig.s2sUrl+"?reqNo="+reqNo;
+		String s2sUrl= GatewayNetsConfig.s2sUrl+"?reqNo="+reqNo;
 		String sessionId=bpc.getSession().getId();
 		String results;
 		String failUrl;
