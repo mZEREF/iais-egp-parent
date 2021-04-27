@@ -424,6 +424,11 @@
                                 $("input[name='isPartEdit']").val('0');
                                 $("input[name='chooseExistData']").val('0');
                                 return;
+                            }else if(eqHciCode=='false'){
+                                $("input[name='isPartEdit']").val('1');
+                                $("input[name='chooseExistData']").val('1');
+                                $('.premSelect').removeClass('disabled');
+                                $('.premisesEdit').addClass('hidden');
                             }
                         }
                     },

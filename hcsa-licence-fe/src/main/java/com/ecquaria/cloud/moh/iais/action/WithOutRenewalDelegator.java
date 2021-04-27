@@ -1090,7 +1090,7 @@ public class WithOutRenewalDelegator {
             if(i<10){
                 detailsDto.setApplicationNo(appGrpNo+"-0"+i);
             }else {
-                detailsDto.setApplicationNo(appGroupNo+"-"+i);
+                detailsDto.setApplicationNo(appGrpNo+"-"+i);
             }
             appSubmissionService.saveAppFeeDetails(detailsDto);
         }

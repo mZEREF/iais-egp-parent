@@ -21,11 +21,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
@@ -395,6 +398,9 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = applicationListDto.getAppPremisesOperationalUnits();
         List<AppPremEventPeriodDto> appPremEventPeriods = applicationListDto.getAppPremEventPeriods();
         List<AppPremOpenPeriodDto> appPremOpenPeriods = applicationListDto.getAppPremOpenPeriods();
+        List<AppSvcVehicleDto> appSvcVehicles = applicationListDto.getAppSvcVehicles();
+        List<AppSvcChargesDto> appSvcChargesPages = applicationListDto.getAppSvcChargesPages();
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectors = applicationListDto.getAppSvcClinicalDirectors();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -405,34 +411,19 @@ public class UploadFileServiceImpl implements UploadFileService {
             ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
             List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();
             List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
-
-
             List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
-
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
-
             List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
-
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
             List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
             List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
@@ -440,6 +431,9 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
             List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=IaisCommonUtils.genNewArrayList();
+            List<AppSvcChargesDto> appSvcChargesDtoList=new ArrayList<>(10);
+            List<AppSvcVehicleDto> appSvcVehicleDtoList=new ArrayList<>(10);
+            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
             groupDtos.add(every);
             String groupId = every.getId();
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
@@ -545,6 +539,24 @@ public class UploadFileServiceImpl implements UploadFileService {
                                     appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
                                 }
                             }
+                            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicles){
+                                String appPremCorreId = appSvcVehicleDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appSvcVehicleDtoList.add(appSvcVehicleDto);
+                                }
+                            }
+                            for(AppSvcChargesDto appSvcChargesDto : appSvcChargesPages){
+                                String appPremCorreId = appSvcChargesDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appSvcChargesDtoList.add(appSvcChargesDto);
+                                }
+                            }
+                            for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto : appSvcClinicalDirectors){
+                                String appPremCorreId = appSvcClinicalDirectorDto.getAppPremCorreId();
+                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                    appSvcClinicalDirectorDtoList.add(appSvcClinicalDirectorDto);
+                                }
+                            }
                         }
                     }
 
@@ -637,6 +649,9 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
             applicationListFileDto.setAppPremEventPeriods(appPremEventPeriodDtoList);
             applicationListFileDto.setAppPremOpenPeriods(appPremOpenPeriodDtoList);
+            applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList);
+            applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList);
+            applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;
