@@ -948,6 +948,8 @@ public class BackendInboxDelegator {
                         ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(applicationGroupDto.getPmtStatus()) ||
                         ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(applicationGroupDto.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
+                } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(applicationGroupDto.getPmtStatus())) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
                 }
             }
         }
