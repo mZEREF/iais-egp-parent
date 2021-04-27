@@ -40,7 +40,7 @@ import java.util.UUID;
  */
 @Controller
 @Slf4j
-public class WriteMultipartFileAjaxController {
+public class AdhocWriteMultipartFileAjaxController {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
