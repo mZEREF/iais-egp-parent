@@ -15,7 +15,7 @@
 <webui:setLayout name="iais-internet"/>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
-        <div class="center-content">
+        <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
             </div>
