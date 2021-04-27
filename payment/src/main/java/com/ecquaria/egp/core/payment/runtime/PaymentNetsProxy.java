@@ -359,7 +359,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
 				applicationGroupDto.setPmtRefNo(refNo);
 				applicationGroupDto.setPaymentDt(new Date());
-				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_NETS);
 
 				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
 			}
