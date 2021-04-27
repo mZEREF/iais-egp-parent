@@ -84,6 +84,6 @@ public interface FeUserClient {
                                                              @PathVariable("nricNumber") String nricNumber,
                                                              @PathVariable("isPermit") Boolean isPermit);
 
-    @GetMapping(path = "/iais-internet-user//expire/singpass/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-internet-user/expire/singpass/list", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<JSONObject>> getExpireSingPassList();
 }
