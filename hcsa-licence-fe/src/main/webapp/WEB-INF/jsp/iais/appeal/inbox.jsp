@@ -24,6 +24,9 @@
       <div class="col-xs-12 col-md-10" style="margin-left: 2%">
         <label style="font-size: 25px">You are appealing for:</label>
       </div>
+      <div class="col-xs-12 col-sm-1">
+        <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+      </div>
 
       <div  class="col-xs-12 col-md-10">
         <div class="col-xs-12 col-md-6" style="margin-left: 1%">
@@ -190,6 +193,12 @@
 
 
     });
+
+    $("#print-review").click(function () {
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohAppealPrint/1/",request)%>';
+        window.open(url,'_blank');
+    })
+
     function link(){
         var type = $('#parametertype').val();
         if(type=='application'){
