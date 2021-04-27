@@ -406,12 +406,22 @@ public class LicenceServiceImpl implements LicenceService {
                             if (Optional.ofNullable(organizationDto).isPresent()){
                                 String uenNo = organizationDto.getUenNo();
                                 if(StringUtil.isNotEmpty(uenNo)){
-                                    LicenseeIndividualDto licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
-                                    PremisesDto premisesDto = superLicDto.getPremisesGroupDtos().get(0).getPremisesDto();
-                                    log.info(StringUtil.changeForLog("licenseeIndividualDto.getUenMailFlag() = " + licenseeIndividualDto.getUenMailFlag()));
-                                    log.info(StringUtil.changeForLog("premisesDto = " + JsonUtil.parseToJson(premisesDto)));
-                                    //judge licence is singlepass
-                                    if(licenseeIndividualDto.getUenMailFlag() == 0){
+                                    LicenseeIndividualDto individual = licenseeDto.getLicenseeIndividualDto();
+
+                                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+
+                                    premisesGroupDtos = Optional.ofNullable(premisesGroupDtos).orElseGet(() -> new ArrayList<>());
+
+                                    log.info("Premises Group Dto {}", JsonUtil.parseToJson(premisesGroupDtos));
+
+                                    Optional<PremisesGroupDto> premisesGroupOptional = premisesGroupDtos.stream().findFirst();
+
+                                    log.info("Uen Mail Flag {}", individual.getUenMailFlag());
+
+                                    if (premisesGroupOptional.isPresent() && individual.getUenMailFlag() == 0){
+                                        PremisesDto premisesDto = premisesGroupOptional.get().getPremisesDto();
+                                        log.info("Premises {}", JsonUtil.parseToJson(premisesDto));
+                                        //judge licence is singlepass
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                         templateContent.put("HCI_Name", premisesDto.getHciName());
                                         String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
@@ -453,7 +463,6 @@ public class LicenceServiceImpl implements LicenceService {
                                         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
                                         emailParam.setRefId(licenseeDto.getId());
                                         notificationHelper.sendNotification(emailParam);
-                                        log.info(StringUtil.changeForLog("send email end"));
 
                                         EmailParam smsParam = new EmailParam();
                                         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_SMS);
@@ -464,7 +473,6 @@ public class LicenceServiceImpl implements LicenceService {
                                         smsParam.setRefId(licenseeDto.getId());
                                         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
                                         notificationHelper.sendNotification(smsParam);
-                                        log.info(StringUtil.changeForLog("send sms end"));
 
                                         EmailParam msgParam = new EmailParam();
                                         msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_UEN_001_MSG);
@@ -480,23 +488,15 @@ public class LicenceServiceImpl implements LicenceService {
                                         msgParam.setRefId(licenseeDto.getId());
                                         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                                         notificationHelper.sendNotification(msgParam);
-                                        log.info(StringUtil.changeForLog("send msg end"));
                                         //set flag = 1
-                                        organizationClient.updateIndividualFlag(licenseeIndividualDto.getId());
-                                        log.info(StringUtil.changeForLog("updateIndividualFlag end"));
+                                        organizationClient.updateIndividualFlag(individual.getId());
                                     }
                                 }
                             }
                         }
-
-
-
-
                     }
-
-
                 }catch (Exception e){
-                    continue;
+                    log.error(e.getMessage(), e);
                 }
 
             }
