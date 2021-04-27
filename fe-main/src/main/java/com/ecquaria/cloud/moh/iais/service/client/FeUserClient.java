@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,4 +83,7 @@ public interface FeUserClient {
     FeignResponseEntity<Boolean> setPermitLoginStatusInUenTrack(@PathVariable("uen") String uen,
                                                              @PathVariable("nricNumber") String nricNumber,
                                                              @PathVariable("isPermit") Boolean isPermit);
+
+    @GetMapping(path = "/iais-internet-user//expire/singpass/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<JSONObject>> getExpireSingPassList();
 }

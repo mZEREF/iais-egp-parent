@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -53,6 +54,7 @@ public class FeMainEmailHelper {
             log.info("send singpass auto ceased email start");
             OrganizationDto organ = userManageService.findOrganizationByUen(uen);
             if (Optional.ofNullable(organ).isPresent()){
+
                 List<LicenseeDto> licList =  userManageService.getLicenseeByOrgId(organ.getId());
                 if (IaisCommonUtils.isNotEmpty(licList)){
                     for (LicenseeDto lic : licList){
@@ -87,7 +89,14 @@ public class FeMainEmailHelper {
                                 templateMap.put("HCI_Name", hciStr);
                                 templateMap.put("HCI_Address", addressStr);
                                 templateMap.put("UEN_No", uenNo);
-                                templateMap.put("Applicant", licenseeName);
+
+                                FeUserDto user = userManageService.getFeUserAccountByNricAndType(uen, nricNumber);
+                                if (Optional.ofNullable(user).isPresent()){
+                                    templateMap.put("Applicant", user.getDisplayName());
+                                }else {
+                                    templateMap.put("Applicant", licenseeName);
+                                }
+
                                 templateMap.put("emailAddress", paramConfig.getSystemAddressOne());
                                 templateMap.put("telNo", paramConfig.getSystemPhoneNumber());
                                 String loginUrl = HmacConstants.HTTPS +"://" + paramConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;

@@ -66,4 +66,6 @@ public interface OrgUserManageService {
     void setSingPassAutoCeased(String uen, String nricNumber);
 
     void receiveEntityFormEDH(FeUserDto user);
+
+    void sendReminderForExpiredSingPass();
 }
