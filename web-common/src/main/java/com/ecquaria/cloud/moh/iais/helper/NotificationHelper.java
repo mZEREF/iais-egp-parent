@@ -673,12 +673,14 @@ public class NotificationHelper {
 		if (roles.contains(RECEIPT_ROLE_MOH_OFFICER)) {
 			passRoles.addAll(adminRoles);
 		} else {
-			roles.forEach(r -> {
-				String role = r.substring(3);
-				if (adminRoles.contains(role)) {
-					passRoles.add(role);
+			for (String roleStr : roles) {
+				for (String adminRoleStr : adminRoles){
+					if (roleStr.contains(adminRoleStr)){
+						passRoles.add(adminRoleStr);
+						break;
+					}
 				}
-			});
+			}
 		}
 
 		if (!IaisCommonUtils.isEmpty(passRoles)){
