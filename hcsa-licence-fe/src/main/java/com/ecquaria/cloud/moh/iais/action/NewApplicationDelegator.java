@@ -2637,19 +2637,40 @@ public class NewApplicationDelegator {
             List<AppSvcCgoDto> appSvcCgoDtoList2 = appSvcRelatedInfoDto2.getAppSvcCgoDtoList();
             if(!list1.isEmpty()){
                 if (appSvcCgoDtoList2 != null && appSvcCgoDtoList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList);
+                    for(AppSvcCgoDto var1 : appSvcCgoDtoList2){
+                        for(AppSvcCgoDto var2 : appSvcCgoDtoList){
+                            if(var1.getIdNo().equals(var2.getIdNo())){
+                                appSvcCgoDtoList2.set(appSvcCgoDtoList2.indexOf(var1),var2);
+                            }
+                        }
+                    }
+                    appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList2);
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
             if(!list2.isEmpty()){
                 if (appSvcMedAlertPersonList2 != null && appSvcMedAlertPersonList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
+                    for(AppSvcPrincipalOfficersDto var1 : appSvcMedAlertPersonList2){
+                        for(AppSvcPrincipalOfficersDto var2 : appSvcMedAlertPersonList){
+                            if(var1.getIdNo().equals(var2.getIdNo())){
+                                appSvcMedAlertPersonList2.set(appSvcMedAlertPersonList2.indexOf(var1),var2);
+                            }
+                        }
+                    }
+                    appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList2);
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
             if(!list3.isEmpty()){
                 if (appSvcPrincipalOfficersDtoList2 != null && appSvcPrincipalOfficersDtoList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
+                    for(AppSvcPrincipalOfficersDto var1 : appSvcPrincipalOfficersDtoList2){
+                        for(AppSvcPrincipalOfficersDto var2 : appSvcPrincipalOfficersDtoList){
+                            if(var1.getIdNo().equals(var2.getIdNo())){
+                                appSvcPrincipalOfficersDtoList2.set(appSvcPrincipalOfficersDtoList2.indexOf(var1),var2);
+                            }
+                        }
+                    }
+                    appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList2);
                 }
             }
 
