@@ -1675,7 +1675,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             if (pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)) {
                 emailMap.put("GIRO_PAY", "true");
                 emailMap.put("GIRO_account_number", serviceConfigService.getGiroAccountByGroupNo(appSubmissionDto.getAppGrpNo()));
-                emailMap.put("usual_text_for_GIRO_deduction", appSubmissionDto.getLateFeeStr());
+                emailMap.put("usual_text_for_GIRO_deduction",StringUtil.isEmpty(appSubmissionDto.getLateFeeStr()) ? "next 7 working days" : appSubmissionDto.getLateFeeStr());
             } else {
                 emailMap.put("Online_PAY", "true");
             }
