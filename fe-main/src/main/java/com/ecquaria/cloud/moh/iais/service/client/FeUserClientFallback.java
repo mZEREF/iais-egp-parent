@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -146,6 +147,14 @@ public class FeUserClientFallback implements FeUserClient{
 
     @Override
     public FeignResponseEntity<Boolean> setPermitLoginStatusInUenTrack(String uen, String nricNumber, Boolean isPermit) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<JSONObject>> getExpireSingPassList() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

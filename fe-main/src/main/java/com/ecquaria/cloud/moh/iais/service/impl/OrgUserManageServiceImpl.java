@@ -58,6 +58,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     private FeAdminClient feAdminClient;
 
     @Autowired
+    private FeMainEmailHelper mainEmailHelper;
+
+    @Autowired
     private FeUserClient feUserClient;
 
     @Autowired
@@ -525,6 +528,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void sendReminderForExpiredSingPass() {
+        List<JSONObject> objectList = feUserClient.getExpireSingPassList().getEntity();
+        log.info("======objectList=>>>>>>>", JsonUtil.parseToJson(objectList));
+        for (JSONObject i : objectList){
+            String uen = i.optString("uen");
+            String nric = i.optString("nric");
+            mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
         }
     }
 }
