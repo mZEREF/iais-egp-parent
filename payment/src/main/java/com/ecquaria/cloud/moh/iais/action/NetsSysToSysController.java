@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import sop.config.ConfigUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +66,7 @@ public class NetsSysToSysController {
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
+        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+ ConfigUtil.getString( "rvl.baiduri.return.url");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace('\n',' ');

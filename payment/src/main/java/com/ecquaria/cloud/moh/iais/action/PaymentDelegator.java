@@ -14,6 +14,7 @@ import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.config.ConfigUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class PaymentDelegator {
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
+        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+ ConfigUtil.getString( "rvl.baiduri.return.url");
         StringBuilder bud = new StringBuilder();
         String header =  ParamUtil.getRequestString(request,"hmac");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);

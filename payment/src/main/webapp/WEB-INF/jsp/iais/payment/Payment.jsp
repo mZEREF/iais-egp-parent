@@ -1,11 +1,12 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ page import="sop.config.ConfigUtil" %>
 
 <%
 
     String sessionId= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
-    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
+    String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+ ConfigUtil.getString( "rvl.baiduri.return.url");
     StringBuilder bud = new StringBuilder();
     bud.append(url).append("?sessionId=").append(sessionId);
     String header =  ParamUtil.getRequestString(request,"hmac");
