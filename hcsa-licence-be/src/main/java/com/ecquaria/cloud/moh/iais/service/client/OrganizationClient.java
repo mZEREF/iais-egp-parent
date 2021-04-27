@@ -149,7 +149,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
     FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
-                                                                          @PathVariable(name = "roleId") String roleId);
+                                                                        @PathVariable(name = "roleId") String roleId);
 
     @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
@@ -212,4 +212,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-task/get-task-by-application-and-role-id-and-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByApplicationNoAndRoleIdAndStatus(@RequestParam("applicationNo") String applicationNo,@RequestParam("roleId") String roleId,@RequestParam("status") String status);
+
+    @GetMapping(value = "/iais-workgroup/work-group/name-hcsa",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(@RequestParam("workGroupName") String workGroupName);
 }

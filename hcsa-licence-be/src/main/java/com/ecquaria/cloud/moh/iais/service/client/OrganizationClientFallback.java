@@ -437,9 +437,16 @@ public class OrganizationClientFallback implements OrganizationClient {
         return entity;
     }
 
-
     @Override
     public FeignResponseEntity<List<TaskDto>> getTaskByApplicationNoAndRoleIdAndStatus(String applicationNo, String roleId, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(String workGroupName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
