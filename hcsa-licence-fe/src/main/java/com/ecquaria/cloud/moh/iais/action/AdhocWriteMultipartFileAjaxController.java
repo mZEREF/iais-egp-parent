@@ -118,16 +118,18 @@ public class AdhocWriteMultipartFileAjaxController {
         return data;
     }
 
-//    @RequestMapping(value = "/showRfiFromFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
-//    public @ResponseBody String showInternalFile(HttpServletRequest request,@RequestParam("uploadKey") String configIndex) {
-//        String data = "";
-//        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"rfiFileDto"+configIndex);
-//        if(blastManagementDto != null){
-//            String errUploadFile="";
-//            data = setHtmlValue(request,blastManagementDto.getAttachmentDtos(),errUploadFile,configIndex);
-//        }
-//        return data;
-//    }
+    @RequestMapping(value = "/showRfiFromFile",  method = RequestMethod.POST)
+    public @ResponseBody String showInternalFile(HttpServletRequest request) {
+        String data = "";
+        String configIndex = request.getParameter("showIndex");
+
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"rfiFileDto"+configIndex);
+        if(blastManagementDto != null){
+            String errUploadFile="";
+            data = setHtmlValue(request,blastManagementDto.getAttachmentDtos(),errUploadFile,configIndex);
+        }
+        return data;
+    }
 
     @RequestMapping(value = "/deleteGiroFromFile", method = RequestMethod.POST)
     @ResponseBody
