@@ -1782,6 +1782,8 @@
             }else{
                 unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'))
                 unreadonlyPartPage($allDayDiv.prev().find('div.col-md-5'))
+                unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'))
+                unreadonlyPartPage($allDayDiv.prev().find('div.col-md-4'))
             }
 
 
