@@ -1408,6 +1408,7 @@ public class LicenceApproveBatchjob {
             List<AppSvcVehicleDto> appSvcVehicleDtos = applicationListDto.getAppSvcVehicleDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)){
               for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
+                  //todo:filter the reject Vehicle
                   LicSvcVehicleDto licSvcVehicleDto = MiscUtil.transferEntityDto(appSvcVehicleDto,LicSvcVehicleDto.class);
                   licSvcVehicleDtos.add(licSvcVehicleDto);
               }
