@@ -143,7 +143,7 @@
                                         <c:choose>
                                             <c:when test="${isDoView != 'Y'}">
                                                 <div class="file-upload-gp">
-                                                        <span name="selectedFileShowId" id="selectedFileShowId">
+                                                        <span name="selectedWdFileShowId" id="selectedWdFileShowId">
                                                         <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                                    varStatus="ind">
                                                           <div id="${withdrawPageShowFile.fileMapId}">
@@ -176,7 +176,7 @@
                                                 </div>
                                             </c:when>
                                             <c:otherwise>
-                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                                <span name="selectedWdFileShowId" id="selectedWdFileShowId">
                                                 <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
                                                   <div id="${withdrawPageShowFile.fileMapId}">
@@ -278,7 +278,7 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedFile",true);
+        ajaxCallUploadForMax('mainForm', "selectedWdFile",true);
     }
 
     function uploadFileValidate() {

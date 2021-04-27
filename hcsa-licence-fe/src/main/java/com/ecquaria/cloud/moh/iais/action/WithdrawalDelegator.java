@@ -89,8 +89,8 @@ public class WithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFiles", null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFileHashMap", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile_MaxIndex", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
@@ -166,8 +166,8 @@ public class WithdrawalDelegator {
                     }
                 }
                 request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile", map);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile_MaxIndex", viewDoc.size());
                 request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
             }
     }
@@ -376,7 +376,7 @@ public class WithdrawalDelegator {
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
-                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedWdFile");
                 Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
                 List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
