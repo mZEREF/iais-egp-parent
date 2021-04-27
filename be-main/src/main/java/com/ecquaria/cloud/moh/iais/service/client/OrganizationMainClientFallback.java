@@ -251,4 +251,12 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(String workGroupName) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
