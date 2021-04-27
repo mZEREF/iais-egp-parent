@@ -21,7 +21,7 @@
     .radio-disabled{
         border-color: #999999 !important;
     }
-    input[type=checkbox] {
+    input.allDay {
         -ms-transform: scale(2,2); /* IE */
         -moz-transform: scale(2,2); /* FireFox */
         -webkit-transform: scale(2,2); /* Safari and Chrome */

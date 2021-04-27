@@ -95,13 +95,15 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		if(reqNo.length()>=20){
-			reqNo=reqNo.substring(0,16)+reqNo.substring(reqNo.length()-4);
+			reqNo=reqNo.substring(0,16)+reqNo.substring(reqNo.length()-3);
 		}
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		String umId= GatewayConfig.eNetsUmId;
 		String keyId=GatewayConfig.eNetsKeyId;
 		String secretKey=GatewayConfig.eNetsSecretKey ;
-		String b2sUrl=AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"/egov/back.jsp?reqNo="+reqNo;
+		String b2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+GatewayNetsConfig.b2sUrl+"?reqNo="+reqNo;
+		//String b2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+"/egov/s2sTxnEnd?reqNo="+reqNo;
+		String s2sUrl= AppConsts.REQUEST_TYPE_HTTPS +bpc.request.getServerName()+GatewayNetsConfig.s2sUrl+"?reqNo="+reqNo;
 		String sessionId=bpc.getSession().getId();
 		String results;
 		String failUrl;
@@ -159,7 +161,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		msg.setNetsMidIndicator("U");
 		msg.setB2sTxnEndURL(b2sUrl);
 		msg.setB2sTxnEndURLParam("");
-		msg.setS2sTxnEndURL("");
+		msg.setS2sTxnEndURL(s2sUrl);
 		msg.setS2sTxnEndURLParam("");
 		msg.setIpAddress("127.0.0.1");
 		msg.setLanguage("en");
@@ -242,7 +244,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		if(refNo.length()>=20){
-			refNo=refNo.substring(0,16)+refNo.substring(refNo.length()-4);
+			refNo=refNo.substring(0,16)+refNo.substring(refNo.length()-3);
 		}
 		double amount = this.getPaymentData().getAmount();
 		String payMethod = this.getPaymentData().getPaymentDescription();
@@ -357,7 +359,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 				applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
 				applicationGroupDto.setPmtRefNo(refNo);
 				applicationGroupDto.setPaymentDt(new Date());
-				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT);
+				applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_NETS);
 
 				PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
 			}
