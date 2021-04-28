@@ -186,7 +186,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
                     String appGrpPersonId = v.getAppGrpPersonId();
-                    if(appGrpPersonId!=null){
+                    String appSvcPersonId = v.getAppSvcPersonId();
+                    if(appGrpPersonId!=null || appSvcPersonId!=null){
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
                             map.put(appGrpPersonId,i.get());
