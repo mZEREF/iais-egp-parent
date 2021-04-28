@@ -191,17 +191,7 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(salutation)){
                     errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
                 }
-                String speciality = appSvcCgoList.get(i).getSpeciality();
-                if(StringUtil.isEmpty(speciality)||"-1".equals(speciality)){
-                    errMap.put("speciality"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
-                }else {
-                    if("other".equals(speciality)){
-                        String specialityOther = appSvcCgoList.get(i).getSpecialityOther();
-                        if(StringUtil.isEmpty(specialityOther)){
-                            errMap.put("other"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others","field"));
-                        }
-                    }
-                }
+
                 String professionType = appSvcCgoList.get(i).getProfessionType();
                 if(StringUtil.isEmpty(professionType)){
                     errMap.put("professionType"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
@@ -211,21 +201,18 @@ public class NewApplicationHelper {
                     errMap.put("designation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                 }
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
-                String qualification = appSvcCgoList.get(i).getSubSpeciality();
-                if(StringUtil.isEmpty(professionRegoNo)){
-                    //errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.","field"));
-                    if(StringUtil.isEmpty(qualification)){
-                        errMap.put("qualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Sub-specialty or relevant qualification ","field"));
-                    }
-                }else if(professionRegoNo.length() > 20){
+                if(!StringUtil.isEmpty(professionRegoNo) && professionRegoNo.length() > 20){
                     String general_err0041=repLength("Professional Regn. No.","20");
                     errMap.put("professionRegoNo" + i, general_err0041);
                 }
-
-                if(!StringUtil.isEmpty(qualification) && qualification.length() > 100){
-                    String general_err0041=repLength("Sub-specialty or relevant qualification","100");
-                    errMap.put("qualification" + i, general_err0041);
+                String specialty = appSvcCgoList.get(i).getSpeciality();
+                if(StringUtil.isEmpty(professionRegoNo) || StringUtil.isEmpty(specialty)){
+                    String otherQualification = appSvcCgoList.get(i).getOtherQualification();
+                    if(StringUtil.isEmpty(otherQualification)){
+                        errMap.put("otherQualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification","field"));
+                    }
                 }
+
                 //to do
                 if(StringUtil.isEmpty(idNo)){
                     errMap.put("idNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
@@ -1147,6 +1134,8 @@ public class NewApplicationHelper {
                     person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setSubSpeciality(psnDto.getSubSpeciality());
+                    person.setQualification(psnDto.getQualification());
+                    person.setOtherQualification(psnDto.getOtherQualification());
                     //
                     person.setNeedSpcOptList(true);
                     List<SelectOption> spcOpts = person.getSpcOptList();
@@ -1284,6 +1273,8 @@ public class NewApplicationHelper {
                     person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setSubSpeciality(psnDto.getSubSpeciality());
+                    person.setQualification(psnDto.getQualification());
+                    person.setOtherQualification(psnDto.getOtherQualification());
                     //
                     person.setNeedSpcOptList(true);
                     List<SelectOption> spcOpts = person.getSpcOptList();
@@ -1411,7 +1402,7 @@ public class NewApplicationHelper {
                         person.setProfessionType(psnDto.getProfessionType());
                         person.setProfRegNo(psnDto.getProfRegNo());
                         person.setSpeciality(psnDto.getSpeciality());
-                        person.setSpecialityOther(psnDto.getSpecialityOther());
+                        //person.setSpecialityOther(psnDto.getSpecialityOther());
                         person.setSubSpeciality(psnDto.getSubSpeciality());
                         //
                         person.setNeedSpcOptList(true);
@@ -1526,7 +1517,7 @@ public class NewApplicationHelper {
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
-                    person.setSpecialityOther(psnDto.getSpecialityOther());
+                    //person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setSubSpeciality(psnDto.getSubSpeciality());
                     //cgo speciality
                     if(!StringUtil.isEmpty(speciality)){
@@ -2141,6 +2132,8 @@ public class NewApplicationHelper {
             appPsnEditDto.setSpeciality(true);
             appPsnEditDto.setProfRegNo(true);
             appPsnEditDto.setProfessionType(true);
+            appPsnEditDto.setQualification(true);
+            appPsnEditDto.setOtherQualification(true);
 
             if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
                 appPsnEditDto.setIdType(true);
@@ -3215,6 +3208,14 @@ public class NewApplicationHelper {
                 String subSpeciality = selPerson.getSubSpeciality();
                 if(!StringUtil.isEmpty(subSpeciality)){
                     appSvcCgoDto.setSubSpeciality(subSpeciality);
+                }
+                String qualification = selPerson.getQualification();
+                if(!StringUtil.isEmpty(qualification)){
+                    appSvcCgoDto.setQualification(qualification);
+                }
+                String otherQualification = selPerson.getOtherQualification();
+                if(!StringUtil.isEmpty(otherQualification)){
+                    appSvcCgoDto.setOtherQualification(otherQualification);
                 }
                 appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
                 appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());

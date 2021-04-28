@@ -54,6 +54,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -104,6 +106,7 @@ import sop.webflow.rt.api.Process;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -371,6 +374,39 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("updateDraftStatus start ..."));
         applicationFeClient.updateDraftStatus(draftNo,status);
         log.debug(StringUtil.changeForLog("updateDraftStatus end ..."));
+    }
+
+    @Override
+    public ProfessionalResponseDto retrievePrsInfo(String profRegNo){
+        log.debug(StringUtil.changeForLog("retrieve prs info start ..."));
+        log.debug("prof Reg No is {}",profRegNo);
+        ProfessionalResponseDto professionalResponseDto = null;
+        if(!StringUtil.isEmpty(profRegNo)){
+            List<String> prgNos = IaisCommonUtils.genNewArrayList();
+            prgNos.add(profRegNo);
+            ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+            professionalParameterDto.setRegNo(prgNos);
+            professionalParameterDto.setClientId("22222");
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String format = simpleDateFormat.format(new Date());
+            professionalParameterDto.setTimestamp(format);
+            professionalParameterDto.setSignature("2222");
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            try {
+                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+                if(professionalResponseDtos != null && professionalResponseDtos.size() > 0){
+                    professionalResponseDto = professionalResponseDtos.get(0);
+                }
+            } catch (Exception e) {
+                professionalResponseDto = new ProfessionalResponseDto();
+                log.info(StringUtil.changeForLog("retrieve prs info start ..."));
+                log.error(e.getMessage(), e);
+            }
+        }
+        log.debug(StringUtil.changeForLog("retrieve prs res dto end ..."));
+        return professionalResponseDto;
     }
 
     @Override

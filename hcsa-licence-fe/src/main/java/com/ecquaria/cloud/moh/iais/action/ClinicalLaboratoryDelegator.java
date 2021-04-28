@@ -871,8 +871,63 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (isGetDataFromPage) {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
-            //do validate
             Map<String, String> errList = IaisCommonUtils.genNewHashMap();
+            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
+            log.debug("prs server flag {}",prsFlag);
+            if("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcCgoDtoList)){
+                for(int i=0;i<appSvcCgoDtoList.size();i++ ){
+                    AppSvcCgoDto appSvcCgoDto = appSvcCgoDtoList.get(i);
+                    String profRegNo = appSvcCgoDto.getProfRegNo();
+                    ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(profRegNo);
+                    String specialtyStr = "";
+                    String subSpecialtyStr = "";
+                    String qualificationStr = "";
+                    if(professionalResponseDto != null){
+                        if(StringUtil.isEmpty(professionalResponseDto.getRegno())){
+                            log.debug(StringUtil.changeForLog("prs svc down ..."));
+                            bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+                            appSvcCgoDto.setSpeciality(specialtyStr);
+                            appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
+                            appSvcCgoDto.setQualification(qualificationStr);
+                            continue;
+                        }
+                        if(StringUtil.isEmpty(professionalResponseDto.getName())){
+                            log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
+                            errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
+                            appSvcCgoDto.setSpeciality(specialtyStr);
+                            appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
+                            appSvcCgoDto.setQualification(qualificationStr);
+                            continue;
+                        }
+                        //retrieve data from prs server
+                        List<String> specialtyList = professionalResponseDto.getSpecialty();
+                        if(!IaisCommonUtils.isEmpty(specialtyList)){
+                            specialtyStr = String.join(",",specialtyList);
+                        }
+                        appSvcCgoDto.setSpeciality(specialtyStr);
+
+                        List<String> subSpecialtyList = professionalResponseDto.getSubspecialty();
+                        if(!IaisCommonUtils.isEmpty(subSpecialtyList)){
+                            subSpecialtyStr = String.join(",",subSpecialtyList);
+                        }
+                        appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
+
+                        List<String> qualificationList = professionalResponseDto.getQualification();
+                        if(!IaisCommonUtils.isEmpty(qualificationList)){
+                            qualificationStr = String.join(",",qualificationList);
+                        }
+                        appSvcCgoDto.setQualification(qualificationStr);
+                    }else{
+                        appSvcCgoDto.setSpeciality(specialtyStr);
+                        appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
+                        appSvcCgoDto.setQualification(qualificationStr);
+                    }
+                }
+                currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
+                setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+            }
+            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
@@ -882,37 +937,6 @@ public class ClinicalLaboratoryDelegator {
             Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
                 //List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
-                for(int i=0;i<appSvcCgoDtoList.size();i++ ){
-                    AppSvcCgoDto appSvcCgoDto = appSvcCgoDtoList.get(i);
-                    String profRegNo = appSvcCgoDto.getProfRegNo();
-                    if(!StringUtil.isEmpty(profRegNo)){
-                        List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                        prgNos.add(profRegNo);
-                            if("Y".equals(prsFlag)){
-                                ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-                                professionalParameterDto.setRegNo(prgNos);
-                                professionalParameterDto.setClientId("22222");
-                                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                                String format = simpleDateFormat.format(new Date());
-                                professionalParameterDto.setTimestamp(format);
-                                professionalParameterDto.setSignature("2222");
-                                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                                try {
-                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                            signature2.date(), signature2.authorization()).getEntity();
-                                    String name = professionalResponseDtos.get(0).getName();
-                                    if(StringUtil.isEmpty(name)){
-                                        errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
-                                    }
-                                }catch (Throwable e){
-                                    bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-                                }
-
-                            }
-
-                    }
-                }
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                 Map<String, String> map = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
                 //validate mandatory count
@@ -2312,9 +2336,10 @@ public class ClinicalLaboratoryDelegator {
         String[] designation = ParamUtil.getStrings(request, "designation");
         String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
-        String[] specialty = ParamUtil.getStrings(request, "specialty");
-        String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
-        String[] qualification = ParamUtil.getStrings(request, "qualification");
+        //String[] specialty = ParamUtil.getStrings(request, "specialty");
+        //String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
+        //String[] qualification = ParamUtil.getStrings(request, "qualification");
+        String[] otherQualification = ParamUtil.getStrings(request, "otherQualification");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         //new and not rfi
@@ -2351,7 +2376,7 @@ public class ClinicalLaboratoryDelegator {
                             idType = removeArrIndex(idType, i);
                             designation = removeArrIndex(designation, i);
                             professionType = removeArrIndex(professionType, i);
-                            specialty = removeArrIndex(specialty, i);
+                            //specialty = removeArrIndex(specialty, i);
                             existingPsn = removeArrIndex(existingPsn, i);
                             //specialtyOther = removeArrIndex(specialtyOther,i);
                             //change arr index
@@ -2394,9 +2419,9 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isProfessionType()){
                     NewApplicationHelper.setPsnValue(professionType,i,appSvcPrincipalOfficersDto,"professionType");
                 }
-                if(appPsnEditDto.isSpeciality()){
+                /*if(appPsnEditDto.isSpeciality()){
                     NewApplicationHelper.setPsnValue(specialty,i,appSvcPrincipalOfficersDto,"speciality");
-                }
+                }*/
                 //input
                 if(appPsnEditDto.isName()){
                     name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
@@ -2410,13 +2435,16 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isProfRegNo()){
                     professionRegoNo = NewApplicationHelper.setPsnValue(professionRegoNo,i,appSvcPrincipalOfficersDto,"profRegNo");
                 }
-                if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpeciality())){
+                /*if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpeciality())){
                     specialtyOther = NewApplicationHelper.setPsnValue(specialtyOther,i,appSvcPrincipalOfficersDto,"specialityOther");
                 }else{
                     specialtyOther = removeArrIndex(specialtyOther,i);
                 }
                 if(appPsnEditDto.isSubSpeciality()){
                     qualification = NewApplicationHelper.setPsnValue(qualification,i,appSvcPrincipalOfficersDto,"subSpeciality");
+                }*/
+                if(appPsnEditDto.isOtherQualification()){
+                    otherQualification = NewApplicationHelper.setPsnValue(otherQualification,i,appSvcPrincipalOfficersDto,"otherQualification");
                 }
                 if(appPsnEditDto.isEmailAddr()){
                     emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
@@ -2454,7 +2482,7 @@ public class ClinicalLaboratoryDelegator {
                 idType = removeArrIndex(idType, i);
                 designation = removeArrIndex(designation, i);
                 professionType = removeArrIndex(professionType, i);
-                specialty = removeArrIndex(specialty, i);
+                //specialty = removeArrIndex(specialty, i);
                 --i;
                 --size;
             }else if(getPageData){
@@ -2471,13 +2499,14 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setDesignation(designation[i]);
                 appSvcCgoDto.setProfessionType(professionType[i]);
                 appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
-                String specialtyStr = specialty[i];
+                /*String specialtyStr = specialty[i];
                 appSvcCgoDto.setSpeciality(specialtyStr);
                 if ("other".equals(specialtyStr)) {
                     appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
-                }
+                }*/
                 //qualification(before)
-                appSvcCgoDto.setSubSpeciality(qualification[i]);
+                //appSvcCgoDto.setSubSpeciality(qualification[i]);
+                appSvcCgoDto.setOtherQualification(otherQualification[i]);
                 appSvcCgoDto.setMobileNo(mobileNo[i]);
                 String emailAddr = "";
                 if(emailAddress != null){
