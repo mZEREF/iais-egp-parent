@@ -7,12 +7,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -25,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
@@ -69,6 +74,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Autowired
     private IntraDashboardClient intraDashboardClient;
+
+    @Autowired
+    private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
+
+    @Autowired
+    private HcsaConfigMainClient hcsaConfigClient;
 
     @Override
     public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo) {
@@ -222,6 +233,67 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             }
         }
         return dashComPoolAjaxQueryDtos;
+    }
+
+    @Override
+    public String getKpiColorByTask(TaskDto taskDto) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationByCorreId(taskDto.getRefNo()).getEntity();
+        if(applicationDto != null) {
+            String stage;
+            if (HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())) {
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                        appPremisesRoutingHistoryMainClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+                stage = appPremisesRoutingHistoryDto.getSubStage();
+            } else {
+                stage = taskDto.getTaskKey();
+            }
+            HcsaServiceDto hcsaServiceDto = inspectionMainAssignTaskService.getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+            HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
+            if (hcsaSvcKpiDto != null) {
+                //get current stage worked days
+                int days = 0;
+                if (!StringUtil.isEmpty(stage)) {
+                    AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskMainClient.getSlaTrackByAppNoStageId(applicationDto.getApplicationNo(), stage).getEntity();
+                    if (appStageSlaTrackingDto != null) {
+                        days = appStageSlaTrackingDto.getKpiSlaDays();
+                    }
+                }
+                //get warning value
+                Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                int kpi = 0;
+                if (!StringUtil.isEmpty(stage)) {
+                    if (kpiMap != null && kpiMap.get(stage) != null) {
+                        kpi = kpiMap.get(stage);
+                    }
+                }
+                //get threshold value
+                int remThreshold = 0;
+                if (hcsaSvcKpiDto.getRemThreshold() != null) {
+                    remThreshold = hcsaSvcKpiDto.getRemThreshold();
+                }
+                //get color
+                colour = getColorByWorkAndKpiDay(kpi, days, remThreshold);
+            }
+        }
+        return colour;
+    }
+
+    private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        if(remThreshold != 0) {
+            if (days < remThreshold) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+            }
+            if (kpi != 0) {
+                if (remThreshold <= days && days <= kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+                } else if (days > kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                }
+            }
+        }
+        return colour;
     }
 
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashCommonTaskAjax")

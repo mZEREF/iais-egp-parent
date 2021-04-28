@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -74,15 +75,15 @@ public class MohHcsaBeDashboardAjax {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
             map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction, dashFilterAppNo);
-            //set url
-            map = setDashComPoolUrl(map, request, loginContext);
+            //set url and kpi color
+            map = setDashComPoolUrl(map, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, switchAction, dashFilterAppNo);
-            //set url
+            //set url and kpi color
             map = setDashKpiPoolUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
 
@@ -97,30 +98,38 @@ public class MohHcsaBeDashboardAjax {
     }
 
     private Map<String, Object> setDashKpiPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        String userId = "";
         String roleId = "";
-        if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
-            log.info(StringUtil.changeForLog("Dashboard Common Pool Current Role =====" + loginContext.getCurRoleId()));
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
             roleId = loginContext.getCurRoleId();
         }
         if(map != null) {
-            SearchResult<DashComPoolAjaxQueryDto> ajaxResult = (SearchResult<DashComPoolAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = (SearchResult<DashKpiPoolAjaxQuery>) map.get("ajaxResult");
             if(ajaxResult != null) {
-                List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos = ajaxResult.getRows();
-                if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)) {
-                    Set<String> workGroupIds = IaisCommonUtils.genNewHashSet();
-                    if (loginContext != null && !IaisCommonUtils.isEmpty(loginContext.getWrkGrpIds())) {
-                        workGroupIds = loginContext.getWrkGrpIds();
-                    }
-                    for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos) {
+                List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueries = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueries)) {
+                    for(DashKpiPoolAjaxQuery dashKpiPoolAjaxQuery : dashKpiPoolAjaxQueries) {
                         //task is current work
-                        TaskDto taskDto = taskService.getTaskById(dashComPoolAjaxQueryDto.getTaskId());
-                        //set mask task Id
-                        String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
-                        if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
-                            dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
-                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_COMMON_POOL_DO);
+                        if(!StringUtil.isEmpty(dashKpiPoolAjaxQuery.getTaskId())) {
+                            TaskDto taskDto = taskService.getTaskById(dashKpiPoolAjaxQuery.getTaskId());
+                            //set kpi color
+                            String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                            dashKpiPoolAjaxQuery.setKpiColor(color);
+                            //set mask task Id
+                            String maskId = MaskUtil.maskValue("taskId", dashKpiPoolAjaxQuery.getTaskId());
+                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                dashKpiPoolAjaxQuery.setTaskMaskId(maskId);
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashKpiPoolAjaxQuery.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
                         } else {
-                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                         }
                     }
                 }
@@ -129,7 +138,7 @@ public class MohHcsaBeDashboardAjax {
         return map;
     }
 
-    private Map<String, Object> setDashComPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+    private Map<String, Object> setDashComPoolUrl(Map<String, Object> map, LoginContext loginContext) {
         String roleId = "";
         if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
             log.info(StringUtil.changeForLog("Dashboard Common Pool Current Role =====" + loginContext.getCurRoleId()));
@@ -147,6 +156,9 @@ public class MohHcsaBeDashboardAjax {
                     for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos) {
                         //task is current work
                         TaskDto taskDto = taskService.getTaskById(dashComPoolAjaxQueryDto.getTaskId());
+                        //set kpi color
+                        String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                        dashComPoolAjaxQueryDto.setKpiColor(color);
                         //set mask task Id
                         String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
                         if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {

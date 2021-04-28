@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.Map;
@@ -9,6 +10,15 @@ import java.util.Map;
  * @date 2021/4/19 10:26
  **/
 public interface BeDashboardAjaxService {
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/28
+     * @Param: taskDto
+     * @return: String
+     * @Descripation: search kpi color
+     */
+    String getKpiColorByTask(TaskDto taskDto);
 
     /**
      * @author: shicheng
