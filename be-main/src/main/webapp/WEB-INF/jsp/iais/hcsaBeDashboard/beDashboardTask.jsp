@@ -314,7 +314,15 @@
                         '</thead>' +
                         '<tbody>';
                     for (let i = 0; i < res.rowCount; i++) {
-                        html += '<tr>';
+                        var color = "black";
+                        if (res[i].timeLimitWarning == "black") {
+                            color = "black";
+                        } else if (res[i].timeLimitWarning == "red") {
+                            color = "red";
+                        } else if (res[i].timeLimitWarning == "amber") {
+                            color = "#DD9C00";
+                        }
+                        html += '<tr style = "color : ' + color + ';">';
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
