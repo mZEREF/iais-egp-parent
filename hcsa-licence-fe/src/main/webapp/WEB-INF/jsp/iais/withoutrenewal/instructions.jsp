@@ -31,7 +31,7 @@
                                 <c:if test="${isSingle == 'N'}">
                                     <p>Your licences to renew are listed below:</p>
                                 </c:if>
-                                <div class="table-gp">
+                                <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                         <tr>
