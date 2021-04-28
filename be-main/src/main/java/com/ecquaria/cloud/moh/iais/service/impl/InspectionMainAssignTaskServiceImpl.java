@@ -113,7 +113,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     }
 
     @Override
-    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId) {
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(String appCorrId) {
         AppGrpPremisesDto appGrpPremisesDto = inspectionTaskMainClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
         if (StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
             appGrpPremisesDto.setHciName("");
@@ -206,7 +206,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             appCorrelationId = taskDto.getRefNo();
         }
 
-        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(appCorrelationId);
+        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppCorrId(appCorrelationId);
         String address = getAddress(appGrpPremisesDto);
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());

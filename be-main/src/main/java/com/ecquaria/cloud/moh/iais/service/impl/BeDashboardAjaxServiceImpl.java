@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
 
+    @Autowired
+    private IntraDashboardClient intraDashboardClient;
+
     @Override
     public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo) {
         if(!StringUtil.isEmpty(groupNo)){
@@ -94,7 +99,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTaskAjax", searchParam);
             SearchResult<DashComPoolAjaxQueryDto> ajaxResult = getCommonAjaxResultByParam(searchParam);
             //set other data
-            setComPoolAjaxDataToShow(ajaxResult.getRows(), loginContext);
+            setComPoolAjaxDataToShow(ajaxResult.getRows());
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -103,11 +108,88 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return map;
     }
 
-    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos, LoginContext loginContext) {
+    @Override
+    public Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String switchAction, String dashFilterAppNo) {
+        if(!StringUtil.isEmpty(groupNo)){
+            SearchParam searchParam = new SearchParam(DashKpiPoolAjaxQuery.class.getName());
+            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            //filter appGroup NO.
+            searchParam.addFilter("groupNo", groupNo, true);
+            ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppGrpByNo(groupNo).getEntity();
+            //filter app Premises Correlation
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
+            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T2.ID", appCorrId_list.size());
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("T2.ID" + i, appCorrId_list.get(i));
+            }
+            //filter appNo
+            if(!StringUtil.isEmpty(dashFilterAppNo)){
+                searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
+            }
+            //filter work groups
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
+            //search
+            QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTaskAjax", searchParam);
+            SearchResult<DashKpiPoolAjaxQuery> ajaxResult = getKpiAjaxResultByParam(searchParam);
+            //set other data
+            setKpiPoolAjaxDataToShow(ajaxResult.getRows());
+            map.put("result", "Success");
+            map.put("ajaxResult", ajaxResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    private List<DashKpiPoolAjaxQuery> setKpiPoolAjaxDataToShow(List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueryList) {
+        if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueryList)){
+            for(DashKpiPoolAjaxQuery dashKpiPoolAjaxQuery : dashKpiPoolAjaxQueryList){
+                //get hciName / address
+                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashKpiPoolAjaxQuery.getId());
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                    dashKpiPoolAjaxQuery.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
+                } else {
+                    dashKpiPoolAjaxQuery.setHciAddress(StringUtil.viewHtml(address));
+                }
+                //app status
+                dashKpiPoolAjaxQuery.setAppStatus(MasterCodeUtil.getCodeDesc(dashKpiPoolAjaxQuery.getAppStatus()));
+                //service
+                HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashKpiPoolAjaxQuery.getServiceId()).getEntity();;
+                dashKpiPoolAjaxQuery.setServiceName(hcsaServiceDto.getSvcName());
+                dashKpiPoolAjaxQuery.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                //application
+                ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashKpiPoolAjaxQuery.getApplicationNo()).getEntity();
+                //get license date
+                if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
+                    dashKpiPoolAjaxQuery.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                } else {
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+                    Date licExpiryDate = licenceDto.getExpiryDate();
+                    if(licExpiryDate != null) {
+                        dashKpiPoolAjaxQuery.setLicenceExpiryDate(licExpiryDate);
+                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, AppConsts.DEFAULT_DATE_FORMAT);
+                        dashKpiPoolAjaxQuery.setLicenceExpiryDateStr(licExpiryDateStr);
+                    } else {
+                        dashKpiPoolAjaxQuery.setLicenceExpiryDate(null);
+                        dashKpiPoolAjaxQuery.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
+                }
+            }
+        }
+        return dashKpiPoolAjaxQueryList;
+    }
+
+    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos) {
         if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)){
             for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos){
                 //get hciName / address
-                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppGroId(dashComPoolAjaxQueryDto.getId());
+                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashComPoolAjaxQueryDto.getId());
                 String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashComPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
@@ -145,6 +227,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashCommonTaskAjax")
     private SearchResult<DashComPoolAjaxQueryDto> getCommonAjaxResultByParam(SearchParam searchParam) {
         return inspectionTaskMainClient.searchDashComPoolDropResult(searchParam).getEntity();
+    }
+
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashKpiTaskAjax")
+    private SearchResult<DashKpiPoolAjaxQuery> getKpiAjaxResultByParam(SearchParam searchParam) {
+        return intraDashboardClient.searchDashKpiPoolDropResult(searchParam).getEntity();
     }
 
     private List<String> getAppPremCorrIdsByDto(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {

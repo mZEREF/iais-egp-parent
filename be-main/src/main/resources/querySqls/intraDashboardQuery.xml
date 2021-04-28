@@ -92,12 +92,13 @@
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
             FROM APP_EXCEEDING_DAY_VIEW T1
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORRID
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
-            <#if workGroup_list??> and ${workGroup_list} </#if>
+            <#if workGroup_list??> and ${workGroup_list}</#if>
+            <#if dashUserId??> and T7.user_id = :dashUserId </#if>
         ]]>
     </sql>
 

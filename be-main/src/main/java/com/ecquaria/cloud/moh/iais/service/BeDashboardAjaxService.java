@@ -13,9 +13,18 @@ public interface BeDashboardAjaxService {
     /**
       * @author: shicheng
       * @Date 2021/4/19
-      * @Param: groupNo, loginContext, map
-      * @return: void
+      * @Param: groupNo, loginContext, map, actionValue, dashFilterAppNo
+      * @return: map
       * @Descripation: Common Pool Dropdown
       */
     Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/4/28
+      * @Param: groupNo, loginContext, map, actionValue, dashFilterAppNo
+      * @return: map
+      * @Descripation: Kpi Pool Dropdown
+      */
+    Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String switchAction, String dashFilterAppNo);
 }
