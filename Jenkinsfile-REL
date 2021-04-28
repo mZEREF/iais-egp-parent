@@ -808,6 +808,7 @@ def uploadVerificationPackage(){
             sh """
                 zip -j \
                     "$VERIFICATION_PACKAGE" \
+                    "$ARCHIVE_1" \
                     "$ARCHIVE_1_HASH" \
                     "$SIGNATURE_FROM_JENKINS"
             """
