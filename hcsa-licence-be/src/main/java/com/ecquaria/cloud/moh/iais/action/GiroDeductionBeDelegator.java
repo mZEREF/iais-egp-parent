@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
@@ -107,7 +108,8 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
-
+    @Autowired
+    private ApplicationClient applicationClient;
     private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
@@ -326,17 +328,23 @@ public class GiroDeductionBeDelegator {
             return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
+        List<ApplicationGroupDto> applicationGroupDtos=new ArrayList<>(map.size());
         map.forEach((k,v)->{
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
+            ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
             giroDeductionDto.setAppGroupNo(k);
+            applicationGroupDto.setGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
+            applicationGroupDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
+            applicationGroupDtos.add(applicationGroupDto);
         });
         if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            applicationClient.updateBeGroupStatus(applicationGroupDtos);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
