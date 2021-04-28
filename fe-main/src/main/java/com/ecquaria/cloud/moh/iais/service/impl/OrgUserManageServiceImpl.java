@@ -541,7 +541,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 if (Optional.ofNullable(object).isPresent()){
                     String uen = object.optString("uen");
                     String nric = object.optString("nricNumber");
-                    mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+                    boolean hasBeenReminder = mainEmailHelper.hasBeenReminder(uen + "_" + nric,
+                            FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
+                    if (!hasBeenReminder){
+                        mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+                    }
                 }
             }
         }
