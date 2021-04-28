@@ -1770,7 +1770,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             smsParam.setSubject(subject);
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
+            notificationHelper.sendNotification(smsParam);
         }
 
 
@@ -1911,7 +1911,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-        notificationHelper.sendNotification(emailParam);
+        notificationHelper.sendNotification(smsParam);
     }
 
     @Override
