@@ -35,5 +35,10 @@
         var url ='${pageContext.request.contextPath}/eservice/INTERNET/InfoDo?section='+section;
         window.open(url,'_blank');
     }
+
+    function linkWins(section) {
+        var url ='${pageContext.request.contextPath}/eservice/INTERNET/InfoDo?section='+section;
+        window.location.href= url;
+    }
 </script>
 
