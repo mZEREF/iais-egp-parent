@@ -531,9 +531,7 @@ public class RequestForChangeMenuDelegator {
            }
         }else {
             boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
-            if(eqHciCode){
-                appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
-            }
+            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
             bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         }
 

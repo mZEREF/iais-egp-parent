@@ -52,6 +52,7 @@
             </c:otherwise>
         </c:choose>
         <c:set var="premValue" value="${status.index}"/>
+        <input hidden class="premiseIndex" value="${premValue}">
         <c:choose>
             <c:when test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() > 0}">
                 <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()}"/>

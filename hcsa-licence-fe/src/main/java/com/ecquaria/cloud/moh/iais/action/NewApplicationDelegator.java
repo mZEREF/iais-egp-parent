@@ -558,9 +558,7 @@ public class NewApplicationDelegator {
                         }
                     }else {
                         boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDtoList.get(0), oldAppGrpPremisesDtoList.get(0));
-                        if(eqHciCode){
-                            appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
-                        }
+                        appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
                         bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(eqHciCode));
                     }
 

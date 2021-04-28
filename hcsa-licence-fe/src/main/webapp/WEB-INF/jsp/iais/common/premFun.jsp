@@ -166,18 +166,22 @@
             }else{
                 <!--choose already exist premises -->
                 var premisesType = '';
+                var premiseIndex='0';
                 if("onSiteSel" == thisId){
                     premisesType = 'onSite';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 }else if ("conveyanceSel" == thisId) {
                     premisesType = 'conveyance';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 }else if ("offSiteSel" == thisId){
                     premisesType = 'offSite';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').removeClass('hidden');
@@ -187,7 +191,8 @@
                 }
                 var jsonData = {
                     'premIndexNo':premSelectVal,
-                    'premisesType':premisesType
+                    'premisesType':premisesType,
+                    'premiseIndex':premiseIndex
                 };
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/lic-premises',
@@ -387,7 +392,7 @@
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                             if(eqHciCode=='true'){
                                 $('.premisesEdit').trigger('click');
-                                $("input[name='isPartEdit']").val('0');
+                                $("input[name='isPartEdit']").val('1');
                                 $("input[name='chooseExistData']").val('0');
                                 return;
                             }
