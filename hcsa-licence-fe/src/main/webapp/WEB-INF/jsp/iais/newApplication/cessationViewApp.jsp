@@ -382,6 +382,10 @@
         }
     }
 
+    function printCSPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessViewPage",'_blank');
+    }
+
     function changePatSelectCessFe() {
         changePatientCessFe();
         if ($('#radioYes').is(':checked')) {

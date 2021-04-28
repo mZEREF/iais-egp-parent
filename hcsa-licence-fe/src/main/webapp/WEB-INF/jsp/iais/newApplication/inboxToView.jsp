@@ -82,4 +82,11 @@
         </div>
     </form>
 </c:if>
+<script>
+    function printRLPDF(){
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        window.open(url,'_blank');
+       // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
+    }
+</script>
 
