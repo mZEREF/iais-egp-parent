@@ -48,7 +48,7 @@
         ]]>
     </sql>
 
-    <sql key="dashCommonTaskAjax"  remarks="get Application By App Group in Common Pool">
+    <sql key = "dashCommonTaskAjax"  remarks = "get Application By App Group in Common Pool">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T7.ID AS TASK_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
             FROM
@@ -60,12 +60,80 @@
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 ) T5
-            JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
+        ]]>
+    </sql>
+
+    <sql key = "dashKpiTask" remarks = "Dashboard Search Kpi Task By Application Group">
+        <![CDATA[
+            SELECT DISTINCT T1.ID, T1.GROUP_NO, T1.PMT_STATUS, T1.APP_TYPE, T1.SUBMIT_DT, T1.COU
+            FROM APP_GRP_EXCEEDING_DAY_VIEW T1
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
+            WHERE 1 = 1
+            <#if workGroup_list??> and ${workGroup_list} </#if>
+            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+            <#if dashUserId??> and T7.user_id = :dashUserId </#if>
+            and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T1.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T1.PREMISE) >0 </#if>
+        ]]>
+    </sql>
+
+    <sql key = "dashKpiTaskAjax"  remarks = "get Application By App Group in Kpi Pool">
+        <![CDATA[
+            SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
+            FROM APP_EXCEEDING_DAY_VIEW T1
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORRID
+            WHERE 1 = 1
+            <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
+            <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
+            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if workGroup_list??> and ${workGroup_list} </#if>
+        ]]>
+    </sql>
+
+    <sql key = "dashWaitApproveTask" remarks = "Dashboard Search Wait Approve Task By Application Group">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashWaitApproveAjax"  remarks = "get Application By App Group in Wait Approve Pool">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashAppReplyTask" remarks = "Dashboard Search Applicant's Reply By Application Group">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashAppReplyAjax"  remarks = "get Application By App Group in Applicant's Reply Pool">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashSupervisorTask" remarks = "Dashboard Search Supervisor Task By Application Group">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashSupervisorAjax"  remarks = "get Application By App Group in Supervisor Pool">
+        <![CDATA[
+
         ]]>
     </sql>
 </sqls>
