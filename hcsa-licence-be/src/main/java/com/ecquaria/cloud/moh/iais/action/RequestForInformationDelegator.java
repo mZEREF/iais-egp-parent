@@ -770,7 +770,7 @@ public class RequestForInformationDelegator {
             return;
         }
         byte[] fileData =requestForInformationService.downloadFile(fileRepoId);
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
         response.addHeader("Content-Length", "" + fileData.length);
         response.setContentType("application/x-octet-stream");
         OutputStream ops = new BufferedOutputStream(response.getOutputStream());
