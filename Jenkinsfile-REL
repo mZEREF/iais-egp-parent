@@ -497,7 +497,7 @@ def scanDockerImages(){
 
         // declare clair images (yes, we are going bleeding edge!)
         def clairDB = docker.image('hub.ecquaria.com/arminc/clair-db:latest')
-        def clairServer = docker.image('hub.ecquaria.com/arminc/clair-local-scan:v2.1.4_a536c757b48ebca4b7b8bffca794d52b42a3de9d')
+        def clairServer = docker.image('hub.ecquaria.com/arminc/clair-local-scan:v2.1.7_5125fde67edee46cb058a3feee7164af9645e07d')
         def clairClient = docker.image('hub.ecquaria.com/objectiflibre/clair-scanner:latest')
 
         //to force grab the latest
