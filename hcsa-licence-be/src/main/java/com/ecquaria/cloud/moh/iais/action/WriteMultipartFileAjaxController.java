@@ -196,7 +196,7 @@ public class WriteMultipartFileAjaxController {
                     byte[] fileData =att.getData();
                     if(fileData != null){
                         try {
-                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  URLEncoder.encode(fileRepoName, StandardCharsets.UTF_8.toString())+"\"");
+                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  fileRepoName+"\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
