@@ -19,12 +19,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
@@ -1441,6 +1443,29 @@ public class LicenceViewServiceDelegator {
             deleteGroup(oldAppSvcDisciplineAllocationDtoList,oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal());
             creatAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList, oldAppSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(), oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(),map);
         }
+        //new service for cr
+        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        if(appSvcVehicleDtoList==null){
+            appSvcVehicleDtoList=new ArrayList<>();
+        }
+        if(oldAppSvcVehicleDtoList==null){
+            oldAppSvcVehicleDtoList=new ArrayList<>();
+        }
+        dealVehicle(appSvcVehicleDtoList,oldAppSvcVehicleDtoList);
+        appSvcRelatedInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtoList);
+        oldAppSvcRelatedInfoDto.setAppSvcVehicleDtoList(oldAppSvcVehicleDtoList);
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        if(appSvcClinicalDirectorDtoList==null){
+            appSvcClinicalDirectorDtoList=new ArrayList<>();
+        }
+        if(oldAppSvcClinicalDirectorDtoList==null){
+            oldAppSvcClinicalDirectorDtoList=new ArrayList<>();
+        }
+        dealClinicalDirector(appSvcClinicalDirectorDtoList,oldAppSvcClinicalDirectorDtoList);
+        appSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtoList);
+        oldAppSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(oldAppSvcClinicalDirectorDtoList);
     }
     private void dealMapSvcDoc( Map<String, List<AppSvcDocDto>> multipleSvcDoc, Map<String, List<AppSvcDocDto>> oldMultipleSvcDoc){
         Set<String> strings = multipleSvcDoc.keySet();
@@ -2495,5 +2520,50 @@ public class LicenceViewServiceDelegator {
                 Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
             });
         }
+    }
+
+    private  void  dealVehicle( List<AppSvcVehicleDto> appSvcVehicleDtoList, List<AppSvcVehicleDto> oldAppSvcVehicleDtoList){
+        int size = appSvcVehicleDtoList.size();
+        int oldSize = oldAppSvcVehicleDtoList.size();
+        if(size < oldSize){
+            copyDealVehicle(appSvcVehicleDtoList,oldAppSvcVehicleDtoList);
+        }else if(oldSize < size){
+            copyDealVehicle(oldAppSvcVehicleDtoList,appSvcVehicleDtoList);
+        }
+    }
+
+    private void copyDealVehicle(List<AppSvcVehicleDto> appSvcVehicleDtoList, List<AppSvcVehicleDto> oldAppSvcVehicleDtoList){
+        int size=oldAppSvcVehicleDtoList.size() - appSvcVehicleDtoList.size();
+        for(int i=0;i< size;i++){
+            AppSvcVehicleDto appSvcVehicleDto = generateAppSvcVehicleDto();
+            appSvcVehicleDtoList.add(appSvcVehicleDto);
+        }
+    }
+    private AppSvcVehicleDto generateAppSvcVehicleDto(){
+        AppSvcVehicleDto appSvcVehicleDto =new AppSvcVehicleDto();
+        appSvcVehicleDto.setVehicleName("");
+        appSvcVehicleDto.setChassisNum("");
+        appSvcVehicleDto.setEngineNum("");
+        return appSvcVehicleDto;
+    }
+    private void dealClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList){
+        int size = appSvcClinicalDirectorDtoList.size();
+        int oldSize = oldAppSvcClinicalDirectorDtoList.size();
+        if(size < oldSize){
+            copyDealClinicalDirector(appSvcClinicalDirectorDtoList,oldAppSvcClinicalDirectorDtoList);
+        }else if(oldSize < size){
+            copyDealClinicalDirector(oldAppSvcClinicalDirectorDtoList,appSvcClinicalDirectorDtoList);
+        }
+    }
+    private void copyDealClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList){
+        for(int i=0;i<oldAppSvcClinicalDirectorDtoList.size()-appSvcClinicalDirectorDtoList.size();i++){
+            AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = generateAppSvcClinicalDirectorDto();
+            appSvcClinicalDirectorDtoList.add(appSvcClinicalDirectorDto);
+        }
+    }
+    private AppSvcClinicalDirectorDto generateAppSvcClinicalDirectorDto(){
+        AppSvcClinicalDirectorDto appSvcClinicalDirectorDto=new AppSvcClinicalDirectorDto();
+
+        return appSvcClinicalDirectorDto;
     }
 }

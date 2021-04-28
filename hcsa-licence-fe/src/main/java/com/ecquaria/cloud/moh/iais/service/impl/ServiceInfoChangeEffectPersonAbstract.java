@@ -144,7 +144,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
 
         return appSubmissionDtoList;
     }
-    private List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
+    protected List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
             List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcPo(appSvcPrincipalOfficersDtoList);
@@ -170,7 +170,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         return ids;
     }
-    private List<String> changeMeadrter(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList, List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) {
+    protected List<String> changeMeadrter(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList, List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList1 != null) {
             List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcMedAlertPersonList);
@@ -195,7 +195,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         return ids;
     }
-    private List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) {
+    protected List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
             List<AppSvcCgoDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
