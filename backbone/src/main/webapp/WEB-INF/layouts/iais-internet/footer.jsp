@@ -10,8 +10,8 @@
                     <ul class="list-inline">
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS019"/>')">HALP</a></li>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS008"/>')">Who we are</a></li>
-                        <li><a href="javascript:void(0);" onclick="openWins('PrivacyStatement')">Privacy Statement</a></li>
-                        <li><a href="javascript:void(0);" onclick="openWins('TermsOfUse')">Terms Of Use</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>--%>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS012"/>')">Sitemap</a></li>--%>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS013"/>')">Share your views @ Reach</a></li>
@@ -32,12 +32,12 @@
 
 <script type="text/javascript">
     function openWins(section){
-        var url ='${pageContext.request.contextPath}/eservice/INTERNET/InfoDo?section='+section;
+        var url ='${pageContext.request.contextPath}/eservice/INTERNET/'+section;
         window.open(url,'_blank');
     }
 
     function linkWins(section) {
-        var url ='${pageContext.request.contextPath}/eservice/INTERNET/InfoDo?section='+section;
+        var url ='${pageContext.request.contextPath}/eservice/INTERNET/'+section;
         window.location.href= url;
     }
 </script>
