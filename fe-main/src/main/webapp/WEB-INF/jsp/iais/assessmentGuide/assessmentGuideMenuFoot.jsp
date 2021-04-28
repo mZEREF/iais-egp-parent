@@ -201,4 +201,12 @@
     $("#updateAdminPersonnel").click(function(){
         guideSubmit("upAdmin","main");
     });
+
+    function submitDataMoh(){
+        if ($('#submitDateMohLab').is(':checked')){
+            Utils.submit('mainForm','subDate');
+        }else{
+            console.log("checkbox is not check")
+        }
+    }
 </script>
