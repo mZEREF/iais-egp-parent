@@ -34,7 +34,7 @@
               <div class="intranet-content">
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
-                    <div class="table-gp">
+                    <div class="table-gp table-responsive">
                       <table class="table">
                         <thead>
                         <tr align="center">
