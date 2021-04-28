@@ -1174,71 +1174,134 @@ public class HcsaApplicationDelegator {
                 log.error(e.getMessage() + "error", e);
             }
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
-            LicenceDto result = null;
-            String originLicenceId = applicationViewDto.getApplicationDto().getOriginLicenceId();
-            if (!StringUtil.isEmpty(originLicenceId)) {
-                result = licenceService.getLicenceDto(originLicenceId);
-            }
-            Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
-            //RFC Application - Send notification to transferor when licence transfer application is rejected
-            Map<String, Object> rejectMap = IaisCommonUtils.genNewHashMap();
-            rejectMap.put("applicationId", applicationNo);
-            try {
-                String applicantName = "";
-                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                if (orgUserDto != null) {
-                    applicantName = orgUserDto.getDisplayName();
-                }
-                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                emailMap.put("ApplicantName", applicantName);
-                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
-                emailMap.put("ApplicationNumber", applicationNo);
-                emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-                emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-                emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
-                emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-                EmailParam emailParam = new EmailParam();
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
-                emailParam.setTemplateContent(emailMap);
-                emailParam.setQueryCode(applicationNo);
-                emailParam.setReqRefNum(applicationNo);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                emailParam.setRefId(applicationNo);
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
-                map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
-                map.put("ApplicationNumber", applicationNo);
-                String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-                emailParam.setSubject(subject);
-                //email
-                notificationHelper.sendNotification(emailParam);
-                //msg
-                EmailParam msgParam = new EmailParam();
-                msgParam.setQueryCode(applicationNo);
-                msgParam.setReqRefNum(applicationNo);
-                msgParam.setTemplateContent(emailMap);
-                msgParam.setSubject(subject);
-                msgParam.setSvcCodeList(svcCodeList);
-                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                msgParam.setRefId(applicationNo);
-                notificationHelper.sendNotification(msgParam);
-                //sms
-                EmailParam smsParam = new EmailParam();
-                smsParam.setQueryCode(applicationNo);
-                smsParam.setReqRefNum(applicationNo);
-                smsParam.setRefId(applicationNo);
-                smsParam.setTemplateContent(emailMap);
-                smsParam.setSubject(subject);
-                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(smsParam);
-            } catch (Exception e) {
-                log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
+            if(StringUtil.isEmpty(applicationViewDto.getApplicationGroupDto().getNewLicenseeId())){
+                rfcRejectedSendNotification( applicationNo, applicationViewDto.getApplicationGroupDto(), applicationDto, svcCodeList);
+            }else {
+                rfcLicenseeRejectedSendNotification( applicationNo, applicationViewDto.getApplicationGroupDto(), applicationDto, svcCodeList);
             }
         }
 
+    }
+    private void rfcRejectedSendNotification( String applicationNo, ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, List<String> svcCodeList) {
+
+        Map<String, Object> rejectMap = IaisCommonUtils.genNewHashMap();
+        rejectMap.put("applicationId", applicationNo);
+        try {
+            String applicantName = "";
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if (orgUserDto != null) {
+                applicantName = orgUserDto.getDisplayName();
+            }
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            emailMap.put("ApplicationNumber", applicationNo);
+            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+            emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
+            emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationNo);
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
+            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            map.put("ApplicationNumber", applicationNo);
+            String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(applicationNo);
+            msgParam.setReqRefNum(applicationNo);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setSubject(subject);
+            msgParam.setSvcCodeList(svcCodeList);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(applicationNo);
+            notificationHelper.sendNotification(msgParam);
+            //sms
+            EmailParam smsParam = new EmailParam();
+            smsParam.setQueryCode(applicationNo);
+            smsParam.setReqRefNum(applicationNo);
+            smsParam.setRefId(applicationNo);
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setSubject(subject);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            notificationHelper.sendNotification(smsParam);
+        } catch (Exception e) {
+            log.info("-----RFC Application - Send SMS to transferor when licensee transfer application is rejected. licenseeId is null---------");
+        }
+    }
+
+    private void rfcLicenseeRejectedSendNotification( String applicationNo, ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, List<String> svcCodeList) {
+
+        Map<String, Object> rejectMap = IaisCommonUtils.genNewHashMap();
+        rejectMap.put("applicationId", applicationNo);
+        try {
+            String applicantName = "";
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if (orgUserDto != null) {
+                applicantName = orgUserDto.getDisplayName();
+            }
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            LicenseeDto existingLicensee= organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+            emailMap.put("ExistingLicensee", existingLicensee.getName());
+            LicenseeDto transfereeLicensee= organizationClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
+            emailMap.put("TransfereeLicensee", transfereeLicensee.getName());
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            emailMap.put("ApplicationNumber", applicationNo);
+            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+            emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
+            emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationNo);
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED).getEntity();
+            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            map.put("ApplicationNumber", applicationNo);
+            String subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(applicationNo);
+            msgParam.setReqRefNum(applicationNo);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setSubject(subject);
+            msgParam.setSvcCodeList(svcCodeList);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_MSG);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(applicationNo);
+            notificationHelper.sendNotification(msgParam);
+            //sms
+            EmailParam smsParam = new EmailParam();
+            smsParam.setQueryCode(applicationNo);
+            smsParam.setReqRefNum(applicationNo);
+            smsParam.setRefId(applicationNo);
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setSubject(subject);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            notificationHelper.sendNotification(smsParam);
+        } catch (Exception e) {
+            log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
+        }
     }
 
     private void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto, List<String> svcCodeList) {

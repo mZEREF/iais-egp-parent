@@ -567,9 +567,8 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         log.info("end send email sms and msg");
     }
 
-    @Override
-    public void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
-                                          List<String> svcCodeList){
+    private void rfcLicenseeSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+                                                   List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         String applicantName = "";
         OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -577,6 +576,10 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             applicantName = orgUserDto.getDisplayName();
         }
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto existingLicensee= organizationMainClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+        emailMap.put("ExistingLicensee", existingLicensee.getName());
+        LicenseeDto transfereeLicensee= organizationMainClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
+        emailMap.put("TransfereeLicensee", transfereeLicensee.getName());
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", applicationTypeShow);
         emailMap.put("ApplicationNumber", applicationNo);
@@ -585,14 +588,14 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
         EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED);
         emailParam.setTemplateContent(emailMap);
         emailParam.setQueryCode(applicationNo);
         emailParam.setReqRefNum(applicationNo);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationNo);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
+        MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED).getEntity();
         map.put("ApplicationType", applicationTypeShow);
         map.put("ApplicationNumber", applicationNo);
         String subject= null;
@@ -607,7 +610,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("send RFC Reject email end"));
         //msg
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
+        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_MSG).getEntity();
         subject = null;
         try {
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
@@ -620,7 +623,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         msgParam.setTemplateContent(emailMap);
         msgParam.setSubject(subject);
         msgParam.setSvcCodeList(svcCodeList);
-        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_MSG);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(applicationNo);
         log.info(StringUtil.changeForLog("send RFC Reject msg send"));
@@ -632,7 +635,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         smsParam.setReqRefNum(applicationNo);
         smsParam.setRefId(applicationNo);
         smsParam.setTemplateContent(emailMap);
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
+        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_SMS).getEntity();
         subject = null;
         try {
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
@@ -640,11 +643,95 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             log.info(e.getMessage(),e);
         }
         smsParam.setSubject(subject);
-        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_011_LICENSEE_REJECTED_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         log.info(StringUtil.changeForLog("send RFC Reject sms send"));
         notificationHelper.sendNotification(smsParam);
         log.info(StringUtil.changeForLog("send RFC Reject sms end"));
+    }
+    @Override
+    public void rfcSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
+                                          List<String> svcCodeList){
+        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+            String applicantName = "";
+            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+            if(orgUserDto != null){
+                applicantName = orgUserDto.getDisplayName();
+            }
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", applicationTypeShow);
+            emailMap.put("ApplicationNumber", applicationNo);
+            emailMap.put("ApplicationDate", appDate);
+            emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
+            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationNo);
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
+            map.put("ApplicationType", applicationTypeShow);
+            map.put("ApplicationNumber", applicationNo);
+            String subject= null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
+            } catch (IOException | TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            emailParam.setSubject(subject);
+            //email
+            log.info(StringUtil.changeForLog("send RFC Reject email send"));
+            notificationHelper.sendNotification(emailParam);
+            log.info(StringUtil.changeForLog("send RFC Reject email end"));
+            //msg
+            rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
+            subject = null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            } catch (IOException |TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            EmailParam msgParam = new EmailParam();
+            msgParam.setQueryCode(applicationNo);
+            msgParam.setReqRefNum(applicationNo);
+            msgParam.setTemplateContent(emailMap);
+            msgParam.setSubject(subject);
+            msgParam.setSvcCodeList(svcCodeList);
+            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefId(applicationNo);
+            log.info(StringUtil.changeForLog("send RFC Reject msg send"));
+            notificationHelper.sendNotification(msgParam);
+            log.info(StringUtil.changeForLog("send RFC Reject msg end"));
+            //sms
+            EmailParam smsParam = new EmailParam();
+            smsParam.setQueryCode(applicationNo);
+            smsParam.setReqRefNum(applicationNo);
+            smsParam.setRefId(applicationNo);
+            smsParam.setTemplateContent(emailMap);
+            rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
+            subject = null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
+            } catch (IOException |TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            smsParam.setSubject(subject);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            log.info(StringUtil.changeForLog("send RFC Reject sms send"));
+            notificationHelper.sendNotification(smsParam);
+            log.info(StringUtil.changeForLog("send RFC Reject sms end"));
+        }
+        else {
+            rfcLicenseeSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+        }
     }
     @Override
     public void newAppSendNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
