@@ -12,11 +12,27 @@ NEXUS_CREDENTIALS = [usernamePassword(
         usernameVariable: 'NEXUS_USERNAME')
 ]
 
-JENKINS_PRIVATE_KEY_CREDENTIALS_ID = 'moh-iais-jenkins-remote.private'
-JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
-        credentialsId: JENKINS_PRIVATE_KEY_CREDENTIALS_ID,
-        variable: 'JENKINS_PRIVATE_KEY')
-]
+// JENKINS_PRIVATE_KEY_CREDENTIALS_ID = 'moh-iais-jenkins-remote.private'
+// JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
+//         credentialsId: JENKINS_PRIVATE_KEY_CREDENTIALS_ID,
+//         variable: 'JENKINS_PRIVATE_KEY')
+// ]
+
+// uses: slift -> decryption
+JENKINS_PFX_CREDENTIALS = file(
+        credentialsId: '487dec9d-9558-43a7-8831-c7b7214f5869',
+        variable: 'JENKINS_PFX')
+
+
+// uses: password for JENKINS_PFX
+JENKINS_PFX_PASSWORD_CREDENTIALS = string(
+        credentialsId: 'c4251176-8422-4dd5-aa36-fc9f0dfb2c6c',
+        variable: 'JENKINS_PFX_PASSWORD')
+
+// uses: slift -> decryption (certificate of sender)
+JENKINS_RECEIVER_CER_CREDENTIALS = file(
+        credentialsId: '129904a8-e15e-4b48-b044-d910ed7154c7',
+        variable: 'JENKINS_SENDER_CER')
 
 SONARQUBE_CREDENTIALS_ID = 'moh-iais-sonartoken'
 
@@ -35,7 +51,7 @@ SYMMETRIC_KEY_ALGO = '-AES-256-CBC'
 // The signing algorithm to use (via OpenSSL).
 SIGN_DIGEST_ALGO = "-sha256"
 
-AD_TOOLS_VERSION = '7361af0'
+AD_TOOLS_VERSION = '6cdfe5e'
 
 // Destination directory when we do `git clone`.
 CHECKOUT_DIRECTORY = 'checkouts'
@@ -129,8 +145,8 @@ try{
             dependencyCheck()
 
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-                buildDockerImages()
-                scanDockerImages()
+                // buildDockerImages()
+                // scanDockerImages()
                 uploadToUAT()
             }
 
@@ -230,37 +246,25 @@ def verifyPackage(){
                     """
                     }
 
-                    withCredentials(JENKINS_PRIVATE_KEY_CREDENTIALS) {
+                    withCredentials([JENKINS_PFX_CREDENTIALS, JENKINS_PFX_PASSWORD_CREDENTIALS, JENKINS_RECEIVER_CER_CREDENTIALS]) {
                         sh """
-                        # extract the downloaded file
-                        tar -xf "$target_file" -C "$EXTRACTED_PAYLOAD"
+                        (
+                            cd "/slift/" || exit
+                            
+                            ./run.sh \
+                                -d "${env.WORKSPACE}/$target_file" "${env.WORKSPACE}/$EXTRACTED_PAYLOAD/project-files-with-approval.tar" \
+                                -pfx "$JENKINS_PFX" "$JENKINS_PFX_PASSWORD" \
+                                -verbose \
+                                -cer "$JENKINS_SENDER_CER"
+                        )
 
-                        # change directory
-                        cd "$EXTRACTED_PAYLOAD"
-
-                        # decrypt the encrypted symmetric key using the receiver's private key
-                        openssl rsautl -decrypt \
-                            -inkey "$JENKINS_PRIVATE_KEY" \
-                            -in "key.bin" \
-                            -out "key"
-
-                        rm key.bin
-
-                        # decrypt payload with the symmetric key
-                        openssl enc \
-                            -d "$SYMMETRIC_KEY_ALGO" \
-                            -K "\$(cat key)" \
-                            -iv "\$(cat iv)" \
-                            -in "project-files-with-approval.bin" \
-                            -out "project-files-with-approval.tar"
-
-                        rm key iv
+                        cd "${env.WORKSPACE}/$EXTRACTED_PAYLOAD"
 
                         # once payload is decrypted, extract it.
                         mkdir -p "project-files-with-approval"
                         tar -xf "project-files-with-approval.tar" -C "project-files-with-approval"
 
-                        rm project-files-with-approval.bin project-files-with-approval.tar
+                        rm project-files-with-approval.tar
 
                         # change directory
                         cd project-files-with-approval

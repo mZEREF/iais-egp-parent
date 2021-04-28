@@ -58,7 +58,7 @@ NEXUS_CREDENTIALS = [usernamePassword(
 // Specify the project ID for the project (this value is retrieved from Dependency Track).
 DEPENDENCY_TRACK_PROJECT = '47741070-b027-4430-acc7-1e04adba7780'
 
-AD_TOOLS_VERSION = "7361af0"
+AD_TOOLS_VERSION = '6cdfe5e'
 
 // Working directory for when we're handling the cicd folder.
 AUTO_DEPLOYMENT_DIRECTORY="auto-deployment"
@@ -93,7 +93,7 @@ ARCHIVE_2 = "${TX_BUILD_FOLDER}/project-files-with-approval.tar"
 ARCHIVE_3 = "${TX_BUILD_FOLDER}/project-files-with-approval.bin"
 
 // This is a new archive consisting of ARCHIVE_3 + encrypted symmetric key + initialization vector (IV)
-ARCHIVE_4 = "${TX_BUILD_FOLDER}/project-payload.tar"
+// ARCHIVE_4 = "${TX_BUILD_FOLDER}/project-payload.tar"
 
 // This file contains the signature that the verifier will have to verify.
 SIGNATURE_FROM_JENKINS="${ARCHIVE_1_HASH}.jenkins"
@@ -110,10 +110,33 @@ INITIALIZATION_VECTOR_SIZE = 16
 INITIALIZATION_VECTOR = "${TX_BUILD_FOLDER}/iv"
 
 // jenkins keys used for signing the package
-JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
-        credentialsId: 'jenkins-hub-ci-key',
+// JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
+//         credentialsId: 'jenkins-hub-ci-key',
+//         variable: 'JENKINS_PRIVATE_KEY')
+// ]
+
+// uses: signing of verification package
+JENKINS_PRIVATE_KEY_CREDENTIALS = file(
+        credentialsId: 'd4bfe0b9-4890-4284-bae2-609df165bee2',
         variable: 'JENKINS_PRIVATE_KEY')
-]
+
+
+// uses: slift -> encryption
+JENKINS_PFX_CREDENTIALS = file(
+        credentialsId: 'c7e96f25-c13e-4f78-866d-64a825ba7044',
+        variable: 'JENKINS_PFX')
+
+
+// uses: password for JENKINS_PFX
+JENKINS_PFX_PASSWORD_CREDENTIALS = string(
+        credentialsId: '5b2e5569-9485-4302-8a8f-867453225a71',
+        variable: 'JENKINS_PFX_PASSWORD')
+
+
+// uses: slift -> encryption (certificate of receiver)
+JENKINS_RECEIVER_CER_CREDENTIALS = file(
+        credentialsId: 'e6b1e911-2be3-4a77-ad69-11a29fe2ea7c',
+        variable: 'JENKINS_RECEIVER_CER')
 
 // remote SFTP uses 2 authentication (private key, and password -- maybe not in that order.)
 //TODO change from mock sftp to actual sftp server
@@ -178,8 +201,8 @@ try{
             dependencyTrack()
 
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-                buildDockerImages()
-                scanDockerImages()
+                // buildDockerImages()
+                // scanDockerImages()
             }
             deploySIT()
         }
@@ -762,7 +785,7 @@ def createVerificationPackage(){
             """
 
             // sign the hash
-            withCredentials(JENKINS_PRIVATE_KEY_CREDENTIALS) {
+            withCredentials([JENKINS_PRIVATE_KEY_CREDENTIALS]) {
                 sh """
                     openssl dgst -sign \
                         "$JENKINS_PRIVATE_KEY" \
@@ -854,7 +877,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin',
+                    submitter: 'admin, mingde, anantharaj',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
@@ -947,8 +970,9 @@ def createTransferPackage(){
         "-e TZ=Asia/Singapore"
     ]
 
-    def credA = file(credentialsId: "moh-iais-jenkins-remote.public", variable: 'RECEIVER_PUBLIC_KEY')
-    withCredentials([credA]) {
+    // def credA = file(credentialsId: "moh-iais-jenkins-remote.public", variable: 'RECEIVER_PUBLIC_KEY')
+    // withCredentials([credA]) {
+    withCredentials([JENKINS_PFX_CREDENTIALS, JENKINS_PFX_PASSWORD_CREDENTIALS, JENKINS_RECEIVER_CER_CREDENTIALS]) {
         docker
             .image("hub.ecquaria.com/ecq/ad-tools:$AD_TOOLS_VERSION")
             .inside(dockerArgs.join(" ")){
@@ -956,16 +980,15 @@ def createTransferPackage(){
                     tar -cf "$ARCHIVE_2" -C "\$(dirname "$ARCHIVE_1")" "\$(basename "$ARCHIVE_1")"
                     tar -rf "$ARCHIVE_2" -C "\$(dirname "$SIGNATURE_FROM_VERIFIER")" "\$(basename "$SIGNATURE_FROM_VERIFIER")"
 
-                    openssl rand -hex "$SYMMETRIC_KEY_SIZE" > "$SYMMETRIC_KEY"
-                    openssl rand -hex "$INITIALIZATION_VECTOR_SIZE" > "$INITIALIZATION_VECTOR"
-
-                    openssl enc -e "$SYMMETRIC_KEY_ALGO" -K "\$(cat $SYMMETRIC_KEY)" -iv "\$(cat $INITIALIZATION_VECTOR)" -in "$ARCHIVE_2" -out "$ARCHIVE_3"
-
-                    openssl rsautl -encrypt -inkey "$RECEIVER_PUBLIC_KEY" -pubin -in "$SYMMETRIC_KEY" -out "$SYMMETRIC_KEY_ENCRYPTED"
-
-                    tar -cf "$ARCHIVE_4" -C "\$(dirname "$ARCHIVE_3")" "\$(basename "$ARCHIVE_3")"
-                    tar -rf "$ARCHIVE_4" -C "\$(dirname "$SYMMETRIC_KEY_ENCRYPTED")" "\$(basename "$SYMMETRIC_KEY_ENCRYPTED")"
-                    tar -rf "$ARCHIVE_4" -C "\$(dirname "$INITIALIZATION_VECTOR")" "\$(basename "$INITIALIZATION_VECTOR")"
+                    (
+                        cd "/slift/" || exit
+                        ./run.sh \
+                            -e "${env.WORKSPACE}/$ARCHIVE_2" "${env.WORKSPACE}/$ARCHIVE_3" \
+                            -pfx "$JENKINS_PFX" "$JENKINS_PFX_PASSWORD" \
+                            -verbose \
+                            -cer "$JENKINS_RECEIVER_CER" \
+                            -aes
+                    )
                 """
             }
     }
@@ -983,7 +1006,7 @@ def uploadTransferPackage(){
                     curl \
                     --insecure \
                     --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
-                    --upload-file "$ARCHIVE_4" \
+                    --upload-file "$ARCHIVE_3" \
                     https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/moh-iais-egp-transfer-${BUILD_NUMBER}.tar
                 """
             }
@@ -1007,7 +1030,7 @@ def uploadTransferPackageToSFTP(){
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
-            put \"$ARCHIVE_4\" \"$REMOTE_PATH\"
+            put \"$ARCHIVE_3\" \"$REMOTE_PATH\"
         """.stripIndent().stripMargin()
 
         def BATCH_FILE='sftp-batch-file'
