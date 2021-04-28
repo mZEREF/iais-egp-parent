@@ -83,8 +83,8 @@
                 <div class="form-group">
                   <label class="col-xs-12 col-md-4 control-label">Role</label>
                   <div class="col-xs-10 col-sm-7 col-md-6">
-                    <iais:select name="beDashRoleId" onchange="chooseCurRole()" options="roleIds"
-                                 cssClass="roleIds" value="${curRole}"></iais:select>
+                    <iais:select name="beDashRoleId" onchange="chooseCurRole()" options="beDashRoleIds"
+                                 cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}"></iais:select>
                   </div>
                 </div>
               </div>
@@ -482,7 +482,7 @@
 
     function chooseCurRole() {
         showWaiting();
-        let dashSwitchActionValue = $('#dashSwitchActionValue').val();
+        let dashSwitchActionValue = $('#switchAction').val();
         intraDashboardSubmit(dashSwitchActionValue);
     }
 
