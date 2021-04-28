@@ -201,4 +201,10 @@
     $("#updateAdminPersonnel").click(function(){
         guideSubmit("upAdmin","main");
     });
+
+    function submitDataMoh(){
+        if ($('#submitDateMohLab').is(':checked')){
+            Utils.submit('mainForm','subDate');
+        }
+    }
 </script>
