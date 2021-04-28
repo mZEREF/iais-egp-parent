@@ -21,7 +21,7 @@
                 <div class="components">
 
                     <br>
-                    <div class="table-gp">
+                    <div class="table-responsive">
 
                         <table class="table">
                             <tr >
@@ -55,7 +55,7 @@
                                             <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_TIME_FORMAT}" /></td>
                                             <td style="float:left;">
                                                 <textarea  name="reason${pool.viewCorrId}" maxlength="500" rows="10" style=" font-weight:normal;"
-                                                          cols="50" >${pool.reason}</textarea><br>
+                                                           cols="50" >${pool.reason}</textarea><br>
                                                 <span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
                                             </td>
                                             <td >
@@ -80,18 +80,16 @@
                             </c:choose>
                             </tbody>
                         </table>
-
-                        <iais:row>
-                            <iais:action style="text-align:left;">
-                                <div align="left"><span><a  href="/hcsa-licence-web/eservice/INTERNET/MohClientRescheduling"><em class="fa fa-angle-left"> </em> Back</a></span></div>
-                            </iais:action>
-                            <br>
-                            <iais:action style="text-align:right;"  >
-                                <button class="btn btn-primary RescheduleButton" type="button"  onclick="doReschedule()">Submit</button>
-                            </iais:action>
-                        </iais:row>
-
                     </div>
+                    <iais:row>
+                        <iais:action style="text-align:left;">
+                            <div align="left"><span><a  href="/hcsa-licence-web/eservice/INTERNET/MohClientRescheduling"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                        </iais:action>
+                        <br>
+                        <iais:action style="text-align:right;"  >
+                            <button class="btn btn-primary RescheduleButton" type="button"  onclick="doReschedule()">Submit</button>
+                        </iais:action>
+                    </iais:row>
                 </div>
             </div>
         </div>
