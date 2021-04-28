@@ -182,7 +182,7 @@
                 The Contents of this Web Site are provided on an "as is" basis without warranties of any
                 kind. To the fullest extent permitted by law, the Ministry of Health does not warrant and
                 hereby disclaims any warranty:
-                
+                <br><br>
                 (i) as to the accuracy, correctness, reliability, timeliness, non-infringement, title,
                 merchantability or fitness for any particular purpose of the Contents of this Web Site;
                 <br>
