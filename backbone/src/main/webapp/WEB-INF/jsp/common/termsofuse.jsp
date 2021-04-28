@@ -126,7 +126,7 @@
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">5.</td>
               <td style="border: 0px solid white">
-                Click <a href="/elis/info.do?task=guidelines&amp;section=PrivacyStatement" tabindex="71">here</a> to review this Web Site Privacy Policy Statement.
+                Click <a href="javascript:void(0);" tabindex="71" onclick="linkWins('PrivacyStatement')">here</a> to review this Web Site Privacy Policy Statement.
                 
               </td>
             </tr>

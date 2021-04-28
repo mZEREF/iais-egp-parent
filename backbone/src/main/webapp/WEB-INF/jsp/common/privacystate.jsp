@@ -84,7 +84,7 @@
           If you have any questions or concerns about this data protection and privacy policy, please contact
        
 
-          <b>Quality Service Manager<br>
+          <b><br><br>Quality Service Manager<br>
             Ministry of Health</b><br><br>
 
           College of Medicine Building<br>
