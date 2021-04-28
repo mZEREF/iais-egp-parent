@@ -145,8 +145,8 @@ try{
             dependencyCheck()
 
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
-                // buildDockerImages()
-                // scanDockerImages()
+                buildDockerImages()
+                scanDockerImages()
                 uploadToUAT()
             }
 
