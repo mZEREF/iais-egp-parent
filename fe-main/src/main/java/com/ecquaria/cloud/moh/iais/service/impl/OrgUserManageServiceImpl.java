@@ -533,12 +533,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void sendReminderForExpiredSingPass() {
-        List<JSONObject> objectList = feUserClient.getExpireSingPassList().getEntity();
-        log.info("======objectList=>>>>>>>", JsonUtil.parseToJson(objectList));
-        for (JSONObject i : objectList){
-            String uen = i.optString("uen");
-            String nric = i.optString("nric");
-            mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+        String objJson = feUserClient.getExpireSingPassList().getEntity();
+        JSONArray uenList = new JSONArray(objJson);
+        if (Optional.ofNullable(uenList).isPresent()){
+            for (int i = 0; i < uenList.length(); i++){
+                JSONObject object = uenList.getJSONObject(i);
+                if (Optional.ofNullable(object).isPresent()){
+                    String uen = object.optString("uen");
+                    String nric = object.optString("nricNumber");
+                    mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+                }
+            }
         }
     }
 }

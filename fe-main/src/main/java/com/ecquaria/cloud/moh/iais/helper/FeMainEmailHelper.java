@@ -54,7 +54,6 @@ public class FeMainEmailHelper {
             log.info("send singpass auto ceased email start");
             OrganizationDto organ = userManageService.findOrganizationByUen(uen);
             if (Optional.ofNullable(organ).isPresent()){
-
                 List<LicenseeDto> licList =  userManageService.getLicenseeByOrgId(organ.getId());
                 if (IaisCommonUtils.isNotEmpty(licList)){
                     for (LicenseeDto lic : licList){
@@ -90,7 +89,8 @@ public class FeMainEmailHelper {
                                 templateMap.put("HCI_Address", addressStr);
                                 templateMap.put("UEN_No", uenNo);
 
-                                FeUserDto user = userManageService.getFeUserAccountByNricAndType(uen, nricNumber);
+                                String idType = IaisEGPHelper.checkIdentityNoType(nricNumber);
+                                FeUserDto user = userManageService.getFeUserAccountByNricAndType(nricNumber, idType);
                                 if (Optional.ofNullable(user).isPresent()){
                                     templateMap.put("Applicant", user.getDisplayName());
                                 }else {
