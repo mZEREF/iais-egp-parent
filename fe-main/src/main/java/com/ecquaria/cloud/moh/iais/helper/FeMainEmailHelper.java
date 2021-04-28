@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -17,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +37,8 @@ import java.util.Optional;
 @Slf4j
 public class FeMainEmailHelper {
 
+    public final static String SINGPASS_EXPIRE_REMINDER_JOB = "singpass_expire_reminder_job";
+
     @Autowired
     private OrgUserManageService userManageService;
 
@@ -46,7 +51,18 @@ public class FeMainEmailHelper {
     @Autowired
     private NotificationHelper notificationHelper;
 
+    @Autowired
+    private SystemAdminMainFeClient systemAdminMainFeClient;
+
     private final static String SINGPASS_AUTO_CEASED_EMAIL_KEY_PRIX = "msg_template_singpass_auto_caased";
+
+    public boolean hasBeenReminder(String refNumber, String trackKey){
+        JobRemindMsgTrackingDto tracking = systemAdminMainFeClient.getJobRemindMsgTrackingDto(refNumber, trackKey).getEntity();
+        if (Optional.ofNullable(tracking).isPresent()){
+            return true;
+        }
+        return false;
+    }
 
     public void sendSingPassAutoCeasedMsg(String uen, String nricNumber){
         log.info("uen => {}, nric => {}", uen, nricNumber);
@@ -101,6 +117,8 @@ public class FeMainEmailHelper {
                                 templateMap.put("telNo", paramConfig.getSystemPhoneNumber());
                                 String loginUrl = HmacConstants.HTTPS +"://" + paramConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                                 templateMap.put("newSystem", loginUrl);
+
+
                                 EmailParam emailParam = new EmailParam();
                                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SINGPASS_AUTO_CAASED_EMAIL);
                                 emailParam.setTemplateContent(templateMap);
@@ -108,8 +126,6 @@ public class FeMainEmailHelper {
                                 emailParam.setReqRefNum(licId);
                                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
                                 emailParam.setRefId(licId);
-                                notificationHelper.sendNotification(emailParam);
-
 
                                 EmailParam smsParam = MiscUtil.transferEntityDto(emailParam, EmailParam.class);
                                 smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_SINGPASS_AUTO_CAASED_SMS);
@@ -122,6 +138,13 @@ public class FeMainEmailHelper {
                                 msgParam.setQueryCode("msg_template_singpass_auto_caased_msg");
                                 msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                                 notificationHelper.sendNotification(msgParam);
+
+                                JobRemindMsgTrackingDto tracking = new JobRemindMsgTrackingDto();
+                                tracking.setRefNo(uenNo + "_" + nricNumber);
+                                tracking.setMsgKey(FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
+                                tracking.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                                emailParam.setJobRemindMsgTrackingDto(tracking);
+                                notificationHelper.sendNotification(emailParam);
                             }
                         }
                     }
