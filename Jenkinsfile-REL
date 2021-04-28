@@ -150,6 +150,14 @@ SFTP_CREDENTIALS = [
                 usernameVariable: 'SFTP_USER_ID')
 ]
 
+SFTP_CREDENTIALS_GDC = [    
+    sshUserPrivateKey(
+        credentialsId: '1b0cdbea-954c-4b77-9a68-94ce6dc03dd7', 
+        keyFileVariable: 'SFTP_PRIVATE_KEY', 
+        passphraseVariable: '', 
+        usernameVariable: 'SFTP_USER_ID')
+]
+
 // used by Katalon Runtime Engine
 KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
     credentialsId: '80b49081-93ca-48cf-96ec-e53b988902ba',
@@ -955,6 +963,7 @@ def createAndUploadDeploymentPackage(){
         createTransferPackage()
         uploadTransferPackage()
         uploadTransferPackageToSFTP()
+        uploadTransferPackageToGDCSFTP()
     }
 }
 
@@ -1048,6 +1057,47 @@ def uploadTransferPackageToSFTP(){
                     cat $BATCH_FILE
 
                     cat \"$BATCH_FILE\" | sshpass -e sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
+                """
+            }
+    }
+}
+
+/**
+ * Transfer the verification package to SFTP.
+ */
+def uploadTransferPackageToGDCSFTP(){
+    withCredentials(SFTP_CREDENTIALS_GDC) {
+        // setup parameters to use when calling docker
+        def dockerArgs = [
+                "--entrypoint=''",
+                "-u 0:0", // prevents ssh from throwing "No user exists for uid xxx"
+                "-e TZ=Asia/Singapore"
+        ]
+
+        // temporarily upload here first (to prevent it from being partially picked up by ctrl M)
+        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/moh-iais-transfer-${BUILD_NUMBER}.tar"
+        // this is where the file will end up on the remote
+        def REMOTE_PATH="/HOME/CICD/IN/moh-iais-transfer-${BUILD_NUMBER}.tar"
+
+        // sftp will be running in "batch" mode
+        def BATCH_FILE_CONTENTS = """\
+            put \"$ARCHIVE_3\" \"$TMP_REMOTE_PATH\"
+            rename \"$TMP_REMOTE_PATH\" \"$REMOTE_PATH\"
+        """.stripIndent().stripMargin()
+
+        def BATCH_FILE='sftp-batch-file'
+        def SFTP_ADDRESS ='160.96.221.9'
+        def SFTP_PORT ='22'
+
+        docker
+            .image("hub.ecquaria.com/ecq/ad-tools:$AD_TOOLS_VERSION")
+            .inside(dockerArgs.join(" ")){
+                sh """
+                    echo \"$BATCH_FILE_CONTENTS\" > \"$BATCH_FILE\"
+
+                    cat $BATCH_FILE
+
+                    cat \"$BATCH_FILE\" | sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
                 """
             }
     }
