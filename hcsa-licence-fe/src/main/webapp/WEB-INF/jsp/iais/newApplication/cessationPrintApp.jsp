@@ -427,8 +427,6 @@
             $("#patRegNo").hide();
             $("#div").hide();
         }
-
-
         doPrint();
     });
 
