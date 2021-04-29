@@ -59,11 +59,6 @@
                                                         <fmt:formatDate value="${appCessHci.effectiveDate}"
                                                                         pattern="dd/MM/yyyy"/>
                                                     </div>
-                                                    <div class="col-xs-8 col-sm-2 col-md-2">
-                                                        <a class="btn-tooltip styleguide-tooltip"
-                                                           data-toggle="tooltip" data-html="true" style="position: absolute;z-index: 1000"
-                                                           title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.&lt;/p&gt;">i</a>
-                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-6 control-label">Cessation
@@ -102,9 +97,9 @@
                                                                                <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
                                                                                onchange="javascirpt:changePatSelectCessFe(this.value);"
                                                                                aria-invalid="false" disabled>
-                                                                        <label class="form-check-label"
-                                                                               for=${num.count}radioYes${uid.count}"><span
-                                                                                class="check-circle"></span>Yes</label>
+                                                                        <c:if test="${appCessHci.patNeedTrans ==true}">
+                                                                            <label class="form-check-label"
+                                                                                   for=${num.count}radioYes${uid.count}">Yes</label></c:if>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xs-12 col-md-3">
@@ -117,9 +112,10 @@
                                                                                <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
                                                                                onchange="javascirpt:changePatSelectCessFe(this.value);"
                                                                                aria-invalid="false" disabled>
-                                                                        <label class="form-check-label"
-                                                                               for="${num.count}radioNo${uid.count}"><span
-                                                                                class="check-circle"></span>No</label>
+                                                                        <c:if test="${appCessHci.patNeedTrans !=true}">
+                                                                            <label class="form-check-label"
+                                                                                   for="${num.count}radioNo${uid.count}">No</label></c:if>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -358,36 +354,7 @@
                     </div>
                     <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
                     <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <span style="padding-right: 10%" class="components">
-                        <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
-                    </span>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <span style="padding-left: 73%" class="components">
-                       <a class="btn btn-primary next" href="javascript:void(0);" onclick="confirmSubmit('submit')">Submit</a>
-                    </span>
-                            </div>
-                        </div>
-                    </div>
-
                     </form>
-                </div>
-            </div>
-            <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body" >
-                            <div class="row">
-                                <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
-                            </div>
-                        </div>
-                        <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                            <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

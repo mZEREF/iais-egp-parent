@@ -33,7 +33,9 @@
                             <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
                             <div class="row">
                                 <div class="col-md-7">
-                                    <iais:select name="withdrawalReason" firstOption="${withdrawDtoView.withdrawnReason}" value="${withdrawDtoView.withdrawnReason}"/>
+                                    <c:if test="${empty withdrawDtoView.withdrawnReason}">
+                                        <iais:select name="withdrawalReason" firstOption="${withdrawDtoView.withdrawnReason}"/>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>
@@ -74,23 +76,11 @@
                                           </div>
                                         </c:forEach>
                                         </span>
-                                            <input id="selectedFile" name="selectedFile"
-                                                   class="selectedFile commDoc"
-                                                   type="file" style="display: none;"
-                                                   aria-label="selectedFile1"/><a
-                                                class="btn btn-file-upload btn-secondary">Upload</a>
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="center-content">
-                        <div class="components">
-                            <a class="btn btn-primary" style="float:right">Submit</a>
-                            <span style="float:right">&nbsp;</span>
-                            <a class="btn btn-secondary" style="float:right">Cancel</a>
                         </div>
                     </div>
                 </div>
