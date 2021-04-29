@@ -33,7 +33,9 @@
                             <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
                             <div class="row">
                                 <div class="col-md-7">
-                                    <iais:select name="withdrawalReason" firstOption="${withdrawDtoView.withdrawnReason}"/>
+                                    <c:if test="${empty withdrawDtoView.withdrawnReason}">
+                                        <iais:select name="withdrawalReason" firstOption="${withdrawDtoView.withdrawnReason}"/>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>
