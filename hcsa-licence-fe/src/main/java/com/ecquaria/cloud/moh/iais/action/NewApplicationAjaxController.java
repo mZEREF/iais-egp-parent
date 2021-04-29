@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -73,6 +74,8 @@ public class NewApplicationAjaxController {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -778,60 +781,17 @@ public class NewApplicationAjaxController {
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
+        ProfessionalResponseDto professionalResponseDto = null;
         if (StringUtil.isEmpty(professionRegoNo)) {
             log.debug(StringUtil.changeForLog("the prgNo is null ...."));
-            return null;
+            return professionalResponseDto;
         }
-//        String specialtyJsp = ParamUtil.getString(request, "specialty");
-//        String qualificationJsp = ParamUtil.getString(request, "qualification");
-        ProfessionalResponseDto professionalResponseDto=new ProfessionalResponseDto();
-            if("Y".equals(prsFlag)){
-                List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                prgNos.add(professionRegoNo);
-                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                professionalParameterDto.setRegNo(prgNos);
-                professionalParameterDto.setClientId("22222");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String format = simpleDateFormat.format(new Date());
-                professionalParameterDto.setTimestamp(format);
-                professionalParameterDto.setSignature("2222");
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
-                    StringBuilder sb = new StringBuilder();
-                    professionalResponseDto = professionalResponseDtos.get(0);
-                    List<String> specialty = professionalResponseDto.getSpecialty();
-                    List<String> qualification = professionalResponseDto.getQualification();
-                    List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                    if(IaisCommonUtils.isEmpty(specialty)){
-                        return professionalResponseDto;
-                    }
-                    if (!IaisCommonUtils.isEmpty(qualification)) {
-                        String s = qualification.get(0);
-                        if(!StringUtil.isEmpty(s)){
-                            sb.append(s);
-                        }
-                    }
-                    if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                        String s = subspecialty.get(0);
-                        if(!StringUtil.isEmpty(s)){
-                            sb.append(s);
-                        }
-                    }
-                    String s = sb.toString();
-                    qualification.clear();
-                    qualification.add(s);
-                    log.debug(StringUtil.changeForLog("the prgNo end ...."));
-                    return professionalResponseDto;
-                }catch (Throwable e){
-                    log.error(e.getMessage(), e);
-                    return professionalResponseDto;
-                }
-
-            }
-            return null;
+        log.debug("prs server flag {}",prsFlag);
+        if("Y".equals(prsFlag)){
+            professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
+        }
+        log.debug(StringUtil.changeForLog("the prgNo end ...."));
+        return professionalResponseDto;
     }
 
 

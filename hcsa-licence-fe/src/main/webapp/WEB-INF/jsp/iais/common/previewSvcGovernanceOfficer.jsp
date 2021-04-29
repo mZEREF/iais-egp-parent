@@ -90,37 +90,33 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                                    <c:choose>
-                                        <c:when test="${'other' == cgo.speciality}">
-                                            <c:out value="Others"/>
-                                        </c:when>
-                                        <c:when test="${'-1' == cgo.speciality}">
-                                            <c:out value=""/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            ${cgo.speciality }
-                                        </c:otherwise>
-                                    </c:choose>
-                                    </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.speciality}</p>
                                 </td>
                             </tr>
-                            <c:if test="${'other' == cgo.speciality}">
-                                <tr>
-                                    <td class="col-xs-8">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                                    </td>
-                                    <td>
-                                        <p><c:out value="${cgo.specialityOther}"/></p>
-                                    </td>
-                                </tr>
-                            </c:if>
+
                             <tr>
                                 <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Sub-specialty or relevant qualification </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Sub-specialty</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.subSpeciality}</p>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-xs-8">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.qualification}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-8">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Other Qualification </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.otherQualification}</p>
                                 </td>
                             </tr>
 
