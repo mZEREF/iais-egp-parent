@@ -1536,6 +1536,25 @@ public class LicenceViewServiceDelegator {
         if(appSvcDocDtoLit==null){
             return;
         }
+        ListIterator<AppSvcDocDto> iterator = appSvcDocDtoLit.listIterator();
+        while (iterator.hasNext()){
+            AppSvcDocDto next = iterator.next();
+            String personType = next.getPersonType();
+            int i = checkPersonType(personType);
+            if(1==i){
+                String appGrpPersonId = next.getAppGrpPersonId();
+                if(appGrpPersonId==null){
+                    log.error("this have error file ,need to remove----> "+next);
+                    iterator.remove();
+                }
+            }else if(2==i){
+                String appSvcPersonId = next.getAppSvcPersonId();
+                if(appSvcPersonId==null){
+                    log.error("this have error file ,need to remove----> "+next);
+                    iterator.remove();
+                }
+            }
+        }
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
             String personType = appSvcDocDto.getPersonType();
             String svcDocId = appSvcDocDto.getSvcDocId();
@@ -2495,6 +2514,18 @@ public class LicenceViewServiceDelegator {
             multipleSvcDoc.forEach((k,v)->{
                 Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
             });
+        }
+    }
+    private int checkPersonType(String type){
+        switch (type){
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                return 1;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
+                return 2;
+            default:return -1;
         }
     }
 }
