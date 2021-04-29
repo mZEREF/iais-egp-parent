@@ -93,5 +93,97 @@
 
         <div> <span class="error-msg" id="error_remarks" name="iaisErrorMsg"></span></div>
 
-</body>
-</html>
+      </div>
+
+      <div class="form-group">
+        <div >
+          <div>
+            <div class="col-xs-12 col-md-10" >
+              <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
+            </div>
+
+            <div class="col-xs-12">
+              <div class="document-upload-list" >
+                <div class="file-upload-gp row" >
+                  <div class="fileContent col-xs-5">
+                    <input class="selectedFile"  id="selectedFile" name = "selectedFile"  onclick="fileClicked(event)"  onchange="javascript:doUserRecUploadConfirmFile(event)" type="file" style="display: none;" aria-label="selectedFile1" >
+                    <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="doFileAddEvent()">Upload</a>
+                  </div>
+                </div>
+                <span class="error-msg" name="iaisErrorMsg" id="error_selectedFileError"></span>
+                <div class="col-xs-12" >
+            <span  name="selectedFileShowId" id="selectedFileShowId">
+            <c:forEach items="${pageShowFiles}" var="pageShowFileDto" varStatus="ind">
+              <div id="${pageShowFileDto.fileMapId}">
+                  <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                  ${pageShowFileDto.fileName}
+              </div>
+
+            </c:forEach>
+            </span>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
+                <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<style>
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
+        var reason= $('#reasonSelect option:selected').val();
+        if("MS003"==reason){
+            $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
+
+        }else  {
+            $('#cgo').attr("style" ,"display: none");
+
+        }
+        if("MS008"==reason){
+            $('#selectHciNameAppeal').attr("style","display: block;margin-top: 20px");
+
+        }else {
+            $('#selectHciNameAppeal').attr("style","display: none");
+        }
+        if("MS004"==reason){
+            $('#licenceYear').attr("style","display: block;margin-top: 20px");
+        }else {
+            $('#licenceYear').attr("style","display: none");
+        }
+        if("MS007"==reason){
+            $('#othersReason').attr("style","display: block");
+        }else {
+            $('#othersReason').attr("style","display: none");
+        }
+        if(  $("input[name='selectHciName']").prop("checked")){
+            $('#proposedHciName').attr("style","display: block");  }else {
+            $('#proposedHciName').attr("style","display: none");
+        }
+        if(  $('#isFile').val()!=''){
+            $('#delete').attr("style","display: inline-block;margin-left: 20px");
+            $('#isDelete').val('Y');
+        }
+      doPrint();
+    });
+    var doPrint = function () {
+        $('a').prop('disabled',true);
+        window.print();
+        window.close();
+    }
+
+</script>
+
+</>
