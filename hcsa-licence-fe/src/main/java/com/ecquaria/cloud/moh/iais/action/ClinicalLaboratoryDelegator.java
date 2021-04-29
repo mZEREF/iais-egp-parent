@@ -902,19 +902,37 @@ public class ClinicalLaboratoryDelegator {
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
                         if(!IaisCommonUtils.isEmpty(specialtyList)){
-                            specialtyStr = String.join(",",specialtyList);
+                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
+                            for(String value:specialtyList){
+                                if(!StringUtil.isEmpty(value)){
+                                    notNullList.add(value);
+                                }
+                            }
+                            specialtyStr = String.join(",",notNullList);
                         }
                         appSvcCgoDto.setSpeciality(specialtyStr);
 
                         List<String> subSpecialtyList = professionalResponseDto.getSubspecialty();
                         if(!IaisCommonUtils.isEmpty(subSpecialtyList)){
-                            subSpecialtyStr = String.join(",",subSpecialtyList);
+                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
+                            for(String value:subSpecialtyList){
+                                if(!StringUtil.isEmpty(value)){
+                                    notNullList.add(value);
+                                }
+                            }
+                            subSpecialtyStr = String.join(",",notNullList);
                         }
                         appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
 
                         List<String> qualificationList = professionalResponseDto.getQualification();
                         if(!IaisCommonUtils.isEmpty(qualificationList)){
-                            qualificationStr = String.join(",",qualificationList);
+                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
+                            for(String value:qualificationList){
+                                if(!StringUtil.isEmpty(value)){
+                                    notNullList.add(value);
+                                }
+                            }
+                            qualificationStr = String.join(",",notNullList);
                         }
                         appSvcCgoDto.setQualification(qualificationStr);
                     }else{
