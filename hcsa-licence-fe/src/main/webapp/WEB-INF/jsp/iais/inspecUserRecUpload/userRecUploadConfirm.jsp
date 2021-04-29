@@ -34,7 +34,7 @@
               <div class="intranet-content">
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
-                    <div class="table-gp table-responsive">
+                    <div class="table-responsive">
                       <table class="table">
                         <thead>
                         <tr align="center">
@@ -98,7 +98,7 @@
                       </div>
                     </div>
                     <iais:row>
-                      <div class="col-sm-7 col-md-6 col-xs-10" style="">
+                      <div class="col-sm-7 col-md-6 col-xs-10 table-responsive">
                         <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
                         <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
                         <span class="error-msg"><c:out value="${inspecUserRecUploadDto.remarksMsg}"></c:out></span>

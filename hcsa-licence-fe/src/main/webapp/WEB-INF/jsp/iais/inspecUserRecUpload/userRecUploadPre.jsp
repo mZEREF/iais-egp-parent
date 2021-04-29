@@ -40,7 +40,7 @@
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
                     <span class="error-msg" name="iaisErrorMsg" id="error_subFlag"></span>
-                    <div class="table-gp">
+                    <div class="table-responsive">
                       <table class="table">
                         <thead>
                         <tr align="center">
