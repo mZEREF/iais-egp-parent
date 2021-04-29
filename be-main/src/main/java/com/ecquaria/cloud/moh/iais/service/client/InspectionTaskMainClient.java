@@ -19,6 +19,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -114,4 +116,10 @@ public interface InspectionTaskMainClient {
     @PostMapping(path = "/application-be/RescomDtoStorage",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRecommendationDto> saveAppRecom(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
+
+    @PostMapping(value = "/iais-inspection/dash-task-me")
+    FeignResponseEntity<SearchResult<DashAssignMeQueryDto>> searchDashAssignMeResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-task-me/drop")
+    FeignResponseEntity<SearchResult<DashAssignMeAjaxQueryDto>> searchDashAssignMeAjaxResult(@RequestBody SearchParam searchParam);
 }
