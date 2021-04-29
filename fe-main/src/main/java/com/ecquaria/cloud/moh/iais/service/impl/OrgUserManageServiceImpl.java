@@ -493,31 +493,36 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                     JSONArray licences = object.getJSONArray("licences");
                     if (Optional.ofNullable(licences).isPresent()){
                         for (int i = 0; i < licences.length(); i++) {
-                            JSONObject licence = licences.getJSONObject(i);
-                            JSONObject acraLicensee = licence.getJSONObject("licensee");
-                            String nric = acraLicensee.getJSONObject("id-no").getString("value");
-                            if (user.getIdentityNo().equals(nric)){
-                                log.info("writeInfoFromEDH START................. {}", nric);
-                                String licenseeName = acraLicensee.getJSONObject("name").getString("value");
-                                user.setDisplayName(licenseeName);
-                                break;
+                            JSONObject licence = licences.optJSONObject(i);
+                            if (Optional.ofNullable(licence).isPresent()){
+                                JSONObject acraLicensee = licence.optJSONObject("licensee");
+                                String nric = acraLicensee.optJSONObject("id-no").getString("value");
+                                if (user.getIdentityNo().equals(nric)){
+                                    log.info("writeInfoFromEDH START................. {}", nric);
+                                    String licenseeName = acraLicensee.optJSONObject("name").getString("value");
+                                    user.setDisplayName(licenseeName);
+                                    break;
+                                }
                             }
+
                         }
                     }
 
                     JSONArray appointments = object.getJSONArray("appointments");
                     if (Optional.ofNullable(appointments).isPresent()){
                         for (int i = 0; i < appointments.length(); i++) {
-                            JSONObject appointment = appointments.getJSONObject(i);
-                            JSONObject appointedPerson = appointment.getJSONObject("appointed-person");
-                            if (Optional.ofNullable(appointedPerson).isPresent()){
-                                JSONObject idNo = appointedPerson.getJSONObject("id-no");
-                                if (Optional.ofNullable(idNo).isPresent()){
-                                    String ido = idNo.getString("value");
-                                    if (user.getIdNumber().equals(ido)){
-                                        log.info("========>>>>>>>>> key appointment true");
-                                        user.setKeyAppointment(true);
-                                        break;
+                            JSONObject appointment = appointments.optJSONObject(i);
+                            if (Optional.ofNullable(appointment).isPresent()){
+                                JSONObject aptPerson = appointment.optJSONObject("appointed-person");
+                                if (Optional.ofNullable(aptPerson).isPresent()){
+                                    JSONObject idNo = aptPerson.optJSONObject("id-no");
+                                    if (Optional.ofNullable(idNo).isPresent()){
+                                        String ido = idNo.getString("value");
+                                        if (user.getIdentityNo().equals(ido)){
+                                            log.info("========>>>>>>>>> key appointment true");
+                                            user.setKeyAppointment(true);
+                                            break;
+                                        }
                                     }
                                 }
                             }
