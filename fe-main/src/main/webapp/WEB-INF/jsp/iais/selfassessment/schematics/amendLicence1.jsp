@@ -1,7 +1,7 @@
 <div class="form-check-gp">
     <p class="form-check-title">Please select an option:</p>
 
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence1_1"
                type="radio" name="amendLicenceType1"
                aria-invalid="false">
@@ -10,7 +10,7 @@
             <span style="font-weight: bold;">Add subsumed service(s), service subcategory(ies)</span>
         </label>
     </div>
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence1_2"
                type="radio" name="amendLicenceType1"
                aria-invalid="false">

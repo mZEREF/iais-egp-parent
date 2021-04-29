@@ -18,9 +18,9 @@
                     <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
                             <div class="swiper-slide"><a href="#tabInbox" aria-controls="tabInbox" role="tab"
-                                                         data-toggle="tab">Inbox (${unreadAndresponseNum})</a></div>
+                                                         data-toggle="tab" onclick="licToAppPage()">Inbox (${unreadAndresponseNum})</a></div>
                             <div class="swiper-slide"><a href="#tabApp" aria-controls="tabApplication" role="tab"
-                                                         data-toggle="tab">Applications</a></div>
+                                                         data-toggle="tab" onclick="licToAppPage()">Applications</a></div>
                             <div class="swiper-slide"><a href="#tabLic" aria-controls="tabLicence" role="tab"
                                                          data-toggle="tab">Licences</a></div>
                         </div>

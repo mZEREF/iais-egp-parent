@@ -50,10 +50,12 @@
     }
 
     function appToMsgPage() {
+        showWaiting();
         submit("appToMsg");
     }
 
     function appToLicPage() {
+        showWaiting();
         submit("appToLic");
     }
 
@@ -62,6 +64,7 @@
     }
 
     function doSearchApp() {
+        showWaiting();
         submit("appSearch");
     }
 
