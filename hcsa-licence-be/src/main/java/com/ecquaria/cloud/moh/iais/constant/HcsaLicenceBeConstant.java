@@ -37,4 +37,7 @@ public class HcsaLicenceBeConstant {
     public static final String SESSION_ROLEIDS_FOR_AUDIT = "roleIdsForAudit";
     public static final String SESSION_ROLEIDS_FOR_AUDIT_SELECT = "roleIdsForAuditSelect";
     public static final String REQUEST_FOR_ACK_CODE = "RSMVerisonChanged";
+
+    public static final String SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE = "specialServiceForChecklistDecide";
+    public static final String SPECIAL_SERVICE_FOR_CHECKLIST_DTOS = "specialServiceForChecklistDecideDtos";
 }
