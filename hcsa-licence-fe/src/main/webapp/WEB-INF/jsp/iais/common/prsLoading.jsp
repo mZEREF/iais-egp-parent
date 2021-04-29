@@ -74,15 +74,15 @@
     }
 
     var loading = function (dataArr,$loadingContent,labelClass) {
-        if(dataArr != null && dataArr != undefined){
-            var displayVal = "";
+        var displayVal = "";
+        if(dataArr != null && dataArr != undefined && dataArr != ''){
             $.each(dataArr,function (k,v) {
                 displayVal = displayVal + v + ',';
             });
             var endLength = displayVal.length-1;
             displayVal = displayVal.substring(0,endLength);
-            $loadingContent.find('.'+labelClass).html(displayVal);
         }
+        $loadingContent.find('.'+labelClass).html(displayVal);
     }
 
 
