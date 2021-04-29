@@ -21,9 +21,9 @@
                             <div class="swiper-slide"><a href="#tabInbox" aria-controls="tabInbox" role="tab"
                                                          data-toggle="tab">Inbox (${unreadAndresponseNum})</a></div>
                             <div class="swiper-slide"><a href="#tabApp" aria-controls="tabApplication" role="tab"
-                                                         data-toggle="tab">Applications</a></div>
+                                                         data-toggle="tab" onclick="msgToAppPage()">Applications</a></div>
                             <div class="swiper-slide"><a href="#tabLic" aria-controls="tabLicence" role="tab"
-                                                         data-toggle="tab">Licences</a></div>
+                                                         data-toggle="tab" onclick="msgToLicPage()">Licences</a></div>
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
