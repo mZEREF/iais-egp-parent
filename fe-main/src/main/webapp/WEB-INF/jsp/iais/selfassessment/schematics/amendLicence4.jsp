@@ -1,7 +1,7 @@
 <div class="form-check-gp">
     <p class="form-check-title">Please select an option:</p>
 
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence4_1"
                type="radio" name="amendLicenceType4"
                aria-invalid="false">
@@ -10,7 +10,7 @@
             <span class="left-content">Add/Remove personnel</span>
         </label>
     </div>
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence4_2"
                type="radio" name="amendLicenceType4"
                aria-invalid="false">

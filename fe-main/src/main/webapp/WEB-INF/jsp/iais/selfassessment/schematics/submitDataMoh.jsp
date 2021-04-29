@@ -1,6 +1,6 @@
 <div class="form-check-gp">
     <p class="form-check-title">Please select the type of data that you will be submitting:</p>
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="submitDateMohLab"
                type="radio" name="amendLicenceType"
                aria-invalid="false">
