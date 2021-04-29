@@ -46,8 +46,8 @@
                         <tr align="center">
                           <th>No</th>
                           <th>NC Clause</th>
-                          <th>Checklist Question</th>
-                          <th>Remarks</th>
+                          <th>Findings/Non-Compliances</th>
+                          <th>Action Required</th>
                           <th>Actions</th>
                           <th>Rectification Uploaded?</th>
                         </tr>
@@ -69,10 +69,10 @@
                                 <td><iais:code code="${feRecNc.checkQuestion}"/></td>
                                 <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
                                 <td><c:out value="N/A"/>
-                                </c:if>
-                                <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
-                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/>
-                                </c:if>
+                                  </c:if>
+                                  <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
+                                <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/>
+                                  </c:if>
                                 </td>
                                 <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
                                   <td>

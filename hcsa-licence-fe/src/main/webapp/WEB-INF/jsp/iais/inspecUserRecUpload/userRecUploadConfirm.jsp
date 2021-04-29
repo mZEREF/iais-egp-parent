@@ -34,13 +34,13 @@
               <div class="intranet-content">
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
-                    <div class="table-gp">
+                    <div class="table-gp table-responsive">
                       <table class="table">
                         <thead>
                         <tr align="center">
                           <th>NC Clause</th>
-                          <th>Checklist Question</th>
-                          <th>Remarks</th>
+                          <th>Findings/Non-Compliances</th>
+                          <th>Action Required</th>
                         </tr>
                         </thead>
                         <tbody>
