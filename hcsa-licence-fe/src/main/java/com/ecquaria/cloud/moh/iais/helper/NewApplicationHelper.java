@@ -3288,11 +3288,16 @@ public class NewApplicationHelper {
                 if(!StringUtil.isEmpty(speciality)){
                     person.setSpeciality(speciality);
                 }
-                if(!StringUtil.isEmpty(specialityOther)){
-                    person.setSpecialityOther(specialityOther);
-                }
                 if(!StringUtil.isEmpty(subSpeciality)){
                     person.setSubSpeciality(subSpeciality);
+                }
+                String qualification = selPerson.getQualification();
+                if(!StringUtil.isEmpty(qualification)){
+                    person.setQualification(qualification);
+                }
+                String otherQualification = selPerson.getOtherQualification();
+                if(!StringUtil.isEmpty(otherQualification)){
+                    person.setOtherQualification(otherQualification);
                 }
                 //set lic person info
                 person.setLicPerson(selPerson.isLicPerson());
