@@ -226,6 +226,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile");
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
         bpc.getSession().removeAttribute("pageShowFiles");
+        bpc.getSession().removeAttribute("appPremiseMiscDto");
         bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         //set upload file config
