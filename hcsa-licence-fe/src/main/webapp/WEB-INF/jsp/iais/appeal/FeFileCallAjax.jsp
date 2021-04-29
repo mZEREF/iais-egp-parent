@@ -97,6 +97,7 @@
         $("#reloadIndex").val(-1);
         $("#fileAppendId").val("");
         $("#uploadFormId").val("");
+        dismissWaiting();
     }
 
     function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
