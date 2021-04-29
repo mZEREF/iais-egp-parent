@@ -463,7 +463,7 @@ public class MohIntranetUserDelegator {
              ) {
             assignRoleOptionFull.remove(e.getKey());
         }
-        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByValue(assignRoleOptionFull));//Professional Screening  - Nursing Home
         ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", sortByKey(roleNameAndIdMap));
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
@@ -490,6 +490,13 @@ public class MohIntranetUserDelegator {
         Map<String, String> result = new LinkedHashMap<>(map.size());
         map.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+    private Map<String, String> sortByValue(Map<String, String> map) {
+        Map<String, String> result = new LinkedHashMap<>(map.size());
+        map.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
                 .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
