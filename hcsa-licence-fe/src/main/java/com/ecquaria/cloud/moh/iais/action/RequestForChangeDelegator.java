@@ -700,6 +700,8 @@ public class RequestForChangeDelegator {
             }else{
                 maxFileIndex ++;
             }
+            String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+            ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
             ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         }else{
             action = "error";

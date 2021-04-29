@@ -55,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +107,8 @@ public class ClinicalLaboratoryDelegator {
     private ValidateVehicle validateVehicle;
     @Autowired
     private ValidateClincalDirector validateClincalDirector;
+    @Autowired
+    private ValidateCharges validateCharges;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     @Value("${iais.hmac.keyId}")
@@ -1990,6 +1993,15 @@ public class ClinicalLaboratoryDelegator {
         setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
 
         log.debug(StringUtil.changeForLog("doCharges end ..."));
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        Map<String,String> map=new HashMap<>(8);
+        if("next".equals(crud_action_type)){
+            validateCharges.doValidateCharges(map,appSvcClinicalDirectorDto);
+        }
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CHARGES);
+        }
     }
     //=============================================================================
     //private method

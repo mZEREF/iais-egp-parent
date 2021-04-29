@@ -117,9 +117,6 @@
               <div id="${pageShowFileDto.fileMapId}">
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
                   ${pageShowFileDto.fileName}
-                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
-                Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
-              ReUpload</button>
               </div>
 
             </c:forEach>

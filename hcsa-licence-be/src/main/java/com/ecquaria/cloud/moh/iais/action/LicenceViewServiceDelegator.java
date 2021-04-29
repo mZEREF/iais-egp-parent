@@ -1560,11 +1560,32 @@ public class LicenceViewServiceDelegator {
         if(appSvcDocDtoLit==null){
             return;
         }
-        for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
-            String personType = appSvcDocDto.getPersonType();
-            String svcDocId = appSvcDocDto.getSvcDocId();
-            Integer personTypeNum = appSvcDocDto.getPersonTypeNum();
-            docDealWith(multipleSvcDoc,appSvcDocDto,personType+svcDocId+":"+personTypeNum);
+        ListIterator<AppSvcDocDto> iterator = appSvcDocDtoLit.listIterator();
+        while (iterator.hasNext()){
+            AppSvcDocDto next = iterator.next();
+            String personType = next.getPersonType();
+            int i = checkPersonType(personType);
+            String svcDocId = next.getSvcDocId();
+            Integer personTypeNum = next.getPersonTypeNum();
+            if(1==i){
+                String appGrpPersonId = next.getAppGrpPersonId();
+                if(appGrpPersonId==null){
+                    log.error("this have error file ,need to remove----> "+next);
+                    iterator.remove();
+                }else {
+                    docDealWith(multipleSvcDoc,next,personType+svcDocId+":"+personTypeNum);
+                }
+            }else if(2==i){
+                String appSvcPersonId = next.getAppSvcPersonId();
+                if(appSvcPersonId==null){
+                    log.error("this have error file ,need to remove----> "+next);
+                    iterator.remove();
+                }else {
+                    docDealWith(multipleSvcDoc,next,personType+svcDocId+":"+personTypeNum);
+                }
+            }else {
+                docDealWith(multipleSvcDoc,next,personType+svcDocId+":"+personTypeNum);
+            }
         }
     }
     private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
@@ -2565,5 +2586,18 @@ public class LicenceViewServiceDelegator {
         AppSvcClinicalDirectorDto appSvcClinicalDirectorDto=new AppSvcClinicalDirectorDto();
 
         return appSvcClinicalDirectorDto;
+    }
+
+    private int checkPersonType(String type){
+        switch (type){
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                return 1;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
+                return 2;
+            default:return -1;
+        }
     }
 }
