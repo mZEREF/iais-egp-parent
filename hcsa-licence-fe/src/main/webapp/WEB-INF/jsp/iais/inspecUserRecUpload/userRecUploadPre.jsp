@@ -46,7 +46,7 @@
                         <tr align="center">
                           <th>No</th>
                           <th>NC Clause</th>
-                          <th>Findings/Non-Compliances</th>
+                          <th>Checklist Question</th>
                           <th>Action Required</th>
                           <th>Actions</th>
                           <th>Rectification Uploaded?</th>
