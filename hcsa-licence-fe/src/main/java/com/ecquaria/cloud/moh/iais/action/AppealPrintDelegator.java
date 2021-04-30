@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
@@ -60,6 +61,9 @@ public class AppealPrintDelegator {
             if (withdrawnDto != null){
                 String withdrawnReason = withdrawnDto.getWithdrawnReason();
                 String codeDesc = MasterCodeUtil.getCodeDesc(withdrawnReason);
+                if (StringUtil.isEmpty(codeDesc)){
+                    codeDesc = withdrawnReason;
+                }
                 withdrawnDto.setWithdrawnReason(codeDesc);
                 ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
             }
