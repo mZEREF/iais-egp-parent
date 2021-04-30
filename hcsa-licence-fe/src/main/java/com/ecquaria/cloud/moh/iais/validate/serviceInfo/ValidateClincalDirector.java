@@ -2,12 +2,14 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.Map;
  * @date 2021/4/25 14:39
  */
 @Component
+@Slf4j
 public class ValidateClincalDirector implements ValidateFlow {
     @Override
     public void doValidateClincalDirector(Map<String, String> map, List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos) {
@@ -179,5 +182,6 @@ public class ValidateClincalDirector implements ValidateFlow {
                 stringList.add(stringBuilder.toString());
             }
         }
+        log.info(StringUtil.changeForLog("=====>ValidateClincalDirector-->"+ JsonUtil.parseToJson(map)));
     }
 }

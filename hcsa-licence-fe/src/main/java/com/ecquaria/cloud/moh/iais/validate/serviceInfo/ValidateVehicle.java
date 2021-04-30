@@ -1,11 +1,15 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,7 +21,10 @@ import java.util.Map;
  * @date 2021/4/25 14:06
  */
 @Component
+@Slf4j
 public class ValidateVehicle implements ValidateFlow {
+    @Autowired
+    private HcsaLicenClient hcsaLicenClient;
     @Override
     public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos) {
         if(appSvcVehicleDtos==null){
@@ -43,6 +50,9 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName" + i, general_err0041);
                 } else if(! VehNoValidator.validateNumber(vehicleName)){
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
+                }else {
+                    //validate  vehicle number used
+
                 }
             }
 
@@ -66,5 +76,6 @@ public class ValidateVehicle implements ValidateFlow {
                 }
             }
         }
+        log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
     }
 }

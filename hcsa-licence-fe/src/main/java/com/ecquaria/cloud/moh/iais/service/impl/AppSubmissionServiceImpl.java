@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -98,6 +99,9 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
+import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
+import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +148,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private AppEicClient appEicClient;
     @Autowired
     private ComFileRepoClient comFileRepoClient;
-
+    @Autowired
+    private ValidateCharges validateCharges;
+    @Autowired
+    private ValidateVehicle validateVehicle;
+    @Autowired
+    private ValidateClincalDirector validateClincalDirector;
     @Override
     public int hashCode() {
         return super.hashCode();
@@ -1687,10 +1696,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
                 validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList),errorMap,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,mandatoryCount,serviceId,sB);
             }else if(ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)){
-
-
+                AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
+                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
             }else if(ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)){
-
+                AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
+                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
@@ -1750,6 +1760,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.info(sB.toString());
 
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
+        validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
+
+        validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList());
+
+        validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList());
 
         return errorMap;
     }
