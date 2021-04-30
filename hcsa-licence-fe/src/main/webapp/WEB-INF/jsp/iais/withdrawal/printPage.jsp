@@ -33,7 +33,7 @@
                             <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
                             <div class="row">
                                 <div class="col-md-7">
-                                    <c:if test="${empty withdrawDtoView.withdrawnReason}">
+                                    <c:if test="${!empty withdrawDtoView.withdrawnReason}">
                                         <iais:select name="withdrawalReason" firstOption="${withdrawDtoView.withdrawnReason}"/>
                                     </c:if>
                                 </div>
@@ -41,7 +41,8 @@
                         </div>
 
                         <div id="reason"
-                             <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
+                             <c:if test="${withdrawDtoView.withdrawnReason == null
+                             || withdrawDtoView.withdrawnReason != 'Others'}">hidden</c:if>>
                             <div class="row">
                                 <div class="center-content">
                                     <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
@@ -51,7 +52,7 @@
                                 <div class="center-content">
                                     <div class="col-md-6">
                                         <div class="file-upload-gp">
-                                    <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
+                                    <textarea name="withdrawnRemarks" cols="90" rows="10" id="withdrawnRemarks"
                                               title="content"
                                               maxlength="500">${withdrawDtoView.withdrawnRemarks}</textarea>
                                         </div>
