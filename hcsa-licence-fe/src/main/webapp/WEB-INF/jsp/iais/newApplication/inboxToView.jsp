@@ -39,15 +39,15 @@
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="crud_action_type_tab" value="">
-        <div style="font-size: 16px">
-            <p class="print" style="margin-left: 75%">
-                <a onclick="printRLPDF()"><em class="fa fa-print"></em>Print</a>
-            </p>
-        </div>
         <div class="main-content">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
+                        <div style="font-size: 16px;margin-left: 89%;padding-bottom: 1%">
+                            <p class="print">
+                                <a onclick="printRLPDF()"><em class="fa fa-print"></em>Print</a>
+                            </p>
+                        </div>
                         <div class="tab-gp steps-tab">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="previewTab" role="tabpanel">
