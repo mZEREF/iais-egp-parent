@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -548,5 +549,26 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             poolRoleCheckDto.setRoleOptions(roleOptions);
         }
         return poolRoleCheckDto;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashAssignMe")
+    public SearchResult<DashAssignMeQueryDto> getDashAssignMeResult(SearchParam searchParam) {
+        return inspectionTaskMainClient.searchDashAssignMeResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashAssignMeQueryDto> getDashAssignMeOtherData(SearchResult<DashAssignMeQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashAssignMeQueryDto dashAssignMeQueryDto : searchResult.getRows()) {
+            if (1 == dashAssignMeQueryDto.getAppCount()) {
+                dashAssignMeQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashAssignMeQueryDto.getAppCount()) {
+                dashAssignMeQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashAssignMeQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
     }
 }

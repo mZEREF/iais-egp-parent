@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -56,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardSupportService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
@@ -126,6 +128,9 @@ public class MohHcsaBeDashboardDelegator {
     @Autowired
     private LicenceClient licenceClient;
 
+    @Autowired
+    private InspectionMainService inspectionService;
+
     /**
      * StartStep: hcsaBeDashboardStart
      *
@@ -136,14 +141,21 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, "dashActionValue", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
+        String backFlag = ParamUtil.getRequestString(bpc.request, "dashProcessBack");
+        if(!AppConsts.YES.equals(backFlag)) {
+            ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", null);
+            ParamUtil.setRequestAttr(bpc.request, "appTypeOption", null);
+            ParamUtil.setRequestAttr(bpc.request, "appStatusOption", null);
+            ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
+            ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
+            ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
+            ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
+            ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", null);
+            ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", null);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, "dashProcessBackFlag", backFlag);
+        }
         ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", null);
-        ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", null);
     }
 
     /**
@@ -154,15 +166,21 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardInit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInit start ...."));
+        String backFlag = (String)ParamUtil.getRequestAttr(bpc.request, "dashProcessBackFlag");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_INTRANET_DASHBOARD);
         //set role list and current role
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(loginContext != null) {
-            List<String> roleList = loginContext.getRoleIds();
-            PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
-            poolRoleCheckDto = mohHcsaBeDashboardService.getDashRoleOption(loginContext, poolRoleCheckDto);
-            ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", (Serializable) roleList);
-            ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", poolRoleCheckDto);
+        if(!AppConsts.YES.equals(backFlag)) {
+            if (loginContext != null) {
+                List<String> roleList = loginContext.getRoleIds();
+                PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
+                poolRoleCheckDto = mohHcsaBeDashboardService.getDashRoleOption(loginContext, poolRoleCheckDto);
+                ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", (Serializable) roleList);
+                ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", poolRoleCheckDto);
+            }
+            ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, "dashProcessBackFlag", backFlag);
         }
     }
 
@@ -174,7 +192,43 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardInitPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInitPre start ...."));
-
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String backFlag = (String)ParamUtil.getRequestAttr(bpc.request, "dashProcessBackFlag");
+        if(!AppConsts.YES.equals(backFlag)) {
+            if (loginContext != null) {
+                SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
+                //get appType option
+                List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
+                //get app status option
+                List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+                //set app status and search filter
+                if (RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3_LEAD.equals(loginContext.getCurRoleId())) {
+                    String application_status = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    searchParam.addFilter("application_status", application_status, true);
+                    ParamUtil.setSessionAttr(bpc.request, "application_status", application_status);
+                }
+                //set filter by login info
+                //role
+                String curRoleId = loginContext.getCurRoleId();
+                if(!StringUtil.isEmpty(curRoleId)) {
+                    searchParam.addFilter("dashRoleId", curRoleId, true);
+                }
+                //user uuid
+                String userId = loginContext.getUserId();
+                if(!StringUtil.isEmpty(userId)) {
+                    searchParam.addFilter("dashUserId", userId, true);
+                }
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+                SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
+                //set session
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+                ParamUtil.setRequestAttr(bpc.request, "appTypeOption", appTypeOption);
+                ParamUtil.setRequestAttr(bpc.request, "appStatusOption", appStatusOption);
+                ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
+            }
+        }
     }
 
     /**
@@ -663,6 +717,25 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaBeDashboardAssignToMe(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardAssignToMe start ...."));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext != null) {
+            SearchParam searchParam = getSearchParam(bpc);
+            //role
+            String curRoleId = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(curRoleId)) {
+                searchParam.addFilter("dashRoleId", curRoleId, true);
+            }
+            //user uuid
+            String userId = loginContext.getUserId();
+            if(!StringUtil.isEmpty(userId)) {
+                searchParam.addFilter("dashUserId", userId, true);
+            }
+            //set form value
+            searchParam = setFilterByDashForm(searchParam, bpc.request, BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME, loginContext);
+            //set session
+            ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+            ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
+        }
     }
 
     /**
@@ -687,6 +760,11 @@ public class MohHcsaBeDashboardDelegator {
             QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
             SearchResult<DashKpiPoolQuery> searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
+            ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(dashSwitchActionValue)) {
+            QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+            SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
+            searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
         }
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
