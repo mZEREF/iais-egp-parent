@@ -107,10 +107,8 @@ public class NetsSysToSysController {
             log.error(e.getMessage(),e);
         }
         String eNetsStatus="1";
-        if(header.equals(generatedHmac)){
-            if(txnResObj!=null&&txnResObj.getMsg()!=null){
-                eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
-            }
+        if(txnResObj!=null&&txnResObj.getMsg()!=null&&header.equals(generatedHmac)){
+            eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
         }
         String appGrpNo= reqNo;
         try {
