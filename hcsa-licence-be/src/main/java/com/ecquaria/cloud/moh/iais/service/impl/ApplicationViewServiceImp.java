@@ -190,10 +190,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     if(appGrpPersonId!=null || appSvcPersonId!=null){
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
-                            map.put(appGrpPersonId,i.get());
-                            i.getAndIncrement();
-                        }else {
                             map.put(appGrpPersonId,1);
+                        }else {
+                            i.getAndIncrement();
+                            map.put(appGrpPersonId,i.get());
                         }
                         map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
                     }
