@@ -182,20 +182,26 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            AtomicInteger i=new AtomicInteger(1);
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
                     String appGrpPersonId = v.getAppGrpPersonId();
                     String appSvcPersonId = v.getAppSvcPersonId();
-                    if(appGrpPersonId!=null || appSvcPersonId!=null){
+                    if(appGrpPersonId!=null ){
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
                             map.put(appGrpPersonId,1);
                         }else {
-                            i.getAndIncrement();
-                            map.put(appGrpPersonId,i.get());
+                            map.put(appGrpPersonId,integer);
                         }
                         map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
+                    }else if(appSvcPersonId!=null){
+                        Integer integer = map.get(appSvcPersonId);
+                        if(integer==null){
+                            map.put(appSvcPersonId,1);
+                        }else {
+                            map.put(appSvcPersonId,integer);
+                        }
+                        map1.put(v.getSvcDocId(),map.get(appSvcPersonId));
                     }
                 });
             }
