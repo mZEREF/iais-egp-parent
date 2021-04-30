@@ -256,7 +256,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
-		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
+		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 		String txnRes= (String) ParamUtil.getSessionAttr(request,"message");
 		String header= (String) ParamUtil.getSessionAttr(request,"header");
 		String generatedHmac= null;
