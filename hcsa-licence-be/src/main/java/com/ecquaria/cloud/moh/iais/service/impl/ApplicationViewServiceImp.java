@@ -190,7 +190,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
                             map.put(appGrpPersonId,1);
-                        }else {
+                        }else {integer=integer++;
                             map.put(appGrpPersonId,integer);
                         }
                         map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
@@ -198,7 +198,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         Integer integer = map.get(appSvcPersonId);
                         if(integer==null){
                             map.put(appSvcPersonId,1);
-                        }else {
+                        }else {integer=integer++;
                             map.put(appSvcPersonId,integer);
                         }
                         map1.put(v.getSvcDocId(),map.get(appSvcPersonId));
