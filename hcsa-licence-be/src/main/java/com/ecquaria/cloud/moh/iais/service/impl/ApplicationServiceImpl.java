@@ -474,6 +474,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
             templateContent.put("tatTime", inspDate);
+            templateContent.put("inspDate", inspDate);
             templateContent.put("reminderDate", today);
             templateContent.put("systemLink", loginUrl);
             templateContent.put("officer_name", "officer_name");
