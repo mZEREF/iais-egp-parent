@@ -268,7 +268,7 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-                                <c:if test="${specLicInfo !=null}">
+                                <c:if test="${specLicInfoPrint !=null}">
                                     <div class="table-responsive">
                                         <div><h4>The following specified healthcare services will also be ceased as
                                             their
@@ -287,7 +287,7 @@
                                                 </th>
                                                 <th style="text-align:center;width: 25%">Base Service Name</th>
                                             </tr>
-                                            <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
+                                            <c:forEach items="${specLicInfoPrint}" var="spec" varStatus="index">
                                                 <tr style="text-align:center">
                                                     <td>
                                                         <p><c:out value="${index.count}"/></p>
