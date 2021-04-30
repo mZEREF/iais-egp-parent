@@ -190,18 +190,18 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
                             map.put(appGrpPersonId,1);
-                        }else {integer=integer++;
+                        }else {integer=++integer;
                             map.put(appGrpPersonId,integer);
                         }
-                        map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
+                        map1.put(v.getFileRepoId(),map.get(appGrpPersonId));
                     }else if(appSvcPersonId!=null){
                         Integer integer = map.get(appSvcPersonId);
                         if(integer==null){
                             map.put(appSvcPersonId,1);
-                        }else {integer=integer++;
+                        }else {integer=++integer;
                             map.put(appSvcPersonId,integer);
                         }
-                        map1.put(v.getSvcDocId(),map.get(appSvcPersonId));
+                        map1.put(v.getFileRepoId(),map.get(appSvcPersonId));
                     }
                 });
             }
@@ -211,7 +211,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFile()));
+                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFileRepoId()));
                     if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
                         switch (docTitleList.get(j).getDupForPerson()){
                             case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;
