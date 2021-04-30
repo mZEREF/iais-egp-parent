@@ -9,20 +9,20 @@
         <input type="hidden" name="msg_page_action" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 col-xs-12">
                 <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">
                     <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}" firstOption="All" cssClass="inboxType"/>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-5 col-xs-12">
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
                 <div class="col-md-8">
                     <%String inboxService = request.getParameter("inboxService");%>
                     <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}" firstOption="All" cssClass="inboxService"/>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-xs-12">
                 <div class="search-wrap" style="width: 100%">
                     <iais:value>
                         <div class="input-group">
