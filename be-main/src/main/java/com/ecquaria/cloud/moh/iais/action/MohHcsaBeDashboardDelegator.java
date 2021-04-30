@@ -144,8 +144,8 @@ public class MohHcsaBeDashboardDelegator {
         String backFlag = ParamUtil.getRequestString(bpc.request, "dashProcessBack");
         if(!AppConsts.YES.equals(backFlag)) {
             ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", null);
-            ParamUtil.setRequestAttr(bpc.request, "appTypeOption", null);
-            ParamUtil.setRequestAttr(bpc.request, "appStatusOption", null);
+            ParamUtil.setSessionAttr(bpc.request, "appTypeOption", null);
+            ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
             ParamUtil.setSessionAttr(bpc.request, "dashWorkGroupIds", null);
@@ -193,8 +193,8 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInitPre start ...."));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String backFlag = (String)ParamUtil.getRequestAttr(bpc.request, "dashProcessBackFlag");
-        if(loginContext != null&&!AppConsts.YES.equals(backFlag)) {
-
+        if(!AppConsts.YES.equals(backFlag)) {
+            if (loginContext != null) {
                 SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
                 //get appType option
                 List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
@@ -223,10 +223,10 @@ public class MohHcsaBeDashboardDelegator {
                 //set session
                 ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
                 ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-                ParamUtil.setRequestAttr(bpc.request, "appTypeOption", appTypeOption);
-                ParamUtil.setRequestAttr(bpc.request, "appStatusOption", appStatusOption);
+                ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
+                ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
                 ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
-
+            }
         }
     }
 
@@ -718,7 +718,7 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardAssignToMe start ...."));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null) {
-            SearchParam searchParam = getSearchParam(bpc);
+            SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
             //role
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
