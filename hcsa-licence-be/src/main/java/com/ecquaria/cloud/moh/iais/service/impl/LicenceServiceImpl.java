@@ -419,7 +419,7 @@ public class LicenceServiceImpl implements LicenceService {
                                     log.info("Uen Mail Flag {}", individual.getUenMailFlag());
 
                                     if (premisesGroupOptional.isPresent() && individual.getUenMailFlag() == 0){
-                                        PremisesDto premisesDto = premisesGroupOptional.get().getPremisesDto();
+                                        PremisesDto premisesDto = premisesGroupDtos.get(0).getPremisesDto();
                                         log.info("Premises {}", JsonUtil.parseToJson(premisesDto));
                                         //judge licence is singlepass
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();

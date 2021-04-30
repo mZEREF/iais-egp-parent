@@ -74,7 +74,7 @@ public class FeMainEmailHelper {
                 if (IaisCommonUtils.isNotEmpty(licList)){
                     for (LicenseeDto lic : licList){
                         //It has to be solo licensee, The licensee list should have only one record
-                        log.info("SingPass Json Str", JsonUtil.parseToJson(lic));
+                        log.info("SingPass Json Str {}", JsonUtil.parseToJson(lic));
                         if (OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(lic.getLicenseeType())){
                             String licId = lic.getId();
                             String licenseeName = lic.getName();
@@ -90,8 +90,8 @@ public class FeMainEmailHelper {
                                                 String hciName = premises.getHciName();
                                                 String hciAddress = MiscUtil.getAddress(premises.getBlkNo(),premises.getStreetName(),
                                                         premises.getBuildingName(),premises.getFloorNo(),premises.getUnitNo(),premises.getPostalCode());
-                                                hciNameBuilder.append(hciName).append(",");
-                                                hciAddressBuilder.append(hciAddress).append(",");
+                                                hciNameBuilder.append(hciName).append(',');
+                                                hciAddressBuilder.append(hciAddress).append(',');
                                             }
                                         }
                                     }

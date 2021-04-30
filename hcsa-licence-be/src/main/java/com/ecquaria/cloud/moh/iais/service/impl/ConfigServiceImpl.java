@@ -103,9 +103,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private volatile List<HcsaServiceCategoryDto> list;
+    private  List<HcsaServiceCategoryDto> list;
 
-    private volatile   List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+    private  List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();

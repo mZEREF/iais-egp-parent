@@ -57,8 +57,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Autowired
     private FeAdminClient feAdminClient;
 
-    @Autowired
-    private FeMainEmailHelper mainEmailHelper;
+
 
     @Autowired
     private FeUserClient feUserClient;
@@ -473,7 +472,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void setSingPassAutoCeased(String uen, String nricNumber) {
-        boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, false).getEntity();
+        boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, Boolean.FALSE).getEntity();
         if (autoCeased) {
             //send email
             feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nricNumber);
@@ -546,10 +545,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 if (Optional.ofNullable(object).isPresent()){
                     String uen = object.optString("uen");
                     String nric = object.optString("nricNumber");
-                    boolean hasBeenReminder = mainEmailHelper.hasBeenReminder(uen + "_" + nric,
+                    boolean hasBeenReminder = feMainEmailHelper.hasBeenReminder(uen + "_" + nric,
                             FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
                     if (!hasBeenReminder){
-                        mainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+                        feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
                     }
                 }
             }

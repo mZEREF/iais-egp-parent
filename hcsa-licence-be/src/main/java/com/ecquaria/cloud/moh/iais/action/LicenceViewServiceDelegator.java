@@ -1544,13 +1544,13 @@ public class LicenceViewServiceDelegator {
             if(1==i){
                 String appGrpPersonId = next.getAppGrpPersonId();
                 if(appGrpPersonId==null){
-                    log.error("this have error file ,need to remove----> "+next);
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
                     iterator.remove();
                 }
             }else if(2==i){
                 String appSvcPersonId = next.getAppSvcPersonId();
                 if(appSvcPersonId==null){
-                    log.error("this have error file ,need to remove----> "+next);
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
                     iterator.remove();
                 }
             }

@@ -14,7 +14,7 @@
                 <div class="col-xs-12">
                     <br/>
                     <input type="hidden" name="draftNo" value="<iais:mask name="draftNo" value="${AppSubmissionDto.draftNo}"/>" />
-                    <p><strong style="font-size:20px;"><iais:message key="GENERAL_ERR0037" escape="false"/></strong></p>
+                    <p><strong style="font-size:20px;"><iais:message key="NEW_ERR0024" escape="false"/></strong></p>
                     <p>You can click <a id="reSubmit" href="#">here</a> to re-submit</p>
                 </div>
             </div>

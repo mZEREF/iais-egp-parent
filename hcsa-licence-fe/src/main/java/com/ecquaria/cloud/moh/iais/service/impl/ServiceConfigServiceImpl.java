@@ -445,7 +445,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if(!IaisCommonUtils.isEmpty(INPUT_DETAIL)) {
             for (InputDetailDto inputDetailDto : INPUT_DETAIL) {
                 log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail APPGROUPNO :" + inputDetailDto.getAppGroupNo()));
-                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail Dto :" + inputDetailDto.toString()));
+                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail Dto :" + JsonUtil.parseToJson(inputDetailDto)));
                 GiroPaymentDto giroPaymentDto = new GiroPaymentDto();
                 giroPaymentDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
                 giroPaymentDto.setPmtType(ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY);

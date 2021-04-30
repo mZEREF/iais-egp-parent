@@ -84,22 +84,22 @@
           If you have any questions or concerns about this data protection and privacy policy, please contact
        
 
-          <b><br><br>Quality Service Manager<br>
-            Ministry of Health</b><br><br>
+          <strong><br><br>Quality Service Manager<br>
+            Ministry of Health</strong><br><br>
 
           College of Medicine Building<br>
           16 College Road Singapore 169854<br>
           <table>
             <tbody><tr>
-              <td style="border: 0px solid white" width="60px"><b>Email :</b></td><td style="border: 0px solid white">
+              <td style="border: 0px solid white" width="60px"><strong>Email :</strong></td><td style="border: 0px solid white">
             </td><td style="border: 0px solid white"><a href="mailto:MOH_INFO@moh.gov.sg" tabindex="71">MOH_INFO@moh.gov.sg</a></td><td style="border: 0px solid white">
             </td></tr><tr>
             </tr><tr>
-              <td style="border: 0px solid white"><b>Tel :</b></td><td style="border: 0px solid white">
+              <td style="border: 0px solid white"><strong>Tel :</strong></td><td style="border: 0px solid white">
             </td><td style="border: 0px solid white">1800-225 4122</td><td style="border: 0px solid white">
             </td></tr><tr>
             </tr><tr>
-              <td style="border: 0px solid white"><b>Fax :</b></td><td style="border: 0px solid white">
+              <td style="border: 0px solid white"><strong>Fax :</strong></td><td style="border: 0px solid white">
             </td><td style="border: 0px solid white">62241677</td><td style="border: 0px solid white">
             </td></tr><tr>
             </tr></tbody></table>

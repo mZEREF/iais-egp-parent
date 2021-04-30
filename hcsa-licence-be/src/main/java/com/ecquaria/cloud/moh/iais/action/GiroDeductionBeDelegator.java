@@ -299,6 +299,7 @@ public class GiroDeductionBeDelegator {
         Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         List<String> list=new ArrayList<>(HEADERS.length);
+        String errMsg=MessageUtil.getMessageDesc("GENERAL_ACK020");
         try {
             for(CSVRecord record:parse){
                 for(String v : HEADERS){
@@ -314,17 +315,17 @@ public class GiroDeductionBeDelegator {
                 String payment_status = record.get("Payment Status");
                 payment_status = encryptionPayment(payment_status);
                 if(payment_status.equals(record.get("Payment Status"))){
-                    bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+                    bpc.request.setAttribute("message",errMsg);
                     return;
                 }
                 map.put(s,payment_status);
             }
         }catch (Exception e){
-            bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+            bpc.request.setAttribute("message",errMsg);
         }
 
         if(!list.equals(Arrays.asList(HEADERS))){
-            bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+            bpc.request.setAttribute("message",errMsg);
             return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();

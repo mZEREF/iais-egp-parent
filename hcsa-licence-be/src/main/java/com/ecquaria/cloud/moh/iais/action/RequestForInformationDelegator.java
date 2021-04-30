@@ -304,7 +304,7 @@ public class RequestForInformationDelegator {
 
         boolean isNeedDoc=false;
         List<LicPremisesReqForInfoDocDto> licPremisesReqForInfoDocDtos=IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(reqType)&&"documents".equals(reqType)&&docTitle!=null) {
+        if(docTitle!=null && !StringUtil.isEmpty(reqType) && "documents".equals(reqType)) {
             isNeedDoc = true;
             int seqNum=1;
             for(String docTi :docTitle){
@@ -318,7 +318,7 @@ public class RequestForInformationDelegator {
             }
         }
         List<LicPremisesReqForInfoReplyDto> licPremisesReqForInfoReplyDtos=IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)&&infoTitle!=null) {
+        if(infoTitle!=null && !StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)) {
 
             for(String infoTi :infoTitle){
                 LicPremisesReqForInfoReplyDto licPremisesReqForInfoReplyDto=new LicPremisesReqForInfoReplyDto();
