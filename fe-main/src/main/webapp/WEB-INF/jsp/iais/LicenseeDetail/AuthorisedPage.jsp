@@ -34,6 +34,12 @@
                     </label>
                 </iais:row>
                 <iais:row>
+                    <iais:field value="ID Type" width="11"/>
+                    <label class="col-xs-11 col-md-4 control-label">
+                        <iais:code code="${feuser.idType}"/>
+                    </label>
+                </iais:row>
+                <iais:row>
                     <iais:field value="ID No." width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
                         <iais:code code="${feuser.identityNo}"/> (<iais:code code="${feuser.idType}"/>)

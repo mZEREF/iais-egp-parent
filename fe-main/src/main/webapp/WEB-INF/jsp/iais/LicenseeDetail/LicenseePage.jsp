@@ -34,7 +34,7 @@
                     <iais:field value="${licensee.uenNo}" width="11"/>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Name of the Company" width="11"/>
+                    <iais:field value="Name of Licensee" width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
                         <iais:code  code="${licensee.name}"/>
                     </label>
@@ -46,12 +46,12 @@
                     </label>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Block / House No." width="11"/>
-                    <iais:field value="${licensee.blkNo}" width="11"/>
+                    <iais:field value="Address Type" width="11"/>
+                    <iais:field value="${licensee.addrType}" width="11"/>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Street Name" width="11"/>
-                    <iais:field value="${licensee.streetName}" width="11"/>
+                    <iais:field value="Block / House No." width="11"/>
+                    <iais:field value="${licensee.blkNo}" width="11"/>
                 </iais:row>
                 <iais:row>
                     <iais:field value="Floor No." width="11"/>
@@ -62,19 +62,22 @@
                     <iais:field value="${licensee.unitNo}" width="11"/>
                 </iais:row>
                 <iais:row>
+                    <iais:field value="Street Name" width="11"/>
+                    <iais:field value="${licensee.streetName}" width="11"/>
+                </iais:row>
+
+
+                <iais:row>
                     <iais:field value="Building Name" width="11"/>
                     <iais:field value="${licensee.buildingName}" width="11"/>
                 </iais:row>
-                <iais:row>
-                    <iais:field value="Address Type" width="11"/>
-                    <iais:field value="${licensee.addrType}" width="11"/>
-                </iais:row>
+
                 <iais:row>
                     <iais:field value="Office Telephone No." width="11"/>
                     <iais:field value="${licensee.getOfficeTelNo()}" width="11"/>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Email Address" width="11"/>
+                    <iais:field value="Office Email Address" width="11"/>
                     <iais:field value="${licensee.getEmilAddr()}" width="11"/>
                 </iais:row>
             </div>
@@ -86,6 +89,12 @@
                     <iais:row>
                         <iais:field value="Name" width="11"/>
                         <iais:field value="${item.getName()}" width="11"/>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="ID Type" width="11"/>
+                        <label class="col-xs-11 col-md-4 control-label">
+                            <iais:code  code="${item.getIdType()}"/>
+                        </label>
                     </iais:row>
                     <iais:row>
                         <iais:field value="ID No." width="11"/>
