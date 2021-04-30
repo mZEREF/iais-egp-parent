@@ -22,6 +22,9 @@ import java.util.Map;
 public class ValidateCharges implements ValidateFlow {
     @Override
     public void doValidateCharges(Map<String, String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto) {
+        if(appSvcClinicalDirectorDto==null){
+            return;
+        }
         List<AppSvcChargesDto> generalChargesDtos = appSvcClinicalDirectorDto.getGeneralChargesDtos();
         doValidateGeneralCharges(map,generalChargesDtos);
         List<AppSvcChargesDto> otherChargesDtos = appSvcClinicalDirectorDto.getOtherChargesDtos();
