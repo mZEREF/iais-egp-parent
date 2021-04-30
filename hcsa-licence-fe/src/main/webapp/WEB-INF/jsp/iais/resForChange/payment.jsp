@@ -55,17 +55,18 @@
                                 <%--<p >--%>
                                     <%--Total amount due: ${dAmount}--%>
                                 <%--</p>--%>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Service</th>
-                                        <th>Application Type</th>
-                                        <th>Application No.</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Application Type</th>
+                                            <th>Application No.</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
                                             <tr>
                                                 <td>
                                                     <p><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>
@@ -80,15 +81,16 @@
                                                     <p><c:out value="${appSubmissionDto.amountStr}"></c:out></p>
                                                 </td>
                                             </tr>
-                                    </c:forEach>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td><p>Total amount due:</p></td>
-                                        <td><p><strong> <c:out value="${dAmount}"></c:out></strong></p></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                        </c:forEach>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td><p>Total amount due:</p></td>
+                                            <td><p><strong> <c:out value="${dAmount}"></c:out></strong></p></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <c:choose>
                                     <c:when test="${dAmount=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">

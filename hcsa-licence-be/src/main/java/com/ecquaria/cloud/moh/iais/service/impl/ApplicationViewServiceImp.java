@@ -182,20 +182,28 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            AtomicInteger i=new AtomicInteger(1);
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
                     String appGrpPersonId = v.getAppGrpPersonId();
                     String appSvcPersonId = v.getAppSvcPersonId();
-                    if(appGrpPersonId!=null || appSvcPersonId!=null){
+                    if(appGrpPersonId!=null ){
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
-                            map.put(appGrpPersonId,i.get());
-                            i.getAndIncrement();
-                        }else {
                             map.put(appGrpPersonId,1);
+                        }else {
+                            integer=++integer;
+                            map.put(appGrpPersonId,integer);
                         }
-                        map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
+                        map1.put(v.getFileRepoId(),map.get(appGrpPersonId));
+                    }else if(appSvcPersonId!=null){
+                        Integer integer = map.get(appSvcPersonId);
+                        if(integer==null){
+                            map.put(appSvcPersonId,1);
+                        }else {
+                            integer=++integer;
+                            map.put(appSvcPersonId,integer);
+                        }
+                        map1.put(v.getFileRepoId(),map.get(appSvcPersonId));
                     }
                 });
             }
@@ -205,7 +213,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFile()));
+                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFileRepoId()));
                     if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
                         switch (docTitleList.get(j).getDupForPerson()){
                             case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;

@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -33,9 +34,13 @@
           <div class="tab-content">
             <div class="tab-pane active" id="previewTab" role="tabpanel">
               <div class="preview-gp">
-                <div class="row">
-                  <br/><br/><br/>
-                </div>
+                <c:if test="${appeal!='appeal'}">
+                  <div style="font-size: 16px">
+                    <p class="print" style="margin-left: 90%">
+                      <a onclick="printRLPDF()"><em class="fa fa-print"></em>Print</a>
+                    </p>
+                  </div>
+                </c:if>
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -86,7 +91,10 @@
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
-
-
+    function printRLPDF(){
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        window.open(url,'_blank');
+        // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
+    }
 </script>
 

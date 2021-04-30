@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Map;
  * @date 2021/4/29 15:30
  */
 @Component
+@Slf4j
 public class ValidateCharges implements ValidateFlow {
     @Override
     public void doValidateCharges(Map<String, String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto) {
@@ -23,6 +26,8 @@ public class ValidateCharges implements ValidateFlow {
         doValidateGeneralCharges(map,generalChargesDtos);
         List<AppSvcChargesDto> otherChargesDtos = appSvcClinicalDirectorDto.getOtherChargesDtos();
         doValidateOtherCharges(map,otherChargesDtos);
+
+        log.info(StringUtil.changeForLog("====> ValidateCharges->"+ JsonUtil.parseToJson(map)));
     }
     protected void doValidateGeneralCharges(Map<String, String> map,List<AppSvcChargesDto> generalChargesDtos){
         if(generalChargesDtos==null || generalChargesDtos.isEmpty()){
@@ -42,7 +47,7 @@ public class ValidateCharges implements ValidateFlow {
                 if(minAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("minAmount"+i,general_err0041);
-                }else if(minAmount.matches("^[0-9]+$")){
+                }else if(!minAmount.matches("^[0-9]+$")){
                     map.put("minAmount"+i,"GENERAL_ERR0002");
                 }else {
                     flag=true;
@@ -56,14 +61,13 @@ public class ValidateCharges implements ValidateFlow {
                 if(maxAmount.length() > 4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("maxAmount"+i,general_err0041);
-                }else if(maxAmount.matches("^[0-9]+$")){
+                }else if(!maxAmount.matches("^[0-9]+$")){
                     map.put("maxAmount"+i,"GENERAL_ERR0002");
                 }else if(flag) {
                     int min = Integer.parseInt(minAmount);
                     int max = Integer.parseInt(maxAmount);
                     if(min> max){
-
-
+                        map.put("maxAmount"+i,MessageUtil.getMessageDesc("NEW_ERR0027"));
                     }
                 }
             }
@@ -96,7 +100,7 @@ public class ValidateCharges implements ValidateFlow {
                 if(minAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("otherAmountMin"+i,general_err0041);
-                }else if(minAmount.matches("^[0-9]+$")){
+                }else if(!minAmount.matches("^[0-9]+$")){
                     map.put("otherAmountMin"+i,"GENERAL_ERR0002");
                 }else {
                     flag=true;
@@ -109,14 +113,13 @@ public class ValidateCharges implements ValidateFlow {
                 if(maxAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("otherAmountMax"+i,general_err0041);
-                }else if(maxAmount.matches("^[0-9]+$")){
+                }else if(!maxAmount.matches("^[0-9]+$")){
                     map.put("otherAmountMax"+i,"GENERAL_ERR0002");
                 }else if(flag){
                     int min = Integer.parseInt(minAmount);
                     int max = Integer.parseInt(maxAmount);
                     if(min > max){
-
-
+                        map.put("otherAmountMax"+i,MessageUtil.getMessageDesc("maxAmount"));
                     }
                 }
             }
