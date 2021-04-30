@@ -46,7 +46,7 @@
                                         <iais:field value="${organization.getUenNo()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Name of the licensee" width="11"/>
+                                        <iais:field value="Name of Licensee" width="11"/>
                                         <iais:field value="${licensee.getName()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
@@ -58,7 +58,7 @@
                                         <iais:field value="${licensee.getAddrType()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Blk No." width="11"/>
+                                        <iais:field value="Block / House No." width="11"/>
                                         <iais:field value="${licensee.getBlkNo()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
@@ -126,7 +126,7 @@
                                             </label>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Designation Cessation" width="11"/>
+                                            <iais:field value="Designation Cessation Reason" width="11"/>
                                             <iais:field value="${item.getCessationReason()}" width="11"/>
                                         </iais:row>
                                     </c:forEach>

@@ -64,7 +64,7 @@
                                         <iais:field value="${licensee.getAddrType()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Blk No." width="11"/>
+                                        <iais:field value="Block / House No." width="11"/>
                                         <iais:field value="${licensee.getBlkNo()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
