@@ -88,6 +88,7 @@
                   </div>
                 </div>
               </div>
+              <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
               <div class="row">
                 <div class="col-xs-10 col-md-12">
                   <div class="components">
@@ -97,7 +98,6 @@
                 </div>
               </div>
               <p></p>
-              <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
               <div id = "beInboxFilter" class="collapse">
                 <iais:row>
                   <iais:field value="Application No."/>
@@ -333,7 +333,7 @@
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].licenceExpiryDateStr + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatusStrShow + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
                             '</tr>';

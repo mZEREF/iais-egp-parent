@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -217,7 +218,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                     dashAssignMeAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
                 }
                 //app status
-                dashAssignMeAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(dashAssignMeAjaxQueryDto.getAppStatus()));
+                dashAssignMeAjaxQueryDto.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(dashAssignMeAjaxQueryDto.getAppStatus()));
                 //service
                 HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashAssignMeAjaxQueryDto.getServiceId()).getEntity();;
                 dashAssignMeAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
@@ -285,7 +286,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                     dashKpiPoolAjaxQuery.setHciAddress(StringUtil.viewHtml(address));
                 }
                 //app status
-                dashKpiPoolAjaxQuery.setAppStatus(MasterCodeUtil.getCodeDesc(dashKpiPoolAjaxQuery.getAppStatus()));
+                dashKpiPoolAjaxQuery.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(dashKpiPoolAjaxQuery.getAppStatus()));
                 //service
                 HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashKpiPoolAjaxQuery.getServiceId()).getEntity();;
                 dashKpiPoolAjaxQuery.setServiceName(hcsaServiceDto.getSvcName());
@@ -324,7 +325,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                     dashComPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
                 }
                 //app status
-                dashComPoolAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(dashComPoolAjaxQueryDto.getAppStatus()));
+                dashComPoolAjaxQueryDto.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
                 //service
                 HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashComPoolAjaxQueryDto.getServiceId()).getEntity();;
                 dashComPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
