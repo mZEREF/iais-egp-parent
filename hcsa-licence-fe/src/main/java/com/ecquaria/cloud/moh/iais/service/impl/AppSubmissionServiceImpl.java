@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -40,7 +39,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -1754,12 +1759,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if (mandatoryCount > 0) {
                 map.put("error"+type, type);
                 sB.append(serviceId);
-                log.info(type+" null");
+                log.info(StringUtil.changeForLog(type+" null"));
             }
         } else if (list.size() < mandatoryCount) {
             map.put("error"+type, type);
             sB.append(serviceId);
-            log.info(type+" mandatoryCount");
+            log.info(StringUtil.changeForLog(type+" mandatoryCount"));
         }
     }
     @Override

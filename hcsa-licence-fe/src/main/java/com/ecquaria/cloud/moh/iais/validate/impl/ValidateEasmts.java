@@ -90,14 +90,15 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             }
         }
         String easMtsStreetName = appGrpPremisesDto.getEasMtsStreetName();
+        String errStreet=MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field");
         if(StringUtil.isEmpty(easMtsStreetName)){
-            map.put("easMtsStreetName"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+            map.put("easMtsStreetName"+index,errStreet);
         }else {
 
         }
         String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
         if(StringUtil.isEmpty(easMtsUseOnly)){
-            map.put("easMtsUseOnly"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+            map.put("easMtsUseOnly"+index,errStreet);
         }
         String easMtsPubEmail = appGrpPremisesDto.getEasMtsPubEmail();
         if(StringUtil.isEmpty(easMtsPubEmail)){
@@ -126,7 +127,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
 
     @Override
     public void doValidateAdressType(String floorNo, String blkNo, String unitNo, Integer index, Map<String, String> map, List<String> errorName) {
-        if(errorName==null&&errorName.size()!=3){
+        if(errorName==null||errorName.size()!=3){
             throw new RuntimeException("errorName list is null or size not is 3");
         }
         if(StringUtil.isEmpty(floorNo)){

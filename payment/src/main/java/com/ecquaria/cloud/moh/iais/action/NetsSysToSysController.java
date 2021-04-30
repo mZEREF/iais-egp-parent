@@ -102,7 +102,7 @@ public class NetsSysToSysController {
         Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
         String generatedHmac= null;
         try {
-            generatedHmac = generateSignature(txnRes, GatewayConfig.eNetsSecretKey);
+            generatedHmac = generateSignature(message, GatewayConfig.eNetsSecretKey);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }

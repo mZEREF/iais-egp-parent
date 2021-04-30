@@ -1645,7 +1645,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
         String appGroupId = appSubmissionDto.getAppGrpId();
         ApplicationGroupDto applicationGroupDto=applicationFeClient.getApplicationGroup(appGroupId).getEntity();
-        if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+        if(applicationGroupDto!=null&&!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
             sendRfcLicenseeSubmittedEmail(appSubmissionDtos,pmtMethod);
         }else {
             double a = 0.0;

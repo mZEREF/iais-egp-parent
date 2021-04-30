@@ -89,8 +89,9 @@ public class ValidateCharges implements ValidateFlow {
             }
             boolean flag=false;
             String minAmount = otherChargesDtos.get(i).getMinAmount();
+            String errMsg=MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field");
             if(StringUtil.isEmpty(minAmount)){
-                map.put("otherAmountMin"+i,MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+                map.put("otherAmountMin"+i,errMsg);
             }else {
                 if(minAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
@@ -103,7 +104,7 @@ public class ValidateCharges implements ValidateFlow {
             }
             String maxAmount = otherChargesDtos.get(i).getMaxAmount();
             if(StringUtil.isEmpty(maxAmount)){
-                map.put("otherAmountMax"+i,MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+                map.put("otherAmountMax"+i,errMsg);
             }else {
                 if(maxAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");

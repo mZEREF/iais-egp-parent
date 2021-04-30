@@ -402,7 +402,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        if(isRfi){
+        if(isRfi&&appSubmissionDto!= null&&appSubmissionDto.getAppGrpPremisesDtoList()!=null){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto v : appGrpPremisesDtoList){
                 String hciCode = v.getHciCode();

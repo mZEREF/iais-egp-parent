@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
@@ -54,8 +53,6 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @Autowired
     private MohHcsaBeDashboardService mohHcsaBeDashboardService;
 
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private InspectionMainAssignTaskService inspectionMainAssignTaskService;
@@ -78,8 +75,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
-    @Autowired
-    private HcsaConfigMainClient hcsaConfigClient;
+
 
     @Override
     public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, String actionValue, String dashFilterAppNo) {
@@ -249,7 +245,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 stage = taskDto.getTaskKey();
             }
             HcsaServiceDto hcsaServiceDto = inspectionMainAssignTaskService.getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
-            HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
+            HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigMainClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
             if (hcsaSvcKpiDto != null) {
                 //get current stage worked days
                 int days = 0;

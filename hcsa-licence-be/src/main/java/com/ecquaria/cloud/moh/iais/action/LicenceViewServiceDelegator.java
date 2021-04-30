@@ -62,6 +62,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Time;
@@ -78,11 +84,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceViewServiceDelegator
@@ -1570,7 +1571,7 @@ public class LicenceViewServiceDelegator {
             if(1==i){
                 String appGrpPersonId = next.getAppGrpPersonId();
                 if(appGrpPersonId==null){
-                    log.error("this have error file ,need to remove----> "+next);
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
                     iterator.remove();
                 }else {
                     docDealWith(multipleSvcDoc,next,personType+svcDocId+":"+personTypeNum);
@@ -1578,7 +1579,7 @@ public class LicenceViewServiceDelegator {
             }else if(2==i){
                 String appSvcPersonId = next.getAppSvcPersonId();
                 if(appSvcPersonId==null){
-                    log.error("this have error file ,need to remove----> "+next);
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
                     iterator.remove();
                 }else {
                     docDealWith(multipleSvcDoc,next,personType+svcDocId+":"+personTypeNum);

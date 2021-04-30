@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.validate.Validate;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,13 +41,13 @@ public abstract class AbstractValidate implements Validate {
     private void validateFidld(Map<String,String> map,@NotNull Field[] declaredFields,Object o,Integer index){
         for(Field v : declaredFields){
             FieldNotNull annotation = v.getAnnotation(FieldNotNull.class);
-            v.setAccessible(true);
+            v.setAccessible(Boolean.TRUE);
             Object f;
             try {
                  f = v.get(o);
             } catch (IllegalAccessException e) {
                 log.error("-----error-----");
-                throw  new RuntimeException();
+                throw  new RuntimeException("-----error-----", e);
             }
             if(annotation!=null){
                 if(f==null){

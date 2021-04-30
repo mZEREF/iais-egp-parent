@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -49,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -100,7 +98,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -1411,7 +1408,7 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
             }
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
-            log.info("start giro payment======>appGrpId {}"+appGrpId);
+            log.info("start giro payment appGrpId {}"+appGrpId);
             if(appSubmissionDtos.size() > 1){
                 Double a = 0.0;
                 for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
