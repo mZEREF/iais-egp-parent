@@ -2,7 +2,7 @@
 <sqls catalog="intraDashboardQuery">
     <sql key = "dashAssignMe"  remarks = "Task Assign to me">
         <![CDATA[
-            SELECT DISTINCT SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
+            SELECT DISTINCT T5.ID, T5.GROUP_NO, T5.PMT_STATUS, T5.APP_TYPE, T5.SUBMIT_DT, T5.COU FROM
             (SELECT T4.GROUP_NO, T4.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS,T4.ID,T6.cou,T2.ID as corrid,T1.APPLICATION_NO,T1.STATUS,T3.HCI_CODE,T3.HCI_NAME,
                 CONCAT(T3.BLK_NO ,
                 case T3.STREET_NAME
@@ -50,9 +50,9 @@
 
     <sql key = "dashAssignMeAjax"  remarks = "Task Assign to me Ajax">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T7.ID AS TASK_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
+            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE, T5.TASK_ID FROM
             (SELECT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS,T1.VERSION, T3.HCI_CODE,T2.ID,T4.GROUP_NO,T1.APP_TYPE,T3.HCI_NAME,T4.SUBMIT_DT,
-                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE,T2.ID as corrid, T3.ID as APP_PREM_ID,
+                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE,T2.ID as corrid, T3.ID as APP_PREM_ID, T7.ID AS TASK_ID,
                 CONCAT(T3.BLK_NO ,
                     case T3.STREET_NAME
                       when null then null
@@ -82,12 +82,13 @@
                 JOIN taskView T7 ON T7.ref_No = T2.ID
                 WHERE 1 = 1
                 and T1.STATUS != 'APST009'
-                <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+                <#if appCorrId_list??> and ${appCorrId_list} </#if>
+                <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 <#if dashUserId??> and T7.user_id = :dashUserId </#if>
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
-            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
@@ -95,7 +96,6 @@
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
-
 
     <sql key = "dashCommonTask" remarks = "Dashboard Search Common Pool Task By Application Group">
         <![CDATA[
@@ -132,7 +132,6 @@
                 JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
                 WHERE 1 = 1
                 and T2.STATUS != 'APST009'
-                <#if workGroup_list??> and ${workGroup_list} </#if>
                 <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 and T7.USER_ID is NULL
@@ -156,6 +155,7 @@
                     JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                     JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+                    WHERE 1 = 1
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 ) T5
             LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID
@@ -165,6 +165,11 @@
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 
@@ -172,7 +177,7 @@
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.GROUP_NO, T1.PMT_STATUS, T1.APP_TYPE, T1.SUBMIT_DT, T1.COU
             FROM APP_GRP_EXCEEDING_DAY_VIEW T1
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
+            JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
@@ -191,13 +196,19 @@
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
             FROM APP_EXCEEDING_DAY_VIEW T1
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+            JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
+            <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
-            <#if workGroup_list??> and ${workGroup_list}</#if>
+            <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
+            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 

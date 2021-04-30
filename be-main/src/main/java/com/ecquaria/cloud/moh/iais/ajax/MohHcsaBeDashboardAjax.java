@@ -5,10 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -73,16 +75,19 @@ public class MohHcsaBeDashboardAjax {
         String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         String groupNo = request.getParameter("groupNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
         if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(switchAction)) {
-            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, switchAction, dashFilterAppNo);
+            map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashComPoolUrl(map, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
-
+            map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo);
+            //set url and kpi color
+            map = setDashAssignMeUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
-            map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, switchAction, dashFilterAppNo);
+            map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashKpiPoolUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
@@ -93,6 +98,35 @@ public class MohHcsaBeDashboardAjax {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
 
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashAssignMeUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        if(map != null) {
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
+                    for(DashAssignMeAjaxQueryDto dashAssignMeAjaxQueryDto : dashAssignMeAjaxQueryDtos) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashAssignMeAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskService.getTaskById(dashAssignMeAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                            dashAssignMeAjaxQueryDto.setKpiColor(color);
+                            //set mask task Id
+                            String maskId = MaskUtil.maskValue("taskId", dashAssignMeAjaxQueryDto.getTaskId());
+                            dashAssignMeAjaxQueryDto.setTaskMaskId(maskId);
+                            dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                            String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                            dashAssignMeAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                        } else {
+                            dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
         }
         return map;
     }
