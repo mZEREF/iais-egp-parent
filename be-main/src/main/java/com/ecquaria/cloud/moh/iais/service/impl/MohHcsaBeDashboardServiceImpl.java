@@ -534,6 +534,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     index++;
                 }
             }
+            poolRoleCheckDto.setRoleOptions(roleOptions);
+            poolRoleCheckDto.setRoleMap(roleMap);
             //set current role in loginContext
             String checkCurRole = poolRoleCheckDto.getCheckCurRole();
             if(roleMap != null && !StringUtil.isEmpty(checkCurRole)){

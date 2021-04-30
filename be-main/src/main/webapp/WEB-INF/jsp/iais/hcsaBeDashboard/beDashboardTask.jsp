@@ -315,11 +315,11 @@
                         '<tbody>';
                     for (let i = 0; i < res.rowCount; i++) {
                         var color = "black";
-                        if (res[i].timeLimitWarning == "black") {
+                        if (res.rows[i].kpiColor == "black") {
                             color = "black";
-                        } else if (res[i].timeLimitWarning == "red") {
+                        } else if (res.rows[i].kpiColor == "red") {
                             color = "red";
-                        } else if (res[i].timeLimitWarning == "amber") {
+                        } else if (res.rows[i].kpiColor == "amber") {
                             color = "#DD9C00";
                         }
                         html += '<tr style = "color : ' + color + ';">';
@@ -333,7 +333,7 @@
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].licenceExpiryDateStr + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
                             '</tr>';

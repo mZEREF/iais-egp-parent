@@ -172,10 +172,9 @@ public class MohHcsaBeDashboardDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!AppConsts.YES.equals(backFlag)) {
             if (loginContext != null) {
-                List<String> roleList = loginContext.getRoleIds();
                 PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
                 poolRoleCheckDto = mohHcsaBeDashboardService.getDashRoleOption(loginContext, poolRoleCheckDto);
-                ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", (Serializable) roleList);
+                ParamUtil.setSessionAttr(bpc.request, "beDashRoleIds", (Serializable) poolRoleCheckDto.getRoleOptions());
                 ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", poolRoleCheckDto);
             }
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
