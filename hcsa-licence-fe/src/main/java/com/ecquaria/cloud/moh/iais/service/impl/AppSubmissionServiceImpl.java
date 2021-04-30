@@ -566,6 +566,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        log.info("Save Draft dto ==> " + JsonUtil.parseToJson(appSubmissionDto));
         return applicationFeClient.saveDraft(appSubmissionDto).getEntity();
     }
 
