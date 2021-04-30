@@ -13,7 +13,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardApplicantReply()">
-            <h1 class="dashboard-count" style="color: #f5333f;">2</h1>
             <p class="dashboard-txt"> Tasks Pending Applicant's Reply</p>
           </a>
         </div>
@@ -21,7 +20,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardKpiTask()">
-            <h1 class="dashboard-count" style="color: #f5333f;">1</h1>
             <p class="dashboard-txt"> New Application Tasks Exceeding x Days</p>
           </a>
         </div>
@@ -29,7 +27,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardRenewalExpiry()">
-            <h1 class="dashboard-count" style="color: #f5333f;">3</h1>
             <p class="dashboard-txt"> Renewal Tasks Nearing Expiry Date</p>
           </a>
         </div>
@@ -37,7 +34,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardWaitApproval()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks waiting for Approval</p>
           </a>
         </div>
@@ -45,13 +41,14 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardCommonPool()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks Not Assigned</p>
           </a>
         </div>
       </div>
     </c:when>
     <c:when test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId ||
+                    'AO1' eq iais_Login_User_Info_Attr.curRoleId ||
+                    'AO1_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
                     'AO3' eq iais_Login_User_Info_Attr.curRoleId ||
                     'AO2_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
                     'AO3_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
@@ -62,7 +59,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardApplicantReply()">
-            <h1 class="dashboard-count" style="color: #f5333f;">2</h1>
             <p class="dashboard-txt"> Tasks Pending Applicant's Reply</p>
           </a>
         </div>
@@ -70,7 +66,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardKpiTask()">
-            <h1 class="dashboard-count" style="color: #f5333f;">1</h1>
             <p class="dashboard-txt"> New Application Tasks Exceeding x Days</p>
           </a>
         </div>
@@ -78,7 +73,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardRenewalExpiry()">
-            <h1 class="dashboard-count" style="color: #f5333f;">3</h1>
             <p class="dashboard-txt"> Renewal Tasks Nearing Expiry Date</p>
           </a>
         </div>
@@ -86,7 +80,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardWaitApproval()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks waiting for Approval</p>
           </a>
         </div>
@@ -94,7 +87,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardCommonPool()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks Not Assigned</p>
           </a>
         </div>
@@ -102,7 +94,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardSupervisorPool()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks Assigned to My Team</p>
           </a>
         </div>
@@ -112,7 +103,6 @@
       <div class="dashboard-tile-item">
         <div class="dashboard-tile">
           <a data-tab="#" onclick="javascript:dashboardCommonPool()">
-            <h1 class="dashboard-count" style="color: #f5333f;">10</h1>
             <p class="dashboard-txt"> Tasks Not Assigned</p>
           </a>
         </div>
@@ -122,57 +112,50 @@
 
     </c:when>
     <c:otherwise>
-      <div class="dashboard-tile-item">
-        <div class="dashboard-tile">
-          <a data-tab="#" href="javascript:;" onclick="javascript:dashboardAssignMe()">
-            <h1 class="dashboard-count" style="color: #f5333f;">6</h1>
-            <p class="dashboard-txt"> Tasks assigned to me</p>
-          </a>
-        </div>
-      </div>
+
     </c:otherwise>
   </c:choose>
 </div>
 <script type="text/javascript">
-  function dashboardAssignMe() {
-      showWaiting();
-      $('#switchAction').val('assignme');
-      intraDashboardSubmit('assignme');
-  }
+    function dashboardAssignMe() {
+        showWaiting();
+        $('#switchAction').val('assignme');
+        intraDashboardSubmit('assignme');
+    }
 
-  function dashboardApplicantReply() {
-      showWaiting();
-      $('#switchAction').val('reply');
-      intraDashboardSubmit('reply');
-  }
+    function dashboardApplicantReply() {
+        showWaiting();
+        $('#switchAction').val('reply');
+        intraDashboardSubmit('reply');
+    }
 
-  function dashboardKpiTask() {
-      showWaiting();
-      $('#switchAction').val('kpi');
-      intraDashboardSubmit('kpi');
-  }
+    function dashboardKpiTask() {
+        showWaiting();
+        $('#switchAction').val('kpi');
+        intraDashboardSubmit('kpi');
+    }
 
-  function dashboardRenewalExpiry() {
-      showWaiting();
-      $('#switchAction').val('renew');
-      intraDashboardSubmit('renew');
-  }
+    function dashboardRenewalExpiry() {
+        showWaiting();
+        $('#switchAction').val('renew');
+        intraDashboardSubmit('renew');
+    }
 
-  function dashboardWaitApproval() {
-      showWaiting();
-      $('#switchAction').val('wait');
-      intraDashboardSubmit('wait');
-  }
+    function dashboardWaitApproval() {
+        showWaiting();
+        $('#switchAction').val('wait');
+        intraDashboardSubmit('wait');
+    }
 
-  function dashboardCommonPool() {
-      showWaiting();
-      $('#switchAction').val('common');
-      intraDashboardSubmit('common');
-  }
+    function dashboardCommonPool() {
+        showWaiting();
+        $('#switchAction').val('common');
+        intraDashboardSubmit('common');
+    }
 
-  function dashboardSupervisorPool() {
-      showWaiting();
-      $('#switchAction').val('group');
-      intraDashboardSubmit('group');
-  }
+    function dashboardSupervisorPool() {
+        showWaiting();
+        $('#switchAction').val('group');
+        intraDashboardSubmit('group');
+    }
 </script>
