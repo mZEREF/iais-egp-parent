@@ -312,9 +312,9 @@ public class GiroDeductionBeDelegator {
                 if(Arrays.asList(HEADERS).contains(s)){
                     continue;
                 }
-                String payment_status = record.get("Payment Status");
-                payment_status = encryptionPayment(payment_status);
-                if(payment_status.equals(record.get("Payment Status"))){
+                String status=record.get("Payment Status");
+                String payment_status = encryptionPayment(status);
+                if(payment_status.equals(status)){
                     bpc.request.setAttribute("message",errMsg);
                     return;
                 }

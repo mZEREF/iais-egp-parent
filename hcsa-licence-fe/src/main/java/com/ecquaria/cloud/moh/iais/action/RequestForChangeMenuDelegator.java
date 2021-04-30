@@ -1375,81 +1375,83 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appSubmissionDto.setPaymentMethod(payMethod);
-        }
-        bpc.request.getSession().setAttribute("payMethod", payMethod);
-        if (0.0 == appSubmissionDtos.get(0).getAmount()) {
-            StringBuilder url = new StringBuilder();
-            url.append("https://")
-                    .append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-            return;
-        }
-        double a = 0.0;
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            a = a + appSubmissionDto.getAmount();
-        }
-        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
-        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            Map<String, String> fieldMap = new HashMap<String, String>();
-            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
-            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
-            try {
-                String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
-                String html = "";
-                switch (payMethod) {
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    default:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
+        if(appSubmissionDtos!=null){
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                appSubmissionDto.setPaymentMethod(payMethod);
+            }
+            bpc.request.getSession().setAttribute("payMethod", payMethod);
+            if (0.0 == appSubmissionDtos.get(0).getAmount()) {
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+                return;
+            }
+            double a = 0.0;
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                a = a + appSubmissionDto.getAmount();
+            }
+            bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+                Map<String, String> fieldMap = new HashMap<String, String>();
+                fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
+                fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+                fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
+                try {
+                    String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
+                    String html = "";
+                    switch (payMethod) {
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                            html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                            html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        default:
+                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                    }
+                    bpc.response.sendRedirect(html);
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
                 }
-                bpc.response.sendRedirect(html);
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
-            }
-            return;
-        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-            if(appSubmissionDtos.size() > 1){
-                appSubmissionDtos.get(0).setTotalAmountGroup(a);
-            }
-            try {
-                if (appSubmissionDtos != null && appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
-                    requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                return;
+            } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+                if(appSubmissionDtos.size() > 1){
+                    appSubmissionDtos.get(0).setTotalAmountGroup(a);
                 }
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
+                try {
+                    if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
+                }
+                String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
+                String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
+                appGrp.setPmtRefNo(giroTranNo);
+                appGrp.setPayMethod(payMethod);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
+                //todo change
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
             }
-            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
-            String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
-            appGrp.setPmtRefNo(giroTranNo);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
-            //todo change
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
         }
 
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
