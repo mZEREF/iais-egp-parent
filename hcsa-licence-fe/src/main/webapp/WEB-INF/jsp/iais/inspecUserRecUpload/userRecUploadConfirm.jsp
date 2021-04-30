@@ -39,7 +39,7 @@
                         <thead>
                         <tr align="center">
                           <th>NC Clause</th>
-                          <th>Findings/Non-Compliances</th>
+                          <th>Checklist Question</th>
                           <th>Action Required</th>
                         </tr>
                         </thead>
