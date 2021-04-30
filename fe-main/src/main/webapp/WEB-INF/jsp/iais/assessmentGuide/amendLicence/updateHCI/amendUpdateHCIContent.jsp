@@ -44,8 +44,11 @@
                                     <input type="hidden" name="amendLicenseId${status.index}premiseId" value="<iais:mask name= "amendLicenseId${status.index}premiseId" value="${pool.premisesId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Name</p>
+                                ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Premises Type</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
                                     <c:out value="On-site"/>
                                 </c:if>
@@ -57,6 +60,7 @@
                                 </c:if>
                             </td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Address</p>
                                 <c:choose>
                                     <c:when test="${pool.premisesDtoList.size() == 1}">
                                         <P>${pool.premisesDtoList[0]}</P>
@@ -71,8 +75,14 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            <td>${pool.hciContactNo}<c:if test="${empty pool.hciContactNo}">N/A</c:if></td>
-                            <td>${pool.svcId}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Contact</p>
+                                ${pool.hciContactNo}<c:if test="${empty pool.hciContactNo}">N/A</c:if>
+                            </td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Active Licence</p>
+                                ${pool.svcId}
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>

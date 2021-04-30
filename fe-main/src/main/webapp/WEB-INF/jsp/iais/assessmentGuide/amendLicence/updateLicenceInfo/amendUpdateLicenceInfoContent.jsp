@@ -46,6 +46,7 @@
                                 </div>
                             </td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
                                 <c:choose>
                                     <c:when test="${empty pool.hciName}">N/A</c:when>
                                     <c:otherwise>
@@ -53,9 +54,14 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            <td>${pool.svcId}</td>
-                            <td>${pool.licenceNo}</td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Type</p>
+                                    ${pool.svcId}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                    ${pool.licenceNo}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
                                     <c:out value="On-site"/>
                                 </c:if>
@@ -67,6 +73,7 @@
                                 </c:if>
                             </td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Address</p>
                                 <c:choose>
                                     <c:when test="${pool.premisesDtoList.size() == 1}">
                                         <P>${pool.premisesDtoList[0]}</P>

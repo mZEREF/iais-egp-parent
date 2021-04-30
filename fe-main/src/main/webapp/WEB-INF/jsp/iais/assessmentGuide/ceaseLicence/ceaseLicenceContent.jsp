@@ -32,10 +32,17 @@
                                 </div>
                                 <input type="hidden" name="ceaseLicence${status.index}" value="<iais:mask name= "ceaseLicence${status.index}" value="${pool.licPremId}"/>"/>
                             </td>
-                            <td>${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
-                            <td>${pool.svcId}</td>
-                            <td>${pool.licenceNo}</td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">HCI Name</p>
+                                    ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Type</p>
+                                    ${pool.svcId}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                    ${pool.licenceNo}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Premises Type</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
                                     <c:out value="On-site"/>
                                 </c:if>
@@ -47,6 +54,7 @@
                                 </c:if>
                             </td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Address</p>
                                 <c:choose>
                                     <c:when test="${pool.premisesDtoList.size() == 1}">
                                         <P>${pool.premisesDtoList[0]}</P>
@@ -71,6 +79,7 @@
     <c:if test="${!empty ceaseLicenceSearchResult.rows}">
         <button type="button" class="btn btn-primary CeaseBtn "  <c:if test="${empty ceasedErrResult }">disabled</c:if> onclick="ceaseSubmit()">NEXT</button>
     </c:if>
+</div>
 </div>
 <script type="text/javascript">
     function ceaseSubmit() {
