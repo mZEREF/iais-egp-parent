@@ -3,13 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -25,6 +19,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -88,6 +83,11 @@ public class FePrintViewDelegator {
                 appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     String svcId = appSvcRelatedInfoDto.getServiceId();
@@ -108,11 +108,33 @@ public class FePrintViewDelegator {
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                     //set svc doc
                     List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+                    appSvcCgoDtoList.addAll(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                    if(appSvcPrincipalOfficersDtoList!=null){
+                        ListIterator<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoListIterator =
+                                appSvcPrincipalOfficersDtoList.listIterator();
+
+                        while (appSvcPrincipalOfficersDtoListIterator.hasNext()){
+                            AppSvcPrincipalOfficersDto next = appSvcPrincipalOfficersDtoListIterator.next();
+                            if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(next.getPsnType())){
+                                principalOfficersDtos.add(next);
+                            }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(next.getPsnType())){
+                                deputyPrincipalOfficersDtos.add(next);
+                            }
+                        }
+                    }
+                    medAlertPsnDtos.addAll(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
+                    appSvcPersonnelDtos.addAll(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
                     Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
+            ParamUtil.setSessionAttr(bpc.request, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
+            ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficers", (Serializable) principalOfficersDtos);
+            ParamUtil.setSessionAttr(bpc.request, "ReloadDeputyPrincipalOfficers",(Serializable) deputyPrincipalOfficersDtos);
+            ParamUtil.setSessionAttr(bpc.request, "AppSvcMedAlertPsn",(Serializable) medAlertPsnDtos);
+            ParamUtil.setSessionAttr(bpc.request, "AppSvcPersonnelDtoList", (Serializable)appSvcPersonnelDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");
