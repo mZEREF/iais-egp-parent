@@ -1549,6 +1549,7 @@ public class NewApplicationDelegator {
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
                         ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
+                        ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
                     }
                     List<SelectOption> reasonOption = NewApplicationHelper.getReasonOption();
                     List<SelectOption> patientsOption = NewApplicationHelper.getPatientsOption();
