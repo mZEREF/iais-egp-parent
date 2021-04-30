@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="center-content">
-                            <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
+                            <h3>Reason for Withdrawal</h3>
                             <div class="row">
                                 <div class="col-md-7">
                                     <c:if test="${!empty withdrawDtoView.withdrawnReason}">
@@ -45,7 +45,7 @@
                              || withdrawDtoView.withdrawnReason != 'Others'}">hidden</c:if>>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
+                                    <label class="col-md-4" style="font-size:2rem">Remarks</label>
                                 </div>
                             </div>
                             <div class="row">
