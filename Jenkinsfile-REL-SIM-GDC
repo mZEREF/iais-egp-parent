@@ -12,6 +12,10 @@ NEXUS_CREDENTIALS = [usernamePassword(
         usernameVariable: 'NEXUS_USERNAME')
 ]
 
+NEXUS_GROUP = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/'
+NEXUS_RELEASE = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
+NEXUS_SNAPSHOT = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
+
 // JENKINS_PRIVATE_KEY_CREDENTIALS_ID = 'moh-iais-jenkins-remote.private'
 // JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
 //         credentialsId: JENKINS_PRIVATE_KEY_CREDENTIALS_ID,
@@ -414,20 +418,23 @@ def buildAndDeploy(){
             docker
                 .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
                 .inside(getDockerArgs()){
-                    sh """
-                        cd "${CHECKOUT_DIRECTORY}/iais-egp"
+                    withCredentials(NEXUS_CREDENTIALS) {
+                        sh """
+                            cd "${CHECKOUT_DIRECTORY}/iais-egp"
 
-                        mvn \
-                            --no-transfer-progress \
-                            -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -P sg-nexus,sg-gdc-nexus \
-                            -s settings-sg-gdc.xml \
-                            -Dsg.gdc.nexus=https://hub.ecquaria.com/nexus/repository/maven-mohiais-mock-gdc/ \
-                            -Dsg.gdc.nexus.snapshot=https://hub.ecquaria.com/nexus/repository/maven-mohiais-mock-gdc/ \
-                            -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
-                            -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
-                            clean deploy
-                    """
+                            mvn \
+                                --no-transfer-progress \
+                                -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
+                                -P "!sg-nexus,cicd-sg-nexus" \
+                                -s settings-cicd-sg.xml \
+                                -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
+                                -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
+                                -Dsg.nexus.group.repo="$NEXUS_GROUP" \
+                                -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
+                                -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
+                                clean deploy
+                        """
+                    }
                 }
         }
     }
@@ -442,18 +449,25 @@ def sonarqube(){
             docker
                 .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
                 .inside(getDockerArgs()){
-                    sh """
-                        cd "${CHECKOUT_DIRECTORY}/iais-egp"
+                    withCredentials(NEXUS_CREDENTIALS) {
+                        sh """
+                            cd "${CHECKOUT_DIRECTORY}/iais-egp"
 
-                        mvn \
-                            --no-transfer-progress \
-                            -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -Dsonar.projectKey=iais-iais-egp-rel \
-                            -Dsonar.projectName=iais-iais-egp-rel \
-                            -P sg-nexus \
-                            -s settings.xml \
-                            sonar:sonar
-                    """
+                            mvn \
+                                --no-transfer-progress \
+                                -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
+                                -Dsonar.projectKey=iais-iais-egp-rel \
+                                -Dsonar.projectName=iais-iais-egp-rel \
+                                -P "!sg-nexus,cicd-sg-nexus" \
+                                -s settings-cicd-sg.xml \
+                                -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
+                                -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
+                                -Dsg.nexus.group.repo="$NEXUS_GROUP" \
+                                -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
+                                -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
+                                sonar:sonar
+                        """
+                    }
                 }
         }
     }
