@@ -12,9 +12,9 @@ NEXUS_CREDENTIALS = [usernamePassword(
         usernameVariable: 'NEXUS_USERNAME')
 ]
 
-NEXUS_GROUP = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/'
-NEXUS_RELEASE = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
-NEXUS_SNAPSHOT = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
+NEXUS_GROUP='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-sim-gdc-grp/'
+NEXUS_RELEASE='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-sim-gdc/'
+NEXUS_SNAPSHOT='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-sim-gdc/'
 
 // JENKINS_PRIVATE_KEY_CREDENTIALS_ID = 'moh-iais-jenkins-remote.private'
 // JENKINS_PRIVATE_KEY_CREDENTIALS = [file(

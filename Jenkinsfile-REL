@@ -55,9 +55,9 @@ NEXUS_CREDENTIALS = [usernamePassword(
         usernameVariable: 'NEXUS_USERNAME')
 ]
 
-NEXUS_GROUP = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/'
-NEXUS_RELEASE = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
-NEXUS_SNAPSHOT = 'https://hub.ecquaria.com/nexus/repository/maven-mohiais/'
+NEXUS_GROUP='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-grp/'
+NEXUS_RELEASE='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
+NEXUS_SNAPSHOT='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
 
 // Specify the project ID for the project (this value is retrieved from Dependency Track).
 DEPENDENCY_TRACK_PROJECT = '47741070-b027-4430-acc7-1e04adba7780'
