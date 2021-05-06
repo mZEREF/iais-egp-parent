@@ -81,7 +81,7 @@
                                         <iais:field value="Bank Code :"  mandatory="true"/>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <label>
-                                                <input type="text" maxlength="66" style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
+                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
                                                 <div><span style="font-weight:normal;" id="error_bankCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -90,7 +90,7 @@
                                         <iais:field value="Branch Code :"  mandatory="true"/>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <label>
-                                                <input type="text" maxlength="66" style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
+                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
                                                 <div><span style="font-weight:normal;" id="error_branchCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -109,7 +109,7 @@
                                         <iais:field value="Bank Account No. :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <label>
-                                                <input type="text" maxlength="66" style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
+                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
                                                 <div><span style="font-weight:normal;" id="error_bankAccountNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -163,7 +163,14 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
-
+    function keyAlphanumericPress() {
+        var keyCode = event.keyCode;
+        if (keyCode >= 48 && keyCode <= 57 || keyCode >= 65 && keyCode <= 90 || keyCode >= 97 && keyCode <= 122) {
+            event.returnValue = true;
+        }else {
+            event.returnValue = false;
+        }
+    }
     function doBack(){
         showWaiting();
         $("[name='crud_action_type']").val("back");
