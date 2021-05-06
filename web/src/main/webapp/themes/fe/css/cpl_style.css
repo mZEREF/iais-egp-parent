@@ -5604,10 +5604,91 @@ section.logo img {
     padding: 14px 55px 14px 15px;
 }
 
-.datepicker {
-    z-index:999 !important;
+/*****************28 April 2021*******************/
+
+.licence_box  {
+    background-image: url("../img/license-mainbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center top;
+    /*background-attachment: fixed;*/
+    height: 100%;
+    padding: 30px 75px;
+    width: 100%;
 }
-/************************************/
+.lic-number {
+    text-align: center;
+    margin-top: 380px;
+}
+.lic-number p {
+    font-size: 14pt;
+}
+.lic-number h2 {
+    font-size: 24pt;
+    font-weight: 700;
+    text-transform:uppercase;
+    border:none;
+}
+.lic-info {
+    margin-top: 35px;
+}
+.lic-info p {
+    font-size: 14pt;
+}
+.lic-info h3 {
+    font-size: 16pt;
+    font-weight: 700;
+    text-transform:uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 0px;
+    border:none;
+}
+.licence_box span {
+    font-style: italic;
+    font-size: 14px;
+}
+.lic-approved-info {
+    background-color: rgba(130, 195, 240, 0.3);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.lic-approved-info p {
+    margin-top: 10px;
+}
+.lic-dateinfo {
+    margin-top: 20px;
+}
+.lic-dateinfo p {
+    font-size: 14pt;
+}
+.lic-dateinfo h3 {
+    font-size: 16pt;
+    font-weight: 700;
+    text-transform:uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 0px;
+    border:none;
+}
+.lic-signature-info {
+    margin-top: 110px;
+}
+.lic-signature-info p {
+    font-size: 14pt;
+    font-weight: 700;
+    text-transform:uppercase;
+}
+.lic-footer {
+    margin-top: 150px;
+    margin-bottom: 50px;
+    padding: 5px;
+}
+.lic-footer p {
+    font-size: 11pt;
+    text-align: center;
+}
+
 /************** DSS Fixes 2 Feb/2021 *************/
 
 .profile-dropdown-mobile {
