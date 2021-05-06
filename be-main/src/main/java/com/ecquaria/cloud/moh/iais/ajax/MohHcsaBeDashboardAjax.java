@@ -97,7 +97,25 @@ public class MohHcsaBeDashboardAjax {
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
+            String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
+            map = beDashboardAjaxService.getWorkTeamDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashCommonPoolStatus);
+            //set url and kpi color
+            map = setWorkTeamPoolUrl(map);
+        }
+        return map;
+    }
 
+    private Map<String, Object> setWorkTeamPoolUrl(Map<String, Object> map) {
+        if(map != null) {
+            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
+                    for(DashAssignMeAjaxQueryDto dashAssignMeAjaxQueryDto : dashAssignMeAjaxQueryDtos) {
+                        dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                    }
+                }
+            }
         }
         return map;
     }

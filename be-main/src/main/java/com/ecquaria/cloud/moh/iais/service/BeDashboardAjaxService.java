@@ -33,7 +33,7 @@ public interface BeDashboardAjaxService {
     /**
       * @author: shicheng
       * @Date 2021/4/28
-      * @Param: groupNo, loginContext, map, actionValue, dashFilterAppNo
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
       * @return: map
       * @Descripation: Kpi Pool Dropdown
       */
@@ -47,4 +47,13 @@ public interface BeDashboardAjaxService {
       * @Descripation: Task Assign To Me Drop down Result
       */
     Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/5/6
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: getWorkTeamDropdownResult
+      */
+    Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashCommonPoolStatus);
 }
