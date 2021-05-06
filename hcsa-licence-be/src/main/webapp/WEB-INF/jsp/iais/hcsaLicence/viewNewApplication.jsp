@@ -442,108 +442,21 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.speciality}">
-                        <c:choose>
-                          <c:when test="${'other' == cgo.speciality}">
-                            <c:out value="Others"/>
-                          </c:when>
-                          <c:otherwise>
-                            <c:out value="${cgo.speciality}"/>
-                          </c:otherwise>
-                        </c:choose>
-                        </span>
-                    </div>
-                    <div class="col-xs-6">
+                         <c:out value="${cgo.speciality}"/>
+                      </span>
+                      <br>
                       <span class="oldVal "
-                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"
-                            style="display: none">
+                          attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"
+                          style="display: none">
                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/>
                       </span>
                     </div>
                     </p>
                   </td>
                 </tr>
-                
-                <c:choose>
-                  <c:when test="${'other' == cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                        <span class="newVal " attr="${cgo.specialityOther}"><c:out
-                                value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                          <span class="oldVal " style="display: none"
-                                attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
-                                  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                  <c:when test="${'other' != cgo.speciality && 'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                        <span class="newVal " attr="${cgo.specialityOther}"><c:out
-                                value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                          <span class="oldVal " style="display: none"
-                                attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
-                                  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                  <c:when test="${'other' == cgo.speciality && 'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                        <span class="newVal " attr="${cgo.specialityOther}"><c:out
-                                value="${cgo.specialityOther}"/></span>
-                        </div>
-                        <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                          <span class="oldVal " style="display: none"
-                                attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out
-                                  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
-                          </div>
-                        </c:if>
-                        <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
-                          <div class="col-xs-6">
-                            <span class="oldVal" attr="" style="display: none"></span>
-                          </div>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:when>
-                </c:choose>
                 <tr>
                   <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspecialty
-                      or relevant qualification</p>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Sub-specialty</p>
                   </td>
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
@@ -551,14 +464,43 @@
                       <span class="newVal " attr="${cgo.subSpeciality}"><c:out value="${cgo.subSpeciality}"/></span>
                       <br>
                       <span class="oldVal "
-                          attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}"
-                          style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}</span>
-                  </div>
-
+                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}"
+                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}</span>
+                    </div>
                     </p>
                   </td>
                 </tr>
+                <tr>
+                  <td class="col-xs-6">
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
+                  </td>
+                  <td>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                    <div class="col-xs-12">
+                      <span class="newVal " attr="${cgo.qualification}"><c:out value="${cgo.qualification}"/></span>
+                      <br>
+                      <span class="oldVal "
+                          attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].qualification}"
+                          style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].qualification}</span>
+                  </div>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-xs-6">
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Other Qualification</p>
+                  </td>
+                  <td>
+                    <div class="col-xs-6">
+                      <span class="newVal " attr="${cgo.otherQualification}"><c:out value="${cgo.otherQualification}"/></span>
+                      <br>
+                      <span class="oldVal "
+                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherQualification}"
+                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherQualification}</span>
+                    </div>
 
+                  </td>
+                </tr>
                 <tr>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile
@@ -1149,10 +1091,10 @@
                         </td>
                       </tr>
                       <tr>
-                        <ttd class="col-xs-6">
+                        <td class="col-xs-6">
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
                           </p>
-                        </ttd>
+                        </td>
                         <td>
 
                           <div class="col-xs-12">

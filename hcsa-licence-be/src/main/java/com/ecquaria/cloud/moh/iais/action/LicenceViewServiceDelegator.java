@@ -78,6 +78,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -1509,7 +1510,7 @@ public class LicenceViewServiceDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         if(multipleGrpPrimaryDoc==null){
-            multipleGrpPrimaryDoc=new HashMap<>();
+            multipleGrpPrimaryDoc=new LinkedHashMap<>();
         }
         dealWithGrpPrimaryDoc(appGrpPrimaryDocDtos,multipleGrpPrimaryDoc);
         appSubmissionDto.setMultipleGrpPrimaryDoc(multipleGrpPrimaryDoc);
@@ -1517,7 +1518,7 @@ public class LicenceViewServiceDelegator {
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
         if(multipleSvcDoc==null){
-            multipleSvcDoc=new HashMap<>();
+            multipleSvcDoc=new LinkedHashMap<>();
         }
         groupWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);

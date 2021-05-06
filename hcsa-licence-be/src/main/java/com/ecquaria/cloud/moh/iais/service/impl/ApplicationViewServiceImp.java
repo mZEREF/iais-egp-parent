@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -203,6 +204,17 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             map.put(appSvcPersonId,integer);
                         }
                         map1.put(v.getFileRepoId(),map.get(appSvcPersonId));
+                    }
+                });
+            }
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionByAppId.getAppGrpPrimaryDocDtos();
+            if(appGrpPrimaryDocDtos!=null&&!appGrpPrimaryDocDtos.isEmpty()){
+                appGrpPrimaryDocDtos.forEach((v)->{
+                    String svcDocId = v.getSvcDocId();
+                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                    if(hcsaSvcDocConfigDto!=null){
+
+
                     }
                 });
             }

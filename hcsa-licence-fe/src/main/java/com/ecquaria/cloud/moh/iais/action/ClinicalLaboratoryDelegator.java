@@ -1620,7 +1620,7 @@ public class ClinicalLaboratoryDelegator {
                                             signature2.date(), signature2.authorization()).getEntity();
                                     String name = professionalResponseDtos.get(0).getName();
                                     if(StringUtil.isEmpty(name)){
-                                        errorMap.put("regnNo" + i,"Professional Regn. No. is not correct.");
+                                        errorMap.put("regnNo" + i,"GENERAL_ERR0042");
 //                            appSvcCgoDto.setSubSpeciality(null);
 //                            appSvcCgoDto.setSpeciality(null);
                                     }else {
