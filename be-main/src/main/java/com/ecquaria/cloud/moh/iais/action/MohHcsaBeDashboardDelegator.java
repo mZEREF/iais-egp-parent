@@ -424,7 +424,7 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInGroup start ...."));
         String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        SearchParam searchParam = getSearchParam(bpc, true, DashComPoolQueryDto.class.getName());
+        SearchParam searchParam = getSearchParam(bpc, true, DashWorkTeamQueryDto.class.getName());
         //set form value
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         searchParam = setFilterByDashForm(searchParam, bpc.request, switchAction, loginContext);
