@@ -308,19 +308,19 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(StringUtil.isEmpty(bankCode)){//66
             errorMap.put("bankCode", MessageUtil.replaceMessage("GENERAL_ERR0006","bankCode","field"));
         }else if(bankCode.length()>=66){
-            repMap.put("fieldNo","bankCode");
+            repMap.put("fieldNo","Bank Code");
             errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(StringUtil.isEmpty(branchCode)){//66
             errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
         }else if(branchCode.length()>=66){
-            repMap.put("fieldNo","branchCode");
+            repMap.put("fieldNo","Branch Code");
             errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(StringUtil.isEmpty(bankAccountNo)){//66
             errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
         }else if(bankAccountNo.length()>=66){
-            repMap.put("fieldNo","bankAccountNo");
+            repMap.put("fieldNo","Bank Account No");
             errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(StringUtil.isEmpty(bankName)){
