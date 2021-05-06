@@ -475,7 +475,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, Boolean.FALSE).getEntity();
         if (autoCeased) {
             //send email
-            feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nricNumber);
+            boolean hasBeenReminder = feMainEmailHelper.hasBeenReminder(uen + "_" + nricNumber,
+                    FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
+
+            if (!hasBeenReminder){
+                feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nricNumber);
+            }
         }
     }
 
