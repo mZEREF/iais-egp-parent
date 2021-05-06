@@ -1759,19 +1759,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS).getEntity();
             subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
             EmailParam smsParam = new EmailParam();
-            if(appSubmissionDto.getAppGrpId()==null){
-                smsParam.setQueryCode(appSubmissionDto.getLicenceNo());
-                smsParam.setReqRefNum(appSubmissionDto.getLicenceNo());
-                smsParam.setRefId(appSubmissionDto.getLicenceId());
-            }else {
-                smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-                smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-                smsParam.setRefId(appSubmissionDto.getAppGrpId());
-            }
+            smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
+            smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
+            smsParam.setRefId(applicationGroupDto.getLicenseeId());
             smsParam.setTemplateContent(emailMap);
             smsParam.setSubject(subject);
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
-            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
             notificationHelper.sendNotification(smsParam);
         }
 
@@ -1900,19 +1894,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS).getEntity();
         subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
         EmailParam smsParam = new EmailParam();
-        if(appSubmissionDto.getAppGrpId()==null){
-            smsParam.setQueryCode(appSubmissionDto.getLicenceNo());
-            smsParam.setReqRefNum(appSubmissionDto.getLicenceNo());
-            smsParam.setRefId(appSubmissionDto.getLicenceId());
-        }else {
-            smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
-            smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-            smsParam.setRefId(appSubmissionDto.getAppGrpId());
-        }
+        smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
+        smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
+        smsParam.setRefId(applicationGroupDto.getLicenseeId());
         smsParam.setTemplateContent(emailMap);
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS);
-        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
         notificationHelper.sendNotification(smsParam);
     }
 
