@@ -1100,9 +1100,9 @@ def uploadTransferPackageToGDCSFTP(){
         ]
 
         // temporarily upload here first (to prevent it from being partially picked up by ctrl M)
-        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/moh-iais-transfer-${BUILD_NUMBER}.tar"
+        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
         // this is where the file will end up on the remote
-        def REMOTE_PATH="/HOME/CICD/IN/moh-iais-transfer-${BUILD_NUMBER}.tar"
+        def REMOTE_PATH="/HOME/CICD/IN/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
