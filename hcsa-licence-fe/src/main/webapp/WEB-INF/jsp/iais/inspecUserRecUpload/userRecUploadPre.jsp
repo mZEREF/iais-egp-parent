@@ -47,6 +47,7 @@
                           <th>No</th>
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
+                          <th>Findings/Non-Compliances</th>
                           <th>Action Required</th>
                           <th>Actions</th>
                           <th>Rectification Uploaded?</th>
@@ -67,13 +68,18 @@
                                 <td><c:out value="${recNo.count}"/></td>
                                 <td><c:out value="${feRecNc.checkClause}"/></td>
                                 <td><iais:code code="${feRecNc.checkQuestion}"/></td>
+                                <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.ncs}">
+                                  <td><c:out value="N/A"/></td>
+                                </c:if>
+                                <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.ncs}">
+                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.ncs}"/></td>
+                                </c:if>
                                 <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
-                                <td><c:out value="N/A"/>
-                                  </c:if>
-                                  <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
-                                <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/>
-                                  </c:if>
-                                </td>
+                                  <td><c:out value="N/A"/></td>
+                                </c:if>
+                                <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
+                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/></td>
+                                </c:if>
                                 <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
                                   <td>
                                     <button class="btn btn-secondary btn-md disabled" type="button" disabled>Rectify</button>
