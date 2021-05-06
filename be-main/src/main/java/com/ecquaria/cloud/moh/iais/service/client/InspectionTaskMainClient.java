@@ -23,6 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjax
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -122,4 +124,10 @@ public interface InspectionTaskMainClient {
 
     @PostMapping(value = "/iais-inspection/dash-task-me/drop")
     FeignResponseEntity<SearchResult<DashAssignMeAjaxQueryDto>> searchDashAssignMeAjaxResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-work-team")
+    FeignResponseEntity<SearchResult<DashWorkTeamQueryDto>> searchDashWorkTeamResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-work-team/drop")
+    FeignResponseEntity<SearchResult<DashWorkTeamAjaxQueryDto>> searchDashWorkTeamDropResult(@RequestBody SearchParam searchParam);
 }
