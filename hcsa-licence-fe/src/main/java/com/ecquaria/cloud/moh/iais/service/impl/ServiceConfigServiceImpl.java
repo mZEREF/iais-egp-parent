@@ -460,6 +460,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     giroPaymentDto.setTxnRefNo(txnRefNo);
                 }
                 //save giroPaymentDto
+                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail giroPaymentDto :" + JsonUtil.parseToJson(giroPaymentDto)));
                 appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
                 giroPaymentDtos.add(giroPaymentDto);
             }
