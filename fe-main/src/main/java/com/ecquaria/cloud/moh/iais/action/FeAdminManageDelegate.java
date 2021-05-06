@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
@@ -227,13 +228,20 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
+                LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
+                boolean amendLicensee = (needRefersh && licenseeDto!=null);
+                if( !needRefersh){
+                    myInfoDto = null;
+                }
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
 
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(null,feUserDto,null,false);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,amendLicensee);
                 if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
                 }else{
