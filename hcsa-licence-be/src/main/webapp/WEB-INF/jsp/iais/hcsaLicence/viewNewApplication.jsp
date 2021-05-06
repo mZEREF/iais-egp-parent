@@ -443,15 +443,15 @@
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.speciality}">
                          <c:out value="${cgo.speciality}"/>
-                        </span>
-                    </div>
-                    <div class="col-xs-6">
+                      </span>
+                      <br>
                       <span class="oldVal "
-                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"
-                            style="display: none">
+                          attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"
+                          style="display: none">
                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/>
                       </span>
                     </div>
+
                     </p>
                   </td>
                 </tr>
@@ -495,12 +495,12 @@
                   <td>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.otherQualification}"><c:out value="${cgo.otherQualification}"/></span>
-                    </div>
-                    <div class="col-xs-6">
+                      <br>
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherQualification}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherQualification}</span>
                     </div>
+
                   </td>
                 </tr>
                 <tr>
