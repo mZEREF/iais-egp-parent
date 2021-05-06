@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -48,4 +49,8 @@ public interface MohHcsaBeDashboardService {
     SearchResult<DashAssignMeQueryDto> getDashAssignMeResult(SearchParam searchParam);
 
     SearchResult<DashAssignMeQueryDto> getDashAssignMeOtherData(SearchResult<DashAssignMeQueryDto> searchResult);
+
+    SearchResult<DashWorkTeamQueryDto> getDashWorkTeamResult(SearchParam searchParam);
+
+    SearchResult<DashWorkTeamQueryDto> getDashWorkTeamOtherData(SearchResult<DashWorkTeamQueryDto> searchResult);
 }
