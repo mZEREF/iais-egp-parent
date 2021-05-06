@@ -614,6 +614,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                licenceFeeDto.setBundle(0);
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     licenceFeeDto.setBaseService(appSvcRelatedInfoDto.getServiceCode());
                 }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
@@ -673,7 +674,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
        if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     licenceFeeDto.setIncludeBase(true);
                 }
@@ -706,7 +707,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.info(StringUtil.changeForLog("base service size:"+baseServiceIds.size()));
         if(!onlySpecifiedSvc) {
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                 if (hcsaServiceDto == null) {
                     log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -780,7 +781,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
@@ -813,7 +814,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             log.info(StringUtil.changeForLog("base service size:"+baseServiceIds.size()));
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -905,7 +906,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
@@ -938,7 +939,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             log.info(StringUtil.changeForLog("base service size:"+baseServiceIds.size()));
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
