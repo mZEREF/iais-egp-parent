@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -315,8 +316,6 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         //get lead role
         String curRoleId = loginContext.getCurRoleId();
-        //get login officer work groups
-        Set<String> wrkGrpIdSet = loginContext.getWrkGrpIds();
         //get ASO work group ids
         workGroupIds = getAsoWorkGroupIds(workGroupIds);
         //get PSO work group ids
@@ -383,25 +382,6 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //set filter
         setRoleAndWrkGrpsInParam(memberRole, workGroupIds, searchParam);
         return workGroupIds;
-    }
-
-    private String getAo1WorkGroupByInspOrPso(String workGroupId) {
-        WorkingGroupDto workingGroupDto = organizationMainClient.getWrkGrpById(workGroupId).getEntity();
-        if(workingGroupDto != null) {
-            String wrkGrpDomain = workingGroupDto.getGroupDomain();
-            List<WorkingGroupDto> workingGroupDtos = organizationMainClient.getWorkingGroup(wrkGrpDomain).getEntity();
-            if(!IaisCommonUtils.isEmpty(workingGroupDtos)) {
-                for (WorkingGroupDto wrkGrpDto : workingGroupDtos) {
-                    if(wrkGrpDto != null) {
-                        String workGrpName = wrkGrpDto.getGroupName();
-                        if(!StringUtil.isEmpty(workGrpName) && workGrpName.contains("Level 1 Approval")) {
-                            return wrkGrpDto.getId();
-                        }
-                    }
-                }
-            }
-        }
-        return "";
     }
 
     private List<String> getInspOrPsoWorkGroupByAo1(String workGroupId) {
@@ -569,6 +549,27 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 dashAssignMeQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
             } else {
                 dashAssignMeQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashSupervisorTask")
+    public SearchResult<DashWorkTeamQueryDto> getDashWorkTeamResult(SearchParam searchParam) {
+        return inspectionTaskMainClient.searchDashWorkTeamResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashWorkTeamQueryDto> getDashWorkTeamOtherData(SearchResult<DashWorkTeamQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashWorkTeamQueryDto dashWorkTeamQueryDto : searchResult.getRows()) {
+            if (1 == dashWorkTeamQueryDto.getAppCount()) {
+                dashWorkTeamQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashWorkTeamQueryDto.getAppCount()) {
+                dashWorkTeamQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashWorkTeamQueryDto.setSubmissionType("-");
             }
         }
         return searchResult;
