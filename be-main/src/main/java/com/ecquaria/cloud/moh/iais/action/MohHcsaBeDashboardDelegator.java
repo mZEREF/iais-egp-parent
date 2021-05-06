@@ -760,7 +760,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardQuery(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardQuery start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        String dashSwitchActionValue = (String) ParamUtil.getSessionAttr(bpc.request, "dashSwitchActionValue");
+        String dashSwitchActionValue = (String)ParamUtil.getSessionAttr(bpc.request, "dashSwitchActionValue");
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
         if(BeDashboardConstant.SWITCH_ACTION_BACK.equals(dashActionValue)) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
