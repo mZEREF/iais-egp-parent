@@ -131,7 +131,6 @@ public class PaginationTag extends DivTagSupport {
             sb.append(pageNo-1);
             sb.append("</a></li>");
             sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:void(0);");
-            sb.append(jsFunc).append("('").append(pageNo).append(ENDTAG);
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo + 1 <= pageCount){
