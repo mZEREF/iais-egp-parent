@@ -179,15 +179,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             } catch (Exception e) {
                 ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
             }
-            try {
-                organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
-            } catch (Exception e) {
-                organizationLicDto.getLicenseeDto().setLicenseeType("-");
-            }
-            try {
-                organizationLicDto.getLicenseeDto().setAddrType(AcraConsts.getAddressTypeD().get(organizationLicDto.getLicenseeDto().getAddrType()));
-            }catch (Exception e) {
-                organizationLicDto.getLicenseeDto().setAddrType("-");
+            if(organizationLicDto.getLicenseeDto()!=null){
+                try {
+                    organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
+                } catch (Exception e) {
+                    organizationLicDto.getLicenseeDto().setLicenseeType("-");
+                }
+                try {
+                    organizationLicDto.getLicenseeDto().setAddrType(AcraConsts.getAddressTypeD().get(organizationLicDto.getLicenseeDto().getAddrType()));
+                }catch (Exception e) {
+                    organizationLicDto.getLicenseeDto().setAddrType("-");
+                }
             }
             if (organizationLicDto.getLicenseeIndividualDto() != null) {
                 try {
