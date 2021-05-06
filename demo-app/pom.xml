@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.ecquaria.egp.console</groupId>
             <artifactId>sop</artifactId>
-            <version>RELEASE</version>
+            <version>20.04.0-PATCH1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
