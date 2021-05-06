@@ -239,15 +239,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 } catch (Exception e) {
                     per.getKeyPersonnelDto().setDesignation( "-");
                 }
-                try {
-                    per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
-                } catch (Exception e) {
-                    per.getKeyPersonnelExtDto().setProfessionType("-");
-                }
-                try {
-                    per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
-                } catch (Exception e) {
-                    per.getKeyPersonnelExtDto().setDescription("-");
+                if(per.getKeyPersonnelExtDto()!=null){
+                    try {
+                        per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
+                    } catch (Exception e) {
+                        per.getKeyPersonnelExtDto().setProfessionType("-");
+                    }
+                    try {
+                        per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
+                    } catch (Exception e) {
+                        per.getKeyPersonnelExtDto().setDescription("-");
+                    }
                 }
             }
         }
