@@ -307,21 +307,36 @@ public class FeeAndPaymentGIROPayeeDelegator {
         repMap.put("number","66");
         if(StringUtil.isEmpty(bankCode)){//66
             errorMap.put("bankCode", MessageUtil.replaceMessage("GENERAL_ERR0006","bankCode","field"));
-        }else if(bankCode.length()>=66){
-            repMap.put("fieldNo","Bank Code");
-            errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+        }else {
+            if(bankCode.length()>=66){
+                repMap.put("fieldNo","Bank Code");
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(bankCode)){
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
         if(StringUtil.isEmpty(branchCode)){//66
             errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
-        }else if(branchCode.length()>=66){
-            repMap.put("fieldNo","Branch Code");
-            errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+        }else {
+            if(branchCode.length()>=66){
+                repMap.put("fieldNo","Branch Code");
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(branchCode)){
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
         if(StringUtil.isEmpty(bankAccountNo)){//66
             errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
-        }else if(bankAccountNo.length()>=66){
-            repMap.put("fieldNo","Bank Account No");
-            errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+        }else {
+            if(bankAccountNo.length()>=66){
+                repMap.put("fieldNo","Bank Account No");
+                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(bankAccountNo)){
+                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
         if(StringUtil.isEmpty(bankName)){
             errorMap.put("bankName", MessageUtil.replaceMessage("GENERAL_ERR0006","bankName","field"));
@@ -435,18 +450,30 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     }
 
+    public static boolean isAlphanumeric(CharSequence cs)
+    {
+        int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetterOrDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public static MultipartFile toMultipartFile(String fieldName, String fileName, byte[] fileByteArray) throws Exception {
-         DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-         String contentType = new MimetypesFileTypeMap().getContentType(fileName);
-         FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
-         try (
-         InputStream inputStream = new ByteArrayInputStream(fileByteArray);
-         OutputStream outputStream = fileItem.getOutputStream()
-         ) {
-             FileCopyUtils.copy(inputStream, outputStream);
-         } catch (Exception e) {
-             throw e;
-         }
+        DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+        String contentType = new MimetypesFileTypeMap().getContentType(fileName);
+        FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
+        try (
+                InputStream inputStream = new ByteArrayInputStream(fileByteArray);
+                OutputStream outputStream = fileItem.getOutputStream()
+        ) {
+            FileCopyUtils.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            throw e;
+        }
         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
         return multipartFile;
     }
