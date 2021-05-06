@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,4 +25,10 @@ public interface IntraDashboardClient {
 
     @PostMapping(value = "/halp-intra-dash/dash-kpi-pool/drop")
     FeignResponseEntity<SearchResult<DashKpiPoolAjaxQuery>> searchDashKpiPoolDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-work-team")
+    FeignResponseEntity<SearchResult<DashWorkTeamQueryDto>> searchDashWorkTeamResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-work-team/drop")
+    FeignResponseEntity<SearchResult<DashWorkTeamAjaxQueryDto>> searchDashWorkTeamDropResult(@RequestBody SearchParam searchParam);
 }
