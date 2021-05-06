@@ -56,7 +56,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -191,7 +190,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         if(integer==null){
                             map.put(appGrpPersonId,1);
                         }else {
-                            integer=++integer;
+                            ++integer;
                             map.put(appGrpPersonId,integer);
                         }
                         map1.put(v.getFileRepoId(),map.get(appGrpPersonId));
@@ -200,7 +199,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         if(integer==null){
                             map.put(appSvcPersonId,1);
                         }else {
-                            integer=++integer;
+                            ++integer;
                             map.put(appSvcPersonId,integer);
                         }
                         map1.put(v.getFileRepoId(),map.get(appSvcPersonId));

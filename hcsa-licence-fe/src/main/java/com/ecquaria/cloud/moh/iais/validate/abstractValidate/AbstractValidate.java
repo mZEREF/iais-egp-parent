@@ -41,7 +41,7 @@ public abstract class AbstractValidate implements Validate {
     private void validateFidld(Map<String,String> map,@NotNull Field[] declaredFields,Object o,Integer index){
         for(Field v : declaredFields){
             FieldNotNull annotation = v.getAnnotation(FieldNotNull.class);
-            v.setAccessible(Boolean.TRUE);
+            v.setAccessible(true);
             Object f;
             try {
                  f = v.get(o);

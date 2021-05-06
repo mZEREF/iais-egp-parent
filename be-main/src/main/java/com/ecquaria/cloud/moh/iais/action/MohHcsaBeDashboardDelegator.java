@@ -193,8 +193,8 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardInitPre start ...."));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String backFlag = (String)ParamUtil.getRequestAttr(bpc.request, "dashProcessBackFlag");
-        if(!AppConsts.YES.equals(backFlag)) {
-            if (loginContext != null) {
+        if(loginContext != null&&!AppConsts.YES.equals(backFlag)) {
+            {
                 SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
                 //get appType option
                 List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();

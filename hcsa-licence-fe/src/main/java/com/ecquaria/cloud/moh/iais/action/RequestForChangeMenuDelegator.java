@@ -377,9 +377,10 @@ public class RequestForChangeMenuDelegator {
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
-
-                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+                    for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                        NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                    }
                 }
             }
         }
