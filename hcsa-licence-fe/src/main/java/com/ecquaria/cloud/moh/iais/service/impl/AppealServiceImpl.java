@@ -408,7 +408,8 @@ public class AppealServiceImpl implements AppealService {
                         if(StringUtil.isEmpty(index)){
                             index = String.valueOf(i);
                         }
-                        int indexInt = Integer.parseInt(index);
+                        String e = index.substring(index.lastIndexOf('e') + 1);
+                        int indexInt = Integer.parseInt(e);
                         if(indexInt >= indexMax){
                             indexMax = indexInt;
                         }
