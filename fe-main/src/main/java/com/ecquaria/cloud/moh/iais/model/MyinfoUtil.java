@@ -31,9 +31,7 @@ import org.springframework.context.ApplicationContext;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Date;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -43,8 +41,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public class MyinfoUtil {
 
+	public static String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
+	public static String KEY_MYINFO_TAKEN = "myinfo_token_";
 
-    /**
+
+	/**
      * Retrieves Person data from MyInfo
      *
      * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
@@ -198,4 +199,20 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
+
+	public static  Map<String,String> getSessionForMyInfoTaken(String nirc, String taken){
+		Map<String,String> map = new HashMap<>(2);
+		map.put(KEY_MYINFO_TAKEN+nirc,taken);
+		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,String.valueOf(new Date().getTime()));
+		return  map;
+	}
+
+	public static String getAuthoriseApiUrl(String authApiUrl,String clientId,String attributes,String purpose,String state,String redirectUrl){
+		String authoriseUrl = authApiUrl + "?client_id=" + clientId +
+				"&attributes=" + attributes +
+				"&purpose=" + purpose +
+				"&state=" + state +
+				"&redirect_uri=" + redirectUrl;
+		return authoriseUrl;
+	}
 }
