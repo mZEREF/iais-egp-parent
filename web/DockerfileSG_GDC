@@ -1,4 +1,4 @@
-FROM nexus3:5000/tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
+FROM nexus3:5000/ecq/tomcat:9.0.40-jre8-alpine
 
 COPY target/web.war /usr/local/tomcat/webapps/web.war
 
