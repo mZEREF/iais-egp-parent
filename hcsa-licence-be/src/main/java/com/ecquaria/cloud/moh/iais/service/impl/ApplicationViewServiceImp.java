@@ -178,8 +178,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        Map<String,Integer> map=new HashMap<>();
-        Map<String,Integer> map1=new LinkedHashMap<>();
+        Map<String,Integer> map1=new HashMap<>();
         if(applicationDto!=null){
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
@@ -200,7 +199,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             for(String var :strings){
                                 if(var.contains(entity.getDocTitle() + personType)){
                                     Integer integer1 = map1.get(var);
-                                    max=integer1;
                                     if(integer1>=max){
                                         max=integer1+1;
                                     }
