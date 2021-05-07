@@ -92,8 +92,6 @@ public class MohHcsaBeDashboardAjax {
             map = setDashKpiPoolUrl(map, request, loginContext);
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(switchAction)) {
-
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {

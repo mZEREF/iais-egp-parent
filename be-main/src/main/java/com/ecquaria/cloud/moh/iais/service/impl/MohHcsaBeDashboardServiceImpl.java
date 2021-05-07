@@ -14,6 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -570,6 +573,69 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 dashWorkTeamQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
             } else {
                 dashWorkTeamQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppReplyTask")
+    public SearchResult<DashReplyQueryDto> getDashReplyResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashReplyPoolResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashReplyQueryDto> getDashReplyOtherData(SearchResult<DashReplyQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashReplyQueryDto dashReplyQueryDto : searchResult.getRows()) {
+            if (1 == dashReplyQueryDto.getAppCount()) {
+                dashReplyQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashReplyQueryDto.getAppCount()) {
+                dashReplyQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashReplyQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashWaitApproveTask")
+    public SearchResult<DashWaitApproveQueryDto> getDashWaitApproveResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashWaitApproveResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashWaitApproveQueryDto> getDashWaitApproveOtherData(SearchResult<DashWaitApproveQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashWaitApproveQueryDto dashWaitApproveQueryDto : searchResult.getRows()) {
+            if (1 == dashWaitApproveQueryDto.getAppCount()) {
+                dashWaitApproveQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashWaitApproveQueryDto.getAppCount()) {
+                dashWaitApproveQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashWaitApproveQueryDto.setSubmissionType("-");
+            }
+        }
+        return searchResult;
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppRenewTask")
+    public SearchResult<DashRenewQueryDto> getDashRenewResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashRenewResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashRenewQueryDto> getDashRenewOtherData(SearchResult<DashRenewQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashRenewQueryDto dashRenewQueryDto : searchResult.getRows()) {
+            if (1 == dashRenewQueryDto.getAppCount()) {
+                dashRenewQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashRenewQueryDto.getAppCount()) {
+                dashRenewQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashRenewQueryDto.setSubmissionType("-");
             }
         }
         return searchResult;
