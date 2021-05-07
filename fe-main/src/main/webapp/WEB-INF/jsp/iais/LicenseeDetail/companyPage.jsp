@@ -94,12 +94,6 @@
                                             <iais:field value="${item.getName()}" width="11"/>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Salutation" width="11"/>
-                                            <label class="col-xs-11 col-md-4 control-label">
-                                                <iais:code  code="${item.getSalutation()}"/>
-                                            </label>
-                                        </iais:row>
-                                        <iais:row>
                                             <iais:field value="ID Type" width="11"/>
                                             <label class="col-xs-11 col-md-4 control-label">
                                                 <iais:code  code="${item.getIdType()}"/>
