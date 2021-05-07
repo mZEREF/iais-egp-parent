@@ -5,6 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,4 +29,22 @@ public interface IntraDashboardClient {
 
     @PostMapping(value = "/halp-intra-dash/dash-kpi-pool/drop")
     FeignResponseEntity<SearchResult<DashKpiPoolAjaxQuery>> searchDashKpiPoolDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-reply-pool")
+    FeignResponseEntity<SearchResult<DashReplyQueryDto>> searchDashReplyPoolResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-reply-pool/drop")
+    FeignResponseEntity<SearchResult<DashReplyAjaxQueryDto>> searchDashReplyPoolDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-w-appr")
+    FeignResponseEntity<SearchResult<DashWaitApproveQueryDto>> searchDashWaitApproveResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-w-appr/drop")
+    FeignResponseEntity<SearchResult<DashWaitApproveAjaxQueryDto>> searchDashWaitApproveDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-renew-pool")
+    FeignResponseEntity<SearchResult<DashRenewQueryDto>> searchDashRenewResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-renew-pool/drop")
+    FeignResponseEntity<SearchResult<DashRenewAjaxQueryDto>> searchDashRenewDropResult(@RequestBody SearchParam searchParam);
 }
