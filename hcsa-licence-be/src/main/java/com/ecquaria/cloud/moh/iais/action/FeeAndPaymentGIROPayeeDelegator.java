@@ -304,7 +304,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(StringUtil.isEmpty(acctName)){//60
             errorMap.put("acctName", MessageUtil.replaceMessage("GENERAL_ERR0006","acctName","field"));
         }else {
-            if(acctName.length()>=60){
+            if(acctName.length()>60){
                 repMap.put("number","60");
                 repMap.put("fieldNo","Account Name");
                 errorMap.put("acctName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
