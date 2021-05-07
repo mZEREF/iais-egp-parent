@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ public class ValidateVehicle implements ValidateFlow {
         List<String> vehicleNameList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String>chassisNumList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String>engineNumNumList=new ArrayList<>(appSvcVehicleDtos.size());
+        List<String> validateVehicleName=new ArrayList<>(appSvcVehicleDtos.size());
+        Map<Integer,String> indexMap=new HashMap<>(appSvcVehicleDtos.size());
         for(int i=0;i<appSvcVehicleDtos.size();i++){
             String vehicleName = appSvcVehicleDtos.get(i).getVehicleName();
             String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
@@ -52,7 +56,8 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
                 }else {
                     //validate  vehicle number used
-
+                    validateVehicleName.add(vehicleName);
+                    indexMap.put(i,vehicleName);
                 }
             }
 
@@ -74,6 +79,12 @@ public class ValidateVehicle implements ValidateFlow {
                 }else {
                     engineNumNumList.add(engineNum);
                 }
+            }
+        }
+        if(!validateVehicleName.isEmpty()){
+            List<HcsaLicenceGroupFeeDto> list = hcsaLicenClient.retrieveHcsaLicenceGroupFee(validateVehicleName).getEntity();
+            if(!list.isEmpty()){
+
             }
         }
         log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
