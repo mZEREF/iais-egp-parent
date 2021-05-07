@@ -40,6 +40,7 @@
                         <tr align="center">
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
+                          <th>Findings/Non-Compliances</th>
                           <th>Action Required</th>
                         </tr>
                         </thead>
@@ -47,6 +48,7 @@
                         <tr>
                           <td><c:out value="${inspecUserRecUploadDto.checkClause}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.checkQuestion}"/></td>
+                          <td><c:out value="${inspecUserRecUploadDto.appPremisesPreInspectionNcItemDto.ncs}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.appPremisesPreInspectionNcItemDto.beRemarks}"/></td>
                         </tr>
                         </tbody>
