@@ -322,7 +322,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
             if(!isNumeric(bankCode)){
-                errorMap.put("bankCode", MessageUtil.getMessageDesc("USER_ERR003"));
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
         if(StringUtil.isEmpty(branchCode)){//4
@@ -334,7 +334,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
             if(!isNumeric(branchCode)){
-                errorMap.put("branchCode", MessageUtil.getMessageDesc("USER_ERR003"));
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
         if(StringUtil.isEmpty(bankAccountNo)){//35
