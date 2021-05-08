@@ -274,54 +274,52 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-                                <c:if test="${specLicInfo !=null}">
-                                <div class="table-responsive">
-                                    <c:forEach items="${specLicInfo}" var="map">
-                                        <c:set var="licNo" value="${map.key}"></c:set>
-                                        <c:if test="${appCess.licenceNo==licNo}">
-                                            <div><h4>The following specified healthcare services will also be ceased as
-                                                their
-                                                underlying licensable healthcare service(s) is/are listed above.</h4>
-                                            </div>
-                                            <table class="table-gp tablebox">
-                                                <tr style="text-align:center">
-                                                    <th style="text-align:center;width: 0%">S/N</th>
-                                                    <th style="text-align:center;width: 25%">Special Licensable Service
-                                                        Licence No.
-                                                    </th>
-                                                    <th style="text-align:center;width: 25%">Special Licensable Service
-                                                        Name
-                                                    </th>
-                                                    <th style="text-align:center;width: 25%">Base Service Licence No.
-                                                    </th>
-                                                    <th style="text-align:center;width: 25%">Base Service Name</th>
-                                                </tr>
-                                                <c:forEach items="${map.value}" var="spec" varStatus="index">
-                                                    <tr style="text-align:center">
-                                                        <td>
-                                                            <p><c:out value="${index.count}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.specLicNo}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.specSvcName}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.baseLicNo}"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.baseSvcName}"/></p>
-                                                        </td>
+                                <%--<c:if test="${specLicInfo !=null}">--%>
+                                        <%--<c:forEach items="${specLicInfo}" var="map">--%>
+                                            <%--<c:set var="licNo" value="${map.key}"></c:set>--%>
+                                            <%--<c:if test="${appCess.licenceNo==licNo}">--%>
+                                                <div>
+                                                    <h4>The following specified healthcare services will also be ceased as
+                                                    their
+                                                    underlying licensable healthcare service(s) is/are listed above.</h4>
+                                                </div>
+                                                <table class="table-gp tablebox">
+                                                    <tr>
+                                                        <th style="width: 1%">S/N</th>
+                                                        <th style="width: 15%">Special Licensable Service
+                                                            Licence No.
+                                                        </th>
+                                                        <th style="width: 15%">Special Licensable Service
+                                                            Name
+                                                        </th>
+                                                        <th style="width: 15%">Base Service Licence No.
+                                                        </th>
+                                                        <th style="width: 15%">Base Service Name</th>
                                                     </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </c:if>
-                                    </c:forEach>
-                                    <div class="table-responsive">
-                                        </c:if>
-                                    </div>
-                                    </c:forEach>
+                                                    <%--<c:forEach items="${map.value}" var="spec" varStatus="index">--%>
+                                                        <tr>
+                                                            <td style="width: 1%">
+                                                                <p style="font-size: 12px">1</p>
+                                                            </td>
+                                                            <td style="width: 15%">
+                                                                <p style="font-size: 12px">L/2111943/NMA/001/210</p>
+                                                            </td>
+                                                            <td style="width: 15%">
+                                                                <p style="font-size: 12px">Nuclear Medicine (Assay)</p>
+                                                            </td>
+                                                            <td style="width: 15%">
+                                                                <p style="font-size: 12px">L/2111943/NMA/001/210</p>
+                                                            </td>
+                                                            <td style="width: 15%">
+                                                                <p style="font-size: 12px">Clinical Laboratory</p>
+                                                            </td>
+                                                        </tr>
+                                                    <%--</c:forEach>--%>
+                                                </table>
+                                            <%--</c:if>--%>
+                                        </c:forEach>
+                                            <%--</c:if>--%>
+                                        <%--</c:forEach>--%>
                                 </div>
                                 <br/>
                             </div>
@@ -477,6 +475,6 @@
     var doPrint = function () {
         $('a').prop('disabled',true);
         window.print();
-        window.close();
+        // window.close();
     }
 </script>
