@@ -53,7 +53,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Intented Purpose of Test" width="11" required="true"/>
+                                        <iais:field value="Intended Purpose of Test" width="11" required="true"/>
                                             <iais:value width="11">
                                                 <input name="intendedPurpose" id="intendedPurpose" type="text" maxlength="500" value="${param.intendedPurpose}"/>
                                                 <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
@@ -97,7 +97,7 @@
                                         <iais:field value="Remarks" width="11" required="false"/>
                                         <iais:value width="11">
                                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks"
-                                                      maxlength="255" >${param.remarks}</textarea>
+                                                      maxlength="300" >${param.remarks}</textarea>
                                             <span class="error-msg" name="errorMsg" id="error_remarks"></span>
                                         </iais:value>
                                     </iais:row>
@@ -106,7 +106,7 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit </button>
+                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">NEXT</button>
                                             </div>
                                         </div>
                                     </div>

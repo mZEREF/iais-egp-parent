@@ -30,4 +30,8 @@ public class INTERNET___IaisSubmissionData___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "saveDataLDT", this);
 	}
 
+	public void confirmStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "confirmStep", this);
+	}
+
 }
