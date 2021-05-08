@@ -274,89 +274,89 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-                                <%--<c:if test="${specLicInfo !=null}">--%>
-                                        <%--<c:forEach items="${specLicInfo}" var="map">--%>
-                                            <%--<c:set var="licNo" value="${map.key}"></c:set>--%>
-                                            <%--<c:if test="${appCess.licenceNo==licNo}">--%>
-                                                <div>
-                                                    <h4>The following specified healthcare services will also be ceased as
+                                <c:if test="${specLicInfo !=null}">
+                                    <c:forEach items="${specLicInfo}" var="map">
+                                        <c:set var="licNo" value="${map.key}"></c:set>
+                                        <c:if test="${appCess.licenceNo==licNo}">
+                                            <div>
+                                                <h4>The following specified healthcare services will also be ceased as
                                                     their
                                                     underlying licensable healthcare service(s) is/are listed above.</h4>
-                                                </div>
-                                                <table class="table-gp tablebox">
+                                            </div>
+                                            <table class="table-gp tablebox">
+                                                <tr>
+                                                    <th style="width: 1%">S/N</th>
+                                                    <th style="width: 25%">Special Licensable Service
+                                                        Licence No.
+                                                    </th>
+                                                    <th style="width: 25%">Special Licensable Service
+                                                        Name
+                                                    </th>
+                                                    <th style="width: 25%">Base Service Licence No.
+                                                    </th>
+                                                    <th style="width: 25%">Base Service Name</th>
+                                                </tr>
+                                                <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                     <tr>
-                                                        <th style="width: 1%">S/N</th>
-                                                        <th style="width: 15%">Special Licensable Service
-                                                            Licence No.
-                                                        </th>
-                                                        <th style="width: 15%">Special Licensable Service
-                                                            Name
-                                                        </th>
-                                                        <th style="width: 15%">Base Service Licence No.
-                                                        </th>
-                                                        <th style="width: 15%">Base Service Name</th>
+                                                        <td style="width: 1%">
+                                                            <p style="font-size: 12px"><c:out value="${index.count}"/></p>
+                                                        </td>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.specLicNo}"/></p>
+                                                        </td>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.specSvcName}"/></p>
+                                                        </td>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.baseLicNo}"/></p>
+                                                        </td>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.baseSvcName}"/></p>
+                                                        </td>
                                                     </tr>
-                                                    <%--<c:forEach items="${map.value}" var="spec" varStatus="index">--%>
-                                                        <tr>
-                                                            <td style="width: 1%">
-                                                                <p style="font-size: 12px">1</p>
-                                                            </td>
-                                                            <td style="width: 15%">
-                                                                <p style="font-size: 12px">L/2111943/NMA/001/210</p>
-                                                            </td>
-                                                            <td style="width: 15%">
-                                                                <p style="font-size: 12px">Nuclear Medicine (Assay)</p>
-                                                            </td>
-                                                            <td style="width: 15%">
-                                                                <p style="font-size: 12px">L/2111943/NMA/001/210</p>
-                                                            </td>
-                                                            <td style="width: 15%">
-                                                                <p style="font-size: 12px">Clinical Laboratory</p>
-                                                            </td>
-                                                        </tr>
-                                                    <%--</c:forEach>--%>
-                                                </table>
-                                            <%--</c:if>--%>
-                                        </c:forEach>
-                                            <%--</c:if>--%>
-                                        <%--</c:forEach>--%>
-                                </div>
-                                <br/>
+                                                </c:forEach>
+                                            </table>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:if>
+                                </c:forEach>
                             </div>
+                            <br/>
                     </div>
-                    <div class="row">
-                        <ul>
-                            <li>
-                                <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
-                                    before
-                                    the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                    clinic or clinical laboratory.</p>
-                            </li>
-                            <li>
-                                <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
-                                    intends to
-                                    cease operating the medical clinic shall take all measures as are reasonable and
-                                    necessary
-                                    to ensure that the medical records of every patient are properly transferred to the
-                                    medical
-                                    clinic or other healthcare institution to which such patient is to be transferred.</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="form-check disabled">
-                        <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                               aria-invalid="false">
-                        <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-                            and
-                            agreed with the above information</label>
-                    </div>
-                    <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-                    <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-                    </form>
                 </div>
+                <div class="row">
+                    <ul>
+                        <li>
+                            <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
+                                before
+                                the cessation of operation, letting, sale or disposal of his private hospital, medical
+                                clinic or clinical laboratory.</p>
+                        </li>
+                        <li>
+                            <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
+                                intends to
+                                cease operating the medical clinic shall take all measures as are reasonable and
+                                necessary
+                                to ensure that the medical records of every patient are properly transferred to the
+                                medical
+                                clinic or other healthcare institution to which such patient is to be transferred.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-check disabled">
+                    <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
+                           aria-invalid="false">
+                    <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
+                        and
+                        agreed with the above information</label>
+                </div>
+                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
+                <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 <style>
     #effectiveDate {
@@ -475,6 +475,6 @@
     var doPrint = function () {
         $('a').prop('disabled',true);
         window.print();
-        // window.close();
+        window.close();
     }
 </script>
