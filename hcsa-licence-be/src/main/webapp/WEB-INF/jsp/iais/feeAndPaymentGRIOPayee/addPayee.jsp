@@ -54,7 +54,7 @@
                                 <iais:section title="" id = "supPoolList">
                                     <iais:row>
                                         <iais:field value="HCI Code(s) :"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-4 col-xs-10" style="line-height: 50px;">
                                             <c:forEach items="${hciSession.rows}" var="hci">
                                                 ${hci.hciCode}<br>
                                             </c:forEach>
@@ -62,7 +62,7 @@
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="HCI Name(s) :"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                        <div class="col-sm-7 col-md-4 col-xs-10" style="line-height: 50px;">
                                             <c:forEach items="${hciSession.rows}" var="hci">
                                                 ${hci.hciName}<br>
                                             </c:forEach>
@@ -72,7 +72,7 @@
                                         <iais:field value="Account Name :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="66" style=" font-weight:normal;" name="acctName" value="${acctName}" />
+                                                <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="acctName" value="${acctName}" />
                                                 <div><span  id="error_acctName" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -81,7 +81,7 @@
                                         <iais:field value="Bank Code :"  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
+                                                <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
                                                 <div><span  id="error_bankCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -90,7 +90,7 @@
                                         <iais:field value="Branch Code :"  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
+                                                <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
                                                 <div><span  id="error_branchCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -100,7 +100,7 @@
                                         <iais:field value="Bank Name :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="256" style=" font-weight:normal;" name="bankName" value="${bankName}" />
+                                                <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="bankName" value="${bankName}" />
                                                 <div><span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -109,7 +109,7 @@
                                         <iais:field value="Bank Account No. :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="66" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
+                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
                                                 <div><span  id="error_bankAccountNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -118,7 +118,7 @@
                                         <iais:field value="Customer Reference No. :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="12" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
+                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
                                                 <div><span  id="error_cusRefNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
@@ -171,6 +171,16 @@
             event.returnValue = false;
         }
     }
+
+    function keyNumericPress() {
+        var keyCode = event.keyCode;
+        if (keyCode >= 48 && keyCode <= 57 ) {
+            event.returnValue = true;
+        }else {
+            event.returnValue = false;
+        }
+    }
+
     function doBack(){
         showWaiting();
         $("[name='crud_action_type']").val("back");

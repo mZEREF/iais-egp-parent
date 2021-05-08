@@ -23,7 +23,7 @@
             </div>
             <div class="col-xs-12 col-md-5">
                 <div class="copyright">
-                    <p class="text-right">	&copy; <span class="year">2020</span>  Government Of Singapore. Last Updated 20 Feb 2020.</p>
+                    <p class="text-right">	&copy; <span class="year">2020</span>  Government Of Singapore. Last Updated 01 Jul 2021.</p>
                 </div>
             </div>
         </div>

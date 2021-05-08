@@ -300,37 +300,48 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
         ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(StringUtil.isEmpty(acctName)){
-            errorMap.put("acctName", MessageUtil.replaceMessage("GENERAL_ERR0006","acctName","field"));
-        }
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-        repMap.put("number","66");
-        if(StringUtil.isEmpty(bankCode)){//66
+        if(StringUtil.isEmpty(acctName)){//60
+            errorMap.put("acctName", MessageUtil.replaceMessage("GENERAL_ERR0006","acctName","field"));
+        }else {
+            if(acctName.length()>60){
+                repMap.put("number","60");
+                repMap.put("fieldNo","Account Name");
+                errorMap.put("acctName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(acctName)){
+                errorMap.put("acctName", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
+        }
+        if(StringUtil.isEmpty(bankCode)){//4
             errorMap.put("bankCode", MessageUtil.replaceMessage("GENERAL_ERR0006","bankCode","field"));
         }else {
-            if(bankCode.length()>=66){
+            if(bankCode.length()>4){
+                repMap.put("number","4");
                 repMap.put("fieldNo","Bank Code");
                 errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
-            if(!isAlphanumeric(bankCode)){
-                errorMap.put("bankCode", MessageUtil.getMessageDesc("USER_ERR003"));
+            if(!isNumeric(bankCode)){
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
-        if(StringUtil.isEmpty(branchCode)){//66
+        if(StringUtil.isEmpty(branchCode)){//4
             errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
         }else {
-            if(branchCode.length()>=66){
+            if(branchCode.length()>4){
+                repMap.put("number","4");
                 repMap.put("fieldNo","Branch Code");
                 errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
-            if(!isAlphanumeric(branchCode)){
-                errorMap.put("branchCode", MessageUtil.getMessageDesc("USER_ERR003"));
+            if(!isNumeric(branchCode)){
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
-        if(StringUtil.isEmpty(bankAccountNo)){//66
+        if(StringUtil.isEmpty(bankAccountNo)){//35
             errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
         }else {
-            if(bankAccountNo.length()>=66){
+            if(bankAccountNo.length()>35){
+                repMap.put("number","35");
                 repMap.put("fieldNo","Bank Account No");
                 errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
@@ -338,11 +349,29 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("USER_ERR003"));
             }
         }
-        if(StringUtil.isEmpty(bankName)){
+        if(StringUtil.isEmpty(bankName)){//60
             errorMap.put("bankName", MessageUtil.replaceMessage("GENERAL_ERR0006","bankName","field"));
+        }else {
+            if(bankName.length()>60){
+                repMap.put("number","60");
+                repMap.put("fieldNo","Bank Name");
+                errorMap.put("bankName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(bankName)){
+                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
-        if(StringUtil.isEmpty(cusRefNo)){
+        if(StringUtil.isEmpty(cusRefNo)){//35
             errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
+        }else {
+            if(cusRefNo.length()>35){
+                repMap.put("number","35");
+                repMap.put("fieldNo","Customer Reference No");
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(cusRefNo)){
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
 
         //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -455,6 +484,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {
             if (!Character.isLetterOrDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNumeric(CharSequence cs)
+    {
+        int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i))) {
                 return false;
             }
         }

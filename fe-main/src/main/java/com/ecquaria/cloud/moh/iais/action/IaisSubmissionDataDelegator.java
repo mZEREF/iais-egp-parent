@@ -38,6 +38,9 @@ public class IaisSubmissionDataDelegator {
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
 
+
+    private final String LABORATORY_DEVELOP_TEST_DTO = "laboratoryDevelopTestDto";
+
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null){
@@ -67,6 +70,18 @@ public class IaisSubmissionDataDelegator {
 
     }
 
+    public void confirmStep(BaseProcessClass bpc){
+        LaboratoryDevelopTestDto laboratoryDevelopTestDto = (LaboratoryDevelopTestDto)ParamUtil.getSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO);
+        if (laboratoryDevelopTestDto != null) {
+            LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
+            try {
+                eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
     public void saveDataLDT(BaseProcessClass bpc) throws ParseException {
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = transformPageData(bpc.request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(laboratoryDevelopTestDto,"save");
@@ -76,13 +91,9 @@ public class IaisSubmissionDataDelegator {
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             return;
         }
-        LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
-        try{
-            eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
+
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, laboratoryDevelopTestDto);
     }
 
     private LaboratoryDevelopTestDto transformPageData(HttpServletRequest request) throws ParseException {

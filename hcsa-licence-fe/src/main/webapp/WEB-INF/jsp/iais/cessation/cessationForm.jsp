@@ -198,6 +198,7 @@
                                                                     name="${num.count}patRegNo${uid.count}"
                                                                     value="${appCessHci.patRegNo}"/>
                                                     </div>
+                                                    <span id="error_${num.count}patRegNo${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                                 </div>
                                                 <div class="form-group" id="${num.count}patOthersTakeOver${uid.count}"
                                                      hidden>
@@ -336,7 +337,6 @@
                                 </c:if>
                             </div>
                             </c:forEach>
-
                     </div>
                 </div>
                 <br/>

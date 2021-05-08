@@ -55,8 +55,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -176,7 +178,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        Map<String,Integer> map=new HashMap<>();
         Map<String,Integer> map1=new HashMap<>();
         if(applicationDto!=null){
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
@@ -184,37 +185,27 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
-                    String appGrpPersonId = v.getAppGrpPersonId();
-                    String appSvcPersonId = v.getAppSvcPersonId();
-                    if(appGrpPersonId!=null ){
-                        Integer integer = map.get(appGrpPersonId);
-                        if(integer==null){
-                            map.put(appGrpPersonId,1);
-                        }else {
-                            ++integer;
-                            map.put(appGrpPersonId,integer);
-                        }
-                        map1.put(v.getFileRepoId(),map.get(appGrpPersonId));
-                    }else if(appSvcPersonId!=null){
-                        Integer integer = map.get(appSvcPersonId);
-                        if(integer==null){
-                            map.put(appSvcPersonId,1);
-                        }else {
-                            ++integer;
-                            map.put(appSvcPersonId,integer);
-                        }
-                        map1.put(v.getFileRepoId(),map.get(appSvcPersonId));
-                    }
-                });
-            }
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionByAppId.getAppGrpPrimaryDocDtos();
-            if(appGrpPrimaryDocDtos!=null&&!appGrpPrimaryDocDtos.isEmpty()){
-                appGrpPrimaryDocDtos.forEach((v)->{
+                    Integer seqNum = v.getPersonTypeNum();
+                    String personType = v.getPersonType();
                     String svcDocId = v.getSvcDocId();
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                    if(hcsaSvcDocConfigDto!=null){
-
-
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                    Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
+                    if(integer==null){
+                        Set<String> strings = map1.keySet();
+                        if(strings==null||strings.isEmpty()){
+                            map1.put(entity.getDocTitle() + personType + seqNum,1);
+                        }else {
+                            Integer max=1;
+                            for(String var :strings){
+                                if(var.contains(entity.getDocTitle() + personType)){
+                                    Integer integer1 = map1.get(var);
+                                    if(integer1>=max){
+                                        max=integer1+1;
+                                    }
+                                }
+                            }
+                            map1.put(entity.getDocTitle() + personType + seqNum,max);
+                        }
                     }
                 });
             }
@@ -224,7 +215,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFileRepoId()));
+                    String configDocId = appSupDocDtos.get(i).getConfigDocId();
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(configDocId).getEntity();
+                    Integer personTypeNum = appSupDocDtos.get(i).getPersonTypeNum();
+                    String personType = appSupDocDtos.get(i).getPersonType();
+                    map1.get(entity.getDocTitle() + personType + personTypeNum);
+                    Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
+                    String  psnIndex = StringUtil.nullToEmpty(integer);
                     if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
                         switch (docTitleList.get(j).getDupForPerson()){
                             case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;
