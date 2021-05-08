@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -18,6 +20,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -56,6 +61,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @Autowired
     private MohHcsaBeDashboardService mohHcsaBeDashboardService;
 
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private InspectionMainAssignTaskService inspectionMainAssignTaskService;
@@ -250,6 +257,247 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    @Override
+    public Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+        if(!StringUtil.isEmpty(groupNo)){
+            SearchParam searchParam = new SearchParam(DashRenewAjaxQueryDto.class.getName());
+            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            //filter appGroup NO.
+            searchParam.addFilter("groupNo", groupNo, true);
+            ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppGrpByNo(groupNo).getEntity();
+            //filter app Premises Correlation
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
+            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+            }
+            //filter appNo
+            if(!StringUtil.isEmpty(dashFilterAppNo)){
+                searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
+            }
+            //licence expire days
+            if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
+                searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
+            }
+            //filter page conditions
+            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            //filter work groups
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
+            //search
+            QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewAjax", searchParam);
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = getRenewAjaxResultByParam(searchParam);
+            //set other data
+            setRenewAjaxDataToShow(ajaxResult.getRows());
+            map.put("result", "Success");
+            map.put("ajaxResult", ajaxResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+        if(!StringUtil.isEmpty(groupNo)){
+            SearchParam searchParam = new SearchParam(DashReplyAjaxQueryDto.class.getName());
+            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            //filter appGroup NO.
+            searchParam.addFilter("groupNo", groupNo, true);
+            ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppGrpByNo(groupNo).getEntity();
+            //filter app Premises Correlation
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
+            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+            }
+            //filter appNo
+            if(!StringUtil.isEmpty(dashFilterAppNo)){
+                searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
+            }
+            //filter page conditions
+            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            //filter work groups
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
+            //search
+            QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyAjax", searchParam);
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = getReplyAjaxResultByParam(searchParam);
+            //set other data
+            setReplyAjaxDataToShow(ajaxResult.getRows());
+            map.put("result", "Success");
+            map.put("ajaxResult", ajaxResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+        if(!StringUtil.isEmpty(groupNo)){
+            SearchParam searchParam = new SearchParam(DashWaitApproveAjaxQueryDto.class.getName());
+            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            //filter appGroup NO.
+            searchParam.addFilter("groupNo", groupNo, true);
+            ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppGrpByNo(groupNo).getEntity();
+            //filter app Premises Correlation
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
+            List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
+            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            searchParam.addParam("appCorrId_list", appPremCorrId);
+            for(int i = 0; i < appCorrId_list.size(); i++){
+                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+            }
+            //filter appNo
+            if(!StringUtil.isEmpty(dashFilterAppNo)){
+                searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
+            }
+            //filter page conditions
+            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            //filter work groups
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
+            //search
+            QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveAjax", searchParam);
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = getWaitAjaxResultByParam(searchParam);
+            //set other data
+            setWaitApproveAjaxDataToShow(ajaxResult.getRows());
+            map.put("result", "Success");
+            map.put("ajaxResult", ajaxResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    private List<DashWaitApproveAjaxQueryDto> setWaitApproveAjaxDataToShow(List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos) {
+        if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)){
+            for(DashWaitApproveAjaxQueryDto dashWaitApproveAjaxQueryDto : dashWaitApproveAjaxQueryDtos){
+                //get hciName / address
+                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashWaitApproveAjaxQueryDto.getId());
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                    dashWaitApproveAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
+                } else {
+                    dashWaitApproveAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
+                }
+                //app status
+                dashWaitApproveAjaxQueryDto.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(dashWaitApproveAjaxQueryDto.getAppStatus()));
+                //service
+                HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashWaitApproveAjaxQueryDto.getServiceId()).getEntity();;
+                dashWaitApproveAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
+                dashWaitApproveAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                //application
+                ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashWaitApproveAjaxQueryDto.getApplicationNo()).getEntity();
+                //get license date
+                if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
+                    dashWaitApproveAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                } else {
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+                    Date licExpiryDate = licenceDto.getExpiryDate();
+                    if(licExpiryDate != null) {
+                        dashWaitApproveAjaxQueryDto.setLicenceExpiryDate(licExpiryDate);
+                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, AppConsts.DEFAULT_DATE_FORMAT);
+                        dashWaitApproveAjaxQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);
+                    } else {
+                        dashWaitApproveAjaxQueryDto.setLicenceExpiryDate(null);
+                        dashWaitApproveAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
+                }
+            }
+        }
+        return dashWaitApproveAjaxQueryDtos;
+    }
+
+    private List<DashReplyAjaxQueryDto> setReplyAjaxDataToShow(List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos) {
+        if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)){
+            for(DashReplyAjaxQueryDto dashReplyAjaxQueryDto : dashReplyAjaxQueryDtos){
+                //get hciName / address
+                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashReplyAjaxQueryDto.getId());
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                    dashReplyAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
+                } else {
+                    dashReplyAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
+                }
+                //app status
+                dashReplyAjaxQueryDto.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(dashReplyAjaxQueryDto.getAppStatus()));
+                //service
+                HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashReplyAjaxQueryDto.getServiceId()).getEntity();;
+                dashReplyAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
+                dashReplyAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                //application
+                ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashReplyAjaxQueryDto.getApplicationNo()).getEntity();
+                //get license date
+                if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
+                    dashReplyAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                } else {
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+                    Date licExpiryDate = licenceDto.getExpiryDate();
+                    if(licExpiryDate != null) {
+                        dashReplyAjaxQueryDto.setLicenceExpiryDate(licExpiryDate);
+                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, AppConsts.DEFAULT_DATE_FORMAT);
+                        dashReplyAjaxQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);
+                    } else {
+                        dashReplyAjaxQueryDto.setLicenceExpiryDate(null);
+                        dashReplyAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
+                }
+            }
+        }
+        return dashReplyAjaxQueryDtos;
+    }
+
+    private List<DashRenewAjaxQueryDto> setRenewAjaxDataToShow(List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos) {
+        if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)){
+            for(DashRenewAjaxQueryDto dashRenewAjaxQueryDto : dashRenewAjaxQueryDtos){
+                //get hciName / address
+                AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashRenewAjaxQueryDto.getId());
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                    dashRenewAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
+                } else {
+                    dashRenewAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
+                }
+                //app status
+                dashRenewAjaxQueryDto.setAppStatusStrShow(MasterCodeUtil.getCodeDesc(dashRenewAjaxQueryDto.getAppStatus()));
+                //service
+                HcsaServiceDto hcsaServiceDto = hcsaConfigMainClient.getHcsaServiceDtoByServiceId(dashRenewAjaxQueryDto.getServiceId()).getEntity();;
+                dashRenewAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
+                dashRenewAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
+                //application
+                ApplicationDto applicationDto = applicationMainClient.getAppByNo(dashRenewAjaxQueryDto.getApplicationNo()).getEntity();
+                //get license date
+                if(StringUtil.isEmpty(applicationDto.getOriginLicenceId())){
+                    dashRenewAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                } else {
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(applicationDto.getOriginLicenceId()).getEntity();
+                    Date licExpiryDate = licenceDto.getExpiryDate();
+                    if(licExpiryDate != null) {
+                        dashRenewAjaxQueryDto.setLicenceExpiryDate(licExpiryDate);
+                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, AppConsts.DEFAULT_DATE_FORMAT);
+                        dashRenewAjaxQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);
+                    } else {
+                        dashRenewAjaxQueryDto.setLicenceExpiryDate(null);
+                        dashRenewAjaxQueryDto.setLicenceExpiryDateStr(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
+                }
+            }
+        }
+        return dashRenewAjaxQueryDtos;
     }
 
     private List<DashWorkTeamAjaxQueryDto> setWorkTeamAjaxDataToShow(List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos) {
@@ -506,6 +754,21 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashKpiTaskAjax")
     private SearchResult<DashKpiPoolAjaxQuery> getKpiAjaxResultByParam(SearchParam searchParam) {
         return intraDashboardClient.searchDashKpiPoolDropResult(searchParam).getEntity();
+    }
+
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppRenewAjax")
+    private SearchResult<DashRenewAjaxQueryDto> getRenewAjaxResultByParam(SearchParam searchParam) {
+        return intraDashboardClient.searchDashRenewDropResult(searchParam).getEntity();
+    }
+
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashWaitApproveAjax")
+    private SearchResult<DashWaitApproveAjaxQueryDto> getWaitAjaxResultByParam(SearchParam searchParam) {
+        return intraDashboardClient.searchDashWaitApproveDropResult(searchParam).getEntity();
+    }
+
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppReplyAjax")
+    private SearchResult<DashReplyAjaxQueryDto> getReplyAjaxResultByParam(SearchParam searchParam) {
+        return intraDashboardClient.searchDashReplyPoolDropResult(searchParam).getEntity();
     }
 
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashAssignMeAjax")

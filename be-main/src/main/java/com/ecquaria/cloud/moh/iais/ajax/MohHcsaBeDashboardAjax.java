@@ -13,6 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -80,21 +84,31 @@ public class MohHcsaBeDashboardAjax {
             map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashComPoolUrl(map, loginContext);
+
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
             map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo);
             //set url and kpi color
             map = setDashAssignMeUrl(map, request, loginContext);
+
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
+            map = beDashboardAjaxService.getReplyDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
+            //set url and kpi color
+            map = setReplyPoolUrl(map);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashKpiPoolUrl(map, request, loginContext);
-        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(switchAction)) {
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
+            map = beDashboardAjaxService.getRenewDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
+            //set url and kpi color
+            map = setDashRenewPoolUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
+            map = beDashboardAjaxService.getWaitApproveDropResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
+            //set url and kpi color
+            map = setDashWaitApproveUrl(map, request, loginContext);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
@@ -105,14 +119,111 @@ public class MohHcsaBeDashboardAjax {
         return map;
     }
 
+    private Map<String, Object> setDashWaitApproveUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        String userId = "";
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
+            roleId = loginContext.getCurRoleId();
+        }
+        if(map != null) {
+            SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = (SearchResult<DashWaitApproveAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)) {
+                    for(DashWaitApproveAjaxQueryDto dashWaitApproveAjaxQueryDto : dashWaitApproveAjaxQueryDtos) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashWaitApproveAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskService.getTaskById(dashWaitApproveAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                            dashWaitApproveAjaxQueryDto.setKpiColor(color);
+                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashWaitApproveAjaxQueryDto.getTaskId());
+                                dashWaitApproveAjaxQueryDto.setTaskMaskId(maskId);
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashWaitApproveAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
+                        } else {
+                            dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setReplyPoolUrl(Map<String, Object> map) {
+        if(map != null) {
+            SearchResult<DashReplyAjaxQueryDto> ajaxResult = (SearchResult<DashReplyAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)) {
+                    for(DashReplyAjaxQueryDto dashReplyAjaxQueryDto : dashReplyAjaxQueryDtos) {
+                        dashReplyAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<String, Object> setDashRenewPoolUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
+        String userId = "";
+        String roleId = "";
+        if(loginContext != null && !StringUtil.isEmpty(loginContext.getUserId()) && !StringUtil.isEmpty(loginContext.getCurRoleId())) {
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool user Id =====" + loginContext.getUserId()));
+            log.info(StringUtil.changeForLog("Dashboard Kpi Pool Role Id =====" + loginContext.getCurRoleId()));
+            userId = loginContext.getUserId();
+            roleId = loginContext.getCurRoleId();
+        }
+        if(map != null) {
+            SearchResult<DashRenewAjaxQueryDto> ajaxResult = (SearchResult<DashRenewAjaxQueryDto>) map.get("ajaxResult");
+            if(ajaxResult != null) {
+                List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)) {
+                    for(DashRenewAjaxQueryDto dashRenewAjaxQueryDto : dashRenewAjaxQueryDtos) {
+                        //task is current work
+                        if(!StringUtil.isEmpty(dashRenewAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskService.getTaskById(dashRenewAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                            dashRenewAjaxQueryDto.setKpiColor(color);
+                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashRenewAjaxQueryDto.getTaskId());
+                                dashRenewAjaxQueryDto.setTaskMaskId(maskId);
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
+                                String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
+                                dashRenewAjaxQueryDto.setDashTaskUrl(dashTaskUrl);
+                            } else {
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            }
+                        } else {
+                            dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
     private Map<String, Object> setWorkTeamPoolUrl(Map<String, Object> map) {
         if(map != null) {
-            SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = (SearchResult<DashAssignMeAjaxQueryDto>) map.get("ajaxResult");
+            SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = (SearchResult<DashWorkTeamAjaxQueryDto>) map.get("ajaxResult");
             if(ajaxResult != null) {
-                List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos = ajaxResult.getRows();
-                if(!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)) {
-                    for(DashAssignMeAjaxQueryDto dashAssignMeAjaxQueryDto : dashAssignMeAjaxQueryDtos) {
-                        dashAssignMeAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos = ajaxResult.getRows();
+                if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)) {
+                    for(DashWorkTeamAjaxQueryDto dashWorkTeamAjaxQueryDto : dashWorkTeamAjaxQueryDtos) {
+                        dashWorkTeamAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                     }
                 }
             }
