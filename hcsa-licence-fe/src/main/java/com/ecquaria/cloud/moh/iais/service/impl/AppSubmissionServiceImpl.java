@@ -1698,10 +1698,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList),errorMap,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,mandatoryCount,serviceId,sB);
             }else if(ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)){
                 AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                if(appSvcChargesPageDto!=null){
+                    validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                }
             }else if(ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)){
                 AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                if(appSvcChargesPageDto!=null){
+                    validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                }
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();

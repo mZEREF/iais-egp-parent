@@ -81,12 +81,6 @@ public class ValidateVehicle implements ValidateFlow {
                 }
             }
         }
-        if(!validateVehicleName.isEmpty()){
-            List<HcsaLicenceGroupFeeDto> list = hcsaLicenClient.retrieveHcsaLicenceGroupFee(validateVehicleName).getEntity();
-            if(!list.isEmpty()){
-
-            }
-        }
         log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
     }
 }
