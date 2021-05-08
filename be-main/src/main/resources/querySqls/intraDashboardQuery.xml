@@ -240,7 +240,7 @@
         <![CDATA[
             SELECT DISTINCT T7.ID, T7.GROUP_NO, T7.PMT_STATUS, T7.APP_TYPE, T7.SUBMIT_DT, T7.COU
             FROM TASK_WAITING_APPROVAL_APP_GRP_VIEW T1
-            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID
+            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
@@ -258,7 +258,7 @@
         <![CDATA[
             SELECT DISTINCT T7.ID, T7.APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO, T7.SERVICE_ID, T7.STATUS, T7.HCI_CODE
             FROM TASK_WAITING_APPROVAL_APP_VIEW T7
-            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID
+            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
@@ -277,8 +277,7 @@
     <sql key = "dashAppReplyTask" remarks = "Dashboard Search Applicant's Reply By Application Group">
         <![CDATA[
             SELECT DISTINCT T7.ID, T7.GROUP_NO, T7.PMT_STATUS, T7.APP_TYPE, T7.SUBMIT_DT, T7.COU
-            FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T1
-            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID
+            FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
@@ -296,7 +295,6 @@
         <![CDATA[
             SELECT DISTINCT T7.ID, T7.APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO, T7.SERVICE_ID, T7.STATUS, T7.HCI_CODE
             FROM TASK_WAITING_APPLICANT_REPLY_APP_VIEW T7
-            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
@@ -316,12 +314,11 @@
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.GROUP_NO, T1.PMT_STATUS, T1.APP_TYPE, T1.SUBMIT_DT, T1.COU
             FROM APP_GRP_EXCEEDING_DAY_VIEW T1
-            JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
-            and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             <#if lic_renew_exp??> and T1.LICEXPDAYS <= :lic_renew_exp</#if>
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
@@ -336,7 +333,7 @@
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
             FROM APP_EXCEEDING_DAY_VIEW T1
-            JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>

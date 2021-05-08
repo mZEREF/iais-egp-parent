@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -134,6 +135,9 @@ public class MohHcsaBeDashboardDelegator {
 
     @Autowired
     private InspectionMainService inspectionService;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     /**
      * StartStep: hcsaBeDashboardStart
@@ -558,6 +562,10 @@ public class MohHcsaBeDashboardDelegator {
         }
         if(!StringUtil.isEmpty(hci_address)){
             searchParam.addFilter("hci_address", hci_address, true);
+        }
+        //licence expire days
+        if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(actionValue)) {
+            searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
         }
         return searchParam;
     }
