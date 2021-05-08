@@ -275,90 +275,88 @@
                                     </c:forEach>
                                 </div>
                                 <c:if test="${specLicInfo !=null}">
-                                <div class="table-responsive">
                                     <c:forEach items="${specLicInfo}" var="map">
                                         <c:set var="licNo" value="${map.key}"></c:set>
                                         <c:if test="${appCess.licenceNo==licNo}">
-                                            <div><h4>The following specified healthcare services will also be ceased as
-                                                their
-                                                underlying licensable healthcare service(s) is/are listed above.</h4>
+                                            <div>
+                                                <h4>The following specified healthcare services will also be ceased as
+                                                    their
+                                                    underlying licensable healthcare service(s) is/are listed above.</h4>
                                             </div>
                                             <table class="table-gp tablebox">
-                                                <tr style="text-align:center">
-                                                    <th style="text-align:center;width: 0%">S/N</th>
-                                                    <th style="text-align:center;width: 25%">Special Licensable Service
+                                                <tr>
+                                                    <th style="width: 1%">S/N</th>
+                                                    <th style="width: 25%">Special Licensable Service
                                                         Licence No.
                                                     </th>
-                                                    <th style="text-align:center;width: 25%">Special Licensable Service
+                                                    <th style="width: 25%">Special Licensable Service
                                                         Name
                                                     </th>
-                                                    <th style="text-align:center;width: 25%">Base Service Licence No.
+                                                    <th style="width: 25%">Base Service Licence No.
                                                     </th>
                                                     <th style="text-align:center;width: 25%">Base Service Name</th>
                                                 </tr>
                                                 <c:forEach items="${map.value}" var="spec" varStatus="index">
-                                                    <tr style="text-align:center">
-                                                        <td>
-                                                            <p><c:out value="${index.count}"/></p>
+                                                    <tr>
+                                                        <td style="width: 1%">
+                                                            <p style="font-size: 12px"><c:out value="${index.count}"/></p>
                                                         </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.specLicNo}"/></p>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.specLicNo}"/></p>
                                                         </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.specSvcName}"/></p>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.specSvcName}"/></p>
                                                         </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.baseLicNo}"/></p>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.baseLicNo}"/></p>
                                                         </td>
-                                                        <td>
-                                                            <p><c:out value="${spec.baseSvcName}"/></p>
+                                                        <td style="width: 15%">
+                                                            <p style="font-size: 12px"><c:out value="${spec.baseSvcName}"/></p>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
                                             </table>
                                         </c:if>
                                     </c:forEach>
-                                    <div class="table-responsive">
-                                        </c:if>
-                                    </div>
-                                    </c:forEach>
-                                </div>
-                                <br/>
+                                </c:if>
+                                </c:forEach>
                             </div>
+                            <br/>
                     </div>
-                    <div class="row">
-                        <ul>
-                            <li>
-                                <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
-                                    before
-                                    the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                    clinic or clinical laboratory.</p>
-                            </li>
-                            <li>
-                                <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
-                                    intends to
-                                    cease operating the medical clinic shall take all measures as are reasonable and
-                                    necessary
-                                    to ensure that the medical records of every patient are properly transferred to the
-                                    medical
-                                    clinic or other healthcare institution to which such patient is to be transferred.</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="form-check disabled">
-                        <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                               aria-invalid="false">
-                        <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-                            and
-                            agreed with the above information</label>
-                    </div>
-                    <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-                    <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-                    </form>
                 </div>
+                <div class="row">
+                    <ul>
+                        <li>
+                            <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
+                                before
+                                the cessation of operation, letting, sale or disposal of his private hospital, medical
+                                clinic or clinical laboratory.</p>
+                        </li>
+                        <li>
+                            <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
+                                intends to
+                                cease operating the medical clinic shall take all measures as are reasonable and
+                                necessary
+                                to ensure that the medical records of every patient are properly transferred to the
+                                medical
+                                clinic or other healthcare institution to which such patient is to be transferred.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-check disabled">
+                    <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
+                           aria-invalid="false">
+                    <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
+                        and
+                        agreed with the above information</label>
+                </div>
+                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
+                <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 <style>
     #effectiveDate {
