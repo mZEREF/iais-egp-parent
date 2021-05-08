@@ -36,7 +36,7 @@
                 <div class="center-content">
                     <h2>Acknowledgement</h2>
                     <br>
-                    <span style="font-size:2rem;">Submit Successfully</span>
+                    <span style="font-size:2rem;">Thank you for your submission.</span>
                 </div>
             </div>
             <div class="col-lg-12 col-xs-12">
