@@ -84,37 +84,51 @@ public class MohHcsaBeDashboardAjax {
             map = beDashboardAjaxService.getCommonDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashComPoolUrl(map, loginContext);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(switchAction)) {
             map = beDashboardAjaxService.getAssignMeDropdownResult(groupNo, loginContext, map, searchParamGroup, dashFilterAppNo);
             //set url and kpi color
             map = setDashAssignMeUrl(map, request, loginContext);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.TRUE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(switchAction)) {
             map = beDashboardAjaxService.getReplyDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setReplyPoolUrl(map);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(switchAction)) {
             map = beDashboardAjaxService.getKpiDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashKpiPoolUrl(map, request, loginContext);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
             map = beDashboardAjaxService.getRenewDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashRenewPoolUrl(map, request, loginContext);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(switchAction)) {
             map = beDashboardAjaxService.getWaitApproveDropResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo);
             //set url and kpi color
             map = setDashWaitApproveUrl(map, request, loginContext);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(switchAction)) {
             String dashCommonPoolStatus = (String)ParamUtil.getSessionAttr(request, "dashCommonPoolStatus");
             map = beDashboardAjaxService.getWorkTeamDropdownResult(groupNo, loginContext, map, searchParamGroup, switchAction, dashFilterAppNo, dashCommonPoolStatus);
             //set url and kpi color
             map = setWorkTeamPoolUrl(map);
+            //set dash support flag
+            map.put("dashSupportFlag", AppConsts.FALSE);
         }
         return map;
     }

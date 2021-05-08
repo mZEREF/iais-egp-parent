@@ -191,50 +191,52 @@
                 </c:choose>
               </table>
             </div>
-            <c:choose>
-              <c:when test="${\"AO1\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-support"
-                           onclick="javascript:approve()">Support</a>
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:aoApprove('ao1approve')">Approve</a>
+            <c:if test="${'assignme' eq dashSwitchActionValue}">
+              <c:choose>
+                <c:when test="${\"AO1\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao1approve')">Approve</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-              <c:when test="${\"AO2\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-support"
-                           onclick="javascript:approve()">Support</a>
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                </c:when>
+                <c:when test="${\"AO2\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-              <c:when test="${\"AO3\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:approve()">Approve</a>
-                        <a class="btn btn-primary btn-trigger"
-                           onclick="javascript:trigger()">Trigger to DMS</a>
+                </c:when>
+                <c:when test="${\"AO3\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:approve()">Approve</a>
+                          <a class="btn btn-primary btn-trigger"
+                             onclick="javascript:trigger()">Trigger to DMS</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-            </c:choose>
+                </c:when>
+              </c:choose>
+            </c:if>
           </iais:body>
         </div>
       </div>
@@ -290,7 +292,7 @@
             '/main-web/hcsa/intranet/dashboard/appGroup.do',
             {groupNo: applicationGroupNo},
             function (data) {
-                /*var hastaskList = data.hastaskList;*/
+                let dashSupportFlag = data.dashSupportFlag;
                 let result = data.result;
                 if('Success' == result) {
                     let res = data.ajaxResult;
@@ -300,9 +302,9 @@
                         '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
-                    /*if (hastaskList == "true") {
+                    if ("true" == dashSupportFlag) {
                         html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }*/
+                    }
 
                     html += '<th width="15%">Application No.</th>' +
                         '<th width="15%">Service</th>' +
@@ -323,6 +325,9 @@
                             color = "#DD9C00";
                         }
                         html += '<tr style = "color : ' + color + ';">';
+                        if ("true" == dashSupportFlag) {
+                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        }
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
