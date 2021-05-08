@@ -1,4 +1,3 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <input type="hidden" id="myinfoServiceDown" name="myinfoServiceDown" value="${myinfoServiceDown}">
 <input type="hidden" id="verifyTakenConfiguration" name="verifyTakenConfiguration" value="<c:out value="${verifyTakenConfiguration}"/>">
 <input type="hidden" id="callAuthoriseApiUri" name="callAuthoriseApiUri" value="<c:out value="${callAuthoriseApiUri}"/>">
