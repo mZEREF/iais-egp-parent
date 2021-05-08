@@ -2055,6 +2055,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
 
+                        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)){
+                            String easMtsAddressType = appGrpPremisesDto.getEasMtsAddressType();
+                            if(!StringUtil.isEmpty(easMtsAddressType)){
+                                String blkNo = appGrpPremisesDto.getEasMtsBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
                         }
 
                     }

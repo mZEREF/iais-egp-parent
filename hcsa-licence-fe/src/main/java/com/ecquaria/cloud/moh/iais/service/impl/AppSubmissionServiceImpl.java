@@ -1700,11 +1700,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
                 if(appSvcChargesPageDto!=null){
                     validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                }else {
+                    errorMap.put("appSvcChargesPageDto","appSvcChargesPageDto is null");
                 }
             }else if(ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)){
                 AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
                 if(appSvcChargesPageDto!=null){
                     validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
+                }else {
+                    errorMap.put("otherAppSvcChargesPageDto","other appSvcChargesPageDto is null");
                 }
             }
         }

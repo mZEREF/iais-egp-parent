@@ -69,7 +69,7 @@ public class ValidateCharges implements ValidateFlow {
                 }else if(flag) {
                     int min = Integer.parseInt(minAmount);
                     int max = Integer.parseInt(maxAmount);
-                    if(min> max){
+                    if(min>= max){
                         map.put("maxAmount"+i,MessageUtil.getMessageDesc("NEW_ERR0027"));
                     }
                 }
@@ -121,7 +121,7 @@ public class ValidateCharges implements ValidateFlow {
                 }else if(flag){
                     int min = Integer.parseInt(minAmount);
                     int max = Integer.parseInt(maxAmount);
-                    if(min > max){
+                    if(min >= max){
                         map.put("otherAmountMax"+i,MessageUtil.getMessageDesc("maxAmount"));
                     }
                 }

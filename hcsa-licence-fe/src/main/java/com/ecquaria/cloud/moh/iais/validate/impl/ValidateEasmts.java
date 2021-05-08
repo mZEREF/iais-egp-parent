@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validate.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -122,6 +123,10 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             map.put("easMtsCoLocation"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Hotline", "field"));
         }else {
 
+        }
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+        if(appPremisesOperationalUnitDtos!=null&&!appPremisesOperationalUnitDtos.isEmpty()){
+            //
         }
     }
 

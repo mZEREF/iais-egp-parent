@@ -374,4 +374,30 @@ public class EqRequestForChangeSubmitResultChange {
 
         return true;
     }
+
+    public static boolean eqAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList ,List<AppSvcVehicleDto> oldAppSvcVehicleDtoList){
+        List<AppSvcVehicleDto> n = PageDataCopyUtil.copyAppSvcVehicleDto(appSvcVehicleDtoList);
+        List<AppSvcVehicleDto> o = PageDataCopyUtil.copyAppSvcVehicleDto(oldAppSvcVehicleDtoList);
+        if(!n.equals(o)){
+        return true;
+        }
+        return false;
+    }
+    public static boolean eqAppSvcClinicalDirector(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
+        AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
+        AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);
+        if(!n.equals(o)){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean eqAppSvcClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtos){
+        List<AppSvcClinicalDirectorDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
+        List<AppSvcClinicalDirectorDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
+        if(!n.equals(o)){
+            return true;
+        }
+        return false;
+    }
 }

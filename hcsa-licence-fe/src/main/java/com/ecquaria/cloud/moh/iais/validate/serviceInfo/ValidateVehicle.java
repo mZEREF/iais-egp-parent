@@ -81,6 +81,18 @@ public class ValidateVehicle implements ValidateFlow {
                 }
             }
         }
+        if(!validateVehicleName.isEmpty()){
+            List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
+            if(!entity.isEmpty()){
+                validateVehicleName.forEach((v)->{
+                    indexMap.forEach((k,var)->{
+                        if(v.equals(var)){
+                            map.put("vehicleName"+k,MessageUtil.getMessageDesc("NEW_ERR0028"));
+                        }
+                    });
+                });
+            }
+        }
         log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
     }
 }
