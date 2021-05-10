@@ -3738,9 +3738,25 @@ public class NewApplicationDelegator {
                 }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+                Object attribute = request.getSession().getAttribute(REQUESTINFORMATIONCONFIG);
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())) {
+                        String hciCode="";
+                        if(attribute!=null){
+
+                        }else {
+                            if(oldAppSubmissionDto!=null){
+                                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+                                if(eqHciCode){
+                                    hciCode=  oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode();
+                                }
+                            }
+                        }
                         appGrpPremisesDto.setHciCode(premDto.getHciCode());
+                        if(!StringUtil.isEmpty(hciCode)){
+                            appGrpPremisesDto.setHciCode(hciCode);
+                        }
                         appGrpPremisesDto.setHciNameChanged(premDto.getHciNameChanged());
                         appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());
                         break;

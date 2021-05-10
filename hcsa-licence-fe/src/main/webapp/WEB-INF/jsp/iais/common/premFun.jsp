@@ -395,6 +395,9 @@
                                 $("input[name='isPartEdit']").val('1');
                                 $("input[name='chooseExistData']").val('0');
                                 return;
+                            }else {
+                                $("input[name='chooseExistData']").val('1');
+                                return;
                             }
                         }
                     },
