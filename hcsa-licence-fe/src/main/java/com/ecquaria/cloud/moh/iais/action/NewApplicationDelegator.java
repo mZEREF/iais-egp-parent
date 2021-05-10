@@ -445,7 +445,8 @@ public class NewApplicationDelegator {
                 }
                 if (readOnlyPrem) {
                     premisesType = IaisCommonUtils.genNewHashSet();
-                    premisesType.add(ApplicationConsts.PREMISES_TYPE_ON_SITE);
+                    AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+                    premisesType.add(appGrpPremisesDto.getPremisesType());
                 }
             }
 
