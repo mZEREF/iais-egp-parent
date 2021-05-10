@@ -351,11 +351,8 @@
 
     function doDashboardTaskOrShow(taskId) {
         showWaiting();
-        let dashSwitchActionValue = $('#switchAction').val();
         $("#taskId").val(taskId);
-        if('common' == dashSwitchActionValue) {
-            intraDashboardSubmit('comassign');
-        }
+        intraDashboardSubmit('comassign');
     }
 
     function dashboardAppViewShow(appPremCorrId) {
@@ -396,6 +393,7 @@
 
     function aoApprove(action) {
         if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
             var arr = new Array();
             var num = 0;
             $("input:checkbox:checked").each(function(i){
@@ -417,11 +415,13 @@
                         $('#switchAction').val('approve');
                         intraDashboardSubmit('approve');
                     }else{
+                        dismissWaiting();
                         $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
                         $('#approveAo').modal('show');
                     }
                 }
             });
+            dismissWaiting();
         } else {
             $('#support').modal('show');
         }
@@ -429,6 +429,7 @@
 
     function approve() {
         if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
             var approveStatus = true;
             var data ;
             $("input:checkbox:checked").each(function () {
@@ -441,12 +442,12 @@
 
             console.log(approveStatus);
             if(!approveStatus){
+                dismissWaiting();
                 $('#approveAo .modal-body span').html(data + " You have no access to support.");
                 $('#approveAo').modal('show');
             }else{
                 $('#switchAction').val('approve');
                 $('#action').val('approve');
-                showWaiting();
                 intraDashboardSubmit('approve');
             }
         } else {
