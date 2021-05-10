@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.RoleService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
@@ -70,6 +71,10 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private InspectionMainService inspectionService;
+
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
@@ -639,5 +644,141 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return searchResult;
+    }
+
+    @Override
+    public List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue) {
+        List<SelectOption> appStatusOption = IaisCommonUtils.genNewArrayList();
+        //add status option
+        if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(dashSwitchActionValue)) {
+            appStatusOption = getKpiAppStatusOptionByRole(curRoleId, appStatusOption);
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(dashSwitchActionValue)) {
+            appStatusOption = inspectionService.getAppStatusOption(curRoleId);
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(dashSwitchActionValue)) {
+            appStatusOption = getTeamAppStatusOptionByRole(curRoleId, appStatusOption);
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(dashSwitchActionValue)) {
+            appStatusOption = getWaitAppStatusOptionByRole(curRoleId, appStatusOption);
+
+        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(dashSwitchActionValue)) {
+            appStatusOption = getRenewAppStatusOptionByRole(curRoleId, appStatusOption);
+        }
+        //duplicate removal
+        appStatusOption = delDuplicateStatusOption(appStatusOption);
+        return appStatusOption;
+    }
+
+    private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
+        if(!StringUtil.isEmpty(curRoleId)) {
+            if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+            ) {
+                appStatusOption = inspectionService.getAppStatusOption(curRoleId);
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO3));
+            }
+        }
+        return appStatusOption;
+    }
+
+    private List<SelectOption> getWaitAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
+        if(!StringUtil.isEmpty(curRoleId)) {
+
+        }
+        return appStatusOption;
+    }
+
+    private List<SelectOption> getTeamAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
+        if(!StringUtil.isEmpty(curRoleId)) {
+            if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+            ) {
+                appStatusOption = inspectionService.getAppStatusOption(curRoleId);
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+            }
+        }
+        return appStatusOption;
+    }
+
+    private List<SelectOption> delDuplicateStatusOption(List<SelectOption> appStatusOption) {
+        if(!IaisCommonUtils.isEmpty(appStatusOption)) {
+            List<SelectOption> appStatusOptionSet = IaisCommonUtils.genNewArrayList();
+            List<String> appStatusKeys = IaisCommonUtils.genNewArrayList();
+            for(SelectOption selectOption : appStatusOption) {
+                if(selectOption != null) {
+                    String value = selectOption.getValue();
+                    if(!StringUtil.isEmpty(value) && !appStatusKeys.contains(value)) {
+                        appStatusKeys.add(value);
+                        appStatusOptionSet.add(selectOption);
+                    }
+                }
+            }
+            return appStatusOptionSet;
+        }
+        return appStatusOption;
+    }
+
+    private List<SelectOption> getKpiAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
+        if(!StringUtil.isEmpty(curRoleId)) {
+            if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
+               curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
+               curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+            ) {
+                appStatusOption = inspectionService.getAppStatusOption(curRoleId);
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+            } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO3));
+            }
+        }
+        return appStatusOption;
     }
 }
