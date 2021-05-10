@@ -636,7 +636,7 @@ public class NewApplicationAjaxController {
         String premIndexNo = ParamUtil.getString(request, "premIndexNo");
         String premisesType = ParamUtil.getString(request,"premisesType");
         String premiseIndex = request.getParameter("premiseIndex");
-        if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType)) {
+        if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
             return null;
         }
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);

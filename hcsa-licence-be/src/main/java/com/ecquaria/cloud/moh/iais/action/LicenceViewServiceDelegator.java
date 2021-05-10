@@ -580,6 +580,7 @@ public class LicenceViewServiceDelegator {
         }catch (Throwable e){
             log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","Not able to connect to HERIMS at this moment!");
+            log.error("------>this have error<----- Not able to connect to HERIMS at this moment!");
         }
         HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(hfsmsDtos)) {
