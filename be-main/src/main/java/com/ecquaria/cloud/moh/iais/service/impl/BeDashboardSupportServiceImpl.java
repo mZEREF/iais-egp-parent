@@ -502,7 +502,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                 }
                 String appealType = premiseMiscDto.getAppealType();
                 if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
-                    LicenceDto licenceDto = licenceClient.getLicBylicId(premiseMiscDto.getRelateRecId()).getEntity();
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(premiseMiscDto.getRelateRecId()).getEntity();
                     if(licenceDto != null){
                         appealNo = licenceDto.getLicenceNo();
                         appType = "Licence";
