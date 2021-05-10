@@ -1574,43 +1574,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
                 }
 
-                for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-                    AppSvcPersonnelDto appSvcPersonnelDto = appSvcPersonnelDtos.get(i);
-                    String profRegNo = appSvcPersonnelDto.getProfRegNo();
-                    if(!StringUtil.isEmpty(profRegNo)){
-                        List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                        prgNos.add(profRegNo);
-
-                            if("Y".equals(prsFlag)){
-                                ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-                                professionalParameterDto.setRegNo(prgNos);
-                                professionalParameterDto.setClientId("22222");
-                                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                                String format = simpleDateFormat.format(new Date());
-                                professionalParameterDto.setTimestamp(format);
-                                professionalParameterDto.setSignature("2222");
-                                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                                try {
-                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                            signature2.date(), signature2.authorization()).getEntity();
-                                    String name = professionalResponseDtos.get(0).getName();
-                                    if(StringUtil.isEmpty(name)){
-                                        errorMap.put("regnNo" + i,"GENERAL_ERR0042");
-//                            appSvcCgoDto.setSubSpeciality(null);
-//                            appSvcCgoDto.setSpeciality(null);
-                                    }else {
-                                        appSvcPersonnelDto.setName(name);
-                                    }
-                                }catch (Throwable e){
-                                    bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-                                }
-
-                            }
-
-
-                    }
-                }
+                errorMap = servicePersonPrsValidate(bpc.request,errorMap,appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
@@ -1661,14 +1625,13 @@ public class ClinicalLaboratoryDelegator {
                     psnLength = appSvcPersonnelDtos.size();
                 }
                 List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-                if(!isRfi){
-                    errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
-                }
-                if(!errorMap.isEmpty()){
-                    NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
-                }
+                errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_SVC);
+            }
+            errorMap = servicePersonPrsValidate(bpc.request,errorMap,appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+            if(!errorMap.isEmpty()){
+                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
             }
         }
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
@@ -3812,5 +3775,44 @@ public class ClinicalLaboratoryDelegator {
         }
         log.debug(StringUtil.changeForLog("remove dirty psn doc info end ..."));
         return currentSvcRelatedDto;
+    }
+
+    private Map<String,String> servicePersonPrsValidate(HttpServletRequest request, Map<String,String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+            for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
+                AppSvcPersonnelDto appSvcPersonnelDto = appSvcPersonnelDtos.get(i);
+                String profRegNo = appSvcPersonnelDto.getProfRegNo();
+                if(!StringUtil.isEmpty(profRegNo)){
+                    List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                    prgNos.add(profRegNo);
+
+                    if("Y".equals(prsFlag)){
+                        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+                        professionalParameterDto.setRegNo(prgNos);
+                        professionalParameterDto.setClientId("22222");
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                        String format = simpleDateFormat.format(new Date());
+                        professionalParameterDto.setTimestamp(format);
+                        professionalParameterDto.setSignature("2222");
+                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                        try {
+                            List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                                    signature2.date(), signature2.authorization()).getEntity();
+                            String name = professionalResponseDtos.get(0).getName();
+                            if(StringUtil.isEmpty(name)){
+                                errorMap.put("regnNo" + i,"GENERAL_ERR0042");
+                            }else {
+                                appSvcPersonnelDto.setName(name);
+                            }
+                        }catch (Throwable e){
+                            request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+                            log.error(StringUtil.changeForLog("prs server down ..."));
+                        }
+                    }
+                }
+            }
+        }
+        return errorMap;
     }
 }
