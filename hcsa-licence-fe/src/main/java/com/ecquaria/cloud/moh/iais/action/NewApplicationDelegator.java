@@ -3744,7 +3744,15 @@ public class NewApplicationDelegator {
                     if (!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())) {
                         String hciCode="";
                         if(attribute!=null){
+                            String hciCode1 = premDto.getHciCode();
+                            String oldHciCode = premDto.getOldHciCode();
+                            if(hciCode1!=null&&oldHciCode!=null){
+                                if(hciCode1.equals(oldHciCode)){
+                                    hciCode=hciCode1;
+                                }
+                            }else if(hciCode1==null) {
 
+                            }
                         }else {
                             if(oldAppSubmissionDto!=null){
                                 boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
