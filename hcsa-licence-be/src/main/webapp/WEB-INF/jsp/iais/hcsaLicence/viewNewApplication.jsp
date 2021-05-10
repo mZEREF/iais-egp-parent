@@ -21,8 +21,30 @@
   <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto==null}">
   <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
-  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST008')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST008']}</label>
+      <div class="amend-preview-info">
+        <c:forEach var="appSvcVehicleDto" items="${currentPreviewSvcInfo.appSvcVehicleDtoList}" varStatus="status">
+          <p><strong class="col-xs-6">Vehicle <c:if
+                  test="${fn:length(appSvcVehicleDto)>1}">${status.index+1}</c:if>:</strong><span
+                  class="col-xs-4 col-md-4"></span>
+          </p>
+          <span class="col-xs-6"></span>
+          <table  class="col-xs-12">
+            <tr>
+              <td>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
+              </td>
+              <td>
 
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+      </div>
+
+    </div>
   </c:if>
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST001')}">
@@ -79,6 +101,39 @@
       </c:forEach>
     </div>
 
+  </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST009')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST009']}</label>
+      <div class="amend-preview-info">
+        <c:forEach var="appSvcClinicalDirectorDto" items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" varStatus="status">
+          <p><strong class="col-xs-6">Clinical Director <c:if
+                  test="${fn:length(appSvcClinicalDirectorDto)>1}">${status.index+1}</c:if>:</strong><span
+                  class="col-xs-4 col-md-4"></span>
+          </p>
+          <span class="col-xs-6"></span>
+          <table  class="col-xs-12">
+            <tr>
+              <td>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
+              </td>
+              <td>
+
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+      </div>
+
+    </div>
+  </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST010')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST010']}</label>
+      <div class="amend-preview-info">
+      </div>
+
+    </div>
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST002')}">
     <div class="amended-service-info-gp">
