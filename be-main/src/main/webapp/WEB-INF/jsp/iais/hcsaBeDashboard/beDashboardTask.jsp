@@ -84,7 +84,7 @@
                   <label class="col-xs-12 col-md-4 control-label">Role</label>
                   <div class="col-xs-10 col-sm-7 col-md-6">
                     <iais:select name="beDashRoleId" onchange="chooseCurRole()" options="beDashRoleIds"
-                                 cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}"></iais:select>
+                                 cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}" needSort="true"></iais:select>
                   </div>
                 </div>
               </div>
@@ -113,13 +113,12 @@
                                  value="${dashSearchParam.filters['application_type']}"></iais:select>
                   </iais:value>
                 </iais:row>
-                <c:if test="${'common' ne dashSwitchActionValue}">
+                <c:if test="${'common' ne dashSwitchActionValue && 'reply' ne dashSwitchActionValue}">
                   <iais:row>
                     <iais:field value="Application Status"/>
                     <iais:value width="18">
-                      <iais:select name="application_status" options="appStatusOption"
-                                   cssClass="application_status"
-                                   firstOption="Please Select"
+                      <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                   cssClass="application_status" firstOption="Please Select"
                                    value="${dashSearchParam.filters['application_status']}"></iais:select>
                     </iais:value>
                   </iais:row>
@@ -317,11 +316,11 @@
                         '<tbody>';
                     for (let i = 0; i < res.rowCount; i++) {
                         var color = "black";
-                        if (res.rows[i].kpiColor == "black") {
+                        if ("black" == res.rows[i].kpiColor) {
                             color = "black";
-                        } else if (res.rows[i].kpiColor == "red") {
+                        } else if ("red" == res.rows[i].kpiColor) {
                             color = "red";
-                        } else if (res.rows[i].kpiColor == "amber") {
+                        } else if ("amber" == res.rows[i].kpiColor) {
                             color = "#DD9C00";
                         }
                         html += '<tr style = "color : ' + color + ';">';
