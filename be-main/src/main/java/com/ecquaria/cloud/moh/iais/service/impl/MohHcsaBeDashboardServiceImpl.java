@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
@@ -702,7 +704,13 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     private List<SelectOption> getWaitAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
-
+            String[] statusStrs = new String[]{
+                ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+            };
+            appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
         }
         return appStatusOption;
     }
