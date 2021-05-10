@@ -3089,6 +3089,10 @@ public class HcsaApplicationDelegator {
             if (oldApplication != null) {
                 appealType = MasterCodeUtil.getCodeDesc(oldApplication.getApplicationType());
             }
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(oldAppId).getEntity();
+            if(licenceDto!=null){
+                appealNo = licenceDto.getLicenceNo();
+            }
         }
 
         templateContent.put("ApplicantName", applicantName);
