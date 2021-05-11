@@ -624,6 +624,20 @@ public class WithOutRenewalDelegator {
                         //set svc doc title
                         Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                         appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+                        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                        if(appSvcPrincipalOfficersDtoList!=null){
+                            List<AppSvcPrincipalOfficersDto> poList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
+                            List<AppSvcPrincipalOfficersDto> dpoList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
+                            for(AppSvcPrincipalOfficersDto var : appSvcPrincipalOfficersDtoList){
+                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(var.getPsnType())){
+                                    dpoList.add(var);
+                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(var.getPsnType())){
+                                    poList.add(var);
+                                }
+                            }
+                            appSvcRelatedInfoDto.setPoList(poList);
+                            appSvcRelatedInfoDto.setDpoList(dpoList);
+                        }
                     }
                 }
 

@@ -41,55 +41,48 @@
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:select cssClass="Salutation" name="hciCode" id="hciCode"  options="personnelOptions" firstOption="Please Select" value="${param.hciCode}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_hciCode"></span>
+                                            <iais:select cssClass="Salutation" name="hciCode" id="hciCode"  options="personnelOptions" firstOption="Please Select" value="${laboratoryDevelopTestDto.hciCode}" disabled="disabled"/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Name of LDT Test" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="${param.ldtTestName}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_ldtTestName"></span>
+                                            <input type="text" name="ldtTestName" id="ldtTestName"  maxlength="50" value="${laboratoryDevelopTestDto.ldtTestName}" disabled/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Intended Purpose of Test" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <input name="intendedPurpose" id="intendedPurpose" type="text" maxlength="500" value="${param.intendedPurpose}"/>
-                                                <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
-                                            </iais:value>
+                                        <iais:value width="11">
+                                            <input name="intendedPurpose" id="intendedPurpose" type="text" maxlength="500" value="${laboratoryDevelopTestDto.intendedPurpose}" disabled/>
+                                        </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Date LDT was made or will be made available" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <iais:datePicker id="ldtDate" name="ldtDate" value="${param.ldtDate}"></iais:datePicker>
-                                                <span class="error-msg" name="errorMsg" id="error_ldtDate"></span>
-                                            </iais:value>
+                                        <iais:value width="11">
+                                            <iais:datePicker id="ldtDate" name="ldtDate" dateVal="${laboratoryDevelopTestDto.ldtDate}"></iais:datePicker>
+                                        </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Person responsible for the test" width="11" required="true"/>
                                         <iais:value width="11">
-                                                <input type="text" name="responsePerson" id="responsePerson"  value="${param.responsePerson}" maxlength="66"/>
-                                                <span class="error-msg" name="errorMsg" id="error_responsePerson"></span>
+                                            <input type="text" name="responsePerson" id="responsePerson"  value="${laboratoryDevelopTestDto.responsePerson}" disabled maxlength="66"/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Designation" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="designation" id="designation" value="${param.designation}" maxlength="20"/>
-                                            <span class="error-msg" name="errorMsg" id="error_designation"></span>
+                                            <input type="text" name="designation" id="designation" value="${laboratoryDevelopTestDto.designation}" maxlength="20" disabled/>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Status of Test" width="11" required="true"/>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${param.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1"> Active
+                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
                                         </iais:value>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${param.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0"> Inactive
+                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
                                         </iais:value>
                                         <iais:value width="11" style="padding-top:12px">
-                                            <span class="error-msg" name="errorMsg" id="error_testStatus"></span>
                                         </iais:value>
 
                                     </iais:row>
@@ -97,8 +90,7 @@
                                         <iais:field value="Remarks" width="11" required="false"/>
                                         <iais:value width="11">
                                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks"
-                                                      maxlength="300" >${param.remarks}</textarea>
-                                            <span class="error-msg" name="errorMsg" id="error_remarks"></span>
+                                                      maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
                                         </iais:value>
                                     </iais:row>
                                     <div class="application-tab-footer">
@@ -106,7 +98,7 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">NEXT</button>
+                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -133,6 +125,3 @@
     }
 
 </style>
-<script type="text/javascript">
-
-</script>

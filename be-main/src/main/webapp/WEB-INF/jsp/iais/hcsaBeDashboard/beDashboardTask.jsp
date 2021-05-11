@@ -84,7 +84,7 @@
                   <label class="col-xs-12 col-md-4 control-label">Role</label>
                   <div class="col-xs-10 col-sm-7 col-md-6">
                     <iais:select name="beDashRoleId" onchange="chooseCurRole()" options="beDashRoleIds"
-                                 cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}"></iais:select>
+                                 cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}" needSort="true"></iais:select>
                   </div>
                 </div>
               </div>
@@ -113,13 +113,12 @@
                                  value="${dashSearchParam.filters['application_type']}"></iais:select>
                   </iais:value>
                 </iais:row>
-                <c:if test="${'common' ne dashSwitchActionValue}">
+                <c:if test="${'common' ne dashSwitchActionValue && 'reply' ne dashSwitchActionValue}">
                   <iais:row>
                     <iais:field value="Application Status"/>
                     <iais:value width="18">
-                      <iais:select name="application_status" options="appStatusOption"
-                                   cssClass="application_status"
-                                   firstOption="Please Select"
+                      <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                   cssClass="application_status" firstOption="Please Select"
                                    value="${dashSearchParam.filters['application_status']}"></iais:select>
                     </iais:value>
                   </iais:row>
@@ -191,50 +190,52 @@
                 </c:choose>
               </table>
             </div>
-            <c:choose>
-              <c:when test="${\"AO1\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-support"
-                           onclick="javascript:approve()">Support</a>
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:aoApprove('ao1approve')">Approve</a>
+            <c:if test="${'assignme' eq dashSwitchActionValue}">
+              <c:choose>
+                <c:when test="${\"AO1\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao1approve')">Approve</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-              <c:when test="${\"AO2\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-support"
-                           onclick="javascript:approve()">Support</a>
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                </c:when>
+                <c:when test="${\"AO2\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-              <c:when test="${\"AO3\".equals(curRole)}">
-                <div class="application-tab-footer">
-                  <div class="row">
-                    <div class="col-xs-11 col-md-11">
-                      <div class="text-right">
-                        <a class="btn btn-primary btn-approve"
-                           onclick="javascript:approve()">Approve</a>
-                        <a class="btn btn-primary btn-trigger"
-                           onclick="javascript:trigger()">Trigger to DMS</a>
+                </c:when>
+                <c:when test="${\"AO3\".equals(curRole)}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:approve()">Approve</a>
+                          <a class="btn btn-primary btn-trigger"
+                             onclick="javascript:trigger()">Trigger to DMS</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </c:when>
-            </c:choose>
+                </c:when>
+              </c:choose>
+            </c:if>
           </iais:body>
         </div>
       </div>
@@ -290,7 +291,7 @@
             '/main-web/hcsa/intranet/dashboard/appGroup.do',
             {groupNo: applicationGroupNo},
             function (data) {
-                /*var hastaskList = data.hastaskList;*/
+                let dashSupportFlag = data.dashSupportFlag;
                 let result = data.result;
                 if('Success' == result) {
                     let res = data.ajaxResult;
@@ -300,9 +301,9 @@
                         '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
-                    /*if (hastaskList == "true") {
+                    if ("true" == dashSupportFlag) {
                         html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }*/
+                    }
 
                     html += '<th width="15%">Application No.</th>' +
                         '<th width="15%">Service</th>' +
@@ -315,14 +316,17 @@
                         '<tbody>';
                     for (let i = 0; i < res.rowCount; i++) {
                         var color = "black";
-                        if (res.rows[i].kpiColor == "black") {
+                        if ("black" == res.rows[i].kpiColor) {
                             color = "black";
-                        } else if (res.rows[i].kpiColor == "red") {
+                        } else if ("red" == res.rows[i].kpiColor) {
                             color = "red";
-                        } else if (res.rows[i].kpiColor == "amber") {
+                        } else if ("amber" == res.rows[i].kpiColor) {
                             color = "#DD9C00";
                         }
                         html += '<tr style = "color : ' + color + ';">';
+                        if ("true" == dashSupportFlag) {
+                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        }
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
@@ -347,11 +351,8 @@
 
     function doDashboardTaskOrShow(taskId) {
         showWaiting();
-        let dashSwitchActionValue = $('#switchAction').val();
         $("#taskId").val(taskId);
-        if('common' == dashSwitchActionValue) {
-            intraDashboardSubmit('comassign');
-        }
+        intraDashboardSubmit('comassign');
     }
 
     function dashboardAppViewShow(appPremCorrId) {
@@ -392,6 +393,7 @@
 
     function aoApprove(action) {
         if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
             var arr = new Array();
             var num = 0;
             $("input:checkbox:checked").each(function(i){
@@ -413,11 +415,13 @@
                         $('#switchAction').val('approve');
                         intraDashboardSubmit('approve');
                     }else{
+                        dismissWaiting();
                         $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
                         $('#approveAo').modal('show');
                     }
                 }
             });
+            dismissWaiting();
         } else {
             $('#support').modal('show');
         }
@@ -425,6 +429,7 @@
 
     function approve() {
         if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
             var approveStatus = true;
             var data ;
             $("input:checkbox:checked").each(function () {
@@ -437,12 +442,12 @@
 
             console.log(approveStatus);
             if(!approveStatus){
+                dismissWaiting();
                 $('#approveAo .modal-body span').html(data + " You have no access to support.");
                 $('#approveAo').modal('show');
             }else{
                 $('#switchAction').val('approve');
                 $('#action').val('approve');
-                showWaiting();
                 intraDashboardSubmit('approve');
             }
         } else {

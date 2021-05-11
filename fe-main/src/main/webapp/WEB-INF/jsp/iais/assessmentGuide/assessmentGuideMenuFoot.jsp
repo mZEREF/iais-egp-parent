@@ -195,6 +195,10 @@
         guideSubmit("amend4_1","main");
     });
 
+    $("#submitDataMoh").click(function(){
+        guideSubmit("subDate","main");
+    });
+
     $("#amendLicence4_2").click(function(){
         guideSubmit("amend4_2","main");
     });
@@ -204,7 +208,9 @@
 
     function submitDataMoh(){
         if ($('#submitDateMohLab').is(':checked')){
-            Utils.submit('mainForm','subDate');
+            guideSubmit("submieDateMoh","second");
+        }else{
+            console.log("checkbox is not check")
         }
     }
 </script>

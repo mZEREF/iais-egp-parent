@@ -2,11 +2,15 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -53,4 +57,25 @@ public interface MohHcsaBeDashboardService {
     SearchResult<DashWorkTeamQueryDto> getDashWorkTeamResult(SearchParam searchParam);
 
     SearchResult<DashWorkTeamQueryDto> getDashWorkTeamOtherData(SearchResult<DashWorkTeamQueryDto> searchResult);
+
+    SearchResult<DashReplyQueryDto> getDashReplyResult(SearchParam searchParam);
+
+    SearchResult<DashReplyQueryDto> getDashReplyOtherData(SearchResult<DashReplyQueryDto> searchResult);
+
+    SearchResult<DashWaitApproveQueryDto> getDashWaitApproveResult(SearchParam searchParam);
+
+    SearchResult<DashWaitApproveQueryDto> getDashWaitApproveOtherData(SearchResult<DashWaitApproveQueryDto> searchResult);
+
+    SearchResult<DashRenewQueryDto> getDashRenewResult(SearchParam searchParam);
+
+    SearchResult<DashRenewQueryDto> getDashRenewOtherData(SearchResult<DashRenewQueryDto> searchResult);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/10
+     * @Param: curRoleId, dashSwitchActionValue
+     * @return: List<SelectOption>
+     * @Descripation: get Application status option By Role and Switch
+     */
+    List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue);
 }

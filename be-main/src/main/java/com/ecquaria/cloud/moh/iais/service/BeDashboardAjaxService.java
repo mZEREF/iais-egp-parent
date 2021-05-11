@@ -56,4 +56,31 @@ public interface BeDashboardAjaxService {
      * @Descripation: getWorkTeamDropdownResult
      */
     Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashCommonPoolStatus);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/7
+     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+     * @return: Map<String, Object>
+     * @Descripation: getRenewDropdownResult
+     */
+    Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/8
+     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+     * @return: Map<String, Object>
+     * @Descripation: getReplyDropdownResult
+     */
+    Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/8
+     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+     * @return: Map<String, Object>
+     * @Descripation: getWaitApproveDropResult
+     */
+    Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
 }

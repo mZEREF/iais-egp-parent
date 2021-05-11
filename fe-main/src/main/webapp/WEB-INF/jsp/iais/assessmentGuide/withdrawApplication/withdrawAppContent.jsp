@@ -1,3 +1,4 @@
+<div class="form-check-gp">
 <p class="form-check-title">Please select an application to withdraw:</p>
 <iais:pagination param="withdrawAppParam" result="withdrawAppResult"/>
 <div class="table-gp">

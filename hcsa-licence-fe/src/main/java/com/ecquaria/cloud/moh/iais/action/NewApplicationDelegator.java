@@ -449,7 +449,8 @@ public class NewApplicationDelegator {
                 }
                 if (readOnlyPrem) {
                     premisesType = IaisCommonUtils.genNewHashSet();
-                    premisesType.add(ApplicationConsts.PREMISES_TYPE_ON_SITE);
+                    AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+                    premisesType.add(appGrpPremisesDto.getPremisesType());
                 }
             }
 
@@ -3737,9 +3738,33 @@ public class NewApplicationDelegator {
                 }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+                Object attribute = request.getSession().getAttribute(REQUESTINFORMATIONCONFIG);
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())) {
+                        String hciCode="";
+                        if(attribute!=null){
+                            String hciCode1 = premDto.getHciCode();
+                            String oldHciCode = premDto.getOldHciCode();
+                            if(hciCode1!=null&&oldHciCode!=null){
+                                if(hciCode1.equals(oldHciCode)){
+                                    hciCode=hciCode1;
+                                }
+                            }else if(hciCode1==null) {
+
+                            }
+                        }else {
+                            if(oldAppSubmissionDto!=null){
+                                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+                                if(eqHciCode){
+                                    hciCode=  oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode();
+                                }
+                            }
+                        }
                         appGrpPremisesDto.setHciCode(premDto.getHciCode());
+                        if(!StringUtil.isEmpty(hciCode)){
+                            appGrpPremisesDto.setHciCode(hciCode);
+                        }
                         appGrpPremisesDto.setHciNameChanged(premDto.getHciNameChanged());
                         appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());
                         break;
