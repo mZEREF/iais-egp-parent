@@ -32,6 +32,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -204,6 +205,6 @@ public interface AppConfigClient {
     @GetMapping(value = "/iais-hcsa-service/active-service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> getActiveSvcCorrelation();
 
-    @GetMapping(value = "/iais-hcsa-service/subtype-subsumed-list",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-service/subtype-subsumed-list",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> getSvcSubtypeOrSubsumedByIdList(@RequestBody List<String> ids);
 }
