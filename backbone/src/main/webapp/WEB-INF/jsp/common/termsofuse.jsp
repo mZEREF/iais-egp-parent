@@ -13,33 +13,6 @@
 <div id="Main" class="clearfix">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <div class="heading">
     <h1>Terms of Use</h1>
   </div>
@@ -354,7 +327,7 @@
       </tr>
       </tbody></table>
     <span>
-			Last updated on 1-Aug-2013
+			Last updated on 1-July-2021
           <br><br>
 		</span>
   </div>
