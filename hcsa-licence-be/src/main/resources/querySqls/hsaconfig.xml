@@ -83,6 +83,7 @@
             hcsa.svc_name as service,
             svc.effective_date as start_date,
             svc.end_date as END_DATE,
+            svc.INSPECTION_ENTITY,
             svc.version as version
             from chkl_config_hcsa_service svc
             left join hcsa_service hcsa on svc.svc_code = hcsa.svc_code

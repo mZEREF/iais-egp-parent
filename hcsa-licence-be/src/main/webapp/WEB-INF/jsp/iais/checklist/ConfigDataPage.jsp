@@ -107,6 +107,7 @@
               <iais:sortableHeader  needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="service" value="Service"></iais:sortableHeader>
               <iais:sortableHeader  style="width:13%" needSort="true"   field="subtype_name" value="Service Sub-Type"></iais:sortableHeader>
+              <iais:sortableHeader  style="width:8%" needSort="true"   field="INS_ENT" value="Inspection Entity"></iais:sortableHeader>
               <iais:sortableHeader  style="width:8%" needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
@@ -139,6 +140,7 @@
                     <td>${config.module}</td>
                     <td>${config.svcName}</td>
                     <td>${config.svcSubType}</td>
+                    <td><iais:code code="${config.inspectionEntity}"/></td>
                     <td>${config.hciCode}</td>
                     <td><fmt:formatDate value="${config.eftStartDate}" pattern="dd/MM/yyyy"/></td>
                     <td><fmt:formatDate value="${config.eftEndDate}" pattern = "dd/MM/yyyy"/></td>
