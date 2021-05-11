@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Autowired
@@ -161,6 +163,36 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
         return configInboxClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
+    }
+
+    @Override
+    public boolean canApplyEasOrMts(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+        log.debug(StringUtil.changeForLog("check can create eas or mts service start ..."));
+        boolean canCreateEasOrMts = false;
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            List<String> svcNames = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                svcNames.add(hcsaServiceDto.getSvcName());
+            }
+            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
+            List<HcsaServiceDto>  HcsaServiceDtoList= hcsaConfigClient.getHcsaServiceByNames(svcNames).getEntity();
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:HcsaServiceDtoList){
+                svcIds.add(hcsaServiceDto.getId());
+            }
+            appPremisesDoQueryDto.setLicenseeId(licenseeId);
+            appPremisesDoQueryDto.setSvcIdList(svcIds);
+            String svcNameStr = JsonUtil.parseToJson(svcNames);
+            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
+            log.debug("licence record size {}",premisesDtos.size());
+            log.debug("pending application record size {}",appGrpPremisesEntityDtos.size());
+            if(IaisCommonUtils.isEmpty(premisesDtos) && IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+                canCreateEasOrMts = true;
+            }
+        }
+        log.debug(StringUtil.changeForLog("check can create eas or mts service end ..."));
+        return canCreateEasOrMts;
     }
 
     private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
