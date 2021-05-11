@@ -29,4 +29,5 @@ public interface AssessmentGuideService {
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId, String appType);
     Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds);
+    boolean canApplyEasOrMts(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
 }

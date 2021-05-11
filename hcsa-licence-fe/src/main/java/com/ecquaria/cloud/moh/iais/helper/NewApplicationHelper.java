@@ -1789,6 +1789,7 @@ public class NewApplicationHelper {
         List<SelectOption> existingOnsitePrem = IaisCommonUtils.genNewArrayList();
         List<SelectOption> existingConvPrem = IaisCommonUtils.genNewArrayList();
         List<SelectOption> existingOffsitePrem = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> existingEasOrMtsPrem = IaisCommonUtils.genNewArrayList();
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
                 SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
@@ -1798,6 +1799,8 @@ public class NewApplicationHelper {
                     existingConvPrem.add(sp);
                 }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())){
                     existingOffsitePrem.add(sp);
+                }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
+                    existingEasOrMtsPrem.add(sp);
                 }
             }
         }
@@ -1805,9 +1808,11 @@ public class NewApplicationHelper {
         doSortSelOption(existingOnsitePrem);
         doSortSelOption(existingConvPrem);
         doSortSelOption(existingOffsitePrem);
+        doSortSelOption(existingEasOrMtsPrem);
         premisesSelect.addAll(existingOnsitePrem);
         conveyancePremSel.addAll(existingConvPrem);
         offSitePremSel.addAll(existingOffsitePrem);
+        easAndMtsPremSel.addAll(existingEasOrMtsPrem);
         ParamUtil.setSessionAttr(request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(request, "conveyancePremSel", (Serializable) conveyancePremSel);
         ParamUtil.setSessionAttr(request, "offSitePremSel", (Serializable) offSitePremSel);

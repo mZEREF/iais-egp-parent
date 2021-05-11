@@ -162,4 +162,8 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence-rfc/premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDtoByHciNameAndPremType(@RequestParam("hciName") String hciName, @RequestParam("premType") String premType, @RequestParam("licenseeId")String licenseeId);
+
+    @GetMapping(value = "/hcsa-licence/bundle-licence-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> getBundleLicence(@RequestParam("hciCode")String hciCode, @RequestParam("licenseeId") String licenseeId, @RequestParam("svcName") String svcName);
+
 }
