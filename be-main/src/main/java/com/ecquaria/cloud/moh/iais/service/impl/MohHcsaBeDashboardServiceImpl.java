@@ -498,22 +498,13 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public PoolRoleCheckDto getDashRoleOption(LoginContext loginContext, PoolRoleCheckDto poolRoleCheckDto) {
         List<String> roles = new ArrayList<>(loginContext.getRoleIds());
+        String curRole = loginContext.getCurRoleId();
         if(!IaisCommonUtils.isEmpty(roles)){
             //sort
             Collections.sort(roles);
             List<SelectOption> roleOptions = IaisCommonUtils.genNewArrayList();
             Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
             int index = 0;
-            //current role check key
-            if(roles.size() > 1) {
-                if(RoleConsts.USER_ROLE_BROADCAST.equals(roles.get(0))) {
-                    poolRoleCheckDto.setCheckCurRole("1");
-                } else {
-                    poolRoleCheckDto.setCheckCurRole("0");
-                }
-            } else {
-                poolRoleCheckDto.setCheckCurRole("0");
-            }
             //set role option
             for(String role : roles) {
                 Role roleDto = roleService.getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, role);
@@ -521,6 +512,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     SelectOption so = new SelectOption(index + "", roleDto.getName());
                     roleOptions.add(so);
                     roleMap.put(index + "", role);
+                    if(!StringUtil.isEmpty(role) && role.equals(curRole)){
+                        poolRoleCheckDto.setCheckCurRole(index + "");
+                    }
                     index++;
                 }
             }

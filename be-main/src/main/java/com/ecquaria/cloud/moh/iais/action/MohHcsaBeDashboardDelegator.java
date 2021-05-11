@@ -881,7 +881,7 @@ public class MohHcsaBeDashboardDelegator {
             searchParam = new SearchParam(className);
             searchParam.setPageSize(pageSize);
             searchParam.setPageNo(1);
-            searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
+            searchParam.setSort("SUBMIT_DT", SearchParam.ASCENDING);
         }
         return searchParam;
     }
