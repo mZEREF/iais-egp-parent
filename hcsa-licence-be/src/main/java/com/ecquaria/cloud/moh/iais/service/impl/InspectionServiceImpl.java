@@ -481,7 +481,7 @@ public class InspectionServiceImpl implements InspectionService {
             return superPool;
         } else {
             List<TaskDto> commonPool = IaisCommonUtils.genNewArrayList();
-            for(TaskDto taskDto : superPool){//NOSONAR
+            for(TaskDto taskDto : superPool){
                 if(taskDto != null){
                     if(StringUtil.isEmpty(taskDto.getUserId())){
                         commonPool.add(taskDto);

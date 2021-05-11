@@ -472,7 +472,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     private Map<String, String> containsRoleVal(List<Role> rolesByDomain, String roleId, Map<String, String> fileErrorMap, String errorKey) {
-        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {//NOSONAR
+        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {
             List<String> systemRoleId = IaisCommonUtils.genNewArrayList();
             for (Role role : rolesByDomain) {
                 String id = role.getId();
@@ -486,7 +486,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     private Map<String, String> containsGrpIdVal(List<WorkingGroupDto> workingGroupDtos, String groupId, Map<String, String> fileErrorMap, String errorKey) {
-        if (!IaisCommonUtils.isEmpty(workingGroupDtos)) {//NOSONAR
+        if (!IaisCommonUtils.isEmpty(workingGroupDtos)) {
             List<String> groupIds = IaisCommonUtils.genNewArrayList();
             for (WorkingGroupDto workingGroupDto : workingGroupDtos) {
                 String id = workingGroupDto.getId();
@@ -501,7 +501,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException {
-        SAXReader saxReader = new SAXReader();//NOSONAR
+        SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(xmlFile);
         //root
         Element root = document.getRootElement();

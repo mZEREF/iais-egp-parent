@@ -116,7 +116,7 @@ public class InspecAssignTaskDelegator {
             GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
-            List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+            List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());
             int workGroupIdsSize = 0;
             if(!IaisCommonUtils.isEmpty(workGroupIds)) {
                 workGroupIdsSize = workGroupIds.size();
@@ -236,7 +236,7 @@ public class InspecAssignTaskDelegator {
         if(applicationDto != null) {
             appStatus = applicationDto.getStatus();
         }
-        if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+        if(appHoursStatusList.contains(appStatus)) {
             inspecTaskCreAndAssDto.setEditHoursFlag(AppConsts.COMMON_POOL);
         }
         return inspecTaskCreAndAssDto;
@@ -387,7 +387,7 @@ public class InspecAssignTaskDelegator {
         }
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
-        List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());//NOSONAR
+        List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();

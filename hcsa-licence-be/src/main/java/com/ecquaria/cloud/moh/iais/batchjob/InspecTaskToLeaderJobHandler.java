@@ -190,7 +190,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                     ApplicationDto taskApp = inspectionTaskClient.getApplicationByCorreId(appInspStatusDto.getAppPremCorreId()).getEntity();
                     //get task type
                     List<TaskDto> taskDtoList = organizationClient.getTaskByAppNoStatus(
-                            taskApp.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();//NOSONAR
+                            taskApp.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
                     List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(taskDtoList)) {
                         if (!StringUtil.isEmpty(leads)) {
@@ -219,7 +219,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                                 taskDto1.setUserId(null);
                             }
                             taskDto1.setApplicationNo(taskDto.getApplicationNo());
-                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
+                            createTasks = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto, intranet, createTasks, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                         }
                         if (!IaisCommonUtils.isEmpty(createTasks)) {
                             taskService.createTasks(createTasks);
@@ -247,12 +247,12 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
         if(IaisCommonUtils.isEmpty(taskScoreDtos)){
             log.info(StringUtil.changeForLog("taskScoreDtos = null"));
             JobLogger.log(StringUtil.changeForLog("taskScoreDtos = null"));
-            return leads.get(0);//NOSONAR
+            return leads.get(0);
         } else {
             for(TaskDto taskDto : taskScoreDtos){
                 String userId = taskDto.getUserId();
-                for(String lead : leads) {//NOSONAR
-                    if (!StringUtil.isEmpty(userId)) {//NOSONAR
+                for(String lead : leads) {
+                    if (!StringUtil.isEmpty(userId)) {
                         if(userId.equals(lead)){
                             taskUserDtos.add(taskDto);
                         }
@@ -268,7 +268,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
         if(IaisCommonUtils.isEmpty(taskUserDtos)){
             log.info(StringUtil.changeForLog("taskUserDtos = null" ));
             JobLogger.log(StringUtil.changeForLog("taskUserDtos = null" ));
-            return leads.get(0);//NOSONAR
+            return leads.get(0);
         } else {
             int score1 = 0;
             String lead = "";

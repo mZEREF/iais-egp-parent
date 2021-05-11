@@ -1297,12 +1297,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
        String [] startDateHHMM = getStringsByHHDD(startDate);
        if(startDateHHMM != null && startDateHHMM.length == 2){
            serListDto.setStartHour(startDateHHMM[0]);
-           serListDto.setStartMin(startDateHHMM[1]); //NOSONAR
+           serListDto.setStartMin(startDateHHMM[1]);
        }
         String [] endDateHHMM = getStringsByHHDD(endDate);
         if(endDateHHMM != null && endDateHHMM.length == 2){
             serListDto.setEndHour(endDateHHMM[0]);
-            serListDto.setEndMin(endDateHHMM[1]);  //NOSONAR
+            serListDto.setEndMin(endDateHHMM[1]);
         }
         if( !StringUtil.isEmpty(appPremCorrId)){
           getTcuInfo(serListDto,appPremCorrId);
@@ -2047,14 +2047,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     String [] startDateHHMM = getStringsByHHDD(startDateTime);
                     if(startDateHHMM != null && startDateHHMM.length == 2){
                         serListDto.setStartHour(startDateHHMM[0]);
-                        serListDto.setStartMin(startDateHHMM[1]); //NOSONAR
+                        serListDto.setStartMin(startDateHHMM[1]);
                         serListDto.setStartTime(startDateTime);
                     }
                     String [] endDateHHMM = getStringsByHHDD(endDateDateTime);
                     if(endDateHHMM != null && endDateHHMM.length == 2){
                         String endHour = String.valueOf(Integer.parseInt(endDateHHMM[0]) + 1);
                         serListDto.setEndHour(endHour);
-                        String endMin = endDateHHMM[1]; //NOSONAR
+                        String endMin = endDateHHMM[1];
                         serListDto.setEndMin(endMin);
                         serListDto.setEndTime( endHour+" : " + endMin);
                     }

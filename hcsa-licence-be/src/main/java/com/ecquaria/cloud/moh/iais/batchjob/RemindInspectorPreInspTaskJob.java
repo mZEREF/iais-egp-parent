@@ -137,7 +137,7 @@ public class RemindInspectorPreInspTaskJob {
             if(days == nowDays){
                 Map<String, Object> templateMap = getEmailField(applicationDto, appPremisesCorrelationDto);
                 List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){//NOSONAR
+                if(!IaisCommonUtils.isEmpty(taskDtos)){
                     for(TaskDto taskDto : taskDtos){
                         if(taskDto != null) {
                             //send email and sms
@@ -154,15 +154,15 @@ public class RemindInspectorPreInspTaskJob {
         String workGrpId = taskDto.getWkGrpId();
         //send sms
         List<String> leads = organizationClient.getInspectionLead(workGrpId).getEntity();
-        if (!StringUtil.isEmpty(userId)) {//NOSONAR
+        if (!StringUtil.isEmpty(userId)) {
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
             if (orgUserDto != null) {
                 sendSms(orgUserDto, taskDto);
             }
         }
-        if (!IaisCommonUtils.isEmpty(leads)) {//NOSONAR
+        if (!IaisCommonUtils.isEmpty(leads)) {
             for (String lead : leads) {
-                if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {//NOSONAR
+                if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {
                     OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
                     if (orgUserDtoLead != null) {
                         sendSms(orgUserDtoLead, taskDto);
@@ -180,15 +180,15 @@ public class RemindInspectorPreInspTaskJob {
             JobLogger.log(StringUtil.changeForLog("msgTemplateDto is INACTIVE......."));
         } else {
             if (msgTemplateDto != null) {
-                if (!StringUtil.isEmpty(userId)) {//NOSONAR
+                if (!StringUtil.isEmpty(userId)) {
                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
                     if (orgUserDto != null) {
                         sendEmail(orgUserDto, msgTemplateDto, taskDto, templateMap);
                     }
                 }
-                if (!IaisCommonUtils.isEmpty(leads)) {//NOSONAR
+                if (!IaisCommonUtils.isEmpty(leads)) {
                     for (String lead : leads) {
-                        if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {//NOSONAR
+                        if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {
                             OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
                             if (orgUserDtoLead != null) {
                                 sendEmail(orgUserDtoLead, msgTemplateDto, taskDto, templateMap);
@@ -237,7 +237,7 @@ public class RemindInspectorPreInspTaskJob {
             if(!StringUtil.isEmpty(emailAddress)) {
                 receiptEmail.add(emailAddress);
             }
-            templateMap.put("officer_name", orgUserDto.getDisplayName());//NOSONAR
+            templateMap.put("officer_name", orgUserDto.getDisplayName());
             String emailTemplate = msgTemplateDto.getMessageContent();
             //replace num
             emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);

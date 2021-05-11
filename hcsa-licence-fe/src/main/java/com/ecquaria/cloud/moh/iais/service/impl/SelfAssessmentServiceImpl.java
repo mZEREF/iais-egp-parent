@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -46,13 +45,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -60,6 +52,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author: yichen
@@ -332,7 +329,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         svcNameList.add(svcName);
                     });
 
-                    String randomStr = IaisEGPHelper.generateRandomString(26);//NOSONAR
+                    String randomStr = IaisEGPHelper.generateRandomString(26);
                     templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
                     templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
@@ -350,7 +347,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
 
-        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);//NOSONAR
+        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
         emailContent_003.put("applicationNo", tlGroupNumber);
         emailContent_003.put("applicationType", tlAppType);
         emailContent_003.put("applicationDate", Formatter.formatDate(tlDate));

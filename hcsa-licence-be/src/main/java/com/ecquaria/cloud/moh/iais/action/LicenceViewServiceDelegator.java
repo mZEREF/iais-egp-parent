@@ -618,7 +618,7 @@ public class LicenceViewServiceDelegator {
     }
 
     private List<ComplaintDto> addMoneySymbol(List<ComplaintDto> complaints) {
-        if(!IaisCommonUtils.isEmpty(complaints)){//NOSONAR
+        if(!IaisCommonUtils.isEmpty(complaints)){
             for(ComplaintDto complaintDto : complaints){
                 if(complaintDto != null && !StringUtil.isEmpty(complaintDto.getFineamount())) {
                     String money = "$" + complaintDto.getFineamount();
@@ -1840,8 +1840,8 @@ public class LicenceViewServiceDelegator {
                 copyOldAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto1);
             }
         }
-        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);//NOSONAR
-        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);//NOSONAR
+        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);
+        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);
 
     }
     private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList , List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList,Map<String,String> map) throws Exception{

@@ -766,9 +766,9 @@ public class ConfigServiceImpl implements ConfigService {
             for(int i = 0;i<hcsaSvcDocConfigDtoList.size();i++){
                 String docTitle = hcsaSvcDocConfigDtoList.get(i).getDocTitle();
                 if(StringUtil.isEmpty(docTitle)){
-                    errorMap.put("commonDoc"+i,Name_of_Info_Field); //NOSONAR
+                    errorMap.put("commonDoc"+i,Name_of_Info_Field);
                 }else if(docTitle.length()>255){
-                    errorMap.put("commonDoc","Illegal operation"); //NOSONAR
+                    errorMap.put("commonDoc","Illegal operation");
                 }else {
                     if(stringBuilder.toString().contains(docTitle)){
 

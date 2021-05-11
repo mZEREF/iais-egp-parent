@@ -471,7 +471,7 @@ public class TaskServiceImpl implements TaskService {
             Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
             List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
             receiptEmail.add(orgUserDto.getEmail());
-            templateMap.put("appNo",appNo);//NOSONAR
+            templateMap.put("appNo",appNo);
             String mesContext;
             if (templateMap != null && !templateMap.isEmpty()) {
                 try {

@@ -285,7 +285,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         String checkUser = systemAssignTaskDto.getCheckUser();
         Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
         Map<String, String> workGroupIdMap = systemAssignTaskDto.getWorkGroupIdMap();
-        if(inspectorByGroup != null && !StringUtil.isEmpty(checkGroup)){//NOSONAR
+        if(inspectorByGroup != null && !StringUtil.isEmpty(checkGroup)){
             if(workGroupIdMap != null){
                 String workGroupId = workGroupIdMap.get(checkGroup);
                 if(!StringUtil.isEmpty(workGroupId)) {
@@ -299,7 +299,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             if(systemOfficerOption != null){
                 for(SelectOption so : systemOfficerOption){
                     String value = so.getValue();
-                    if(!StringUtil.isEmpty(value) && value.equals(checkUser)){//NOSONAR
+                    if(!StringUtil.isEmpty(value) && value.equals(checkUser)){
                         systemAssignTaskDto.setCheckUserName(so.getText());
                     }
                 }
@@ -327,7 +327,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         Map<String, Map<String, String>> groupCheckUserIdMap = systemAssignTaskDto.getGroupCheckUserIdMap();
         //set new task user Id and work group Id
         TaskDto createTask = new TaskDto();
-        if(groupCheckUserIdMap != null && !StringUtil.isEmpty(checkGroup)){//NOSONAR
+        if(groupCheckUserIdMap != null && !StringUtil.isEmpty(checkGroup)){
             if(workGroupIdMap != null){
                 String workGroupId = workGroupIdMap.get(checkGroup);
                 createTask.setWkGrpId(workGroupId);

@@ -1409,7 +1409,7 @@ public class LicenceApproveBatchjob {
             }
 
             //create LicPremisesScopeDto
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremCorrecId);//NOSONAR
+            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremCorrecId);
             if (!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)) {
                 List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtoList) {
