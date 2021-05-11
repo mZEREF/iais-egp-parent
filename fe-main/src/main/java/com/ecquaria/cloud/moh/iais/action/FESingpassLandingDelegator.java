@@ -162,6 +162,7 @@ public class FESingpassLandingDelegator {
             userSession.setScp(scp);
             ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
         }else {
+            //todo Change to call MyInfo
             Optional<MyInfoDto> infoOpt = Optional.ofNullable(myInfoAjax.getMyInfo(identityNo));
             if (infoOpt.isPresent()){
                 MyInfoDto myInfo = infoOpt.get();

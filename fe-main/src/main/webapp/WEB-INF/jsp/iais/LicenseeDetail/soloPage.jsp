@@ -113,7 +113,13 @@
     })
 
     $("#reLoadMyInfo").click(function () {
-        $("[name='crud_action_type']").val('refresh');
-        $('#mainForm').submit();
+        if(verifyTaken()){
+            $("[name='crud_action_type']").val('refresh');
+            $('#mainForm').submit();
+        }else {
+            // To obtain authorization
+            showWaiting();
+            callAuthoriseApi();
+        }
     })
 </script>

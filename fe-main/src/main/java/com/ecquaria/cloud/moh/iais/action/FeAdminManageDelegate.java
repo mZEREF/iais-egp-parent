@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,7 +230,7 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
                 LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
                 boolean amendLicensee = (needRefersh && licenseeDto!=null);
                 if( !needRefersh){
@@ -258,13 +259,14 @@ public class FeAdminManageDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, "inter_user_attr");
         if(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber())){
-            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),request);
             if(myInfoDto != null){
                 if(!myInfoDto.isServiceDown()){
                     feUserDto.setEmail(myInfoDto.getEmail());
                     feUserDto.setMobileNo(myInfoDto.getMobileNo());
                     feUserDto.setDisplayName(myInfoDto.getUserName());
                     ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
+                    ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum(),myInfoDto);
                 }else {
                     ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
                 }
