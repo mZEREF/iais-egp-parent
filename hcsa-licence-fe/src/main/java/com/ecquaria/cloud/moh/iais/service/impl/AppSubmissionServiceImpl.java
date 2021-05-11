@@ -655,6 +655,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             int easMtsVehicleCount = getEasMtsVehicleCount(appSvcRelatedInfoDtos);
+            log.debug("eas nad mts vehicle count is {}",easMtsVehicleCount);
             List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = appConfigClient.getActiveBundleDtoList().getEntity();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
@@ -691,6 +692,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setExistOnsite(existingOnSiteLic);
                 //set bundle
                 if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
+                    log.debug(StringUtil.changeForLog("set bundle info ..."));
                     if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
                         if(hadEas && hadMts){
                             //judge vehicle count
@@ -714,6 +716,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     } else{
                         licenceFeeDto.setBundle(0);
                     }
+                }else{
+                    licenceFeeDto.setBundle(0);
                 }
                 licenceFeeQuaryDtos.add(licenceFeeDto);
             }
@@ -2885,22 +2889,32 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     }
 
-    private boolean getBundleLicenceByHciCode(String hciCode, String licenseeId, String svcName) {
-        if(StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(licenseeId)){
+    private boolean getBundleLicenceByHciCode(String hciCode, String licenseeId, List<String> svcNameList) {
+        if(StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(svcNameList)){
             return false;
         }
-        return licenceClient.getBundleLicence(hciCode,licenseeId,svcName).getEntity();
+        return licenceClient.getBundleLicence(hciCode,licenseeId,svcNameList).getEntity();
     }
 
-    private HcsaFeeBundleItemDto getBundleDtoBySvcCode(List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String svcCode){
-        HcsaFeeBundleItemDto result = null;
+    private List<HcsaFeeBundleItemDto> getBundleDtoBySvcCode(List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String svcCode){
+        List<HcsaFeeBundleItemDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && !StringUtil.isEmpty(svcCode)){
+            //get target bundleId
+            String bundleId = null;
             for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:hcsaFeeBundleItemDtos){
                 if(svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())){
-                    result = hcsaFeeBundleItemDto;
+                    bundleId = hcsaFeeBundleItemDto.getBundleId();
                     break;
                 }
             }
+            if(!StringUtil.isEmpty(bundleId)){
+                for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:hcsaFeeBundleItemDtos){
+                    if(bundleId.equals(hcsaFeeBundleItemDto.getBundleId()) && !svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())){
+                        result.add(hcsaFeeBundleItemDto);
+                    }
+                }
+            }
+
         }
         return result;
     }
@@ -2922,11 +2936,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, String hciCode, List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount){
-        HcsaFeeBundleItemDto bundleDto = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos,serviceCode);
+        List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos,serviceCode);
         boolean hadBundleLicence = false;
-        if(bundleDto != null){
-            hadBundleLicence = getBundleLicenceByHciCode(hciCode, licenseeId, HcsaServiceCacheHelper.getServiceByCode(serviceCode).getSvcName());
+        if(!IaisCommonUtils.isEmpty(bundleDtos)){
+            log.debug(StringUtil.changeForLog("get bundle licence ..."));
+            log.debug("hciCode is {}",hciCode);
+            log.debug("licenseeId is {}",licenseeId);
+            List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
+            for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:bundleDtos){
+                bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
+            }
+            hadBundleLicence = getBundleLicenceByHciCode(hciCode, licenseeId, bundleSvcNameList);
         }
+        log.debug("hadBundleLicence is {}",hadBundleLicence);
         if(hadBundleLicence){
             //found bundle licence
             licenceFeeDto.setBundle(4);
