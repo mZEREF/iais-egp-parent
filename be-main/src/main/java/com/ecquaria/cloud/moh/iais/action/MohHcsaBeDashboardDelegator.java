@@ -791,11 +791,6 @@ public class MohHcsaBeDashboardDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null) {
             SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
-            //role
-            String curRoleId = loginContext.getCurRoleId();
-            if(!StringUtil.isEmpty(curRoleId)) {
-                searchParam.addFilter("dashRoleId", curRoleId, true);
-            }
             //user uuid
             String userId = loginContext.getUserId();
             if(!StringUtil.isEmpty(userId)) {
@@ -803,6 +798,11 @@ public class MohHcsaBeDashboardDelegator {
             }
             //set form value
             searchParam = setFilterByDashForm(searchParam, bpc.request, BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME, loginContext);
+            //role
+            String curRoleId = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(curRoleId)) {
+                searchParam.addFilter("dashRoleId", curRoleId, true);
+            }
             //app status
             List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);

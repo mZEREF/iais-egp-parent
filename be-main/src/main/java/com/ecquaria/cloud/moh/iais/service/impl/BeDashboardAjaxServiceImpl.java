@@ -316,10 +316,10 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
             List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            String appPremCorrId = SqlHelper.constructInCondition("T7.ID", appCorrId_list.size());
             searchParam.addParam("appCorrId_list", appPremCorrId);
             for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+                searchParam.addFilter("T7.ID" + i, appCorrId_list.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
@@ -356,10 +356,10 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             //filter app Premises Correlation
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationMainClient.getPremCorrDtoByAppGroupId(applicationGroupDto.getId()).getEntity();
             List<String> appCorrId_list = getAppPremCorrIdsByDto(appPremisesCorrelationDtos);
-            String appPremCorrId = SqlHelper.constructInCondition("T7.REF_NO", appCorrId_list.size());
+            String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
             searchParam.addParam("appCorrId_list", appPremCorrId);
             for(int i = 0; i < appCorrId_list.size(); i++){
-                searchParam.addFilter("T7.REF_NO" + i, appCorrId_list.get(i));
+                searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
             }
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
