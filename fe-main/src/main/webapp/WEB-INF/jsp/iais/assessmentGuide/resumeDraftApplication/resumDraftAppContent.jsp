@@ -1,3 +1,4 @@
+<div class="form-check-gp">
 <p class="form-check-title">Please select a draft application to resume</p>
 <iais:pagination param="draftAppSearchParam" result="draftAppSearchResult"/>
 <div class="table-gp">

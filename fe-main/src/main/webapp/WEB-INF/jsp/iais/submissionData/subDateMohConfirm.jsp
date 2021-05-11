@@ -85,5 +85,43 @@
                                         <iais:value width="11" style="padding-top:12px">
                                         </iais:value>
 
-</body>
-</html>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Remarks" width="11" required="false"/>
+                                        <iais:value width="11">
+                                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks"
+                                                      maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
+                                        </iais:value>
+                                    </iais:row>
+                                    <div class="application-tab-footer">
+                                        <div class="row">
+                                            <div class="col-xs-2 col-md-2">
+                                                <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide"><em class="fa fa-angle-left"></em> Back</a></div>
+                                            <div class="text-right col-xs-9 col-md-9">
+                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input hidden name="id" value="${user.id}">
+    <input hidden name="action" id="action" value="">
+    <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
+</form>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<style>
+    .mandatory {
+        color: rgb(255, 0, 0);
+    }
+
+    .prelogin-title{
+        padding-left: 90px;
+    }
+
+</style>
