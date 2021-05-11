@@ -45,10 +45,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -418,13 +415,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeDto.setEmilAddr(feUserDto.getEmail());
             licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
-            licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
-            licenseeIndividualDto.setIdType(feUserDto.getIdType());
-            licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
-            licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
-            licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+            if (Objects.nonNull(licenseeIndividualDto)) {
+                licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+                licenseeIndividualDto.setIdType(feUserDto.getIdType());
+                licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
+                licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
+                licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+                licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
+            }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
-            licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
             refreshLicensee(licenseeDto);
         }
         return licenseeDto;
