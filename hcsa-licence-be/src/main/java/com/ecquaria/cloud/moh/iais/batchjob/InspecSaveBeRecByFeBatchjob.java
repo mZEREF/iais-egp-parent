@@ -58,7 +58,7 @@ public class InspecSaveBeRecByFeBatchjob {
                     try {
                         log.info(StringUtil.changeForLog("Rectification AppId" + map.getKey()));
                         List<ProcessFileTrackDto> processFileTrackDtoList = map.getValue();
-                        if(!IaisCommonUtils.isEmpty(processFileTrackDtoList)) {//NOSONAR
+                        if(!IaisCommonUtils.isEmpty(processFileTrackDtoList)) {
                             List<String> reportIds = inspecSaveBeRecByService.compressFile(processFileTrackDtoList);
                             if (!IaisCommonUtils.isEmpty(reportIds)) {
                                 inspecSaveBeRecByService.saveData(intranet, processFileTrackDtoList, reportIds);

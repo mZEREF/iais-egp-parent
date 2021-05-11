@@ -227,7 +227,7 @@ public class InspectionPreDelegator {
         String preInspecComments = ParamUtil.getRequestString(bpc.request,"preInspecComments");
         String checkRbStage = ParamUtil.getRequestString(bpc.request,"checkRbStage");
         String[] preInspRfiCheckStr = ParamUtil.getStrings(bpc.request,"preInspRfiCheck");
-        //NOSONAR
+
         List<String> preInspRfiCheck = getPreInspListByArray(preInspRfiCheckStr);
         inspectionPreTaskDto.setPreInspRfiCheck(preInspRfiCheck);
         inspectionPreTaskDto.setReMarks(preInspecRemarks);
@@ -247,7 +247,7 @@ public class InspectionPreDelegator {
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
-            //NOSONAR
+
             if(preInspRfiCheck != null) {
                 //Request for information cannot be made at the same time
                 int appInspRfiResult = inspectionPreTaskService.preInspRfiTogether(applicationDto);
@@ -297,7 +297,7 @@ public class InspectionPreDelegator {
 
     private ValidationResult validateAppRfiCheck(ValidationResult validationResult, List<String> preInspRfiCheck, BaseProcessClass bpc) {
         if(!IaisCommonUtils.isEmpty(preInspRfiCheck)){
-            //NOSONAR
+
             if(preInspRfiCheck.contains(InspectionConstants.SWITCH_ACTION_APPLICATION)){
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 //rfiSelectValue and check value

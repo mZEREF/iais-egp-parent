@@ -860,16 +860,16 @@ public class MohIntranetUserDelegator {
                     if (roleName.contains("LEAD")) {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);//NOSONAR
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                         }
                     } else {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 0);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp); //NOSONAR
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                         }
 //                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
 //                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
-//                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);//NOSONAR
+//                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);
 //                        }
                     }
                 }
@@ -1480,7 +1480,7 @@ public class MohIntranetUserDelegator {
         List list = null;
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         try {
-            SAXReader saxReader = new SAXReader();//NOSONAR
+            SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(file);
             //root
             Element root = document.getRootElement();

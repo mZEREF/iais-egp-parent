@@ -132,8 +132,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                 }
                 List<String> deleteIds = IaisCommonUtils.genNewArrayList();
                 deleteIds.add(removeIds.get(r));
-                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(deleteIds).getEntity();//NOSONAR
-                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){//NOSONAR
+                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(deleteIds).getEntity();
+                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){
                     fileRepoClient.removeFileById(fileRepoDtos.get(0));
                 }
             }
@@ -319,16 +319,16 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         //get fileReport
                         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
                                 applicationFeClient.getNcDocListByItemId(appPremisesPreInspectionNcItemDto.getId()).getEntity();
-                        if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){//NOSONAR
+                        if(!IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos)){
                             List<String> fileReportIds = IaisCommonUtils.genNewArrayList();
                             for(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos){
                                 fileReportIds.add(appPremPreInspectionNcDocDto.getFileRepoId());
                             }
                             List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportIds).getEntity();
                             inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
-                            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {//NOSONAR
+                            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {
                                 inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
-                                inspecUserRecUploadDto = setRealFileName(inspecUserRecUploadDto, appPremPreInspectionNcDocDtos);//NOSONAR
+                                inspecUserRecUploadDto = setRealFileName(inspecUserRecUploadDto, appPremPreInspectionNcDocDtos);
                             }
                             inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
                         } else {
@@ -347,7 +347,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         for(FileRepoDto fileRepoDto : fileRepoDtos) {
             if(fileRepoDto != null) {
                 for (AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos) {
-                    if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {//NOSONAR
+                    if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {
                         fileRepoDto.setRealFileName(appPremPreInspectionNcDocDto.getDocName());
                     }
                 }

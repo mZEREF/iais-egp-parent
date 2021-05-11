@@ -433,7 +433,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                 for(FileRepoDto fileRepoDto : fileRepoDtos) {
                     if(fileRepoDto != null) {
                         for (AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto : appPremPreInspectionNcDocDtos) {
-                            if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {//NOSONAR
+                            if (appPremPreInspectionNcDocDto != null && fileRepoDto.getId().equals(appPremPreInspectionNcDocDto.getFileRepoId())) {
                                 fileRepoDto.setRealFileName(appPremPreInspectionNcDocDto.getDocName());
                             }
                         }

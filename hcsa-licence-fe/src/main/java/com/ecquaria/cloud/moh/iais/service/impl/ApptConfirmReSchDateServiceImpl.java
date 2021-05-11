@@ -172,7 +172,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private List<ApplicationDto> getApplicationBySamePremCorrId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, ProcessReSchedulingDto processReSchedulingDto, String appStatus) {
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<String> taskRefNo = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
                     ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();

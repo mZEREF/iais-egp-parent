@@ -145,7 +145,7 @@ import java.util.UUID;
  * @date 9/23/2019
  */
 @Delegator("newApplicationDelegator")
-@Slf4j //NOSONAR
+@Slf4j
 public class NewApplicationDelegator {
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String PREMISESTYPE = "premisesType";
@@ -2059,7 +2059,7 @@ public class NewApplicationDelegator {
         * 2. migrated ->premises -> is 0 all to -> 0 . can 2-> 0. but cannot 0->2
         *
         * */
-        grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);//NOSONAR
+        grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
         AppSubmissionDto n = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);

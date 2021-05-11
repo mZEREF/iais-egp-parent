@@ -1105,8 +1105,8 @@ public class ClinicalLaboratoryDelegator {
                                     continue;
                                 }*/
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
-                                appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);//NOSONAR
-                                appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);//NOSONAR
+                                appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
+                                appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);
 
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){

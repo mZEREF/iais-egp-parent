@@ -483,7 +483,7 @@ public class NotificationHelper {
 		interMessageDto.setMessageType(refIdType);
 		String mesNO = getHelperMessageNo();
 		interMessageDto.setRefNo(mesNO);
-		if(IaisCommonUtils.isEmpty(svcCodeList)){//NOSONAR
+		if(IaisCommonUtils.isEmpty(svcCodeList)){
 			interMessageDto.setService_id("");
 		} else {
 			StringBuilder svcCodeShow = new StringBuilder();
@@ -618,7 +618,7 @@ public class NotificationHelper {
 	}
 
 	private void addPsnMobileByRoleSvc(String refId, List<String> svcCodeList, List<String> mobile) {
-		for(String svcCode : svcCodeList){//NOSONAR
+		for(String svcCode : svcCodeList){
 			if(!StringUtil.isEmpty(svcCode)){
 				List<String> mobileSvcList = hcsaLicenceClient.getMobileByRole(refId, HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName()).getEntity();
 				if(!IaisCommonUtils.isEmpty(mobileSvcList)){

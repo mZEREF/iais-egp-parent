@@ -1049,7 +1049,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             applicationDtos.add(applicationDto);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-            appPremScoreMap.put(appPremCorrId, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
+            appPremScoreMap.put(appPremCorrId, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
 
         return appPremScoreMap;

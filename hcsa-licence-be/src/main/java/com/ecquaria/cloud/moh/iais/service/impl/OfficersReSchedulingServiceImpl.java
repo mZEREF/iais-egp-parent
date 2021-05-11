@@ -568,7 +568,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 List<String> appNoList = samePremisesAppMap.get(applicationNo);
                 //set application no list
                 appointmentDto.setAppNoList(appNoList);
-                if(!IaisCommonUtils.isEmpty(appNoList)){//NOSONAR
+                if(!IaisCommonUtils.isEmpty(appNoList)){
                     List<String> serviceIds = IaisCommonUtils.genNewArrayList();
                     for(String appNo : appNoList) {
                         ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
@@ -679,7 +679,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 //Has it been blown up
                 if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
                     List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                    if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {//NOSONAR
+                    if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {
                         for (ApptRequestDto apptRequestDto : apptRequestDtos) {
                             //set new inspection date string to show
                             reschedulingOfficerDto = getShowDateTimeStringList(apptRequestDto, reschedulingOfficerDto);
@@ -1042,7 +1042,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             List<String> apptRefNos = apptAppInfoShowDto.getApptRefNo();
             if(!IaisCommonUtils.isEmpty(apptRefNos)) {
                 String apptRefNo = apptRefNos.get(0);
-                for (AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {//NOSONAR
+                for (AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {
                     //old
                     appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     appPremisesInspecApptDto.setAuditTrailDto(auditTrailDto);
@@ -1089,7 +1089,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         if(reschedulingOfficerDto != null) {
             //confirm apptRefNo
-            ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);//NOSONAR
+            ApptAppInfoShowDto apptAppInfoShowDto = apptReSchAppInfoShowDtos.get(0);
             if(apptAppInfoShowDto != null) {
                 apptCalendarStatusDto.setConfirmRefNums(apptAppInfoShowDto.getApptRefNo());
             }
@@ -1115,7 +1115,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
             if (samePremisesAppMap != null && !StringUtil.isEmpty(reschedulingOfficerDto.getAssignNo())) {
                 List<String> appNoList = samePremisesAppMap.get(reschedulingOfficerDto.getAssignNo());
-                if(!IaisCommonUtils.isEmpty(appNoList)) {//NOSONAR
+                if(!IaisCommonUtils.isEmpty(appNoList)) {
                     for(String appNo : appNoList) {
                         if(!StringUtil.isEmpty(appNo)) {
                             ApplicationDto applicationDto = getApplicationByAppNo(appNo);
@@ -1150,14 +1150,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     private List<ApptAppInfoShowDto> setUserWithAppNo(ApptRequestDto apptReDto, List<ApptAppInfoShowDto> apptAppInfoShowDtos) {
-        if(apptReDto != null && !IaisCommonUtils.isEmpty(apptAppInfoShowDtos)) {//NOSONAR
+        if(apptReDto != null && !IaisCommonUtils.isEmpty(apptAppInfoShowDtos)) {
             List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
             String apptRefNo = apptReDto.getApptRefNo();
             apptRefNos.add(apptRefNo);
             List<ApptUserCalendarDto> userClandars = apptReDto.getUserClandars();
             //set user with App No.
-            if(!IaisCommonUtils.isEmpty(userClandars)){//NOSONAR
-                Date inspDate = userClandars.get(0).getStartSlot().get(0);//NOSONAR
+            if(!IaisCommonUtils.isEmpty(userClandars)){
+                Date inspDate = userClandars.get(0).getStartSlot().get(0);
                 int endTimeSize = userClandars.get(0).getEndSlot().size();
                 Date inspEndDate = userClandars.get(0).getEndSlot().get(endTimeSize - 1);
                 Map<String, List<String>> appNoUserLoginId = getAppNoUserLoginIdByUserClandars(userClandars);
@@ -1209,7 +1209,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     private ApptAppInfoShowDto setUserIdByLoginIds(ApptAppInfoShowDto apptAppInfoShowDto, List<String> userLoginIds) {
-        if(!IaisCommonUtils.isEmpty(userLoginIds)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(userLoginIds)) {
             List<String> userIdList = IaisCommonUtils.genNewArrayList();
             List<String> userNameList = IaisCommonUtils.genNewArrayList();
             for(String userLoginId : userLoginIds) {
@@ -1235,11 +1235,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     private Map<String, List<String>> getAppNoUserLoginIdByUserClandars(List<ApptUserCalendarDto> userClandars) {
         Map<String, List<String>> appNoUserLoginId = IaisCommonUtils.genNewHashMap();
-        if(!IaisCommonUtils.isEmpty(userClandars)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(userClandars)) {
             for (ApptUserCalendarDto apptUserCalendarDto : userClandars) {
                 if(apptUserCalendarDto != null) {
                     String appNo = apptUserCalendarDto.getAppNo();
-                    if(!StringUtil.isEmpty(appNo)) {//NOSONAR
+                    if(!StringUtil.isEmpty(appNo)) {
                         List<String> userLoginId = appNoUserLoginId.get(appNo);
                         if(IaisCommonUtils.isEmpty(userLoginId)){
                            userLoginId = IaisCommonUtils.genNewArrayList();
@@ -1256,14 +1256,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     private ReschedulingOfficerDto getShowDateTimeStringList(ApptRequestDto apptRequestDto, ReschedulingOfficerDto reschedulingOfficerDto) {
         if(reschedulingOfficerDto != null){
             List<String> newInspDates;
-            if(IaisCommonUtils.isEmpty(reschedulingOfficerDto.getNewInspDates())){//NOSONAR
+            if(IaisCommonUtils.isEmpty(reschedulingOfficerDto.getNewInspDates())){
                 newInspDates = IaisCommonUtils.genNewArrayList();
             } else {
                 newInspDates = reschedulingOfficerDto.getNewInspDates();
             }
             if(apptRequestDto != null) {
                 List<ApptUserCalendarDto> userClandars = apptRequestDto.getUserClandars();
-                if(!IaisCommonUtils.isEmpty(userClandars)) {//NOSONAR
+                if(!IaisCommonUtils.isEmpty(userClandars)) {
                     int endTimeSize = userClandars.get(0).getEndSlot().size();
                     String inspStartDate = apptDateToStringShow(userClandars.get(0).getStartSlot().get(0));
                     String inspEndDate = apptDateToStringShow(userClandars.get(0).getEndSlot().get(endTimeSize - 1));
@@ -1440,7 +1440,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }

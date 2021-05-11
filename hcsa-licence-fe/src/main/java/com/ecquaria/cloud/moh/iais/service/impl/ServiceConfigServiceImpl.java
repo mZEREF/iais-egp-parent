@@ -684,7 +684,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setPhoneNumber4("");
                 inputDetailDto.setPhoneNumber5("");
                 if("E".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
-                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto(); //NOSONAR
+                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
                     //todo true data
                     String inNo = "1010039098";
                     invoiceDetailsDto.setSNo("001");

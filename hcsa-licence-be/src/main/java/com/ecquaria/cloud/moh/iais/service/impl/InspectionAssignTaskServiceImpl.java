@@ -345,7 +345,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     roleOptions.add(so);
                     roleMap.put(index + "", role);
                     //set current role check key
-                    if (role.equals(curRole)) {//NOSONAR
+                    if (role.equals(curRole)) {
                         curCheckRole = String.valueOf(index);
                     }
                     index++;
@@ -372,7 +372,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 roleOptions.add(so);
                 roleMap.put(index + "", role);
                 //set current role check key
-                if (role.equals(curRole)) {//NOSONAR
+                if (role.equals(curRole)) {
                     poolRoleCheckDto.setCheckCurRole(index + "");
                 }
                 index++;
@@ -1017,14 +1017,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
 
-        List<AppointmentUserDto> appointmentUserDtoList = null;//NOSONAR
+        List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
                 if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
@@ -1048,7 +1048,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-                    appointmentUserDtoList.add(auDto);//NOSONAR
+                    appointmentUserDtoList.add(auDto);
                 }
             }
         }

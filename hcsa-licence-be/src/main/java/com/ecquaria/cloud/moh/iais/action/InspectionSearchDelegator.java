@@ -463,7 +463,7 @@ public class InspectionSearchDelegator {
             appStatus = applicationDto.getStatus();
         }
         if(StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskDto().getUserId())){
-            if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+            if(appHoursStatusList.contains(appStatus)) {
                 inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
             }
         }

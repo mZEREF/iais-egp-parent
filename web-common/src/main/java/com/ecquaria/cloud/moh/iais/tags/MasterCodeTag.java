@@ -25,7 +25,7 @@ public class MasterCodeTag extends DivTagSupport {
 
     public MasterCodeTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state

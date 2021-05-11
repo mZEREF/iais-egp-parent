@@ -129,9 +129,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
         if(new File(zipFile).isDirectory()){
             File[] files = new File(zipFile).listFiles();
-            int allSize = processFileTrackDtos.size();//NOSONAR
+            int allSize = processFileTrackDtos.size();
             int nowSize = 0;
-            List<String> appIds = IaisCommonUtils.genNewArrayList();//NOSONAR
+            List<String> appIds = IaisCommonUtils.genNewArrayList();
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
@@ -207,7 +207,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             if(appPremPreInspectionNcDto != null){
                 List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos =
                         fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
-                if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){//NOSONAR
+                if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
                     for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
                         if(appPremisesPreInspectionNcItemDto != null) {
                             List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos =
@@ -359,7 +359,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public Map<String, List<ProcessFileTrackDto>> getProcessFileTrackDtosWithAppId(List<ProcessFileTrackDto> processFileTrackDtos) {
         Map<String, List<ProcessFileTrackDto>> appIdProFileMap = IaisCommonUtils.genNewHashMap();
-        for(ProcessFileTrackDto processFileTrackDto : processFileTrackDtos){//NOSONAR
+        for(ProcessFileTrackDto processFileTrackDto : processFileTrackDtos){
             String appId = processFileTrackDto.getRefId();
             List<ProcessFileTrackDto> processFileTrackDtoList = appIdProFileMap.get(appId);
             if(IaisCommonUtils.isEmpty(processFileTrackDtoList)){

@@ -82,7 +82,7 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
 
             if ("create".equals(user_action)) {
-                if(!(startDateStr.equals(todayStr) || sDate.after(today))) {//NOSONAR
+                if(!(startDateStr.equals(todayStr) || sDate.after(today))) {
                     errorMap.put("accountActivateDatetime", "USER_ERR007");
                 }
             } else {
