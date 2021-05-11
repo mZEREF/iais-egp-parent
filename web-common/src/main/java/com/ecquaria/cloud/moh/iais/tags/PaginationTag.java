@@ -29,7 +29,7 @@ public class PaginationTag extends DivTagSupport {
     
     public PaginationTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state

@@ -358,7 +358,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         List list = IaisCommonUtils.genNewArrayList();
         try {
             //validate data
-            SAXReader saxReader = new SAXReader();//NOSONAR
+            SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(xmlFile);
             //root
             Element root = document.getRootElement();
@@ -402,9 +402,9 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         errorData = false;
                         fileErrorMap.put(errorRoleKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Role ID", "field"));
                     } else {
-                        List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);//NOSONAR
+                        List<Role> rolesByDomain = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
                         //egp contains role
-                        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {//NOSONAR
+                        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {
                             List<String> systemRoleId = IaisCommonUtils.genNewArrayList();
                             for (Role role : rolesByDomain) {
                                 String id = role.getId();
@@ -420,9 +420,9 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         errorData = false;
                         fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
                     } else {
-                        List<WorkingGroupDto> workingGroups = getWorkingGroups();//NOSONAR
+                        List<WorkingGroupDto> workingGroups = getWorkingGroups();
                         //egp contains workgroupId
-                        if (!IaisCommonUtils.isEmpty(workingGroups)) {//NOSONAR
+                        if (!IaisCommonUtils.isEmpty(workingGroups)) {
                             List<String> groupIds = IaisCommonUtils.genNewArrayList();
                             for (WorkingGroupDto workingGroupDto : workingGroups) {
                                 String id = workingGroupDto.getId();

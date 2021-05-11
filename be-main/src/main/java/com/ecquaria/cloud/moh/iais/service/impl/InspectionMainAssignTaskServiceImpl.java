@@ -363,7 +363,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         if(applicationDto != null) {
             appStatus = applicationDto.getStatus();
         }
-        if(appHoursStatusList.contains(appStatus)) {//NOSONAR
+        if(appHoursStatusList.contains(appStatus)) {
             inspecTaskCreAndAssDto.setEditHoursFlag(AppConsts.COMMON_POOL);
         }
         return inspecTaskCreAndAssDto;

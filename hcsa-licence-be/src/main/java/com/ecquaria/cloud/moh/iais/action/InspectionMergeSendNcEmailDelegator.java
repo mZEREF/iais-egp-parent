@@ -742,12 +742,12 @@ public class InspectionMergeSendNcEmailDelegator {
         if(IaisCommonUtils.isEmpty(taskScoreDtos)){
             log.info(StringUtil.changeForLog("taskScoreDtos = null"));
             JobLogger.log(StringUtil.changeForLog("taskScoreDtos = null"));
-            return leads.get(0);//NOSONAR
+            return leads.get(0);
         } else {
             for(TaskDto taskDto : taskScoreDtos){
                 String userId = taskDto.getUserId();
-                for(String lead : leads) {//NOSONAR
-                    if (!StringUtil.isEmpty(userId)) {//NOSONAR
+                for(String lead : leads) {
+                    if (!StringUtil.isEmpty(userId)) {
                         if(userId.equals(lead)){
                             taskUserDtos.add(taskDto);
                         }
@@ -760,7 +760,7 @@ public class InspectionMergeSendNcEmailDelegator {
     }
     private String getLeadByTaskScore(List<TaskDto> taskUserDtos, List<String> leads) {
         if(IaisCommonUtils.isEmpty(taskUserDtos)){
-            return leads.get(0);//NOSONAR
+            return leads.get(0);
         } else {
             int score1 = 0;
             String lead = "";

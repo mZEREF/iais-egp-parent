@@ -130,7 +130,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendMailForAuditPlanerForSms(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
         if( !IaisCommonUtils.isEmpty(userDtoList)){
-            sendEmailToInsForSms(emailKey,null);//NOSONAR
+            sendEmailToInsForSms(emailKey,null);
         }else {
             log.info("----------no audit plan user ---------");
         }

@@ -132,8 +132,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                 }
                 List<String> deleteIds = IaisCommonUtils.genNewArrayList();
                 deleteIds.add(removeIds.get(r));
-                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(deleteIds).getEntity();//NOSONAR
-                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){//NOSONAR
+                List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(deleteIds).getEntity();
+                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){
                     fileRepoClient.removeFileById(fileRepoDtos.get(0));
                 }
             }

@@ -483,7 +483,7 @@ public class NotificationHelper {
 		interMessageDto.setMessageType(refIdType);
 		String mesNO = getHelperMessageNo();
 		interMessageDto.setRefNo(mesNO);
-		if(IaisCommonUtils.isEmpty(svcCodeList)){//NOSONAR
+		if(IaisCommonUtils.isEmpty(svcCodeList)){
 			interMessageDto.setService_id("");
 		} else {
 			StringBuilder svcCodeShow = new StringBuilder();
@@ -618,7 +618,7 @@ public class NotificationHelper {
 	}
 
 	private void addPsnMobileByRoleSvc(String refId, List<String> svcCodeList, List<String> mobile) {
-		for(String svcCode : svcCodeList){//NOSONAR
+		for(String svcCode : svcCodeList){
 			if(!StringUtil.isEmpty(svcCode)){
 				List<String> mobileSvcList = hcsaLicenceClient.getMobileByRole(refId, HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName()).getEntity();
 				if(!IaisCommonUtils.isEmpty(mobileSvcList)){
@@ -826,9 +826,9 @@ public class NotificationHelper {
 				set.addAll(getRecrptLicensee(roles, licenseeId));
 			}
 		}
-		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);
 		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
 		return inspectionEmailTemplateDto;
 	}
 
@@ -881,12 +881,12 @@ public class NotificationHelper {
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
 		List<ApplicationDto> appList = hcsaAppClient.getAppsByGrpId(appGrpId).getEntity();
 		for (ApplicationDto app : appList) {
-			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
+			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto,recipientUserId);
 		}
 		set.addAll(getSubmitApplicant(roles, grpDto));
-		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);
 		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
 		return inspectionEmailTemplateDto;
 	}
 
@@ -894,10 +894,10 @@ public class NotificationHelper {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getSubmitApplicant(roles, grpDto));
-		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
-		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);//NOSONAR
+		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto,recipientUserId);
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto,recipientUserId);
 		List<String> receiptEmails = new ArrayList<>(set);
-		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);//NOSONAR
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
 		return inspectionEmailTemplateDto;
 	}
 
@@ -933,10 +933,10 @@ public class NotificationHelper {
 
 	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto,String recipientUserId) {
 		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType)){
-			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo,recipientUserId);//NOSONAR
+			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo,recipientUserId);
 		}else {
 			//The default function
-			inspectionEmailTemplateDto = getDefaultAssignedOfficer(roles, inspectionEmailTemplateDto, appNo,recipientUserId);//NOSONAR
+			inspectionEmailTemplateDto = getDefaultAssignedOfficer(roles, inspectionEmailTemplateDto, appNo,recipientUserId);
 		}
 		return inspectionEmailTemplateDto;
 	}

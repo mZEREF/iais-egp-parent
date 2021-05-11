@@ -161,8 +161,8 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInspectionStatusDtos.get(0).getAppPremCorreId()).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());//NOSONAR
-            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());//NOSONAR
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(3);
             HcsaSvcStageWorkingGroupDto hsswgDto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
@@ -172,8 +172,8 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                 workGroupId = hsswgDto.getGroupId();
                 leads = organizationClient.getInspectionLead(workGroupId).getEntity();
             }
-            log.info(StringUtil.changeForLog("Inspection Lead Task AppNo = " + applicationDto.getApplicationNo()));//NOSONAR
-            JobLogger.log(StringUtil.changeForLog("Inspection Lead Task AppNo = " + applicationDto.getApplicationNo()));//NOSONAR
+            log.info(StringUtil.changeForLog("Inspection Lead Task AppNo = " + applicationDto.getApplicationNo()));
+            JobLogger.log(StringUtil.changeForLog("Inspection Lead Task AppNo = " + applicationDto.getApplicationNo()));
             log.info(StringUtil.changeForLog("Inspection Lead Task Working Group Id = " + workGroupId));
             JobLogger.log(StringUtil.changeForLog("Inspection Lead Task Working Group Id = " + workGroupId));
             //get lead by lead score

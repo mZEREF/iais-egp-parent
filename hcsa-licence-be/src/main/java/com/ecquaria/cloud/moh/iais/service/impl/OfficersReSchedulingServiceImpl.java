@@ -568,7 +568,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 List<String> appNoList = samePremisesAppMap.get(applicationNo);
                 //set application no list
                 appointmentDto.setAppNoList(appNoList);
-                if(!IaisCommonUtils.isEmpty(appNoList)){//NOSONAR
+                if(!IaisCommonUtils.isEmpty(appNoList)){
                     List<String> serviceIds = IaisCommonUtils.genNewArrayList();
                     for(String appNo : appNoList) {
                         ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
@@ -679,7 +679,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 //Has it been blown up
                 if (headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
                     List<ApptRequestDto> apptRequestDtos = result.getEntity();
-                    if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {//NOSONAR
+                    if (!IaisCommonUtils.isEmpty(apptRequestDtos)) {
                         for (ApptRequestDto apptRequestDto : apptRequestDtos) {
                             //set new inspection date string to show
                             reschedulingOfficerDto = getShowDateTimeStringList(apptRequestDto, reschedulingOfficerDto);

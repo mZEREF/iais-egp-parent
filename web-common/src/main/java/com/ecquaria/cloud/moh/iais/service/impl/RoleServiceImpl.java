@@ -38,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
         List<Role> roles = getRolesByDomain(domain);
         if(!IaisCommonUtils.isEmpty(roles)) {
             for (Role roleDto : roles) {
-                if(roleDto != null && roleId.equals(roleDto.getId())) {//NOSONAR
+                if(roleDto != null && roleId.equals(roleDto.getId())) {
                     return roleDto;
                 }
             }

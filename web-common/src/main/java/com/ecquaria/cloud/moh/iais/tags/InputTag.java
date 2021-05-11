@@ -25,7 +25,7 @@ public class InputTag extends DivTagSupport{
 
     public InputTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state

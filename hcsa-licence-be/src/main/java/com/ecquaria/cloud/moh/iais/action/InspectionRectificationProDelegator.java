@@ -448,7 +448,7 @@ public class InspectionRectificationProDelegator {
 
     private String getInspectorLeadShowByList(List<String> inspectorLeads) {
         StringBuilder leadStrBu = new StringBuilder();
-        if(!IaisCommonUtils.isEmpty(inspectorLeads)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(inspectorLeads)) {
             Collections.sort(inspectorLeads);
             for (String strLeadName : inspectorLeads) {
                 if (StringUtil.isEmpty(leadStrBu.toString())) {

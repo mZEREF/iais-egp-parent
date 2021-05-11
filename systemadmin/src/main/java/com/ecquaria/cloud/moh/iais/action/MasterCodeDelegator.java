@@ -220,7 +220,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+        if (cartOptional != null && cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {
@@ -255,7 +255,7 @@ public class MasterCodeDelegator {
                 }
 
             }
-            if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+            if (cartOptional != null && cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
@@ -557,7 +557,7 @@ public class MasterCodeDelegator {
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+                    if (cartOptional != null && cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         if(masterCodeToExcelDto1.getFilterValue() != null){
                             log.info(StringUtil.changeForLog("masterCodeToExcelDto1  ===========> " + masterCodeToExcelDto1.getFilterValue()));
@@ -643,7 +643,7 @@ public class MasterCodeDelegator {
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
-                if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+                if (cartOptional != null && cartOptional.isPresent()) {
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                     masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
                     masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
@@ -813,7 +813,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+        if (cartOptional != null && cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (masterCodeDto.getSequence() != null){
@@ -853,7 +853,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional != null && cartOptional.isPresent()) {//NOSONAR
+            if (cartOptional != null && cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);

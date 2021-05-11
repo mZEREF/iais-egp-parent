@@ -420,7 +420,7 @@ public class GiroDeductionBeDelegator {
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
         try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              InputStream in = new FileInputStream(file.getPath())){//NOSONAR
+              InputStream in = new FileInputStream(file.getPath())){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){

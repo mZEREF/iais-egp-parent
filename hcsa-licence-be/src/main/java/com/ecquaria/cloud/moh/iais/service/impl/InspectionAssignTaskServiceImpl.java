@@ -345,7 +345,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     roleOptions.add(so);
                     roleMap.put(index + "", role);
                     //set current role check key
-                    if (role.equals(curRole)) {//NOSONAR
+                    if (role.equals(curRole)) {
                         curCheckRole = String.valueOf(index);
                     }
                     index++;

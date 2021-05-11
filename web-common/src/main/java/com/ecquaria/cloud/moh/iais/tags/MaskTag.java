@@ -3,11 +3,9 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import javax.servlet.jsp.JspException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 
 /**
  * MaskTag
@@ -24,7 +22,7 @@ public class MaskTag extends DivTagSupport {
 
     public MaskTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     @Override
