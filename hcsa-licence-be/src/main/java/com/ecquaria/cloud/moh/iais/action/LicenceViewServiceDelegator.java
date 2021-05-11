@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.csrfguard.util.Strings;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1973,6 +1974,10 @@ public class LicenceViewServiceDelegator {
             appGrpPremisesDto.setOnsiteEndMM("");
             appGrpPremisesDto.setAddrType("");
             appGrpPremisesDto.setBuildingName("");
+            appGrpPremisesDto.setEasMtsPubHotline("");
+            appGrpPremisesDto.setEasMtsPubEmail("");
+            appGrpPremisesDto.setEasMtsCoLocation("");
+            appGrpPremisesDto.setEasMtsUseOnly("");
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
     }
@@ -2587,7 +2592,20 @@ public class LicenceViewServiceDelegator {
     }
     private AppSvcClinicalDirectorDto generateAppSvcClinicalDirectorDto(){
         AppSvcClinicalDirectorDto appSvcClinicalDirectorDto=new AppSvcClinicalDirectorDto();
-
+        appSvcClinicalDirectorDto.setProfessionBoard(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setSalutation(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setName(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setIdType(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setIdNo(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setProfRegNo(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setDesignation(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setSpecialty(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setTypeOfRegister(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setTypeOfCurrRegi(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setRelevantExperience(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setHoldCerByEMS(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setEmailAddr(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setMobileNo(Strings.EMPTY);
         return appSvcClinicalDirectorDto;
     }
 

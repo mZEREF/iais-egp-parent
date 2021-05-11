@@ -79,6 +79,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -625,7 +626,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
                                     StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new TreeMap<>();
+                                    Map<Integer,String> map=new LinkedHashMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
                                             map.put(hciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
@@ -906,7 +907,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
                                     StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new TreeMap<>();
+                                    Map<Integer,String> map=new LinkedHashMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (convHciName.toUpperCase().contains(s[index].toUpperCase())) {
                                             map.put(convHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
@@ -1178,7 +1179,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 if (masterCodeDto != null) {
                                     String[] s = masterCodeDto.split(" ");
                                     StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new TreeMap<>();
+                                    Map<Integer,String> map=new LinkedHashMap<>();
                                     for (int index = 0; index < s.length; index++) {
                                         if (offSiteHciName.toUpperCase().contains(s[index].toUpperCase())) {
                                             map.put(offSiteHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
@@ -1361,7 +1362,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
-                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i,masterCodeDto);
+                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i,masterCodeDto, floorUnitList,  floorUnitNo);
                     }
                 } else {
                     //premiseSelect = organization hci code

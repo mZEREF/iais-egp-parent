@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.validate.abstractValidate.AbstractValidate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Override
-    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto) {
+    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo) {
         String easMtsHciName = appGrpPremisesDto.getEasMtsHciName();
         if(StringUtil.isEmpty(easMtsHciName)){
             map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
@@ -40,7 +41,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                     if(masterCodeDto!=null){
                         String[] s = masterCodeDto.split(" ");
                         StringBuilder sb=new StringBuilder();
-                        Map<Integer,String> treeMap=new TreeMap<>();
+                        Map<Integer,String> treeMap=new LinkedHashMap<>();
                         for (int i = 0; i < s.length; i++) {
                             if (easMtsHciName.toUpperCase().contains(s[index].toUpperCase())) {
                                 treeMap.put(easMtsHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
@@ -76,8 +77,10 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             }
         }
         String easMtsAddressType = appGrpPremisesDto.getEasMtsAddressType();
+        boolean flag=true;
         if(StringUtil.isEmpty(easMtsAddressType)){
             map.put("easMtsAddressType"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+            flag=false;
         }else {
             if(ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(easMtsAddressType)){
                 String easMtsFloorNo = appGrpPremisesDto.getEasMtsFloorNo();
@@ -88,6 +91,11 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                 list.add("easMtsBlockNo");
                 list.add("easMtsUnitNo");
                 doValidateAdressType(easMtsFloorNo,easMtsBlockNo,easMtsUnitNo,index,map,list);
+                if(!StringUtil.isEmpty(easMtsFloorNo)&&!StringUtil.isEmpty(easMtsBlockNo)&&!StringUtil.isEmpty(easMtsUnitNo)){
+                    StringBuilder stringBuilder=new StringBuilder();
+                    stringBuilder.append(easMtsFloorNo).append(easMtsBlockNo).append(easMtsUnitNo);
+                    floorUnitNo.add(stringBuilder.toString());
+                }
             }
         }
         String easMtsStreetName = appGrpPremisesDto.getEasMtsStreetName();
@@ -125,6 +133,9 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
 
         }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
+        if(flag){
+            floorUnitList.add(appGrpPremisesDto.getEasMtsFloorNo()+appGrpPremisesDto.getEasMtsUnitNo());
+        }
         if(appPremisesOperationalUnitDtos!=null&&!appPremisesOperationalUnitDtos.isEmpty()){
             //
         }
@@ -160,5 +171,10 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Override
     public Map<String, String> validate(Object o,Integer index) {
         return super.validate(o,index);
+    }
+
+    @Override
+    protected void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap, String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo, AppGrpPremisesDto appGrpPremisesDto) {
+        super.checkOperaionUnit(operationalUnitDtos, errorMap, floorErrName, unitErrName, floorUnitList, floorUnitErrName, floorUnitNo, appGrpPremisesDto);
     }
 }

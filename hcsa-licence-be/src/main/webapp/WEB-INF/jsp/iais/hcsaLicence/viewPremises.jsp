@@ -649,13 +649,23 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="">
-
+                                            <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
+                                              <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">
+                                                No
+                                              </c:if>
+                                                <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">
+                                                  Yes
+                                                </c:if>
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="">
-
+                                            <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
+                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">
+                                                  No
+                                                </c:if>
+                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">
+                                                  Yes
+                                                 </c:if>
                                             </span>
                                           </div>
                                       </div>

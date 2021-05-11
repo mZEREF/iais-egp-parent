@@ -285,6 +285,7 @@
                             <input class="form-check-input holdCerByEMS" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${cdStat.index}" value = "0" aria-invalid="false">
                             <label class="form-check-label" ><span class="check-circle"></span>No</label>
                         </div>
+                        <span class="error-msg col-md-3" name="iaisErrorMsg" id="error_holdCerByEMS${cdStat.index}"></span>
                     </div>
                 </div>
             </div>
