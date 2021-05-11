@@ -374,4 +374,14 @@ public class LicenceInFallback implements LicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+
+    @Override
+    public FeignResponseEntity<Boolean> getBundleLicence(String hciCode, String licenseeId, String svcName) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

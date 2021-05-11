@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -993,7 +994,43 @@ public class HalpAssessmentGuideDelegator {
                 onlyBaseSvc = true;
                 ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
             }
-
+            if(!currentPage.equals(nextstep)){
+                List<String> chkSvcIdList = IaisCommonUtils.genNewArrayList();
+                chkSvcIdList.addAll(basecheckedlist);
+                chkSvcIdList.addAll(sepcifiedcheckedlist);
+                //validate premises type intersection
+                Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkSvcIdList);
+                if(IaisCommonUtils.isEmpty(premisesTypeList)){
+                    nextstep = currentPage;
+                    err = MessageUtil.getMessageDesc("NEW_ERR0026");
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    //set audit
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put(ERROR_ATTR,err);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                }else{
+                    //EAS and MTS licence only one active/approve licence
+                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                    for(String baseId:basecheckedlist){
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseId);
+                        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                            hcsaServiceDtos.add(hcsaServiceDto);
+                        }
+                    }
+                    if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                        boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(licenseeId,hcsaServiceDtos);
+                        if(!canCreateEasOrMts){
+                            nextstep = currentPage;
+                            err = MessageUtil.getMessageDesc("NEW_ERR0029");
+                            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                            //set audit
+                            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                            errorMap.put(ERROR_ATTR,err);
+                            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        }
+                    }
+                }
+            }
         }
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -2051,13 +2088,17 @@ public class HalpAssessmentGuideDelegator {
         }
     }
 
-    public void subDateMoh(BaseProcessClass bpc) throws IOException {
+    public void submitDateMohStep(BaseProcessClass bpc) throws IOException {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
                 .append(InboxConst.URL_MAIN_WEB_MODULE+"IaisSubmissionData");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
+    }
+
+    public void subDateMoh(BaseProcessClass bpc) throws IOException {
+
     }
 
     public void resumeSort(BaseProcessClass bpc) {

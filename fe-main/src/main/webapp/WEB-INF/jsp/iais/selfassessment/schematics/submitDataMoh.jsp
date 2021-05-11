@@ -13,9 +13,6 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
-    $('#submitDataMoh').click(function () {
-        $('.submitDataMoh').removeClass('disabled');
-        $('#submitDateMohLab').prop('checked', true);
-    })
-
+    $("#submitDataMoh").attr('checked', 'true');
+    $("#submitDateMohLab").attr('checked', 'true');
 </script>
