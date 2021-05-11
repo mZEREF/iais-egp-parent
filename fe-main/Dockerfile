@@ -22,5 +22,5 @@ RUN chmod a+x /run.sh
 
 USER iais
 
-CMD ["sh", "/run.sh"]
+CMD ["sh", "/run.sh -Djava.awt.headless=true"]
 
