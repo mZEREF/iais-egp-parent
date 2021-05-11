@@ -134,13 +134,13 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         String workGrpId = taskDto.getWkGrpId();
         //send sms
         List<String> leads = organizationClient.getInspectionLead(workGrpId).getEntity();
-        if (!StringUtil.isEmpty(userId)) {//NOSONAR
+        if (!StringUtil.isEmpty(userId)) {
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
             if (orgUserDto != null) {
                 sendSms(orgUserDto, taskDto);
             }
         }
-        if (!IaisCommonUtils.isEmpty(leads)) {//NOSONAR
+        if (!IaisCommonUtils.isEmpty(leads)) {
             for (String lead : leads) {
                 if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {//NOSONAR
                     OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();

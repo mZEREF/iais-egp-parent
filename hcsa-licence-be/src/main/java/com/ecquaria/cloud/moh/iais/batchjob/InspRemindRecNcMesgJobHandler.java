@@ -191,7 +191,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appPremisesCorrelationDto);
         //get rec date
         List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);//NOSONAR
+        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
         Date date = WorkDayCalculateUtil.getDate(appPremisesRecommendationDto.getRecomInDate(), systemParamConfig.getRectificateDay(), holidays, nonWorkingDateListByWorkGroupId);
         String strDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         //get url

@@ -97,7 +97,7 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
  *   @date 1/4/2020
  *   @author zixian
  */
-@Slf4j //NOSONAR
+@Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
     private FilterParameter filterParameter = new FilterParameter.Builder()

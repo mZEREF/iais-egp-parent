@@ -23,14 +23,14 @@ public class MultipleSelectTag extends DivTagSupport {
     private boolean disabled;
     public MultipleSelectTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state
     @Override
     protected void init() {
         setId(null);
-        name = null;//NOSONAR
+        name = null;
         setCssClass("");
         setStyle("");
         setSelectValue("");

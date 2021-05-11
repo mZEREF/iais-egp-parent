@@ -108,7 +108,7 @@ import java.util.Map;
  */
 
 @Delegator("withOutRenewalDelegator")
-@Slf4j //NOSONAR
+@Slf4j
 public class WithOutRenewalDelegator {
     private static final String PAGE1 = "instructions";
     private static final String PAGE2 = "licenceReview";
@@ -562,7 +562,7 @@ public class WithOutRenewalDelegator {
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         }
-        if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if (appGrpPremisesDtoList != null) {

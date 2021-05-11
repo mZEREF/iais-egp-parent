@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
  */
 
 
-public class SystemParamUtil {   //NOSONAR
+public class SystemParamUtil {
 
     public static int getFileMaxLimit(){
        ApplicationContext applicationContext = SpringContextHelper.getContext();

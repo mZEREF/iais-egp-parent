@@ -10,7 +10,7 @@ public class DivTagSupport extends BodyTagSupport {
 
     public DivTagSupport() {
         super();
-        init(); //NOSONAR
+        init();
     }
 
     protected void init() {

@@ -46,7 +46,7 @@ public class SelectTag extends DivTagSupport {
     @Override
     protected final void init() {
         setId(null);
-        name = null; //NOSONAR
+        name = null;
         setCodeCategory("");
         setFilterCode("");
         setFilterValue("");
@@ -72,7 +72,7 @@ public class SelectTag extends DivTagSupport {
     @Override
     public void release() {
         super.release();
-        init();//NOSONAR
+        init();
     }
     @Override
     public int doStartTag(){

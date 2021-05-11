@@ -24,7 +24,7 @@ public class LinkTag extends DivTagSupport {
 
     public LinkTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state
