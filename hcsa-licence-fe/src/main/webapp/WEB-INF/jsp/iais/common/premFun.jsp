@@ -178,8 +178,8 @@
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
                     $premContent.find('.new-premise-form-eas-mts').removeClass('hidden');
                     var data = {};
-                    fillForm('easMtsSel',data,$premContent);
-                    setAddress('easMtsSel',data,$premContent);
+                    fillForm('easMts',data,$premContent);
+                    setAddress('easMts',data,$premContent);
                 }
                 //if Moving to new address need value from page 68859
                 $("input[name='isPartEdit']").val('1');
@@ -219,6 +219,10 @@
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').removeClass('hidden');
+                }else if('easMtsSel' == thisId){
+                    premisesType = 'easMts';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
+                    $premContent.find('.new-premise-form-eas-mts').removeClass('hidden');
                 }
                 if(init == 0){
                     return;
@@ -256,6 +260,8 @@
                                 $currForm = $premContent.find('.new-premise-form-conv');
                             }else if (premisesType == 'offSite'){
                                 $currForm = $premContent.find('.new-premise-form-off-site');
+                            }else if(premisesType == 'easMts'){
+                                $currForm = $premContent.find('.new-premise-form-eas-mts');
                             }
                             $currForm.find('div.addOpDiv').before(data.operationHtml);
 
@@ -404,6 +410,8 @@
                             var $premFormConveyance = $premContent.find('div.new-premise-form-conv');
                             readonlyPartPage($premFormConveyance);
                             var $premFormOffSite = $premContent.find('div.new-premise-form-off-site');
+                            readonlyPartPage($premFormOffSite);
+                            var $premFormOffSite = $premContent.find('div.new-premise-form-eas-mts');
                             readonlyPartPage($premFormOffSite);
                             <!--hidden btn -->
                             $premContent.find('a.retrieveAddr').addClass('hidden');
@@ -582,7 +590,7 @@
             });
         });
 
-    }
+    };
 
     var doEdit = function () {
         $('.premisesEdit').click(function () {
@@ -645,7 +653,7 @@
                 disabeleForAllDay($allDayDiv);
             });
         });
-    }
+    };
 
     var coLocation = function () {
         $('.co-location').unbind('click');
@@ -655,63 +663,7 @@
             $coLocationEle.find('input.co-location-val').val(val);
         });
 
-    }
-
-
-
-    /*var genPhHtml = function ($premContentEle,$contentDivEle) {
-        var name = $premContentEle.find('.premTypeValue').val();
-        var premVal = $premContentEle.find('input[name="premValue"]').val();
-        var type = '';
-        if('ONSITE' == name){
-            name = premVal+'onSite';
-            type = 'onSite';
-        }else if('CONVEYANCE' == name){
-            name = premVal+"conveyance";
-            type = 'conveyance';
-        }else if('OFFSITE' == name){
-            name = premVal+"offSite";
-            type = 'offSite';
-        }
-
-        var jsonData={
-            'type':type,
-            'premVal': name,
-            'phLength': 0
-        };
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/public-holiday-html',
-            'dataType':'text',
-            'data':jsonData,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
-                    return;
-                }
-                <!--use ph mark point -->
-                $contentDivEle.find('div.phFormMarkPoint').addClass('pubHolidayContent');
-                <!--add html -->
-                $contentDivEle.find('div.pubHolidayContent:last').after(data);
-                <!--init ph mark point -->
-                $contentDivEle.find('div.phFormMarkPoint').removeClass('pubHolidayContent');
-                <!--change hidden length value -->
-                var length = $contentDivEle.find('div.pubHolidayContent').length;
-                $premContentEle.find('.phLength').val(length);
-
-                //remove del
-                $contentDivEle.find('.removePhBtn').remove();
-
-                /!*$("div.premSelect->ul").mCustomScrollbar({
-                        advanced:{
-                            updateOnContentResize: true
-                        }
-                    }
-                );*!/
-            },
-            'error':function () {
-            }
-        });
-    }*/
+    };
 
     var removePH = function () {
         $('.removePhBtn').click(function () {
@@ -779,8 +731,14 @@
             $AddrEle.find('select[name="offSiteAddressType"]').val(addrVal);
             var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
             $AddrEle.find('select[name="offSiteAddrType"]').next().find('.current').html(addressVal);
-        }else if('easMtsSel' == premisesType){
-            //todo
+        }else if('easMts' == premisesType){
+            var addrVal = data.easMtsAddressType;
+            if(addrVal == undefined){
+                addrVal = '';
+            }
+            $AddrEle.find('select[name="easMtsAddrType"]').val(addrVal);
+            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
+            $AddrEle.find('select[name="easMtsAddrType"]').next().find('.current').html(addressVal);
         }
     }
 
@@ -947,7 +905,7 @@
             $premSelect.find('select[name="'+premisesType+'EndMM"]').val(endMMVal);
             var endMM = $premSelect.find('.'+premisesType+'EndMM option[value="' + endMMVal + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
-        }else if('easMtsSel' == premisesType){
+        }else if('easMts' == premisesType){
             $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.easMtsHciName);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.easMtsBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.easMtsPostalCode);
@@ -955,14 +913,29 @@
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.easMtsUnitNo);
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.easMtsBuildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.easMtsStreetName);
-            $premSelect.find('input[name="'+premisesType+'easMtsBuildingName"]').val(data.easMtsBuildingName);
-            $premSelect.find('input[name="'+premisesType+'easMtsPubEmail"]').val(data.easMtsPubEmail);
-            $premSelect.find('input[name="'+premisesType+'easMtsPubHotline"]').val(data.easMtsPubHotline);
-
+            $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.easMtsBuildingName);
+            $premSelect.find('input[name="'+premisesType+'PubEmail"]').val(data.easMtsPubEmail);
+            $premSelect.find('input[name="'+premisesType+'PubHotline"]').val(data.easMtsPubHotline);
             //co-location
-
+            $premSelect.find('input.co-location').each(function () {
+                if($(this).val() == data.easMtsCoLocation){
+                    $(this).prop("checked",true);
+                    $(this).closest('div').find('.check-circle').addClass('radio-disabled');
+                }else {
+                    $(this).prop("checked",false);
+                }
+            });
+            $premSelect.find('input[name="easMtsCoLocationVal"]').val(data.easMtsCoLocation);
             //use type
-
+            $premSelect.find('input.useType').each(function () {
+                if($(this).val() == data.easMtsUseOnly){
+                    $(this).prop("checked",true);
+                    $(this).closest('div').find('.check-circle').addClass('radio-disabled');
+                }else {
+                    $(this).prop("checked",false);
+                }
+            });
+            $premSelect.find('input[name="easMtsUseOnly"]').val(data.easMtsUseOnly);
         }
     }
 
