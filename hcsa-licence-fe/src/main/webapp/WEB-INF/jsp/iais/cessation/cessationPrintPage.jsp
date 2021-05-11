@@ -294,7 +294,7 @@
                                                     </th>
                                                     <th style="width: 25%">Base Service Licence No.
                                                     </th>
-                                                    <th style="text-align:center;width: 25%">Base Service Name</th>
+                                                    <th style="width: 25%">Base Service Name</th>
                                                 </tr>
                                                 <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                     <tr>
