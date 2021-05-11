@@ -122,4 +122,5 @@ public interface AppSubmissionService {
     void updateDraftStatus(String draftNo,String status);
     ProfessionalResponseDto retrievePrsInfo(String profRegNo);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
+    boolean canApplyEasOrMts(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
 }
