@@ -478,7 +478,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     public Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String masterCodeDto, boolean rfi) {
 
         //do validate one premiss
-        List<String> list = IaisCommonUtils.genNewArrayList();//NOSONAR
+        List<String> list = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
