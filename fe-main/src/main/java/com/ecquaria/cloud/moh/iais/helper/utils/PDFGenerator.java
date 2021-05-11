@@ -73,7 +73,10 @@ public class PDFGenerator {
 			ITextRenderer renderer = new ITextRenderer();
 			renderer.setDocument(optHtmlFile.getPath());
 			if(!StringUtil.isEmpty(templateDirPath)){
-				renderer.getSharedContext().setBaseURL("file:/"+templateDirPath+"/");
+				templateDirPath = "file:"+File.separator+templateDirPath+File.separator;
+				log.info("The File.separator is -->:"+File.separator);
+				log.info("The templateDirPath is -->:"+templateDirPath);
+				renderer.getSharedContext().setBaseURL(templateDirPath);
 			}
 			renderer.layout();
 			renderer.createPDF(os);
