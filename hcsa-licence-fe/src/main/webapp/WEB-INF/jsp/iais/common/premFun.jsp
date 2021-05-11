@@ -329,19 +329,19 @@
 
                             //ph
                             var $phCountent = $currForm.find('div.pubHolDayContent');
+                            //remove ph div
+                            $phCountent.find('div.pubHolidayDiv').remove();
+                            //add html
+                            $phCountent.find('div.addPhDiv').before(data.phHtml);
+                            //remove first field
+                            //$phCountent.find('div.form-group:eq(0)').remove();
+                            //remove first del btn
+                            $phCountent.find('.pubHolidayDel').remove();
+                            //gen multi dropdown
+                            $phCountent.find('select.PubHoliday').each(function () {
+                                $(this).multiSelect();
+                            });
                             if(data.phDtoList != null && data.phDtoList != '' && data.phDtoList != undefined){
-                                //remove ph div
-                                $phCountent.find('div.pubHolidayDiv').remove();
-                                //add html
-                                $phCountent.find('div.addPhDiv').before(data.phHtml);
-                                //remove first field
-                                $phCountent.find('div.form-group:eq(0)').remove();
-                                //remove first del btn
-                                $phCountent.find('.pubHolidayDel').remove();
-                                //gen multi dropdown
-                                $phCountent.find('select.PubHoliday').each(function () {
-                                    $(this).multiSelect();
-                                });
                                 //fill data
                                 $phCountent.find('div.pubHolidayDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
