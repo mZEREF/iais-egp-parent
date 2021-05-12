@@ -37,29 +37,57 @@
         <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType &&!onlySpec}">
             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
+                <c:set var="bundleSvcFeeExt" value="${feeInfoDto.bundleSvcFeeExt}"/>
                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                 <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
-                <tr>
-                    <td>
-                        <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                <c:if test="${not empty baseSvcFeeExt }">
+                    <tr>
+                        <td>
+                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                <p>
+                                    <c:out value="${svcName}"></c:out>
+                                    &nbsp;(Group - ${AppSubmissionDto.appGrpPremisesDtoList.size()} Premises)
+                                </p>
+                            </c:forEach>
+                        </td>
+                        <td>
+                            <p>New Licence</p>
+                        </td>
+                        <td>
                             <p>
-                                <c:out value="${svcName}"></c:out>
-                                &nbsp;(Group - ${AppSubmissionDto.appGrpPremisesDtoList.size()} Premises)
+                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
                             </p>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <p>New Licence</p>
-                    </td>
-                    <td>
-                        <p>
-                            <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                        </p>
-                    </td>
-                    <td>
-                        <p><c:out value="${baseSvcFeeExt.totalAmoumtStr}"></c:out></p>
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            <p><c:out value="${baseSvcFeeExt.totalAmoumtStr}"></c:out></p>
+                        </td>
+                    </tr>
+                </c:if>
+                <!--bundleSvcFeeExt -->
+                <c:if test="${not empty bundleSvcFeeExt }">
+                    <tr>
+                        <td>
+                            <p>&nbsp;&nbsp;Bundled Fees</p>
+                            <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                            </c:forEach>
+
+                        </td>
+                        <td>
+                            <p>New Licence</p>
+                        </td>
+                        <td>
+                            <p>
+                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                            </p>
+                        </td>
+                        <td>
+                            <p >
+                                <c:out value="${bundleSvcFeeExt.amountStr}"></c:out>
+                            </p>
+                        </td>
+                    </tr>
+                </c:if>
                 <!--complexSpecifiedFeeExt -->
                 <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
                     <tr>
@@ -172,49 +200,76 @@
             <c:forEach items="${AppSubmissionDto.appGrpPremisesDtoList}" var="premises" varStatus="stat">
                 <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto" varStatus="feeInfoStat">
                     <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
+                    <c:set var="bundleSvcFeeExt" value="${feeInfoDto.bundleSvcFeeExt}"/>
                     <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                     <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                     <!--todo:includedSvcFeeExtList -->
                     <!--base -->
                     <%--<c:if test="${!AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <tr>
-                        <td>
-                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                    <c:if test="${not empty baseSvcFeeExt }">
+                        <tr>
+                            <td>
+                                <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                    <p>
+                                        <c:out value="${svcName}"></c:out>
+                                        <c:if test="${multiplePrem}">
+                                            &nbsp;(Premises #${stat.index+1})
+                                        </c:if>
+                                    </p>
+                                </c:forEach>
+                            </td>
+                            <td>
                                 <p>
-                                    <c:out value="${svcName}"></c:out>
-                                    <c:if test="${multiplePrem}">
-                                        &nbsp;(Premises #${stat.index+1})
-                                    </c:if>
+                                    New Licence
                                 </p>
-                            </c:forEach>
-                        </td>
-                        <td>
-                            <p>
-                                New Licence
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                <c:choose>
-                                    <c:when test="${IsCharity && feeInfoStat.index>0}">
-                                        <c:out value="$0"></c:out>
-                                    </c:when>
-                                    <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
-                                        <c:out value="$0"></c:out>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
-                                    </c:otherwise>
-                                </c:choose>
-                            </p>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>
+                                <p>
+                                    <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    <c:choose>
+                                        <c:when test="${IsCharity && feeInfoStat.index>0}">
+                                            <c:out value="$0"></c:out>
+                                        </c:when>
+                                        <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
+                                            <c:out value="$0"></c:out>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
+                            </td>
+                        </tr>
+                    </c:if>
+                    <!--bundleSvcFeeExt -->
+                    <c:if test="${not empty bundleSvcFeeExt }">
+                        <tr>
+                            <td>
+                                <p>&nbsp;&nbsp;Bundled Fees</p>
+                                <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                    <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                                </c:forEach>
 
+                            </td>
+                            <td>
+                                <p>New Licence</p>
+                            </td>
+                            <td>
+                                <p>
+                                    <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                </p>
+                            </td>
+                            <td>
+                                <p >
+                                    <c:out value="${bundleSvcFeeExt.amountStr}"></c:out>
+                                </p>
+                            </td>
+                        </tr>
+                    </c:if>
                     <!--simpleSpecifiedFeeExt -->
                     <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
                         <tr>
