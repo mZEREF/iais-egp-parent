@@ -66,7 +66,7 @@
     };
 
     var addMandatoryForOtherQua = function (data,$loadingContent) {
-        if(data == null || data == undefined){
+        if(data == null || data == undefined || data == ''){
             $loadingContent.find('span.otherQualificationSpan').html('*');
         }else{
             $loadingContent.find('span.otherQualificationSpan').html('');
