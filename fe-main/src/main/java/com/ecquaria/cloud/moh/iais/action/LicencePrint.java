@@ -60,7 +60,7 @@ public class LicencePrint {
                 map.put("endDate",licenceViewDto.getEndDate());
                 OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
                 try {
-                    pdfGenerator.generate(outputStream, "licence.ftl", map,templateDir.getPath());
+                    pdfGenerator.generate(outputStream, "licence.ftl", map);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }

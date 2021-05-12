@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper.utils;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.google.common.base.Charsets;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
@@ -19,9 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author yichen
@@ -48,11 +47,8 @@ public class PDFGenerator {
 		resolver.addFont(fontPath, encoding, embedded);
 	}
 
-	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
-		generate(os,ftlName,params,null);
-	}
 
-	public void generate(OutputStream os, String ftlName, Map<String, String> params,String templateDirPath) throws IOException, TemplateException,DocumentException {
+	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
 			log.debug("params is empty !!!");
 			return;
@@ -72,13 +68,6 @@ public class PDFGenerator {
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
 			renderer.setDocument(optHtmlFile.getPath());
-			if(!StringUtil.isEmpty(templateDirPath)){
-				//templateDirPath = "file://"+templateDirPath+File.separator;
-				templateDirPath="file:///usr/local/tomcat/webapps/main-web/";
-				//log.info("The File.separator is -->:"+File.separator);
-				log.info("The templateDirPath is -->:"+templateDirPath);
-				//renderer.getSharedContext().setBaseURL(templateDirPath);
-			}
 			renderer.layout();
 			renderer.createPDF(os);
 		}catch (TemplateNotFoundException | DocumentException e){
