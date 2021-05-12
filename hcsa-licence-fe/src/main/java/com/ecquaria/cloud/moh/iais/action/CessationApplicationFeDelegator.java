@@ -188,13 +188,6 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, READINFO, readInfo);
         Map<String, String> errorMap = new HashMap<>(34);
         Boolean choose = Boolean.FALSE;
-        for (int i = 0;i<confirmDtos.size();i++){
-            List<AppCessHciDto> appCessHciDtos1 = confirmDtos.get(i).getAppCessHciDtos();
-            List<String> prgNos = IaisCommonUtils.genNewArrayList();
-            for (int j =0;j<appCessHciDtos1.size();j++){
-                prgNos.add(appCessHciDtos1.get(j).getPatRegNo());
-            }
-        }
         for (int i = 1; i <= size; i++) {
             int size1 = appCessDtosByLicIds.get(i - 1).getAppCessHciDtos().size();
             for (int j = 1; j <= size1; j++) {
