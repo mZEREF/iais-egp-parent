@@ -1098,11 +1098,12 @@ public class NewApplicationAjaxController {
 
     @GetMapping(value = "/new-app-ack-print")
     public @ResponseBody void generateAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String action = ParamUtil.getString(request,"action");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO);
         String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt);
+        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt,action);
         if(bytes != null){
             String fileName = "newAppAck.pdf";
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -1126,7 +1127,7 @@ public class NewApplicationAjaxController {
         appSubmissionDtos.get(0).setPaymentMethod(payMethod);
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDtos.get(0),isRfi,txnRefNo,new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        byte[] bytes = doPrint(appSubmissionDtos.get(0),isRfi,txnRefNo,new SimpleDateFormat("dd/MM/yyyy").format(new Date()),"");
         if(bytes != null){
             response.setContentType("application/OCTET-STREAM");
             response.addHeader("Content-Disposition", "attachment;filename=rfcAppAck.pdf");
@@ -1364,7 +1365,7 @@ public class NewApplicationAjaxController {
         return person;
     }
 
-    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi,String txnRefNo,String txnDt) throws Exception {
+    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi, String txnRefNo, String txnDt, String action) throws Exception {
         byte[] bytes = null;
         if(appSubmissionDto != null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1403,9 +1404,11 @@ public class NewApplicationAjaxController {
                             .append(appSubmissionDto.getLicenceNo())
                             .append("</strong>)</p>");
                 }
-                paramMap.put("title",title);
-                paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
-                paramMap.put("newExtraTitle",newExtraTitle.toString());
+                if(StringUtil.isEmpty(action) || !"noHeader".equals(action)){
+                    paramMap.put("title",title);
+                    paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
+                    paramMap.put("newExtraTitle",newExtraTitle.toString());
+                }
                 paramMap.put("serviceName",serviceName.toString());
                 paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
                 paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));

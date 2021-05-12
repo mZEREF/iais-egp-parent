@@ -2981,9 +2981,48 @@ public class NewApplicationHelper {
         return flag;
     }
 
+    public static List<HcsaServiceDto> sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {
+        List<HcsaServiceDto> baseList = new ArrayList();
+        List<HcsaServiceDto> specifiedList = new ArrayList();
+        List<HcsaServiceDto> subList = new ArrayList();
+        List<HcsaServiceDto> otherList = new ArrayList();
+        //class
+        for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
+            switch (hcsaServiceDto.getSvcType()) {
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:
+                    baseList.add(hcsaServiceDto);
+                    break;
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:
+                    subList.add(hcsaServiceDto);
+                    break;
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
+                    specifiedList.add(hcsaServiceDto);
+                    break;
+                default:
+                    otherList.add(hcsaServiceDto);
+                    break;
+            }
+        }
+        //Sort
+        sortService(baseList);
+        sortService(specifiedList);
+        sortService(subList);
+        sortService(otherList);
+        hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+        hcsaServiceDtoList.addAll(baseList);
+        hcsaServiceDtoList.addAll(specifiedList);
+        hcsaServiceDtoList.addAll(subList);
+        hcsaServiceDtoList.addAll(otherList);
+        return hcsaServiceDtoList;
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
+
+    private static void sortService(List<HcsaServiceDto> list) {
+        list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
+    }
 
     private static HcsaSvcSubtypeOrSubsumedDto getScopeConfigByRecursiveTarNameUpward(Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap,String targetChkName,String startId){
         HcsaSvcSubtypeOrSubsumedDto targetDto = null;

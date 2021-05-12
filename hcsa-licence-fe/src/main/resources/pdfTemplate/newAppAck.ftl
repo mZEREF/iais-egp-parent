@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="dashboard-page-title">
-                <h1>${title}</h1>
+                <h1>${title!""}</h1>
                 <br/>
                 ${rfcExtraTitle!""}
                 ${newExtraTitle!""}

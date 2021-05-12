@@ -197,8 +197,11 @@ public class RetriggerGiroPaymentDelegator {
 
             }
             List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+            //do sort
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+                hcsaServiceDtoList = NewApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
+            }
             ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-            ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
 
         }else{
             log.info("appSvcRelatedInfoDtos is empty ...");
@@ -453,7 +456,7 @@ public class RetriggerGiroPaymentDelegator {
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         if (StringUtil.isEmpty(txnRefNo)) {
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
-            ParamUtil.setRequestAttr(bpc.request, "txnDt", txnDt);
+            ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
         }
 
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
