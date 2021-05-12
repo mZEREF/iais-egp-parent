@@ -765,6 +765,120 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
+    @Override
+    public void print(HttpServletRequest req) {
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String saveDraftId = (String) req.getSession().getAttribute("saveDraftNo");
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
+        String reasonSelect = request.getParameter("reasonSelect");
+        String proposedHciName = request.getParameter("proposedHciName");
+        String remarks = request.getParameter("remarks");
+        String othersReason = request.getParameter("othersReason");
+        Map<String, File> map = (Map<String, File>)req.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)request.getSession().getAttribute("pageShowFileHashMap");
+        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList =new ArrayList<>(5);
+        List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
+        List<File> files=new ArrayList<>(5);
+        if(map!=null&&!map.isEmpty()){
+            map.forEach((k,v)->{
+                if(v!=null){
+                    long length = v.length();
+                    if(length>0){
+                        Long size=length/1024;
+                        files.add(v);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setDocName(v.getName());
+                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                        String fileMd5 = singeFileUtil.getFileMd5(v);
+                        premisesSpecialDocDto.setMd5Code(fileMd5);
+                        premisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setFileName(v.getName());
+                        String e = k.substring(k.lastIndexOf('e') + 1);
+                        pageShowFileDto.setIndex(e);
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                        pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                        pageShowFileDto.setMd5Code(fileMd5);
+                        premisesSpecialDocDto.setIndex(k);
+                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                }else {
+                    if(pageShowFileHashMap!=null){
+                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(k);
+                        AppPremisesSpecialDocDto premisesSpecialDocDto=new AppPremisesSpecialDocDto();
+                        premisesSpecialDocDto.setDocName(pageShowFileDto.getFileName());
+                        premisesSpecialDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                        premisesSpecialDocDto.setDocSize(pageShowFileDto.getSize());
+                        premisesSpecialDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                        premisesSpecialDocDto.setIndex(k.substring(k.lastIndexOf('e') + 1));
+                        appPremisesSpecialDocDtoList.add(premisesSpecialDocDto);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                }
+
+            });
+        }
+        List<String> list = comFileRepoClient.saveFileRepo(files);
+        if(list!=null){
+            ListIterator<String> iterator = list.listIterator();
+            for(int j=0;j< appPremisesSpecialDocDtoList.size();j++){
+                String fileRepoId = appPremisesSpecialDocDtoList.get(j).getFileRepoId();
+                if(fileRepoId==null){
+                    if(iterator.hasNext()){
+                        String next = iterator.next();
+                        pageShowFileDtos.get(j).setFileUploadUrl(next);
+                        appPremisesSpecialDocDtoList.get(j).setFileRepoId(next);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        Collections.sort(pageShowFileDtos,(s1,s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
+        req.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+        CommonsMultipartFile selectedFile = (CommonsMultipartFile) request.getFile("selectedFile");
+        if (selectedFile != null && selectedFile.getSize() > 0) {
+            String filename = selectedFile.getOriginalFilename();
+            req.setAttribute("filename", filename);
+            Long size = selectedFile.getSize() / 1024;
+            if (appPremisesSpecialDocDto == null) {
+                appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+            }
+            appPremisesSpecialDocDto.setDocName(selectedFile.getOriginalFilename());
+            if (size < 5 * 1024) {
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
+                appPremisesSpecialDocDto.setMd5Code(s);
+                try {
+                    String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
+                    appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
+                    req.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
+                    req.getSession().setAttribute("fileReportIdForAppeal",fileToRepo);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+        List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
+        ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
+        ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
+
+        AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
+        if (!StringUtil.isEmpty(saveDraftId)) {
+            appPremiseMiscDto.setRemarks(remarks);
+            appPremiseMiscDto.setReason(reasonSelect);
+            if (ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reasonSelect)) {
+                appPremiseMiscDto.setNewHciName(proposedHciName);
+            }
+            appPremiseMiscDto.setOtherReason(othersReason);
+        }
+        appPremiseMiscDto.setRemarks(remarks);
+        appPremiseMiscDto.setOtherReason(othersReason);
+        appPremiseMiscDto.setReason(reasonSelect);
+        appPremiseMiscDto.setNewHciName(proposedHciName);
+        req.getSession().setAttribute("appPremiseMiscDto", appPremiseMiscDto);
+    }
+
 
     private List<AppSvcCgoDto> reAppSvcCgo(HttpServletRequest req) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);

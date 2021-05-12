@@ -138,6 +138,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         }
         if(appPremisesOperationalUnitDtos!=null&&!appPremisesOperationalUnitDtos.isEmpty()){
             //
+            checkOperaionUnit(appPremisesOperationalUnitDtos,map,"opOffFloorNo"+index,"opOffUnitNo"+index,floorUnitList,"offFloorUnit"+index,floorUnitNo,appGrpPremisesDto);
         }
     }
 

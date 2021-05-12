@@ -246,9 +246,10 @@ public class AppealDelegator {
         log.info("end**************save************");
     }
 
-    public void print(BaseProcessClass bpc){
+    public void print(BaseProcessClass bpc) throws IOException {
         log.info("=====start====print");
-
+        appealService.print(bpc.request);
+        bpc.request.setAttribute("need_print","need_print");
     }
     @RequestMapping(value = "/regNo-prs",method = RequestMethod.GET)
     @ResponseBody

@@ -44,7 +44,7 @@
                     </span>
                 </div>
                 <div class="col-xs-6">
-                    <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}">
+                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}">
                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}"></c:out>
                     </span>
                 </div>
@@ -61,7 +61,7 @@
                     </span>
                 </div>
                 <div class="col-xs-6">
-                   <span  class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].chassisNum}">
+                   <span  class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].chassisNum}">
                      <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].chassisNum}"></c:out>
                    </span>
                 </div>
@@ -78,7 +78,7 @@
                     </span>
                 </div>
                 <div class="col-xs-6">
-                    <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].engineNum}">
+                    <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].engineNum}">
                       <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].engineNum}"></c:out>
                     </span>
                 </div>
@@ -171,7 +171,7 @@
                           </span>
                       </div>
                       <div class="col-xs-6">
-                          <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].professionBoard}">
+                          <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].professionBoard}">
                             <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].professionBoard}"></iais:code>
                           </span>
                       </div>
@@ -188,7 +188,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}
                         </span>
                       </div>
@@ -205,7 +205,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].salutation}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].salutation}">
                           <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].salutation}"></iais:code>
                         </span>
                       </div>
@@ -221,7 +221,7 @@
                               ${appSvcClinicalDirectorDto.name}
                           </span>
                           <br>
-                          <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
+                          <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
                               ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
                           </span>
                       </div>
@@ -238,7 +238,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idType}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idType}">
                             <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idType}"></iais:code>
                         </span>
                       </div>
@@ -255,7 +255,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}
                         </span>
                       </div>
@@ -272,7 +272,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].designation}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].designation}">
                             <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].designation}"></iais:code>
                         </span>
                       </div>
@@ -289,7 +289,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialty}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialty}">
                           <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialty}"></iais:code>
                         </span>
                       </div>
@@ -306,7 +306,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialtyGetDate}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialtyGetDate}">
                           <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                         </span>
                       </div>
@@ -322,7 +322,7 @@
                             ${appSvcClinicalDirectorDto.typeOfCurrRegi}
                         </span>
                         <br>
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfCurrRegi}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfCurrRegi}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfCurrRegi}
                         </span>
                       </div>
@@ -339,7 +339,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].currRegiDate}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].currRegiDate}">
                           <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                         </span>
                       </div>
@@ -356,7 +356,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].praCerEndDate}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].praCerEndDate}">
                            <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                         </span>
                       </div>
@@ -372,7 +372,7 @@
                               ${appSvcClinicalDirectorDto.typeOfRegister}
                           </span>
                         <br>
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfRegister}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfRegister}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].typeOfRegister}
                           </span>
                       </div>
@@ -389,7 +389,7 @@
                             ${appSvcClinicalDirectorDto.relevantExperience}
                         </span>
                         <br>
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].relevantExperience}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].relevantExperience}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].relevantExperience}
                         </span>
                       </div>
@@ -407,7 +407,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].holdCerByEMS}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].holdCerByEMS}">
                           <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].holdCerByEMS=='1'}">Yes</c:if>
                           <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].holdCerByEMS=='0'}">No</c:if>
                         </span>
@@ -426,7 +426,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].aclsExpiryDate}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].aclsExpiryDate}">
                            <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].aclsExpiryDate}" pattern="dd/MM/yyyy"/>
                         </span>
                       </div>
@@ -444,7 +444,7 @@
                         </span>
                       </div>
                       <div  class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].mobileNo}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].mobileNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].mobileNo}
                         </span>
                       </div>
@@ -461,7 +461,7 @@
                             ${appSvcClinicalDirectorDto.emailAddr}
                         </span>
                         <br>
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].emailAddr}">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].emailAddr}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].emailAddr}
                         </span>
                       </div>
@@ -481,9 +481,9 @@
       <label style="font-size: 2.2rem">${stepNameMap['SVST010']}</label>
       <div class="amend-preview-info">
         <c:set value="${currentPreviewSvcInfo.appSvcChargesPageDto}" var="appSvcChargesPageDto"></c:set>
-        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos">
+        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="index">
           <p><strong class="col-xs-6">General Conveyance Charges <c:if
-                  test="${fn:length(generalChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
+                  test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
@@ -494,12 +494,88 @@
               </td>
               <td>
                 <div class="col-xs-12">
-                  <span class="newVal " attr="">
-
+                  <span class="newVal " attr="${generalChargesDtos.chargesType}">
+                    <iais:code code="${generalChargesDtos.chargesType}"></iais:code>
                   </span>
                   <br>
-                  <span class="oldVal " attr="">
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].chargesType}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].chargesType}"></iais:code>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td  class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount</p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                  <span class="newVal " attr="${generalChargesDtos.minAmount}">
+                      ${generalChargesDtos.minAmount}
+                  </span>
+                </div>
+                <div class="col-xs-6">
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].minAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].minAmount}
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount to</p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                  <span class="newVal " attr="${generalChargesDtos.maxAmount}">
+                      ${generalChargesDtos.maxAmount}
+                  </span>
+                </div>
+                <div class="col-xs-6">
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].maxAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].maxAmount}
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remake</p>
+              </td>
+              <td>
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${generalChargesDtos.remarks}">
+                      ${generalChargesDtos.remarks}
+                  </span>
+                  <br>
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].remarks}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].remarks}
+                  </span>
+                </div>
 
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="index">
+          <p><strong class="col-xs-6">General Conveyance Charges <c:if
+                  test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
+                  class="col-xs-4 col-md-4"></span>
+          </p>
+          <span class="col-xs-6"></span>
+          <table class="col-xs-12">
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
+              </td>
+              <td>
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${otherChargesDtos.chargesCategory}">
+                    <iais:code code="${otherChargesDtos.chargesCategory}"></iais:code>
+                  </span>
+                  <br>
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesCategory}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesCategory}"></iais:code>
                   </span>
                 </div>
               </td>
@@ -509,32 +585,67 @@
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
               </td>
               <td>
-
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${otherChargesDtos.chargesType}">
+                    <iais:code code="${otherChargesDtos.chargesType}"></iais:code>
+                  </span>
+                  <br>
+                  <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesType}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesType}"></iais:code>
+                  </span>
+                </div>
               </td>
             </tr>
             <tr>
               <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount</p>
               </td>
               <td>
-
+                <div class="col-xs-6">
+                  <span class="newVal " attr="${otherChargesDtos.minAmount}">
+                      ${otherChargesDtos.minAmount}
+                  </span>
+                </div>
+                <div class="col-xs-6">
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].minAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].minAmount}
+                  </span>
+                </div>
               </td>
             </tr>
             <tr>
               <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remake</p>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount to</p>
               </td>
               <td>
-
+                <div class="col-xs-6">
+                  <span class="newVal " attr="${otherChargesDtos.maxAmount}">
+                      ${otherChargesDtos.maxAmount}
+                  </span>
+                </div>
+                <div class="col-xs-6">
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].maxAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].maxAmount}
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remarks</p>
+              </td>
+              <td>
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${otherChargesDtos.remarks}">
+                      ${otherChargesDtos.remarks}
+                  </span>
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}
+                  </span>
+                </div>
               </td>
             </tr>
           </table>
-        </c:forEach>
-        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos">
-          <p><strong class="col-xs-6">General Conveyance Charges <c:if
-                  test="${fn:length(generalChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
-                  class="col-xs-4 col-md-4"></span>
-          </p>
         </c:forEach>
       </div>
 
