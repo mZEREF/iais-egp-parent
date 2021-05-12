@@ -121,6 +121,7 @@
         <c:when test="${'APTY002' == AppSubmissionDto.appType && onlySpec}">
             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
+                <c:set var="bundleSvcFeeExt" value="${feeInfoDto.bundleSvcFeeExt}"/>
                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                 <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                 <c:if test="${!empty baseSvcFeeExt}">
@@ -155,6 +156,31 @@
                                         <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
                                     </c:otherwise>
                                 </c:choose>
+                            </p>
+                        </td>
+                    </tr>
+                </c:if>
+                <!--bundleSvcFeeExt -->
+                <c:if test="${not empty bundleSvcFeeExt }">
+                    <tr>
+                        <td>
+                            <p>&nbsp;&nbsp;Bundled Fees</p>
+                            <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"></c:out></p>
+                            </c:forEach>
+
+                        </td>
+                        <td>
+                            <p>New Licence</p>
+                        </td>
+                        <td>
+                            <p>
+                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                            </p>
+                        </td>
+                        <td>
+                            <p >
+                                <c:out value="${bundleSvcFeeExt.amountStr}"></c:out>
                             </p>
                         </td>
                     </tr>
