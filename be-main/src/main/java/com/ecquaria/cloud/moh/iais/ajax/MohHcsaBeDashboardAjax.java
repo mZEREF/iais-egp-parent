@@ -155,7 +155,9 @@ public class MohHcsaBeDashboardAjax {
                             //set kpi color
                             String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
                             dashWaitApproveAjaxQueryDto.setKpiColor(color);
-                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashWaitApproveAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
                                 //set mask task Id
                                 String maskId = MaskUtil.maskValue("taskId", dashWaitApproveAjaxQueryDto.getTaskId());
                                 dashWaitApproveAjaxQueryDto.setTaskMaskId(maskId);
@@ -211,7 +213,9 @@ public class MohHcsaBeDashboardAjax {
                             //set kpi color
                             String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
                             dashRenewAjaxQueryDto.setKpiColor(color);
-                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashRenewAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
                                 //set mask task Id
                                 String maskId = MaskUtil.maskValue("taskId", dashRenewAjaxQueryDto.getTaskId());
                                 dashRenewAjaxQueryDto.setTaskMaskId(maskId);
@@ -296,9 +300,11 @@ public class MohHcsaBeDashboardAjax {
                             //set kpi color
                             String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
                             dashKpiPoolAjaxQuery.setKpiColor(color);
-                            //set mask task Id
-                            String maskId = MaskUtil.maskValue("taskId", dashKpiPoolAjaxQuery.getTaskId());
-                            if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                            if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                                dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                            } else if (userId.equals(taskDto.getUserId()) && roleId.equals(taskDto.getRoleId())) {
+                                //set mask task Id
+                                String maskId = MaskUtil.maskValue("taskId", dashKpiPoolAjaxQuery.getTaskId());
                                 dashKpiPoolAjaxQuery.setTaskMaskId(maskId);
                                 dashKpiPoolAjaxQuery.setCanDoTask(BeDashboardConstant.TASK_PROCESS);
                                 String dashTaskUrl = generateProcessUrl(taskDto.getProcessUrl(), request, maskId);
@@ -337,9 +343,11 @@ public class MohHcsaBeDashboardAjax {
                         //set kpi color
                         String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
                         dashComPoolAjaxQueryDto.setKpiColor(color);
-                        //set mask task Id
-                        String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
-                        if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
+                        if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                            dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
+                        } else if (workGroupIds.contains(taskDto.getWkGrpId()) && roleId.equals(taskDto.getRoleId())) {
+                            //set mask task Id
+                            String maskId = MaskUtil.maskValue("taskId", dashComPoolAjaxQueryDto.getTaskId());
                             dashComPoolAjaxQueryDto.setTaskMaskId(maskId);
                             dashComPoolAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_COMMON_POOL_DO);
                         } else {
