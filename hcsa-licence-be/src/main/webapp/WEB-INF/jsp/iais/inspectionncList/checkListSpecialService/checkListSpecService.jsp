@@ -27,7 +27,7 @@
                         <div class="tab-content">
                         </div>
                         <div class="tab-pane active" id="tabPayment" role="tabpanel">
-                             <jsp:include page="tab.jsp"/>
+                            <%@include file="tab.jsp"%>
                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                             <div class="tab-content" id="checkLsitItemArea">
 
