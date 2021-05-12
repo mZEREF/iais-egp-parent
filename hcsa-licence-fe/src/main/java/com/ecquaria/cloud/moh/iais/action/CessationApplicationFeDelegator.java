@@ -194,27 +194,7 @@ public class CessationApplicationFeDelegator {
             for (int j =0;j<appCessHciDtos1.size();j++){
                 prgNos.add(appCessHciDtos1.get(j).getPatRegNo());
             }
-            ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-            professionalParameterDto.setRegNo(prgNos);
-            professionalParameterDto.setClientId("22222");
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-            String format = simpleDateFormat.format(new Date());
-            professionalParameterDto.setTimestamp(format);
-            professionalParameterDto.setSignature("2222");
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            try {
-                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                String name = professionalResponseDtos.get(0).getName();
-                if(StringUtil.isEmpty(name)){
-                    errorMap.put("1"+PATREGNO+"1","GENERAL_ERR0042");
-                }
-            }catch (Throwable e){
-                bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-            }
         }
-
         for (int i = 1; i <= size; i++) {
             int size1 = appCessDtosByLicIds.get(i - 1).getAppCessHciDtos().size();
             for (int j = 1; j <= size1; j++) {
@@ -498,7 +478,7 @@ public class CessationApplicationFeDelegator {
                 errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", "field"));
             } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)) {
 
-                if ("Y".equals(prsFlag)) {
+                if ("N".equals(prsFlag)) {
                     ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
                     List<String> prgNos = IaisCommonUtils.genNewArrayList();
                     prgNos.add(patRegNo);
@@ -514,8 +494,8 @@ public class CessationApplicationFeDelegator {
                         List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                                 signature2.date(), signature2.authorization()).getEntity();
                         if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
-                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                            if (IaisCommonUtils.isEmpty(specialty)) {
+                            String name = professionalResponseDtos.get(0).getName();
+                            if (StringUtil.isEmpty(name)) {
                                 errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
                             }
                         }
