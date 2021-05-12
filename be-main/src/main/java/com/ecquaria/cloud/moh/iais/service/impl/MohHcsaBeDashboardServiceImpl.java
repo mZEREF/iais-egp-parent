@@ -135,11 +135,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     //for ASO / PSO / Inspector lead
                     workGroupIds = getByAsoPsoInspLead(searchParam, loginContext);
                 } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
-                    //for approver
+                    //for approver 1
                     workGroupIds = getByAo1AndLead(searchParam, loginContext, switchAction);
                 } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2) || curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
-                    //for approver
+                    //for approver 2 / 3
                     workGroupIds = getByAo2Ao3AndLead(searchParam, loginContext, switchAction);
+                } else if (RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                    //for System admin
+                    workGroupIds = getBySystemAdmin(searchParam);
                 } else {
                     //for myself
                     if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
@@ -170,6 +173,37 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     }
                 }
             }
+        }
+        return workGroupIds;
+    }
+
+    private List<String> getBySystemAdmin(SearchParam searchParam) {
+        List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+        //get ASO work group ids
+        workGroupIds = getAsoWorkGroupIds(workGroupIds);
+        //get PSO work group ids
+        workGroupIds = getPsoWorkGroupIds(workGroupIds);
+        //get Insp work group ids
+        workGroupIds = getInspWorkGroupIds(workGroupIds);
+        //set Ao1 Ao2 Groups
+        workGroupIds = getAo1WorkGroupIds(workGroupIds);
+        workGroupIds = getAo2WorkGroupIds(workGroupIds);
+        //set Ao3 Groups
+        workGroupIds = getAo3WorkGroupIds(workGroupIds);
+        //duplicate removal
+        Set<String> workGroupIdSet = new HashSet<>(workGroupIds);
+        workGroupIds = new ArrayList<>(workGroupIdSet);
+        int workGroupIdsSize = 0;
+        if(!IaisCommonUtils.isEmpty(workGroupIds)) {
+            workGroupIdsSize = workGroupIds.size();
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                searchParam.addFilter("T7.WRK_GRP_ID" + i, workGroupIds.get(i));
+            }
+        } else {
+            String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
+            searchParam.addParam("workGroup_list", workGroupId);
         }
         return workGroupIds;
     }
