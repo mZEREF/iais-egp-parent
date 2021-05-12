@@ -478,7 +478,7 @@ public class CessationApplicationFeDelegator {
                 errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn. No.", "field"));
             } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && !StringUtil.isEmpty(patRegNo)) {
 
-                if ("N".equals(prsFlag)) {
+                if ("Y".equals(prsFlag)) {
                     ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
                     List<String> prgNos = IaisCommonUtils.genNewArrayList();
                     prgNos.add(patRegNo);
