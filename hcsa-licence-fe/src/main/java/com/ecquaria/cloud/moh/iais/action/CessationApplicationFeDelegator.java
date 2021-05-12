@@ -489,8 +489,8 @@ public class CessationApplicationFeDelegator {
                         List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                                 signature2.date(), signature2.authorization()).getEntity();
                         if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
-                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                            if (IaisCommonUtils.isEmpty(specialty)) {
+                            String name = professionalResponseDtos.get(0).getName();
+                            if (StringUtil.isEmpty(name)) {
                                 errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
                             }
                         }
