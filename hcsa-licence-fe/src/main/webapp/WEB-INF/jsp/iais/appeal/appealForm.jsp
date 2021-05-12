@@ -148,6 +148,9 @@
       <div class="row">
         <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
+            <div class="col-xs-12 col-sm-1">
+              <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+            </div>
             <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
             <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
             <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>
@@ -161,6 +164,7 @@
     </c:if>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <%@ include file="./FeFileCallAjax.jsp" %>
+    <input type="hidden" value="${need_print}" id="need_print" />
   </form>
 </div>
 <style>
@@ -206,7 +210,10 @@
           $('#delete').attr("style","display: inline-block;margin-left: 20px");
           $('#isDelete').val('Y');
       }
-
+      if($('#need_print').val()=='need_print'){
+          var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohAppealPrint/1/",request)%>';
+          window.open(url,'_blank');
+      }
   });
 $('#submit').click(function () {
     if("N" == $('#isDelete').val()){
@@ -218,6 +225,9 @@ $('#submit').click(function () {
    /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
   }
 });
+  $("#print-review").click(function () {
+      Utils.submit('mainForm','print','print','','');
+  });
 
   var debug = true;//true: add debug logs when cloning
   var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)

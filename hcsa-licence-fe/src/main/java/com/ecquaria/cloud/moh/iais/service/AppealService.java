@@ -23,4 +23,6 @@ public interface AppealService {
     void inbox(HttpServletRequest request, String appNo);
 
     ProfessionalResponseDto prsFlag(String regNo);
+
+    void print(HttpServletRequest request);
 }
