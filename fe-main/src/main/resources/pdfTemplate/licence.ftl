@@ -102,7 +102,7 @@
     /*****************28 April 2021*******************/
 
     .licence_box  {
-      background-image: url("/img/license-mainbg.png");
+      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;

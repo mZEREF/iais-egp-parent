@@ -77,7 +77,7 @@ public class PDFGenerator {
 				templateDirPath="file:///usr/local/tomcat/webapps/main-web/";
 				//log.info("The File.separator is -->:"+File.separator);
 				log.info("The templateDirPath is -->:"+templateDirPath);
-				renderer.getSharedContext().setBaseURL(templateDirPath);
+				//renderer.getSharedContext().setBaseURL(templateDirPath);
 			}
 			renderer.layout();
 			renderer.createPDF(os);
