@@ -675,13 +675,13 @@
             var $currContent = $(this).closest('.new-officer-form');
             var $prsLoadingContent = $(this).closest('table.assignContent');
             var specialty = $prsLoadingContent.find('label.specialty-label').html();
-            //add Remark For Subspecialty
-            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
-                $currContent.find('span.otherQualificationSpan').html('*');
-            }
             //prs loading
             if(init == 1){
                 prdLoading($prsLoadingContent,prgNo);
+            }
+            //add Remark For Subspecialty
+            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                $currContent.find('span.otherQualificationSpan').html('*');
             }
         });
     }
