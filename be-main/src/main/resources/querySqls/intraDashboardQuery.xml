@@ -261,13 +261,14 @@
             SELECT T7.ID, MAX(T7.APP_PREM_ID) AS APP_PREM_ID, MAX(T1.ID) AS TASK_ID, MAX(T7.APPLICATION_NO) AS APPLICATION_NO,
                               MAX(T7.SERVICE_ID) AS SERVICE_ID, MAX(T7.STATUS) AS STATUS, MAX(T7.HCI_CODE) AS HCI_CODE
             FROM TASK_WAITING_APPROVAL_APP_VIEW T7
-            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID
+                      and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+                      <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
-            <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
             <#if application_status??> and T7.STATUS = :application_status</#if>
@@ -341,13 +342,14 @@
             SELECT T1.ID, MAX(T1.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T1.APPLICATION_NO) AS APPLICATION_NO,
                       MAX(T1.SERVICE_ID) AS SERVICE_ID, MAX(T1.STATUS) AS STATUS, MAX(T1.HCI_CODE) AS HCI_CODE
             FROM TASK_RENEWAL_EXPIRY_APP_VIEW T1
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+                      and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+                      <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
-            <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if lic_renew_exp??> and T1.LICEXPDAYS <= :lic_renew_exp</#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
