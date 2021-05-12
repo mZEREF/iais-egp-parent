@@ -4318,7 +4318,7 @@ public class NewApplicationDelegator {
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         //msgId = "415199C2-4AAA-42BF-B068-9B019BF1ED1C";
         if (!StringUtil.isEmpty(appNo) && !StringUtil.isEmpty(msgId)) {
-            appNo = "AN210511010651A-01";
+//            appNo = "AN210511010651A-01";
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
