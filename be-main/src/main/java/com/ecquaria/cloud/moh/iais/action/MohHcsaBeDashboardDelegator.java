@@ -266,6 +266,10 @@ public class MohHcsaBeDashboardDelegator {
         String successInfo = "Success";
         if(!StringUtil.isEmpty(taskList)){
             for (String item:taskList) {
+                if(StringUtil.isEmpty(item)) {
+                    log.info(StringUtil.changeForLog("-------- task id is NULL----"));
+                    continue;
+                }
                 TaskDto taskDto = taskService.getTaskById(item);
                 String correlationId;
                 if(taskDto != null){
@@ -393,6 +397,7 @@ public class MohHcsaBeDashboardDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
+        ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
     }
 
     /**
