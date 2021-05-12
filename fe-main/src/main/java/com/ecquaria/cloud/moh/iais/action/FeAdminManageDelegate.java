@@ -58,6 +58,8 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
+        myInfoAjax.noTakenCallMyInfo(bpc,"MohFeAdminUserManagement");
+        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement");
     }
 
     /**

@@ -91,7 +91,7 @@
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                    <button class="btn btn-primary save" id="reLoadMyInfo">Refresh And Save Data</button>
+                                                    <a class="btn btn-primary save" id="reLoadMyInfo">Refresh And Save Data</a>
                                             </div>
                                         </div>
                                     </div>

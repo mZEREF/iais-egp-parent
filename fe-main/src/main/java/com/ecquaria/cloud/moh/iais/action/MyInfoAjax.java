@@ -81,6 +81,7 @@ public class MyInfoAjax {
 		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			log.info("-----------myinfo.true.open is No-------");
+			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
 			return ;
 		}
 		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
