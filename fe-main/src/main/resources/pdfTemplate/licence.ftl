@@ -21,17 +21,17 @@
             </div>
             <div class="lic-approved-info">
               <div class="table-responsive">
-                <table class="table">
+                <table class="table" width = "100%">
                   <thead>
                   <tr>
-                    <th></th>
-                    <th>Business Name</th>
-                    <th>Licensed Premises</th>
-                    <th>Licensed Conveyances <br></br>(Vehicle No.)</th>
+                    <th width = "10%"></th>
+                    <th width = "30%" align = "left">Business Name</th>
+                    <th width = "30%" align = "left">Licensed Premises</th>
+                    <th width = "30%" align = "left">Licensed Conveyances(Vehicle No.)</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
+                  <tr align = "left">
                     <td>
                       <p><br></br></p>
                       <p>1</p>
@@ -54,23 +54,33 @@
               </div>
             </div>
             <div class="lic-dateinfo">
-              <div class="row">
-                <div class="col-xs-12 col-md-6">
-                  <p>Licence Start Date</p>
-                  <h3>${startDate}</h3>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p>Licence End Date</p>
-                  <h3>${endDate}</h3>
-                </div>
-              </div>
+              <table width = "100%" >
+                <tr align = "left">
+                  <td width = "50%">
+                    <div class="col-xs-12 col-md-6">
+                      <p>Licence Start Date</p>
+                      <h3>${startDate}</h3>
+                    </div>
+                  </td>
+                  <td width = "50%" align = "left">
+                    <div class="col-xs-12 col-md-6">
+                      <p>Licence End Date</p>
+                      <h3>${endDate}</h3>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
             </div>
+            <br></br>
             <div class="lic-signature-info">
               <p>DIRECTOR OF MEDICAL SERVICES
                 SINGAPORE </p>
               <span>This is a computer -generated document. No Signature is required</span>
             </div>
-
+            <br></br>
+            <br></br>
+            <br></br>
             <div class="lic-footer">
               <p>This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p>Ministry of Health | Page 1 of 1</p>
@@ -93,7 +103,7 @@
   <meta name="keywords" content=""></meta>
   <style type="text/css">
     @page {
-      size: 1400px 1900px;
+      size: 1400px 1950px;
     }
     * {
       page-break-inside: always;
@@ -102,7 +112,7 @@
     /*****************28 April 2021*******************/
 
     .licence_box  {
-      background-image: url("/img/license-mainbg.png");
+      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
