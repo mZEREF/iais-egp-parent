@@ -472,8 +472,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         List<GiroPaymentDto> giroPaymentDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(INPUT_DETAIL)) {
             for (InputDetailDto inputDetailDto : INPUT_DETAIL) {
-                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail APPGROUPNO :" + inputDetailDto.getAppGroupNo()));
-                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail Dto :" + JsonUtil.parseToJson(inputDetailDto)));
                 GiroPaymentDto giroPaymentDto = new GiroPaymentDto();
                 giroPaymentDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
                 giroPaymentDto.setPmtType(ApplicationConsts.GIRO_BANK_PAYMENT_TYPE_MONEYPAY);
@@ -488,7 +486,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     giroPaymentDto.setTxnRefNo(txnRefNo);
                 }
                 //save giroPaymentDto
-                log.info(StringUtil.changeForLog("----------saveGiroPaymentDtosByInputDetail giroPaymentDto :" + JsonUtil.parseToJson(giroPaymentDto)));
                 appPaymentStatusClient.updateGiroPaymentDto(giroPaymentDto);
                 giroPaymentDtos.add(giroPaymentDto);
             }
