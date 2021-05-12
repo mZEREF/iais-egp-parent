@@ -1560,6 +1560,24 @@ public class ClinicalLaboratoryDelegator {
                 personnelTypeList.add(sp.getValue());
             }
             appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
+
+            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
+            log.debug("prs server flag {}",prsFlag);
+            if("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+                for(int i=0;i<appSvcPersonnelDtos.size();i++ ){
+                    AppSvcPersonnelDto appSvcPersonDto = appSvcPersonnelDtos.get(i);
+                    String profRegNo = appSvcPersonDto.getProfRegNo();
+                    ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(profRegNo);
+                    if(professionalResponseDto != null){
+                        String name = appSvcPersonDto.getName();
+                        if(!StringUtil.isEmpty(name)){
+                            appSvcPersonDto.setPrsLoading(true);
+                        }
+                    }
+                }
+            }
+            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
             if (!StringUtil.isEmpty(nextStep)) {
