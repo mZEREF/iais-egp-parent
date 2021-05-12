@@ -46,7 +46,8 @@ public class LicenseeCompanyDelegate {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-
+        myInfoAjax.noTakenCallMyInfo(bpc,"MohLicenseeCompanyDetail");
+        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohLicenseeCompanyDetail");
     }
 
     /**
