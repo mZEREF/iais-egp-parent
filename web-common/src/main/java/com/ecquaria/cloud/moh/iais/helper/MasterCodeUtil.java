@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -112,6 +113,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_MEDICATIONS_CHARGES_TYPE                         = "A721D57E-F5A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MISCELLANEOUS_CHARGES_TYPE                       = "5ADA2A9A-F6A3-EB11-8B7F-000C29FD17F9";
 
+    // Inspection entity
+    public static final String CATE_ID_INSPECTION_ENTITY_TYPE                           = "796E6112-36B1-EB11-8B7D-000C293F0C99";
+
 
     /**
      * @description: refresh the master codes into cache
@@ -192,6 +196,29 @@ public final class MasterCodeUtil {
         return codeKey;
     }
 
+    /**
+     * Get code key via category id and code value
+     *
+     * @param cateId
+     * @param codeValue
+     * @return
+     */
+    public static String getCodeKeyByCateIdAndCodeVal(String cateId, String codeValue) {
+        String codeKey = null;
+        if (StringUtil.isEmpty(cateId)) {
+            return codeKey;
+        }
+        List<MasterCodeView> masterCodes = retrieveByCategory(cateId);
+        if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+            Optional<String> code = masterCodes.stream()
+                    .filter(i -> StringUtil.isEmpty(codeValue) ? StringUtil.isEmpty(i.getCodeValue()) :
+                            codeValue.equalsIgnoreCase(i.getCodeValue()))
+                    .findAny()
+                    .map(i -> i.getCode());
+            codeKey = code.orElse(null);
+        }
+        return codeKey;
+    }
 
     /**
      * @description: The method to get master code value by code

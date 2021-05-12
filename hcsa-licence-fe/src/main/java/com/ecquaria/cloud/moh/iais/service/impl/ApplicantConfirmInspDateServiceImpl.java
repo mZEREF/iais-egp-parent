@@ -169,7 +169,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private List<ApplicationDto> getApplicationBySamePremCorrId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, ApptFeConfirmDateDto apptFeConfirmDateDto, String appStatus) {
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<String> taskRefNo = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
                     ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
@@ -205,8 +205,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
-            Date startDate = getEarliestDate(apptUserCalendarDtoList);//NOSONAR
-            Date endDate = getLatestDate(apptUserCalendarDtoList);//NOSONAR
+            Date startDate = getEarliestDate(apptUserCalendarDtoList);
+            Date endDate = getLatestDate(apptUserCalendarDtoList);
             String inspStartDate = apptDateToStringShow(startDate);
             String inspEndDate = apptDateToStringShow(endDate);
             String dateStr = inspStartDate + " - " + inspEndDate;
@@ -228,11 +228,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date endDate = null;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
             ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
-            Date lastEndDate = getLastEndDate(apptUserCalendarDto);//NOSONAR
+            Date lastEndDate = getLastEndDate(apptUserCalendarDto);
             if(endDate == null){
                 endDate = lastEndDate;
             } else {
-                if(lastEndDate.after(endDate)){//NOSONAR
+                if(lastEndDate.after(endDate)){
                     endDate = lastEndDate;
                 }
             }
@@ -244,7 +244,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date lastEndDate = null;
         if(apptUserCalendarDto != null) {
             List<Date> endDateList = apptUserCalendarDto.getEndSlot();
-            if(!IaisCommonUtils.isEmpty(endDateList)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(endDateList)){
                 for(Date endDate : endDateList){
                     if(lastEndDate == null){
                         lastEndDate = endDate;
@@ -263,11 +263,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date inspStartDate = null;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
             ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtoList.get(i);
-            Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);//NOSONAR
+            Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);
             if(inspStartDate == null){
                 inspStartDate = earliestStartDate;
             } else {
-                if(earliestStartDate.before(inspStartDate)){//NOSONAR
+                if(earliestStartDate.before(inspStartDate)){
                     inspStartDate = earliestStartDate;
                 }
             }
@@ -279,7 +279,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         Date earliestStartDate = null;
         if(apptUserCalendarDto != null) {
             List<Date> startDateList = apptUserCalendarDto.getStartSlot();
-            if(!IaisCommonUtils.isEmpty(startDateList)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(startDateList)){
                 for(Date startDate : startDateList){
                     if(earliestStartDate == null){
                         earliestStartDate = startDate;
@@ -498,7 +498,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 appointmentUserDtoList.add(appointmentUserDto);
                 loginUserIds.add(appointmentUserDto.getLoginUserId());
             } else {
-                if(!loginUserIds.contains(appointmentUserDto.getLoginUserId())){//NOSONAR
+                if(!loginUserIds.contains(appointmentUserDto.getLoginUserId())){
                     appointmentUserDtoList.add(appointmentUserDto);
                     loginUserIds.add(appointmentUserDto.getLoginUserId());
                 }

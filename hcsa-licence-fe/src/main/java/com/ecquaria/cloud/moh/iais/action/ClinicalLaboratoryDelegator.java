@@ -1110,7 +1110,7 @@ public class ClinicalLaboratoryDelegator {
 
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
-                                    targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);//NOSONAR
+                                    targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
                                 }
                             }
                         }
@@ -1897,8 +1897,9 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>(17);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         if("next".equals(crud_action_type)){
-            validateClincalDirector.doValidateClincalDirector(map,appSvcClinicalDirectorDtos);
+            validateClincalDirector.doValidateClincalDirector(map,appSvcClinicalDirectorDtos,currSvcCode);
         }
 
         if(!map.isEmpty()){

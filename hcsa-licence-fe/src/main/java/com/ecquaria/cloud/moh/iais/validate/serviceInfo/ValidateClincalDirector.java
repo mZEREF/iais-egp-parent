@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class ValidateClincalDirector implements ValidateFlow {
     @Override
-    public void doValidateClincalDirector(Map<String, String> map, List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos) {
+    public void doValidateClincalDirector(Map<String, String> map, List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,String serviceCode) {
         if(appSvcClinicalDirectorDtos==null){
             return;
         }
@@ -175,6 +175,7 @@ public class ValidateClincalDirector implements ValidateFlow {
                     map.put("emailAddr" + i, general_err0041);
                 }
             }
+            switchService(serviceCode,appSvcClinicalDirectorDtos.get(i),map,i);
             if(stringList.contains(stringBuilder.toString())&&!StringUtil.isEmpty(stringBuilder.toString())) {
 
 
@@ -183,5 +184,35 @@ public class ValidateClincalDirector implements ValidateFlow {
             }
         }
         log.info(StringUtil.changeForLog("=====>ValidateClincalDirector-->"+ JsonUtil.parseToJson(map)));
+    }
+    //Medical Transport Service
+    protected void doValidateForMTS(AppSvcClinicalDirectorDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
+        String transportYear = appSvcClinicalDirectorDto.getTransportYear();
+        if(StringUtil.isEmpty(transportYear)){
+            map.put("transportYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Years of experience in patient transport", "field"));
+        }else {
+
+        }
+        Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
+        if(bclsExpiryDate==null){
+            map.put("bclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "BCLS and AED Expiry Date", "field"));
+        }else {
+
+        }
+    }
+    //Emergency Ambulance Service
+    protected void doValidateForESA(Map<String, String> map, List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos){
+
+    }
+
+    protected void switchService(String code,AppSvcClinicalDirectorDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
+        if(code==null){
+            return ;
+        }
+        if("MTS".equals(code)){
+            doValidateForMTS(appSvcClinicalDirectorDto,map,index);
+        }else if("EAS".equals(code)){
+
+        }
     }
 }

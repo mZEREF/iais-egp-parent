@@ -2,15 +2,25 @@ package com.ecquaria.cloud.moh.iais.validate.abstractValidate;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.validate.FieldNotNull;
 import com.ecquaria.cloud.moh.iais.common.annotation.validate.FieldValidate;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.Validate;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * @author Wenkang
@@ -104,5 +114,97 @@ public abstract class AbstractValidate implements Validate {
 
             }
         }
+    }
+    protected void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap, String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo, AppGrpPremisesDto appGrpPremisesDto){
+
+        if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+            int opLength = 0;
+            for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
+                boolean flag = true;
+                String floorNo = operationalUnitDto.getFloorNo();
+                String unitNo = operationalUnitDto.getUnitNo();
+                boolean floorNoFlag = StringUtil.isEmpty(floorNo);
+                boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+                if(!(floorNoFlag && unitNoFlag)){
+                    if(floorNoFlag){
+                        flag = false;
+                        errorMap.put(floorErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                    }else if(unitNoFlag) {
+                        flag = false;
+                        errorMap.put(unitErrName + opLength, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                    }
+                }
+
+                if(!floorNoFlag && floorNo.length() > 3){
+                    String general_err0041= NewApplicationHelper.repLength("Floor No.","3");
+                    errorMap.put(floorErrName + opLength, general_err0041);
+                }
+
+                if(!unitNoFlag && unitNo.length() > 5){
+                    String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
+                    errorMap.put(unitErrName + opLength, general_err0041);
+                }
+
+                String floorNoErr = errorMap.get(floorErrName + opLength);
+                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                    Pattern pattern = compile("[0-9]*");
+                    boolean noFlag = pattern.matcher(floorNo).matches();
+                    if (noFlag) {
+                        int floorNum = Integer.parseInt(floorNo);
+                        if (10 > floorNum) {
+                            floorNo = "0" + floorNum;
+                            operationalUnitDto.setFloorNo(floorNo);
+                        }
+                    }
+                }
+                if(flag){
+                    if(!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())){
+                        String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
+                        if(floorUnitList.contains(floorUnitStr)){
+                            errorMap.put(floorUnitErrName + opLength, "NEW_ERR0017");
+                        }else{
+                            floorUnitList.add(floorUnitStr);
+                        }
+                        String premisesType = appGrpPremisesDto.getPremisesType();
+                        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+                            String addrType = appGrpPremisesDto.getAddrType();
+                            String blkNo = appGrpPremisesDto.getBlkNo();
+                            if(!StringUtil.isEmpty(blkNo)){
+                                floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                            }
+                        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)){
+                            String offSiteAddressType = appGrpPremisesDto.getOffSiteAddressType();
+                            if(!StringUtil.isEmpty(offSiteAddressType)){
+                                String blkNo = appGrpPremisesDto.getOffSiteBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
+
+                        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+                            String conveyanceAddressType = appGrpPremisesDto.getConveyanceAddressType();
+                            if(!StringUtil.isEmpty(conveyanceAddressType)){
+                                String blkNo = appGrpPremisesDto.getConveyanceBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
+
+                        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)){
+                            String easMtsAddressType = appGrpPremisesDto.getEasMtsAddressType();
+                            if(!StringUtil.isEmpty(easMtsAddressType)){
+                                String blkNo = appGrpPremisesDto.getEasMtsBlockNo();
+                                if(!StringUtil.isEmpty(blkNo)){
+                                    floorUnitNo.add(operationalUnitDto.getFloorNo()+blkNo+operationalUnitDto.getUnitNo());
+                                }
+                            }
+                        }
+
+                    }
+                }
+                opLength++;
+            }
+        }
+
     }
 }

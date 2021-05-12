@@ -423,7 +423,7 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getUserIdByWorkGrpId(String workGrpId) {
         List<String> userIds = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGrpId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        if(!IaisCommonUtils.isEmpty(orgUserDtos)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(orgUserDtos)) {
             for (OrgUserDto orgUserDto : orgUserDtos) {
                 if(orgUserDto != null){
                     if(!StringUtil.isEmpty(orgUserDto.getId())){
@@ -481,7 +481,7 @@ public class InspectionServiceImpl implements InspectionService {
             return superPool;
         } else {
             List<TaskDto> commonPool = IaisCommonUtils.genNewArrayList();
-            for(TaskDto taskDto : superPool){//NOSONAR
+            for(TaskDto taskDto : superPool){
                 if(taskDto != null){
                     if(StringUtil.isEmpty(taskDto.getUserId())){
                         commonPool.add(taskDto);

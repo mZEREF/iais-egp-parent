@@ -35,7 +35,7 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
             //get expire Service By End Date
             AuditTrailHelper.setupBatchJobAuditTrail(this);
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
                     if(hcsaServiceDto != null){
@@ -58,7 +58,7 @@ public class SyncServiceByEndJobHandler extends MohJobHandler {
                 JobLogger.log(StringUtil.changeForLog("hcsaServiceDtos is Null"));
             }
             List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigClient.getNeedActiveServices(AppConsts.COMMON_STATUS_IACTIVE).getEntity();
-            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
                     if(hcsaServiceDto != null){

@@ -78,7 +78,7 @@ public class LicenseeCompanyDelegate {
                 OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
                 orgUserManageService.refreshLicensee(organizationDto.getUenNo());
             }else{
-                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),bpc.request);
                 if(myInfoDto != null){
                     if(!myInfoDto.isServiceDown()){
                         FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());

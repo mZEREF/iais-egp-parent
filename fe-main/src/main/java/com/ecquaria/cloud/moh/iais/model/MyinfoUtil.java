@@ -18,6 +18,9 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.AccessTokenDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.GetTokenDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.SignatureUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -27,6 +30,8 @@ import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -43,8 +48,9 @@ public class MyinfoUtil {
 
 	public static String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
 	public static String KEY_MYINFO_TAKEN = "myinfo_token_";
-
-
+	public static String KEY_TAKEN_TYPE ="token_type";
+	public static String MYINFODTO_REFRESH = "myinfoDto_refresh";
+	public static long TAKEN_DURATION_TIME = 30*60*1000l;;
 	/**
      * Retrieves Person data from MyInfo
      *
@@ -167,17 +173,7 @@ public class MyinfoUtil {
 	}
 
 	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl) throws NoSuchAlgorithmException {
-		StringBuilder sb = new StringBuilder();
-		if( !IaisCommonUtils.isEmpty(attrs)){
-			for (int i = 0; i < attrs.size(); i++) {
-				if (i == (attrs.size() - 1)) {
-					sb.append(attrs.get(i));
-				} else {
-					sb.append(attrs.get(i)).append(',');
-				}
-			}
-		}
-		String attribute = sb.toString();
+		String attribute = getAttrsStringByListAttrs(attrs);
 		String timestamp = String.valueOf(new Date().getTime());
 		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
 		String nonceValue = timestamp +	(secureRandom.nextInt(9000) + 1000);
@@ -200,10 +196,20 @@ public class MyinfoUtil {
 	}
 
 
-	public static  Map<String,String> getSessionForMyInfoTaken(String nirc, String taken){
-		Map<String,String> map = new HashMap<>(2);
+	public static  Map<String,String> getSessionForMyInfoTaken(String nirc, String taken,String takenType){
+		Map<String,String> map = new HashMap<>(3);
 		map.put(KEY_MYINFO_TAKEN+nirc,taken);
+		map.put(KEY_MYINFO_TAKEN+nirc+KEY_TAKEN_TYPE,taken);
 		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,String.valueOf(new Date().getTime()));
+		return  map;
+	}
+
+
+	public static  Map<String,String> clearSessionForMyInfoTaken(String nirc){
+		Map<String,String> map = new HashMap<>(3);
+		map.put(KEY_MYINFO_TAKEN+nirc,null);
+		map.put(KEY_MYINFO_TAKEN+nirc+KEY_TAKEN_TYPE,null);
+		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,null);
 		return  map;
 	}
 
@@ -214,5 +220,86 @@ public class MyinfoUtil {
 				"&state=" + state +
 				"&redirect_uri=" + redirectUrl;
 		return authoriseUrl;
+	}
+
+
+	public static String getAttrsStringByListAttrs( List<String> attrs){
+		StringBuilder sb = new StringBuilder();
+		if( !IaisCommonUtils.isEmpty(attrs)){
+			for (int i = 0; i < attrs.size(); i++) {
+				if (i == (attrs.size() - 1)) {
+					sb.append(attrs.get(i));
+				} else {
+					sb.append(attrs.get(i)).append(',');
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+
+	public static  String generateAuthorizationHeaderForMyInfo(String method, String clientId, String attribute, String privateKeyPEM,String appId,String requestUrl,String takenType,String validToken){
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String nonceValue;
+		try{
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			nonceValue = timestamp + (secureRandom.nextInt(9000) + 1000);
+		}catch (Exception e){
+			log.error(e.getMessage(),e);
+			nonceValue = timestamp;
+		}
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
+		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", appId);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
+	}
+
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
+		baseParams.put(AcraConsts.CODE + "=", code);
+		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
+	}
+
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
+		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
+		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
+		ResponseEntity<MyInfoTakenDto> resEntity;
+		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
+		HttpStatus httpStatus;
+		try {
+			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,getTokenDto,null, header,MyInfoTakenDto.class,null);
+			httpStatus = resEntity.getStatusCode();
+			if( httpStatus == HttpStatus.OK){
+				return resEntity.getBody();
+			}else {
+				return null;
+			}
+		}catch (HttpClientErrorException e){
+			log.error(e.getMessage(), e);
+			return null;
+		}
+
 	}
 }

@@ -1845,8 +1845,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
         validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
-
-        validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList());
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+        validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
 
         validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList());
 

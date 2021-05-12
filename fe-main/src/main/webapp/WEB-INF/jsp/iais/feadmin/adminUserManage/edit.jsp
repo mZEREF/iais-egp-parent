@@ -104,8 +104,14 @@
     }
 
     function reLoadMyInfoTodo() {
+        if(verifyTaken()){
         $("#action").val("getMyInfo");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
+        }else {
+            // To obtain authorization
+            showWaiting();
+            callAuthoriseApi();
+        }
     }
 </script>

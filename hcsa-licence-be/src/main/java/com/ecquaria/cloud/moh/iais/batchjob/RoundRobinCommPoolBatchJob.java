@@ -757,14 +757,14 @@ public class RoundRobinCommPoolBatchJob {
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
 
-        List<AppointmentUserDto> appointmentUserDtoList = null;//NOSONAR
+        List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
                 if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
@@ -788,7 +788,7 @@ public class RoundRobinCommPoolBatchJob {
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-                    appointmentUserDtoList.add(auDto);//NOSONAR
+                    appointmentUserDtoList.add(auDto);
                 }
             }
         }

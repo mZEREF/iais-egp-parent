@@ -218,9 +218,10 @@
 
     <sql key = "dashKpiTaskAjax"  remarks = "get Application By App Group in Kpi Pool">
         <![CDATA[
-            SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
+            SELECT T1.ID, MAX(T1.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T1.APPLICATION_NO) AS APPLICATION_NO,
+                          MAX(T1.SERVICE_ID) AS SERVICE_ID, MAX(T1.STATUS) AS STATUS, MAX(T1.HCI_CODE) AS HCI_CODE
             FROM APP_EXCEEDING_DAY_VIEW T1
-            JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID
+            JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
@@ -233,13 +234,14 @@
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
+            GROUP BY T1.ID
         ]]>
     </sql>
 
     <sql key = "dashWaitApproveTask" remarks = "Dashboard Search Wait Approve Task By Application Group">
         <![CDATA[
             SELECT DISTINCT T7.ID, T7.GROUP_NO, T7.PMT_STATUS, T7.APP_TYPE, T7.SUBMIT_DT, T7.COU
-            FROM TASK_WAITING_APPROVAL_APP_GRP_VIEW T1
+            FROM TASK_WAITING_APPROVAL_APP_GRP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
@@ -256,7 +258,8 @@
 
     <sql key = "dashWaitApproveAjax"  remarks = "get Application By App Group in Wait Approve Pool">
         <![CDATA[
-            SELECT DISTINCT T7.ID, T7.APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO, T7.SERVICE_ID, T7.STATUS, T7.HCI_CODE
+            SELECT T7.ID, MAX(T7.APP_PREM_ID) AS APP_PREM_ID, MAX(T1.ID) AS TASK_ID, MAX(T7.APPLICATION_NO) AS APPLICATION_NO,
+                              MAX(T7.SERVICE_ID) AS SERVICE_ID, MAX(T7.STATUS) AS STATUS, MAX(T7.HCI_CODE) AS HCI_CODE
             FROM TASK_WAITING_APPROVAL_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
@@ -271,6 +274,7 @@
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
+            GROUP BY T7.ID
         ]]>
     </sql>
 
@@ -293,7 +297,8 @@
 
     <sql key = "dashAppReplyAjax"  remarks = "get Application By App Group in Applicant's Reply Pool">
         <![CDATA[
-            SELECT DISTINCT T7.ID, T7.APP_PREM_ID, T1.ID AS TASK_ID, T7.APPLICATION_NO, T7.SERVICE_ID, T7.STATUS, T7.HCI_CODE
+            SELECT T7.ID, MAX(T7.APP_PREM_ID) AS APP_PREM_ID, MAX(T1.ID) AS TASK_ID, MAX(T7.APPLICATION_NO) AS APPLICATION_NO,
+                      MAX(T7.SERVICE_ID) AS SERVICE_ID, MAX(T7.STATUS) AS STATUS, MAX(T7.HCI_CODE) AS HCI_CODE
             FROM TASK_WAITING_APPLICANT_REPLY_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
@@ -308,19 +313,20 @@
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
+            GROUP BY T7.ID
         ]]>
     </sql>
 
     <sql key = "dashAppRenewTask" remarks = "Dashboard Search Near Renewal Licence Expire Day">
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.GROUP_NO, T1.PMT_STATUS, T1.APP_TYPE, T1.SUBMIT_DT, T1.COU
-            FROM APP_GRP_EXCEEDING_DAY_VIEW T1
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            FROM TASK_RENEWAL_EXPIRY_GRP_VIEW T1
+            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORRID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
-            <#if lic_renew_exp??> and T1.LICEXPDAYS <= :lic_renew_exp</#if>
+            <#if lic_renew_exp??> and T1.licExpDays <= :lic_renew_exp</#if>
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
             <#if application_status??> and T1.STATUS = :application_status</#if>
@@ -332,8 +338,9 @@
 
     <sql key = "dashAppRenewAjax"  remarks = "get Application By Near Renewal Licence Expire Day">
         <![CDATA[
-            SELECT DISTINCT T1.ID, T1.APP_PREM_ID, T7.ID AS TASK_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T1.HCI_CODE
-            FROM APP_EXCEEDING_DAY_VIEW T1
+            SELECT T1.ID, MAX(T1.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T1.APPLICATION_NO) AS APPLICATION_NO,
+                      MAX(T1.SERVICE_ID) AS SERVICE_ID, MAX(T1.STATUS) AS STATUS, MAX(T1.HCI_CODE) AS HCI_CODE
+            FROM TASK_RENEWAL_EXPIRY_APP_VIEW T1
             LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
@@ -348,6 +355,7 @@
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
+            GROUP BY T1.ID
         ]]>
     </sql>
 
@@ -403,7 +411,9 @@
 
     <sql key = "dashSupervisorAjax"  remarks = "get Application By App Group in Supervisor Pool">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE, T5.TASK_ID FROM
+            SELECT T5.ID, MAX(T5.APP_PREM_ID) AS APP_PREM_ID, MAX(T5.TASK_ID) AS TASK_ID, MAX(T5.APPLICATION_NO) AS APPLICATION_NO,
+                      MAX(T5.SERVICE_ID) AS SERVICE_ID, MAX(T5.STATUS) AS STATUS, MAX(T5.HCI_CODE) AS HCI_CODE
+            FROM
             (SELECT T1.ID APPLICATION_ID,T1.APPLICATION_NO,T1.SERVICE_ID, T1.ORIGIN_LICENCE_ID LICENCE_ID, T1.STATUS, T3.HCI_CODE, T2.ID, T4.GROUP_NO, T1.APP_TYPE, T3.HCI_NAME, T4.SUBMIT_DT,
                 T3.ID as APP_PREM_ID, T7.ID AS TASK_ID,
                 CONCAT(T3.BLK_NO ,
@@ -436,6 +446,7 @@
                 WHERE 1 = 1
                 and T1.STATUS != 'APST009'
                 <#if appCorrId_list??> and ${appCorrId_list} </#if>
+                <#if workGroup_list??> and ${workGroup_list} </#if>
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 <#if dashCommonPoolStatus??> and T7.USER_ID is NULL</#if>
@@ -449,6 +460,7 @@
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
+            GROUP BY T5.ID
         ]]>
     </sql>
 </sqls>
