@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -36,7 +38,12 @@ import java.util.List;
 public class ExportUserRoleDelegator {
     @Autowired
     private IntranetUserService intranetUserService;
-
+    private static final Set<String> notWorkGrp = ImmutableSet.of(
+            "BROADCAST",
+            "REGULATORY_ANALYTICS",
+            "SYSTEM_USER_ADMIN",
+            "APO"
+    );
     /**
      * StartStep: intrantUserRoleExportStart
      *
@@ -75,6 +82,21 @@ public class ExportUserRoleDelegator {
             for(String id :ids){
                 String maskUserId = MaskUtil.unMaskValue("maskUserId", id);
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(maskUserId);
+                List<OrgUserRoleDto> orgUserRoleDtoList= intranetUserService.retrieveRolesByuserAccId (orgUserDto.getId());
+                if(!orgUserRoleDtoList.isEmpty()){
+                    for (OrgUserRoleDto orgUserRoleDto:orgUserRoleDtoList
+                         ) {
+                        if(notWorkGrp.contains(orgUserRoleDto.getRoleName())){
+                            Element userGroup = userGroups.addElement("user-group");
+                            Element userId = userGroup.addElement("userId");
+                            userId.setText(orgUserDto.getUserId());
+                            Element roleId = userGroup.addElement("roleId");
+                            roleId.setText(orgUserRoleDto.getRoleName());
+                            Element workingGroupId = userGroup.addElement("workingGroupId");
+                            workingGroupId.setText("");
+                        }
+                    }
+                }
                 List<UserGroupCorrelationDto> userGroupsByUserId = intranetUserService.getUserGroupsByUserId(maskUserId);
                 if(!IaisCommonUtils.isEmpty(userGroupsByUserId)){
                     for(UserGroupCorrelationDto dto : userGroupsByUserId){

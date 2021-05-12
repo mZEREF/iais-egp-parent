@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.role.Role;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -38,6 +39,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -53,7 +55,12 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     private EgpUserClient egpUserClient;
     @Autowired
     private OrganizationClient organizationClient;
-
+    private static final Set<String> notWorkGrp = ImmutableSet.of(
+            "BROADCAST",
+            "REGULATORY_ANALYTICS",
+            "SYSTEM_USER_ADMIN",
+            "APO"
+    );
     @Override
     public void createIntranetUser(OrgUserDto orgUserDto) {
         intranetUserClient.createOrgUserDto(orgUserDto);
@@ -417,8 +424,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                         }
                     }
                     if (StringUtil.isEmpty(workingGroupId)) {
-                        errorData = false;
-                        fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
+                        if(!StringUtil.isEmpty(roleId)&&!notWorkGrp.contains(roleId)){
+                            errorData = false;
+                            fileErrorMap.put(errorworkGrpIdKey + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "WorkingGroup ID", "field"));
+                        }
                     } else {
                         List<WorkingGroupDto> workingGroups = getWorkingGroups();
                         //egp contains workgroupId
@@ -523,16 +532,19 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserRoleDto.setRoleName(roleId);
                 orgUserRoleDto.setAuditTrailDto(auditTrailDto);
-                Boolean isExist = intranetUserClient.checkRoleIsExist(orgUserRoleDto).getEntity();
-                if (isExist) {
+                List<OrgUserRoleDto> userRoleDtos = IaisCommonUtils.genNewArrayList();
+                userRoleDtos.add(orgUserRoleDto);
+                List<OrgUserRoleDto> orgUserRoleDtoList= assignRole(userRoleDtos);
+                if (orgUserRoleDtoList==null||orgUserRoleDtoList.size()==0) {
                     continue;
                 }
-                orgUserRoleDtos.add(orgUserRoleDto);
+                orgUserRoleDtos.add(orgUserRoleDtoList.get(0));
                 EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                 egpUserRoleDto.setUserId(userId);
                 egpUserRoleDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
                 egpUserRoleDto.setRoleId(roleId);
                 egpUserRoleDto.setPermission("A");
+                egpUserRoleDto.setWorkGroupId(workingGroupId);
                 //egpUserRoleDto.isSystem()
                 egpUserRoleDtos.add(egpUserRoleDto);
                 UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
@@ -544,8 +556,11 @@ public class IntranetUserServiceImpl implements IntranetUserService {
                 } else {
                     userGroupCorrelationDto.setIsLeadForGroup(0);
                 }
+                userGroupCorrelationDto.setUserRoleId(orgUserRoleDtoList.get(0).getId());
                 userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
-                userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                if(!StringUtil.isEmpty(workingGroupId)){
+                    userGroupCorrelationDtos.add(userGroupCorrelationDto);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
