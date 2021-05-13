@@ -40,10 +40,10 @@
         <h2>SERVICES SELECTED</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
+            <li><span><iais:service value="${baseItem}"></iais:service></span> (Licensable Healthcare Services)</li>
           </c:forEach>
           <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Service)</li>
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Healthcare Services)</li>
           </c:forEach>
         </ul>
         <div class="gray-content-box">
@@ -95,7 +95,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
-              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Start Application</a></div>
+              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Proceed</a></div>
             </div>
           </div>
         </div>
