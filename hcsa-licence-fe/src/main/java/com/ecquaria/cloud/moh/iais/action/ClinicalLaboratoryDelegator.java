@@ -2142,7 +2142,16 @@ public class ClinicalLaboratoryDelegator {
         String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn. No.","20");
         String errLengthWrkExpYear = NewApplicationHelper.repLength("Relevant working experience (Years)","2");
         String errLengthQualification = NewApplicationHelper.repLength("Qualification","100");
+        List<SelectOption> personnelTypeSel = genPersonnelTypeSel(svcCode);
+        //Verify that each type of person has at least one
+        //person type,value/empty
+        Map<String,String> personCountMap = IaisCommonUtils.genNewHashMap();
+
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
+            String personType = appSvcPersonnelDtos.get(i).getPersonnelType();
+            if(!StringUtil.isEmpty(personType)){
+                personCountMap.put(personType,AppConsts.YES);
+            }
             if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 if (StringUtil.isEmpty(designation)) {
@@ -2305,6 +2314,19 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
+        if(personnelTypeSel.size() > 0){
+            log.debug("current service code is {},personnel type size is {}", svcCode, personnelTypeSel.size());
+            boolean eachTypeHadOne = true;
+            if(personCountMap.size() != personnelTypeSel.size()){
+                eachTypeHadOne = false;
+            }
+
+            if(!eachTypeHadOne){
+                errorMap.put("psnMandatory",MessageUtil.getMessageDesc("NEW_ERR0030"));
+            }
+        }
+
+
     }
 
 
