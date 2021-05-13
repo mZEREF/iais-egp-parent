@@ -116,14 +116,14 @@
                                         <tr style="display: table-row;">
                                             <td>
                                                 <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name='editBlast' value='${item.id}'/>"
-                                                    <c:choose>
-                                                    <c:when test="${!empty item.actual}">
-                                                        data-edit = "0"
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        data-edit = "1"
-                                                    </c:otherwise>
-                                                    </c:choose>
+                                                <c:choose>
+                                                <c:when test="${!empty item.actual}">
+                                                          data-edit = "0"
+                                                </c:when>
+                                                <c:otherwise>
+                                                          data-edit = "1"
+                                                </c:otherwise>
+                                                </c:choose>
                                                 ></p>
                                             </td>
                                             <td>
@@ -161,7 +161,7 @@
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}')">Audit</a>
+                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}','${item.modifiedBy}','${item.modifiedDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -222,10 +222,10 @@
         if ($("input:checkbox:checked").length > 0) {
             var canedit = 1;
             $("input:checkbox:checked").each(function(i){
-               var edit = $(this).data("edit");
-               if(edit == 0){
-                   canedit = 0;
-               }
+                var edit = $(this).data("edit");
+                if(edit == 0){
+                    canedit = 0;
+                }
             })
 
             if(canedit == 1 ){
@@ -256,11 +256,13 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id,mode,createby,createDt) {
+    function audit(id,mode,createby,createDt,modifiedBy,modifiedDt) {
         $("#msgId").val(id);
         $("#mode").val(mode);
         $("#createby").val(createby);
         $("#createDt").val(createDt);
+        $("#modifiedBy").val(modifiedBy);
+        $("#modifiedDt").val(modifiedDt);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 
