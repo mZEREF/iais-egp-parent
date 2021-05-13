@@ -42,7 +42,7 @@
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Preview & Submit</a>
+              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Preview</a>
             </c:when>
             <c:when test="${serviceStepDto.isStepEnd() && !serviceStepDto.isServiceEnd()}">
               <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Next Service</a>
