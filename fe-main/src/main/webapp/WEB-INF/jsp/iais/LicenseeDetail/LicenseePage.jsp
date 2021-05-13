@@ -23,7 +23,7 @@
     <div class="instruction-content center-content">
         <div class="h3-with-desc">
             <strong>Licensee</strong>
-            <p>The Licensee is accountable for the healthcare organisation's overall compliance with the HCSA Bill and the appointment of key leadership roles.</p>
+            <p>A licensee is a person or company to whom a licence is granted.</p>
 
             <strong>${licensee.name}</strong>
             <p>Your company information is retrieved from ACRA.</p>
