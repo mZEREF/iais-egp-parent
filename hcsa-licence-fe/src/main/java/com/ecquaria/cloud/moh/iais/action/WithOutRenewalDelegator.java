@@ -724,7 +724,6 @@ public class WithOutRenewalDelegator {
         } else {
             log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
-        Double total = 0d;
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
 
@@ -736,9 +735,7 @@ public class WithOutRenewalDelegator {
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
 
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
-                appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
-            }
+            appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
