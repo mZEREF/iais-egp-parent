@@ -1643,6 +1643,8 @@ public class RequestForChangeMenuDelegator {
         if (eqAddFloorNo) {
             amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
         }
+        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         //

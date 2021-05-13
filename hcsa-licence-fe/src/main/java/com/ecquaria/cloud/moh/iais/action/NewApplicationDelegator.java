@@ -2071,7 +2071,8 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
+        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto,isCharity);
         if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
@@ -3531,13 +3532,14 @@ public class NewApplicationDelegator {
         return false;
     }
 
-    private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+    private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeLocation = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         amendmentFeeDto.setChangeInHCIName(!changeHciName);
         amendmentFeeDto.setChangeInLocation(!changeLocation);
+        amendmentFeeDto.setIsCharity(isCharity);
         return amendmentFeeDto;
     }
 

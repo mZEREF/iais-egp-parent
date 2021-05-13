@@ -460,7 +460,8 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setNewLicenseeId(newLicenseeId);
                 appSubmissionDto.setLicenseeId(licenceDto.getLicenseeId());
                 appSubmissionDto.setAutoRfc(false);
-                FeeDto feeDto = getTransferFee();
+                boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+                FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
                     appSubmissionDto.setAmount(amount);
@@ -748,11 +749,12 @@ public class RequestForChangeDelegator {
 
     }
 
-    private FeeDto getTransferFee(){
+    private FeeDto getTransferFee(boolean isCharity){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
         amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
         amendmentFeeDto.setChangeInLocation(Boolean.FALSE);
+        amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         return feeDto;
     }
