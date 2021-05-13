@@ -88,14 +88,15 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:10%"/>
-                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="false" field="" value="S/N" style="width:1%"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Email Subject" style="width:14%"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:14%"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name" style="width:15%"/>
                                 <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date" style="width:10%"/>
-                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:12%"/>
-                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:8%"/>
                                 <iais:sortableHeader needSort="false" field="subject" value="Action" style="width:8%"/>
                             </tr>
                             </thead>
@@ -128,6 +129,10 @@
                                             </td>
                                             <td>
                                                 <p><c:out  value="${massIndex}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.msgName}"/>
+                                                </p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
