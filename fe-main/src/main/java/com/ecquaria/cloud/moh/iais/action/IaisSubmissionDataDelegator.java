@@ -81,9 +81,9 @@ public class IaisSubmissionDataDelegator {
         String orgId = interInboxUserDto.getOrgId();
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = (LaboratoryDevelopTestDto)ParamUtil.getSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO);
         if (laboratoryDevelopTestDto != null) {
-//            LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
+            LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
             try {
-//                eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
+                eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
                 laboratoryDevelopTestService.sendLDTTestEmailAndSMS(orgId,licenseeId);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
