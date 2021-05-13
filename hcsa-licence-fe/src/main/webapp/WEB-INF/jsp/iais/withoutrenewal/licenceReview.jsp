@@ -52,7 +52,7 @@
                                         <div class="tab-gp steps-tab">
                                             <div class="tab-content" style="padding-top: 0px;">
                                                 <c:if test="${isSingle == 'Y'}">
-                                                    <p>Please review your licence details and click edit to make necessary changes before renewal.</p>
+                                                    <p>Please review your licence Information and click edit to make necessary changes before renewal.</p>
                                                 </c:if>
                                                 <input hidden id="DtoSize" value="${renewDto.appSubmissionDtos.size() - 1}"/>
                                             <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">

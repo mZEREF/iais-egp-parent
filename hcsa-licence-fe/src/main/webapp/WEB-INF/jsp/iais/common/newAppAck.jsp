@@ -20,7 +20,7 @@
         <br/>
     </div>
     <div class="col-xs-12">
-        Transactional details:
+        Transactional Information:
     </div>
     <div class="col-xs-12">
         <div class="table-responsive">

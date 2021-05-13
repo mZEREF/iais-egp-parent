@@ -112,7 +112,7 @@
                                                <c:if test="${editSelectResult=='update'}">checked</c:if> type="radio"
                                                name="editSelect" value="update" aria-invalid="false">
                                         <label class="form-check-label" for="checkitem1"><span
-                                                class="check-circle"></span>Change the Details of this Personnel</label>
+                                                class="check-circle"></span>Change the Information of this Personnel</label>
                                     </div>
                                     <div class="form-check progress-step-check" style="width: 33%">
                                         <input class="form-check-input" id="checkitem2" type="radio"
