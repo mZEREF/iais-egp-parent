@@ -40,6 +40,8 @@
                                         <th>Sent date time</th>
                                         <th>Created By</th>
                                         <th>Created Date</th>
+                                        <th>Modified By</th>
+                                        <th>Modified Date</th>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
@@ -53,6 +55,8 @@
                                         <th>Sent date time</th>
                                         <th>Created By</th>
                                         <th>Created Date</th>
+                                        <th>Modified By</th>
+                                        <th>Modified Date</th>
                                     </tr>
                                 </c:otherwise>
                             </c:choose>
@@ -100,6 +104,12 @@
                                                 <td>
                                                     <p><c:out value="${createDt}"/></p>
                                                 </td>
+                                                <td>
+                                                    <p><c:out value="${modifiedBy}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${modifiedDt}"/></p>
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
@@ -112,7 +122,7 @@
                             <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 text-right ">
-                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}&createby=${createby}&createDt=${createDt}" title="Download">Download</a>
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo" title="Download">Download</a>
                         </div>
                     </div>
                 </div>

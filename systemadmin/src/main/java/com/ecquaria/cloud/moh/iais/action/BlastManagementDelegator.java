@@ -108,12 +108,19 @@ public class BlastManagementDelegator {
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         Map<String, String> userNameList = IaisCommonUtils.genNewHashMap();
         List<String> ids = IaisCommonUtils.genNewArrayList();
+        List<String> updateIds = IaisCommonUtils.genNewArrayList();
         for (BlastManagementListDto item:searchResult.getRows()
         ) {
             ids.add(item.getCreateBy());
+            updateIds.add(item.getModifiedBy());
         }
         List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
         for (OrgUserDto item:actionByRealNameList
+        ) {
+            userNameList.put(item.getId(),item.getDisplayName());
+        }
+        List<OrgUserDto> updateByRealNameList=blastManagementListService.retrieveOrgUserAccount(updateIds);
+        for (OrgUserDto item:updateByRealNameList
         ) {
             userNameList.put(item.getId(),item.getDisplayName());
         }
@@ -125,11 +132,16 @@ public class BlastManagementDelegator {
             if(item.getCreateDt() != null){
                 item.setCreateDt(getDate(item.getCreateDt()));
             }
+            if(item.getModifiedDt() != null){
+                item.setModifiedDt(getDate(item.getModifiedDt()));
+            }
             if(item.getActual() != null){
                 item.setActual(getDate(item.getActual()));
             }
-            String name = userNameList.get(item.getCreateBy());
-            item.setCreateBy(name);
+            String nameCreateBy = userNameList.get(item.getCreateBy());
+            item.setCreateBy(nameCreateBy);
+            String nameModifiedBy = userNameList.get(item.getModifiedBy());
+            item.setModifiedBy(nameModifiedBy);
             if(StringUtil.isEmpty(item.getDocName())){
                 item.setDocName("No");
             }else{
@@ -524,32 +536,43 @@ public class BlastManagementDelegator {
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         if (!searchResult.getRows().isEmpty()){
             //master code to description
-            List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();
-            List<String> ids = IaisCommonUtils.genNewArrayList();
-
-            for (BlastManagementListDto item:blastManagementListDtos
-                 ) {
-                ids.add(item.getCreateBy());
-            }
             Map<String, String> userNameList = IaisCommonUtils.genNewHashMap();
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+            List<String> updateIds = IaisCommonUtils.genNewArrayList();
+            for (BlastManagementListDto item:searchResult.getRows()
+            ) {
+                ids.add(item.getCreateBy());
+                updateIds.add(item.getModifiedBy());
+            }
             List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
             for (OrgUserDto item:actionByRealNameList
-                 ) {
+            ) {
                 userNameList.put(item.getId(),item.getDisplayName());
             }
-            for (BlastManagementListDto item:blastManagementListDtos
+            List<OrgUserDto> updateByRealNameList=blastManagementListService.retrieveOrgUserAccount(updateIds);
+            for (OrgUserDto item:updateByRealNameList
+            ) {
+                userNameList.put(item.getId(),item.getDisplayName());
+            }
+            for (BlastManagementListDto item:searchResult.getRows()
             ) {
                 item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
-                item.setCreateBy(userNameList.get(item.getCreateBy()));
                 if(item.getSchedule() != null){
                     item.setSchedule(getDate(item.getSchedule()));
-                }
-                if(item.getActual() != null){
-                    item.setActual(getDate(item.getActual()));
                 }
                 if(item.getCreateDt() != null){
                     item.setCreateDt(getDate(item.getCreateDt()));
                 }
+                if(item.getModifiedDt() != null){
+                    item.setModifiedDt(getDate(item.getModifiedDt()));
+                }
+                if(item.getActual() != null){
+                    item.setActual(getDate(item.getActual()));
+                }
+                String nameCreateBy = userNameList.get(item.getCreateBy());
+                item.setCreateBy(nameCreateBy);
+                String nameModifiedBy = userNameList.get(item.getModifiedBy());
+                item.setModifiedBy(nameModifiedBy);
                 if(StringUtil.isEmpty(item.getDocName())){
                     item.setDocName("No");
                 }else{
@@ -591,8 +614,10 @@ public class BlastManagementDelegator {
     @GetMapping(value = "/audit-repo")
     public @ResponseBody
     void auditfileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String msgid =  ParamUtil.getString(request, "editBlast");
-        String mode =  ParamUtil.getString(request, "mode");
+        String msgid = (String) ParamUtil.getSessionAttr(request, "editBlast");
+        String mode = (String) ParamUtil.getSessionAttr(request, "mode");
+        String createby = (String) ParamUtil.getSessionAttr(request, "createby");
+        String createDt = (String) ParamUtil.getSessionAttr(request, "createDt");
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
         auditSearchParam.addFilter("REQUEST_REF_NO", msgid,true);
@@ -600,8 +625,6 @@ public class BlastManagementDelegator {
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
         File file = null;
-        String createby =  ParamUtil.getString(request, "createby");
-        String createDt =  ParamUtil.getString(request, "createDt");
         try {
             if("SMS".equals(mode)){
                 List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
@@ -753,6 +776,26 @@ public class BlastManagementDelegator {
         String mode =  ParamUtil.getString(bpc.request, "mode");
         String createby =  ParamUtil.getString(bpc.request, "createby");
         String createDt =  ParamUtil.getString(bpc.request, "createDt");
+        String modifiedBy =  ParamUtil.getString(bpc.request, "modifiedBy");
+        String modifiedDt =  ParamUtil.getString(bpc.request, "modifiedDt");
+        if(StringUtil.isEmpty(createby)){
+            createby= (String) ParamUtil.getSessionAttr(bpc.request, "createby");
+        }
+        if(StringUtil.isEmpty(createDt)){
+            createDt= (String) ParamUtil.getSessionAttr(bpc.request, "createDt");
+        }
+        if(StringUtil.isEmpty(modifiedBy)){
+            modifiedBy= (String) ParamUtil.getSessionAttr(bpc.request, "modifiedBy");
+        }
+        if(StringUtil.isEmpty(modifiedDt)){
+            modifiedDt= (String) ParamUtil.getSessionAttr(bpc.request, "modifiedDt");
+        }
+        if(StringUtil.isEmpty(msgid)){
+            msgid= (String) ParamUtil.getSessionAttr(bpc.request, "msgid");
+        }
+        if(StringUtil.isEmpty(mode)){
+            mode= (String) ParamUtil.getSessionAttr(bpc.request, "mode");
+        }
 
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
@@ -785,11 +828,13 @@ public class BlastManagementDelegator {
         //
         ParamUtil.setRequestAttr(bpc.request,"searchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"auditSearchParam",auditSearchParam);
-        ParamUtil.setRequestAttr(bpc.request,"mode",mode);
-        ParamUtil.setRequestAttr(bpc.request,"msgId",msgid);
-        ParamUtil.setRequestAttr(bpc.request,"createDt",createDt);
-        ParamUtil.setRequestAttr(bpc.request,"createby",createby);
-        ParamUtil.setRequestAttr(bpc.request,"editBlast",msgid);
+        ParamUtil.setSessionAttr(bpc.request,"mode",mode);
+        ParamUtil.setSessionAttr(bpc.request,"msgId",msgid);
+        ParamUtil.setSessionAttr(bpc.request,"modifiedDt",modifiedDt);
+        ParamUtil.setSessionAttr(bpc.request,"modifiedBy",modifiedBy);
+        ParamUtil.setSessionAttr(bpc.request,"createDt",createDt);
+        ParamUtil.setSessionAttr(bpc.request,"createby",createby);
+        ParamUtil.setSessionAttr(bpc.request,"editBlast",msgid);
     }
 
     public void preview(BaseProcessClass bpc){

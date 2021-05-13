@@ -161,7 +161,7 @@
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}')">Audit</a>
+                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}','${item.modifiedBy}','${item.modifiedDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -256,11 +256,13 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id,mode,createby,createDt) {
+    function audit(id,mode,createby,createDt,modifiedBy,modifiedDt) {
         $("#msgId").val(id);
         $("#mode").val(mode);
         $("#createby").val(createby);
         $("#createDt").val(createDt);
+        $("#modifiedBy").val(modifiedBy);
+        $("#modifiedDt").val(modifiedDt);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 
