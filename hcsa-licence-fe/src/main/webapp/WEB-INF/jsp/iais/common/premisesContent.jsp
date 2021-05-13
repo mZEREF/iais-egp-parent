@@ -115,7 +115,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-4">
-                        <strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
+                        <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-6 text-right">
                         <c:choose>
@@ -173,7 +173,7 @@
             <div class="form-horizontal">
                 <%--<div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if> >--%>
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType }">hidden</c:if> >
-                    <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
+                    <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your mode of service delivery ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
                     <c:forEach var="premType" items="${premisesType}">
@@ -205,20 +205,28 @@
                                 </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premType == onSite}">
-                                        <c:out value="On-site" /><br/>
+                                        <c:out value="Premises" />
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                        <br/>
                                         <span>(at a fixed address)</span>
                                     </c:if>
                                     <c:if test="${premType == conv}">
-                                        <c:out value="Conveyance" /><br/>
-                                        <span>(in a mobile clinic / ambulance)</span>
+                                        <c:out value="Conveyance" />
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                        <br/>
+                                        <span>(registered vehicle, aircraft, vessel or train)</span>
                                     </c:if>
                                     <c:if test="${premType == offSite}">
-                                        <c:out value="Off-site" /><br/>
-                                        <span>(as tele-medicine)</span>
+                                        <c:out value="Off-site" />
+                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                        <br/>
+                                        <span>(remotely/non-fixed location)</span>
                                     </c:if>
                                     <c:if test="${premType == easMts}">
-                                        <c:out value="Conveyance" /><br/>
-                                        <span>(in a mobile clinic / ambulance)</span>
+                                        <c:out value="Conveyance" />
+                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                        <br/>
+                                        <span>(registered vehicle, aircraft, vessel or train)</span>
                                     </c:if>
                                 </label>
                             </div>
@@ -232,7 +240,7 @@
                     </div>
                 </div>
                 <iais:row cssClass="onSiteSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == onSite}">
@@ -245,7 +253,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="conveyanceSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == conv}">
@@ -258,7 +266,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="offSiteSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == offSite}">
@@ -271,7 +279,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="easMtsSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == easMts}">
