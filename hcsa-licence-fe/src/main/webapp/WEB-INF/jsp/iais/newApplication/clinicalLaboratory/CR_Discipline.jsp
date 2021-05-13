@@ -46,12 +46,12 @@
 
   <fieldset class="fieldset-content" id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
     <legend></legend>
-    <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
+    <p><strong class="cgo-header">Mode of Service Delivery ${status.index+1}</strong></p>
     <p>
       <strong class="cgo-header">
         <c:choose>
           <c:when test="${'ONSITE' == appGrpPremisesDto.premisesType}">
-            <c:out value="On-site"/>: <c:out value="${appGrpPremisesDto.address}"/>
+            <c:out value="Address"/>: <c:out value="${appGrpPremisesDto.address}"/>
           </c:when>
           <c:when test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
             <c:out value="Conveyance"/>: <c:out value="${appGrpPremisesDto.address}"/>

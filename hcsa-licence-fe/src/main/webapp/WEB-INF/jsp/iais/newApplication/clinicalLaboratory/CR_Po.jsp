@@ -15,7 +15,7 @@
             <div class="panel-main-content">
               <div class="" style="height: auto">
                 <h2>Principal Officer</h2>
-                <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
+                <p><h4><iais:message key="NEW_ACK024"/></h4></p>
                 <p><span class="error-msg" name="iaisErrorMsg" id="error_poPsnMandatory"></span></p>
                 <div class="row"></div>
               </div>
@@ -312,7 +312,7 @@
               <div class="row dpoDropDownDiv">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
-                    Nominee (Optional)
+                    Nominee (Optional) <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK025"></iais:message>&lt;/p&gt;">i</a>
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >

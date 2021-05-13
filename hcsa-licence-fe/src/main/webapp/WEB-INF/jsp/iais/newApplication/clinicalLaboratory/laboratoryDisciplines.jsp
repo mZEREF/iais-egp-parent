@@ -37,7 +37,7 @@
                                                 <div class="application-service-steps">
                                                     <div class="laboratory-disciplines">
                                                         <p><strong class="app-font-size-22">${currStepName}</strong></p>
-                                                        <p>Please select the service disciplines you would like to apply at your premises.</p>
+                                                        <p><iais:message key="NEW_ACK022"/></p>
                                                         <%@include file="CR_Discipline.jsp"%>
                                                     </div>
                                                 </div>
