@@ -283,7 +283,7 @@ public class TaskServiceImpl implements TaskService {
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                                     createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
                                             stageId,null,createHistoryRoleId,auditTrailDto,isFEActionBy);
-                            appPremisesRoutingHistoryDto.setWrkGrpId(createWorkGroupId);
+                            appPremisesRoutingHistoryDto.setWrkGrpId(createWorkGroupId==null?workGroupId:createWorkGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                         }
                     }
