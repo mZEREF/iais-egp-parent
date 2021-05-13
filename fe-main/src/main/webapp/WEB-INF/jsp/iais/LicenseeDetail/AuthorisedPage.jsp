@@ -21,8 +21,13 @@
     <input type="hidden" name="crud_action_type" value="">
     <div class="instruction-content center-content">
         <div class="h3-with-desc">
-            <strong>Authorised User</strong>
-            <p style="margin-top: 30px;margin-bottom: 20px">The Authorised Person is responsible for liaising with MOH on all licensing matters and for the administration and management of the healthcare organisation. </p>
+            <strong>Authorised Person</strong>
+            <p style="margin-top: 30px;margin-bottom: 20px">
+                An Authorised Person is an admin personnel appointed by the licensee who is responsible for transacting with MOH
+                (e.g. communicating and/or submitting information) on behalf of the licensee.
+                This includes but is not limited to the renewal/ cessation/ surrendering of licences
+                or updating of information relating to the healthcare institution.
+            </p>
 
             <strong>${feuser.displayName}, ${feuser.identityNo} (<iais:code code="${feuser.idType}"/>)</strong>
 

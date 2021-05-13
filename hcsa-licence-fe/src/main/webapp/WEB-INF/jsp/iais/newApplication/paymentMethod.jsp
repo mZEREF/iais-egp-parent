@@ -74,7 +74,7 @@
         </c:if>
     </div>
     <div class="col-xs-12 col-sm-6">
-        <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
+        <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Pay"></iais:input></p>
     </div>
 </div>
 

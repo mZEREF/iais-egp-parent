@@ -121,7 +121,7 @@
                                                         <a class="next btn btn-primary" id = "Next">Submit </a></div>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <a class="next btn btn-primary" id = "Next">Make Payment </a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Submit</a></div>
                                                     </c:otherwise>
                                                 </c:choose>
                                         </div>

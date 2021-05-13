@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-xs-12">
         <p style="font-weight: 600;font-size: 2.2rem">MedAlert Person</p>
-        <p>MedAlert Person is the person appointed to receive the medical alert notification and circulars issued by MOH.</p>
+        <p>A MedAlert Person is appointed by the licensee to receive medical alert notifications and circulars issued by MOH.</p>
         <hr>
         <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>
         <div class="row">
