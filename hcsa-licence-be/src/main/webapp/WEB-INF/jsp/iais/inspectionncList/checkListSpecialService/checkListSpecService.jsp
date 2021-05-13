@@ -30,7 +30,7 @@
                             <%@include file="tab.jsp"%>
                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                             <div class="tab-content" id="checkLsitItemArea">
-
+                                <%@include file="commonCheckList.jsp" %>
                                   <div class="tab-pane ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
                                       <c:if test="${not empty serListDto.fdtoList}">
                                       <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
