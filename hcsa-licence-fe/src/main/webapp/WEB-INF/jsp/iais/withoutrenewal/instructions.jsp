@@ -40,7 +40,7 @@
                                             <c:if test="${isSingle == 'Y'}">
                                                 <th>Licensee</th>
                                             </c:if>
-                                            <th class="premises-info">Premises</th>
+                                            <th class="premises-info">Mode of Service Delivery</th>
                                             <th>Start Date</th>
                                             <th style="white-space: nowrap;">Expires On</th>
                                         </tr>
@@ -54,7 +54,7 @@
                                                 <c:if test="${isSingle == 'Y'}">
                                                     <td>${licenseeName}</td>
                                                 </c:if>
-                                                <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
+                                                <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>Address</span><br/></c:forEach></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                             </tr>

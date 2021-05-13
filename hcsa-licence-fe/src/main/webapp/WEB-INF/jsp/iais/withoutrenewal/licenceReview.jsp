@@ -153,7 +153,7 @@
                                     <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
                                 </div>
                                 <div class="col-xs-12 col-sm-3">
-                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Make Payment</a></div>
+                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Submit</a></div>
                                     <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>

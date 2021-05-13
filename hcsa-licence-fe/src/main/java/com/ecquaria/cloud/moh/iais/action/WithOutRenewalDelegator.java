@@ -721,7 +721,6 @@ public class WithOutRenewalDelegator {
         } else {
             log.debug(StringUtil.changeForLog("interInboxUserDto null"));
         }
-        Double total = 0d;
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
 
@@ -731,11 +730,9 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> autoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> noAutoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
-
+        String renewGropNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
-                appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
-            }
+            appSubmissionDto.setAppGrpNo(renewGropNo);
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
@@ -747,7 +744,6 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setPreInspection(preOrPostInspectionResultDto1.isPreInspection());
                 appSubmissionDto.setRequirement(preOrPostInspectionResultDto1.isRequirement());
             }
-
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
