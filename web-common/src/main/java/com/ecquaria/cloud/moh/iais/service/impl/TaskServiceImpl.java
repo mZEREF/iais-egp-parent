@@ -198,11 +198,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId) throws FeignException{
-        return getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto,createHistoryRoleId,false);
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,String createWorkGroupId) throws FeignException{
+        return getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto,createHistoryRoleId,createWorkGroupId,false);
     }
     @Override
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,boolean isFEActionBy) throws FeignException {
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto, String createHistoryRoleId,String createWorkGroupId,boolean isFEActionBy) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
         log.info(StringUtil.changeForLog("---------------"+ JsonUtil.parseToJson(applicationDtos) +"--------"+stageId));
         TaskHistoryDto result = new TaskHistoryDto();
@@ -283,7 +283,7 @@ public class TaskServiceImpl implements TaskService {
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                                     createAppPremisesRoutingHistory(applicationDto,applicationDto.getStatus(),
                                             stageId,null,createHistoryRoleId,auditTrailDto,isFEActionBy);
-                            appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
+                            appPremisesRoutingHistoryDto.setWrkGrpId(createWorkGroupId==null?workGroupId:createWorkGroupId);
                             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                         }
                     }
