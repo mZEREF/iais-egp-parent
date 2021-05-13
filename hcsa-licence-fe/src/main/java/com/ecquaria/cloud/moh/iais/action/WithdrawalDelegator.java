@@ -361,6 +361,7 @@ public class WithdrawalDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
+        String printActionType = ParamUtil.getString(bpc.request, "print_action_type");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(paramAppNos)){
@@ -459,14 +460,21 @@ public class WithdrawalDelegator {
                 withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
                 mulReq.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
 
-                if(validationResult != null && validationResult.isHasErrors()){
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    //isValid = IaisEGPConstant.NO;\
-                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
-                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                    }
+                if ("applyPagePrint".equals(printActionType)){
                     wdIsValid = IaisEGPConstant.NO;
+                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    ParamUtil.setRequestAttr(bpc.request,"apply_page_print","Y");
+                }
+                if(validationResult != null && validationResult.isHasErrors()){
+                    if (!"applyPagePrint".equals(printActionType)){
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        //isValid = IaisEGPConstant.NO;\
+                        if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                            ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                        }
+                        wdIsValid = IaisEGPConstant.NO;
+                    }
                 }{
                     if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
                         ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);

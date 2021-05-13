@@ -12,14 +12,20 @@
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
+        <input type="hidden" name="print_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
         <div class="navigation-gp">
-            <c:if test="${isDoView eq 'Y'}">
-                <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
-            </c:if>
+            <c:choose>
+                <c:when test="${isDoView eq 'Y'}">
+                    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+                </c:when>
+                <c:otherwise>
+                    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printApplyPrint()"> <em class="fa fa-print"></em>Print</a></div></p>
+                </c:otherwise>
+            </c:choose>
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
                     <div class="internet-content">
@@ -257,6 +263,13 @@
         if ('${appIsWithdrawal}') {
             $('#isAppealModal').modal('show');
         }
+
+        var result = '${apply_page_print}';
+        console.log(result);
+        if ("Y" == result){
+            // alert("print")
+            window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+        }
     });
 
     function withdrawalReasons(obj) {
@@ -271,6 +284,11 @@
     function submit(action) {
         $("[name='app_action_type']").val(action);
         $("#mainForm").submit();
+    }
+
+    function printApplyPrint(){
+        $("[name='print_action_type']").val("applyPagePrint");
+        doSubmit();
     }
 
     function doFileAddEvent() {
