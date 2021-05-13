@@ -4172,6 +4172,9 @@ public class NewApplicationDelegator {
             }
             //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+            appGrpPremisesDto.setWeeklyDtoList(weeklyDtoList);
+            appGrpPremisesDto.setPhDtoList(phDtoList);
+            appGrpPremisesDto.setEventDtoList(eventList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
