@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -244,7 +243,7 @@ public class ApproveWdAppBatchJob {
 
     private void createTaskAndHistory(List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null);
         if (taskHistoryDto != null) {
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();

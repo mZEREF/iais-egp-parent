@@ -42,13 +42,11 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -235,7 +233,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
 
     private void createTaskAndHistory( List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null);
         if(taskHistoryDto != null){
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();

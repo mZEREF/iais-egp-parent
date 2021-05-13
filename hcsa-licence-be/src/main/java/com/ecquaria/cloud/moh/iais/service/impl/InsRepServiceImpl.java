@@ -740,7 +740,7 @@ public class InsRepServiceImpl implements InsRepService {
             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos,
-                    HcsaConsts.ROUTING_STAGE_AO2, RoleConsts.USER_ROLE_AO2, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId());
+                    HcsaConsts.ROUTING_STAGE_AO2, RoleConsts.USER_ROLE_AO2, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             createHistoryList(appPremisesRoutingHistoryDtos);
@@ -762,7 +762,7 @@ public class InsRepServiceImpl implements InsRepService {
                 }
                 if (!IaisCommonUtils.isEmpty(creatTaskApplicationList)) {
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId());
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     createHistoryList(appPremisesRoutingHistoryDtos);

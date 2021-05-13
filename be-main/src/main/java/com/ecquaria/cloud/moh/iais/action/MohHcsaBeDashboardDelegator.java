@@ -1067,7 +1067,7 @@ public class MohHcsaBeDashboardDelegator {
 
                     // send the task to Ao3 or ao2
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
