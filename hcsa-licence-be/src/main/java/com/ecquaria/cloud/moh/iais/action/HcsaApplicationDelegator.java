@@ -2212,7 +2212,7 @@ public class HcsaApplicationDelegator {
                     if (!IaisCommonUtils.isEmpty(creatTaskApplicationList)) {
                         // send the task to Ao2  or Ao3
                         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId());
+                                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                         broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
@@ -2602,7 +2602,7 @@ public class HcsaApplicationDelegator {
                 log.info(StringUtil.changeForLog("roleId : " + roleId));
                 // send the task to Ao2  or Ao3
                 TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                        stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId());
+                        stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                 List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                 broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
