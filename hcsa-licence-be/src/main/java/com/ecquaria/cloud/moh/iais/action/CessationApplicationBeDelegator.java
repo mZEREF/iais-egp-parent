@@ -434,8 +434,8 @@ public class CessationApplicationBeDelegator {
                     try {
                         List<ProfessionalResponseDto> professionalResponseDtos = applicationClient.getProfessionalDetail(professionalParameterDto).getEntity();
                         if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
-                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                            if (IaisCommonUtils.isEmpty(specialty)) {
+                            String name = professionalResponseDtos.get(0).getName();
+                            if (StringUtil.isEmpty(name)) {
                                 errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
                             }
                         }
