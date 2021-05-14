@@ -2111,7 +2111,7 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
-        if(personnelTypeSel.size() > 0){
+        /*if(personnelTypeSel.size() > 0){
             log.debug("current service code is {},personnel type size is {}", svcCode, personnelTypeSel.size());
             boolean eachTypeHadOne = true;
             if(personCountMap.size() != personnelTypeSel.size()){
@@ -2121,7 +2121,7 @@ public class ClinicalLaboratoryDelegator {
             if(!eachTypeHadOne){
                 errorMap.put("psnMandatory",MessageUtil.getMessageDesc("NEW_ERR0030"));
             }
-        }
+        }*/
 
 
     }
