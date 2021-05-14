@@ -54,7 +54,7 @@
                     <c:set var="newLic" value="true"/>
                 </c:if>
                 <div class="speSvcContent remark-point">
-                    <p class="assessment-title">Licensable Healthcare Services for ${specSvc.svcName}</p>
+                    <p class="assessment-title"><iais:code code="CDN002"/> for ${specSvc.svcName}</p>
                     <c:if test="${noExistBaseLic}">
                         <div class="row">
                             <div class="col-xs-12 col-md-12">
@@ -140,7 +140,10 @@
             </c:forEach>
             <div class="row">
                 <div class="col-xs-12 col-md-12">
-                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a target="_blank" href="<iais:code code="URL001"/>">Learn more</a>
+                    <iais:message key="NEW_ACK008"></iais:message>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <iais:message key="NEW_ACK009"></iais:message>
                 </div>
             </div>
         </div>
