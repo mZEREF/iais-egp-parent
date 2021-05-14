@@ -75,6 +75,9 @@ public class BackendInboxDelegator {
     InspectionMainService inspectionService;
 
     @Autowired
+    private MohHcsaBeDashboardService mohHcsaBeDashboardService;
+
+    @Autowired
     TaskService taskService;
 
     @Autowired
@@ -1404,6 +1407,9 @@ public class BackendInboxDelegator {
                 }
                 item.setApplicationTypeCode(String.copyValueOf(item.getApplicationType().toCharArray()));
                 item.setApplicationType(MasterCodeUtil.getCodeDesc(item.getApplicationType()));
+                //set max update
+                Date maxUpdateDate = mohHcsaBeDashboardService.getMaxUpdateByAppGroup(item.getId());
+                item.setGroupUpDt(maxUpdateDate);
             }
 
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult3);
