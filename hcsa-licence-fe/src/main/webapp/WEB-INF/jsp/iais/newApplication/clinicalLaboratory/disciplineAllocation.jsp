@@ -70,7 +70,7 @@
                               <table class="table discipline-table">
                                 <thead>
                                 <tr>
-                                  <th>Premises</th>
+                                  <th>Mode of Service Delivery</th>
                                   <th>${svcScopePageName}</th>
                                   <th>Clinical Governance Officers</th>
                                 </tr>

@@ -27,16 +27,16 @@
                        varStatus="status">
                 <div class="panel-main-content amend-preview-info">
                     <div class="row">
-                        <p><strong>Premises ${status.index+1}</strong></p>
+                        <p><strong>Mode of Service Delivery ${status.index+1}</strong></p>
                     </div>
                     <div class="preview-info">
                         <div class="row">
                             <div class="col-md-6">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span>Premises Type</span></p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span>Mode of Service Delivery</span></p>
                             </div>
                             <div class="col-md-6">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                    <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
+                                    <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">Premises</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">Off-site</c:if>
                                     </span>

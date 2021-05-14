@@ -8,7 +8,7 @@
 
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-            <p><span class="preview-title">Premises ${status.index+1}</span>: ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}</p>
+            <p><span class="preview-title">Mode of Service Delivery ${status.index+1}</span>: ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}</p>
             <div class="form-check-gp">
                 <div class="row">
                     <div class="col-xs-12">
