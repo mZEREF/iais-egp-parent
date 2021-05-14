@@ -51,7 +51,7 @@
               <c:forEach var="item" items="${feUserDtos}" varStatus="status">
                 <div class="license-info-row">
                   <div class="licnese-info">
-                    <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
+                    <p>Authorised Person ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
                   </div>
                   <div class="license-edit">
                     <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId${status.index}" value="${item.id}"/>','authorisedId${status.index}')">View</a></p>
