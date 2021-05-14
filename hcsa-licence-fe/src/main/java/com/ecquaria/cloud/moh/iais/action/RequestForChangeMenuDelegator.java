@@ -268,7 +268,7 @@ public class RequestForChangeMenuDelegator {
 
     private void setSelectOption(List<SelectOption> list) {
         SelectOption onsite = new SelectOption();
-        onsite.setText("On-site");
+        onsite.setText("Premises");
         onsite.setValue("ONSITE");
         SelectOption conveyance = new SelectOption();
         conveyance.setText("Conveyance");
