@@ -23,7 +23,8 @@
                     <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
                   </c:when>
                   <c:when test="${'TSB' ==currentSvcCode}">
-                    <h4>There is an appointed Laboratory Director who has the appropriate qualifications</h4>
+                    <strong style="font-size: 20px;">Laboratory Director (Tissue Banking - Cord Blood)</strong>
+                    <h4><iais:message key="NEW_ACK023"/></h4>
                   </c:when>
                   <c:when test="${'NMI' ==currentSvcCode}">
                     <h4>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</h4>
