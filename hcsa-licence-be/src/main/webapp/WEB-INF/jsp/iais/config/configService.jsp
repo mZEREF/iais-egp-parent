@@ -143,19 +143,19 @@
               <div class="form-check " style="left: 10%">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input" name="PremisesType" id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" value="ONSITE" name="Onsite" aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises(at fixed address)</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input"  name="PremisesType" id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" value="OFFSITE" name="Offsite" aria-invalid="false">
-                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Off-site(remotely/non-fixed location)</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input"  name="PremisesType" id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance (registered vehicle, aircraft, vessel or train)</label>
               </div>
             </div>
           </div>
