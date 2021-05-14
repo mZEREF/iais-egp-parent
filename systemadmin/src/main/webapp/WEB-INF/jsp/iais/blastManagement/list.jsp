@@ -197,6 +197,8 @@
         <input hidden id="msgId" name="msgId" value="">
         <input hidden id="createby" name="createby" value="">
         <input hidden id="createDt" name="createDt" value="">
+        <input hidden id="modifiedBy" name="modifiedBy" value="">
+        <input hidden id="modifiedDt" name="modifiedDt" value="">
         <input hidden id="mode" name="mode" value="">
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
