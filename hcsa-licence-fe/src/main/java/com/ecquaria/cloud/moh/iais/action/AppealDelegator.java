@@ -150,6 +150,9 @@ public class AppealDelegator {
               log.error(e.getMessage(),e);
             }
             return;
+        }else if("print".equals(crud_action_value)){
+            bpc. request.setAttribute("crud_action_type","print");
+            return;
         }
         Map<String, String> validate = appealService.validate(bpc.request);
         if(!validate.isEmpty()){
