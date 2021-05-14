@@ -89,7 +89,7 @@
                             <tr align="center">
                                 <th></th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" style="width:1%"/>
-                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Email Subject" style="width:14%"/>
+                                <iais:sortableHeader needSort="true" field="SUBJECT" value="Email Subject" style="width:14%"/>
                                 <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:14%"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name" style="width:15%"/>
                                 <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery" style="width:10%"/>
@@ -131,7 +131,7 @@
                                                 <p><c:out  value="${massIndex}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.msgName}"/>
+                                                <p><c:out value="${item.subject}"/>
                                                 </p>
                                             </td>
                                             <td>
