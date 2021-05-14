@@ -303,25 +303,25 @@
         console.log("groupajax")
         dividajaxlist.push(divid);
         $.post(
-            '/main-web/backend/appGroup.do',
-            {groupno: applicationGroupNo},
-            function (data, status) {
-                console.log("ajax start")
-                var serviceName = data.serviceName;
-                var res = data.ajaxResult;
-                var url = data.appNoUrl;
-                var taskList = data.taskList;
-                var hastaskList = data.hastaskList;
-                var html = '';
-                html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                    '<td colspan="6" style="padding: 0px 8px !important;">' +
-                    '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                    '<thead>' +
-                    '<tr>';
-                if (hastaskList == "true") {
-                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                }
+                '/main-web/backend/appGroup.do',
+                {groupno: applicationGroupNo},
+                function (data, status) {
+                    console.log("ajax start")
+                    var serviceName = data.serviceName;
+                    var res = data.ajaxResult;
+                    var url = data.appNoUrl;
+                    var taskList = data.taskList;
+                    var hastaskList = data.hastaskList;
+                    var html = '';
+                    html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                            '<td colspan="7" style="padding: 0px 8px !important;">' +
+                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<thead>' +
+                            '<tr>';
+                    if (hastaskList == "true") {
+                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }
 
                 html += '<th width="15%">Application No.</th>' +
                     '<th width="15%">Service</th>' +
