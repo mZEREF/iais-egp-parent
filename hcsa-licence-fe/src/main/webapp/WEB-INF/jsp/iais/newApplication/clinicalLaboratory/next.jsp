@@ -20,7 +20,7 @@
                 <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Preview</a>
               </c:when>
               <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Preview</a>
               </c:when>
             </c:choose>
           </c:when>
