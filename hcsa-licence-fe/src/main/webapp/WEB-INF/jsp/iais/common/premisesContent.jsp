@@ -190,11 +190,23 @@
                                 <c:set var="className" value="easMts" />
                             </c:when>
                         </c:choose>
-                        <div class="col-xs-5"
+                        <div class="col-xs-12"
                              <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
-                             <c:if test="${'conveyance'==className}">style="width: 27%;"</c:if>
-                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if>
-                             <c:if test="${'easMts'==className}">style="width: 30%;"</c:if> >
+                             <c:if test="${'conveyance'==className}">style="width: 25%;"</c:if>
+                             <c:if test="${'offSite'==className}">style="width: 20%;"</c:if>
+                             <c:if test="${'easMts'==className}">style="width: 25%;"</c:if> >
+                            <c:choose>
+                                <c:when test="${premType == onSite}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premType == conv || premType == easMts}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premType == offSite}">
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                            </c:choose>
+
                             <div class="form-check">
                                 <c:if test="${appGrpPremisesDto.premisesType!=premType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premType}" aria-invalid="false">
@@ -205,25 +217,21 @@
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premType == onSite}">
                                         <c:out value="Premises" />
-                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
                                         <br/>
                                         <span>(at fixed address)</span>
                                     </c:if>
                                     <c:if test="${premType == conv}">
                                         <c:out value="Conveyance" />
-                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
                                         <br/>
                                         <span>(registered vehicle, aircraft, vessel or train)</span>
                                     </c:if>
                                     <c:if test="${premType == offSite}">
                                         <c:out value="Off-site" />
-                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
                                         <br/>
                                         <span>(remotely/non-fixed location)</span>
                                     </c:if>
                                     <c:if test="${premType == easMts}">
                                         <c:out value="Conveyance" />
-                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
                                         <br/>
                                         <span>(registered vehicle, aircraft, vessel or train)</span>
                                     </c:if>
