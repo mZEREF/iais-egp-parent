@@ -86,6 +86,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -465,7 +466,16 @@ public class InspectEmailAo1Delegator {
                         try {
                             List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
                             if(apptUserCalendarDtos!=null&&!apptUserCalendarDtos.isEmpty()&&apptUserCalendarDtos.get(0).getEndSlot()!=null){
-                                mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                                Date startDt= apptUserCalendarDtos.get(0).getStartSlot().get(0);
+                                Date endDt= apptUserCalendarDtos.get(0).getEndSlot().get(0);
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(startDt);
+                                cal.add(Calendar.DAY_OF_MONTH, 1);
+                                String inspStartDate_1 = Formatter.formatDateTime(cal.getTime());
+                                String inspEndDate = Formatter.formatDateTime(endDt);
+                                if(inspStartDate_1.compareTo(inspEndDate)>0){
+                                    mapTemplate.put("InspectionEndDate", Formatter.formatDate(endDt));
+                                }
                             }
                         }catch (Exception e1){
                             log.info(e1.getMessage(),e1);
