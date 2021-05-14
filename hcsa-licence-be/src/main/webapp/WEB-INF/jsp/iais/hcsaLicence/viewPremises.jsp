@@ -62,37 +62,37 @@
                                 <div class="preview-info">
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <label>Premises ${status.index+1} </label>
+                                      <label>Mode of Service Delivery ${status.index+1} </label>
                                     </div>
                                   </div>
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      Premises Type
+                                      mode of service delivery
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
                                           <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
-                                            Off-site
+                                          Off-site(remotely/non-fixed location)
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
-                                            On-site
+                                            Premises(at fixed address)
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
-                                            Conveyance
+                                            Conveyance (registered vehicle, aircraft, vessel or train)
                                          </c:if>
                                       </div>
                                       <div class="col-md-6">
                                         <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none">
                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSITE'}">
-                                             Off-site
+                                             Off-site(remotely/non-fixed location)
                                            </c:if>
                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">
-                                           On-site
+                                           Premises(at fixed address)
                                          </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">
-                                            Conveyance
+                                            Conveyance (registered vehicle, aircraft, vessel or train)
                                           </c:if>
                                         </span>
                                       </div>
