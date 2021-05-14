@@ -159,7 +159,7 @@ public class NewApplicationAjaxController {
             premTypeBuffer.append("<div class=\"col-xs-5 \" style=\"").append(width).append("\">")
                     .append("<div class=\"form-check\">").append("<input class=\"form-check-input premTypeRadio ").append(className).append("\"  type=\"radio\" name=\"premType").append(currentLength).append("\" value = ").append(type).append(" aria-invalid=\"false\">");
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Premises<br/><span>(at a fixed address)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Premises<br/><span>(at fixed address)</span></label>");
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(registered vehicle, aircraft, vessel or train)</span></label>");
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {

@@ -167,7 +167,6 @@
             </div>
             </c:if>
             <div class="form-horizontal">
-                <%--<div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if> >--%>
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType }">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your mode of service delivery ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
@@ -200,7 +199,7 @@
                                         <c:out value="Premises" />
                                         <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
                                         <br/>
-                                        <span>(at a fixed address)</span>
+                                        <span>(at fixed address)</span>
                                     </c:if>
                                     <c:if test="${premisesType == conv}">
                                         <c:out value="Conveyance" />
