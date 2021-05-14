@@ -151,12 +151,23 @@ public class NewApplicationAjaxController {
                 width = "width: 20%;";
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
-                width = "width: 27%;";
+                width = "width: 25%;";
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
                 className = "offSite";
-                width = "width: 19%;";
+                width = "width: 20%;";
             }
-            premTypeBuffer.append("<div class=\"col-xs-5 \" style=\"").append(width).append("\">")
+            premTypeBuffer.append("<div class=\"col-xs-12 \" style=\"").append(width).append("\">");
+            String premTypeTooltip = "";
+            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK019");
+            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK021");
+            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK020");
+            }
+            premTypeBuffer.append("<a class=\"btn-tooltip styleguide-tooltip\" style=\"z-index: 999;position: absolute; right: 30px; top: 12px;\" href=\"javascript:void(0);\" data-placement=\"top\"  data-toggle=\"tooltip\" data-html=\"true\" title=\"&lt;p&gt;")
+                    .append(premTypeTooltip)
+                    .append("&lt;/p&gt;\">i</a>")
                     .append("<div class=\"form-check\">").append("<input class=\"form-check-input premTypeRadio ").append(className).append("\"  type=\"radio\" name=\"premType").append(currentLength).append("\" value = ").append(type).append(" aria-invalid=\"false\">");
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Premises<br/><span>(at fixed address)</span></label>");
