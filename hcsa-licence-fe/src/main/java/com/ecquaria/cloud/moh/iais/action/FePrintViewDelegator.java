@@ -108,7 +108,10 @@ public class FePrintViewDelegator {
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                     //set svc doc
                     List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                    appSvcCgoDtoList.addAll(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                    List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+                        appSvcCgoDtoList.addAll(appSvcCgoDtos);
+                    }
                     List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                     if(appSvcPrincipalOfficersDtoList!=null){
                         ListIterator<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoListIterator =
@@ -123,8 +126,14 @@ public class FePrintViewDelegator {
                             }
                         }
                     }
-                    medAlertPsnDtos.addAll(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
-                    appSvcPersonnelDtos.addAll(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+                    List<AppSvcPrincipalOfficersDto> appSvcMedAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                    if(!IaisCommonUtils.isEmpty(appSvcMedAlertPsnDtos)){
+                        medAlertPsnDtos.addAll(appSvcMedAlertPsnDtos);
+                    }
+                    List<AppSvcPersonnelDto> appSvcPersonnelDtos1 = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos1)){
+                        appSvcPersonnelDtos.addAll(appSvcPersonnelDtos1);
+                    }
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
                     Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
