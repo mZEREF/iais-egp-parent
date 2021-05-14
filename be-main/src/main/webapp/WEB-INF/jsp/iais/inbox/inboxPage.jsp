@@ -150,6 +150,7 @@
                                     <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Last Modified Date"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                                 </tr>
                                 </thead>
@@ -173,6 +174,7 @@
                                                 <td><c:out value="${pool.applicationType}"/></td>
                                                 <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
                                                 <td><c:out value="${pool.submitDate}"/></td>
+                                                <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
                                                 <td><c:out value="${pool.paymentstatus}"/></td>
                                             </tr>
                                         </c:forEach>

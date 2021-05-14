@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.RoleService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
@@ -43,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +80,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Autowired
     private InspectionMainService inspectionService;
 
+    @Autowired
+    private ApplicationMainClient applicationMainClient;
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
@@ -698,6 +703,26 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //duplicate removal
         appStatusOption = delDuplicateStatusOption(appStatusOption);
         return appStatusOption;
+    }
+
+    @Override
+    public Date getMaxUpdateByAppGroup(String appGroupId) {
+        Date maxDate = null;
+        if(!StringUtil.isEmpty(appGroupId)) {
+            List<ApplicationDto> applicationDtos = applicationMainClient.getGroupAppsByNo(appGroupId).getEntity();
+            for(ApplicationDto applicationDto : applicationDtos) {
+                if(applicationDto != null && applicationDto.getModifiedAt() != null) {
+                    if(maxDate == null) {
+                        maxDate = applicationDto.getModifiedAt();
+                    } else if(applicationDto.getModifiedAt().after(maxDate)) {
+                        maxDate = applicationDto.getModifiedAt();
+                    }
+                }
+            }
+        } else {
+            maxDate = new Date();
+        }
+        return maxDate;
     }
 
     private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {

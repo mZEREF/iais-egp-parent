@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQuer
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,4 +79,13 @@ public interface MohHcsaBeDashboardService {
       * @Descripation: get Application status option By Role and Switch
       */
     List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/5/14
+      * @Param: appGroupId
+      * @return: Date
+      * @Descripation: getMaxUpdateByAppGroup
+      */
+    Date getMaxUpdateByAppGroup(String appGroupId);
 }
