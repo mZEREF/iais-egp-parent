@@ -732,12 +732,27 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     private List<SelectOption> getWaitAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
-            String[] statusStrs = new String[]{
-                ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
-            };
+            String[] statusStrs;
+            if(curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)) {
+                statusStrs = new String[]{
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+                    ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS
+                };
+            } else if(curRoleId.contains(RoleConsts.USER_ROLE_PSO)) {
+                statusStrs = new String[]{
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
+                };
+            } else {
+                statusStrs = new String[]{
+                    ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
+                };
+            }
             appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
         }
         return appStatusOption;
