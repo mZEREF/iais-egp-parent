@@ -185,8 +185,19 @@
                         </c:choose>
                         <div class="col-xs-5"
                              <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
-                             <c:if test="${'conveyance'==className}">style="width: 27%;"</c:if>
-                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if> >
+                             <c:if test="${'conveyance'==className}">style="width: 25%;"</c:if>
+                             <c:if test="${'offSite'==className}">style="width: 20%;"</c:if>
+                            <c:choose>
+                                <c:when test="${premType == onSite}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premType == conv}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premType == offSite}">
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                            </c:choose>
                             <div class="form-check">
                                 <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
