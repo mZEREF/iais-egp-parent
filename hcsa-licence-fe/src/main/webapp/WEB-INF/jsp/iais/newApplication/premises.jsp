@@ -40,7 +40,7 @@
                   <div class="row ">
                     <div class="col-xs-12">
                       <div class="premises-txt">
-                        <p><iais:message key="NEW_ACK018"/></p>
+                        <p><iais:message escape="false" key="NEW_ACK018"/></p>
                       </div>
                     </div>
                   </div>
