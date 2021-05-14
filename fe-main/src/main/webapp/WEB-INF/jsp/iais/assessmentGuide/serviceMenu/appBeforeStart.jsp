@@ -27,10 +27,10 @@
         <h2>SERVICES SELECTED</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
+            <li><span><iais:service value="${baseItem}"></iais:service></span> (<iais:code code="CDN002"/>)</li>
           </c:forEach>
           <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Service)</li>
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (<iais:code code="CDN004"/>)</li>
           </c:forEach>
         </ul>
         <div class="gray-content-box">
