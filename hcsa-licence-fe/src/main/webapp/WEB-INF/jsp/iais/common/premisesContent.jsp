@@ -144,13 +144,13 @@
                         <span class="premise-type ack-font-16">
                             <strong>
                               <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="On-site: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                               <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Conveyance: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                               <c:if test="${'OFFSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Off-site: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                             </strong>
                         </span>
