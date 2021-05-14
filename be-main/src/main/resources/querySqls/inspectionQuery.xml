@@ -105,12 +105,12 @@
         ) T5  JOIN taskView T7 ON T7.ref_No = T5.corrid WHERE (T7.task_status = 'TSTATUS001' or T7.task_status = 'TSTATUS002')
                 <#if userId??> and T7.user_id = :userId </#if>
                 <#if roleId??> and T7.role_id = :roleId </#if>
-                <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
+                <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0</#if>
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
                 <#if application_status??> and T5.STATUS IN ${application_status}</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
-                <#if hci_address??> and (T5.address like :hci_address)</#if>
-                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
+                <#if hci_address??> and charindex(:hci_address, T5.address) >0</#if>
+                <#if hci_name??> and  charindex(:hci_name, T5.HCI_NAME) >0</#if>
             ]]>
     </sql>
 
@@ -150,13 +150,13 @@
                 <#if userId??> and T7.user_id = :userId </#if>
                 <#if roleId??> and T7.role_id = :roleId </#if>
                 <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
-                <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
+                <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0</#if>
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
                 <#if application_status??> and T5.STATUS IN ${application_status}</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
                 <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
-                 <#if hci_address??> and (T5.address like :hci_address)</#if>
-                <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
+                 <#if hci_address??> and charindex(:hci_address, T5.address) >0</#if>
+                <#if hci_name??> and  charindex(:hci_name, T5.HCI_NAME) >0</#if>
             ]]>
     </sql>
 </sqls>

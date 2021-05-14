@@ -303,7 +303,7 @@ public class InterInboxDelegator {
             inboxMsgParam.removeFilter("messageType");
         }
         if(inboxService != null){
-            inboxMsgParam.addFilter("interService","%" + inboxService + "%",true);
+            inboxMsgParam.addFilter("interService", inboxService ,true);
         }else{
             inboxMsgParam.removeFilter("interService");
         }
@@ -972,9 +972,9 @@ public class InterInboxDelegator {
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
-                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
+                inboxParam.addFilter("appNo", applicationNo,true);
             }else{
-                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
+                inboxParam.addFilter("appNo", applicationNo,true);
             }
         }else{
             inboxParam.removeFilter("appNo");
@@ -985,7 +985,7 @@ public class InterInboxDelegator {
             if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceType);
                 if (hcsaServiceDto != null && !StringUtil.isEmpty(hcsaServiceDto.getSvcCode())){
-                    inboxParam.addFilter("serviceCode", "%" + hcsaServiceDto.getSvcCode() + "%",true);
+                    inboxParam.addFilter("serviceCode",  hcsaServiceDto.getSvcCode() ,true);
                 }
             }else{
 //                String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);

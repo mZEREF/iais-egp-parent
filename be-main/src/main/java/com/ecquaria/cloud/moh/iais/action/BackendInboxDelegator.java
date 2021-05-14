@@ -1304,8 +1304,8 @@ public class BackendInboxDelegator {
             searchParamGroup.addFilter("roleId",loginContext.getCurRoleId(),true);
             searchParamAjax.addFilter("roleId",loginContext.getCurRoleId(),true);
             if(!StringUtil.isEmpty(application_no)){
-                searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
-                searchParamAjax.addFilter("application_no", "%" +application_no +"%",true);
+                searchParamGroup.addFilter("application_no",application_no  ,true);
+                searchParamAjax.addFilter("application_no", application_no ,true);
                 ParamUtil.setSessionAttr(bpc.request,"application_no",null);
             }else{
                 searchParamGroup.removeFilter("application_no");
@@ -1368,8 +1368,8 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             if(!StringUtil.isEmpty(hci_address)){
                 ParamUtil.setSessionAttr(bpc.request,"hci_address",null);
-                searchParamGroup.addFilter("hci_address", "%" +hci_address +"%",true);
-                searchParamAjax.addFilter("hci_address", "%" +hci_address +"%",true);
+                searchParamGroup.addFilter("hci_address", hci_address ,true);
+                searchParamAjax.addFilter("hci_address", hci_address ,true);
             }else{
                 searchParamGroup.removeFilter("hci_address");
                 searchParamAjax.removeFilter("hci_address");
@@ -1377,8 +1377,8 @@ public class BackendInboxDelegator {
 
             if(!StringUtil.isEmpty(hci_name)){
                 ParamUtil.setSessionAttr(bpc.request,"hci_name",null);
-                searchParamGroup.addFilter("hci_name", "%" +hci_name +"%",true);
-                searchParamAjax.addFilter("hci_name", "%" +hci_name +"%",true);
+                searchParamGroup.addFilter("hci_name", hci_name ,true);
+                searchParamAjax.addFilter("hci_name", hci_name ,true);
             }else{
                 searchParamGroup.removeFilter("hci_name");
                 searchParamAjax.removeFilter("hci_name");

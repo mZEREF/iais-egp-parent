@@ -608,7 +608,7 @@ public class RequestForChangeMenuDelegator {
         searchParam.setPageNo(0);
         String personName = ParamUtil.getRequestString(bpc.request, "perName");
         if (!StringUtil.isEmpty(personName)) {
-            searchParam.addFilter("personName", "%" + personName + "%", true);
+            searchParam.addFilter("personName",  personName , true);
         }
         searchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
@@ -1199,7 +1199,7 @@ public class RequestForChangeMenuDelegator {
         String psnType = ParamUtil.getString(bpc.request, "psnTypes");
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
         if (!StringUtil.isEmpty(personName)) {
-            searchParam.addFilter("personName", "%" + personName + "%", true);
+            searchParam.addFilter("personName",  personName , true);
             QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "personName", personName);
             ParamUtil.setRequestAttr(bpc.request, "perName", personName);
