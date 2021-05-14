@@ -52,40 +52,44 @@ public class EqRequestForChangeSubmitResultChange {
         List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList);
         List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = o.get(0).getAppSvcDisciplineAllocationDtoList();
+        List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = o.get(0).getAppSvcDisciplineAllocationDtoList();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = n.get(0).getHcsaServiceStepSchemeDtos();
         String deputyPoFlag = n.get(0).getDeputyPoFlag();
         o.get(0).setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
         o.get(0).setDeputyPoFlag(deputyPoFlag);
-        boolean flag=false;
-        boolean flag1=false;
-        if (appSvcDisciplineAllocationDtoList != null && appSvcDisciplineAllocationDtoList1 != null) {
-            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
-                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
-                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
-                for (AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList1) {
-                    String idNo1 = allocationDto.getIdNo();
-                    String premiseVal1 = allocationDto.getPremiseVal();
-                    String chkLstConfId1 = allocationDto.getChkLstConfId();
-                    try {
-                        if (idNo.equals(idNo1) && premiseVal.equals(premiseVal1) && chkLstConfId.equals(chkLstConfId1)) {
-                            allocationDto.setCgoSelName(cgoSelName);
-                            allocationDto.setChkLstName(chkLstName);
-                        }
-                    } catch (NullPointerException e) {
-
-                    }
-                }
-            }
-            flag = appSvcDisciplineAllocationDtoList.equals(appSvcDisciplineAllocationDtoList1);
-        }else {
-            flag=true;
-        }
+        boolean flag=eqAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = n.get(0).getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = o.get(0).getAppSvcLaboratoryDisciplinesDtoList();
+        boolean flag1= eqAppSvcLaboratoryDisciplines(appSvcLaboratoryDisciplinesDtoList,oldAppSvcLaboratoryDisciplinesDtoList);
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
+        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
+        boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
+        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
+
+        List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
+        List<AppSvcCgoDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
+        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
+
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
+        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
+        List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
+        List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
+        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
+        boolean eqAppSvcVehicle = eqAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
+        boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(n.get(0).getAppSvcClinicalDirectorDtoList(), o.get(0).getAppSvcClinicalDirectorDtoList());
+        boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(n.get(0).getAppSvcChargesPageDto(), o.get(0).getAppSvcChargesPageDto());
+        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc || eqAppSvcVehicle || eqAppSvcClinicalDirector ||eqAppSvcChargesPageDto) {
+            return true;
+
+        }
+        return false;
+    }
+
+    private static boolean eqAppSvcLaboratoryDisciplines(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList,List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList){
+        boolean flag1;
         if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
             List<AppSvcChckListDto> list= IaisCommonUtils.genNewArrayList();
             List<AppSvcChckListDto> list1=IaisCommonUtils.genNewArrayList();
@@ -118,28 +122,36 @@ public class EqRequestForChangeSubmitResultChange {
         }else {
             flag1=true;
         }
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
-        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
-        boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
-        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
+        return flag1;
+    }
+    private static boolean eqAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList , List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
+        boolean flag;
+        if (appSvcDisciplineAllocationDtoList != null && oldAppSvcDisciplineAllocationDtoList != null) {
+            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
+                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
+                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
+                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
+                for (AppSvcDisciplineAllocationDto allocationDto : oldAppSvcDisciplineAllocationDtoList) {
+                    String idNo1 = allocationDto.getIdNo();
+                    String premiseVal1 = allocationDto.getPremiseVal();
+                    String chkLstConfId1 = allocationDto.getChkLstConfId();
+                    try {
+                        if (idNo.equals(idNo1) && premiseVal.equals(premiseVal1) && chkLstConfId.equals(chkLstConfId1)) {
+                            allocationDto.setCgoSelName(cgoSelName);
+                            allocationDto.setChkLstName(chkLstName);
+                        }
+                    } catch (NullPointerException e) {
 
-        List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
-        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
-
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
-        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
-        List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
-        List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
-        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
-        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc) {
-            return true;
-
+                    }
+                }
+            }
+            flag = appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList);
+        }else {
+            flag=true;
         }
-        return false;
+        return flag;
     }
     private static boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList , List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList){
         if(appSvcPersonnelDtoList==null){
@@ -383,7 +395,7 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return false;
     }
-    public static boolean eqAppSvcClinicalDirector(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
+    public static boolean eqAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
         AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
         AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);
         if(!n.equals(o)){

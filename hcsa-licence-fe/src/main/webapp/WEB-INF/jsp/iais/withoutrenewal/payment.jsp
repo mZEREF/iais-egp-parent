@@ -73,6 +73,7 @@
                 $('[name="switch_value"]').val('doPayment');
                 $('#menuListForm').submit();
             }
+            dismissWaiting();
         }
 
     });

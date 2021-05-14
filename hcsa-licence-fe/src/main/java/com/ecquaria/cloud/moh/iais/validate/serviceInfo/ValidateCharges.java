@@ -50,7 +50,7 @@ public class ValidateCharges implements ValidateFlow {
                 if(minAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("minAmount"+i,general_err0041);
-                }else if(!minAmount.matches("^[0-9]+$")){
+                }else if(!isMoney(minAmount)){
                     map.put("minAmount"+i,"GENERAL_ERR0002");
                 }else {
                     flag=true;
@@ -64,7 +64,7 @@ public class ValidateCharges implements ValidateFlow {
                 if(maxAmount.length() > 4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("maxAmount"+i,general_err0041);
-                }else if(!maxAmount.matches("^[0-9]+$")){
+                }else if(!isMoney(maxAmount)){
                     map.put("maxAmount"+i,"GENERAL_ERR0002");
                 }else if(flag) {
                     int min = Integer.parseInt(minAmount);
@@ -132,5 +132,14 @@ public class ValidateCharges implements ValidateFlow {
                 map.put("otherRemarks"+i,general_err0041);
             }
         }
+    }
+
+    private  boolean isMoney(String amount){
+        try {
+            Double.parseDouble(amount);
+        }catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }

@@ -54,7 +54,7 @@
                                                 <c:if test="${isSingle == 'Y'}">
                                                     <td>${licenseeName}</td>
                                                 </c:if>
-                                                <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>Address</span><br/></c:forEach></td>
+                                                <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                             </tr>
@@ -65,10 +65,10 @@
 
                             </div>
                             <c:if test="${isSingle == 'Y'}">
-                                <p>Click proceed to view your licence Information and if necessary make amendment, before renewal.</p>
+                                <p>Click proceed to view your licence information and if necessary make amendment, before renewal.</p>
                             </c:if>
                             <c:if test="${isSingle == 'N'}">
-                                <p>Please submit renewal application for each individual licence if you wish to amend the Information.</p>
+                                <p>Please submit renewal application for each individual licence if you wish to amend the information.</p>
                             </c:if>
                             <div class="application-tab-footer">
                                 <div class="row">

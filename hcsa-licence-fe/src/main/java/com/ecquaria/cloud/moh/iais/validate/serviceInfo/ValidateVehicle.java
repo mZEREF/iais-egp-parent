@@ -82,7 +82,7 @@ public class ValidateVehicle implements ValidateFlow {
             }
         }
         if(!validateVehicleName.isEmpty()){
-            List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
+           /* List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
             if(!entity.isEmpty()){
                 validateVehicleName.forEach((v)->{
                     indexMap.forEach((k,var)->{
@@ -91,7 +91,8 @@ public class ValidateVehicle implements ValidateFlow {
                         }
                     });
                 });
-            }
+            }*/
+            //need to do check application premises vehicle name;
         }
         log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
     }

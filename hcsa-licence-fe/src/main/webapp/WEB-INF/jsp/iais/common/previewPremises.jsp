@@ -39,6 +39,9 @@
                                     <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">Premises</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">Off-site</c:if>
+                                     <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
+                                         Conveyance(in a mobile clinic / ambulance)
+                                     </c:if>
                                     </span>
                                 </p>
                             </div>

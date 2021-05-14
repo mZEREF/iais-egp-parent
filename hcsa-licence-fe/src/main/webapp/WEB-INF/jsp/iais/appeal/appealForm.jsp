@@ -25,7 +25,9 @@
         <div class="col-xs-12 col-md-10" style="margin-left: 2%">
           <label style="font-size: 25px">You are appealing for:</label>
         </div>
-
+        <div class="col-xs-12 col-sm-1">
+          <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+        </div>
         <div  class="col-xs-12 col-md-10">
           <div class="col-xs-12 col-md-6" style="margin-left: 1%">
             <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
@@ -150,9 +152,6 @@
         <div class="row">
           <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
             <div class="text-right text-center-mobile">
-              <div class="col-xs-12 col-sm-1">
-                <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
-              </div>
               <a class="btn btn-secondary" href="javascript:void(0);" id="cancel">Cancel</a>
               <a class="btn btn-secondary" href="javascript:void(0);" id="save">Save</a>
               <a class="btn btn-primary" href="javascript:void(0);" id="submit">Submit</a>

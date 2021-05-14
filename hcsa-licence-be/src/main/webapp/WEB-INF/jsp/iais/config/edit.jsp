@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -139,19 +140,19 @@
               <div class="form-check " style="left: 10%;">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input"  name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises(at fixed address)</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
-                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Off-site(remotely/non-fixed location)</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance (registered vehicle, aircraft, vessel or train)</label>
               </div>
             </div>
           </div>
@@ -417,17 +418,17 @@
       </div>--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-left: 10%">
-          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}">Please check New Application routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR014")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}">Please check Renew routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR015")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}">Please check Appeal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR016")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}">Please check Request For Change routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR017")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}">Please check Cessation routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR018")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}">Please check Withdrawal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR019")%></c:if></span>
         </div>
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
@@ -805,7 +806,7 @@
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:style")
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service');
         }else {
@@ -847,7 +848,7 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {

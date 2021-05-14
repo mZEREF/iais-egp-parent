@@ -413,7 +413,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-6 text-right">
                                 <div class="button-group">
-                                    <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview and Submit</a>
+                                    <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview</a>
                                 </div>
                             </div>
                         </div>

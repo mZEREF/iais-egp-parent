@@ -1951,7 +1951,7 @@ public class NewApplicationDelegator {
          * StartStep: doRequestForChangeSubmit
      *
      * @param bpc
-     * @throwsdoRequestInformationSubmit
+     *
      */
     public void doRequestForChangeSubmit(BaseProcessClass bpc) throws Exception {
         //validate reject  apst050
@@ -2047,9 +2047,9 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        boolean grpPremiseIsChange = false;
-        boolean serviceIsChange = false;
-        boolean docIsChange = false;
+        boolean grpPremiseIsChange ;
+        boolean serviceIsChange;
+        boolean docIsChange ;
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         docIsChange = EqRequestForChangeSubmitResultChange.eqDocChange(dtoAppGrpPrimaryDocDtos, oldAppGrpPrimaryDocDtos);
