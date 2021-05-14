@@ -12,19 +12,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -222,6 +218,16 @@ public class InspectionNcCheckListDelegator {
                 }
             }
         }
+       /* ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+        List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
+        for(int i= 0;i<3;i++){
+            InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
+            inspectionSpecServiceDto.setIdentify("88888888"+i);
+            inspectionSpecServiceDto.setFdtoList(serListDto.getFdtoList());
+            inspectionSpecServiceDto.setAdchklDto(adchklDto);
+            fDtosDtos.add(inspectionSpecServiceDto);
+        }
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);*/
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
