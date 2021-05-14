@@ -20,9 +20,9 @@
             WHERE ACM.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
             <#if codeCategory??> AND ACM.code_category = :codeCategory</#if>
-            <#if codeValue??> AND ACM.code_value LIKE :codeValue</#if>
-            <#if codeDescription??> AND ACM.code_description LIKE :codeDescription</#if>
-            <#if filterValue??> AND ACM.filter_value LIKE :filterValue</#if>
+            <#if codeValue??> AND  charindex(:codeValue, ACM.code_value) >0  </#if>
+            <#if codeDescription??> AND charindex(:codeDescription, ACM.code_description) >0  </#if>
+            <#if filterValue??> AND charindex(:filterValue, ACM.filter_value) >0 </#if>
             <#if esd??> AND cast(ACM.effective_from as date)>= :esd</#if>
             <#if eed??> AND cast(ACM.effective_to as date) <= :eed</#if>
             <#if codeStatus??> AND ACM.status = :codeStatus</#if>
@@ -288,7 +288,7 @@
             WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND T1.message_type = :msgType</#if>
-            <#if templateName??> AND T1.template_name like :templateName</#if>
+            <#if templateName??> AND charindex(:templateName, T1.template_name) >0 </#if>
             <#if deliveryMode??> AND T1.delivery_mode = :deliveryMode</#if>
             <#if tepProcess??> AND T1.process = :tepProcess</#if>
             <#if esd??> AND T1.effective_from >= :esd</#if>
@@ -372,7 +372,7 @@
             <#if phCode??> AND PH_CODE = :phCode</#if>
             <#if nonWorking??> AND (FROM_DATE between :nonWorking and :nonWorking)</#if>
             <#if status??> AND STATUS = :status</#if>
-            <#if year??> AND FROM_DATE like :year</#if>
+            <#if year??>AND charindex(:year, FROM_DATE) >0 </#if>
         ]]>
     </sql>
 
@@ -482,7 +482,7 @@
              LEFT JOIN userAccountView T3 ON T3.id = T1.CREATED_BY
              WHERE 1 = 1
             <#if status??> AND T1.STATUS = :status</#if>
-            <#if description??> AND DISTRIBUTION_NAME like :description</#if>
+            <#if description??> AND charindex(:description, DISTRIBUTION_NAME) > 0</#if>
             <#if remises_corr_id_in??> and RECIPIENTS_ROLE IN ${remises_corr_id_in} </#if>
             <#if service??> AND SERVICE_CODE =:service</#if>
             <#if mode??> AND T1.DELIVERY_MODE = :mode</#if>
@@ -505,8 +505,8 @@
 			) D (DOC_NAME)
             WHERE 1 = 1 AND T1.STATUS != 'CMSTAT002'
             <#if id??> AND T1.ID =:id</#if>
-            <#if description??> AND DISTRIBUTION_NAME like :description</#if>
-            <#if msgName??> AND MSG_NAME like :msgName</#if>
+            <#if description??> AND charindex(:description, DISTRIBUTION_NAME) > 0 </#if>
+            <#if msgName??> AND charindex(:msgName, MSG_NAME) > 0 </#if>
             <#if mode??> AND T1.DELIVERY_MODE = :mode</#if>
             <#if distribution??> AND DISTRIBUTION_ID = :distribution</#if>
             <#if start??> AND T1.SCHEDULE_SEND_DATE > CONVERT(datetime, :start, 103)</#if>
@@ -581,7 +581,7 @@
 			left join licensee T4 on T4.ORGANIZATION_ID = T1.ORGANIZATION_ID
 			left join organization T5 on T4.ORGANIZATION_ID = T5.ID
 			WHERE T1.user_domain = 'internet' and T1.STATUS != 'CMSTAT002'
-			<#if licenseeName??> and T4.NAME like :licenseeName</#if>
+			<#if licenseeName??> and charindex(:licenseeName, T4.NAME) > 0  </#if>
 			<#if uenNo??> and T5.UEN_NO = :uenNo</#if>
 			<#if designation??> and T1.DESIGNATION = :designation</#if>
 			<#if idNo??> and T1.ID_NO = :idNo</#if>

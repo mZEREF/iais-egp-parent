@@ -16,11 +16,11 @@
             FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
-            <#if msgSubject??> AND inbox.subject like :msgSubject</#if>
+            <#if msgSubject??> AND CHARINDEX(:msgSubject, inbox.subject) >0 </#if>
             <#if userId??> AND inbox.user_id = :userId</#if>
             <#if msgStatus??> AND inbox.status in :msgStatus</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
-            <#if interService??> AND inbox.service_codes LIKE :interService</#if>
+            <#if interService??> AND CHARINDEX(:interService, inbox.service_codes) >0 </#if>
         ]]>
     </sql>
 
@@ -93,11 +93,11 @@
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
-            <#if appNo??> AND B.application_no like :appNo</#if>
+            <#if appNo??> AND CHARINDEX(:appNo, B.application_no) >0 </#if>
             <#if appStatus??> AND ${appStatus}</#if>
             <#if service_id??> AND ${service_id}</#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
-            <#if serviceCode??> AND B.code like :serviceCode</#if>
+            <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
         ]]>
     </sql>
@@ -154,7 +154,7 @@
             <#if eStartDate??> AND lic.start_date <= :eStartDate</#if>
             <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
             <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
-            <#if licNo??> AND lic.licence_no like :licNo</#if>
+            <#if licNo??> AND CHARINDEX(:licNo, lic.licence_no) >0 </#if>
         ]]>
     </sql>
 

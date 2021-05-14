@@ -317,17 +317,17 @@ public class MasterCodeDelegator {
             searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_STATUS);
         }
         if (!StringUtil.isEmpty(codeDescription)) {
-            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION, "%" + codeDescription + "%",true);
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION,  codeDescription ,true);
         } else {
             searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         }
         if (!StringUtil.isEmpty(codeValue)) {
-            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_VALUE, "%" + codeValue + "%",true);
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_VALUE,  codeValue ,true);
         } else {
             searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_VALUE);
         }
         if (!StringUtil.isEmpty(filterValue)) {
-            searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE, "%" + filterValue + "%",true);
+            searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE,  filterValue ,true);
         } else {
             searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }

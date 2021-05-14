@@ -280,10 +280,10 @@ public class BlastManagementDelegator {
             searchParam.getParams().clear();
             searchParam.getFilters().clear();
             if(!StringUtil.isEmpty(descriptionSwitch)){
-                searchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
+                searchParam.addFilter("description",  descriptionSwitch ,true);
             }
             if(!StringUtil.isEmpty(msgName)){
-                searchParam.addFilter("msgName",  "%" +msgName + "%",true);
+                searchParam.addFilter("msgName",  msgName ,true);
             }
             if(!StringUtil.isEmpty(start)){
                 searchParam.addFilter("start",  start,true);
