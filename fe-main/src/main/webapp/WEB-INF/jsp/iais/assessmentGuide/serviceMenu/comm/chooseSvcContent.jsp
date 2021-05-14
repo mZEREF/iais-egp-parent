@@ -27,7 +27,7 @@
         <div class="self-assessment-checkbox-gp gradient-light-grey">
 
             <div class="form-check-gp " >
-                <p class="assessment-title">Base Services</p>
+                <p class="assessment-title">Licensable Healthcare Services</p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
                         <input class="form-check-input assessment-service"

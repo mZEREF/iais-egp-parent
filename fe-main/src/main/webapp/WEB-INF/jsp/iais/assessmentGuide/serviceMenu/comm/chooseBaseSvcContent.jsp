@@ -54,7 +54,7 @@
                     <c:set var="newLic" value="true"/>
                 </c:if>
                 <div class="speSvcContent remark-point">
-                    <p class="assessment-title">Base Services for ${specSvc.svcName}</p>
+                    <p class="assessment-title">Licensable Healthcare Services for ${specSvc.svcName}</p>
                     <c:if test="${noExistBaseLic}">
                         <div class="row">
                             <div class="col-xs-12 col-md-12">
