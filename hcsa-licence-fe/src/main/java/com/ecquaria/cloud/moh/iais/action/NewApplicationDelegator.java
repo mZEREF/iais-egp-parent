@@ -109,6 +109,8 @@ import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.PreliminaryQuestion;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.Statements;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -2001,15 +2003,17 @@ public class NewApplicationDelegator {
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
         Map<String, String> map = appSubmissionService.doPreviewAndSumbit(bpc);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        AppDeclarationMessageDto appDeclarationMessageDto = getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+        DeclarationsUtil.declarationsValidate(map,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         if (!map.isEmpty()) {
             //set audit
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             return;
         }
-        List<Declarations> list=new ArrayList<>();
-        DeclarationsUtil.declarationsValidate(list,map,new AppDeclarationMessageDto());
         String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
         Date effectiveDate = appSubmissionDto.getEffectiveDate();
         log.info(StringUtil.changeForLog("effectiveDate"+effectiveDate));
