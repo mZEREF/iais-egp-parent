@@ -1037,6 +1037,12 @@
       <rtexprvalue>false</rtexprvalue>
       <type>boolean</type>
     </attribute>
+    <attribute>
+      <name>needLowerCase</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
   </tag>
 
   <tag>
