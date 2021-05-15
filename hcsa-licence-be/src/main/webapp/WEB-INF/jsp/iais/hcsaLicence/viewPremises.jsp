@@ -68,7 +68,7 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      mode of service delivery
+                                      Mode of Service Delivery
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
