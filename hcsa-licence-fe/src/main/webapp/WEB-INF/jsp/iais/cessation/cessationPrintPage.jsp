@@ -281,7 +281,7 @@
                                             <div>
                                                 <h4>The following specified healthcare services will also be ceased as
                                                     their
-                                                    underlying licensable healthcare service(s) is/are listed above.</h4>
+                                                    underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4>
                                             </div>
                                             <table class="table-gp tablebox">
                                                 <tr>
@@ -292,9 +292,9 @@
                                                     <th style="width: 25%">Special Licensable Service
                                                         Name
                                                     </th>
-                                                    <th style="width: 25%">Base Service Licence No.
+                                                    <th style="width: 25%"><iais:code code="CDN001"/> Licence No.
                                                     </th>
-                                                    <th style="width: 25%">Base Service Name</th>
+                                                    <th style="width: 25%"><iais:code code="CDN001"/> Name</th>
                                                 </tr>
                                                 <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                     <tr>

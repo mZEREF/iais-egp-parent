@@ -14,7 +14,7 @@
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
     <h4>
         A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and
-        who is responsible for the oversight of clinical and technical matters related to the licensable healthcare service provided.
+        who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.
     </h4>
     <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
         <div id="control--runtime--0" class="page control control-area  container-p-1">
