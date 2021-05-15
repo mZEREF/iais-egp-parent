@@ -244,7 +244,7 @@
                         </div>
                         <c:if test="${specLicInfo !=null}">
                             <div><h4>The following specified healthcare services will also be ceased as their
-                                underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4></div>
+                                underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4></div>
                             <table class="table-gp tablebox">
                                 <tr style="text-align:center">
                                     <th style="text-align:center;width: 0%">S/N</th>

@@ -281,7 +281,7 @@
                                             <div>
                                                 <h4>The following specified healthcare services will also be ceased as
                                                     their
-                                                    underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4>
+                                                    underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                             </div>
                                             <table class="table-gp tablebox">
                                                 <tr>

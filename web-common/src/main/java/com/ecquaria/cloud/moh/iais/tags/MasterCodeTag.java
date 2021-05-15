@@ -22,6 +22,7 @@ public class MasterCodeTag extends DivTagSupport {
     private String code;
     private boolean empty;
     private boolean viewEmptyStr;
+    private boolean needLowerCase;
 
     public MasterCodeTag() {
         super();
@@ -52,7 +53,8 @@ public class MasterCodeTag extends DivTagSupport {
             description = AppConsts.EMPTY_STR;
         else if (StringUtil.isEmpty(description) && !empty)
             description = code;
-
+        if(!StringUtil.isEmpty(description) && needLowerCase)
+            description = description.toLowerCase();
         try {
             pageContext.getOut().print(StringUtil.viewNonNullHtml(description));
         } catch (IOException e) {
@@ -75,4 +77,5 @@ public class MasterCodeTag extends DivTagSupport {
     public void setViewEmptyStr(boolean viewEmptyStr) {
         this.viewEmptyStr = viewEmptyStr;
     }
+    public void setNeedLowerCase(boolean needLowerCase){this.needLowerCase = needLowerCase;}
 }
