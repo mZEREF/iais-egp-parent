@@ -36,7 +36,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Premises</th>
+                                    <th>Mode of Service Delivery</th>
                                     <th>Service</th>
                                     <th>Action</th>
                                 </tr>

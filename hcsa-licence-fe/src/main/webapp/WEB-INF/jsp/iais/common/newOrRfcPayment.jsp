@@ -67,7 +67,7 @@
                             <p>&nbsp;&nbsp;
                                 <em>Complex <iais:code code="CDN004"/>
                                     <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()}) </c:if>
-                                    (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} premises)
+                                    (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} Mode of Service Delivery)
                                 </em>
                             </p>
                             <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
@@ -183,7 +183,7 @@
                                 <p>
                                     <c:out value="${svcName}"></c:out>
                                     <c:if test="${multiplePrem}">
-                                        &nbsp;(Premises #${stat.index+1})
+                                        &nbsp;(Mode of Service Delivery #${stat.index+1})
                                     </c:if>
                                 </p>
                             </c:forEach>

@@ -38,7 +38,7 @@
                 </div>
                 <div class="form-check col-sm-12">
                   <ul>
-                    <li>Changes made will be applied to other licences associated with this premises:</li>
+                    <li>Changes made will be applied to other licences associated with this mode of service delivery:</li>
                   </ul>
                 </div>
                 <!--todo:slect prem issue -->

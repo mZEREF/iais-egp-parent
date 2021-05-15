@@ -51,7 +51,7 @@
                                                         <tr>
                                                             <td class="col-xs-2"><strong>Licence No.</strong></td>
                                                             <td class="col-xs-2"><strong>Type</strong></td>
-                                                            <td class="col-xs-4"><strong>Premises</strong></td>
+                                                            <td class="col-xs-4"><strong>Mode of Service Delivery</strong></td>
                                                             <td class="col-xs-2"><strong>Start date</strong></td>
                                                             <td class="col-xs-2"><strong>Expires on</strong></td>
                                                         </tr>

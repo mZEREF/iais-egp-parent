@@ -783,7 +783,7 @@
             </c:forEach>
             <c:if test="${FirstView && !('APTY004' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType)}">
                 <br/>
-                <p class="font-size-14">Please note that you will not be able to add  or remove any premises here.</p>
+                <p class="font-size-14">Please note that you will not be able to add  or remove any mode of service delivery here.</p>
                 <p class="font-size-14">If you wish to do so, please click <a href="#">here</a>.</p>
             </c:if>
         </div>

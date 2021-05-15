@@ -48,7 +48,7 @@
                     <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                       <div class="form-check col-sm-12">
                         <ul>
-                          <li>Changes made will be applied to other licences associated with this premises:</li>
+                          <li>Changes made will be applied to other licences associated with this mode of service delivery:</li>
                         </ul>
                       </div>
                     </c:if>
@@ -66,7 +66,7 @@
                   <div class="col-xs-12" id="addPremBody" hidden>
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
                     <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly}">
-                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
+                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                     </c:if>
                   </div>
                 </div>
@@ -122,7 +122,7 @@
   </c:if>
 
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
-  <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
+  <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
   <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">

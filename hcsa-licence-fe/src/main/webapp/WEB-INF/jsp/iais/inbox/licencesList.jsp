@@ -17,7 +17,7 @@
                         <th>Licence No.</th>
                         <th>Type <span class="sort"></span></th>
                         <th>Status <span class="sort"></span></th>
-                        <th>Premises <span class="sort"></span></th>
+                        <th>Mode of Service Delivery <span class="sort"></span></th>
                         <th>Start Date <span class="desc"></span></th>
                         <th>Expiry Date <span class="sort"></span></th>
                     </tr>
@@ -40,7 +40,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
                         </td>
                         <td>
@@ -69,7 +69,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
@@ -98,7 +98,7 @@
                             <p>Expired</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p><a class="collapsed" data-toggle="collapse" href="#serviceCollapse" aria-expanded="false" aria-controls="serviceCollapse">Multiple</a></p>
                             <div class="collapse" id="serviceCollapse">
                                 <ul>
@@ -134,7 +134,7 @@
                             <p>Expired</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
@@ -163,7 +163,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
                         </td>
                         <td>
@@ -192,7 +192,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
@@ -221,7 +221,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
                         </td>
                         <td>
@@ -250,7 +250,7 @@
                             <p>Active</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
@@ -279,7 +279,7 @@
                             <p>Expired</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
@@ -308,7 +308,7 @@
                             <p>Expired</p>
                         </td>
                         <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
+                            <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                             <p>16 Raffles Quay <br> # 01-03, 048581</p>
                         </td>
                         <td>
