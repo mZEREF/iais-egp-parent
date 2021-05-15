@@ -74,13 +74,13 @@
                                       <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
                                           <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
-                                             Off-site(remotely/non-fixed location)
+                                             Off-site
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
-                                            Premises(at fixed address)
+                                            Premises
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
-                                             Conveyance (registered vehicle, aircraft, vessel or train)
+                                             Conveyance
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
                                              Conveyance(in a mobile clinic / ambulance)
@@ -89,13 +89,13 @@
                                       <div class="col-md-6">
                                         <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none">
                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSITE'}">
-                                             Off-site(remotely/non-fixed location)
+                                             Off-site
                                            </c:if>
                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">
-                                           Premises(at fixed address)
+                                           Premises
                                          </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">
-                                            Conveyance (registered vehicle, aircraft, vessel or train)
+                                            Conveyance
                                           </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='EASMTS'}">
                                             Conveyance(in a mobile clinic / ambulance)
