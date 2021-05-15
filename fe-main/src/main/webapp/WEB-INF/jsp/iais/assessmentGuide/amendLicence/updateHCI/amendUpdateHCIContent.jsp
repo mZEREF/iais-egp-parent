@@ -7,7 +7,7 @@
             <tr >
                 <th></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="Name" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="HCI_CONTACT_NO" value="Contact" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Active Licence" isFE="true"/>
@@ -48,7 +48,7 @@
                                 <p class="visible-xs visible-sm table-row-title">Name</p>
                                 ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>
-                                <p class="visible-xs visible-sm table-row-title">Premises Type</p>
+                                <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
                                     <c:out value="On-site"/>
                                 </c:if>

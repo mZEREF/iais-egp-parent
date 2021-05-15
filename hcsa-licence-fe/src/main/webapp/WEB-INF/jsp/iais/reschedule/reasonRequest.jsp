@@ -26,7 +26,7 @@
                         <table class="table">
                             <tr >
                                 <td class="sorting"><strong>S/N</strong></td>
-                                <td class="sorting"><strong>Premises</strong></td>
+                                <td class="sorting"><strong>Mode of Service Delivery</strong></td>
                                 <td class="sorting"><strong>Service(s)</strong></td>
                                 <td class="sorting"><strong>Date and Time of Inspection</strong></td>
                                 <td class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></td>

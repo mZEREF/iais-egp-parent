@@ -25,7 +25,7 @@
             <div class="center-content">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <h3>
-                        ${premiseWorkloadType} Premises Workload Manhours
+                        ${premiseWorkloadType} Mode of Service Delivery Workload Manhours
                     </h3>
 
                     <div class="table-gp">

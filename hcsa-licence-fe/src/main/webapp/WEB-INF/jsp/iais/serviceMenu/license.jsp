@@ -61,7 +61,7 @@
                             </c:forEach>
                             <div class="form-check">
                                 <input style="position: absolute;" type="radio" name="licenceJudge" value="0">
-                                <label class="form-check-label" style="padding-left: 0px;margin-left: 30px">${baseName} at a different premises</label>
+                                <label class="form-check-label" style="padding-left: 0px;margin-left: 30px">${baseName} at a different mode of service delivery</label>
                             </div>
                         </div>
                     </div>

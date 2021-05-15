@@ -24,7 +24,7 @@
                     <td></td>
                     <td><strong>Licence No.</strong></td>
                     <td><strong>Type</strong></td>
-                    <td><strong>Premises</strong></td>
+                    <td><strong>Mode of Service Delivery</strong></td>
                     <td style="width:17%;"><strong>Expires on</strong></td>
                 </tr>
             </thead>

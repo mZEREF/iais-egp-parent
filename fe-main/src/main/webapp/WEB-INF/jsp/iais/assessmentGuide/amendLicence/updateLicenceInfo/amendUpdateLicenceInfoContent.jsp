@@ -12,7 +12,7 @@
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" isFE="true"/>
             </tr>
             </thead>

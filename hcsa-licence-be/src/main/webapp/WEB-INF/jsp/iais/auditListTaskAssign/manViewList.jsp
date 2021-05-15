@@ -35,7 +35,7 @@
                                     <th>Results of last Compliance</th>
                                     <th>HCSA Service Code</th>
                                     <th>HCI Code</th>
-                                    <th>Premises Type</th>
+                                    <th>Mode of Service Delivery</th>
                                     <th>Type of Risk</th>
                                 </tr>
                                 </thead>

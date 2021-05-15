@@ -88,7 +88,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
-          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
         </div>
       </div>
 
@@ -232,7 +232,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
               <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                 <select disabled>
@@ -274,7 +274,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
                 <input style="white-space: nowrap" disabled class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
             </div>
           </div>
@@ -283,7 +283,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
+          <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual mode of service delivery?</label>
           <div class="col-xs-12 col-md-2">
             <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0" disabled>&nbsp;&nbsp;<span style="font-size: 16px">No</span>
           </div>

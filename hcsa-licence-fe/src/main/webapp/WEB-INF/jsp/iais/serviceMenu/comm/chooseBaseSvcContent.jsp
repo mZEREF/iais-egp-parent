@@ -106,7 +106,7 @@
                                                     <%--<input type="hidden" name="baseCode${indexNo}" value="<iais:mask name="baseCode${indexNo}" value="${specSvc.svcCode}"/>" />--%>
                                                 <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}"/>
                                                 <input class="form-check-input firstStep diff-base" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                                <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different premises</label>
+                                                <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different mode of service delivery</label>
                                             </div>
                                         </div>
                                     </div>

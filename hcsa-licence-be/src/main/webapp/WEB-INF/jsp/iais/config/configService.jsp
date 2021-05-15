@@ -132,7 +132,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12">
-          <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
           <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
       </div>
@@ -144,7 +144,7 @@
               <div class="form-check " style="left: 10%">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input" name="PremisesType" id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" value="ONSITE" name="Onsite" aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Mode of Service Delivery</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
@@ -291,7 +291,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                   <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                   <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
-                  <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                  <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
               <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                 <select name="selectDocPerson">
@@ -339,7 +339,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
                 <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
               <div class="col-xs-12 col-md-5" style="margin-right: 2%">
               </div>
@@ -1021,7 +1021,7 @@
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"commDocPremises\" value=\"0\">\n" +
                     "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocPremises\">\n" +
-                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");
@@ -1059,7 +1059,7 @@
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
                     "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
-                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <select name=\"selectDocPerson\" style=\"display: none;\">\n" +

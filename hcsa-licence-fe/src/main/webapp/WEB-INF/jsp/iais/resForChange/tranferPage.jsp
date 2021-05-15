@@ -25,7 +25,7 @@
                                  </iais:row>
                            <c:if test="${prepareTranfer.groupLic}">
                              <iais:row>
-                               <iais:field value="Select Premises" mandatory="true"></iais:field>
+                               <iais:field value="Select Mode of Service Delivery" mandatory="true"></iais:field>
                                <iais:value width="10">
                                  <p>
                                  <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
