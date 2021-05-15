@@ -57,7 +57,7 @@
     <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
     <br>
     <div class="form-check col-xs-12">
-      <textarea  cols="85"  rows="5" name="criminalRecordsRemark" ></textarea>
+      <textarea  cols="65"  rows="5" name="criminalRecordsRemark" ></textarea>
       <span  class="error-msg" name="iaisErrorMsg" id="error_criminalRecordsRemark"></span>
     </div>
 

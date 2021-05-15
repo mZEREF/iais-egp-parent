@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
@@ -198,7 +200,18 @@ public class UploadFileServiceImpl implements UploadFileService {
             getFileRep(every.getFileRepoId(),every.getDocName(),groupId);
         }
     }
-
+/*--------*/
+    private void appDeclarationDocs(List<AppDeclarationDocDto> appDeclarationDocs,String groupId) throws Exception{
+        File fileRepPath=new File(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files");
+        if(!fileRepPath.exists()){
+            fileRepPath.mkdirs();
+        }
+        if(appDeclarationDocs!=null){
+            for (AppDeclarationDocDto v : appDeclarationDocs) {
+                getFileRep(v.getFileRepoId(),v.getDocName(),groupId);
+            }
+        }
+    }
     private String compress(String groupId){
         log.info("------------ start compress() -----------------------");
         long l =   System.currentTimeMillis();
@@ -401,6 +414,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppSvcVehicleDto> appSvcVehicles = applicationListDto.getAppSvcVehicles();
         List<AppSvcChargesDto> appSvcChargesPages = applicationListDto.getAppSvcChargesPages();
         List<AppSvcClinicalDirectorDto> appSvcClinicalDirectors = applicationListDto.getAppSvcClinicalDirectors();
+        List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
+        List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -434,8 +449,26 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppSvcChargesDto> appSvcChargesDtoList=new ArrayList<>(10);
             List<AppSvcVehicleDto> appSvcVehicleDtoList=new ArrayList<>(10);
             List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
+            List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
+            List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
             groupDtos.add(every);
             String groupId = every.getId();
+            if(appDeclarationMessages!=null){
+                for (AppDeclarationMessageDto v : appDeclarationMessages) {
+                    String appGrpId = v.getAppGrpId();
+                    if(groupId.equals(appGrpId)){
+                        appDeclarationMessageDtos.add(v);
+                    }
+                }
+            }
+            if(appDeclarationDocs!=null){
+                for (AppDeclarationDocDto v : appDeclarationDocs) {
+                    String appGrpId = v.getAppGrpId();
+                    if(groupId.equals(appGrpId)){
+                        appDeclarationDocDtoList.add(v);
+                    }
+                }
+            }
             for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
                 String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
                 if(groupId.equals(grpPremisesDtoAppGrpId)){
@@ -652,6 +685,8 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList);
             applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList);
             applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
+            applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
+            applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;
@@ -673,7 +708,9 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
+            List<AppDeclarationDocDto> appDeclarationDocs = applicationListFileDto.getAppDeclarationDocs();
             appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities,groupId);
+            appDeclarationDocs(appDeclarationDocs,groupId);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("***************** there have a error is "+e+"***************"));
             log.error(e.getMessage(),e);

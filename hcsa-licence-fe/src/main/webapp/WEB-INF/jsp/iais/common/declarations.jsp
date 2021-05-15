@@ -8,6 +8,12 @@
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/statements.jsp"%>
       </c:if>
+      <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
+        <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
+        <%@include file="../newApplication/declarations/competencies.jsp"%>
+        <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
+      </c:if>
     </div>
   </div>
 </div>

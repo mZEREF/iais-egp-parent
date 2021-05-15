@@ -56,7 +56,7 @@
         </div>
         <div class="col-xs-12 txt-area-normal">
             <p>If you have selected ‘Yes’ to any of the questions above, please provide further details below:</p>
-            <textarea id="competencyRemarks" cols="85"  rows="5" name="competenciesRemark"></textarea>
+            <textarea id="competencyRemarks" cols="65"  rows="5" name="competenciesRemark"></textarea>
         </div>
     </div>
 </div>
