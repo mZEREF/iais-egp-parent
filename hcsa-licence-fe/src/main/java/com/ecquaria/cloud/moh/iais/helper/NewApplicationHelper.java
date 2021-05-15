@@ -3057,7 +3057,7 @@ public class NewApplicationHelper {
             SelectOption cps2 = new SelectOption("newPremise", "Moving to a new address");
             selectOptionList.add(cps2);
         }else{
-            SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
+            SelectOption cps2 = new SelectOption("newPremise", "Add a new mode of service delivery");
             selectOptionList.add(cps2);
         }
         return selectOptionList;
