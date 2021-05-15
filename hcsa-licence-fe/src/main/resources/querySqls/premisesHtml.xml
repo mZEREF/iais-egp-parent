@@ -12,6 +12,7 @@
     <input class="weeklyLength" type="hidden" name="weeklyLength" value="1"/>
     <input class="phLength" type="hidden" name="phLength" value="1"/>
     <input class="eventLength" type="hidden" name="eventLength" value="1"/>
+     <input hidden class="premiseIndex" value="${premVal}">
     <div class="col-xs-12">
         <div class="form-horizontal">
             <div class="form-group">
