@@ -31,7 +31,7 @@
       <c:forEach var="appSvcLaboratoryDisciplinesDto"
                  items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-          <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Premises ${status.index+1}</span>
+          <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">mode of service delivery ${status.index+1}</span>
           <div class="col-xs-10">
             <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}"><c:out
                     value="${appGrpPremisesDtoList[status.index].address}"/></span>
@@ -558,7 +558,7 @@
                 <table class="table discipline-table" border="1px">
                   <thead>
                   <tr>
-                    <th style="text-align: center">Premises</th>
+                    <th style="text-align: center">mode of service delivery</th>
                     <th style="text-align: center">${stepNameMap['SVST001']}</th>
                     <th style="text-align: center">Clinical Governance Officers</th>
                   </tr>
