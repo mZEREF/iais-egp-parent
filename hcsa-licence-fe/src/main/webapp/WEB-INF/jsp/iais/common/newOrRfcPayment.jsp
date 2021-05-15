@@ -65,7 +65,7 @@
                     <tr>
                         <td class="breakdown">
                             <p>&nbsp;&nbsp;
-                                <em>Complex Special Licensable Services
+                                <em>Complex <iais:code code="CDN004"/>
                                     <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()}) </c:if>
                                     (1 x ${AppSubmissionDto.appGrpPremisesDtoList.size()} premises)
                                 </em>
@@ -133,7 +133,7 @@
                 </c:if>
                 <tr>
                     <td>
-                        <p><em>Complex Special Licensable Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                        <p><em>Complex <iais:code code="CDN004"/> <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
                         <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
                             <p>- <c:out value="${svcName}"></c:out></p>
                         </c:forEach>
