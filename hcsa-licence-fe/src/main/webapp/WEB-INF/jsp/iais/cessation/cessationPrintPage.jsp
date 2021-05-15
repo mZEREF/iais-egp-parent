@@ -286,10 +286,10 @@
                                             <table class="table-gp tablebox">
                                                 <tr>
                                                     <th style="width: 1%">S/N</th>
-                                                    <th style="width: 25%">Special Licensable Service
+                                                    <th style="width: 25%"><iais:code code="CDN003"/>
                                                         Licence No.
                                                     </th>
-                                                    <th style="width: 25%">Special Licensable Service
+                                                    <th style="width: 25%"><iais:code code="CDN003"/>
                                                         Name
                                                     </th>
                                                     <th style="width: 25%"><iais:code code="CDN001"/> Licence No.
