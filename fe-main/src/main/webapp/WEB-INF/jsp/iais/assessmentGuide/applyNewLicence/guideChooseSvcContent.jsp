@@ -33,7 +33,7 @@
                 </c:forEach>
             </div>
             <div class="form-check-gp" style="width: 50%;">
-            <p class="assessment-title">Licensable Healthcare Services</p>
+            <p class="assessment-title"><iais:code code="CDN002"/></p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
                         <input class="form-check-input"

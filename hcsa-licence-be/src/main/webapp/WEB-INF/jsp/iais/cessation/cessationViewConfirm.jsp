@@ -244,14 +244,14 @@
                         </div>
                         <c:if test="${specLicInfo !=null}">
                             <div><h4>The following specified healthcare services will also be ceased as their
-                                underlying licensable healthcare service(s) is/are listed above.</h4></div>
+                                underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4></div>
                             <table class="table-gp tablebox">
                                 <tr style="text-align:center">
                                     <th style="text-align:center;width: 0%">S/N</th>
                                     <th style="text-align:center;width: 25%">Special Licensable Service Licence No.</th>
                                     <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
-                                    <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Base Service Name</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                 </tr>
                                 <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
                                     <tr style="text-align:center">

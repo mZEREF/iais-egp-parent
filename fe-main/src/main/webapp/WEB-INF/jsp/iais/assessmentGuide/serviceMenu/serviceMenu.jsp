@@ -44,7 +44,7 @@ preChooseSvc<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
-                        <p class="assessment-title">Licensable Healthcare Services</p>
+                        <p class="assessment-title"><iais:code code="CDN002"/></p>
                         <div class="form-check-gp">
                             <c:forEach var="base" items="${baseService}">
                                 <div class="form-check">
