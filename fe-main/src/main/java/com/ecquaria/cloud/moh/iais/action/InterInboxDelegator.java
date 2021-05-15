@@ -308,7 +308,7 @@ public class InterInboxDelegator {
             inboxMsgParam.removeFilter("interService");
         }
         if(msgSubject != null){
-            inboxMsgParam.addFilter("msgSubject",'%'+msgSubject+'%',true);
+            inboxMsgParam.addFilter("msgSubject",msgSubject,true);
         }else{
             inboxMsgParam.removeFilter("msgSubject");
         }
@@ -420,7 +420,7 @@ public class InterInboxDelegator {
         String eExpiryDate = Formatter.formatDateTime(liceExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
         SearchParam inboxLicParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic",true);
         if(licenceNo != null){
-            inboxLicParam.addFilter("licNo",'%'+licenceNo+'%',true);
+            inboxLicParam.addFilter("licNo",licenceNo,true);
         }else{
             inboxLicParam.removeFilter("licNo");
         }

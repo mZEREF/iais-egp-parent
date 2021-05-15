@@ -281,7 +281,7 @@ public class TemplatesDelegator {
             searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
         }
         if(!StringUtil.isEmpty(templateName)){
-            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,'%'+templateName+'%',true);
+            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,templateName,true);
         }else{
             searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
         }
