@@ -1207,7 +1207,7 @@ public class LicenceViewServiceDelegator {
         List<String> rfiUpWindowsCheck = IaisCommonUtils.genNewArrayList();
         if (selectsList.contains("premises")) {
             appEditSelectDto.setPremisesEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Premises</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Mode of Service Delivery</li>";
             rfiUpWindowsCheck.add("Premises");
         }
         if (selectsList.contains("primary")) {
