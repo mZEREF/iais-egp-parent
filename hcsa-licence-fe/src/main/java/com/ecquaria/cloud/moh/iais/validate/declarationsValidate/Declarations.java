@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate.declarationsValidate;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+
 import java.util.Map;
 
 /**
@@ -7,5 +9,5 @@ import java.util.Map;
  * @date 2021/5/15 9:42
  */
 public interface Declarations {
-    void validateDeclarations(Map<String,String> map);
+    void validateDeclarations(Map<String,String> map, AppDeclarationMessageDto appDeclarationMessageDto);
 }

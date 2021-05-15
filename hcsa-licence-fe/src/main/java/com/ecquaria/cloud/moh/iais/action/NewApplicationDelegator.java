@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -106,6 +107,8 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -2005,6 +2008,8 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
+        List<Declarations> list=new ArrayList<>();
+        DeclarationsUtil.declarationsValidate(list,map,new AppDeclarationMessageDto());
         String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
         Date effectiveDate = appSubmissionDto.getEffectiveDate();
         log.info(StringUtil.changeForLog("effectiveDate"+effectiveDate));
@@ -2506,6 +2511,19 @@ public class NewApplicationDelegator {
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+    }
+
+    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request,String type){
+        AppDeclarationMessageDto appDeclarationMessageDto=new AppDeclarationMessageDto();
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
+            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
+            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+        }
+        return appDeclarationMessageDto;
     }
 
     public void reSubmit(BaseProcessClass bpc) throws Exception {
