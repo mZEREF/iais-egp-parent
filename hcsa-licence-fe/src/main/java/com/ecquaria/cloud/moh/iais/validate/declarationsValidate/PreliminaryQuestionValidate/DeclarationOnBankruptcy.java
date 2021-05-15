@@ -43,11 +43,11 @@ public class DeclarationOnBankruptcy implements Declarations {
             }
         }
         String bankruptcyItem4 = appDeclarationMessageDto.getBankruptcyItem4();
-        if(StringUtil.isEmpty(bankruptcyItem4)){
-            map.put("bankruptcyItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
-        }else {
-            if("1".equals(bankruptcyItem4)){
-                flag=true;
+        if (StringUtil.isEmpty(bankruptcyItem4)) {
+            map.put("bankruptcyItem4", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+        } else {
+            if ("1".equals(bankruptcyItem4)) {
+                flag = true;
             }
         }
         String bankruptcyRemark = appDeclarationMessageDto.getBankruptcyRemark();

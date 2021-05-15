@@ -1161,6 +1161,10 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setGroupLic(false);
             }
         }
+        // declaration
+        appSubmissionDto.setAppDeclarationMessageDto(getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+        DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(), ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
         if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
             appSubmissionDto.setUserAgreement(true);
@@ -2558,6 +2562,33 @@ public class NewApplicationDelegator {
             String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
             appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
 
+        } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
+            // Preliminary Question
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
+            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
+            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+            // Declaration on Bankruptcy
+            appDeclarationMessageDto.setBankruptcyItem1(ParamUtil.getString(request, "bankruptcyItem1"));
+            appDeclarationMessageDto.setBankruptcyItem2(ParamUtil.getString(request, "bankruptcyItem2"));
+            appDeclarationMessageDto.setBankruptcyItem3(ParamUtil.getString(request, "bankruptcyItem3"));
+            appDeclarationMessageDto.setBankruptcyItem4(ParamUtil.getString(request, "bankruptcyItem4"));
+            appDeclarationMessageDto.setBankruptcyRemark(ParamUtil.getString(request, "bankruptcyRemark"));
+            // Declaration on Competencies
+            appDeclarationMessageDto.setCompetenciesItem1(ParamUtil.getString(request, "competenciesItem1"));
+            appDeclarationMessageDto.setCompetenciesItem2(ParamUtil.getString(request, "competenciesItem2"));
+            appDeclarationMessageDto.setCompetenciesItem3(ParamUtil.getString(request, "competenciesItem3"));
+            appDeclarationMessageDto.setCompetenciesRemark(ParamUtil.getString(request, "competenciesRemark"));
+            // Declaration on Criminal Records and Past Suspension/ Revocation under PHMCA/HCSA
+            appDeclarationMessageDto.setCriminalRecordsItem1(ParamUtil.getString(request, "criminalRecordsItem1"));
+            appDeclarationMessageDto.setCriminalRecordsItem2(ParamUtil.getString(request, "criminalRecordsItem2"));
+            appDeclarationMessageDto.setCriminalRecordsItem3(ParamUtil.getString(request, "criminalRecordsItem3"));
+            appDeclarationMessageDto.setCriminalRecordsItem4(ParamUtil.getString(request, "criminalRecordsItem4"));
+            appDeclarationMessageDto.setCriminalRecordsRemark(ParamUtil.getString(request, "criminalRecordsRemark"));
+            // General Accuracy Declaration
+            appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
         }
         return appDeclarationMessageDto;
     }

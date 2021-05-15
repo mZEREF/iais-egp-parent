@@ -1,11 +1,13 @@
+<c:set var="appDeclarationMessageDto" value="${AppSubmissionDto.appDeclarationMessageDto}"/>
+
 <div class="panel-body">
     <div class="row">
         <h2>General Accuracy Declaration</h2>
     </div>
     <br>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="col-xs-12">
+        <div>
+            <div class="col-xs-12 form-group">
                 The granting of this application is dependent on full compliance with the requirements under the Healthcare Services Act 2020; any regulations, rules, code of practices and directions issued under it; and any conditions imposed by the Director of Medical Services.
                 <br/>
                 <br/>
@@ -18,13 +20,16 @@
                 The information provided in this application and any document submitted together with the application is not false, misleading or inaccurate in any particular manner.
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "0" aria-invalid="false">
+                <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "0" aria-invalid="false"
+                    <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '0'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
-            <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "1" aria-invalid="false">
+            <div class="form-check form-group col-xs-3">
+                <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '0'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
+            <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_generalAccuracyItem1"></span>
         </div>
     </div>
 </div>
