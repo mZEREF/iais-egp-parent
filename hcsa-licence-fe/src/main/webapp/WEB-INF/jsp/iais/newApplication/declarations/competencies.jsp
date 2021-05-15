@@ -4,7 +4,7 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-xs-12">Please indicate ‘Yes’ or ‘No’ to the following statements::</div>
+        <div class="col-xs-12">Please indicate ‘Yes’ or ‘No’ to the following statements:</div>
         <br>
         <div class="col-xs-12">
             <div>

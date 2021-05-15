@@ -2526,6 +2526,38 @@ public class NewApplicationDelegator {
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            String bankruptcyItem1 = request.getParameter("bankruptcyItem1");
+            appDeclarationMessageDto.setBankruptcyItem1(bankruptcyItem1);
+            String bankruptcyItem2 = request.getParameter("bankruptcyItem2");
+            appDeclarationMessageDto.setBankruptcyItem2(bankruptcyItem2);
+            String bankruptcyItem3 = request.getParameter("bankruptcyItem3");
+            appDeclarationMessageDto.setBankruptcyItem3(bankruptcyItem3);
+            String bankruptcyItem4 = request.getParameter("bankruptcyItem4");
+            appDeclarationMessageDto.setBankruptcyItem4(bankruptcyItem4);
+            String bankruptcyRemark = request.getParameter("bankruptcyRemark");
+            appDeclarationMessageDto.setBankruptcyRemark(bankruptcyRemark);
+            String competenciesItem1 = request.getParameter("competenciesItem1");
+            appDeclarationMessageDto.setCompetenciesItem1(competenciesItem1);
+            String competenciesItem2 = request.getParameter("competenciesItem2");
+            appDeclarationMessageDto.setCompetenciesItem2(competenciesItem2);
+            String competenciesItem3 = request.getParameter("competenciesItem3");
+            appDeclarationMessageDto.setCompetenciesItem3(competenciesItem3);
+            String competenciesRemark = request.getParameter("competenciesRemark");
+            appDeclarationMessageDto.setCompetenciesRemark(competenciesRemark);
+            String criminalRecordsItem1 = request.getParameter("criminalRecordsItem1");
+            appDeclarationMessageDto.setCompetenciesRemark(criminalRecordsItem1);
+            String criminalRecordsItem2 = request.getParameter("criminalRecordsItem2");
+            appDeclarationMessageDto.setCriminalRecordsItem2(criminalRecordsItem2);
+            String criminalRecordsItem3 = request.getParameter("criminalRecordsItem3");
+            appDeclarationMessageDto.setCriminalRecordsItem3(criminalRecordsItem3);
+            String criminalRecordsItem4 = request.getParameter("criminalRecordsItem4");
+            appDeclarationMessageDto.setCriminalRecordsItem4(criminalRecordsItem4);
+            String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
+            appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
+
         }
         return appDeclarationMessageDto;
     }
