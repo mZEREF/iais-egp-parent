@@ -17,21 +17,35 @@ public class DeclarationOnCompetencies implements Declarations {
         if(appDeclarationMessageDto==null){
             return;
         }
+        boolean flag=false;
         String competenciesItem1 = appDeclarationMessageDto.getCompetenciesItem1();
         if(StringUtil.isEmpty(competenciesItem1)){
             map.put("competenciesItem1", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        }else {
+            if("1".equals(competenciesItem1)){
+                flag=true;
+            }
         }
         String competenciesItem2 = appDeclarationMessageDto.getCompetenciesItem2();
         if(StringUtil.isEmpty(competenciesItem2)){
             map.put("competenciesItem2", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        }else {
+            if("1".equals(competenciesItem2)){
+                flag=true;
+            }
         }
         String competenciesItem3 = appDeclarationMessageDto.getCompetenciesItem3();
         if(StringUtil.isEmpty(competenciesItem3)){
             map.put("competenciesItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        }else {
+            if("1".equals(competenciesItem3)){
+                flag=true;
+            }
         }
         String competenciesRemark = appDeclarationMessageDto.getCompetenciesRemark();
-        if(StringUtil.isEmpty(competenciesRemark)){
-            map.put("competenciesItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        if(StringUtil.isEmpty(competenciesRemark)&&flag){
+            map.put("competenciesRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
         }
+
     }
 }
