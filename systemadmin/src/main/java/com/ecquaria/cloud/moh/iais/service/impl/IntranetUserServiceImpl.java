@@ -40,6 +40,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.xml.sax.SAXException;
 
 /**
  * @author weilu
@@ -366,6 +367,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
         try {
             //validate data
             SAXReader saxReader = new SAXReader();
+            saxReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             Document document = saxReader.read(xmlFile);
             //root
             Element root = document.getRootElement();
@@ -509,8 +511,9 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException {
+    public List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException {
         SAXReader saxReader = new SAXReader();
+        saxReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         Document document = saxReader.read(xmlFile);
         //root
         Element root = document.getRootElement();
