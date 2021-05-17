@@ -117,9 +117,17 @@
                   <iais:row>
                     <iais:field value="Application Status"/>
                     <iais:value width="18">
-                      <iais:select name="application_status" options="appStatusOption" needSort="true"
-                                   cssClass="application_status" firstOption="Please Select"
-                                   value="${dashSearchParam.filters['application_status']}"></iais:select>
+                      <c:if test="${empty dashCommonPoolStatus}">
+                        <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                     cssClass="application_status" firstOption="Please Select"
+                                     value="${dashSearchParam.filters['application_status']}"></iais:select>
+                      </c:if>
+                      <c:if test="${not empty dashCommonPoolStatus}">
+                        <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                     cssClass="application_status" firstOption="Please Select"
+                                     value="APST029"></iais:select>
+                      </c:if>
+
                     </iais:value>
                   </iais:row>
                 </c:if>
