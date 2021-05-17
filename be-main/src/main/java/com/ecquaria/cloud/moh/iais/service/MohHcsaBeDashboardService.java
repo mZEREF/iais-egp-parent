@@ -88,4 +88,13 @@ public interface MohHcsaBeDashboardService {
      * @Descripation: getMaxUpdateByAppGroup
      */
     Date getMaxUpdateByAppGroup(String appGroupId);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/17
+     * @Param: application_status, appStatusOption
+     * @return:
+     * @Descripation:
+     */
+    boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status);
 }

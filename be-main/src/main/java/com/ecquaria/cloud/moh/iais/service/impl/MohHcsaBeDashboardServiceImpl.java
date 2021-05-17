@@ -705,6 +705,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue) {
         List<SelectOption> appStatusOption = IaisCommonUtils.genNewArrayList();
+        SelectOption comPoolSo = new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
         //add status option
         if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(dashSwitchActionValue)) {
             appStatusOption = getKpiAppStatusOptionByRole(curRoleId, appStatusOption);
@@ -714,12 +715,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(dashSwitchActionValue)) {
             appStatusOption = getTeamAppStatusOptionByRole(curRoleId, appStatusOption);
+            appStatusOption.add(comPoolSo);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(dashSwitchActionValue)) {
             appStatusOption = getWaitAppStatusOptionByRole(curRoleId, appStatusOption);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(dashSwitchActionValue)) {
             appStatusOption = getRenewAppStatusOptionByRole(curRoleId, appStatusOption);
+
         }
         //duplicate removal
         appStatusOption = delDuplicateStatusOption(appStatusOption);
@@ -744,6 +747,20 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             maxDate = new Date();
         }
         return maxDate;
+    }
+
+    @Override
+    public boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status) {
+        if(!IaisCommonUtils.isEmpty(appStatusOption)) {
+            for(SelectOption so : appStatusOption) {
+                if(so != null && !StringUtil.isEmpty(so.getValue())) {
+                    if(so.getValue().equals(application_status)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
