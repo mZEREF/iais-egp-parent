@@ -126,6 +126,7 @@
         <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
         $('#preview').unbind();
         $('#previewli').unbind();
+        $('#preview').removeAttr("data-toggle");
         </c:if>
         <c:choose>
         <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
@@ -135,6 +136,9 @@
         $('#serviceFormsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#documents').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
         $('#premises').unbind();
@@ -143,6 +147,9 @@
         $('#serviceFormsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#premises').unbind();
@@ -151,6 +158,9 @@
         $('#documentsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#documents').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:otherwise>
         $('#premises').unbind();
@@ -163,6 +173,11 @@
         $('#previewli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#documents').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#preview').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:otherwise>
         </c:choose>
 
