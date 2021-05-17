@@ -1481,6 +1481,7 @@ public class MohIntranetUserDelegator {
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         try {
             SAXReader saxReader = new SAXReader();
+            saxReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             Document document = saxReader.read(file);
             //root
             Element root = document.getRootElement();
