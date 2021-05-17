@@ -2524,6 +2524,7 @@ public class NewApplicationDelegator {
     public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request,String type) {
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         appDeclarationMessageDto.setAppType(type);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
