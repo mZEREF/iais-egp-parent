@@ -15,28 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -58,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -76,7 +57,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
+import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -457,6 +440,46 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         log.debug(StringUtil.changeForLog("check can create eas or mts service end ..."));
         return canCreateEasOrMts;
+    }
+
+    @Override
+    public AppDeclarationDocShowPageDto getFileAppDecInfo(List<AppDeclarationDocDto> appDeclarationDocDtoList) {
+
+//            List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
+            List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+            Map<String,File> map= IaisCommonUtils.genNewHashMap();
+            Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+            AppDeclarationDocShowPageDto appDeclarationDocShowPageDto = new AppDeclarationDocShowPageDto();
+            if (appDeclarationDocDtoList != null && !appDeclarationDocDtoList.isEmpty()) {
+                for (int i = 0; i < appDeclarationDocDtoList.size(); i++) {
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    String index = appDeclarationDocDtoList.get(i).getSeqNum().toString();
+                    if (StringUtil.isEmpty(index)){
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + i);
+                    }else{
+                        pageShowFileDto.setFileMapId("selectedFileDiv" + index);
+                        pageShowFileDto.setIndex(index);
+                    }
+                    pageShowFileDto.setFileName(appDeclarationDocDtoList.get(i).getDocName());
+                    pageShowFileDto.setSize(appDeclarationDocDtoList.get(i).getDocSize());
+                    pageShowFileDto.setMd5Code(appDeclarationDocDtoList.get(i).getMd5Code());
+                    pageShowFileDto.setFileUploadUrl(appDeclarationDocDtoList.get(i).getFileRepoId());
+                    pageShowFileDtos.add(pageShowFileDto);
+                    if (StringUtil.isEmpty(index)){
+                        map.put("selectedFile" + i, null);
+                        pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
+                    }else{
+                        map.put("selectedFile" + index, null);
+                        pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
+                    }
+                }
+            }
+            appDeclarationDocShowPageDto.setFileMaxIndex(appDeclarationDocDtoList.size());
+            appDeclarationDocShowPageDto.setPageShowFileMap(map);
+            appDeclarationDocShowPageDto.setPageShowFileDtos(pageShowFileDtos);
+            appDeclarationDocShowPageDto.setPageShowFileHashMap(pageShowFileHashMap);
+            return appDeclarationDocShowPageDto;
     }
 
     @Override
