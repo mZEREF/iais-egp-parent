@@ -219,6 +219,12 @@
         var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
         $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
 
+        if('Others' == designation){
+            $CurrentPsnEle.find('div.otherDesignationDiv').removeClass('hidden');
+            $CurrentPsnEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
+        }else{
+            $CurrentPsnEle.find('div.otherDesignationDiv').addClass('hidden');
+        }
 
         <!-- professionType-->
         var professionType = data.professionType;
@@ -362,6 +368,9 @@
             $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
         }
         if(psnEditDto.otherQualification){
+            $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
+        }
+        if(psnEditDto.otherDesignation){
             $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
         }
         //map->mode

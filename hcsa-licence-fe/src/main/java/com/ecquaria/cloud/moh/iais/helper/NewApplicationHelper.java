@@ -3016,6 +3016,14 @@ public class NewApplicationHelper {
         return hcsaServiceDtoList;
     }
 
+    public static List<SelectOption> genDesignationOpList(boolean needOthers){
+        List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        if(needOthers && !IaisCommonUtils.isEmpty(idTypeSelectList)){
+            idTypeSelectList.add(new SelectOption(NewApplicationConstant.DESIGNATION_OTHERS,NewApplicationConstant.DESIGNATION_OTHERS));
+        }
+        return idTypeSelectList;
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -3233,6 +3241,7 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setIdType(selPerson.getIdType());
                 appSvcCgoDto.setIdNo(selPerson.getIdNo());
                 appSvcCgoDto.setDesignation(selPerson.getDesignation());
+                appSvcCgoDto.setOtherDesignation(selPerson.getOtherDesignation());
                 String professionType = selPerson.getProfessionType();
                 if(!StringUtil.isEmpty(professionType)){
                     appSvcCgoDto.setProfessionType(professionType);
@@ -3320,8 +3329,12 @@ public class NewApplicationHelper {
                 String speciality = selPerson.getSpeciality();
                 String specialityOther = selPerson.getSpecialityOther();
                 String subSpeciality = selPerson.getSubSpeciality();
+                String otherDesignation = selPerson.getOtherDesignation();
                 if(!StringUtil.isEmpty(designation)){
                     person.setDesignation(designation);
+                }
+                if(!StringUtil.isEmpty(otherDesignation)){
+                    person.setOtherDesignation(otherDesignation);
                 }
                 if(!StringUtil.isEmpty(professionType)){
                     person.setProfessionType(professionType);

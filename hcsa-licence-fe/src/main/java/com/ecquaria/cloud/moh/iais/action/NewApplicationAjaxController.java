@@ -382,7 +382,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "designationSel");
             designationAttr.put("name", "designation");
@@ -550,7 +550,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "designation");
             designationAttr.put("name", "designation");
@@ -616,7 +616,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "deputyDesignation");
             designationAttr.put("name", "deputyDesignation");

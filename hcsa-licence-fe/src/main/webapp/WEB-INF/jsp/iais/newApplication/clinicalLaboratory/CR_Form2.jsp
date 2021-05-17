@@ -345,12 +345,32 @@
                                                                                     <iais:select
                                                                                             cssClass="designationSel"
                                                                                             name="designation"
-                                                                                            codeCategory="CATE_ID_DESIGNATION"
+                                                                                            options="designationOpList"
                                                                                             value="${currentCgo.designation}"
                                                                                             firstOption="Please Select"></iais:select>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_designation${status.index}"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr height="1">
+                                                                <td class="first last" style="width: 100%;">
+                                                                    <div class="control control-caption-horizontal otherDesignationDiv
+                                                                        <c:if test="${currentCgo.designation != 'Others' }">
+                                                                            hidden
+                                                                        </c:if>
+                                                                    ">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7" >
+                                                                                <div class="">
+                                                                                    <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${currentCgo.otherDesignation}"/>
+                                                                                    <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -617,6 +637,8 @@
 
         profRegNoBlur();
 
+        designationChange();
+
         $('input[name="licPerson"]').each(function (k, v) {
             if ('1' == $(this).val()) {
                 var $currentPsn = $(this).closest('.assignContent').find('.new-officer-form');
@@ -774,6 +796,8 @@
                     changePsnItem();
 
                     profRegNoBlur();
+
+                    designationChange();
                     <!--set Scrollbar -->
                     /*$("div.assignSel->ul").mCustomScrollbar({
                             advanced: {
@@ -852,7 +876,18 @@
             }
         });
 
-    }
+    };
+    var designationChange = function () {
+        $('.designationSel').unbind('change');
+        $('.designationSel').change(function () {
+            var thisVal = $(this).val();
+            if("Others" == thisVal){
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }

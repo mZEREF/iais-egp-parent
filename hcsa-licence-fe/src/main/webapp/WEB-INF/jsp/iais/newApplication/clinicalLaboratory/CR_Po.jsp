@@ -3,581 +3,606 @@
 <div class="row">
 </div>
 <div class="row">
-  <div class="col-xs-12">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      <div class="panel panel-default">
-        <div class="panel-heading" id="headingPrincipal" role="tab">
-          <h4 class="panel-title"><a role="button" class="" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
-        </div>
-        <div class="panel-collapse collapse in" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
+    <div class="col-xs-12">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" id="headingPrincipal" role="tab">
+                    <h4 class="panel-title"><a role="button" class="" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
+                </div>
+                <div class="panel-collapse collapse in" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
-          <div class="panel-body">
-            <div class="panel-main-content">
-              <div class="" style="height: auto">
-                <h2>Principal Officer</h2>
-                <p><h4><iais:message key="NEW_ACK024"/></h4></p>
-                <p><span class="error-msg" name="iaisErrorMsg" id="error_poPsnMandatory"></span></p>
-                <div class="row"></div>
-              </div>
-              <div class="po-content">
-                <c:if test="${AppSubmissionDto.needEditController}">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN04' == clickEditPage}">
-                      <c:set var="isClickEdit" value="true"/>
-                    </c:if>
-                  </c:forEach>
-                  <c:choose>
-                    <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                      <p><div class="text-right app-font-size-16"><a class="back" id="RfcSkip">Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em></a></div></p>
-                  </c:if>
-                  <c:if test="${'true' != isClickEdit}">
-                    <c:set var="showPreview" value="true"/>
-                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                  </c:if>
-                </c:if>
-              </div>
-              <c:set var="editControlPo" value="${(!empty ReloadPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
-              <c:if test="${PrincipalOfficersMandatory>0 && editControlPo}">
-                <c:set value="${poHcsaSvcPersonnelDto.mandatoryCount}" var="poMandatoryCount"/>
-                <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
-                  <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
-                    <c:set var="principalOfficer" value="${ReloadPrincipalOfficers[status.index]}"/>
-                  </c:if>
-                  <c:set var="suffix" value="${status.index}" />
-                  <div class="po-content">
-                    <c:choose>
-                      <c:when test="${principalOfficer.licPerson}">
-                        <input type="hidden" name="poLicPerson" value="1"/>
-                      </c:when>
-                      <c:otherwise>
-                        <input type="hidden" name="poLicPerson" value="0"/>
-                      </c:otherwise>
-                    </c:choose>
-                    <input type="hidden" name="poExistingPsn" value="0"/>
-                    <input type="hidden" name="poIsPartEdit" value="0"/>
-                    <input type="hidden" name="poIndexNo" value="${principalOfficer.cgoIndexNo}"/>
-                    <input type="hidden" name="loadingType" value="${principalOfficer.loadingType}"/>
-                    <div class="row">
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-8">
-                            <div class="cgo-header" style="font-size: 18px;">
-                              <strong>Principal Officer <label class="assign-psn-item"><c:if test="${ReloadPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
+                    <div class="panel-body">
+                        <div class="panel-main-content">
+                            <div class="" style="height: auto">
+                                <h2>Principal Officer</h2>
+                                <p><h4><iais:message key="NEW_ACK024"/></h4></p>
+                                <p><span class="error-msg" name="iaisErrorMsg" id="error_poPsnMandatory"></span></p>
+                                <div class="row"></div>
                             </div>
-                          </div>
-                          <div class="col-sm-5 col-md-4 text-right" >
-                            <c:if test="${status.index - poMandatoryCount >=0}">
-                              <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removePoBtn cursorPointer"></em></h4>
+                            <div class="po-content">
+                                <c:if test="${AppSubmissionDto.needEditController}">
+                                    <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                                        <c:if test="${'APPSPN04' == clickEditPage}">
+                                            <c:set var="isClickEdit" value="true"/>
+                                        </c:if>
+                                    </c:forEach>
+                                    <c:choose>
+                                        <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+                                            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                                        <p><div class="text-right app-font-size-16"><a class="back" id="RfcSkip">Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em></a></div></p>
+                                    </c:if>
+                                    <c:if test="${'true' != isClickEdit}">
+                                        <c:set var="showPreview" value="true"/>
+                                        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                                    </c:if>
+                                </c:if>
+                            </div>
+                            <c:set var="editControlPo" value="${(!empty ReloadPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:if test="${PrincipalOfficersMandatory>0 && editControlPo}">
+                                <c:set value="${poHcsaSvcPersonnelDto.mandatoryCount}" var="poMandatoryCount"/>
+                                <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
+                                    <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
+                                        <c:set var="principalOfficer" value="${ReloadPrincipalOfficers[status.index]}"/>
+                                    </c:if>
+                                    <c:set var="suffix" value="${status.index}" />
+                                    <div class="po-content">
+                                        <c:choose>
+                                            <c:when test="${principalOfficer.licPerson}">
+                                                <input type="hidden" name="poLicPerson" value="1"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="hidden" name="poLicPerson" value="0"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <input type="hidden" name="poExistingPsn" value="0"/>
+                                        <input type="hidden" name="poIsPartEdit" value="0"/>
+                                        <input type="hidden" name="poIndexNo" value="${principalOfficer.cgoIndexNo}"/>
+                                        <input type="hidden" name="loadingType" value="${principalOfficer.loadingType}"/>
+                                        <div class="row">
+                                            <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="col-sm-6 control-label formtext col-md-8">
+                                                        <div class="cgo-header" style="font-size: 18px;">
+                                                            <strong>Principal Officer <label class="assign-psn-item"><c:if test="${ReloadPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 col-md-4 text-right" >
+                                                        <c:if test="${status.index - poMandatoryCount >=0}">
+                                                            <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removePoBtn cursorPointer"></em></h4>
+                                                        </c:if>
+                                                    </div>
+                                                    <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
+                                                        <div class="col-sm-10">
+                                                            <label class="control-font-label">
+                                                                <c:if test="${!empty principalOfficer.name && !empty principalOfficer.idNo && !empty principalOfficer.idType}">
+                                                                    ${principalOfficer.name}, ${principalOfficer.idNo} (<iais:code code="${principalOfficer.idType}"/>)
+                                                                </c:if>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-2 text-right">
+                                                            <div class="edit-content">
+                                                                <c:if test="${'true' == canEdit}">
+                                                                    <label class="control-font-label"><a class="edit poEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                                                    <%--<p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>--%>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="row  <c:if test="${'true' == canEdit && !empty principalOfficer.assignSelect && '-1' != principalOfficer.assignSelect}">hidden</c:if>">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-6 control-label formtext col-md-4">
+                                                            <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
+                                                            <span class="mandatory">*</span>
+                                                            <span class="upload_controls"></span>
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
+                                                            <div class="">
+                                                                <iais:select cssClass="poSelect"  name="poSelect" options="PrincipalOfficersAssignSelect" needSort="false"  value="${principalOfficer.assignSelect}" ></iais:select>
+                                                                <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
+                                                                <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="principalOfficers hidden">
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Name</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-4 col-xs-12" id="salutation${suffix}">
+                                                            <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
+                                                            <span class="error-msg" id="error_salutation${suffix}" name="iaisErrorMsg"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-4 col-md-4 col-xs-12">
+                                                            <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
+                                                                <span class="mandatory">*</span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-4 col-xs-12">
+                                                            <div class="" id="idType${suffix}">
+                                                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
+                                                                <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-4 col-xs-12">
+                                                            <input autocomplete="off" id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                                                            <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
+                                                            <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="">
+                                                                <span class="error-msg" name="iaisErrorMsg" id="error_poIdTypeNo${status.index}"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Designation</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8" id="designation${suffix}">
+                                                            <iais:select cssClass="designation" name="designation" options="designationOpList" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
+                                                        </div>
+                                                        <div  class="col-sm-3  col-md-4"></div>
+                                                        <div class="col-sm-5 col-md-8">
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_designation${suffix}"></span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row otherDesignationDiv <c:if test="${principalOfficer.designation != 'Others'}">hidden</c:if>">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8" >
+                                                            <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${principalOfficer.otherDesignation}"/>
+                                                        </div>
+                                                        <div  class="col-sm-3  col-md-4"></div>
+                                                        <div class="col-sm-5 col-md-8">
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${suffix}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
+                                                            <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo${status.index}" ></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Email Address</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
                             </c:if>
-                          </div>
-                          <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
-                            <div class="col-sm-10">
-                              <label class="control-font-label">
-                                <c:if test="${!empty principalOfficer.name && !empty principalOfficer.idNo && !empty principalOfficer.idType}">
-                                  ${principalOfficer.name}, ${principalOfficer.idNo} (<iais:code code="${principalOfficer.idType}"/>)
+                            <c:if test="${requestInformationConfig==null}">
+                                <%--<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>--%>
+                                <%--<c:if test="${poDtoLength == '0'}">
+                                  <c:set var="poDtoLength" value="1"/>
+                                </c:if>--%>
+                                <c:choose>
+                                    <c:when test="${!empty ReloadPrincipalOfficers }">
+                                        <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:choose>
+                                            <c:when test="${AppSubmissionDto.needEditController}">
+                                                <c:set var="poDtoLength" value="0"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="poDtoLength" value="${poHcsaSvcPersonnelDto.mandatoryCount}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:set var="needAddPsn" value="true"/>
+                                <c:choose>
+                                    <c:when test="${poHcsaSvcPersonnelDto.status =='CMSTAT003'}">
+                                        <c:set var="needAddPsn" value="false"/>
+                                    </c:when>
+                                    <c:when test="${poDtoLength >= poHcsaSvcPersonnelDto.maximumCount}">
+                                        <c:set var="needAddPsn" value="false"/>
+                                    </c:when>
+                                </c:choose>
+                                <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-po">
+                                    <div class="col-sm-4">
+                                        <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
+                                    </div>
+                                    <div  class="col-sm-5 col-md-5"><span class="poErrorMsg" style="color: red;"></span></div>
+                                </div>
+                            </c:if>
+                            <br/>
+                            <br/>
+                            <c:if test="${AppSubmissionDto.needEditController }">
+                                <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                                    <c:if test="${'APPSPN05' == clickEditPage}">
+                                        <c:set var="isClickEditDpo" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${'true' != isClickEditDpo && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+                                        <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:if test="${!isClickEditDpo}">
+                                    <c:set var="showPreview" value="true"/>
+                                    <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                                    <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
+                                        <c:choose>
+                                            <c:when test="${canEditDpoEdit}">
+                                                <p><div class="text-right app-font-size-16"><a id="edit-dpo" class="dpoSelectEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
+                                            </c:when>
+                                            <c:otherwise>
+
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
                                 </c:if>
-                              </label>
-                            </div>
-                            <div class="col-sm-2 text-right">
-                              <div class="edit-content">
-                                <c:if test="${'true' == canEdit}">
-                                  <label class="control-font-label"><a class="edit poEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
-                                  <%--<p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>--%>
-                                </c:if>
-                              </div>
-                            </div>
-                          </c:if>
+                            </c:if>
+                            <c:set var="needDpoDrop" value="N"/>
+                            <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
+                                <c:set var="needDpoDrop" value="Y"/>
+                            </c:if>
+                            <c:if test="${needDpoDrop == 'Y'}">
+                                <div class="row dpoDropDownDiv">
+                                    <div class="form-group form-horizontal formgap">
+                                        <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
+                                            Nominee (Optional) <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK025"></iais:message>&lt;/p&gt;">i</a>
+                                        </div>
+                                        <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
+                                        <div class="col-sm-5 col-md-8" >
+                                            <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false"  value="${DeputyPoFlag}" ></iais:select>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                        </div>
+                                    </div>
+                                    </c:if>
+                                </div>
+                            </c:if>
                         </div>
-                      </div>
-                    </div>
-                    <div class="">
-                      <div class="row  <c:if test="${'true' == canEdit && !empty principalOfficer.assignSelect && '-1' != principalOfficer.assignSelect}">hidden</c:if>">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-6 control-label formtext col-md-4">
-                              <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
-                              <span class="mandatory">*</span>
-                              <span class="upload_controls"></span>
-                            </div>
-                            <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                              <div class="">
-                                <iais:select cssClass="poSelect"  name="poSelect" options="PrincipalOfficersAssignSelect" needSort="false"  value="${principalOfficer.assignSelect}" ></iais:select>
-                                <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
-                                <span id="error_assignSelect${suffix}" name="iaisErrorMsg" class="error-msg"></span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="principalOfficers hidden">
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Name</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-4 col-xs-12" id="salutation${suffix}">
-                              <iais:select cssClass="salutation"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
-                              <span class="error-msg" id="error_salutation${suffix}" name="iaisErrorMsg"></span>
-                            </div>
 
-                            <div class="col-sm-4 col-md-4 col-xs-12">
-                              <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
-                              <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
-                                <span class="mandatory">*</span>
-                              </label>
-                            </div>
-                            <div class="col-sm-4 col-md-4 col-xs-12">
-                              <div class="" id="idType${suffix}">
-                                <iais:select cssClass="idType"  name="idType"  value="${principalOfficer.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_idType${status.index}"></span>
-                              </div>
-                            </div>
-                            <div class="col-sm-4 col-md-4 col-xs-12">
-                              <input autocomplete="off" id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
-                              <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
-                              <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                            </div>
-                            <div class="col-sm-8">
-                              <div class="">
-                                <span class="error-msg" name="iaisErrorMsg" id="error_poIdTypeNo${status.index}"></span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Designation</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-5 col-md-8" id="designation${suffix}">
-                              <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
-                            </div>
-                            <div  class="col-sm-3  col-md-4"></div>
-                            <div class="col-sm-5 col-md-8">
-                              <span class="error-msg" name="iaisErrorMsg" id="error_designation${suffix}"></span>
-                            </div>
-
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Mobile No.</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
-                              <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
-                              <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo${status.index}" ></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Email Address</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
-                              <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </c:forEach>
-              </c:if>
-              <c:if test="${requestInformationConfig==null}">
-                <%--<c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>--%>
-                <%--<c:if test="${poDtoLength == '0'}">
-                  <c:set var="poDtoLength" value="1"/>
-                </c:if>--%>
-                <c:choose>
-                  <c:when test="${!empty ReloadPrincipalOfficers }">
-                    <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
-                  </c:when>
-                  <c:otherwise>
-                    <c:choose>
-                      <c:when test="${AppSubmissionDto.needEditController}">
-                        <c:set var="poDtoLength" value="0"/>
-                      </c:when>
-                      <c:otherwise>
-                        <c:set var="poDtoLength" value="${poHcsaSvcPersonnelDto.mandatoryCount}"/>
-                      </c:otherwise>
-                    </c:choose>
-                  </c:otherwise>
-                </c:choose>
-
-                <c:set var="needAddPsn" value="true"/>
-                <c:choose>
-                  <c:when test="${poHcsaSvcPersonnelDto.status =='CMSTAT003'}">
-                    <c:set var="needAddPsn" value="false"/>
-                  </c:when>
-                  <c:when test="${poDtoLength >= poHcsaSvcPersonnelDto.maximumCount}">
-                    <c:set var="needAddPsn" value="false"/>
-                  </c:when>
-                </c:choose>
-                <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-po">
-                  <div class="col-sm-4">
-                    <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
-                  </div>
-                  <div  class="col-sm-5 col-md-5"><span class="poErrorMsg" style="color: red;"></span></div>
                 </div>
-              </c:if>
-              <br/>
-              <br/>
-              <c:if test="${AppSubmissionDto.needEditController }">
-                <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                  <c:if test="${'APPSPN05' == clickEditPage}">
-                    <c:set var="isClickEditDpo" value="true"/>
-                  </c:if>
-                </c:forEach>
-                <c:choose>
-                  <c:when test="${'true' != isClickEditDpo && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
-                  </c:when>
-                  <c:otherwise>
-                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
-                  </c:otherwise>
-                </c:choose>
-                <c:if test="${!isClickEditDpo}">
-                  <c:set var="showPreview" value="true"/>
-                  <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                  <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
-                    <c:choose>
-                      <c:when test="${canEditDpoEdit}">
-                          <p><div class="text-right app-font-size-16"><a id="edit-dpo" class="dpoSelectEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
-                      </c:when>
-                      <c:otherwise>
-
-                      </c:otherwise>
-                    </c:choose>
-                  </div>
-                </c:if>
-              </c:if>
-              <c:set var="needDpoDrop" value="N"/>
-              <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
-                  <c:set var="needDpoDrop" value="Y"/>
-              </c:if>
-              <c:if test="${needDpoDrop == 'Y'}">
-              <div class="row dpoDropDownDiv">
-                <div class="form-group form-horizontal formgap">
-                  <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
-                    Nominee (Optional) <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK025"></iais:message>&lt;/p&gt;">i</a>
-                  </div>
-                  <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
-                  <div class="col-sm-5 col-md-8" >
-                    <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect" needSort="false"  value="${DeputyPoFlag}" ></iais:select>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                  </div>
-                </div>
-                </c:if>
-              </div>
-              </c:if>
             </div>
-
-          </div>
-        </div>
-      </div>
-      <div class="deputy-content panel panel-default hidden">
-        <div class="panel-heading " id="headingDeputy" role="tab">
-          <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Nominee (Optional)</a></h4>
-        </div>
-        <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
-          <div class="panel-body">
-            <div class="panel-main-content">
-              <h2>Nominee</h2>
-              <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
-              <div class="dpo-content">
-              </div>
-              <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
-              <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
-                <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
-                <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
-                  <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
-                    <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
-                  </c:if>
-                  <div class="dpo-content">
-                    <c:choose>
-                      <c:when test="${deputy.licPerson}">
-                        <input type="hidden" name="dpoLicPerson" value="1"/>
-                      </c:when>
-                      <c:otherwise>
-                        <input type="hidden" name="dpoLicPerson" value="0"/>
-                      </c:otherwise>
-                    </c:choose>
-                    <input type="hidden" name="dpoExistingPsn" value="0"/>
-                    <input type="hidden" name="dpoIsPartEdit" value="0"/>
-                    <input type="hidden" name="dpoIndexNo" value="${deputy.cgoIndexNo}"/>
-                    <input type="hidden" name="dpoLoadingType" value="${deputy.loadingType}"/>
-                    <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
-                      <div class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-8">
-                            <div class="cgo-header" style="font-size: 18px;">
-                              <strong>Nominee <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
+            <div class="deputy-content panel panel-default hidden">
+                <div class="panel-heading " id="headingDeputy" role="tab">
+                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Nominee (Optional)</a></h4>
+                </div>
+                <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
+                    <div class="panel-body">
+                        <div class="panel-main-content">
+                            <h2>Nominee</h2>
+                            <p><span class="error-msg" name="iaisErrorMsg" id="error_dpoPsnMandatory"></span></p>
+                            <div class="dpo-content">
                             </div>
-                          </div>
-                          <div class="col-sm-5 col-md-4 text-right" >
+                            <c:set var="editControlDpo" value="${(!empty ReloadDeputyPrincipalOfficers && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
+                            <c:if test="${DeputyPrincipalOfficersMandatory>0 && editControlDpo}">
+                                <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
+                                <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
+                                    <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
+                                        <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
+                                    </c:if>
+                                    <div class="dpo-content">
+                                        <c:choose>
+                                            <c:when test="${deputy.licPerson}">
+                                                <input type="hidden" name="dpoLicPerson" value="1"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="hidden" name="dpoLicPerson" value="0"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <input type="hidden" name="dpoExistingPsn" value="0"/>
+                                        <input type="hidden" name="dpoIsPartEdit" value="0"/>
+                                        <input type="hidden" name="dpoIndexNo" value="${deputy.cgoIndexNo}"/>
+                                        <input type="hidden" name="dpoLoadingType" value="${deputy.loadingType}"/>
+                                        <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
+                                            <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="col-sm-6 control-label formtext col-md-8">
+                                                        <div class="cgo-header" style="font-size: 18px;">
+                                                            <strong>Nominee <label class="assign-psn-item"><c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">${status.index+1}</c:if></label></strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 col-md-4 text-right" >
 
-                              <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeDpoBtn cursorPointer"></em></h4>
+                                                        <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeDpoBtn cursorPointer"></em></h4>
 
-                          </div>
-                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
-                            <div class="col-sm-10">
-                              <c:if test="${'-1' != deputy.assignSelect}">
-                              <label class="control-font-label">
-                                <c:if test="${!empty deputy.name && !empty deputy.idNo && !empty deputy.idType}">
-                                  ${deputy.name}, ${deputy.idNo} (<iais:code code="${deputy.idType}"/>)
-                                </c:if>
-                              </label>
-                              </c:if>
-                            </div>
-                            <div class="col-sm-2 text-right">
-                              <div class="edit-content">
-                                <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag}">
-                                  <label class="control-font-label"><a class="dpoEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
-                                </c:if>
-                              </div>
-                            </div>
-                          </c:if>
+                                                    </div>
+                                                    <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
+                                                        <div class="col-sm-10">
+                                                            <c:if test="${'-1' != deputy.assignSelect}">
+                                                                <label class="control-font-label">
+                                                                    <c:if test="${!empty deputy.name && !empty deputy.idNo && !empty deputy.idType}">
+                                                                        ${deputy.name}, ${deputy.idNo} (<iais:code code="${deputy.idType}"/>)
+                                                                    </c:if>
+                                                                </label>
+                                                            </c:if>
+                                                        </div>
+                                                        <div class="col-sm-2 text-right">
+                                                            <div class="edit-content">
+                                                                <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag}">
+                                                                    <label class="control-font-label"><a class="dpoEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
+                                                        Assign a Nominee
+                                                        <span class="mandatory">*</span>
+                                                    </div>
+                                                    <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
+                                                        <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>
+                                                        <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="deputyPrincipalOfficers hidden">
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Name</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-xs-12" id="deputySalutation${suffix}">
+                                                            <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
+                                                            <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-xs-12">
+                                                            <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">ID No.
+                                                                <span class="mandatory">*</span>
+                                                            </label>
+
+                                                        </div>
+                                                        <div class="col-sm-4 col-xs-12" id="deputyIdType${suffix}">
+                                                            <div class="">
+                                                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
+                                                                <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 col-xs-12">
+                                                            <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                                                            <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="">
+                                                                <span class="error-msg" name="iaisErrorMsg" id="error_dpoIdTypeNo${status.index}"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Designation</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8" id="deputyDesignation${suffix}">
+                                                            <iais:select cssClass="deputyDesignation" name="deputyDesignation" options="designationOpList" value="${deputy.designation}" firstOption="Please Select"></iais:select>
+                                                            <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row deputyOtherDesignationDiv <c:if test="${deputy.designation != 'Others'}">hidden</c:if>">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                        </div>
+                                                        <div class="col-sm-5 col-md-8" >
+                                                            <iais:input  maxLength="100" type="text" cssClass="deputyOtherDesignation" name="deputyOtherDesignation" value="${deputy.otherDesignation}"/>
+                                                        </div>
+                                                        <div  class="col-sm-3  col-md-4"></div>
+                                                        <div class="col-sm-5 col-md-8">
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${suffix}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
+                                                            <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
+                                                            <span name="iaisErrorMsg" id="error_deputyofficeTelNo${status.index}" class="error-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="control control-caption-horizontal">
+                                                    <div class=" form-group form-horizontal formgap">
+                                                        <div class="col-sm-3 control-label formtext col-md-4">
+                                                            <label  class="control-label control-set-font control-font-label">Email Address</label>
+                                                            <span class="mandatory">*</span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-8">
+                                                            <input autocomplete="off" name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
+                                                            <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
                         </div>
-                      </div>
+                        <c:if test="${requestInformationConfig==null}">
+                            <c:choose>
+                                <c:when test="${!empty ReloadDeputyPrincipalOfficers }">
+                                    <c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:choose>
+                                        <c:when test="${AppSubmissionDto.needEditController}">
+                                            <c:set var="dpoDtoLength" value="0"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:set var="dpoDtoLength" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:otherwise>
+                            </c:choose>
+
+
+                            <c:set var="needAddPsn" value="true"/>
+                            <c:choose>
+                                <c:when test="${dpoHcsaSvcPersonnelDto.status =='CMSTAT003'}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                                <c:when test="${dpoDtoLength >= dpoHcsaSvcPersonnelDto.maximumCount}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                            </c:choose>
+                            <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-dpo">
+                                <div class="col-sm-5">
+                                    <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Nominee</span>
+                                </div>
+                                <div  class="col-sm-5 col-md-5">
+                                    <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
+                                </div>
+                            </div>
+                        </c:if>
+                        <br/>
+                        <br/>
+                        <br/>
                     </div>
-                    <div class="row">
-                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag && !empty deputy.assignSelect && '-1' != deputy.assignSelect}">hidden</c:if>">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
-                            Assign a Nominee
-                            <span class="mandatory">*</span>
-                          </div>
-                          <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
-                            <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>
-                            <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="deputyPrincipalOfficers hidden">
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Name</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-xs-12" id="deputySalutation${suffix}">
-                              <iais:select cssClass="deputySalutation"  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Please Select"></iais:select>
-                              <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
-                            </div>
-                            <div class="col-sm-4 col-xs-12">
-                              <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
-                              <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">ID No.
-                                <span class="mandatory">*</span>
-                              </label>
-
-                            </div>
-                            <div class="col-sm-4 col-xs-12" id="deputyIdType${suffix}">
-                              <div class="">
-                                <iais:select cssClass="deputyIdType"  name="deputyIdType" value="${deputy.idType}" needSort="false" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" ></iais:select>
-                                <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType${status.index}"></span>
-                              </div>
-                            </div>
-                            <div class="col-sm-4 col-xs-12">
-                              <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class="dpoIdNoVal form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
-                              <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                            </div>
-                            <div class="col-sm-8">
-                              <div class="">
-                                <span class="error-msg" name="iaisErrorMsg" id="error_dpoIdTypeNo${status.index}"></span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Designation</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-5 col-md-8" id="deputyDesignation${suffix}">
-                              <iais:select cssClass="deputyDesignation" name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Please Select"></iais:select>
-                              <span class="error-msg" id="error_deputyDesignation${status.index}" name="iaisErrorMsg"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Mobile No.</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
-                              <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Office Telephone No.</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
-                              <span name="iaisErrorMsg" id="error_deputyofficeTelNo${status.index}" class="error-msg"></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="control control-caption-horizontal">
-                          <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-3 control-label formtext col-md-4">
-                              <label  class="control-label control-set-font control-font-label">Email Address</label>
-                              <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-sm-4 col-md-8">
-                              <input autocomplete="off" name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
-                              <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </c:forEach>
-              </c:if>
+                </div>
             </div>
-            <c:if test="${requestInformationConfig==null}">
-              <%--<c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>--%>
-              <%--<c:if test="${dpoDtoLength == '0'}">
-                <c:set var="dpoDtoLength" value="1"/>
-              </c:if>--%>
-
-              <c:choose>
-                <c:when test="${!empty ReloadDeputyPrincipalOfficers }">
-                  <c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>
-                </c:when>
-                <c:otherwise>
-                  <c:choose>
-                    <c:when test="${AppSubmissionDto.needEditController}">
-                      <c:set var="dpoDtoLength" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <c:set var="dpoDtoLength" value="${dpoHcsaSvcPersonnelDto.mandatoryCount}"/>
-                    </c:otherwise>
-                  </c:choose>
-                </c:otherwise>
-              </c:choose>
-
-
-              <c:set var="needAddPsn" value="true"/>
-              <c:choose>
-                <c:when test="${dpoHcsaSvcPersonnelDto.status =='CMSTAT003'}">
-                  <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${dpoDtoLength >= dpoHcsaSvcPersonnelDto.maximumCount}">
-                  <c:set var="needAddPsn" value="false"/>
-                </c:when>
-              </c:choose>
-              <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-dpo">
-                <div class="col-sm-5">
-                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Nominee</span>
-                </div>
-                <div  class="col-sm-5 col-md-5">
-                  <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
-                </div>
-              </div>
-            </c:if>
-            <br/>
-            <br/>
-            <br/>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <script>
@@ -608,6 +633,10 @@
         retrieveData();
 
         dpoRetrieveData();
+
+        designationChange();
+
+        deputyDesignationChange();
 
         $('select.poSelect').trigger('change');
         $('select.deputySelect').trigger('change');
@@ -650,50 +679,50 @@
         if('APTY002' == appType && '0' == rfiObj){
             //po
             <c:choose>
-              <c:when test="${!empty ReloadPrincipalOfficers}">
-                console.log('po true');
-                <c:set var="psnLength" value="${ReloadPrincipalOfficers.size()-1}"/>
-              </c:when>
-              <c:otherwise>
-                <c:set var="psnLength" value="0"/>
-              </c:otherwise>
+            <c:when test="${!empty ReloadPrincipalOfficers}">
+            console.log('po true');
+            <c:set var="psnLength" value="${ReloadPrincipalOfficers.size()-1}"/>
+            </c:when>
+            <c:otherwise>
+            <c:set var="psnLength" value="0"/>
+            </c:otherwise>
             </c:choose>
-            console.log('psnLength:'+${psnLength});
+
             <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
-              var $currentPsn = $('.po-content').eq(${stat.index+1});
-              //remove dis style
-              $currentPsn.find('input[type="text"]').css('border-color','');
-              $currentPsn.find('input[type="text"]').css('color','');
-              //add edit and set style
-              var psnDto = {};
-              <c:if test="${!empty ReloadPrincipalOfficers[stat.index].psnEditFieldStr}">
-              psnDto = ${ReloadPrincipalOfficers[stat.index].psnEditFieldStr};
-              </c:if>
-              setPoPsnDisabled($currentPsn,psnDto);
+            var $currentPsn = $('.po-content').eq(${stat.index+1});
+            //remove dis style
+            $currentPsn.find('input[type="text"]').css('border-color','');
+            $currentPsn.find('input[type="text"]').css('color','');
+            //add edit and set style
+            var psnDto = {};
+            <c:if test="${!empty ReloadPrincipalOfficers[stat.index].psnEditFieldStr}">
+            psnDto = ${ReloadPrincipalOfficers[stat.index].psnEditFieldStr};
+            </c:if>
+            setPoPsnDisabled($currentPsn,psnDto);
             </c:forEach>
 
             //dpo
             <c:choose>
-              <c:when test="${!empty ReloadDeputyPrincipalOfficers}">
-            console.log('dpo true');
-                <c:set var="psnLengthDpo" value="${ReloadDeputyPrincipalOfficers.size()-1}"/>
-              </c:when>
-              <c:otherwise>
-                <c:set var="psnLengthDpo" value="0"/>
-              </c:otherwise>
+            <c:when test="${!empty ReloadDeputyPrincipalOfficers}">
+
+            <c:set var="psnLengthDpo" value="${ReloadDeputyPrincipalOfficers.size()-1}"/>
+            </c:when>
+            <c:otherwise>
+            <c:set var="psnLengthDpo" value="0"/>
+            </c:otherwise>
             </c:choose>
-            console.log('psnLengthDpo:'+${psnLengthDpo});
+
             <c:forEach begin="0" end="${psnLengthDpo}" step="1" varStatus="stat">
-              var $currentPsn = $('.dpo-content').eq(${stat.index+1});
-              //remove dis style
-              $currentPsn.find('input[type="text"]').css('border-color','');
-              $currentPsn.find('input[type="text"]').css('color','');
-              //add edit and set style
-              var psnDto = {};
-              <c:if test="${!empty ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr}">
-              psnDto = ${ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr};
-              </c:if>
-              setDpoPsnDisabled($currentPsn,psnDto);
+            var $currentPsn = $('.dpo-content').eq(${stat.index+1});
+            //remove dis style
+            $currentPsn.find('input[type="text"]').css('border-color','');
+            $currentPsn.find('input[type="text"]').css('color','');
+            //add edit and set style
+            var psnDto = {};
+            <c:if test="${!empty ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr}">
+            psnDto = ${ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr};
+            </c:if>
+            setDpoPsnDisabled($currentPsn,psnDto);
             </c:forEach>
         }
 
@@ -882,6 +911,7 @@
                         //retrieveData();
                         removePo();
                         retrieveData();
+                        designationChange();
                         <!--set Scrollbar -->
                         /*$("div.poSelect->ul").mCustomScrollbar({
                                 advanced:{
@@ -937,6 +967,7 @@
                         dpoSelect();
                         removeDpo();
                         dpoRetrieveData();
+                        deputyDesignationChange();
                         <!--set Scrollbar -->
                         /*$("div.deputyPoSelect->ul").mCustomScrollbar({
                                 advanced:{
@@ -1134,6 +1165,12 @@
         $poContentEle.find('select[name="designation"]').val(designation);
         var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+        if('Others' == designation){
+            $poContentEle.find('div.otherDesignationDiv').removeClass('hidden');
+            $poContentEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
+        }else{
+            $poContentEle.find('div.otherDesignationDiv').addClass('hidden');
+        }
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
@@ -1182,6 +1219,12 @@
         $dpoContentEle.find('select[name="deputyDesignation"]').val(designation);
         var designationVal = $dpoContentEle.find('option[value="' + designation + '"]').html();
         $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
+        if('Others' == designation){
+            $dpoContentEle.find('div.deputyOtherDesignationDiv').removeClass('hidden');
+            $dpoContentEle.find('input[name="deputyOtherDesignation"]').val(data.otherDesignation);
+        }else{
+            $dpoContentEle.find('div.deputyOtherDesignationDiv').addClass('hidden');
+        }
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
@@ -1438,5 +1481,29 @@
             });
         });
     }
+
+    var designationChange = function () {
+        $('.designation').unbind('change');
+        $('.designation').change(function () {
+            var thisVal = $(this).val();
+            if("Others" == thisVal){
+                $(this).closest('div.po-content').find('div.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('div.po-content').find('div.otherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
+
+    var deputyDesignationChange = function () {
+        $('.deputyDesignation').unbind('change');
+        $('.deputyDesignation').change(function () {
+            var thisVal = $(this).val();
+            if("Others" == thisVal){
+                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
 
 </script>
