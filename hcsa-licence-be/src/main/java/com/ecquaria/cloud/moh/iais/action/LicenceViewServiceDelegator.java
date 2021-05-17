@@ -455,7 +455,7 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-        if("N".equals(prsFlag)){
+        if("Y".equals(prsFlag)){
             disciplinaryRecord(appSubmissionDto,bpc.request);
         }
     }

@@ -1375,6 +1375,22 @@
                           </div>
                         </div>
                       </div>
+                      <div class="panel panel-default svc-content">
+
+                        <div class="panel-heading" id="declarations" role="tab">
+                          <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                                     href="#collapseDeclarations" aria-expanded="true"
+                                                     aria-controls="declarations">Declarations
+                        </a></h4>
+                        </div>
+                        <div class=" panel-collapse collapse" id="collapseDeclarations" role="tabpanel"
+                             aria-labelledby="headingServiceInfo0">
+                          <div class="panel-body">
+                            <%@include file="declarations.jsp"%>
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                 </div>

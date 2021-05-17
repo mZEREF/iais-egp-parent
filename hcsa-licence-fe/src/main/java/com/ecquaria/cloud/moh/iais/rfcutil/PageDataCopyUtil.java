@@ -251,6 +251,8 @@ public class PageDataCopyUtil {
             cgoDto.setSpeciality(appSvcCgoDto.getSpeciality());
             cgoDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
             cgoDto.setMobileNo(appSvcCgoDto.getMobileNo());
+            cgoDto.setOtherQualification(appSvcCgoDto.getOtherQualification());
+            cgoDto.setQualification(appSvcCgoDto.getQualification());
             cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
             list.add(cgoDto);
         }

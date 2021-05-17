@@ -15,6 +15,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -480,6 +503,79 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appDeclarationDocShowPageDto.setPageShowFileDtos(pageShowFileDtos);
             appDeclarationDocShowPageDto.setPageShowFileHashMap(pageShowFileHashMap);
             return appDeclarationDocShowPageDto;
+    }
+
+    @Override
+    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
+        AppDeclarationMessageDto appDeclarationMessageDto=new AppDeclarationMessageDto();
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
+            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
+            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            String bankruptcyItem1 = request.getParameter("bankruptcyItem1");
+            appDeclarationMessageDto.setBankruptcyItem1(bankruptcyItem1);
+            String bankruptcyItem2 = request.getParameter("bankruptcyItem2");
+            appDeclarationMessageDto.setBankruptcyItem2(bankruptcyItem2);
+            String bankruptcyItem3 = request.getParameter("bankruptcyItem3");
+            appDeclarationMessageDto.setBankruptcyItem3(bankruptcyItem3);
+            String bankruptcyItem4 = request.getParameter("bankruptcyItem4");
+            appDeclarationMessageDto.setBankruptcyItem4(bankruptcyItem4);
+            String bankruptcyRemark = request.getParameter("bankruptcyRemark");
+            appDeclarationMessageDto.setBankruptcyRemark(bankruptcyRemark);
+            String competenciesItem1 = request.getParameter("competenciesItem1");
+            appDeclarationMessageDto.setCompetenciesItem1(competenciesItem1);
+            String competenciesItem2 = request.getParameter("competenciesItem2");
+            appDeclarationMessageDto.setCompetenciesItem2(competenciesItem2);
+            String competenciesItem3 = request.getParameter("competenciesItem3");
+            appDeclarationMessageDto.setCompetenciesItem3(competenciesItem3);
+            String competenciesRemark = request.getParameter("competenciesRemark");
+            appDeclarationMessageDto.setCompetenciesRemark(competenciesRemark);
+            String criminalRecordsItem1 = request.getParameter("criminalRecordsItem1");
+            appDeclarationMessageDto.setCompetenciesRemark(criminalRecordsItem1);
+            String criminalRecordsItem2 = request.getParameter("criminalRecordsItem2");
+            appDeclarationMessageDto.setCriminalRecordsItem2(criminalRecordsItem2);
+            String criminalRecordsItem3 = request.getParameter("criminalRecordsItem3");
+            appDeclarationMessageDto.setCriminalRecordsItem3(criminalRecordsItem3);
+            String criminalRecordsItem4 = request.getParameter("criminalRecordsItem4");
+            appDeclarationMessageDto.setCriminalRecordsItem4(criminalRecordsItem4);
+            String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
+            appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
+
+        } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
+            // Preliminary Question
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
+            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
+            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+            // Declaration on Bankruptcy
+            appDeclarationMessageDto.setBankruptcyItem1(ParamUtil.getString(request, "bankruptcyItem1"));
+            appDeclarationMessageDto.setBankruptcyItem2(ParamUtil.getString(request, "bankruptcyItem2"));
+            appDeclarationMessageDto.setBankruptcyItem3(ParamUtil.getString(request, "bankruptcyItem3"));
+            appDeclarationMessageDto.setBankruptcyItem4(ParamUtil.getString(request, "bankruptcyItem4"));
+            appDeclarationMessageDto.setBankruptcyRemark(ParamUtil.getString(request, "bankruptcyRemark"));
+            // Declaration on Competencies
+            appDeclarationMessageDto.setCompetenciesItem1(ParamUtil.getString(request, "competenciesItem1"));
+            appDeclarationMessageDto.setCompetenciesItem2(ParamUtil.getString(request, "competenciesItem2"));
+            appDeclarationMessageDto.setCompetenciesItem3(ParamUtil.getString(request, "competenciesItem3"));
+            appDeclarationMessageDto.setCompetenciesRemark(ParamUtil.getString(request, "competenciesRemark"));
+            // Declaration on Criminal Records and Past Suspension/ Revocation under PHMCA/HCSA
+            appDeclarationMessageDto.setCriminalRecordsItem1(ParamUtil.getString(request, "criminalRecordsItem1"));
+            appDeclarationMessageDto.setCriminalRecordsItem2(ParamUtil.getString(request, "criminalRecordsItem2"));
+            appDeclarationMessageDto.setCriminalRecordsItem3(ParamUtil.getString(request, "criminalRecordsItem3"));
+            appDeclarationMessageDto.setCriminalRecordsItem4(ParamUtil.getString(request, "criminalRecordsItem4"));
+            appDeclarationMessageDto.setCriminalRecordsRemark(ParamUtil.getString(request, "criminalRecordsRemark"));
+            // General Accuracy Declaration
+            appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
+        }
+        return appDeclarationMessageDto;
     }
 
     @Override

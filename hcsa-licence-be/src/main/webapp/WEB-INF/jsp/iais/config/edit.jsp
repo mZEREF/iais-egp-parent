@@ -140,7 +140,7 @@
               <div class="form-check " style="left: 10%;">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input"  name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Mode of Service Delivery</label>
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
@@ -806,7 +806,7 @@
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:style")
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Service');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service');
         }else {
@@ -848,7 +848,7 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Service');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {

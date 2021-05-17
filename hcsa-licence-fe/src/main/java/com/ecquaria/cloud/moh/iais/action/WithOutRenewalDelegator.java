@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -80,6 +81,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonForRenew;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -1211,6 +1213,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "userAgreement", Boolean.FALSE);
         }
         Map<String,  Map<String, String>> errMap = IaisCommonUtils.genNewHashMap();
+        Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
             if (date.before(new Date())||date.equals(new Date())) {
@@ -1240,10 +1243,12 @@ public class WithOutRenewalDelegator {
                     errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
                     count++;
                 }
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                DeclarationsUtil.declarationsValidate(allErrMap,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
             }
         }
         boolean passValidate = true;
-        Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
         for(Map<String,String> errorMap:errMap.values()){
             if(!errorMap.isEmpty()){
                 allErrMap.putAll(errorMap);
@@ -1260,6 +1265,7 @@ public class WithOutRenewalDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.TRUE);
             ParamUtil.setRequestAttr(bpc.request, "svcSecMaps", errMap);
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(allErrMap));
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
             return;
 
