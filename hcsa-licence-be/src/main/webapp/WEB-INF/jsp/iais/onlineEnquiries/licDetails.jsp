@@ -323,7 +323,7 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <td align="right">Sub-specialty or relevant qualification</td>
-                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality}">-</c:if></td>
+                                                                            <td>&nbsp;${personnel.keyPersonnelExtDto.subSpeciality}&nbsp;${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality and empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
                                                                         </tr>
                                                                     </c:if>
                                                                     <tr>
