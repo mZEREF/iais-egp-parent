@@ -2521,16 +2521,17 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request,String type){
-        AppDeclarationMessageDto appDeclarationMessageDto=new AppDeclarationMessageDto();
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
+    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request,String type) {
+        AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
+        appDeclarationMessageDto.setAppType(type);
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
             String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             String bankruptcyItem1 = request.getParameter("bankruptcyItem1");
