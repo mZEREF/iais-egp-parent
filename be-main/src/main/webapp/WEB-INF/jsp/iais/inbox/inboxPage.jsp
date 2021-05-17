@@ -157,7 +157,7 @@
                                 <c:choose>
                                     <c:when test="${empty supTaskSearchResult.rows}">
                                         <tr>
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                             </td>
                                         </tr>

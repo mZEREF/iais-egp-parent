@@ -160,13 +160,14 @@
                   <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="" value="Last Modified Date"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                 </tr>
                 </thead>
                 <c:choose>
                   <c:when test="${empty dashSearchResult.rows}">
                     <tr>
-                      <td colspan="6">
+                      <td colspan="7">
                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                       </td>
                     </tr>
@@ -183,6 +184,7 @@
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
                         <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
                         <td><iais:code code="${pool.paymentStatus}"/></td>
                       </tr>
                     </c:forEach>
@@ -296,7 +298,7 @@
                 if('Success' == result) {
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="6" style="padding: 0px 8px !important;">' +
+                        '<td colspan="7" style="padding: 0px 8px !important;">' +
                         '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
                         '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
