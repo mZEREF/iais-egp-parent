@@ -52,7 +52,7 @@
                     </div>
                 </c:forEach>
             </div>
-            <p class="assessment-title">Special Licensable Healthcare Services
+            <p class="assessment-title"><iais:code code="CDN004"/>
                 <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK007"></iais:message>&lt;/p&gt;">i</a>
             </p>
             <div class="form-check-gp">
