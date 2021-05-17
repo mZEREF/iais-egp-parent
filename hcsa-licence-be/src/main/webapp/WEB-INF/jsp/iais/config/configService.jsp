@@ -6,6 +6,7 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -408,17 +409,17 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-left: 10%">
-          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}">Please check New Application routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR014")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}">Please check Renew routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR015")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}">Please check Appeal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR016")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}">Please check Request For Change routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR017")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}">Please check Cessation routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR018")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}">Please check Withdrawal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR019")%></c:if></span>
         </div>
 
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
