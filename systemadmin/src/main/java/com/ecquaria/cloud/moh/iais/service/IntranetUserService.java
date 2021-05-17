@@ -21,6 +21,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import org.xml.sax.SAXException;
 
 /**
  * @author weilu
@@ -83,7 +84,7 @@ public interface IntranetUserService {
       * @return: importRoleXml
       * @Descripation: save role data
       */
-    List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException;
+    List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException;
 
     List<OrganizationDto> getUenList();
 }
