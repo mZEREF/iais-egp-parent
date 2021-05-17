@@ -200,18 +200,6 @@ public class BackendInboxDelegator {
 
         String application_no = (String) searchParamGroup.getFilters().get("application_no");
 
-        if(!StringUtil.isEmpty(hci_name)){
-            hci_name = hci_name.substring(1,hci_name.length()-1);
-            hci_name = hci_name.replace("%","");
-        }
-        if(!StringUtil.isEmpty(address)){
-            address = address.substring(1,address.length()-1);
-            address = address.replace("%","");
-        }
-        if(!StringUtil.isEmpty(application_no)){
-            application_no = application_no.substring(1,application_no.length()-1);
-            application_no = application_no.replace("%","");
-        }
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
