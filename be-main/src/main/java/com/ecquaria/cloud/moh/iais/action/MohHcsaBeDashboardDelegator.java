@@ -553,7 +553,9 @@ public class MohHcsaBeDashboardDelegator {
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type", application_type, true);
         }
-        if(!StringUtil.isEmpty(application_status) && !(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue))) {
+        if(!StringUtil.isEmpty(application_status) &&
+                (!(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(actionValue)) && !(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(actionValue))))
+        {
             //Filter the Common Pool Task in another place
             if (!application_status.equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                 searchParam.addFilter("application_status", application_status, true);

@@ -509,6 +509,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashComPoolQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashComPoolQueryDto.getId());
+            dashComPoolQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -530,6 +533,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashKpiPoolQuery.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashKpiPoolQuery.getId());
+            dashKpiPoolQuery.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -593,6 +599,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashAssignMeQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashAssignMeQueryDto.getId());
+            dashAssignMeQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -614,6 +623,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashWorkTeamQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashWorkTeamQueryDto.getId());
+            dashWorkTeamQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -635,6 +647,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashReplyQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashReplyQueryDto.getId());
+            dashReplyQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -656,6 +671,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashWaitApproveQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashWaitApproveQueryDto.getId());
+            dashWaitApproveQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
@@ -677,6 +695,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             } else {
                 dashRenewQueryDto.setSubmissionType("-");
             }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashRenewQueryDto.getId());
+            dashRenewQueryDto.setGroupUpDt(maxUpdateDate);
         }
         return searchResult;
     }
