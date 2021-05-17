@@ -8,7 +8,8 @@
     <div class="row">
         <div>
             <div class="col-xs-12 form-group">
-                The granting of this application is dependent on full compliance with the requirements under the Healthcare Services Act 2020; any regulations, rules, code of practices and directions issued under it; and any conditions imposed by the Director of Medical Services.
+                <iais:message key="DECLARATION_GENERAL_ACCURACY_ITME_1" escape="false"/>
+                <%--The granting of this application is dependent on full compliance with the requirements under the Healthcare Services Act 2020; any regulations, rules, code of practices and directions issued under it; and any conditions imposed by the Director of Medical Services.
                 <br/>
                 <br/>
                 Any person that, in relation to any matter under the Healthcare Services Act 2020 (i.e. including the making of this application), makes any statement, or provides any information or document, that is false or misleading in a material particular; and knows or ought reasonably to know that, or is reckless as to whether, the statement, information or document is false or misleading in a material particular, shall be guilty of an offence and shall be liable on conviction to a fine not exceeding $20,000 or to imprisonment for a term not exceeding 12 months or to both.
@@ -18,6 +19,7 @@
                 <br/>
                 <br/>
                 The information provided in this application and any document submitted together with the application is not false, misleading or inaccurate in any particular manner.
+                --%>
             </div>
             <div class="form-check col-xs-3">
                 <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "0" aria-invalid="false"

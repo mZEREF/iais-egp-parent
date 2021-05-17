@@ -6,13 +6,13 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-xs-12 form-group">Please indicate ‘Yes’ or ‘No’ to the following statements:</div>
+        <div class="col-xs-12 form-group">Please indicate 'Yes' or 'No' to the following statements:</div>
         <br>
         <div>
             <div class="col-xs-12 form-group">
                 <span>1.</span>
                 <span>
-                    The PO possesses the skills and competencies that are prescribed for the performance of the functions and duties as the licensee’s PO (if the application is granted)
+                    <iais:message key="DECLARATION_COMPETENCIES_ITME_1" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -31,7 +31,7 @@
             <div class="col-xs-12 form-group">
                 <span>2.</span>
                 <span>
-                    The CGO(s) possesses or possess the skills and competencies that are prescribed for the performance of the functions and duties as the licensee’s CGO(s) (if the application is granted).
+                    <iais:message key="DECLARATION_COMPETENCIES_ITME_2" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -50,7 +50,7 @@
             <div class="col-xs-12 form-group">
                 <span>3.</span>
                 <span>
-                    The composition of the KAHs satisfies the skills and competencies requirements prescribed or as specified in any code of practice if not prescribed (if the application is granted).
+                    <iais:message key="DECLARATION_COMPETENCIES_ITME_3" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -66,10 +66,8 @@
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesItem3"></span>
         </div>
         <div class="col-xs-12 form-group txt-area-normal">
-            <p>If you have selected ‘Yes’ to any of the questions above, please provide further details below:</p>
-            <textarea id="competencyRemarks" cols="85"  rows="5" name="competenciesRemark">
-                ${appDeclarationMessageDto.competenciesRemark}
-            </textarea>
+            <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
+            <textarea id="competencyRemarks" class="form-control" name="competenciesRemark">${appDeclarationMessageDto.competenciesRemark}</textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesRemark"></span>
         </div>
     </div>

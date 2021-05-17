@@ -6,13 +6,13 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-xs-12 form-group">Please indicate ‘Yes’ or ‘No’ to the following statements:</div>
+        <div class="col-xs-12 form-group">Please indicate ''Yes'' or ''No'' to the following statements:</div>
         <br>
         <div>
             <div class="col-xs-12 form-group">
                 <span>1.</span>
                 <span>
-                   The Applicant is not an undischarged bankrupt or has gone, or is likely to go, into compulsory or voluntary liquidation other than for the purpose of amalgamation or reconstruction.
+                    <iais:message key="DECLARATION_BANKRUPTCY_ITME_1" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -31,7 +31,7 @@
             <div class="col-xs-12 form-group">
                 <span>2.</span>
                 <span>
-                    The individual who is the principal officer for the Applicant and is to be the principal officer for the licensee (if the application is granted) (“PO”) is not an undischarged bankrupt.
+                    <iais:message key="DECLARATION_BANKRUPTCY_ITME_2" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -50,7 +50,7 @@
             <div class="col-xs-12 form-group">
                 <span>3.</span>
                 <span>
-                    The individual or individuals who is or are the Clinical Governance Officer or Clinical Governance Officers for the Applicant and is or are to be the Clinical Governance Officer or Clinical Governance Officers for the licensee (if the application is granted) (“CGO(s)”) is not an or are not undischarged  bankruptcy(s).
+                    <iais:message key="DECLARATION_BANKRUPTCY_ITME_3" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -69,7 +69,7 @@
             <div class="col-xs-12 form-group">
                 <span>4.</span>
                 <span>
-                    The Applicant’s key appointment holders ("<b>KAHs</b>") are not undischarged bankrupt(s).
+                    <iais:message key="DECLARATION_BANKRUPTCY_ITME_4" escape="false"/>
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -85,10 +85,8 @@
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem4"></span>
         </div>
         <div class="col-xs-12 txt-area-normal">
-            <p>If you have selected ‘Yes’ to any of the questions above, please provide further details below:</p>
-            <textarea id="bankruptcyRemark" cols="85" rows="5" name="bankruptcyRemark">
-                ${appDeclarationMessageDto.bankruptcyRemark}
-            </textarea>
+            <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
+            <textarea id="bankruptcyRemark" class="form-control" name="bankruptcyRemark">${appDeclarationMessageDto.bankruptcyRemark}</textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyRemark"></span>
         </div>
     </div>

@@ -6,9 +6,12 @@
   </div>
   <br>
   <div class="row">
-    <P>Please indicate 'Yes' or 'No' to the following statements:</P>
+    <P class="col-xs-12">Please indicate 'Yes' or 'No' to the following statements:</P>
     <br>
-    <p>The Applicant, PO, CGO(s), and KAHs do not have any criminal record or its equivalent in Singapore or elsewhere.</p>
+    <p class="col-xs-12">
+      <span>1.</span>
+      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_1" escape="false"/></span>
+    </p>
     <br>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem1=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem1" value = "1" aria-invalid="false">
@@ -20,7 +23,10 @@
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem1"></span>
     <br>
-    <p>The Applicant, PO, CGO(s), and KAHs have not been convicted or found guilty by a disciplinary tribunal of a professional body or its equivalent in Singapore or elsewhere.</p>
+    <p class="col-xs-12">
+      <span>2.</span>
+      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_2" escape="false"/></span>
+    </p>
     <br>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem2=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem2" value = "1" aria-invalid="false">
@@ -32,7 +38,10 @@
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem2"></span>
     <br>
-    <p>The Applicant, PO, CGO(s), and KAHs are not awaiting the commencement of disciplinary proceedings before a disciplinary tribunal of a professional body or its equivalent, or the conclusion of such disciplinary proceedings, in Singapore or elsewhere.</p>
+    <p class="col-xs-12">
+      <span>3.</span>
+      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_3" escape="false"/></span>
+    </p>
     <br>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem3=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem3" value = "1" aria-invalid="false">
@@ -44,7 +53,10 @@
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem3"></span>
     <br>
-    <p>The Applicant, PO, CGO(s), and KAHs are not awaiting the commencement of disciplinary proceedings before a disciplinary tribunal of a professional body or its equivalent, or the conclusion of such disciplinary proceedings, in Singapore or elsewhere.</p>
+    <p class="col-xs-12">
+      <span>4.</span>
+      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_4" escape="false"/></span>
+    </p>
     <br>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem4=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem4" value = "1" aria-invalid="false">
@@ -58,7 +70,7 @@
     <br>
     <div class="col-xs-12 txt-area-normal">
       <p>If you have selected ‘Yes’ to any of the questions above, please provide further details below:</p>
-      <textarea  cols="85"  rows="5" name="criminalRecordsRemark" ></textarea>
+      <textarea id="criminalRecordsRemark" class="form-control" name="criminalRecordsRemark" ></textarea>
       <span class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsRemark"></span>
     </div>
 
