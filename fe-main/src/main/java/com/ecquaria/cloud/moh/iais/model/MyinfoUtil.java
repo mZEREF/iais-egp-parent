@@ -46,11 +46,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public class MyinfoUtil {
 
-	public static String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
-	public static String KEY_MYINFO_TAKEN = "myinfo_token_";
-	public static String KEY_TAKEN_TYPE ="token_type";
-	public static String MYINFODTO_REFRESH = "myinfoDto_refresh";
-	public static long TAKEN_DURATION_TIME = 30*60*1000l;;
+	public static final String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
+	public static  final String KEY_MYINFO_TAKEN = "myinfo_token_";
+	public static  final String KEY_TAKEN_TYPE ="token_type";
+	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
+	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
 	/**
      * Retrieves Person data from MyInfo
      *
