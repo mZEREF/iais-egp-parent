@@ -554,16 +554,19 @@ public class WithOutRenewalDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
             } else {
-                if(!"cancelled".equals(result)){
-                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                }
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 //jump page to payment
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             }
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
+        }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&(appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)||appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_NETS))) {
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
         }
         if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
