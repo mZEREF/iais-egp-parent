@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<div class="tab-pane  active" id="General" role="tabpanel">
+<div class="tab-pane  ${(errorSpecTab == null || errorSpecTab== 'General') ? 'active' : ''}" id="General" role="tabpanel">
     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
     <h3>General</h3>

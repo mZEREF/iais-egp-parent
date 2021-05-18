@@ -40,4 +40,9 @@ public class HcsaLicenceBeConstant {
 
     public static final String SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE = "specialServiceForChecklistDecide";
     public static final String SPECIAL_SERVICE_FOR_CHECKLIST_DTOS = "specialServiceForChecklistDecideDtos";
+
+    public static final String CHECK_LIST_ERROR_TAB_NAME  = "errorTab";
+    public static final String CHECK_LIST_ERROR_SPEC_TAB_NAME  = "errorSpecTab";
+
+    public static final String CHECK_LIST_COM_TAB_NAME  = "nowComTabIn";
 }

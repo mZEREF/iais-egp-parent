@@ -2,9 +2,10 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li class="complete active" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
+    <li class="complete ${(errorSpecTab == null || errorSpecTab== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
     <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
-        <li class="complete" role="presentation"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab"
+        <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
+        <li class="complete ${errorSpecTab == errorTabName ? 'active' : ''}" role="presentation"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab"
                                                     data-toggle="tab"><c:out value="${service.serviceName}"/></a></li>
       </c:forEach>
 </ul>

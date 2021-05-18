@@ -1,5 +1,6 @@
 <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
-<div class="tab-pane" id="ServiceInfo${service.identify}" role="tabpanel">
+    <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
+<div class="tab-pane ${errorSpecTab == errorTabName ? 'active' : ''}" id="ServiceInfo${service.identify}" role="tabpanel">
     <c:if test="${not empty service.fdtoList}">
         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${service.serviceDo}"/>/<c:out value="${service.serviceTotal}"/><br>
         <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${service.serviceNc}"/>
