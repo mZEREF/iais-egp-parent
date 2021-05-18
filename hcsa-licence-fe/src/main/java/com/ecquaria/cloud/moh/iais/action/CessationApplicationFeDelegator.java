@@ -128,6 +128,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
+        ParamUtil.setSessionAttr(bpc.request, "pageShowFileDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile_MaxIndex", null);
         int configFileSize = systemParamConfig.getUploadFileLimit();
@@ -627,6 +628,9 @@ public class CessationApplicationFeDelegator {
                         String fileMd5 = singeFileUtil.getFileMd5(file);
                         appDeclarationDocDto.setMd5Code(fileMd5);
                         appDeclarationDocDto.setDocSize(Integer.valueOf(size.toString()));
+                        appDeclarationDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        appDeclarationDocDto.setVersion(1);
+                        appDeclarationDocDto.setSeqNum(Integer.parseInt(e));
                         appDeclarationDocDtoList.add(appDeclarationDocDto);
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setIndex(e);
@@ -651,6 +655,8 @@ public class CessationApplicationFeDelegator {
                 }
             });
         }
+
+        mulReq.getSession().setAttribute("pageShowFileDtos", pageShowFileDtos);
         return appDeclarationDocDtoList;
     }
 }
