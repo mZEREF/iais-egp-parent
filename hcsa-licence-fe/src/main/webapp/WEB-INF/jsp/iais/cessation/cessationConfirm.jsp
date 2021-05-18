@@ -331,6 +331,13 @@
                   </div>
                   </c:forEach>
                 </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                      <%@include file="../common/declarations.jsp"%>
+                    </div>
+                  </div>
+                </div>
                 <br/>
               </div>
                 <div class="row">

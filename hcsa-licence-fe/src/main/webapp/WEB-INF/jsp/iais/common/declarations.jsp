@@ -13,7 +13,7 @@
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
       </c:if>
       <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
-        <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+
         <%@include file="../newApplication/declarations/statements.jsp"%>
       </c:if>
       <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
@@ -23,6 +23,11 @@
         <%@include file="../newApplication/declarations/competencies.jsp"%>
         <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
+      </c:if>
+      <c:if test="${declaration_page_is == 'cessation' }">
+        <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        <%@include file="../newApplication/declarations/cessationQuestion.jsp"%>
       </c:if>
     </div>
   </div>

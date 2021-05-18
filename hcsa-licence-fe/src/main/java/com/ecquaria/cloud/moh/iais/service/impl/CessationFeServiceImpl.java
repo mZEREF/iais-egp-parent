@@ -210,7 +210,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
             filetDoc(appSubmissionDto);
-            Map<String, List<String>> baseMap = transform(appSubmissionDto, licenseeId, premiseIds);
+            Map<String, List<String>> baseMap = transform(appSubmissionDto, licenseeId, premiseIds,appCessationDtos);
             List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 AppSubmissionDto appSubmissionDtoSpec = licenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
@@ -653,7 +653,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     /*
     utils
      */
-    private Map<String, List<String>> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
+    private Map<String, List<String>> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds,List<AppCessationDto> appCessationDtos) {
         Map<String, List<String>> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -676,6 +676,14 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        AppDeclarationMessageDto appDeclarationMessageDto = appCessationDtos.get(0).getAppDeclarationMessageDto();
+        List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessationDtos.get(0).getAppDeclarationDocDtoList();
+        if (appDeclarationMessageDto != null){
+            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+        }
+        if (appDeclarationDocDtoList != null && appDeclarationDocDtoList.size() > 0){
+            appSubmissionDto.setAppDeclarationDocDtos(appDeclarationDocDtoList);
+        }
         setRiskToDto(appSubmissionDto);
 
         AppSubmissionDto entity = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();

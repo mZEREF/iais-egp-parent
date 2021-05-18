@@ -2,11 +2,15 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -19,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -26,16 +31,20 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -58,6 +67,8 @@ public class CessationApplicationFeDelegator {
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private LicenceClient licenceClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -70,6 +81,9 @@ public class CessationApplicationFeDelegator {
     private String prsFlag;
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
+    private static final String PRELIMINARYQUESTIONKINDLY = "preliminaryQuestionKindly";
+    private static final String ISBEFORE = "isBefore";
+    private static final String ISSURRENDERING = "isSurrendering";
     private static final String WHICHTODO = "whichTodo";
     private static final String EFFECTIVEDATE = "effectiveDate";
     private static final String REASON = "reason";
@@ -114,6 +128,11 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile_MaxIndex", null);
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
+        ParamUtil.setSessionAttr(bpc.request,"declaration_page_is","cessation");
     }
 
     public void init(BaseProcessClass bpc) {
@@ -169,6 +188,7 @@ public class CessationApplicationFeDelegator {
 
     public void valiant(BaseProcessClass bpc) throws IOException {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         if ("back".equals(action_type)) {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
@@ -277,6 +297,15 @@ public class CessationApplicationFeDelegator {
      */
 
     private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {
+        AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
+        String preliminaryquestionkindly = ParamUtil.getRequestString(bpc.request, PRELIMINARYQUESTIONKINDLY);
+        String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
+        String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
+        appDeclarationMessageDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryquestionkindly);
+        appDeclarationMessageDto.setPreliminaryQuestionItem1(isbefore);
+        appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);
+        List<AppDeclarationDocDto> cessationDocData = getCessationDocData(bpc.request);
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
@@ -339,6 +368,8 @@ public class CessationApplicationFeDelegator {
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
+            appCessLicDto.setAppDeclarationDocDtoList(cessationDocData);
+            appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
             appCessLicDtos.add(appCessLicDto);
         }
         return appCessLicDtos;
@@ -350,6 +381,8 @@ public class CessationApplicationFeDelegator {
             String licenceId = appCessLicDto.getLicenceId();
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             List<String> specialLicIds = appCessLicDto.getSpecialLicIds();
+            List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessLicDto.getAppDeclarationDocDtoList();
+            AppDeclarationMessageDto appDeclarationMessageDto = appCessLicDto.getAppDeclarationMessageDto();
             if (appCessHciDtos != null && !appCessHciDtos.isEmpty()) {
                 for (AppCessHciDto appCessHciDto : appCessHciDtos) {
                     String whichTodo = appCessHciDto.getPremiseIdChecked();
@@ -387,6 +420,8 @@ public class CessationApplicationFeDelegator {
                         appCessationDto.setSpecialLicIds(specialLicIds);
                         appCessationDto.setMobileNo(mobileNo);
                         appCessationDto.setEmailAddress(emailAddress);
+                        appCessationDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                        appCessationDto.setAppDeclarationDocDtoList(appDeclarationDocDtoList);
                         appCessationDtos.add(appCessationDto);
                     }
                 }
@@ -449,6 +484,18 @@ public class CessationApplicationFeDelegator {
         String patOthers = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERS + j);
         String patMobile = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSMOBILENO + j);
         String patEmailAddress = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSEMAILADDRESS + j);
+        String preliminaryquestionkindly = ParamUtil.getRequestString(bpc.request, PRELIMINARYQUESTIONKINDLY);
+        String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
+        String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
+        if (StringUtil.isEmpty(preliminaryquestionkindly)){
+            errorMap.put(PRELIMINARYQUESTIONKINDLY, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+        }
+        if (StringUtil.isEmpty(isbefore)){
+            errorMap.put(ISBEFORE, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+        }
+        if (StringUtil.isEmpty(issurrendering)){
+            errorMap.put(ISSURRENDERING, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+        }
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
                 errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
@@ -556,4 +603,53 @@ public class CessationApplicationFeDelegator {
         return selectOptions;
     }
 
+
+
+    private List<AppDeclarationDocDto> getCessationDocData(HttpServletRequest request){
+        List<AppDeclarationDocDto> appDeclarationDocDtoList = IaisCommonUtils.genNewArrayList();
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        Map<String, File> map = (Map<String, File>)request.getSession().getAttribute("seesion_files_map_ajax_feselectedDeclFile");
+        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("declarationsPageShowFileHashMap");
+        List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
+        List<File> files= IaisCommonUtils.genNewArrayList();
+        if(map!=null&&!map.isEmpty()){
+            map.forEach((str, file)->{
+                if(file!=null){
+                    long length = file.length();
+                    if(length>0){
+                        Long size=length/1024;
+                        files.add(file);
+                        AppDeclarationDocDto appDeclarationDocDto = new AppDeclarationDocDto();
+                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                        String e = str.substring(str.lastIndexOf('e') + 1);
+                        appDeclarationDocDto.setDocName(file.getName());
+                        String fileMd5 = singeFileUtil.getFileMd5(file);
+                        appDeclarationDocDto.setMd5Code(fileMd5);
+                        appDeclarationDocDto.setDocSize(Integer.valueOf(size.toString()));
+                        appDeclarationDocDtoList.add(appDeclarationDocDto);
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setIndex(e);
+                        pageShowFileDto.setFileName(file.getName());
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                        pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                        pageShowFileDto.setMd5Code(fileMd5);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                }else {
+                    if(pageShowFileHashMap!=null){
+                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
+                        String e = str.substring(str.lastIndexOf('e') + 1);
+                        AppDeclarationDocDto appDeclarationDocDto = new AppDeclarationDocDto();
+                        appDeclarationDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                        appDeclarationDocDto.setDocName(pageShowFileDto.getFileName());
+                        appDeclarationDocDto.setDocSize(pageShowFileDto.getSize());
+                        appDeclarationDocDto.setMd5Code(pageShowFileDto.getMd5Code());
+                        appDeclarationDocDtoList.add(appDeclarationDocDto);
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                }
+            });
+        }
+        return appDeclarationDocDtoList;
+    }
 }
