@@ -1,18 +1,15 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -88,12 +85,74 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     }
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
-        if(commFillUpVad(request,errMap)&&serviceFillUpVad(request,errMap)&& adhocFillUpVad(request,errMap)){
-
-        }else{
-            errMap.put("fillchkl","UC_INSTA004_ERR009");
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))) {
+            if(!(commFillUpVad(request,errMap) && specServiceFillUpVad(request,errMap))){
+                errMap.put("fillchkl","UC_INSTA004_ERR009");
+            }
+        }else {
+            if(!(commFillUpVad(request,errMap)&&serviceFillUpVad(request,errMap)&& adhocFillUpVad(request,errMap))){
+                errMap.put("fillchkl","UC_INSTA004_ERR009");
+            }
         }
     }
+
+    private boolean  specServiceFillUpVad(HttpServletRequest request,Map<String, String> errMap){
+        List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+        if(IaisCommonUtils.isNotEmpty( fDtosDtos)){
+            for(InspectionSpecServiceDto inspectionSpecServiceDto : fDtosDtos){
+                if( !adhocSpecFillUpVad(errMap,inspectionSpecServiceDto) ||  !serviceSpecFillUpVad(errMap,inspectionSpecServiceDto)){
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+
+    private boolean adhocSpecFillUpVad(Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
+        if(inspectionSpecServiceDto.getAdchklDto() != null && IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getAdchklDto().getAdItemList())){
+            List<AdhocNcCheckItemDto> itemDtoList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
+            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                boolean isError = true;
+                String identify = inspectionSpecServiceDto.getIdentify();
+                for(AdhocNcCheckItemDto temp:itemDtoList){
+                    String  prefix = temp.getId() + identify;
+                    if(StringUtil.isEmpty(temp.getAdAnswer())){
+                        errMap.put(prefix+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                        if(isError)
+                            isError = false;
+                    } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
+                        errMap.put(prefix +"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
+                        if(isError)
+                            isError = false;
+                    }else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
+                        errMap.put(prefix +"adhoc",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
+                        if(isError)
+                            isError = false;
+                    }
+                }
+                return  isError;
+            }
+        }
+        return true;
+    }
+    private boolean serviceSpecFillUpVad(Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
+        if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
+                int flagNum = 0;
+                if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
+                    for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
+                        if(!fillServiceVad(fDto,errMap)){
+                            flagNum++;
+                        };
+                    }
+                }
+                if(flagNum>0){
+                    return false;
+                }
+        }
+        return true;
+    }
+
     private boolean adhocFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
         if(showDto!=null){

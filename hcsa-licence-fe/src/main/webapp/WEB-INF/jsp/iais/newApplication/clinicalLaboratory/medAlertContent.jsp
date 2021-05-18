@@ -342,6 +342,7 @@
             if(psnLength <= 1){
                 $('.assign-psn-item:eq(0)').html('');
             }
+            $('#isEditHiddenVal').val('1');
         });
     }
 

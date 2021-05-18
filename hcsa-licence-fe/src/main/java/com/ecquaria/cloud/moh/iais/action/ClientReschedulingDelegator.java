@@ -109,7 +109,7 @@ public class ClientReschedulingDelegator {
     }
 
     public void init(BaseProcessClass bpc)  {
-        ParamUtil.setRequestAttr(bpc.request,"DashboardTitle","Scheduled Appointments");
+        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Scheduled Appointments");
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
@@ -118,7 +118,7 @@ public class ClientReschedulingDelegator {
         StringBuilder stringBuilder=new StringBuilder();
         List<String> appStatus=IaisCommonUtils.genNewArrayList();
         for (String appSt: AppointmentUtil.getNoReschdulingAppStatus()
-             ) {
+        ) {
             appStatus.add(appSt);
             stringBuilder.append(appSt).append("','");
         }
@@ -209,7 +209,7 @@ public class ClientReschedulingDelegator {
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String,ApptViewDto> entry:apptViewDtos.entrySet()
-                     ) {
+                ) {
                     apptViewDtos1.add(entry.getValue());
                 }
                 List<ApptViewDto> apptViewDtos2=IaisCommonUtils.genNewArrayList();
@@ -248,7 +248,7 @@ public class ClientReschedulingDelegator {
 
     public void doReschedule(BaseProcessClass bpc)  {
         String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
-        ParamUtil.setRequestAttr(bpc.request,"DashboardTitle","Appointment Rescheduling");
+        ParamUtil.setSessionAttr(bpc.request,"DashboardTitle","Appointment Rescheduling");
 
         if(keyIds==null){
             keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
@@ -285,7 +285,7 @@ public class ClientReschedulingDelegator {
 
         List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
         for (String key: keyIds
-             ) {
+        ) {
             ApptViewDto apptViewDto=apptViewDtos.get(key);
             apptViewDtos1.add(apptViewDto);
 
@@ -372,7 +372,7 @@ public class ClientReschedulingDelegator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(httpServletRequest,"apptViewDtosMap");
         for (String id:apptIds
-             ) {
+        ) {
 
             String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
 
@@ -436,7 +436,7 @@ public class ClientReschedulingDelegator {
             }
         }
         if(errMap.isEmpty()){
-           String OAPPT_ERR012Msg =  MessageUtil.getMessageDesc("OAPPT_ERR012");
+            String OAPPT_ERR012Msg =  MessageUtil.getMessageDesc("OAPPT_ERR012");
             for (String id:apptIds){
                 Date inspStDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newStartDate"+id));
                 Date inspEndDate=Formatter.parseDate(ParamUtil.getString(httpServletRequest, "newEndDate"+id));

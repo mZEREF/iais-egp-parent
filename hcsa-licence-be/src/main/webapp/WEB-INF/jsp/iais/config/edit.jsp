@@ -806,7 +806,7 @@
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:style")
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Service');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service');
         }else {
@@ -848,7 +848,7 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Service');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {

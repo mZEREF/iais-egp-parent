@@ -53,7 +53,7 @@ import java.util.Map;
  */
 @Delegator(value = "inspectionNcCheckListDelegator")
 @Slf4j
-public class InspectionNcCheckListDelegator {
+public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMethodDelegator{
     @Autowired
     private FillupChklistService fillupChklistService;
     @Autowired
@@ -218,13 +218,28 @@ public class InspectionNcCheckListDelegator {
                 }
             }
         }
-       /* ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+     /*   ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
         for(int i= 0;i<3;i++){
             InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
             inspectionSpecServiceDto.setIdentify("88888888"+i);
-            inspectionSpecServiceDto.setFdtoList(serListDto.getFdtoList());
-            inspectionSpecServiceDto.setAdchklDto(adchklDto);
+            List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
+            for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
+                try{
+                    InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
+                    inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + i);
+                    fdtoList.add(inspectionFillCheckListDtoCopy);
+                }catch (Exception e){
+                    log.error(e.getMessage());
+                }
+
+            }
+            inspectionSpecServiceDto.setFdtoList(fdtoList);
+            try{
+            inspectionSpecServiceDto.setAdchklDto((AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adchklDto));
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
             fDtosDtos.add(inspectionSpecServiceDto);
         }
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);*/
@@ -469,44 +484,8 @@ public class InspectionNcCheckListDelegator {
         fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"RemarksForHistory"),loginContext,flag);
     }
 
-    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
-        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
-            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-            for(InspectionCheckQuestionDto temp:checkListDtoList){
-                    String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
-                    temp.setChkanswer(answer);
-                String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
-                String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
-                String ncs  = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comFindNcs");
-                temp.setNcs(ncs);
-                if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                    temp.setRectified(true);
-                }else{
-                    temp.setRectified(false);
-                }
-                temp.setRemark(remark);
-            }
-            fillupChklistService.fillInspectionFillCheckListDto(cDto);
-        }
-        return cDto;
-    }
 
-    public InspectionFDtosDto getServiceCheckListDataFormViewPage(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        getServiceData(temp,fdto,request);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }
-        return serListDto;
-    }
+
 
     public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
@@ -537,46 +516,6 @@ public class InspectionNcCheckListDelegator {
         return serListDto;
     }
 
-
-
-    public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
-            temp.setChkanswer(answer);
-        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
-        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
-        String ncs = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs");
-        temp.setNcs(ncs);
-        if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-            temp.setRectified(true);
-        }else{
-            temp.setRectified(false);
-        }
-        temp.setRemark(remark);
-    }
-
-    public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
-        List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
-        if(itemDtoList!=null && !itemDtoList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:itemDtoList){
-                String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
-                String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
-                String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
-                String ncs  = ParamUtil.getString(request,temp.getId()+"adhocFindNcs");
-                temp.setNcs(ncs);
-                temp.setAdAnswer(answer);
-                temp.setRemark(remark);
-                if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
-                    temp.setRectified(Boolean.TRUE);
-                }else{
-                    temp.setRectified(Boolean.FALSE);
-                }
-            }
-        }
-        showDto.setAdItemList(itemDtoList);
-        return showDto;
-    }
-
     public void doCheckList(BaseProcessClass bpc){
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
@@ -601,10 +540,13 @@ public class InspectionNcCheckListDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
 
-            String errTab = (String) ParamUtil.getSessionAttr(request, "errorTab");
+            String errTab = (String) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.CHECK_LIST_ERROR_TAB_NAME);
             if (!StringUtil.isEmpty(errTab)) {
-                ParamUtil.setSessionAttr(request, "errorTab", null);
-                ParamUtil.setRequestAttr(request, "nowComTabIn", errTab);
+                ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.CHECK_LIST_ERROR_TAB_NAME, null);
+                if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+                    ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.CHECK_LIST_ERROR_SPEC_TAB_NAME, errTab);
+                }
+                ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME, errTab);
             }
          }
         }
@@ -718,8 +660,8 @@ public class InspectionNcCheckListDelegator {
         log.info("----------changeTab --");
         String nowTabIn = ParamUtil.getString(request,"nowTabIn");
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
-        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
-        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+        String nowComTabIn = ParamUtil.getString(request,HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME);
+        ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME,  nowComTabIn);
         changeDataForCheckList(request);
     }
 
@@ -872,12 +814,12 @@ public class InspectionNcCheckListDelegator {
         insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
         String nowTabIn = ParamUtil.getString(request,"nowTabIn");
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
-        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
-        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
-       /* String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
+        String nowComTabIn = ParamUtil.getString(request,HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME);
+        ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME,  nowComTabIn);
+       /* String errTab = (String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.CHECK_LIST_ERROR_TAB_NAME);
         if( !StringUtil.isEmpty(errTab)){
-            ParamUtil.setSessionAttr(request,"errorTab",null);
-            ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.CHECK_LIST_ERROR_TAB_NAME,null);
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME,  errTab);
         }*/
         log.info("----------saveDraftChecklist end--------");
     }
@@ -889,12 +831,16 @@ public class InspectionNcCheckListDelegator {
             changeDataForCheckList(request);
 
         }else {
-            InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
             InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-            AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-            ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+            if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+                getSpecServiceCheckListDataFormViewPage(request);
+            }else {
+                InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
+                AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+                ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+                ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+            }
             ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
-            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         }
         log.info("---------- saveCheckListAllSession end --------------");
     }
