@@ -380,6 +380,7 @@
               $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');
               $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
               $personnelContentEle.find('div.personnel-qualification input[name="qualification"]').val('');
+              clearPrsInfo($personnelContentEle);
           }
           personnelSelFun(personnelSel,$personnelContentEle);
       });
@@ -501,6 +502,16 @@
           $('#edit-content').addClass('hidden');
           $('.addListBtn').removeClass('hidden');
           $('.text-danger').removeClass('hidden');
+          $('input[name="prsLoading"]').each(function () {
+              var prsLoading = $(this).val();
+              if(prsLoading  == 'true'){
+                  var $currContent = $(this).closest('.personnel-content');
+                  $currContent.find('input[name="name"]').prop('readonly',true);
+                  $currContent.find("input[name='name']").css('border-color', '#ededed');
+                  $currContent.find("input[name='name']").css('color', '#999');
+              }
+          });
+
       });
   }
 var spRemove = function(){
@@ -524,6 +535,13 @@ var spRemove = function(){
 }
 
     function aaa(obj) {
+        console.log('loading prs info ...');
+        var $loadingContent =$(obj).closest('table.personnel-content');
+        var prgNo =  $(obj).val();
+        if(prgNo == "" || prgNo == null || prgNo == undefined){
+            clearPrsInfo($loadingContent);
+            return;
+        }
       var no = $(obj).val();
       var jsonData = {
         'prgNo': no
@@ -535,20 +553,29 @@ var spRemove = function(){
         'type': 'GET',
         'success': function (data) {
             if(data.regno==null){
+                clearPrsInfo($loadingContent);
                 $('#PRS_SERVICE_DOWN').modal('show');
                 return;
             }
           if (data.name == null) {
-            notLoadingSp();
+              clearPrsInfo($loadingContent);
             return;
           }
           loadingSp(data,obj);
         },
         'error': function () {
+            clearPrsInfo($loadingContent);
         }
       });
 
     }
+
+    var clearPrsInfo = function ($loadingContent) {
+        $loadingContent.find('input[name="name"]').val('');
+        $loadingContent.find("input[name='name']").prop('readonly', false);
+        $loadingContent.find("input[name='name']").css('border-color', '');
+        $loadingContent.find("input[name='name']").css('color', '');
+    };
 
     function loadingSp(data,obj) {
       var $CurrentPsnEle = $(obj).closest('table.personnel-content');
