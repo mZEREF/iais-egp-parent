@@ -1198,6 +1198,7 @@ public class WithOutRenewalDelegator {
     }
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc) throws Exception {
+        log.info("-----start -----doLicenceReview");
         String crud_action_type = bpc.request.getParameter("crud_action_additional");
         if("exitSaveDraft".equals(crud_action_type)){
             jumpYeMian(bpc.request, bpc.response);
@@ -1218,6 +1219,7 @@ public class WithOutRenewalDelegator {
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
             if (date.before(new Date())||date.equals(new Date())) {
+                log.info("-----RFC_ERR012------");
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
                 errorMap.put("rfcEffectiveDate", "RFC_ERR012");
@@ -1264,12 +1266,13 @@ public class WithOutRenewalDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.TRUE);
             ParamUtil.setRequestAttr(bpc.request, "svcSecMaps", errMap);
+            log.info("-----svcSecMaps------"+JsonUtil.parseToJson(allErrMap));
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
             return;
 
         }
 
-
+        log.info("-------------------");
         if (renewDto != null) {
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
@@ -1299,6 +1302,7 @@ public class WithOutRenewalDelegator {
                                     rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                                     bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                    log.info("-----configIsChange====");
                                     return;
                                 }
                             }
@@ -1321,16 +1325,19 @@ public class WithOutRenewalDelegator {
                                                 rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
                                                 bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                                                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                                log.info("-----configIsChange >1===");
                                                 return;
                                             }
                                         }
                                     }
+                                    log.info("-----appByLicIdAndExcludeNewOther---- ");
                                     List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
                                     if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
                                         bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
                                         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                                         return;
                                     }
+                                    log.info("-----rfcPendingApplication---- ");
                                     Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
                                     if (!otherLicenceOperation) {
                                         bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
@@ -1354,6 +1361,7 @@ public class WithOutRenewalDelegator {
                                 if(!configIsChange){
                                     rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
                                     bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                    log.info("-----rfcPendingApplication---- 1366");
                                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                                     return;
                                 }
