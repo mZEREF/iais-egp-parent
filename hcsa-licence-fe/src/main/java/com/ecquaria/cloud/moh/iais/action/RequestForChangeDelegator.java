@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -124,6 +125,8 @@ public class RequestForChangeDelegator {
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
         request.getSession().removeAttribute("rfc_eqHciCode");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
+        request.getSession().removeAttribute("pageShowFileDtos");
     }
     /**
      *
@@ -150,8 +153,8 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDraft start ...."));
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        removeSession(bpc.request);
         loadingDraft(bpc,draftNo);
-
         log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
     }
 
@@ -691,6 +694,22 @@ public class RequestForChangeDelegator {
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
+                List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
+                if(appDeclarationDocDtos!=null){
+                    List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
+                    for (AppDeclarationDocDto v : appDeclarationDocDtos) {
+                        PageShowFileDto pageShowFileDto=new PageShowFileDto();
+                        pageShowFileDto.setSize(v.getDocSize());
+                        pageShowFileDto.setFileName(v.getDocName());
+                        pageShowFileDto.setVersion(v.getVersion());
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+v.getSeqNum());
+                        pageShowFileDto.setMd5Code(v.getMd5Code());
+                        pageShowFileDto.setFileUploadUrl(v.getFileRepoId());
+                        pageShowFileDto.setIndex(String.valueOf(v.getSeqNum()));
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                    bpc.request.getSession().setAttribute("pageShowFileDtos",pageShowFileDtos);
+                }
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
             }else{
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);

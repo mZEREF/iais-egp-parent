@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
@@ -129,4 +130,6 @@ public interface AppSubmissionService {
 
     AppDeclarationDocShowPageDto getFileAppDecInfo(List<AppDeclarationDocDto> appDeclarationDocDtoList);
     AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type);
+    List<AppDeclarationDocDto> getAppDeclarationDocDto(HttpServletRequest request);
+    void validateFile(PageShowFileDto pageShowFileDto, Map<String,String> map, int i);
 }

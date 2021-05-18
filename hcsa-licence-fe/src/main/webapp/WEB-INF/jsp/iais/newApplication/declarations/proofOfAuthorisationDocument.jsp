@@ -38,3 +38,8 @@
     </div>
 </div>
 <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
+<script>
+    function doUserRecUploadConfirmDecFile(event) {
+        ajaxCallUploadForMax('mainForm', "selectedDeclFile",true);
+    }
+</script>

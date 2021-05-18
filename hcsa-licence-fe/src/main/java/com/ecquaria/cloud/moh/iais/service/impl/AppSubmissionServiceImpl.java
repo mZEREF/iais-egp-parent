@@ -106,6 +106,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
@@ -123,10 +124,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -571,7 +575,80 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             // General Accuracy Declaration
             appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
         }
+        appDeclarationMessageDto.setAppType(type);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return appDeclarationMessageDto;
+    }
+
+    @Override
+    public List<AppDeclarationDocDto> getAppDeclarationDocDto(HttpServletRequest request) {
+        Map<String, File> fileMap = (Map<String, File>)request.getSession().getAttribute("seesion_files_map_ajax_feselectedDeclFile");
+        List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
+        List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(12);
+        List<File> files=new ArrayList<>(5);
+        if(fileMap!=null&&!fileMap.isEmpty()){
+            fileMap.forEach((k,v)->{
+                if(v!=null){
+                    files.add(v);
+                    SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
+                    String fileMd5 = singeFileUtil.getFileMd5(v);
+                    PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                    pageShowFileDto.setFileName(v.getName());
+                    String e = k.substring(k.lastIndexOf('e') + 1);
+                    pageShowFileDto.setIndex(e);
+                    pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                    Long l = v.length() / 1024;
+                    pageShowFileDto.setSize(Integer.valueOf(l.toString()));
+                    pageShowFileDto.setMd5Code(fileMd5);
+                    pageShowFileDtos.add(pageShowFileDto);
+                    AppDeclarationDocDto appDeclarationDocDto=new AppDeclarationDocDto();
+                    appDeclarationDocDto.setDocName(v.getName());
+                    appDeclarationDocDto.setDocSize(Integer.valueOf(l.toString()));
+                    appDeclarationDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appDeclarationDocDto.setMd5Code(fileMd5);
+                    appDeclarationDocDto.setVersion(Integer.valueOf(1));
+                    appDeclarationDocDto.setSeqNum(Integer.valueOf(e));
+                    appDeclarationDocDtoList.add(appDeclarationDocDto);
+                }else {
+
+                }
+            });
+        }
+        List<String> list = comFileRepoClient.saveFileRepo(files);
+        if(list!=null){
+            ListIterator<String> iterator = list.listIterator();
+            for(int j=0;j< appDeclarationDocDtoList.size();j++){
+                String fileRepoId = appDeclarationDocDtoList.get(j).getFileRepoId();
+                if(fileRepoId==null){
+                    if(iterator.hasNext()){
+                        String next = iterator.next();
+                        pageShowFileDtos.get(j).setFileUploadUrl(next);
+                        appDeclarationDocDtoList.get(j).setFileRepoId(next);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        Collections.sort(pageShowFileDtos,(s1,s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
+        request.getSession().setAttribute("pageShowFileDtos", pageShowFileDtos);
+        return appDeclarationDocDtoList;
+    }
+
+    @Override
+    public void validateFile(PageShowFileDto pageShowFileDto, Map<String, String> map, int i) {
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+        String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
+        List<String> fileTypes = Arrays.asList(configFileType.split(","));
+        if(pageShowFileDto.getSize()/1024>configFileSize){
+            map.put("file"+i, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(configFileSize),"sizeMax"));
+        }
+        String substring = pageShowFileDto.getFileName().substring(pageShowFileDto.getFileName().lastIndexOf('.') + 1);
+        if(!fileTypes.contains(substring.toUpperCase())){
+            map.put("file"+i,MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
+        }
+        if(pageShowFileDto.getFileName().length()>100){
+            map.put("file"+i,MessageUtil.getMessageDesc("GENERAL_ERR0022"));
+        }
     }
 
     @Override
