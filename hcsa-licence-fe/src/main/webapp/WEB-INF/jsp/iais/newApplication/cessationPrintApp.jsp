@@ -419,11 +419,30 @@
         doPrint();
     });
 
+    var userAgent = navigator.userAgent;
+    var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
+    
     var doPrint = function () {
         $('a').prop('disabled',true);
-        window.print();
-        window.close();
+        if(isChrome){
+            addPrintListener();
+            window.print();
+        }else{
+            window.print();
+            window.close();
+        }
     }
 
+    var addPrintListener = function () {
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function(mql) {
+                if (mql.matches) {
 
+                } else {
+                    window.close();
+                }
+            });
+        }
+    }
 </script>
