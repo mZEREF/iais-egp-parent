@@ -302,6 +302,7 @@ public class CessationApplicationFeDelegator {
         String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
         String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
         appDeclarationMessageDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryquestionkindly);
         appDeclarationMessageDto.setPreliminaryQuestionItem1(isbefore);
         appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);

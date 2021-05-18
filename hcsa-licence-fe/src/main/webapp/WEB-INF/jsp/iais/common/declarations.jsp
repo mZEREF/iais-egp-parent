@@ -25,6 +25,7 @@
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
       </c:if>
       <c:if test="${declaration_page_is == 'cessation' }">
+        <c:set value="${appCessationDtos[0]}" var="AppSubmissionDto"></c:set>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/cessationQuestion.jsp"%>
