@@ -1260,6 +1260,7 @@
             if(psnLength <= 1){
                 $('.po-content:eq(1) .assign-psn-item').html('');
             }
+            $('#isEditHiddenVal').val('1');
         });
 
     }
