@@ -1732,24 +1732,24 @@
     }
 
     var fillWeekly = function($thisDiv,premisesType,prefix,startHHVal,startMMVal,endHHVal,endMMVal,isAllDay) {
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').val(startHHVal);
+        $thisDiv.find('select.'+prefix+'StartHH').val(startHHVal);
         var startHH =$thisDiv.find('.'+prefix+'StartHH option[value="' + startHHVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').next().find('.current').html(startHH);
+        $thisDiv.find('select.'+prefix+'StartHH').next().find('.current').html(startHH);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').val(startMMVal);
+        $thisDiv.find('select.'+prefix+'StartMM').val(startMMVal);
         var startMM =$thisDiv.find('.'+prefix+'StartMM option[value="' + startMMVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').next().find('.current').html(startMM);
+        $thisDiv.find('select.'+prefix+'StartMM').next().find('.current').html(startMM);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').val(endHHVal);
+        $thisDiv.find('select.'+prefix+'EndHH').val(endHHVal);
         var endHH =$thisDiv.find('.'+prefix+'EndHH option[value="' + endHHVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').next().find('.current').html(endHH);
+        $thisDiv.find('select.'+prefix+'EndHH').next().find('.current').html(endHH);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').val(endMMVal);
+        $thisDiv.find('select.'+prefix+'EndMM').val(endMMVal);
         var endMM =$thisDiv.find('.'+prefix+'EndMM option[value="' + endMMVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').next().find('.current').html(endMM);
+        $thisDiv.find('select.'+prefix+'EndMM').next().find('.current').html(endMM);
 
         $thisDiv.find('.allDay').attr('checked',isAllDay);
     }
