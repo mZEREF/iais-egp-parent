@@ -18,30 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -52,65 +29,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
-import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.constant.*;
+import com.ecquaria.cloud.moh.iais.dto.*;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
 import com.ecquaria.cloud.moh.iais.rfi.impl.RfiLoadingCheckImplForRenew;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.PreliminaryQuestion;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.Statements;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.DelcarationDocValidation;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -133,15 +71,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * egator
@@ -250,6 +180,10 @@ public class NewApplicationDelegator {
     private String currentDomain;
     @Autowired
     private Environment env;
+
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
+
     /**
      * StartStep: Start
      *
@@ -310,6 +244,12 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
         /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
+        // New Application - declaration - clear uploaded dto
+        String fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX  + fileAppendId
+                + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
@@ -733,11 +673,62 @@ public class NewApplicationDelegator {
                 }
             }
         }
+
+        // init uploaded File
+        initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
+
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request,"isCharity",NewApplicationHelper.isCharity(bpc.request));
 
         log.info(StringUtil.changeForLog("the do preparePreview end ...."));
+    }
+
+    private void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appDeclarationDocDtos)) {
+            return;
+        }
+        String fileAppendId = getFileAppendId(appType);
+        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(fileAppendId + "DocShowPageDto");
+        if (Objects.nonNull(dto)) {
+            return;
+        }
+        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+        for (int i = 0, len = appDeclarationDocDtos.size(); i < len; i++) {
+            AppDeclarationDocDto viewDoc = appDeclarationDocDtos.get(i);
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
+            PageShowFileDto pageShowFileDto = new PageShowFileDto();
+            pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
+            pageShowFileDto.setIndex(index);
+            pageShowFileDto.setFileName(viewDoc.getDocName());
+            pageShowFileDto.setSize(viewDoc.getDocSize());
+            pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
+            pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDtos.add(pageShowFileDto);
+            map.put(fileAppendId + index, null);
+            pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
+        }
+        // put page entity to sesstion
+        dto = new AppDeclarationDocShowPageDto();
+        dto.setFileMaxIndex(appDeclarationDocDtos.size());
+        dto.setPageShowFileDtos(pageShowFileDtos);
+        dto.setPageShowFileHashMap(pageShowFileHashMap);
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, map);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX  + fileAppendId
+                + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, appDeclarationDocDtos.size());
+    }
+
+    private String getFileAppendId(String appType) {
+        StringBuilder s = new StringBuilder("selected");
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            s.append("New");
+        }
+        s.append("File");
+        return s.toString();
     }
 
     /**
@@ -1162,7 +1153,13 @@ public class NewApplicationDelegator {
             }
             // declaration
             appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-            DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(), appSubmissionDto.getAppType());
+            DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
+                    appSubmissionDto.getAppType());
+            // uploaded files
+            if (new DelcarationDocValidation().validate(errorMap, getFileAppendId(appSubmissionDto.getAppType()),
+                    !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request)){
+                appSubmissionDto.setAppDeclarationDocDtos(getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+            }
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
@@ -1219,6 +1216,92 @@ public class NewApplicationDelegator {
             }
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
+    }
+
+    private List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
+        String fileAppendId = getFileAppendId(appType);
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (IaisCommonUtils.isEmpty(fileMap)) {
+            return null;
+        }
+        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(
+                fileAppendId + "DocShowPageDto");
+        if (Objects.isNull(dto)) {
+            dto = new AppDeclarationDocShowPageDto();
+            dto.setPageShowFileHashMap(IaisCommonUtils.genNewHashMap());
+            request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+        }
+        Map<String, PageShowFileDto> pageShowFileHashMap = dto.getPageShowFileHashMap();
+        List<PageShowFileDto> pageDtos = IaisCommonUtils.genNewArrayList();
+        List<File> files = IaisCommonUtils.genNewArrayList();
+        List<AppDeclarationDocDto> docDtos = IaisCommonUtils.genNewArrayList();
+        SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
+        fileMap.forEach((s, file) -> {
+            // the current uploaed files
+            String index = s.substring(fileAppendId.length());
+            if (file != null) {
+                long length = file.length();
+                if (length > 0) {
+                    Long size = length / 1024;
+                    files.add(file);
+                    AppDeclarationDocDto docDto = new AppDeclarationDocDto();
+                    docDto.setDocName(file.getName());
+                    String fileMd5 = singeFileUtil.getFileMd5(file);
+                    docDto.setMd5Code(singeFileUtil.getFileMd5(file));
+                    docDto.setDocSize(Integer.valueOf(size.toString()));
+                    docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    docDto.setSeqNum(Integer.parseInt(index));
+                    Optional<Integer> versions = pageShowFileHashMap.entrySet()
+                            .stream()
+                            .filter(i -> s.equals(i.getKey()))
+                            .map(i -> i.getValue().getVersion())
+                            .findAny();
+                    docDto.setVersion(versions.orElse(0) + 1);
+                    docDtos.add(docDto);
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    pageShowFileDto.setIndex(index);
+                    pageShowFileDto.setFileName(file.getName());
+                    pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
+                    pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                    pageShowFileDto.setMd5Code(fileMd5);
+                    pageDtos.add(pageShowFileDto);
+                }
+            } else {
+                // the previous / old files
+                PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(s);
+                if (Objects.nonNull(pageShowFileDto)) {
+                    AppDeclarationDocDto docDto = new AppDeclarationDocDto();
+                    docDto.setDocName(pageShowFileDto.getFileName());
+                    docDto.setMd5Code(pageShowFileDto.getMd5Code());
+                    docDto.setDocSize(pageShowFileDto.getSize());
+                    docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                    docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    docDto.setSeqNum(Integer.parseInt(index));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDtos.add(docDto);
+                    pageDtos.add(pageShowFileDto);
+                }
+            }
+        });
+        dto.setPageShowFileDtos(pageDtos);
+        dto.setFileMaxIndex(pageDtos.size());
+        List<String> list = comFileRepoClient.saveFileRepo(files);
+        if (list != null) {
+            ListIterator<String> iterator = list.listIterator();
+            for (int j = 0; j < docDtos.size(); j++) {
+                String fileRepoId = docDtos.get(j).getFileRepoId();
+                if (fileRepoId == null) {
+                    if (iterator.hasNext()) {
+                        String next = iterator.next();
+                        pageDtos.get(j).setFileUploadUrl(next);
+                        docDtos.get(j).setFileRepoId(next);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        return docDtos;
     }
 
     /**
@@ -2530,80 +2613,6 @@ public class NewApplicationDelegator {
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
-    }
-
-    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request,String type) {
-        AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
-        appDeclarationMessageDto.setAppType(type);
-        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
-            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
-            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
-            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
-            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
-            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
-            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
-            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
-            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
-            String bankruptcyItem1 = request.getParameter("bankruptcyItem1");
-            appDeclarationMessageDto.setBankruptcyItem1(bankruptcyItem1);
-            String bankruptcyItem2 = request.getParameter("bankruptcyItem2");
-            appDeclarationMessageDto.setBankruptcyItem2(bankruptcyItem2);
-            String bankruptcyItem3 = request.getParameter("bankruptcyItem3");
-            appDeclarationMessageDto.setBankruptcyItem3(bankruptcyItem3);
-            String bankruptcyItem4 = request.getParameter("bankruptcyItem4");
-            appDeclarationMessageDto.setBankruptcyItem4(bankruptcyItem4);
-            String bankruptcyRemark = request.getParameter("bankruptcyRemark");
-            appDeclarationMessageDto.setBankruptcyRemark(bankruptcyRemark);
-            String competenciesItem1 = request.getParameter("competenciesItem1");
-            appDeclarationMessageDto.setCompetenciesItem1(competenciesItem1);
-            String competenciesItem2 = request.getParameter("competenciesItem2");
-            appDeclarationMessageDto.setCompetenciesItem2(competenciesItem2);
-            String competenciesItem3 = request.getParameter("competenciesItem3");
-            appDeclarationMessageDto.setCompetenciesItem3(competenciesItem3);
-            String competenciesRemark = request.getParameter("competenciesRemark");
-            appDeclarationMessageDto.setCompetenciesRemark(competenciesRemark);
-            String criminalRecordsItem1 = request.getParameter("criminalRecordsItem1");
-            appDeclarationMessageDto.setCompetenciesRemark(criminalRecordsItem1);
-            String criminalRecordsItem2 = request.getParameter("criminalRecordsItem2");
-            appDeclarationMessageDto.setCriminalRecordsItem2(criminalRecordsItem2);
-            String criminalRecordsItem3 = request.getParameter("criminalRecordsItem3");
-            appDeclarationMessageDto.setCriminalRecordsItem3(criminalRecordsItem3);
-            String criminalRecordsItem4 = request.getParameter("criminalRecordsItem4");
-            appDeclarationMessageDto.setCriminalRecordsItem4(criminalRecordsItem4);
-            String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
-            appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
-
-        } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
-            // Preliminary Question
-            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
-            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
-            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
-            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
-            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
-            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-            // Declaration on Bankruptcy
-            appDeclarationMessageDto.setBankruptcyItem1(ParamUtil.getString(request, "bankruptcyItem1"));
-            appDeclarationMessageDto.setBankruptcyItem2(ParamUtil.getString(request, "bankruptcyItem2"));
-            appDeclarationMessageDto.setBankruptcyItem3(ParamUtil.getString(request, "bankruptcyItem3"));
-            appDeclarationMessageDto.setBankruptcyItem4(ParamUtil.getString(request, "bankruptcyItem4"));
-            appDeclarationMessageDto.setBankruptcyRemark(ParamUtil.getString(request, "bankruptcyRemark"));
-            // Declaration on Competencies
-            appDeclarationMessageDto.setCompetenciesItem1(ParamUtil.getString(request, "competenciesItem1"));
-            appDeclarationMessageDto.setCompetenciesItem2(ParamUtil.getString(request, "competenciesItem2"));
-            appDeclarationMessageDto.setCompetenciesItem3(ParamUtil.getString(request, "competenciesItem3"));
-            appDeclarationMessageDto.setCompetenciesRemark(ParamUtil.getString(request, "competenciesRemark"));
-            // Declaration on Criminal Records and Past Suspension/ Revocation under PHMCA/HCSA
-            appDeclarationMessageDto.setCriminalRecordsItem1(ParamUtil.getString(request, "criminalRecordsItem1"));
-            appDeclarationMessageDto.setCriminalRecordsItem2(ParamUtil.getString(request, "criminalRecordsItem2"));
-            appDeclarationMessageDto.setCriminalRecordsItem3(ParamUtil.getString(request, "criminalRecordsItem3"));
-            appDeclarationMessageDto.setCriminalRecordsItem4(ParamUtil.getString(request, "criminalRecordsItem4"));
-            appDeclarationMessageDto.setCriminalRecordsRemark(ParamUtil.getString(request, "criminalRecordsRemark"));
-            // General Accuracy Declaration
-            appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
-        }
-        return appDeclarationMessageDto;
     }
 
     public void reSubmit(BaseProcessClass bpc) throws Exception {

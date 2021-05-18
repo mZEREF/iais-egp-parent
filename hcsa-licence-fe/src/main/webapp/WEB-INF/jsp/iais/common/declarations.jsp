@@ -6,6 +6,8 @@
     <div class="panel-body">
       <%-- New Application --%>
       <c:if test="${AppSubmissionDto.appType == 'APTY002'}">
+        <c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+        <c:set var="sec" value="New" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
@@ -39,7 +41,6 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('#declarations').find('.error-msg').on('DOMNodeInserted', function(){
-      console.log($(this).html() + " - " + $(this).text());
       if ($(this).not(':empty')) {
         $('#declarations').collapse('show');
       }

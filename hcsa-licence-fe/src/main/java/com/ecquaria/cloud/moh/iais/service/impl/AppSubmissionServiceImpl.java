@@ -550,11 +550,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
             // Preliminary Question
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
-            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
-            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
-            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
-            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
             // Declaration on Bankruptcy
             appDeclarationMessageDto.setBankruptcyItem1(ParamUtil.getString(request, "bankruptcyItem1"));
             appDeclarationMessageDto.setBankruptcyItem2(ParamUtil.getString(request, "bankruptcyItem2"));
