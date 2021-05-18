@@ -28,7 +28,7 @@
             </div>
             <div class="form-check form-group col-xs-3">
                 <input class="form-check-input" type="radio" name="generalAccuracyItem1" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '0'}">checked="checked"</c:if> />
+                       <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '1'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_generalAccuracyItem1"></span>

@@ -511,15 +511,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
-        AppDeclarationMessageDto appDeclarationMessageDto=new AppDeclarationMessageDto();
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
+        AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
+        appDeclarationMessageDto.setAppType(type);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
             String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             String bankruptcyItem1 = request.getParameter("bankruptcyItem1");

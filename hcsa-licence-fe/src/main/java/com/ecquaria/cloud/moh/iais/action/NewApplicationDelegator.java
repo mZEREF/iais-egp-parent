@@ -99,7 +99,6 @@ import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.DelcarationDocValidation;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -1207,10 +1206,9 @@ public class NewApplicationDelegator {
             DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
                     appSubmissionDto.getAppType());
             // uploaded files
-            if (new DelcarationDocValidation().validate(errorMap, getFileAppendId(appSubmissionDto.getAppType()),
-                    !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request)){
-                appSubmissionDto.setAppDeclarationDocDtos(getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-            }
+            appSubmissionDto.setAppDeclarationDocDtos(getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+            validateDeclarationDoc(errorMap, getFileAppendId(appSubmissionDto.getAppType()),
+                    !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request);
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
@@ -1281,7 +1279,6 @@ public class NewApplicationDelegator {
         if (Objects.isNull(dto)) {
             dto = new AppDeclarationDocShowPageDto();
             dto.setPageShowFileHashMap(IaisCommonUtils.genNewHashMap());
-            request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
         }
         Map<String, PageShowFileDto> pageShowFileHashMap = dto.getPageShowFileHashMap();
         List<PageShowFileDto> pageDtos = IaisCommonUtils.genNewArrayList();
@@ -1336,7 +1333,8 @@ public class NewApplicationDelegator {
             }
         });
         dto.setPageShowFileDtos(pageDtos);
-        dto.setFileMaxIndex(pageDtos.size());
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+        // dto.setFileMaxIndex(pageDtos.size());
         List<String> list = comFileRepoClient.saveFileRepo(files);
         if (list != null) {
             ListIterator<String> iterator = list.listIterator();
@@ -1353,6 +1351,17 @@ public class NewApplicationDelegator {
             }
         }
         return docDtos;
+    }
+
+    public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
+        boolean isValid = true;
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (isMandatory && (fileMap == null || fileMap.isEmpty())) {
+            errorMap.put("selectedFileError", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            isValid = false;
+        }
+        return isValid;
     }
 
     /**
