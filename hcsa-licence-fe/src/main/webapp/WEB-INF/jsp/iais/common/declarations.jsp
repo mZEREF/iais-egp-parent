@@ -7,18 +7,21 @@
       <%-- New Application --%>
       <c:if test="${AppSubmissionDto.appType == 'APTY002'}">
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
         <%@include file="../newApplication/declarations/competencies.jsp"%>
         <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
       </c:if>
       <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
-
+        <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/statements.jsp"%>
       </c:if>
       <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
         <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
         <%@include file="../newApplication/declarations/competencies.jsp"%>
         <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
