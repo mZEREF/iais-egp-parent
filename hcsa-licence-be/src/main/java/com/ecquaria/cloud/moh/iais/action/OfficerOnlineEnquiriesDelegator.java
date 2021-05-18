@@ -106,7 +106,7 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(ApplicationLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("application_no").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("start_date").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     FilterParameter licenseeParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryDto.class)
