@@ -139,11 +139,16 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public String getWrkGrpName(String id) {
+        String result = null;
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
-        if(workingGroupDto == null){
-           return null;
+        if(workingGroupDto != null){
+        if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
+            result = AppConsts.WORK_GROUP_BROADCAST;
+        }else{
+            result = workingGroupDto.getGroupName();
         }
-        return workingGroupDto.getGroupName();
+        }
+        return result;
     }
 
     @Override
