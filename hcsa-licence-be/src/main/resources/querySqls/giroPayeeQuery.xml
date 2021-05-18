@@ -34,11 +34,11 @@
         a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
         from hcsala.dbo.application_group as ag , giro_payment_view as a  WHERE ag.GROUP_NO=a.APP_GROUP_NO )
         t1 where 1=1 and PMT_STATUS in ('PMT03','PMT09')
-        <#if groupNo??> and APP_GROUP_NO like CONCAT('%',:groupNo,'%') </#if>
-        <#if acctNo??>and ACCT_NO like CONCAT('%',:acctNo,'%')</#if>
-        <#if amount??>and AMOUNT like CONCAT('%',:amount,'%')</#if>
-        <#if txnRefNo??> and TXN_REF_NO like CONCAT('%',:txnRefNo,'%')</#if>
-        <#if hciName??> and HCI_NAME like CONCAT('%',:hciName,'%')</#if>
+         <#if groupNo??> and charindex  (:groupNo,APP_GROUP_NO) </#if>
+        <#if acctNo??>and charindex  (acctNo,ACCT_NO)</#if>
+        <#if amount??>and charindex  (:amount,AMOUNT)</#if>
+        <#if txnRefNo??> and charindex  (:txnRefNo,TXN_REF_NO)</#if>
+        <#if hciName??> and charindex  (:hciName,HCI_NAME)</#if>
         ]]>
     </sql>
 
