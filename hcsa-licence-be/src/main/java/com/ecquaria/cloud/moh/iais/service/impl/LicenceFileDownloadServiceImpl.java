@@ -350,7 +350,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             if(Boolean.TRUE.equals(aBoolean)){
                                 saveFileRepo( fileName,groupPath,submissionId,l);
                             }
-                           saveFileRepo( fileName,groupPath,submissionId,l);
 
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
