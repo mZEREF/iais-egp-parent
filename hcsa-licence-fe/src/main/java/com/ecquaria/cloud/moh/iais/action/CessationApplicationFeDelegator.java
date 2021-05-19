@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,6 +87,7 @@ public class CessationApplicationFeDelegator {
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
     private static final String PRELIMINARYQUESTIONKINDLY = "preliminaryQuestionKindly";
+    private static final String SELECTEDFILEERROR = "selectedFileError";
     private static final String ISBEFORE = "isBefore";
     private static final String ISSURRENDERING = "isSurrendering";
     private static final String WHICHTODO = "whichTodo";
@@ -498,6 +500,13 @@ public class CessationApplicationFeDelegator {
         String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
         if (StringUtil.isEmpty(preliminaryquestionkindly)){
             errorMap.put(PRELIMINARYQUESTIONKINDLY, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+        }else{
+            if (AppConsts.NO.equals(preliminaryquestionkindly)){
+                List<AppDeclarationDocDto> cessationDocData = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+                if (cessationDocData == null){
+                    errorMap.put(SELECTEDFILEERROR, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                }
+            }
         }
         if (StringUtil.isEmpty(isbefore)){
             errorMap.put(ISBEFORE, MessageUtil.replaceMessage(ERROR, "Others", "field"));

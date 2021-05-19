@@ -484,63 +484,6 @@
         $("#mainForm").submit();
     }
 
-
-    function ajaxCallUploadForMaxDec(idForm,fileAppendId,needMaxGlobalIndex){
-        showWaiting();
-        var reloadIndex =  $("#reloadIndex").val();
-        console.log(reloadIndex)
-        if(reloadIndex == -1){
-            $("#fileAppendId").val(fileAppendId);
-        }
-        $("#needGlobalMaxIndex").val(needMaxGlobalIndex);
-        fileAppendId =  $("#fileAppendId").val();
-        $("#uploadFormId").val(idForm);
-        var form = new FormData($("#"+idForm)[0]);
-        var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,'selectedFile');
-        // alert('rslt:'+rslt);
-        if (rslt == 'N') {
-            $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
-            clearFlagValueFEFile();
-        } else if (rslt == 'E') {
-            clearFlagValueFEFile();
-        } else {
-            $.ajax({
-                type:"post",
-                url:"${pageContext.request.contextPath}/ajax-upload-file?stamp="+new Date().getTime(),
-                data: form,
-                async:true,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    console.log(data)
-                    if(data != null && data.description != null){
-                        if( data.msgType == "Y"){
-                            if(reloadIndex != -1){
-                                $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
-                                deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
-                                $("#reloadIndex").val(-1);
-                                $("#"+fileAppendId+"Div"+reloadIndex+"Copy").after(data.description);
-                                deleteFileFeDiv(fileAppendId+"Div"+reloadIndex+"Copy");
-                            }else {
-                                $("#"+fileAppendId+"ShowId").append(data.description);
-                            }
-                            $("#error_"+fileAppendId+"Error").html("");
-                        }else {
-                            $("#error_"+fileAppendId+"Error").html(data.description);
-                        }
-                    }
-                    dismissWaiting();
-                },
-                error: function (msg) {
-                    alert("error");
-                    dismissWaiting();
-                }
-            });
-        }
-    }
-
     function submitSure(action) {
         if ($('#confirmInfo').is(':checked')) {
             uploadFileValidate();
