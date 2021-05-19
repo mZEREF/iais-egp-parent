@@ -143,7 +143,7 @@
                     <iais:message key="NEW_ACK008"></iais:message>
                 </div>
                 <div class="col-xs-12 col-md-12">
-                    <iais:message key="NEW_ACK009"></iais:message>
+                    <a target="_blank" href="<iais:code code="URL001"/>">Learn More</a>: <iais:message key="NEW_ACK009"></iais:message>
                 </div>
             </div>
         </div>
