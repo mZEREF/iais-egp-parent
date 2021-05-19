@@ -103,6 +103,10 @@
         forwordMain("amendLic4_2");
     });
 
+    $("#submitDataMoh").click(function(){
+        forwordMain("subDateMoh");
+    });
+
     $("#updateAdminPersonnel").click(function(){
         forwordMain("updateAdminPers");
     });
