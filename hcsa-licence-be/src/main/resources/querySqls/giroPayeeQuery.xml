@@ -35,7 +35,7 @@
         from hcsala.dbo.application_group as ag , giro_payment_view as a  WHERE ag.GROUP_NO=a.APP_GROUP_NO )
         t1 where 1=1 and PMT_STATUS in ('PMT03','PMT09')
          <#if groupNo??> and charindex  (:groupNo,APP_GROUP_NO)>0 </#if>
-        <#if acctNo??>and charindex  (acctNo,ACCT_NO) >0</#if>
+        <#if acctNo??>and charindex  (:acctNo,ACCT_NO) >0</#if>
         <#if amount??>and charindex  (:amount,AMOUNT) >0</#if>
         <#if txnRefNo??> and charindex  (:txnRefNo,TXN_REF_NO)>0</#if>
         <#if hciName??> and charindex  (:hciName,HCI_NAME)>0</#if>
