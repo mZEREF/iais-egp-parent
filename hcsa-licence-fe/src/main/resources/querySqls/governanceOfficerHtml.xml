@@ -112,6 +112,21 @@
                                     </tr>
                                     <tr height="1">
                                         <td class="first last" style="width: 100%;">
+                                            <div class="control control-caption-horizontal otherDesignationDiv hidden">
+                                                <div class="form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                    </div>
+                                                    <div class="col-md-7 col-xs-5 col-sm-3">
+                                                        <div class="">
+                                                            <input type="text" name="otherDesignation" class="otherDesignation" maxlength="100" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
                                             <div class="control control-caption-horizontal">
                                                 <div class="form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">

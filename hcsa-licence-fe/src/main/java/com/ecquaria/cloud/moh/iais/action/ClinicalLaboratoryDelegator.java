@@ -286,6 +286,8 @@ public class ClinicalLaboratoryDelegator {
         specialtyAttr.put("style", "display: none;");
         String specialtyHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtySelectList, null, null);
         ParamUtil.setRequestAttr(bpc.request, "SpecialtyHtml", specialtyHtml);
+        List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
+        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         //reload
         if (appSvcRelatedInfoDto != null) {
             List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -427,6 +429,8 @@ public class ClinicalLaboratoryDelegator {
         SelectOption deputyFlagOp3 = new SelectOption("1", "Yes");
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
+        List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
+        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
 
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
@@ -2186,6 +2190,7 @@ public class ClinicalLaboratoryDelegator {
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
         String[] designation = ParamUtil.getStrings(request, "designation");
+        String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
         String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
         //String[] specialty = ParamUtil.getStrings(request, "specialty");
@@ -2268,12 +2273,13 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isDesignation()){
                     NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
                 }
+                if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                    NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                }
                 if(appPsnEditDto.isProfessionType()){
                     NewApplicationHelper.setPsnValue(professionType,i,appSvcPrincipalOfficersDto,"professionType");
                 }
-                /*if(appPsnEditDto.isSpeciality()){
-                    NewApplicationHelper.setPsnValue(specialty,i,appSvcPrincipalOfficersDto,"speciality");
-                }*/
+
                 //input
                 if(appPsnEditDto.isName()){
                     name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
@@ -2287,14 +2293,6 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isProfRegNo()){
                     professionRegoNo = NewApplicationHelper.setPsnValue(professionRegoNo,i,appSvcPrincipalOfficersDto,"profRegNo");
                 }
-                /*if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpeciality())){
-                    specialtyOther = NewApplicationHelper.setPsnValue(specialtyOther,i,appSvcPrincipalOfficersDto,"specialityOther");
-                }else{
-                    specialtyOther = removeArrIndex(specialtyOther,i);
-                }
-                if(appPsnEditDto.isSubSpeciality()){
-                    qualification = NewApplicationHelper.setPsnValue(qualification,i,appSvcPrincipalOfficersDto,"subSpeciality");
-                }*/
                 if(appPsnEditDto.isOtherQualification()){
                     otherQualification = NewApplicationHelper.setPsnValue(otherQualification,i,appSvcPrincipalOfficersDto,"otherQualification");
                 }
@@ -2349,15 +2347,11 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setIdType(idType[i]);
                 appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                 appSvcCgoDto.setDesignation(designation[i]);
+                if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation[i])){
+                    appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
+                }
                 appSvcCgoDto.setProfessionType(professionType[i]);
                 appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
-                /*String specialtyStr = specialty[i];
-                appSvcCgoDto.setSpeciality(specialtyStr);
-                if ("other".equals(specialtyStr)) {
-                    appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
-                }*/
-                //qualification(before)
-                //appSvcCgoDto.setSubSpeciality(qualification[i]);
                 appSvcCgoDto.setOtherQualification(otherQualification[i]);
                 appSvcCgoDto.setMobileNo(mobileNo[i]);
                 String emailAddr = "";
@@ -2404,6 +2398,7 @@ public class ClinicalLaboratoryDelegator {
             String[] idType = ParamUtil.getStrings(request, "idType");
             String[] idNo = ParamUtil.getStrings(request, "idNo");
             String[] designation = ParamUtil.getStrings(request, "designation");
+            String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
             String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
@@ -2505,7 +2500,12 @@ public class ClinicalLaboratoryDelegator {
                     if(appPsnEditDto.isDesignation()){
                         NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
                     }
-                    //input
+                    if(appPsnEditDto.isOtherDesignation()){
+                        NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                    }
+                    if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                        NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                    }
 
                     if(appPsnEditDto.isName()){
                         name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
@@ -2561,6 +2561,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setIdType(idType[i]);
                     appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                     appSvcPrincipalOfficersDto.setDesignation(designation[i]);
+                    appSvcPrincipalOfficersDto.setOtherDesignation(otherDesignations[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(officeTelNo[i]);
                     String emailAddr = "";
@@ -2589,6 +2590,7 @@ public class ClinicalLaboratoryDelegator {
             String[] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
             String[] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String[] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
+            String[] deputyOtherDesignations = ParamUtil.getStrings(request, "deputyOtherDesignation");
             String[] deputyName = ParamUtil.getStrings(request, "deputyName");
             String[] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
             String[] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
@@ -2699,6 +2701,9 @@ public class ClinicalLaboratoryDelegator {
                     if (appPsnEditDto.isDesignation()) {
                         NewApplicationHelper.setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
                     }
+                    if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                        NewApplicationHelper.setPsnValue(deputyOtherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
+                    }
                     //input
                     if (appPsnEditDto.isName()) {
                         deputyName = NewApplicationHelper.setPsnValue(deputyName, i, appSvcPrincipalOfficersDto, "name");
@@ -2746,6 +2751,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
                     appSvcPrincipalOfficersDto.setIdNo(StringUtil.toUpperCase(deputyIdNo[i]));
                     appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
+                    appSvcPrincipalOfficersDto.setOtherDesignation(deputyOtherDesignations[i]);
                     appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
                     appSvcPrincipalOfficersDto.setOfficeTelNo(deputyOfficeTelNo[i]);
                     String emailAddr = "";
