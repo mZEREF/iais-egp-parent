@@ -728,6 +728,83 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
                 map.put("date", dateStr);
                 map.put("dateTime", dateTime);
+                map.put("newDate", "-");
+                map.put("newDateTime", "-");
+                map.put("systemLink", loginUrl);
+                map.put("address", address1);
+                //msg service code
+                Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+                List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+                if(samePremisesAppMap != null) {
+                    serviceCodes = msgSvcCodeByAppNos(appNo, samePremisesAppMap, serviceCodes);
+                }
+                try{
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(appNo);
+                    emailParam.setReqRefNum(appNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(appNo);
+                    notificationHelper.sendNotification(emailParam);
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_SMS);
+                    smsParam.setSubject("MOH HALP - Rescheduling of inspection date");
+                    smsParam.setQueryCode(appNo);
+                    smsParam.setReqRefNum(appNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(appNo);
+                    notificationHelper.sendNotification(smsParam);
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE_MSG);
+                    msgParam.setTemplateContent(map);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    msgParam.setQueryCode(appNo);
+                    msgParam.setReqRefNum(appNo);
+                    msgParam.setRefId(appNo);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    notificationHelper.sendNotification(msgParam);
+                } catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sendEmailToApplicantNewDate(ReschedulingOfficerDto reschedulingOfficerDto,ApptAppInfoShowDto appInfoShowDto) {
+        String appNo = reschedulingOfficerDto.getAssignNo();
+        if(!StringUtil.isEmpty(appNo)){
+            //get Official Email Address
+            String address1 = systemParamConfig.getSystemAddressOne();
+            ApplicationDto applicationDto = getApplicationByAppNo(appNo);
+            //get old inspection start date
+            Date inspDate = getOldInspectionStartDate(applicationDto);
+            String dateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
+            String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
+
+            String newDateStr = Formatter.formatDateTime(inspDate, "dd/MM/yyyy");
+            String newDateStartTime = Formatter.formatDateTime(appInfoShowDto.getInspDate(), "HH:mm:ss");
+
+            //url
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+            if(applicationDto != null) {
+                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                String applicantId = applicationGroupDto.getSubmitBy();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                String applicantName = orgUserDto.getDisplayName();
+                AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
+                Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("applicant", applicantName);
+                String hciName = appGrpPremisesDto.getHciName();
+                if(!StringUtil.isEmpty(hciName)){
+                    map.put("hciName", hciName);
+                }
+                map.put("date", dateStr);
+                map.put("dateTime", dateTime);
+                map.put("hasNewDate", "true");
+                map.put("newDate", newDateStr);
+                map.put("newDateTime", newDateStartTime);
                 map.put("systemLink", loginUrl);
                 map.put("address", address1);
                 //msg service code
@@ -823,6 +900,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
                         updateUserForTask(taskDtos, apptAppInfoShowDto);
                         //update recommendation inspection date
+                        try{
+                            sendEmailToApplicantNewDate(reschedulingOfficerDto,apptAppInfoShowDto);
+                        }catch (Exception e){
+                            log.error(e.getMessage());
+                        }
                         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                         createOrUpdateRecommendation(appPremisesRecommendationDto, appPremisesCorrelationDto.getId(), apptAppInfoShowDto.getInspDate());
                         try {
