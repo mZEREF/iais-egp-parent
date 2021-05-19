@@ -116,6 +116,8 @@ public final class MasterCodeUtil {
     // Inspection entity
     public static final String CATE_ID_INSPECTION_ENTITY_TYPE                           = "796E6112-36B1-EB11-8B7D-000C293F0C99";
 
+    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
+
 
     /**
      * @description: refresh the master codes into cache
