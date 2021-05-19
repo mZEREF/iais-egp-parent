@@ -59,6 +59,17 @@
                                 </td>
                             </tr>
 
+                            <c:if test="${'DES999' == cgo.designation}">
+                                <tr>
+                                    <td class="col-xs-8">
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.otherDesignation}"/> </p>
+                                    </td>
+                                </tr>
+                            </c:if>
+
+
                             <tr>
                                 <td class="col-xs-8">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type </p>

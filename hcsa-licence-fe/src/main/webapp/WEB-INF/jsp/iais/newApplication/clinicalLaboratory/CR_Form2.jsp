@@ -360,7 +360,7 @@
                                                             <tr height="1">
                                                                 <td class="first last" style="width: 100%;">
                                                                     <div class="control control-caption-horizontal otherDesignationDiv
-                                                                        <c:if test="${currentCgo.designation != 'Others' }">
+                                                                        <c:if test="${currentCgo.designation != 'DES999' }">
                                                                             hidden
                                                                         </c:if>
                                                                     ">
@@ -882,7 +882,7 @@
         $('.designationSel').unbind('change');
         $('.designationSel').change(function () {
             var thisVal = $(this).val();
-            if("Others" == thisVal){
+            if("DES999" == thisVal){
                 $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
             }else{
                 $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');

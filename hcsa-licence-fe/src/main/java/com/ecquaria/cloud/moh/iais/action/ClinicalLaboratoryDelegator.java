@@ -2273,7 +2273,7 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isDesignation()){
                     NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
                 }
-                if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
                     NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                 }
                 if(appPsnEditDto.isProfessionType()){
@@ -2347,7 +2347,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setIdType(idType[i]);
                 appSvcCgoDto.setIdNo(StringUtil.toUpperCase(idNo[i]));
                 appSvcCgoDto.setDesignation(designation[i]);
-                if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation[i])){
+                if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation[i])){
                     appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
                 }
                 appSvcCgoDto.setProfessionType(professionType[i]);
@@ -2503,7 +2503,7 @@ public class ClinicalLaboratoryDelegator {
                     if(appPsnEditDto.isOtherDesignation()){
                         NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
-                    if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
                         NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
 
@@ -2701,7 +2701,7 @@ public class ClinicalLaboratoryDelegator {
                     if (appPsnEditDto.isDesignation()) {
                         NewApplicationHelper.setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
                     }
-                    if(appPsnEditDto.isOtherDesignation() && NewApplicationConstant.DESIGNATION_OTHERS.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
                         NewApplicationHelper.setPsnValue(deputyOtherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
                     //input
@@ -2943,6 +2943,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
         String[] personnelSels = ParamUtil.getStrings(request, "personnelSel");
         String[] designations = ParamUtil.getStrings(request, "designation");
+        String[] otherDesignationss = ParamUtil.getStrings(request, "otherDesignation");
         String[] names = ParamUtil.getStrings(request, "name");
         String[] qualifications = ParamUtil.getStrings(request, "qualification");
         String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
@@ -3010,6 +3011,9 @@ public class ClinicalLaboratoryDelegator {
 
 
                 appSvcPersonnelDto.setDesignation(designation);
+                if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation)){
+                    appSvcPersonnelDto.setOtherDesignation(otherDesignationss[i]);
+                }
                 appSvcPersonnelDto.setName(name);
                 appSvcPersonnelDto.setQualification(qualification);
                 appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
@@ -3070,6 +3074,9 @@ public class ClinicalLaboratoryDelegator {
 
         }
         NewApplicationHelper.doSortSelOption(designation);
+        if(designation.size() > 0){
+            designation.add(new SelectOption(NewApplicationConstant.DESIGNATION_OTHERS,NewApplicationConstant.DESIGNATION_OTHERS));
+        }
         return designation;
     }
 

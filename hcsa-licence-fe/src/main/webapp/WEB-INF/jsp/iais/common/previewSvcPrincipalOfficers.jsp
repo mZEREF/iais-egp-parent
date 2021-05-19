@@ -84,6 +84,15 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.designation}"/></p>
                                         </td>
                                     </tr>
+                                    <c:if test="${'DES999' == po.designation}">
+                                        <tr>
+                                            <td class="col-xs-8">
+                                            </td>
+                                            <td>
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.otherDesignation}"/> </p>
+                                            </td>
+                                        </tr>
+                                    </c:if>
                                     <tr>
                                         <td class="col-xs-8">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.</p>
@@ -151,6 +160,15 @@
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.designation}"/></p>
                                         </td>
                                     </tr>
+                                    <c:if test="${'DES999' == po.designation}">
+                                        <tr>
+                                            <td class="col-xs-8">
+                                            </td>
+                                            <td>
+                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.otherDesignation}"/> </p>
+                                            </td>
+                                        </tr>
+                                    </c:if>
                                     <tr>
                                         <td class="col-xs-8">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.</p>

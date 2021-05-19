@@ -190,7 +190,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row otherDesignationDiv <c:if test="${principalOfficer.designation != 'Others'}">hidden</c:if>">
+                                            <div class="row otherDesignationDiv <c:if test="${principalOfficer.designation != 'DES999'}">hidden</c:if>">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-3 control-label formtext col-md-4">
@@ -497,7 +497,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row deputyOtherDesignationDiv <c:if test="${deputy.designation != 'Others'}">hidden</c:if>">
+                                            <div class="row deputyOtherDesignationDiv <c:if test="${deputy.designation != 'DES999'}">hidden</c:if>">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-3 control-label formtext col-md-4">
@@ -1165,7 +1165,7 @@
         $poContentEle.find('select[name="designation"]').val(designation);
         var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
-        if('Others' == designation){
+        if('DES999' == designation){
             $poContentEle.find('div.otherDesignationDiv').removeClass('hidden');
             $poContentEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
         }else{
@@ -1219,7 +1219,7 @@
         $dpoContentEle.find('select[name="deputyDesignation"]').val(designation);
         var designationVal = $dpoContentEle.find('option[value="' + designation + '"]').html();
         $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
-        if('Others' == designation){
+        if('DES999' == designation){
             $dpoContentEle.find('div.deputyOtherDesignationDiv').removeClass('hidden');
             $dpoContentEle.find('input[name="deputyOtherDesignation"]').val(data.otherDesignation);
         }else{
@@ -1329,6 +1329,9 @@
         if(psnEditDto.emailAddr){
             $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
         }
+        if(psnEditDto.otherDesignation){
+            $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
+        }
         //for disabled add style
         $cgoPsnEle.find('input[type="text"]').each(function () {
             if($(this).prop('disabled')){
@@ -1375,6 +1378,9 @@
         }
         if(psnEditDto.emailAddr){
             $cgoPsnEle.find('input[name="deputyEmailAddress"]').prop('disabled',false);
+        }
+        if(psnEditDto.otherDesignation){
+            $cgoPsnEle.find('input[name="deputyOtherDesignation"]').prop('disabled',false);
         }
         //for disabled add style
         $cgoPsnEle.find('input[type="text"]').each(function () {
@@ -1499,7 +1505,7 @@
         $('.deputyDesignation').unbind('change');
         $('.deputyDesignation').change(function () {
             var thisVal = $(this).val();
-            if("Others" == thisVal){
+            if("DES999" == thisVal){
                 $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').removeClass('hidden');
             }else{
                 $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').addClass('hidden');
