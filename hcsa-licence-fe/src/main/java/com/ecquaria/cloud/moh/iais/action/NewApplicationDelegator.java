@@ -311,6 +311,10 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
         /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
+        // New Application - Declaration - clear uploaded dto
+        String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
