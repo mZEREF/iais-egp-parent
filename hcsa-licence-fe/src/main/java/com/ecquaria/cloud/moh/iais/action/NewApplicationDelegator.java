@@ -1177,7 +1177,16 @@ public class NewApplicationDelegator {
             } else {
                 appSubmissionDto.setGroupLic(false);
             }
+            // declaration
+            appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+            DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
+                    appSubmissionDto.getAppType());
+            // uploaded files
+            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+            validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                    !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request);
         }
+
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
         if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
             appSubmissionDto.setUserAgreement(true);
