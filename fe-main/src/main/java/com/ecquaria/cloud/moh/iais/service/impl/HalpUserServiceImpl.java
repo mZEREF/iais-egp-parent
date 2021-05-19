@@ -63,7 +63,7 @@ public class HalpUserServiceImpl implements HalpUserService {
             log.warn(StringUtil.changeForLog("The user Id is null!"));
             return false;
         }
-        ValidationResult result = WebValidationHelper.validateProperty(feUserDto, "edit");
+        ValidationResult result = WebValidationHelper.validatePropertyWithoutCustom(feUserDto, "edit");
         if (result.isHasErrors()) {
             log.warn(StringUtil.changeForLog("" + WebValidationHelper.generateJsonStr(result.retrieveAll())));
             return false;
