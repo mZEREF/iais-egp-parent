@@ -705,7 +705,6 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue) {
         List<SelectOption> appStatusOption = IaisCommonUtils.genNewArrayList();
-        SelectOption comPoolSo = new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT));
         //add status option
         if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(dashSwitchActionValue)) {
             appStatusOption = getKpiAppStatusOptionByRole(curRoleId, appStatusOption);
@@ -715,7 +714,6 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
         } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(dashSwitchActionValue)) {
             appStatusOption = getTeamAppStatusOptionByRole(curRoleId, appStatusOption);
-            appStatusOption.add(comPoolSo);
 
         } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(dashSwitchActionValue)) {
             appStatusOption = getWaitAppStatusOptionByRole(curRoleId, appStatusOption);
@@ -774,17 +772,20 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO3));
@@ -832,15 +833,18 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
             }
@@ -877,17 +881,20 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO2)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO3)) {
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_ASO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_PSO));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO3));

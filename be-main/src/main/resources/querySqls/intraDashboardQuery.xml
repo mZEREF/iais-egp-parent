@@ -149,7 +149,8 @@
 
     <sql key = "dashCommonTaskAjax"  remarks = "get Application By App Group in Common Pool">
         <![CDATA[
-            SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T7.ID AS TASK_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
+            SELECT T5.ID, MAX(T5.APP_PREM_ID) AS APP_PREM_ID, MAX(T7.ID) AS TASK_ID, MAX(T5.APPLICATION_NO) AS APPLICATION_NO,
+                          MAX(T5.SERVICE_ID) AS SERVICE_ID, MAX(T5.STATUS) AS STATUS, MAX(T5.HCI_CODE) AS HCI_CODE
             FROM
                 (
                     SELECT T2.ID, T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_NAME, T3.HCI_CODE, T4.GROUP_NO, T1.APP_TYPE,
@@ -194,6 +195,7 @@
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
+            GROUP BY T5.ID
         ]]>
     </sql>
 
