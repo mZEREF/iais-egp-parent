@@ -696,10 +696,6 @@
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
 
-    function doUserRecUploadConfirmDecFile(event) {
-        ajaxCallUploadForMaxDec('mainForm', "selectedDeclFile",true);
-    }
-
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
