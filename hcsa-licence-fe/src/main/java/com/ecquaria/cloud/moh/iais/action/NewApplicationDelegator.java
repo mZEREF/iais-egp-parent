@@ -231,9 +231,6 @@ public class NewApplicationDelegator {
     @Autowired
     private Environment env;
 
-    @Autowired
-    private ComFileRepoClient comFileRepoClient;
-
     /**
      * StartStep: Start
      *
@@ -1218,8 +1215,6 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
-
-
 
     public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
         boolean isValid = true;
