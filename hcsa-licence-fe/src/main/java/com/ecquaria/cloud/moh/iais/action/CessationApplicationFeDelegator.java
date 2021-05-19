@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -69,6 +70,9 @@ public class CessationApplicationFeDelegator {
     private LicenceClient licenceClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -97,6 +101,7 @@ public class CessationApplicationFeDelegator {
     private static final String PATOTHERS = "patOthersTakeOver";
     private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
     private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
+    private static final String APPSUBMISSIONDTO = "appSubmissionDto";
     private static final String ERROR = "GENERAL_ERR0006";
     static String[] arrReason = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     static String[] arrPatients = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
@@ -128,9 +133,10 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
-        ParamUtil.setSessionAttr(bpc.request, "pageShowFileDtos", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile_MaxIndex", null);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFileDocShowPageDto_MaxIndex", null);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
         ParamUtil.setSessionAttr(bpc.request,"declaration_page_is","cessation");
@@ -307,7 +313,8 @@ public class CessationApplicationFeDelegator {
         appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryquestionkindly);
         appDeclarationMessageDto.setPreliminaryQuestionItem1(isbefore);
         appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);
-        List<AppDeclarationDocDto> cessationDocData = getCessationDocData(bpc.request);
+        List<AppDeclarationDocDto> cessationDocData = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+        appSubmissionService.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
@@ -606,57 +613,4 @@ public class CessationApplicationFeDelegator {
     }
 
 
-
-    private List<AppDeclarationDocDto> getCessationDocData(HttpServletRequest request){
-        List<AppDeclarationDocDto> appDeclarationDocDtoList = IaisCommonUtils.genNewArrayList();
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        Map<String, File> map = (Map<String, File>)request.getSession().getAttribute("seesion_files_map_ajax_feselectedDeclFile");
-        Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("declarationsPageShowFileHashMap");
-        List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
-        List<File> files= IaisCommonUtils.genNewArrayList();
-        if(map!=null&&!map.isEmpty()){
-            map.forEach((str, file)->{
-                if(file!=null){
-                    long length = file.length();
-                    if(length>0){
-                        Long size=length/1024;
-                        files.add(file);
-                        AppDeclarationDocDto appDeclarationDocDto = new AppDeclarationDocDto();
-                        SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
-                        String e = str.substring(str.lastIndexOf('e') + 1);
-                        appDeclarationDocDto.setDocName(file.getName());
-                        String fileMd5 = singeFileUtil.getFileMd5(file);
-                        appDeclarationDocDto.setMd5Code(fileMd5);
-                        appDeclarationDocDto.setDocSize(Integer.valueOf(size.toString()));
-                        appDeclarationDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        appDeclarationDocDto.setVersion(1);
-                        appDeclarationDocDto.setSeqNum(Integer.parseInt(e));
-                        appDeclarationDocDtoList.add(appDeclarationDocDto);
-                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
-                        pageShowFileDto.setIndex(e);
-                        pageShowFileDto.setFileName(file.getName());
-                        pageShowFileDto.setFileMapId("selectedFileDiv"+e);
-                        pageShowFileDto.setSize(Integer.valueOf(size.toString()));
-                        pageShowFileDto.setMd5Code(fileMd5);
-                        pageShowFileDtos.add(pageShowFileDto);
-                    }
-                }else {
-                    if(pageShowFileHashMap!=null){
-                        PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(str);
-                        String e = str.substring(str.lastIndexOf('e') + 1);
-                        AppDeclarationDocDto appDeclarationDocDto = new AppDeclarationDocDto();
-                        appDeclarationDocDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
-                        appDeclarationDocDto.setDocName(pageShowFileDto.getFileName());
-                        appDeclarationDocDto.setDocSize(pageShowFileDto.getSize());
-                        appDeclarationDocDto.setMd5Code(pageShowFileDto.getMd5Code());
-                        appDeclarationDocDtoList.add(appDeclarationDocDto);
-                        pageShowFileDtos.add(pageShowFileDto);
-                    }
-                }
-            });
-        }
-
-        mulReq.getSession().setAttribute("pageShowFileDtos", pageShowFileDtos);
-        return appDeclarationDocDtoList;
-    }
 }

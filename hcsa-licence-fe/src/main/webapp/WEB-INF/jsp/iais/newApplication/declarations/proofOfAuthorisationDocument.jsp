@@ -12,7 +12,7 @@
                     <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto" varStatus="ind">
                         <div id="${pageShowFileDto.fileMapId}">
                           <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
+                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
                              title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
                           </span>
                           <span class="error-msg" name="iaisErrorMsg" id="file${ind.index}"></span>
@@ -38,8 +38,3 @@
     </div>
 </div>
 <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
-<script>
-    function doUserRecUploadConfirmDecFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedDeclFile",true);
-    }
-</script>

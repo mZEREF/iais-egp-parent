@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,6 +34,9 @@ public class AppealPrintDelegator {
 
     @Autowired
     CessationApplicationFeDelegator cessationApplicationFeDelegator;
+
+    @Autowired
+    private ApplicationFeClient applicationFeClient;
 
     public void prepareData(BaseProcessClass bpc){
         log.info("------>prepareData start<------");
@@ -118,10 +125,12 @@ public class AppealPrintDelegator {
 
 
     private void printCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessPrint");
     }
 
     private void printViewCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessViewPage");
     }
 

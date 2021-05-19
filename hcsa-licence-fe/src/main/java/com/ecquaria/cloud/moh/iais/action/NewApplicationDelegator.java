@@ -231,9 +231,6 @@ public class NewApplicationDelegator {
     @Autowired
     private Environment env;
 
-    @Autowired
-    private ComFileRepoClient comFileRepoClient;
-
     /**
      * StartStep: Start
      *
@@ -1219,8 +1216,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
-
-
     public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
         boolean isValid = true;
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
@@ -1506,6 +1501,12 @@ public class NewApplicationDelegator {
                     appCessLicDto.setSvcName(svcName);
                     AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
                     AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationFeClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+                    List<AppDeclarationMessageDto> appDeclarationMessageDtoList = applicationFeClient.getAppDeclarationMessageDto(appGrpPremisesEntityDto.getAppGrpId()).getEntity();
+                    List<AppDeclarationDocDto> appDeclarationDocDtoList = applicationFeClient.getAppDeclarationDocDto(appGrpPremisesEntityDto.getAppGrpId()).getEntity();
+                    if (appDeclarationMessageDtoList != null && appDeclarationMessageDtoList.size() > 0){
+                        appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDtoList.get(0));
+                    }
+                    appSubmissionService.initDeclarationFiles(appDeclarationDocDtoList,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
                     String blkNo = appGrpPremisesEntityDto.getBlkNo();
                     String premisesId = appGrpPremisesEntityDto.getId();
                     String streetName = appGrpPremisesEntityDto.getStreetName();
@@ -1593,12 +1594,16 @@ public class NewApplicationDelegator {
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
+                    ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
 
 
+                    ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessLicDtos);
                     ParamUtil.setSessionAttr(bpc.request, "reasonOptionPrint", (Serializable) reasonOption);
                     ParamUtil.setSessionAttr(bpc.request, "patientsOptionPrint", (Serializable) patientsOption);
                     ParamUtil.setRequestAttr(bpc.request, "applicationDtoPrint", applicationDto);
                     ParamUtil.setSessionAttr(bpc.request, "confirmPrintDtos", (Serializable) appCessLicDtos);
+
+                    ParamUtil.setSessionAttr(bpc.request,"declaration_page_is","cessation");
                     return;
                 }
                 AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
