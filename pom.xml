@@ -205,6 +205,11 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.5.12</version>
             </dependency>
+            <dependency>
+                <groupId>com.dbs.sgqr.generator</groupId>
+                <artifactId>SGQRGenerator</artifactId>
+                <version>1.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
