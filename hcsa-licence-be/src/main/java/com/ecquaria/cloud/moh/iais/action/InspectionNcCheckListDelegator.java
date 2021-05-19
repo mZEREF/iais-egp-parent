@@ -82,20 +82,9 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     public void start(BaseProcessClass bpc) {
         log.info("=======inspectionNcCheckListDelegator start=======");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, ADHOCLDTO, null);
-        ParamUtil.setSessionAttr(request, COMMONDTO, null);
-        ParamUtil.setSessionAttr(request, TASKDTO, null);
-        ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
-        ParamUtil.setSessionAttr(request, CHECKLISTFILEDTO, null);
-        ParamUtil.setSessionAttr(request, TASKDTOLIST, null);
-        ParamUtil.setSessionAttr(request, INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
-        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
-        ParamUtil.setSessionAttr(request,INSPECTION_USERS,null);
-        ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH,null);
-        ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.NO);
-        ParamUtil.setSessionAttr(request, MOBILE_REMARK_GROUP,null);
-        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
-        ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        clearSessionForStartCheckList(request);
+        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
+        ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
 
     public void successViewPre(BaseProcessClass bpc){
@@ -236,7 +225,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             }
             inspectionSpecServiceDto.setFdtoList(fdtoList);
             try{
-            inspectionSpecServiceDto.setAdchklDto((AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adchklDto));
+                inspectionSpecServiceDto.setAdchklDto((AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adchklDto));
             }catch (Exception e){
                 log.error(e.getMessage());
             }
@@ -348,110 +337,8 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
 
     }
 
-    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        String tcuflag = ParamUtil.getString(request,"tcuType");
-        String tcu = null;
-        if(!StringUtil.isEmpty(tcuflag)){
-            tcu = ParamUtil.getString(request,"tuc");
-        }
-        String bestpractice = ParamUtil.getString(request,"bestpractice");
-        String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        String otherOfficers = ParamUtil.getString(request,"otherinspector");
-        serListDto.setRemarksForHistory( ParamUtil.getString(request,"RemarksForHistory"));
-        //startHour   startHourMin  endHour endHourMin
-        String inspectionDate = ParamUtil.getString(request,"inspectionDate");
-        String startHour = ParamUtil.getString(request,"startHour");
-        String startMin = ParamUtil.getString(request,"startHourMin");
-        String endHour = ParamUtil.getString(request,"endHour");
-        String endMin = ParamUtil.getString(request,"endHourMin");
-        String startTime = startHour+" : "+startMin;
-        String endTime =  endHour+" : "+endMin;
-        serListDto.setStartTime(startTime);
-        serListDto.setEndTime(endTime);
-        serListDto.setStartHour(startHour);
-        serListDto.setEndHour(endHour);
-        serListDto.setStartMin(startMin);
-        serListDto.setEndMin(endMin);
-        serListDto.setInspectionDate(inspectionDate);
-        serListDto.setOtherinspectionofficer(otherOfficers);
-        serListDto.setTcuRemark(tcuremark);
-        if(!StringUtil.isEmpty(tcuflag)){
-            serListDto.setTcuFlag(true);
-            serListDto.setTuc(tcu);
-        }else{
-            serListDto.setTcuFlag(false);
-            serListDto.setTuc(null);
-        }
-        serListDto.setBestPractice(bestpractice);
 
-        // set litter file
-        String litterFile =  ParamUtil.getString(request,"litterFile" );
-        if(!StringUtil.isEmpty(litterFile)){
-            String litterFileId =  ParamUtil.getString(request,"litterFileId" );
-            CommonsMultipartFile file= (CommonsMultipartFile) request.getFile("selectedFileView");
-            if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
-                if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                    file.getFileItem().setFieldName("selectedFile");
-                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASKDTO);
-                    String correlationId = taskDto.getRefNo();
-                    AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
-                    appIntranetDocDto.setDocName(litterFile);
-                    appIntranetDocDto.setAppPremCorreId(correlationId);
-                    appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
-                    long size = file.getSize()/1024;
-                    if(size <= Integer.MAX_VALUE ){
-                        appIntranetDocDto.setDocSize((int)size);
-                    }else {
-                        appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
-                    }
-                     //delete file
-                    insepctionNcCheckListService.deleteInvalidFile(serListDto);
-                    //save file
-                    if( size <= 10240)
-                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
-                    serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
-                }
-            }
-        }else {
-            //delete file
-            insepctionNcCheckListService.deleteInvalidFile(serListDto);
-            serListDto.setAppPremisesSpecialDocDto(null);
-           // serListDto.setFile(null);
-        }
 
-        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-        getAuditData(request);
-        return serListDto;
-    }
-
-   private void  getAuditData(MultipartHttpServletRequest request)throws IOException {
-       ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
-       if (appViewDto != null && appViewDto.getLicPremisesAuditDto() != null){
-           LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
-           String framework = ParamUtil.getString(request,"framework");
-           String periods = ParamUtil.getString(request,"periods");
-           String frameworkRemarks = ParamUtil.getString(request,"frameworkRemarks");
-           if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("0")){
-               licPremisesAuditDto.setInRiskSocre(0);
-               if(!StringUtil.isEmpty(periods)){
-                   licPremisesAuditDto.setIncludeRiskType(periods);
-                   if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))
-                       licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
-                   else
-                       licPremisesAuditDto.setLgrRemarks(null);
-               }else {
-                   licPremisesAuditDto.setIncludeRiskType(null);
-                   licPremisesAuditDto.setLgrRemarks(null);
-               }
-           }else {
-               licPremisesAuditDto.setInRiskSocre(1);
-               licPremisesAuditDto.setIncludeRiskType(null);
-               licPremisesAuditDto.setLgrRemarks(null);
-           }
-         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
-       }
-   }
 
 
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {
@@ -484,37 +371,6 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"RemarksForHistory"),loginContext,flag);
     }
 
-
-
-
-    public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
-        /*if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        getServiceData(temp,fdto,request);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }*/
-        String tcu = ParamUtil.getString(request,"tuc");
-        String bestpractice = ParamUtil.getString(request,"bestpractice");
-        String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        String otherOfficers = ParamUtil.getString(request,"otherinspector");
-        String startTime = ParamUtil.getString(request,"startTime");
-        String endTime =  ParamUtil.getString(request,"endTime");
-        serListDto.setStartTime(startTime);
-        serListDto.setEndTime(endTime);
-        serListDto.setOtherinspectionofficer(otherOfficers);
-        serListDto.setTcuRemark(tcuremark);
-        serListDto.setTuc(tcu);
-        serListDto.setBestPractice(bestpractice);
-        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-        return serListDto;
-    }
 
     public void doCheckList(BaseProcessClass bpc){
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
