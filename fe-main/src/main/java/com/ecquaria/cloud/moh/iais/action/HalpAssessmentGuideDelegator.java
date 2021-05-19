@@ -739,6 +739,23 @@ public class HalpAssessmentGuideDelegator {
             baseAndSpcSvcMap.put(hcsaServiceDto.getSvcCode(),baseServiceDtos);
             allChkSvcIds.add(hcsaServiceDto.getId());
         }
+        List<HcsaServiceDto> pendAndLicPremSvc = IaisCommonUtils.genNewArrayList();
+        List<HcsaServiceDto> chkBaseSvcDtos = appSelectSvcDto.getBaseSvcDtoList();
+        if(!IaisCommonUtils.isEmpty(chkBaseSvcDtos) && !IaisCommonUtils.isEmpty(baseSvcDtoList)){
+            List<String> alignBaseSvcCodes = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:baseSvcDtoList){
+                alignBaseSvcCodes.add(hcsaServiceDto.getSvcCode());
+            }
+            //remove align base svc
+            List<HcsaServiceDto> newBaseSvcDots = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto chkBaseSvcDto:chkBaseSvcDtos){
+                if(!alignBaseSvcCodes.contains(chkBaseSvcDto.getSvcCode())){
+                    newBaseSvcDots.add(chkBaseSvcDto);
+                }
+            }
+            pendAndLicPremSvc.addAll(newBaseSvcDots);
+        }
+        pendAndLicPremSvc.addAll(specSvcDtos);
         ParamUtil.setSessionAttr(bpc.request,BASEANDSPCSVCMAP, (Serializable) baseAndSpcSvcMap);
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
         //init map ->svcName,List<AppAlignLicQueryDto> =>
@@ -758,7 +775,7 @@ public class HalpAssessmentGuideDelegator {
         Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(allChkSvcIdList);
         log.debug("premises Type size {}",premisesTypeList.size());
         List<AppAlignLicQueryDto> appAlignLicQueryDtos = assessmentGuideService.getAppAlignLicQueryDto(licenseeId,svcNameList,transferToList(premisesTypeList));
-        List<String> pendAndLicPremHci = assessmentGuideService.getHciFromPendAppAndLic(licenseeId,specSvcDtos);
+        List<String> pendAndLicPremHci = assessmentGuideService.getHciFromPendAppAndLic(licenseeId,pendAndLicPremSvc);
         //remove item when same svc and same premises(hci)
         List<AppAlignLicQueryDto> newAppAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
         for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
