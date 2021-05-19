@@ -27,7 +27,7 @@
                     <h4><iais:message key="NEW_ACK023"/></h4>
                   </c:when>
                   <c:when test="${'NMI' ==currentSvcCode}">
-                    <h4>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</h4>
+                    <h4>Please appoint at least one person for each role listed under "Service Personnel".</h4>
                   </c:when>
                   <c:when test="${'NMA' ==currentSvcCode}">
                     <h4>The Nuclear Medicine Assay Service have the following personnel that satisfy the minimum requirements at all times</h4>
