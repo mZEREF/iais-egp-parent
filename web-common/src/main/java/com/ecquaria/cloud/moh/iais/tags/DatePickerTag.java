@@ -32,6 +32,7 @@ public final class DatePickerTag extends DivTagSupport {
     private String startDate;
     private String endDate;
     private boolean needErrorSpan;
+    private boolean disabled;
     
     public DatePickerTag() {
         super();
@@ -55,6 +56,7 @@ public final class DatePickerTag extends DivTagSupport {
         setStartDate(null);
         setEndDate(null);
         setNeedErrorSpan(true);
+        setDisabled(false);
     }
 
     public void setNeedErrorSpan(boolean needErrorSpan) {
@@ -134,6 +136,9 @@ public final class DatePickerTag extends DivTagSupport {
         if (!StringUtil.isEmpty(title)) {
             html.append(" title=\"").append(title).append('\"');
         }
+        if(disabled){
+            html.append(" disabled=\"").append(disabled).append('\"');
+        }
         html.append(" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"/>");
         if (needErrorSpan) {
             html.append("<span id=\"error_").append(name).append('\"');
@@ -167,6 +172,9 @@ public final class DatePickerTag extends DivTagSupport {
     }
     public void setWorkingDay(boolean workingDay) {
         this.workingDay = workingDay;
+    }
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
     public String getTitle() {
         return title;

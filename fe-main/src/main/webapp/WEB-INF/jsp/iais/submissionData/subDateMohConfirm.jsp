@@ -59,7 +59,7 @@
                                     <iais:row>
                                         <iais:field value="Date LDT was made or will be made available" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:datePicker id="ldtDate" name="ldtDate" dateVal="${laboratoryDevelopTestDto.ldtDate}"></iais:datePicker>
+                                            <iais:datePicker disabled ="true"  id="ldtDate" name="ldtDate" dateVal="${laboratoryDevelopTestDto.ldtDate}"></iais:datePicker>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
