@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -122,4 +124,12 @@ public interface AppSubmissionService {
     void updateDraftStatus(String draftNo,String status);
     ProfessionalResponseDto retrievePrsInfo(String profRegNo);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
+
+    void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
+
+    String getFileAppendId(String appType);
+
+    List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request);
+
+    AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String applicationTypeRequestForChange);
 }

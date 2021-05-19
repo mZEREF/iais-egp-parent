@@ -127,6 +127,9 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
+                                                <div class="panel-group"  role="tablist" aria-multiselectable="true">
+                                                    <%@include file="../common/declarations.jsp"%>
+                                                </div>
                                             <c:if test="${isSingle == 'Y'}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${userAgreement}">checked="checked"</c:if> >

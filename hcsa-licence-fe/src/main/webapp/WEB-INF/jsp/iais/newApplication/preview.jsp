@@ -59,6 +59,7 @@
                                                         </div>
                                                     </div>
                                                 </c:forEach>
+                                                <%@include file="../common/declarations.jsp"%>
                                             </div>
                                             <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
                                                 <div class="row">

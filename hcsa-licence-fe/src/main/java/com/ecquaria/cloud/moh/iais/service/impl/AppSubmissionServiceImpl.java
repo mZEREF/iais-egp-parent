@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -15,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -66,7 +69,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
+import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -90,6 +95,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -107,7 +113,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -408,6 +417,219 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId,String appType) {
         return applicationFeClient.getDraftListBySvcCodeAndStatus(svcCodeList,licenseeId,status,appType).getEntity();
+    }
+
+    @Override
+    public void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appDeclarationDocDtos)) {
+            return;
+        }
+        String fileAppendId = getFileAppendId(appType);
+        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(fileAppendId + "DocShowPageDto");
+        if (Objects.nonNull(dto)) {
+            return;
+        }
+        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+        for (int i = 0, len = appDeclarationDocDtos.size(); i < len; i++) {
+            AppDeclarationDocDto viewDoc = appDeclarationDocDtos.get(i);
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
+            PageShowFileDto pageShowFileDto = new PageShowFileDto();
+            pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
+            pageShowFileDto.setIndex(index);
+            pageShowFileDto.setFileName(viewDoc.getDocName());
+            pageShowFileDto.setSize(viewDoc.getDocSize());
+            pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
+            pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDtos.add(pageShowFileDto);
+            map.put(fileAppendId + index, null);
+            pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
+        }
+        // put page entity to sesstion
+        dto = new AppDeclarationDocShowPageDto();
+        dto.setFileMaxIndex(appDeclarationDocDtos.size());
+        dto.setPageShowFileDtos(pageShowFileDtos);
+        dto.setPageShowFileHashMap(pageShowFileHashMap);
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, map);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX  + fileAppendId
+                + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, appDeclarationDocDtos.size());
+    }
+
+    @Override
+    public String getFileAppendId(String appType) {
+        StringBuilder s = new StringBuilder("selected");
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            s.append("New");
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            s.append("RFC");
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            s.append("RENEW");
+        }
+        s.append("File");
+        return s.toString();
+    }
+
+    @Override
+    public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
+        String fileAppendId = getFileAppendId(appType);
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (IaisCommonUtils.isEmpty(fileMap)) {
+            return null;
+        }
+        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(
+                fileAppendId + "DocShowPageDto");
+        if (Objects.isNull(dto)) {
+            dto = new AppDeclarationDocShowPageDto();
+            dto.setPageShowFileHashMap(IaisCommonUtils.genNewHashMap());
+        }
+        Map<String, PageShowFileDto> pageShowFileHashMap = dto.getPageShowFileHashMap();
+        List<PageShowFileDto> pageDtos = IaisCommonUtils.genNewArrayList();
+        List<File> files = IaisCommonUtils.genNewArrayList();
+        List<AppDeclarationDocDto> docDtos = IaisCommonUtils.genNewArrayList();
+        SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
+        fileMap.forEach((s, file) -> {
+            // the current uploaed files
+            String index = s.substring(fileAppendId.length());
+            if (file != null) {
+                long length = file.length();
+                if (length > 0) {
+                    Long size = length / 1024;
+                    files.add(file);
+                    AppDeclarationDocDto docDto = new AppDeclarationDocDto();
+                    docDto.setDocName(file.getName());
+                    String fileMd5 = singeFileUtil.getFileMd5(file);
+                    docDto.setMd5Code(singeFileUtil.getFileMd5(file));
+                    docDto.setDocSize(Integer.valueOf(size.toString()));
+                    docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    docDto.setSeqNum(Integer.parseInt(index));
+                    Optional<Integer> versions = pageShowFileHashMap.entrySet()
+                            .stream()
+                            .filter(i -> s.equals(i.getKey()))
+                            .map(i -> i.getValue().getVersion())
+                            .findAny();
+                    docDto.setVersion(versions.orElse(0) + 1);
+                    docDtos.add(docDto);
+                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                    pageShowFileDto.setIndex(index);
+                    pageShowFileDto.setFileName(file.getName());
+                    pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
+                    pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                    pageShowFileDto.setMd5Code(fileMd5);
+                    pageDtos.add(pageShowFileDto);
+                }
+            } else {
+                // the previous / old files
+                PageShowFileDto pageShowFileDto = pageShowFileHashMap.get(s);
+                if (Objects.nonNull(pageShowFileDto)) {
+                    AppDeclarationDocDto docDto = new AppDeclarationDocDto();
+                    docDto.setDocName(pageShowFileDto.getFileName());
+                    docDto.setMd5Code(pageShowFileDto.getMd5Code());
+                    docDto.setDocSize(pageShowFileDto.getSize());
+                    docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
+                    docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    docDto.setSeqNum(Integer.parseInt(index));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDtos.add(docDto);
+                    pageDtos.add(pageShowFileDto);
+                }
+            }
+        });
+        dto.setPageShowFileDtos(pageDtos);
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+        // dto.setFileMaxIndex(pageDtos.size());
+        List<String> list = comFileRepoClient.saveFileRepo(files);
+        if (list != null) {
+            ListIterator<String> iterator = list.listIterator();
+            for (int j = 0; j < docDtos.size(); j++) {
+                String fileRepoId = docDtos.get(j).getFileRepoId();
+                if (fileRepoId == null) {
+                    if (iterator.hasNext()) {
+                        String next = iterator.next();
+                        pageDtos.get(j).setFileUploadUrl(next);
+                        docDtos.get(j).setFileRepoId(next);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        return docDtos;
+    }
+
+    @Override
+    public AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
+        AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
+        appDeclarationMessageDto.setAppType(type);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
+            String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
+            appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            String bankruptcyItem1 = request.getParameter("bankruptcyItem1");
+            appDeclarationMessageDto.setBankruptcyItem1(bankruptcyItem1);
+            String bankruptcyItem2 = request.getParameter("bankruptcyItem2");
+            appDeclarationMessageDto.setBankruptcyItem2(bankruptcyItem2);
+            String bankruptcyItem3 = request.getParameter("bankruptcyItem3");
+            appDeclarationMessageDto.setBankruptcyItem3(bankruptcyItem3);
+            String bankruptcyItem4 = request.getParameter("bankruptcyItem4");
+            appDeclarationMessageDto.setBankruptcyItem4(bankruptcyItem4);
+            String bankruptcyRemark = request.getParameter("bankruptcyRemark");
+            appDeclarationMessageDto.setBankruptcyRemark(bankruptcyRemark);
+            String competenciesItem1 = request.getParameter("competenciesItem1");
+            appDeclarationMessageDto.setCompetenciesItem1(competenciesItem1);
+            String competenciesItem2 = request.getParameter("competenciesItem2");
+            appDeclarationMessageDto.setCompetenciesItem2(competenciesItem2);
+            String competenciesItem3 = request.getParameter("competenciesItem3");
+            appDeclarationMessageDto.setCompetenciesItem3(competenciesItem3);
+            String competenciesRemark = request.getParameter("competenciesRemark");
+            appDeclarationMessageDto.setCompetenciesRemark(competenciesRemark);
+            String criminalRecordsItem1 = request.getParameter("criminalRecordsItem1");
+            appDeclarationMessageDto.setCompetenciesRemark(criminalRecordsItem1);
+            String criminalRecordsItem2 = request.getParameter("criminalRecordsItem2");
+            appDeclarationMessageDto.setCriminalRecordsItem2(criminalRecordsItem2);
+            String criminalRecordsItem3 = request.getParameter("criminalRecordsItem3");
+            appDeclarationMessageDto.setCriminalRecordsItem3(criminalRecordsItem3);
+            String criminalRecordsItem4 = request.getParameter("criminalRecordsItem4");
+            appDeclarationMessageDto.setCriminalRecordsItem4(criminalRecordsItem4);
+            String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
+            appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
+
+        } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
+            // Preliminary Question
+            String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
+            appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
+            // Declaration on Bankruptcy
+            appDeclarationMessageDto.setBankruptcyItem1(ParamUtil.getString(request, "bankruptcyItem1"));
+            appDeclarationMessageDto.setBankruptcyItem2(ParamUtil.getString(request, "bankruptcyItem2"));
+            appDeclarationMessageDto.setBankruptcyItem3(ParamUtil.getString(request, "bankruptcyItem3"));
+            appDeclarationMessageDto.setBankruptcyItem4(ParamUtil.getString(request, "bankruptcyItem4"));
+            appDeclarationMessageDto.setBankruptcyRemark(ParamUtil.getString(request, "bankruptcyRemark"));
+            // Declaration on Competencies
+            appDeclarationMessageDto.setCompetenciesItem1(ParamUtil.getString(request, "competenciesItem1"));
+            appDeclarationMessageDto.setCompetenciesItem2(ParamUtil.getString(request, "competenciesItem2"));
+            appDeclarationMessageDto.setCompetenciesItem3(ParamUtil.getString(request, "competenciesItem3"));
+            appDeclarationMessageDto.setCompetenciesRemark(ParamUtil.getString(request, "competenciesRemark"));
+            // Declaration on Criminal Records and Past Suspension/ Revocation under PHMCA/HCSA
+            appDeclarationMessageDto.setCriminalRecordsItem1(ParamUtil.getString(request, "criminalRecordsItem1"));
+            appDeclarationMessageDto.setCriminalRecordsItem2(ParamUtil.getString(request, "criminalRecordsItem2"));
+            appDeclarationMessageDto.setCriminalRecordsItem3(ParamUtil.getString(request, "criminalRecordsItem3"));
+            appDeclarationMessageDto.setCriminalRecordsItem4(ParamUtil.getString(request, "criminalRecordsItem4"));
+            appDeclarationMessageDto.setCriminalRecordsRemark(ParamUtil.getString(request, "criminalRecordsRemark"));
+            // General Accuracy Declaration
+            appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
+        }
+        appDeclarationMessageDto.setAppType(type);
+        appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return appDeclarationMessageDto;
     }
 
     @Override

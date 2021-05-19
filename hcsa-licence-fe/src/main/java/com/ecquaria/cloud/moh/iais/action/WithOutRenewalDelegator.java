@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -83,6 +84,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonAbstract;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
+import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,6 +184,9 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfc_eqHciCode", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
+        ParamUtil.setSessionAttr(bpc.request, "selectedRENEWFileDocShowPageDto", null);
+        bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
+        bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -224,6 +229,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
         } else {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            appSubmissionService.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             requestForChangeService.svcDocToPresmise(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, "test");
             appSubmissionDtoDraft.setOneLicDoRenew(true);
@@ -1220,6 +1226,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "userAgreement", Boolean.FALSE);
         }
         Map<String,  Map<String, String>> errMap = IaisCommonUtils.genNewHashMap();
+        Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
             if (date.before(new Date())||date.equals(new Date())) {
@@ -1250,10 +1257,15 @@ public class WithOutRenewalDelegator {
                     errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
                     count++;
                 }
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                DeclarationsUtil.declarationsValidate(allErrMap,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
+                appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
+                appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
             }
         }
         boolean passValidate = true;
-        Map<String,String> allErrMap = IaisCommonUtils.genNewHashMap();
+
         for(Map<String,String> errorMap:errMap.values()){
             if(!errorMap.isEmpty()){
                 allErrMap.putAll(errorMap);

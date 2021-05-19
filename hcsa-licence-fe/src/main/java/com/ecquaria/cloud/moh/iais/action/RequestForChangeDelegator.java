@@ -124,6 +124,9 @@ public class RequestForChangeDelegator {
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
         request.getSession().removeAttribute("rfc_eqHciCode");
+        request.getSession().removeAttribute("selectedRFCFileDocShowPageDto");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
     }
     /**
      *
@@ -150,6 +153,7 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDraft start ...."));
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        removeSession(bpc.request);
         loadingDraft(bpc,draftNo);
 
         log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
@@ -688,6 +692,7 @@ public class RequestForChangeDelegator {
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
