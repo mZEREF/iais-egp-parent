@@ -424,7 +424,6 @@
                 <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
                 <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
                 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-                <%@ include file="../appeal/FeFileCallAjax.jsp" %>
                 </form>
                 <div class="application-tab-footer">
                     <div class="row">
