@@ -443,7 +443,7 @@ public class LicenceViewServiceDelegator {
             if(publicHolidayDtos!=null){
                 formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
             }
-            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto(),bpc.request);
         }
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if(groupDto!=null){
@@ -2162,7 +2162,7 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto==null||oldAppSubmissionDto==null){
             return;
         }
@@ -2174,6 +2174,8 @@ public class LicenceViewServiceDelegator {
         if(oldAppSubmissionDtoAppGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList.isEmpty()){
             return;
         }
+        String appType = appSubmissionDto.getAppType();
+        boolean equals=true;
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getStreetName())&&StringUtil.isEmpty(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getStreetName())){
 
@@ -2256,6 +2258,18 @@ public class LicenceViewServiceDelegator {
                     oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).setScdfRefNo("");
                 }
             }
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                String oldHciName = oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciName();
+                if(hciName!=null){
+                     equals = hciName.equals(oldHciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }else if(oldHciName!=null){
+                     equals = oldHciName.equals(hciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }
+            }
+
         }
     }
 

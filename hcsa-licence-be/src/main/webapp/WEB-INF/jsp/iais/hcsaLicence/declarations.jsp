@@ -8,7 +8,7 @@
       <%@include file="declarations/crimAndPassApp.jsp"%>
       <%@include file="declarations/generalAccuracy.jsp"%>
   </c:if>
-  <c:if test="${appSubmissionDto.appType == 'APTY005'}">
+  <c:if test="${appSubmissionDto.appType == 'APTY005'&&RFC_HCAI_NAME_CHNAGE=='false'}">
     <%@include file="declarations/preliminaryQuestion.jsp"%>
     <%@include file="declarations/document.jsp"%>
     <%@include file="declarations/statements.jsp"%>
