@@ -16,12 +16,16 @@
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
       </c:if>
       <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
+        <c:set var="pageShowFileDtos" value="${selectedRFCFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+        <c:set var="sec" value="RFC" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/statements.jsp"%>
       </c:if>
       <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
         <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>
+        <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+        <c:set var="sec" value="RENEW" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>

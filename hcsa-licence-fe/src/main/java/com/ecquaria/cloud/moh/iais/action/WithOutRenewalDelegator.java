@@ -183,6 +183,9 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedDeclFile", null);
         ParamUtil.setSessionAttr(bpc.request, "pageShowFileDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedRENEWFileDocShowPageDto", null);
+        bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
+        bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
@@ -226,6 +229,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
         } else {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            appSubmissionService.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             requestForChangeService.svcDocToPresmise(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, "test");
             appSubmissionDtoDraft.setOneLicDoRenew(true);
@@ -1253,8 +1257,8 @@ public class WithOutRenewalDelegator {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                 DeclarationsUtil.declarationsValidate(allErrMap,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                 appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
-                List<AppDeclarationDocDto> appDeclarationDocDto = appSubmissionService.getAppDeclarationDocDto(bpc.request);
-                appSubmissionDtos.get(0).setAppDeclarationDocDtos(appDeclarationDocDto);
+                appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
+                appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
             }
         }
         boolean passValidate = true;

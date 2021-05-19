@@ -2028,8 +2028,10 @@ public class NewApplicationDelegator {
                     AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                     DeclarationsUtil.declarationsValidate(map,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                    List<AppDeclarationDocDto> appDeclarationDocDto = appSubmissionService.getAppDeclarationDocDto(bpc.request);
-                    appSubmissionDto.setAppDeclarationDocDtos(appDeclarationDocDto);
+                    appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                    validateDeclarationDoc(map, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                            !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request);
+                    appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
                 }
             }
         }

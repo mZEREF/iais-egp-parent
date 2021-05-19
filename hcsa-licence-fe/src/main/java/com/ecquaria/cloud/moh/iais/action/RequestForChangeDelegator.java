@@ -127,6 +127,9 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("rfc_eqHciCode");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
         request.getSession().removeAttribute("pageShowFileDtos");
+        request.getSession().removeAttribute("selectedRFCFileDocShowPageDto");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
     }
     /**
      *
@@ -692,6 +695,7 @@ public class RequestForChangeDelegator {
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();

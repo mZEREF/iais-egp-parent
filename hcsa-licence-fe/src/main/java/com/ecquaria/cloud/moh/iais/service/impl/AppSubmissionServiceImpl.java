@@ -660,6 +660,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         StringBuilder s = new StringBuilder("selected");
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             s.append("New");
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            s.append("RFC");
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            s.append("RENEW");
         }
         s.append("File");
         return s.toString();
