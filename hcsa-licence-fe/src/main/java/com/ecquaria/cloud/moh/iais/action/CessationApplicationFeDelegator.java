@@ -135,8 +135,8 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFileDocShowPageDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFileDocShowPageDto_MaxIndex", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile_MaxIndex", null);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
         ParamUtil.setSessionAttr(bpc.request,"declaration_page_is","cessation");
