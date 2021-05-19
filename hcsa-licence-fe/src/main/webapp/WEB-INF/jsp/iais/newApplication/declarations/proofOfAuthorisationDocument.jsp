@@ -12,7 +12,7 @@
                     <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto" varStatus="ind">
                         <div id="${pageShowFileDto.fileMapId}">
                           <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
+                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
                              title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
                           </span>
                           <span class="error-msg" name="iaisErrorMsg" id="file${ind.index}"></span>
@@ -32,14 +32,9 @@
                     <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
                 </div>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show" style="color: #D22727; font-size: 1.6rem"></span>
-                <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
+                <span id="error_selected${sec}FileError" name="iaisErrorMsg" class="error-msg"></span>
             </div>
         </div>
     </div>
 </div>
 <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
-<script>
-    function doUserRecUploadConfirmDecFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedDeclFile",true);
-    }
-</script>

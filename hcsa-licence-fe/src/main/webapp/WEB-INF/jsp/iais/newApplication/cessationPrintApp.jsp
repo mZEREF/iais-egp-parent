@@ -427,7 +427,7 @@
 
     var userAgent = navigator.userAgent;
     var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
-    
+
     var doPrint = function () {
         $('a').prop('disabled',true);
         if(isChrome){
