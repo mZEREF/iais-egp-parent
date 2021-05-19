@@ -87,7 +87,7 @@ public class CessationApplicationFeDelegator {
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
     private static final String PRELIMINARYQUESTIONKINDLY = "preliminaryQuestionKindly";
-    private static final String SELECTEDFILEERROR = "selectedFileError";
+    private static final String SELECTEDFILEERROR = "selectedCessFileError";
     private static final String ISBEFORE = "isBefore";
     private static final String ISSURRENDERING = "isSurrendering";
     private static final String WHICHTODO = "whichTodo";
