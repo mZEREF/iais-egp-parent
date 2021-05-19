@@ -251,6 +251,7 @@ public class NewApplicationDelegator {
     private String currentDomain;
     @Autowired
     private Environment env;
+
     /**
      * StartStep: Start
      *
@@ -757,6 +758,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePreview end ...."));
     }
 
+
     /**
      * StartStep: PreparePayment
      *
@@ -1241,6 +1243,17 @@ public class NewApplicationDelegator {
             }
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
+    }
+
+    public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
+        boolean isValid = true;
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (isMandatory && (fileMap == null || fileMap.isEmpty())) {
+            errorMap.put("selectedFileError", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            isValid = false;
+        }
+        return isValid;
     }
 
     /**
@@ -1991,21 +2004,11 @@ public class NewApplicationDelegator {
         }
         return false;
     }
-    public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
-        boolean isValid = true;
-        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
-                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
-        if (isMandatory && (fileMap == null || fileMap.isEmpty())) {
-            errorMap.put("selectedFileError", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
-            isValid = false;
-        }
-        return isValid;
-    }
     /**
          * StartStep: doRequestForChangeSubmit
      *
      * @param bpc
-     * @throwsdoRequestInformationSubmit
+     *
      */
     public void doRequestForChangeSubmit(BaseProcessClass bpc) throws Exception {
         //validate reject  apst050
