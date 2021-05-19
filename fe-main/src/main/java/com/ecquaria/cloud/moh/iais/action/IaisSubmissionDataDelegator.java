@@ -25,8 +25,17 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator("submissionDataDelegator")
 @Slf4j
@@ -54,6 +63,9 @@ public class IaisSubmissionDataDelegator {
                 for (AppGrpPremisesDto appGrpPremisesDto:collect
                      ) {
                     String hciName = appGrpPremisesDto.getAddress();
+                    if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())){
+                        hciName = appGrpPremisesDto.getHciName()+","+hciName;
+                    }
                     String hciCode = appGrpPremisesDto.getHciCode();
                     if (!StringUtil.isEmpty(hciName)){
                         SelectOption selectOption = new SelectOption(hciCode,hciName);

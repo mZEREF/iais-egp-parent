@@ -55,7 +55,8 @@
                                     <iais:row>
                                         <iais:field value="Intended Purpose of Test" width="11" required="true"/>
                                             <iais:value width="11">
-                                                <input name="intendedPurpose" id="intendedPurpose" type="text" maxlength="500" value="${param.intendedPurpose}"/>
+                                               <textarea id="intendedPurpose" style="width: 100%;margin-bottom: 15px;" rows="6" name="intendedPurpose"
+                                                        maxlength="500" >${param.intendedPurpose}</textarea>
                                                 <span class="error-msg" name="errorMsg" id="error_intendedPurpose"></span>
                                             </iais:value>
                                     </iais:row>
@@ -82,6 +83,11 @@
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Status of Test" width="11" required="true"/>
+                                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                           title='Active - Clinical laboratory continues to offer this LDT in their laboratory.
+                                                  Inactive - Clinical laboratory has ceased to make available this LDT in their laboratory.'
+                                           style="position: absolute;left: 150px; top: 770px;z-index: 10"
+                                           data-original-title="">i</a>
                                         <iais:value width="5">
                                             <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${param.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1"> Active
                                         </iais:value>
