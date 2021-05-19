@@ -54,7 +54,7 @@
     <br>
     <div class="col-xs-12 txt-area-normal">
       <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
-      <textarea disabled cols="85"  rows="5" name="criminalRecordsRemark" ></textarea>
+      <textarea disabled cols="85"  rows="5" name="criminalRecordsRemark" >${appDeclarationMessageDto.criminalRecordsRemark}</textarea>
     </div>
 
   </div>
