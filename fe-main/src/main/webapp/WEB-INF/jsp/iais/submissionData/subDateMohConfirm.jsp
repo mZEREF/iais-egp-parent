@@ -53,7 +53,8 @@
                                     <iais:row>
                                         <iais:field value="Intended Purpose of Test" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <input name="intendedPurpose" id="intendedPurpose" type="text" maxlength="500" value="${laboratoryDevelopTestDto.intendedPurpose}" disabled/>
+                                            <textarea id="intendedPurpose" style="width: 100%;margin-bottom: 15px;" rows="6" name="intendedPurpose"
+                                                      maxlength="500" disabled>${laboratoryDevelopTestDto.intendedPurpose}</textarea>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
