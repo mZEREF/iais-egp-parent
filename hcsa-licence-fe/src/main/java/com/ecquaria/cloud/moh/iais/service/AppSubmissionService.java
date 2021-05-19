@@ -132,4 +132,7 @@ public interface AppSubmissionService {
     AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type);
     List<AppDeclarationDocDto> getAppDeclarationDocDto(HttpServletRequest request);
     void validateFile(PageShowFileDto pageShowFileDto, Map<String,String> map, int i);
+    List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request);
+    String getFileAppendId(String appType);
+    void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
 }
