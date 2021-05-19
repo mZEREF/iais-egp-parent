@@ -1,4 +1,4 @@
-<div ${(nowComTabIn== 'ServiceInfo' && ( nowTabIn == null ||  nowTabIn == 'Combined')) ? '' : 'hidden'}>
+<div ${(nowComTabIn== errorTabName && ( nowTabIn == null ||  nowTabIn == 'Combined')) ? '' : 'hidden'}>
                                       <c:forEach var ="cdto" items ="${service.fdtoList}" varStatus="one">
                                           <h3>${cdto.subType}</h3>
                                           <br>
@@ -100,8 +100,9 @@
                                                       <tbody>
 
                                                       <c:forEach var = "item" items = "${service.adchklDto.adItemList}" varStatus="status">
+                                                          <c:set value = "${item.id}${service.identify}" var = "ckkId"/>
                                                       <c:forEach var = "answerForDifDto" items = "${item.adhocAnswerForDifDtos}" varStatus="answerForDifDtoStatus">
-                                                          <tr  id="${item.id}adhocDiv${answerForDifDtoStatus.index}" style="background-color: ${ item.sameAnswer ? 'white' : (empty item.deconflict ? 'lightcoral': 'lightgreen')}">
+                                                          <tr  id="${ckkId}adhocDiv${answerForDifDtoStatus.index}" style="background-color: ${ item.sameAnswer ? 'white' : (empty item.deconflict ? 'lightcoral': 'lightgreen')}">
                                                               <c:if test="${answerForDifDtoStatus.index == 0}">
                                                                   <td  rowspan="${inspectorsParticipant.size()}" class="row_no">     <div class="form-check">${(status.index + 1)}</div></td>
                                                                   <td rowspan="${inspectorsParticipant.size()}"> <div class="form-check"><c:out value="${item.question}"/></div></td>
@@ -120,16 +121,16 @@
                                                               <td class="text-center">
                                                                   <c:if test="${ !item.sameAnswer}">
                                                                       <div class="form-check">
-                                                                      <input name="<c:out value="${item.id}"/>adhocDeconflict" id="<c:out value="${item.id}"/>adhocDeconflict${answerForDifDtoStatus.index}" type="radio" <c:if test="${item.deconflict == answerForDifDto.submitId}">checked</c:if> value="${answerForDifDto.submitId}"
-                                                                             onclick="javascript: doChangeDeconflict(3,'${item.id}',${inspectorsParticipant.size()})"
+                                                                      <input name="<c:out value="${ckkId}"/>adhocDeconflict" id="<c:out value="${ckkId}"/>adhocDeconflict${answerForDifDtoStatus.index}" type="radio" <c:if test="${item.deconflict == answerForDifDto.submitId}">checked</c:if> value="${answerForDifDto.submitId}"
+                                                                             onclick="javascript: doChangeDeconflict(3,'${ckkId}',${inspectorsParticipant.size()})"
                                                                              class="form-check-input" />
-                                                                          <label class="form-check-label" for="<c:out value="${item.id}"/>adhocDeconflict${answerForDifDtoStatus.index}"><span class="check-circle"></span></label>
+                                                                          <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocDeconflict${answerForDifDtoStatus.index}"><span class="check-circle"></span></label>
                                                                       </div>
                                                                   </c:if>
                                                              </td>
                                                               <td>
                                                                   <c:if test="${answerForDifDtoStatus.index == 0}">
-                                                                      <c:set value = "error_${item.id}adhoc" var = "err"/>
+                                                                      <c:set value = "error_${ckkId}adhoc" var = "err"/>
                                                                       <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}Remark"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}FindNcs"/>" name="iaisErrorMsg"></span>

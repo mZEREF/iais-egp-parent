@@ -93,4 +93,6 @@ public interface FillupChklistService {
     String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto,InspectionFillCheckListDto commonDto,String refNo);
 
     boolean isBeforeFinishCheckList(String refNo);
+
+    void getRateOfSpecCheckList( List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto);
 }

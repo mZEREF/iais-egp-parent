@@ -126,6 +126,86 @@ public class InspectionCheckListCommonMethodDelegator {
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
     }
 
+    public void  getSpecServiceCheckListMoreData(HttpServletRequest request){
+        List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+        String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
+        if(IaisCommonUtils.isNotEmpty( fDtosDtos)){
+            for(InspectionSpecServiceDto inspectionSpecServiceDto : fDtosDtos){
+                getOneServiceMoreData( request,inspectionSpecServiceDto.getFdtoList(),userId);
+                getAhocCheckListMoreData(request,inspectionSpecServiceDto.getAdchklDto(),inspectionSpecServiceDto.getIdentify(),userId);
+            }
+
+        }
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
+    }
+
+    public void getOneServiceMoreData(HttpServletRequest request,List<InspectionFillCheckListDto> inspectionFillCheckListDtos,String userId){
+        if(!IaisCommonUtils.isEmpty(inspectionFillCheckListDtos)){
+            for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
+                List<InspectionCheckQuestionDto> checkList = inspectionFillCheckListDto.getCheckList();
+                for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
+                    String prefix = inspectionFillCheckListDto.getSubName()+ inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
+                    List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
+                    int index = 0;
+                    for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                        if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                            String answer =  ParamUtil.getString(request,prefix +"radIns" + index);
+                            String remark = ParamUtil.getString(request,prefix +"remarkIns" + index);
+                            String raf =  ParamUtil.getString(request,prefix +"recIns" + index);
+                            String ncs = ParamUtil.getString(request,prefix +"FindNcsIns" + index);
+                            answerForDifDto.setNcs(ncs);
+                            answerForDifDto.setAnswer(answer);
+                            answerForDifDto.setRemark(remark);
+                            if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
+                                answerForDifDto.setIsRec("1");
+                            }else {
+                                answerForDifDto.setIsRec("0");
+                            }
+                            break;
+                        }
+                        index++;
+                    }
+                    String deconflict = ParamUtil.getString(request,prefix +"Deconflict");
+                    fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,deconflict);
+                }
+            }
+        }
+    }
+
+    public void getAhocCheckListMoreData(HttpServletRequest request,AdCheckListShowDto adchklDto,String identify,String userId){
+        if( adchklDto == null){
+            return;
+        }
+        List<AdhocNcCheckItemDto> adItemList = adchklDto.getAdItemList();
+        if( !IaisCommonUtils.isEmpty( adItemList)){
+            for(AdhocNcCheckItemDto temp:adItemList){
+                List<AnswerForDifDto> adhocAnswerForDifDtos = temp.getAdhocAnswerForDifDtos();
+                String prefix = temp.getId()+identify;
+                int index = 0;
+                for(AnswerForDifDto answerForDifDto : adhocAnswerForDifDtos){
+                    if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                        String answer = ParamUtil.getString(request,prefix+"adhocradIns"+index);
+                        String remark = ParamUtil.getString(request,prefix+"adhocremarkIns" + index);
+                        String rec = ParamUtil.getString(request,prefix+"adhocrecIns"+index);
+                        String ncs = ParamUtil.getString(request,prefix+"adhocFindNcsIns" + index);
+                        answerForDifDto.setNcs(ncs);
+                        answerForDifDto.setAnswer(answer);
+                        answerForDifDto.setRemark(remark);
+                        if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(rec)){
+                            answerForDifDto.setIsRec("1");
+                        }else {
+                            answerForDifDto.setIsRec("0");
+                        }
+                        break;
+                    }
+                    index++;
+                }
+                String deconflict = ParamUtil.getString(request,prefix +"adhocDeconflict");
+                fillupChklistService.setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(temp,adhocAnswerForDifDtos,deconflict);
+            }
+        }
+    }
+
     public void getAdhocSpecDtoFromPage(HttpServletRequest request,InspectionSpecServiceDto inspectionSpecServiceDto){
         if(inspectionSpecServiceDto.getAdchklDto() != null && IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getAdchklDto().getAdItemList())){
             List<AdhocNcCheckItemDto> itemDtoList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();

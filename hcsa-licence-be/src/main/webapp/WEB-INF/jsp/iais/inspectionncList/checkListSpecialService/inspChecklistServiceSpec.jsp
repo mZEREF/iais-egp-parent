@@ -1,6 +1,6 @@
 <c:forEach var = "inspector" items="${inspectorsParticipant}"  varStatus="inspectorsStatus">
-<div  ${(nowComTabIn.indexOf("ServiceInfo") >0  && ( nowTabIn == inspector.id)) ? '' : 'hidden'} >
-<c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
+<div  ${(nowComTabIn == errorTabName && ( nowTabIn == inspector.id)) ? '' : 'hidden'} >
+<c:forEach var ="cdto" items ="${service.fdtoList}" varStatus="one">
     <h3>${cdto.subType}</h3>
     <div class="table-gp">
         <c:forEach var ="section" items ="${cdto.sectionDtoList}" varStatus="two">
@@ -95,9 +95,9 @@
         </c:forEach>
     </div>
 </c:forEach>
-<c:if test="${adchklDto.adItemList != null}">
-    <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
-    <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
+<c:if test="${service.adchklDto.adItemList != null}">
+    <span><strong>do/total:</strong></span>&nbsp;<c:out value="${service.adhocDo}"/>/<c:out value="${service.adhocTotal}"/><br>
+    <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${service.adhocNc}"/>
     <div class="table-gp">
         <h3>Adhoc</h3>
         <br/>
@@ -118,50 +118,50 @@
             </thead>
             <tbody>
 
-            <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
+            <c:forEach var = "item" items = "${service.adchklDto.adItemList}" varStatus="status">
                 <tr>
                     <td class="row_no">         <div class="form-check">${(status.index + 1) }</div></td>
                     <td>         <div class="form-check"><c:out value="${item.question}"/></div></td>
-                    <c:set value = "${item.id}" var = "ckkId"/>
+                    <c:set value = "${item.id}${service.identify}" var = "ckkId"/>
                     <c:set value = "${item.answerForDifDtoMaps[inspector.id]}" var = "inspAhocAnswer"/>
                     <td class="text-center">
-                        <div class="form-check"><input name="<c:out value="${item.id}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'Yes'}">checked</c:if> value="Yes" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
+                        <div class="form-check"><input name="<c:out value="${ckkId}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'Yes'}">checked</c:if> value="Yes" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                        <input name="<c:out value="${item.id}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'No'}">checked</c:if> value="No" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNo" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
+                        <input name="<c:out value="${ckkId}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'No'}">checked</c:if> value="No" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxNo" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check">
-                        <input name="<c:out value="${item.id}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'N/A'}">checked</c:if> value='N/A' ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
-                            <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
+                        <input name="<c:out value="${ckkId}"/>adhocradIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')" type="radio" <c:if test="${inspAhocAnswer.answer eq'N/A'}">checked</c:if> value='N/A' ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} class="form-check-input"/>
+                            <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}','${inspectorsStatus.index}')"><span class="check-circle"></span></label>
                         </div>
                     </td>
                     <td>
-                        <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcsIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcsIns${inspectorsStatus.index}"  maxlength="500"><c:out value="${inspAhocAnswer.ncs}"/></textarea>
+                        <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${ckkId}"/>adhocFindNcsIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocitemCheckboxFindNcsIns${inspectorsStatus.index}"  maxlength="500"><c:out value="${inspAhocAnswer.ncs}"/></textarea>
                         <br/>
-                        <c:set value = "error_${item.id}${inspector.id}DraftadhocFindNcs" var = "err"/>
+                        <c:set value = "error_${ckkId}${inspector.id}DraftadhocFindNcs" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td>
-                        <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremarkIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocitemCheckboxRemarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.remark}"/></textarea>
+                        <textarea ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'} cols="35" rows="4" name="<c:out value="${ckkId}"/>adhocremarkIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocitemCheckboxRemarkIns${inspectorsStatus.index}" maxlength="500"><c:out value="${inspAhocAnswer.remark}"/></textarea>
                         <br/>
-                        <c:set value = "error_${item.id}${inspector.id}DraftadhocRemark" var = "err"/>
+                        <c:set value = "error_${ckkId}${inspector.id}DraftadhocRemark" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                     <td class="text-center">
-                        <div id="<c:out value="${item.id}"/>ckIns${inspectorsStatus.index}"<c:if test="${inspAhocAnswer.answer != 'No'}">hidden</c:if>>
+                        <div id="<c:out value="${ckkId}"/>ckIns${inspectorsStatus.index}"<c:if test="${inspAhocAnswer.answer != 'No'}">hidden</c:if>>
                             <div class="form-check">
-                            <input name="<c:out value="${item.id}"/>adhocrecIns${inspectorsStatus.index}" id="<c:out value="${item.id}"/>adhocrecIns${inspectorsStatus.index}" type="checkbox" <c:if test="${inspAhocAnswer.isRec == '1'}">checked</c:if> value="rec" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/>
+                            <input name="<c:out value="${ckkId}"/>adhocrecIns${inspectorsStatus.index}" id="<c:out value="${ckkId}"/>adhocrecIns${inspectorsStatus.index}" type="checkbox" <c:if test="${inspAhocAnswer.isRec == '1'}">checked</c:if> value="rec" ${inspectorUserFinishChecklistId == inspector.id ? "" : 'disabled'}/>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <c:set value = "error_${item.id}${inspector.id}Draftadhoc" var = "err"/>
+                        <c:set value = "error_${ckkId}${inspector.id}Draftadhoc" var = "err"/>
                         <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                     </td>
                 </tr>

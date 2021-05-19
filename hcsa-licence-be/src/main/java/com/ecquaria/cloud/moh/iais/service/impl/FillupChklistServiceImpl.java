@@ -19,10 +19,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
@@ -1035,6 +1033,39 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setTotalNcNum(totalNcNum);
     }
 
+    @Override
+    public void getRateOfSpecCheckList(List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto) {
+        if(serListDto == null) return;
+        if(commonDto!=null){
+            getGeneralTotalAndNc(commonDto,serListDto);
+        }
+        int totalNcNum = serListDto.getGeneralNc();
+       if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
+            for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
+                InspectionFDtosDto inspectionFDtosDto = MiscUtil.transferEntityDto(inspectionSpecServiceDto,InspectionFDtosDto.class);
+                if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
+                    inspectionFDtosDto.setFdtoList(inspectionSpecServiceDto.getFdtoList());
+                    getServiceTotalAndNc(inspectionFDtosDto);
+                    totalNcNum += inspectionFDtosDto.getServiceNc();
+                }
+                if(inspectionSpecServiceDto.getAdchklDto() != null && IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getAdchklDto().getAdItemList())){
+                    getAdhocTotalAndNc(inspectionSpecServiceDto.getAdchklDto(),inspectionFDtosDto);
+                    totalNcNum += inspectionFDtosDto.getAdhocNc();
+                }
+                setInspectionSpecServiceDtoByInspectionFDtosDto(inspectionSpecServiceDto,inspectionFDtosDto);
+            }
+       }
+        serListDto.setTotalNcNum(totalNcNum);
+    }
+
+    private void setInspectionSpecServiceDtoByInspectionFDtosDto(InspectionSpecServiceDto inspectionSpecServiceDto,InspectionFDtosDto inspectionFDtosDto ){
+        inspectionSpecServiceDto.setAdhocDo(inspectionFDtosDto.getAdhocDo());
+        inspectionSpecServiceDto.setAdhocNc(inspectionFDtosDto.getAdhocNc());
+        inspectionSpecServiceDto.setAdhocTotal(inspectionFDtosDto.getAdhocTotal());
+        inspectionSpecServiceDto.setServiceDo(inspectionFDtosDto.getServiceDo());
+        inspectionSpecServiceDto.setServiceNc(inspectionFDtosDto.getServiceNc());
+        inspectionSpecServiceDto.setServiceTotal(inspectionFDtosDto.getServiceTotal());
+    }
     private void getAdhocTotalAndNc(AdCheckListShowDto adchklDto, InspectionFDtosDto serListDto) {
         int totalNum = 0;
         int ncNum = 0;

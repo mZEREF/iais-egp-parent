@@ -207,7 +207,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 }
             }
         }
-     /*   ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+/*        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
         for(int i= 0;i<3;i++){
             InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
@@ -495,6 +495,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             // get ah draft
             adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos));
             ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+            setSpecAhoc(request,adchklDto);
             //get nc
             setRate(request);
             ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
@@ -511,6 +512,20 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
     }
 
+    public void setSpecAhoc(HttpServletRequest request, AdCheckListShowDto adchklDto){
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+            List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+            if(IaisCommonUtils.isNotEmpty(fDtosDtos)){
+                for(InspectionSpecServiceDto inspectionSpecServiceDto : fDtosDtos){
+                    try{
+                        inspectionSpecServiceDto.setAdchklDto((AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adchklDto));
+                    }catch (Exception e){
+                        log.error(e.getMessage());
+                    }
+                }
+            }
+        }
+    }
     public void changeTab(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info("----------changeTab --");
@@ -522,20 +537,38 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     }
 
     public void changeDataForCheckList(HttpServletRequest request){
-            getCommonCheckListMoreData(request);
+        getCommonCheckListMoreData(request);
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+            getSpecServiceCheckListMoreData(request);
+        }else {
             getServiceCheckListMoreData(request);
             getAhocCheckListMoreData(request);
-            setRate(request);
+        }
+        setRate(request);
     }
 
     public void setRate(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+            setSpecRate(request);
+        }else {
+            InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+            InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
+            AdCheckListShowDto adchklDto = (AdCheckListShowDto) ParamUtil.getSessionAttr(request,ADHOCLDTO);
+            fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+            ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+            ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        }
+    }
+
+    public void setSpecRate(HttpServletRequest request){
         InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
-        AdCheckListShowDto adchklDto = (AdCheckListShowDto) ParamUtil.getSessionAttr(request,ADHOCLDTO);
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+        InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
+        fillupChklistService.getRateOfSpecCheckList(fDtosDtos,commonDto, serListDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
     }
 
     public void getCommonCheckListMoreData(HttpServletRequest request){
@@ -579,34 +612,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
         List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
         if(fdtoList != null && fdtoList.size() >0){
-            for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
-                List<InspectionCheckQuestionDto> checkList = inspectionFillCheckListDto.getCheckList();
-                for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
-                    String prefix = inspectionFillCheckListDto.getSubName()+ inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
-                    List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
-                    int index = 0;
-                    for(AnswerForDifDto answerForDifDto : answerForDifDtos){
-                        if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
-                            String answer =  ParamUtil.getString(request,prefix +"radIns" + index);
-                            String remark = ParamUtil.getString(request,prefix +"remarkIns" + index);
-                            String raf =  ParamUtil.getString(request,prefix +"recIns" + index);
-                            String ncs = ParamUtil.getString(request,prefix +"FindNcsIns" + index);
-                            answerForDifDto.setNcs(ncs);
-                            answerForDifDto.setAnswer(answer);
-                            answerForDifDto.setRemark(remark);
-                            if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(raf)){
-                                answerForDifDto.setIsRec("1");
-                            }else {
-                                answerForDifDto.setIsRec("0");
-                            }
-                            break;
-                        }
-                        index++;
-                    }
-                    String deconflict = ParamUtil.getString(request,prefix +"Deconflict");
-                    fillupChklistService.setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(inspectionCheckQuestionDto,answerForDifDtos,deconflict);
-                }
-            }
+            getOneServiceMoreData( request,fdtoList,userId);
             ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         }
     }
@@ -616,31 +622,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         String userId = (String)ParamUtil.getSessionAttr(request, INSPECTION_USER_FINISH);
         List<AdhocNcCheckItemDto> adItemList = adchklDto.getAdItemList();
         if( !IaisCommonUtils.isEmpty( adItemList)){
-            for(AdhocNcCheckItemDto temp:adItemList){
-                List<AnswerForDifDto> adhocAnswerForDifDtos = temp.getAdhocAnswerForDifDtos();
-                String prefix = temp.getId();
-                int index = 0;
-                for(AnswerForDifDto answerForDifDto : adhocAnswerForDifDtos){
-                    if(userId.equalsIgnoreCase(answerForDifDto.getSubmitId())){
-                        String answer = ParamUtil.getString(request,temp.getId()+"adhocradIns"+index);
-                        String remark = ParamUtil.getString(request,temp.getId()+"adhocremarkIns" + index);
-                        String rec = ParamUtil.getString(request,temp.getId()+"adhocrecIns"+index);
-                        String ncs = ParamUtil.getString(request,temp.getId()+"adhocFindNcsIns" + index);
-                        answerForDifDto.setNcs(ncs);
-                        answerForDifDto.setAnswer(answer);
-                        answerForDifDto.setRemark(remark);
-                        if("No".equalsIgnoreCase(answer) && "rec".equalsIgnoreCase(rec)){
-                            answerForDifDto.setIsRec("1");
-                        }else {
-                            answerForDifDto.setIsRec("0");
-                        }
-                        break;
-                    }
-                    index++;
-                }
-                String deconflict = ParamUtil.getString(request,prefix +"adhocDeconflict");
-                fillupChklistService.setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(temp,adhocAnswerForDifDtos,deconflict);
-            }
+            getAhocCheckListMoreData(request,adchklDto,"",userId);
             ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         }
     }
