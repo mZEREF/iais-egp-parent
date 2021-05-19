@@ -153,6 +153,8 @@ public interface OfficersReSchedulingService {
       */
     void sendEmailToApplicant(ReschedulingOfficerDto reschedulingOfficerDto);
 
+    void sendEmailToApplicantNewDate(ReschedulingOfficerDto reschedulingOfficerDto,ApptAppInfoShowDto appInfoShowDto);
+
     /**
       * @author: shicheng
       * @Date 2021/3/30
