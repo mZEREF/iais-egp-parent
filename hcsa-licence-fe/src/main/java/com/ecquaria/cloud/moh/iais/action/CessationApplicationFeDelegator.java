@@ -141,6 +141,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile_MaxIndex", null);
         int configFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
+        ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setSessionAttr(bpc.request,"declaration_page_is","cessation");
     }
 
@@ -269,6 +270,7 @@ public class CessationApplicationFeDelegator {
         if ("submit".equals(action_type)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         } else if ("back".equals(action_type)) {
+            ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         }
     }

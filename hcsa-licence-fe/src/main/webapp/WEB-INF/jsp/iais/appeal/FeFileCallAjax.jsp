@@ -76,7 +76,7 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
-                        <c:if test="${empty declaration_page_is}">
+                        <c:if test="${empty declaration_page_request}">
                             cloneUploadFile();
                         </c:if>
                     }else {
