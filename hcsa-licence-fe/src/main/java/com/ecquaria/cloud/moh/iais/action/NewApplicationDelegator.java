@@ -298,8 +298,6 @@ public class NewApplicationDelegator {
         String fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
         bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
-        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX  + fileAppendId
-                + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
