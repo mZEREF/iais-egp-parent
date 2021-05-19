@@ -657,7 +657,7 @@ public class NewApplicationHelper {
                 newPremisesSp.add(sp);
             }else if(NewApplicationConstant.NEW_PSN.equals(val)){
                 newPsnSp.add(sp);
-            }else if("other".equals(val)){
+            }else if("other".equals(val) || MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(val) || NewApplicationConstant.DESIGNATION_OTHERS.equals(val)){
                 otherSp.add(sp);
             }
         }
@@ -671,7 +671,7 @@ public class NewApplicationHelper {
             boolean pleaseSelectVal = StringUtil.isEmpty(val) || "-1".equals(val);
             boolean newPremisesVal = NewApplicationConstant.NEW_PREMISES.equals(val);
             boolean newPsnVal = NewApplicationConstant.NEW_PSN.equals(val);
-            boolean otherVal = "other".equals(val);
+            boolean otherVal = "other".equals(val) || MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(val) || NewApplicationConstant.DESIGNATION_OTHERS.equals(val);
             if(pleaseSelectVal || newPremisesVal || newPsnVal || otherVal){
                 continue;
             }
@@ -2132,6 +2132,7 @@ public class NewApplicationHelper {
             }
             //confirm with mingde , person_ext field can edit anytime
             appPsnEditDto.setDesignation(true);
+            appPsnEditDto.setOtherDesignation(true);
             appPsnEditDto.setSubSpeciality(true);
             appPsnEditDto.setSpecialityOther(true);
             appPsnEditDto.setSpeciality(true);
@@ -3018,9 +3019,6 @@ public class NewApplicationHelper {
 
     public static List<SelectOption> genDesignationOpList(boolean needOthers){
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
-        if(needOthers && !IaisCommonUtils.isEmpty(idTypeSelectList)){
-            idTypeSelectList.add(new SelectOption(NewApplicationConstant.DESIGNATION_OTHERS,NewApplicationConstant.DESIGNATION_OTHERS));
-        }
         return idTypeSelectList;
     }
 

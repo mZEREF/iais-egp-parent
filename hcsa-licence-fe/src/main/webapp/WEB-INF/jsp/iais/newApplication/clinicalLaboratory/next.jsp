@@ -219,7 +219,7 @@
         var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
         $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
 
-        if('Others' == designation){
+        if('DES999' == designation){
             $CurrentPsnEle.find('div.otherDesignationDiv').removeClass('hidden');
             $CurrentPsnEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
         }else{
@@ -371,7 +371,7 @@
             $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
         }
         if(psnEditDto.otherDesignation){
-            $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
+            $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
         }
         //map->mode
         if(psnEditDto.description){
