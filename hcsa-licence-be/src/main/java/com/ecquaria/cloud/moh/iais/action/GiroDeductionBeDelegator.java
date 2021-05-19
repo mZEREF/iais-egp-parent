@@ -154,7 +154,7 @@ public class GiroDeductionBeDelegator {
         //init loading request ==null
         HttpServletRequest request = determineType(bpc.request);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
-        String transactionId = request.getParameter("transactionId");
+        String transactionId = request.getParameter("txnRefNo");
         String bankAccountNo = request.getParameter("bankAccountNo");
         String group_no = request.getParameter("applicationNo");
         String paymentRefNo = request.getParameter("paymentRefNo");
@@ -180,7 +180,7 @@ public class GiroDeductionBeDelegator {
             searchParam.addFilter("refNo",paymentRefNo,true);
         }
         if(!StringUtil.isEmpty(transactionId)){
-            searchParam.addFilter("invoiceNo",transactionId,true);
+            searchParam.addFilter("txnRefNo",transactionId,true);
         }
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

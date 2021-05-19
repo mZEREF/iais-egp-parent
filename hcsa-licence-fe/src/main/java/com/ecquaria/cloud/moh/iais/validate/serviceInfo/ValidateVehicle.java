@@ -81,6 +81,7 @@ public class ValidateVehicle implements ValidateFlow {
                 }
             }
         }
+        //need validate
         if(!validateVehicleName.isEmpty()){
            /* List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
             if(!entity.isEmpty()){

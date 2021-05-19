@@ -447,7 +447,7 @@ public class LicenceViewServiceDelegator {
             if(publicHolidayDtos!=null){
                 formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
             }
-            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto(),bpc.request);
         }
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if(groupDto!=null){
@@ -2195,7 +2195,7 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto==null||oldAppSubmissionDto==null){
             return;
         }
@@ -2203,6 +2203,7 @@ public class LicenceViewServiceDelegator {
         if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
             return;
         }
+        String appType = appSubmissionDto.getAppType();
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if(oldAppSubmissionDtoAppGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList.isEmpty()){
             return;
@@ -2289,6 +2290,18 @@ public class LicenceViewServiceDelegator {
                     oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).setScdfRefNo("");
                 }
             }
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                String oldHciName = oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciName();
+                if(hciName!=null){
+                    boolean equals = hciName.equals(oldHciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }else if(oldHciName!=null){
+                    boolean equals = oldHciName.equals(hciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }
+            }
+
         }
     }
 

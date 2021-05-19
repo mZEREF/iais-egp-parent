@@ -7,8 +7,10 @@
   <div class="row">
     <h3>Proof of Authorisation </h3>
     <c:forEach items="${appSubmissionDto.appDeclarationDocDtos}" var="appDeclarationDocDto" varStatus="inx">
-      <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${appDeclarationDocDto.fileRepoId}" docName="${appDeclarationDocDto.docName}"/>
-      <c:out value="(${appDeclarationDocDto.docSize} KB)"/>
+      <div class="col-xs-12">
+        <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${appDeclarationDocDto.fileRepoId}" docName="${appDeclarationDocDto.docName}"/>
+        <c:out value="(${appDeclarationDocDto.docSize} KB)"/>
+      </div>
     </c:forEach>
 
   </div>

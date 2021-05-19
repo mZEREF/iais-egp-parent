@@ -124,6 +124,7 @@ import sop.webflow.rt.api.Process;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -521,9 +522,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             String preliminaryQuestionItem1 = request.getParameter("preliminaryQuestionItem1");
             String preliminaryQuestiontem2 = request.getParameter("preliminaryQuestiontem2");
+            String effectiveDt = request.getParameter("effectiveDt");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
+            if(effectiveDt!=null){
+                try {
+                    Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDt);
+                    appDeclarationMessageDto.setEffectiveDt(parse);
+                } catch (ParseException e) {
+
+                }
+            }
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);

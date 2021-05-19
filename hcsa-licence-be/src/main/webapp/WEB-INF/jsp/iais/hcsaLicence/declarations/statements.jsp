@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel-body" >
     <div class="row">
       <p>Please indicate 'Yes' or 'No' to the following statements:</p>
@@ -31,7 +31,7 @@
       <br>
       <p class="form-check col-xs-9">Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.</p>
       <div  class="col-xs-3">
-        <input disabled type="text"/>
+        <input disabled type="text" value="<fmt:formatDate value="${appSubmissionDto.appDeclarationMessageDto.effectiveDt}" pattern="dd/MM/yyyy"></fmt:formatDate>" />
       </div>
     </div>
 
