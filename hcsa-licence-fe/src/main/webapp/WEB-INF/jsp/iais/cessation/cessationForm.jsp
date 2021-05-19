@@ -18,9 +18,10 @@
                     <h2>Please key in cessation information</h2>
                     <br/>
                     <div class="row">
-                        <form id="mainForm" class="form-horizontal"
+                        <form  method="post" id="mainForm" class="form-horizontal"
                               enctype="multipart/form-data"
                               action=<%=process.runtime.continueURL()%>>
+                            <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
                             <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
                             <div class="col-lg-12 col-xs-12 cesform-box">
                                 <div class="row">
@@ -334,9 +335,63 @@
                                         </c:if>
                                     </c:forEach>
                                 </div>
+                                    <div class="table-responsive">
+                                        <c:forEach items="${specLicInfo}" var="map">
+                                            <c:set var="licNo" value="${map.key}"></c:set>
+                                            <c:if test="${appCess.licenceNo==licNo}">
+                                                <div><h4>The following specified healthcare services will also be ceased as
+                                                    their
+                                                    underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4>
+                                                </div>
+                                                <table class="table-gp tablebox">
+                                                    <tr style="text-align:center">
+                                                        <th style="text-align:center;width: 0%">S/N</th>
+                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
+                                                            Licence No.
+                                                        </th>
+                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
+                                                            Name
+                                                        </th>
+                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN001"/>
+                                                            Licence No.
+                                                        </th>
+                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN001"/>
+                                                            Name
+                                                        </th>
+                                                    </tr>
+                                                    <c:forEach items="${map.value}" var="spec" varStatus="index">
+                                                        <tr style="text-align:center">
+                                                            <td>
+                                                                <p><c:out value="${index.count}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out value="${spec.specLicNo}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out value="${spec.specSvcName}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out value="${spec.baseLicNo}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p><c:out value="${spec.baseSvcName}"/></p>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </table>
+                                            </c:if>
+                                        </c:forEach>
+                                    </div>
                                 </c:if>
                             </div>
                             </c:forEach>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <%@include file="../common/declarations.jsp"%>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br/>
@@ -368,6 +423,7 @@
                 </div>
                 <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
                 <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
+                <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
                 </form>
                 <div class="application-tab-footer">
                     <div class="row">
@@ -431,6 +487,7 @@
 
     function submitSure(action) {
         if ($('#confirmInfo').is(':checked')) {
+            uploadFileValidate();
             submit(action);
             $("#readInfo").hide();
         } else {
@@ -580,5 +637,24 @@
 
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+
+    function uploadFileValidate() {
+        var configFileSize = $("#configFileSize").val();
+        var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+        if (error == "Y") {
+            $('#error_litterFile_Show').html("");
+            $("#delFile").removeAttr("hidden");
+            let fileName = $("#selectedFile").val();
+            let pos = fileName.lastIndexOf("\\");
+            $("#fileName").html(fileName.substring(pos + 1));
+        } else if(error == "E"){
+            $('#error_litterFile_Show').html("");
+            $('#error_file').html("");
+        } else{
+            $("#selectedFile").val("");
+            $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
+            $("#fileName").html("");
+        }
     }
 </script>

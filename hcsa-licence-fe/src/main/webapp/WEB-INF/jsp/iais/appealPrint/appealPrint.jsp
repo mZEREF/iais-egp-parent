@@ -188,6 +188,7 @@
             window.print();
             window.close();
         }
+
     });
     var addPrintListener = function () {
         if (window.matchMedia) {
