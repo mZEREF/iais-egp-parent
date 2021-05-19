@@ -563,10 +563,14 @@ public class WithOutRenewalDelegator {
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&(appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)||appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_NETS))) {
-            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-            errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
+            String switch_value = ParamUtil.getString(bpc.request, "switch_value");
+            if(switch_value==null||PAYMENT.equals(switch_value)){
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
+            }
+
         }
         if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
