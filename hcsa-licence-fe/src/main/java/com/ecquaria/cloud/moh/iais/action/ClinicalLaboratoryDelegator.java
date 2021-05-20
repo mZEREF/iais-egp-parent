@@ -1036,7 +1036,8 @@ public class ClinicalLaboratoryDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         boolean cgoChange=false;
         String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        if (isRfi || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -1054,10 +1055,6 @@ public class ClinicalLaboratoryDelegator {
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
-        boolean isRfi = false;
-        if (requestInformationConfig != null) {
-            isRfi = true;
-        }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Set<String> clickEditPage = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
