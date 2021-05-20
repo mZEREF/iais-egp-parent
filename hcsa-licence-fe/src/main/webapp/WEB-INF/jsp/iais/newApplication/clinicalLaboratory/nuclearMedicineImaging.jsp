@@ -71,6 +71,7 @@
                                     </c:if>
                                 </c:if>
                             </div>
+                            <input type="hidden" name="prsFlag" value="${prsFlag}"/>
                             <c:if test="${ServicePersonnelMandatory>0 && editControl}">
                                 <c:set var="spMandatoryCount" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
                                 <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
@@ -338,9 +339,7 @@
         $('input[name="prsLoading"]').each(function () {
             if($(this).val() == 'true'){
                 var $currContent = $(this).closest('.personnel-content');
-                $currContent.find('input[name="name"]').prop('readonly',true);
-                $currContent.find("input[name='name']").css('border-color', '#ededed');
-                $currContent.find("input[name='name']").css('color', '#999');
+                inputReadonly($currContent.find('input[name="name"]'));
             }
         });
 
@@ -350,6 +349,7 @@
 
     var absencePsnSel = function (val) {
         $('.svcPsnSel').addClass('hidden');
+        var prsFlag = $('input[name="prsFlag"]').val();
         $('.personnel-content').each(function (k,v) {
             if('Blood Banking' == val){
                 $(this).find('div.personnel-sel').addClass('hidden');
@@ -359,6 +359,9 @@
                 $(this).find('div.personnel-qualification').addClass('hidden');
                 $(this).find('div.personnel-regnNo ').removeClass('hidden');
                 $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+                if("Y" == prsFlag){
+                    inputReadonly($(this).find('input[name="name"]'));
+                }
             }else if('Tissue Banking p1' == val){
                 $(this).find('div.personnel-sel').addClass('hidden');
                 $(this).find('div.new-svc-personnel-form').removeClass('hidden');
@@ -367,6 +370,9 @@
                 $(this).find('div.personnel-qualification').removeClass('hidden');
                 $(this).find('div.personnel-regnNo ').addClass('hidden');
                 $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+                if("Y" == prsFlag){
+                    inputCancelReadonly($(this).find('input[name="name"]'));
+                }
             }else {
                 $(this).find('div.personnel-sel').addClass('hidden');
                 $(this).find('div.new-svc-personnel-form').removeClass('hidden');
@@ -375,6 +381,9 @@
                 $(this).find('div.personnel-qualification').removeClass('hidden');
                 $(this).find('div.personnel-regnNo ').addClass('hidden');
                 $(this).find('div.personnel-wrkExpYear').removeClass('hidden');
+                if("Y" == prsFlag){
+                    inputCancelReadonly($(this).find('input[name="name"]'));
+                }
             }
         });
     };
@@ -383,6 +392,7 @@
         $('.personnelSel').change(function () {
             var personnelSel = $(this).val();
             var $personnelContentEle = $(this).closest('table.personnel-content');
+            var prsFlag = $('input[name="prsFlag"]').val();
             if(init != 0){
                 //clear data;
                 $personnelContentEle.find('div.personnel-designation select[name="designation"]').val('');
@@ -393,7 +403,9 @@
                 $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');
                 $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
                 $personnelContentEle.find('div.personnel-qualification input[name="qualification"]').val('');
-                clearPrsInfo($personnelContentEle);
+                if('Y' == prsFlag){
+                    inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
+                }
             }
             personnelSelFun(personnelSel,$personnelContentEle);
         });
@@ -401,37 +413,51 @@
 
     var personnelSelFun = function(personnelSel,$personnelContentEle){
         $personnelContentEle.find('div.new-svc-personnel-form ').removeClass('hidden');
-
+        var prsFlag = $('input[name="prsFlag"]').val();
         if('SPPT001' == personnelSel){
             $personnelContentEle.find('div.personnel-designation').removeClass('hidden');
             $personnelContentEle.find('div.personnel-name').removeClass('hidden');
             $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
             $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
             $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+            if('Y' == prsFlag){
+                inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
+            }
         }else if('SPPT002' == personnelSel){
             $personnelContentEle.find('div.personnel-designation').addClass('hidden');
             $personnelContentEle.find('div.personnel-name').removeClass('hidden');
             $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
             $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
             $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+            if('Y' == prsFlag){
+                inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
+            }
         }else if('SPPT003' == personnelSel){
             $personnelContentEle.find('div.personnel-designation').addClass('hidden');
             $personnelContentEle.find('div.personnel-name').removeClass('hidden');
             $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
             $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
             $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
+            inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
         }else if('SPPT004' == personnelSel){
             $personnelContentEle.find('div.personnel-designation').addClass('hidden');
             $personnelContentEle.find('div.personnel-name').removeClass('hidden');
             $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
             $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
             $personnelContentEle.find('div.personnel-regnNo ').removeClass('hidden');
+            //regnNo.
+            if('Y' == prsFlag){
+                inputReadonly($personnelContentEle.find('input[name="name"]'));
+            }
         }else if('' == personnelSel){
             $personnelContentEle.find('div.personnel-designation').addClass('hidden');
             $personnelContentEle.find('div.personnel-name').addClass('hidden');
             $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
             $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
             $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
+            if('Y' == prsFlag){
+                inputCancelReadonly($personnelContentEle.find('input[name="name"]'));
+            }
         }
     }
 
@@ -520,9 +546,7 @@
                 var prsLoading = $(this).val();
                 if(prsLoading  == 'true'){
                     var $currContent = $(this).closest('.personnel-content');
-                    $currContent.find('input[name="name"]').prop('readonly',true);
-                    $currContent.find("input[name='name']").css('border-color', '#ededed');
-                    $currContent.find("input[name='name']").css('color', '#999');
+                    inputReadonly($currContent.find('input[name="name"]'));
                 }
             });
 
@@ -570,6 +594,9 @@
                 if(data.regno==null){
                     clearPrsInfo($loadingContent);
                     $('#PRS_SERVICE_DOWN').modal('show');
+                    //able to edit name
+                    inputCancelReadonly($loadingContent.find('input[name="name"]'));
+                    console.log('return regno is empty ...');
                     return;
                 }
                 if (data.name == null) {
@@ -587,18 +614,28 @@
 
     var clearPrsInfo = function ($loadingContent) {
         $loadingContent.find('input[name="name"]').val('');
-        $loadingContent.find("input[name='name']").prop('readonly', false);
-        $loadingContent.find("input[name='name']").css('border-color', '');
-        $loadingContent.find("input[name='name']").css('color', '');
+        // inputCancelReadonly($loadingContent.find('input[name="name"]'));
     };
 
     function loadingSp(data,obj) {
         var $CurrentPsnEle = $(obj).closest('table.personnel-content');
         const name = data.name;
         $CurrentPsnEle.find("input[name='name']").val(name);
-        $CurrentPsnEle.find("input[name='name']").prop('readonly', true);
-        $CurrentPsnEle.find("input[name='name']").css('border-color', '#ededed');
-        $CurrentPsnEle.find("input[name='name']").css('color', '#999');
+        var prsFlag = $('input[name="prsFlag"]').val();
+        if('Y' == prsFlag){
+            inputReadonly($CurrentPsnEle.find('input[name="name"]'));
+        }
+    }
+
+    function inputReadonly($content){
+        $content.prop('readonly', true);
+        $content.css('border-color', '#ededed');
+        $content.css('color', '#999');
+    }
+    function inputCancelReadonly($content){
+        $content.prop('readonly', false);
+        $content.css('border-color', '');
+        $content.css('color', '');
     }
 
     function notLoadingSp() {
