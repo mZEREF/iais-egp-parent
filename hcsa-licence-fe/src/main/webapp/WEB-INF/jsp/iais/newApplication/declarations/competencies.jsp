@@ -16,13 +16,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem1" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem1" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem1" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem1" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesItem1"></span>
@@ -35,13 +35,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem2" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem2" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem2" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem2" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesItem2"></span>
@@ -54,13 +54,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem3" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem3" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="competenciesItem3" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="competenciesItem3" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesItem3"></span>

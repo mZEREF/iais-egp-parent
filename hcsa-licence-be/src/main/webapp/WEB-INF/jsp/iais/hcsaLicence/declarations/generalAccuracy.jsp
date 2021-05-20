@@ -20,12 +20,12 @@
                 The information provided in this application and any document submitted together with the application is not false, misleading or inaccurate in any particular manner.
             </div>
             <div class="form-check col-xs-3">
-                <input disabled class="form-check-input" type="radio" name="generalAccuracyItem1" value = "0" aria-invalid="false"
+                <input disabled class="form-check-input" type="radio" name="generalAccuracyItem1" value = "1" aria-invalid="false"
                     <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '1'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check form-group col-xs-3">
-                <input disabled class="form-check-input" type="radio" name="generalAccuracyItem1" value = "1" aria-invalid="false"
+                <input disabled class="form-check-input" type="radio" name="generalAccuracyItem1" value = "0" aria-invalid="false"
                        <c:if test="${appDeclarationMessageDto.generalAccuracyItem1 == '0'}">checked="checked"</c:if> />
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
