@@ -826,7 +826,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         if(!StringUtil.isEmpty(curRoleId)) {
             if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
                     curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
-                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+                    curRoleId.equals(RoleConsts.USER_ROLE_INSPECTIOR)
             ) {
                 appStatusOption = inspectionService.getAppStatusOption(curRoleId);
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
@@ -847,6 +847,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+            } else if (curRoleId.equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
             }
         }
         return appStatusOption;
