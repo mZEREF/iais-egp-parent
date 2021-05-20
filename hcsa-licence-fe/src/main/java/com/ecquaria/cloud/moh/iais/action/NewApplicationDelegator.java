@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -295,6 +296,8 @@ public class NewApplicationDelegator {
         String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
         bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        ParamUtil.setSessionAttr(bpc.request, "declaration_page_is",null);
+        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
