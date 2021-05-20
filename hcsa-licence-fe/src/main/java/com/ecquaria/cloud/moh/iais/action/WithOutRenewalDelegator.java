@@ -1259,6 +1259,9 @@ public class WithOutRenewalDelegator {
                 appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
                 appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
                 appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+                String preQuesKindly =  appSubmissionDtos.get(0).getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+                appSubmissionService.validateDeclarationDoc(allErrMap,appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL),
+                        preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
             }
         }
         boolean passValidate = true;
