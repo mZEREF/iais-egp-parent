@@ -8,8 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
@@ -21,15 +30,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjax
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +54,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +86,19 @@ public class MohHcsaBeDashboardAjax {
     private InspectionTaskMainClient inspectionTaskMainClient;
 
     @Autowired
+    private ApplicationMainClient applicationMainClient;
+
+    @Autowired
+    private LicenceClient licenceClient;
+
+    @Autowired
+    private CessationMainClient cessationMainClient;
+
+    @Autowired
     private TaskService taskService;
+
+    private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
+    private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
@@ -377,7 +405,16 @@ public class MohHcsaBeDashboardAjax {
         String appPremCorrId = request.getParameter("appPremCorrId");
         try {
             ApplicationViewDto applicationViewDto = applicationViewMainService.getApplicationViewDtoByCorrId(appPremCorrId);
+            if(applicationViewDto != null) {
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                        setCessation(request, applicationViewDto);
+                    }
+                }
+            }
             map.put("dashAppShowFlag", AppConsts.SUCCESS);
+
             ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
         } catch (Exception e) {
             map.put("dashAppShowFlag", AppConsts.FAIL);
@@ -462,5 +499,135 @@ public class MohHcsaBeDashboardAjax {
         }
         sb.append("taskId=").append(taskMaskId);
         return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
+    }
+
+    private void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
+            AppCessLicDto appCessLicDto = new AppCessLicDto();
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            LicenceDto licenceDto = licenceClient.getLicDtoById(originLicenceId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            appCessLicDto.setLicenceNo(licenceNo);
+            appCessLicDto.setSvcName(svcName);
+            AppPremiseMiscDto appPremiseMiscDto = cessationMainClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+            AppCessMiscDto appCessMiscDto = MiscUtil.transferEntityDto(appPremiseMiscDto, AppCessMiscDto.class);
+            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationMainClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
+            String blkNo = appGrpPremisesEntityDto.getBlkNo();
+            String premisesId = appGrpPremisesEntityDto.getId();
+            String streetName = appGrpPremisesEntityDto.getStreetName();
+            String buildingName = appGrpPremisesEntityDto.getBuildingName();
+            String floorNo = appGrpPremisesEntityDto.getFloorNo();
+            String unitNo = appGrpPremisesEntityDto.getUnitNo();
+            String postalCode = appGrpPremisesEntityDto.getPostalCode();
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            AppCessHciDto appCessHciDto = new AppCessHciDto();
+            String hciName = appGrpPremisesEntityDto.getHciName();
+            String hciCode = appGrpPremisesEntityDto.getHciCode();
+            appCessHciDto.setHciCode(hciCode);
+            appCessHciDto.setHciName(hciName);
+            appCessHciDto.setPremiseId(premisesId);
+            appCessHciDto.setHciAddress(hciAddress);
+            if (appCessMiscDto != null) {
+                Date effectiveDate = appCessMiscDto.getEffectiveDate();
+                String reason = appCessMiscDto.getReason();
+                String otherReason = appCessMiscDto.getOtherReason();
+                String patTransType = appCessMiscDto.getPatTransType();
+                String patTransTo = appCessMiscDto.getPatTransTo();
+                String mobileNo = appCessMiscDto.getMobileNo();
+                String emailAddress = appCessMiscDto.getEmailAddress();
+                appCessHciDto.setPatientSelect(patTransType);
+                appCessHciDto.setReason(reason);
+                appCessHciDto.setOtherReason(otherReason);
+                appCessHciDto.setEffectiveDate(effectiveDate);
+                Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+                MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
+                Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
+                if (patNeedTrans) {
+                    appCessHciDto.setPatientSelect(patTransType);
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatHciName(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        PremisesDto premisesDto = getPremiseByHciCodeName(patTransTo);
+                        String hciAddressPat = premisesDto.getHciAddress();
+                        String hciNamePat = premisesDto.getHciName();
+                        String hciCodePat = premisesDto.getHciCode();
+                        appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciCodePat(hciCodePat);
+                        appCessHciDto.setHciAddressPat(hciAddressPat);
+                    }
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatRegNo(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                    }
+                    if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                        appCessHciDto.setPatOthers(patTransTo);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                        appCessHciDto.setMobileNo(mobileNo);
+                        appCessHciDto.setEmailAddress(emailAddress);
+                    }
+                } else {
+                    String remarks = appCessMiscDto.getPatNoReason();
+                    appCessHciDto.setPatNoRemarks(remarks);
+                    appCessHciDto.setPatNoConfirm("no");
+                    appCessHciDto.setPatNeedTrans(Boolean.FALSE);
+                }
+                List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
+                appCessHciDtos.add(appCessHciDto);
+                appCessLicDto.setAppCessHciDtos(appCessHciDtos);
+                //spec
+                String applicationNo = applicationDto.getApplicationNo();
+                ApplicationDto specApp = cessationMainClient.getAppByBaseAppNo(applicationNo).getEntity();
+                List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+                if (specApp != null) {
+                    String specId = specApp.getOriginLicenceId();
+                    LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
+                    if (specLicenceDto != null) {
+                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                        LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
+                        String specLicenceNo = specLicenceDto.getLicenceNo();
+                        String licenceDtoId = specLicenceDto.getId();
+                        String specSvcName = specLicenceDto.getSvcName();
+                        appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                        appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                        appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                        appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                        appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                        appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                    }
+                    ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
+                }
+                ParamUtil.setSessionAttr(request, "confirmDto", appCessLicDto);
+                ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
+                ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
+            }
+        }
+    }
+
+    public PremisesDto getPremiseByHciCodeName(String hciNameCode) {
+        PremisesDto premisesDto = licenceClient.getPremiseDtoByHciCodeOrName(hciNameCode).getEntity();
+        if(premisesDto!=null){
+            String blkNo = premisesDto.getBlkNo();
+            String streetName = premisesDto.getStreetName();
+            String buildingName = premisesDto.getBuildingName();
+            String floorNo = premisesDto.getFloorNo();
+            String unitNo = premisesDto.getUnitNo();
+            String postalCode = premisesDto.getPostalCode();
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            premisesDto.setHciAddress(hciAddress);
+        }
+        return premisesDto;
+    }
+
+    private List<SelectOption> getReasonOption() {
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(reasonArr);
+        return selectOptions;
+    }
+
+    private List<SelectOption> getPatientsOption() {
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
+        return selectOptions;
     }
 }
