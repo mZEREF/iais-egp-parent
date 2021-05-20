@@ -313,7 +313,13 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 String beforeFinishYes = (String) ParamUtil.getSessionAttr(request,BEFORE_FINISH_CHECK_LIST);
                 if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
-                    insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
+                    if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+                        List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+                        insepctionNcCheckListService.submitSpecService(comDto, fDtosDtos,serListDto,taskDto.getRefNo());
+                        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
+                    }else {
+                        insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
+                    }
                 }else {
                     insepctionNcCheckListService.saveOtherDataForPengingIns(serListDto,taskDto.getRefNo());
                 }
@@ -428,7 +434,13 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
         log.info(" ----------- saveCheckListBefore start ------------");
-        insepctionNcCheckListService.saveBeforeSubmitCheckList(commonDto,showDto,serListDto,taskDto.getRefNo());
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+            List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+            insepctionNcCheckListService.saveBeforeSubmitSpecCheckList(commonDto,fDtosDtos,serListDto,taskDto.getRefNo());
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
+        }else {
+            insepctionNcCheckListService.saveBeforeSubmitCheckList(commonDto,showDto,serListDto,taskDto.getRefNo());
+        }
         insepctionNcCheckListService.saveBeforeFinishCheckListRec(taskDto.getRefNo(),(String)ParamUtil.getSessionAttr(request, MOBILE_REMARK_GROUP));
         ParamUtil.setSessionAttr(request,BEFORE_FINISH_CHECK_LIST,AppConsts.YES);
         log.info(" ----------- saveCheckListBefore end ------------");
@@ -649,7 +661,13 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COMMONDTO);
         AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADHOCLDTO);
-        insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+        if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
+            List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
+            insepctionNcCheckListService.saveDraftSpecChecklist(commonDto,taskDto.getRefNo(),fDtosDtos);
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
+        }else {
+            insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+        }
         String nowTabIn = ParamUtil.getString(request,"nowTabIn");
         ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
         String nowComTabIn = ParamUtil.getString(request,HcsaLicenceBeConstant.CHECK_LIST_COM_TAB_NAME);
