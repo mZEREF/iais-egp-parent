@@ -154,9 +154,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="center-content">
-                            <div class="components">
-                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()" href="javascript:void(0);">Submit</a>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <span style="padding-right: 10%" class="components">
+                                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                                class="fa fa-angle-left"></em> Back</a>
+                                    </span>
+                                </div>
+                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
+                                   href="javascript:void(0);">Submit</a>
                                 <span style="float:right">&nbsp;</span>
                                 <a class="btn btn-secondary" style="float:right"
                                    href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>

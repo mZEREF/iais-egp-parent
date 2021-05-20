@@ -206,18 +206,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <c:if test="${isDoView == 'Y'}">
-                                <div class="components">
-                                    <a style="float:left;padding-top: 1.1%;" class="back"
-                                       href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
-                                            class="fa fa-angle-left"></em> Back</a>
-                                </div>
-                            </c:if>
                         </div>
                     </div>
+                    <c:if test="${isDoView == 'Y'}">
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                <span style="padding-right: 10%" class="components">
+                                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                            class="fa fa-angle-left"></em> Back</a>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </c:if>
                     <c:if test="${isDoView != 'Y'}">
-                        <div class="center-content">
-                            <div class="components">
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <span style="padding-right: 10%" class="components">
+                                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                                                class="fa fa-angle-left"></em> Back</a>
+                                    </span>
+                                </div>
                                 <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
                                    href="javascript:void(0);">Submit</a>
                                 <span style="float:right">&nbsp;</span>
