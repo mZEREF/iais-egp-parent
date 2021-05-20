@@ -34,7 +34,10 @@
         <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
       </c:if>
       <c:if test="${declaration_page_is == 'cessation' }">
-        <c:set value="${appCessationDtos[0]}" var="AppSubmissionDto"></c:set>
+        <c:set value="${appCessationDtos[0]}" var="AppSubmissionDto" scope="request"></c:set>
+        <c:set var="pageShowFileDtos" value="${selectedCessFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+        <%--<c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>--%>
+        <c:set var="sec" value="Cess" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
         <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         <%@include file="../newApplication/declarations/cessationQuestion.jsp"%>
