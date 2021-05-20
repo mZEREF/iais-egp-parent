@@ -196,12 +196,12 @@ public class FeUserManagement {
         }else{
             //do validation
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
-            String uenNo = ParamUtil.getString(bpc.request,"uenNo");
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
             String idType = ParamUtil.getString(bpc.request,"idType");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(bpc.request,"idNo"));
             String designation = ParamUtil.getString(bpc.request,"designation");
+            String designationOther = ParamUtil.getString(bpc.request,"designationOther");
             String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             String email = ParamUtil.getString(bpc.request,"email");
@@ -210,13 +210,13 @@ public class FeUserManagement {
             active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String prevIdNumber = userAttr.getIdentityNo();
-            userAttr.setUenNo(uenNo);
             userAttr.setIdType(idType);
             userAttr.setIdentityNo(idNo);
             userAttr.setIdNumber(idNo);
             userAttr.setDisplayName(name);
             userAttr.setSalutation(salutation);
             userAttr.setDesignation(designation);
+            userAttr.setDesignationOther(designationOther);
             userAttr.setMobileNo(mobileNo);
             userAttr.setOfficeTelNo(officeNo);
             userAttr.setEmail(email);
@@ -274,6 +274,14 @@ public class FeUserManagement {
                         validationResult.setHasErrors(true);
                     }
                 }
+            }
+            // set user id
+            if (userAttr.isCorpPass()) {
+                userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
+                userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
+            } else {
+                userAttr.setUserId(idNo);
+                userDto.setUserId(idNo);
             }
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();

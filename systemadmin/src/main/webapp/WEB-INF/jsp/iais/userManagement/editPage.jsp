@@ -41,7 +41,7 @@
                                 <c:otherwise>
                                     <iais:value width="11">
                                         <p><c:out value="${inter_user_attr.uenNo}"></c:out></p>
-                                        <input name="organizationId" id="organizationId" type="text" value="${organizationId}" hidden/>
+                                        <input name="organizationId" id="organizationId" type="hidden" value="<iais:mask name="organizationId" value="${organizationId}"/>"/>
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:otherwise>
@@ -82,14 +82,17 @@
                                     <iais:row>
                                         <iais:field value="Designation" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${inter_user_attr.designation}" firstOption="Please Select"/>
+                                            <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${inter_user_attr.designation}"
+                                                         firstOption="Please Select" onchange="toggleOnSelect('designation', 'DES999', 'designationOther')" />
+                                            <iais:input type="text" name="designationOther" id="designationOther" value="${inter_user_attr.designationOther}"
+                                                        maxLength="100" style="${inter_user_attr.designation eq 'DES999' ? '' : 'display:none'}"/>
                                             <span class="error-msg" name="errorMsg" id="error_designation"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Mobile No" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}"/>
+                                            <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}" />
                                             <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
                                         </iais:value>
                                     </iais:row>
