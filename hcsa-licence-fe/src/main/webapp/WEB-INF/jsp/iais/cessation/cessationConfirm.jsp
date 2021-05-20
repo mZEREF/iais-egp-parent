@@ -108,7 +108,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for=${num.count}radioYes${uid.count}"><span
-                                            class="check-circle"></span>Yes</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==true}">radio-disabled</c:if>"></span>Yes</label>
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
@@ -123,7 +123,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="${num.count}radioNo${uid.count}"><span
-                                            class="check-circle"></span>No</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==false}">radio-disabled</c:if>"></span>No</label>
                                   </div>
                                 </div>
                               </div>
@@ -383,25 +383,22 @@
               </div>
             </div>
           </div>
-          <br/>
           </form>
         </div>
       </div>
-      <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
-           style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-body" >
-              <div class="row">
-                <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
-              </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-              <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                      data-dismiss="modal" onclick="cancel()">OK
-              </button>
-            </div>
+      <br/>
+    </div>
+  </div>
+  <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body" >
+          <div class="row">
+            <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
           </div>
+        </div>
+        <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
         </div>
       </div>
     </div>
@@ -414,6 +411,14 @@
 
   input[type='text'] {
     margin-bottom: 0px;
+  }
+
+  .radio-disabled::before{
+    background-color: #999999 !important;
+
+  }
+  .radio-disabled{
+    border-color: #999999 !important;
   }
 </style>
 <script type="text/javascript">
