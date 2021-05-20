@@ -120,7 +120,7 @@
                       <c:if test="${empty dashCommonPoolStatus}">
                         <iais:select name="application_status" options="appStatusOption" needSort="true"
                                      cssClass="application_status" firstOption="Please Select"
-                                     value="${dashSearchParam.filters['application_status']}"></iais:select>
+                                     value="${dashAppStatus}"></iais:select>
                       </c:if>
                       <c:if test="${not empty dashCommonPoolStatus}">
                         <iais:select name="application_status" options="appStatusOption" needSort="true"
