@@ -41,7 +41,7 @@
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
@@ -91,7 +91,7 @@
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
@@ -211,7 +211,7 @@
             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
@@ -232,7 +232,7 @@
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
@@ -251,7 +251,7 @@
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_no??> and charindex(:application_no, T7.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T7.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
@@ -273,7 +273,7 @@
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T7.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
@@ -332,7 +332,7 @@
             <#if lic_renew_exp??> and T1.licExpDays <= :lic_renew_exp</#if>
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
@@ -355,7 +355,7 @@
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if lic_renew_exp??> and T1.LICEXPDAYS <= :lic_renew_exp</#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
@@ -406,7 +406,7 @@
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if dashCommonPoolStatus??> and T5.USER_ID is NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
@@ -461,7 +461,7 @@
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-            <#if application_status??> and T5.STATUS = :application_status</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>

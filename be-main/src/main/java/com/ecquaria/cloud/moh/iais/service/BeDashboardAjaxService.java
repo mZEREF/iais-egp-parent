@@ -37,7 +37,7 @@ public interface BeDashboardAjaxService {
      * @return: map
      * @Descripation: Kpi Pool Dropdown
      */
-    Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
+    Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 
     /**
      * @author: shicheng
@@ -46,7 +46,7 @@ public interface BeDashboardAjaxService {
      * @return: Map<String, Object>
      * @Descripation: Task Assign To Me Drop down Result
      */
-    Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo);
+    Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo, String dashAppStatus);
 
     /**
      * @author: shicheng
@@ -55,7 +55,7 @@ public interface BeDashboardAjaxService {
      * @return: Map<String, Object>
      * @Descripation: getWorkTeamDropdownResult
      */
-    Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashCommonPoolStatus);
+    Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus);
 
     /**
      * @author: shicheng
@@ -64,7 +64,7 @@ public interface BeDashboardAjaxService {
      * @return: Map<String, Object>
      * @Descripation: getRenewDropdownResult
      */
-    Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
+    Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 
     /**
      * @author: shicheng
@@ -82,5 +82,5 @@ public interface BeDashboardAjaxService {
      * @return: Map<String, Object>
      * @Descripation: getWaitApproveDropResult
      */
-    Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
+    Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 }

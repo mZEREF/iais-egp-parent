@@ -97,4 +97,13 @@ public interface MohHcsaBeDashboardService {
      * @Descripation:
      */
     boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/20
+     * @Param: application_status
+     * @return: List<String>
+     * @Descripation: getSearchAppStatus
+     */
+    List<String> getSearchAppStatus(String application_status);
 }
