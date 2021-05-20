@@ -507,7 +507,7 @@
                                                         </div>
                                                         <div  class="col-sm-3  col-md-4"></div>
                                                         <div class="col-sm-5 col-md-8">
-                                                            <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${suffix}"></span>
+                                                            <span class="error-msg" name="iaisErrorMsg" id="error_deputyOtherDesignation${suffix}"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1493,7 +1493,7 @@
         $('.designation').unbind('change');
         $('.designation').change(function () {
             var thisVal = $(this).val();
-            if("Others" == thisVal){
+            if("DES999" == thisVal){
                 $(this).closest('div.po-content').find('div.otherDesignationDiv').removeClass('hidden');
             }else{
                 $(this).closest('div.po-content').find('div.otherDesignationDiv').addClass('hidden');

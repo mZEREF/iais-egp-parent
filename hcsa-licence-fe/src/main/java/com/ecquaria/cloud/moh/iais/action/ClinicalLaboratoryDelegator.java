@@ -2162,11 +2162,13 @@ public class ClinicalLaboratoryDelegator {
         String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
         String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
         String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
+        String errOtherDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field");
 
         String errLengthName = NewApplicationHelper.repLength("Name","66");
         String errLengthRegnNo = NewApplicationHelper.repLength("Professional Regn. No.","20");
         String errLengthWrkExpYear = NewApplicationHelper.repLength("Relevant working experience (Years)","2");
         String errLengthQualification = NewApplicationHelper.repLength("Qualification","100");
+        String errLengthOtherDesignation = NewApplicationHelper.repLength("Others Designation","100");
         List<SelectOption> personnelTypeSel = genPersonnelTypeSel(svcCode);
         //Verify that each type of person has at least one
         //person type,value/empty
@@ -2181,6 +2183,13 @@ public class ClinicalLaboratoryDelegator {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 if (StringUtil.isEmpty(designation)) {
                     errorMap.put("designation" + i, errDesignation);
+                }else if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation)){
+                    String otherDesignation = appSvcPersonnelDtos.get(i).getOtherDesignation();
+                    if(StringUtil.isEmpty(otherDesignation)){
+                        errorMap.put("otherDesignation"+i,errOtherDesignation);
+                    }else if(otherDesignation.length() > 100){
+                        errorMap.put("otherDesignation" + i, errLengthOtherDesignation);
+                    }
                 }
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
@@ -2288,6 +2297,13 @@ public class ClinicalLaboratoryDelegator {
                     }
                     if (StringUtil.isEmpty(designation)) {
                         errorMap.put("designation" + i, errDesignation);
+                    }else if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation)){
+                        String otherDesignation = appSvcPersonnelDtos.get(i).getOtherDesignation();
+                        if(StringUtil.isEmpty(otherDesignation)){
+                            errorMap.put("otherDesignation"+i,errOtherDesignation);
+                        }else if(otherDesignation.length() > 100){
+                            errorMap.put("otherDesignation" + i, errLengthOtherDesignation);
+                        }
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
                         errorMap.put("wrkExpYear" + i, errWrkExpYear);
@@ -2476,7 +2492,7 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isDesignation()){
                     NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
                 }
-                if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())){
                     NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                 }
                 if(appPsnEditDto.isProfessionType()){
@@ -2842,7 +2858,7 @@ public class ClinicalLaboratoryDelegator {
                     if(appPsnEditDto.isOtherDesignation()){
                         NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
-                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())){
                         NewApplicationHelper.setPsnValue(otherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
 
@@ -3040,7 +3056,7 @@ public class ClinicalLaboratoryDelegator {
                     if (appPsnEditDto.isDesignation()) {
                         NewApplicationHelper.setPsnValue(deputyDesignation, i, appSvcPrincipalOfficersDto, "designation");
                     }
-                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getOtherDesignation())){
+                    if(appPsnEditDto.isOtherDesignation() && MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcPrincipalOfficersDto.getDesignation())){
                         NewApplicationHelper.setPsnValue(deputyOtherDesignations,i,appSvcPrincipalOfficersDto,"otherDesignation");
                     }
                     //input

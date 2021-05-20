@@ -199,6 +199,15 @@ public class NewApplicationHelper {
                 String designation = appSvcCgoList.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
                     errMap.put("designation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
+                }else if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                    String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
+                    if(StringUtil.isEmpty(otherDesignation)){
+                        errMap.put("otherDesignation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field"));
+                    }else if(otherDesignation.length() > 100){
+                        String general_err0041 = repLength("Others Designation","100");
+                        errMap.put("otherDesignation" + i, general_err0041);
+                    }
+
                 }
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 if(!StringUtil.isEmpty(professionRegoNo) && professionRegoNo.length() > 20){
@@ -434,6 +443,14 @@ public class NewApplicationHelper {
                     }
                     if(StringUtil.isEmpty(designation)){
                         oneErrorMap.put("designation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
+                    }else if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        String otherDesignation = poDto.get(i).getOtherDesignation();
+                        if(StringUtil.isEmpty(otherDesignation)){
+                            oneErrorMap.put("otherDesignation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field"));
+                        }else if(otherDesignation.length() > 100){
+                            String general_err0041 = repLength("Others Designation","100");
+                            oneErrorMap.put("otherDesignation" + i, general_err0041);
+                        }
                     }
                     if(!StringUtil.isEmpty(idNo)){
                         if(idNo.length() > 9){
@@ -538,6 +555,14 @@ public class NewApplicationHelper {
                 }else {
                     if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
                         oneErrorMap.put("deputyDesignation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
+                    }else if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        String otherDesignation = poDto.get(i).getOtherDesignation();
+                        if(StringUtil.isEmpty(otherDesignation)){
+                            oneErrorMap.put("deputyOtherDesignation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field"));
+                        }else if(otherDesignation.length() > 100){
+                            String general_err0041 = repLength("Others Designation","100");
+                            oneErrorMap.put("deputyOtherDesignation" + dpoIndex, general_err0041);
+                        }
                     }
                     if(StringUtil.isEmpty(salutation)||"-1".equals(salutation)){
                         oneErrorMap.put("deputySalutation"+dpoIndex,errSalutation);
@@ -1127,8 +1152,12 @@ public class NewApplicationHelper {
                 person.setIdNo(psnDto.getIdNo());
                 person.setMobileNo(psnDto.getMobileNo());
                 person.setEmailAddr(psnDto.getEmailAddr());
+                String designation = psnDto.getDesignation();
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
-                    person.setDesignation(psnDto.getDesignation());
+                    person.setDesignation(designation);
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
@@ -1177,10 +1206,16 @@ public class NewApplicationHelper {
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
                     person.setDesignation(psnDto.getDesignation());
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
                     person.setDesignation(psnDto.getDesignation());
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
