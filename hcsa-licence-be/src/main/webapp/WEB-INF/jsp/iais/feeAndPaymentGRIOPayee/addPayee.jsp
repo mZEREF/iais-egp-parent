@@ -90,26 +90,23 @@
                                         <iais:field value="Branch Code :"  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
+                                                <input type="text" maxlength="3" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
                                                 <div><span  id="error_branchCode" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>
                                     </iais:row>
-
                                     <iais:row>
                                         <iais:field value="Bank Name :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="bankName" value="${bankName}" />
-                                                <div><span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span></div>
-                                            </label>
-                                        </div>
+                                            <iais:select name="bankName" options="bankNameSelectOptions" firstOption="Please Select" value="${bankName}" needSort="true" ></iais:select>
+                                            <span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Bank Account No. :" mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
+                                                <input type="text" maxlength="10" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
                                                 <div><span  id="error_bankAccountNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>

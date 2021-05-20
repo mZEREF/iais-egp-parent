@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -54,6 +57,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * FeeAndPaymentGIROPayeeDelegator
@@ -83,7 +87,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    private static final Set<String> bankNames = ImmutableSet.of(
+            "The Hongkong & Shanghai Banking Corporation Ltd (HSBC)",
+            "United Overseas Bank Ltd (UOB)",
+            "DBS Bank Ltd (DBS)",
+            "POSB",
+            "Oversea-Chinese Banking Corporation Ltd (OCBC)",
+            "Standard Chartered Bank (SCB)", "Citibank NA"
+    );
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
@@ -263,6 +274,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
+        List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
+
+        for (String bankName:bankNames
+        ) {
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText(bankName);
+            selectOption.setValue(bankName);
+            selectOptions.add(selectOption);
+        }
+        ParamUtil.setRequestAttr(request,"bankNameSelectOptions", selectOptions);
+
 
     }
     public void doBack(BaseProcessClass bpc) {
@@ -325,11 +347,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
-        if(StringUtil.isEmpty(branchCode)){//4
+        if(StringUtil.isEmpty(branchCode)){//3
             errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
         }else {
-            if(branchCode.length()>4){
-                repMap.put("number","4");
+            if(branchCode.length()>3){
+                repMap.put("number","3");
                 repMap.put("fieldNo","Branch Code");
                 errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
@@ -337,11 +359,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
-        if(StringUtil.isEmpty(bankAccountNo)){//35
+        if(StringUtil.isEmpty(bankAccountNo)){//10
             errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
         }else {
-            if(bankAccountNo.length()>35){
-                repMap.put("number","35");
+            if(bankAccountNo.length()>10){
+                repMap.put("number","10");
                 repMap.put("fieldNo","Bank Account No");
                 errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
@@ -351,16 +373,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         if(StringUtil.isEmpty(bankName)){//60
             errorMap.put("bankName", MessageUtil.replaceMessage("GENERAL_ERR0006","bankName","field"));
-        }else {
-            if(bankName.length()>60){
-                repMap.put("number","60");
-                repMap.put("fieldNo","Bank Name");
-                errorMap.put("bankName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-            }
-            if(!isAlphanumeric(bankName)){
-                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
-            }
         }
+//        else {
+//            if(bankName.length()>60){
+//                repMap.put("number","60");
+//                repMap.put("fieldNo","Bank Name");
+//                errorMap.put("bankName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+//            }
+//            if(!isAlphanumeric(bankName)){
+//                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
+//            }
+//        }
         if(StringUtil.isEmpty(cusRefNo)){//35
             errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
         }else {
