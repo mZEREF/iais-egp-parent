@@ -86,6 +86,9 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
+        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
     }
 
     public void init(BaseProcessClass bpc) {
