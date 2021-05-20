@@ -1116,8 +1116,9 @@ public class NewApplicationDelegator {
                     appSubmissionDto.getAppType());
             // uploaded files
             appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-            validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
-                    !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request);
+            String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+            appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                    preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
@@ -1994,8 +1995,9 @@ public class NewApplicationDelegator {
                     appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                     DeclarationsUtil.declarationsValidate(map,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-                    validateDeclarationDoc(map, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
-                            !StringUtil.isEmpty(appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly()), bpc.request);
+                    String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+                    appSubmissionService.validateDeclarationDoc(map, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                            preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
                     appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
                 }
             }

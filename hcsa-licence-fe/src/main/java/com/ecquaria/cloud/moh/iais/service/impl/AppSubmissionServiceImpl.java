@@ -614,6 +614,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appDeclarationMessageDto.setCriminalRecordsItem4(criminalRecordsItem4);
             String criminalRecordsRemark = request.getParameter("criminalRecordsRemark");
             appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
+            String generalAccuracyItem1 = request.getParameter("generalAccuracyItem1");
+            appDeclarationMessageDto.setGeneralAccuracyItem1(generalAccuracyItem1);
 
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
             // Preliminary Question
@@ -642,6 +644,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appDeclarationMessageDto.setAppType(type);
         appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return appDeclarationMessageDto;
+    }
+
+    @Override
+    public boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request) {
+        boolean isValid = true;
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
+                HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        if (isMandatory && (fileMap == null || fileMap.isEmpty())) {
+            errorMap.put("selectedFileError", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            isValid = false;
+        }
+        return isValid;
     }
 
     @Override
