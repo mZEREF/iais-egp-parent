@@ -15,10 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -37,10 +34,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -58,8 +52,6 @@ public class FeUserManagement {
         getSearchParam(bpc.request,true);
     }
 
-
-
     public void prepare(BaseProcessClass bpc){
         log.debug("****preparePage Process ****");
         ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",null);
@@ -75,8 +67,7 @@ public class FeUserManagement {
         Map<String,String> uenMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(orgId)){
-            for (OrganizationDto i :organList
-            ) {
+            for (OrganizationDto i :organList) {
                 if(i.getId().equals(orgId)){
                     ParamUtil.setRequestAttr(bpc.request,"uenNo",  i.getUenNo());
                     ParamUtil.setRequestAttr(bpc.request,"organizationId",orgId);
@@ -245,17 +236,20 @@ public class FeUserManagement {
 
             OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
-            if(userAttr.isCorpPass()){
-                userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
-                userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
-            }else{
-                userAttr.setUserId(idNo);
-                userDto.setUserId(idNo);
-            }
             ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",userAttr);
-            if("Edit".equals(title)){
+            if ("Edit".equals(title)) {
                 validationResult = WebValidationHelper.validateProperty(userAttr, "edit");
-            }else{
+                if (StringUtil.isEmpty(userAttr.getId())) {
+                    validationResult.addMessage("uenNo", "GENERAL_ERR0006");
+                } else {
+                    String organizationId = ParamUtil.getMaskedString(bpc.request,"organizationId");
+                    if (!userAttr.getOrgId().equalsIgnoreCase(organizationId)) {
+                        validationResult.addMessage("uenNo", "GENERAL_ERR0006");
+                    }
+                }
+            } else {
+                String uenNo = ParamUtil.getString(bpc.request,"uenNo");
+                userAttr.setUenNo(uenNo);
                 validationResult = WebValidationHelper.validateProperty(userAttr, "create");
                 if (StringUtil.isEmpty(uenNo)){
                     validationResult.addMessage("uenNo", "GENERAL_ERR0006");
@@ -268,8 +262,11 @@ public class FeUserManagement {
                         if(orgId!=null){
                             userDto.setOrgId(orgId);
                             userAttr.setOrgId(orgId);
+                        } else {
+                            validationResult.addMessage("uenNo", "USER_ERR020");
+                            validationResult.setHasErrors(true);
                         }
-                    }else {
+                    } else {
                         validationResult.addMessage("uenNo", "USER_ERR020");
                         validationResult.setHasErrors(true);
                     }
@@ -343,59 +340,42 @@ public class FeUserManagement {
             searchParam.setPageNo(1);
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
             ParamUtil.setSessionAttr(request,"feUserSearchParam",searchParam);
-        }else
-        {
+        } else {
             searchParam = (SearchParam) ParamUtil.getSessionAttr(request,"feUserSearchParam");
         }
         return searchParam;
     }
 
     private void saveEgpUser(OrgUserDto orgUserDto) {
-        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-        clientUser.setId(orgUserDto.getUserId());
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        String email = orgUserDto.getEmail();
-        String salutation = orgUserDto.getSalutation();
-        clientUser.setSalutation(salutation);
-        clientUser.setEmail(email);
-        String randomStr = IaisEGPHelper.generateRandomString(6);
-        String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
-        clientUser.setPassword(pwd);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
-        intranetUserService.saveEgpUser(clientUser);
+        intranetUserService.saveEgpUser(transferEntityDto(orgUserDto));
     }
 
     private void editEgpUser(OrgUserDto orgUserDto) {
         String userId = orgUserDto.getUserId();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null) {
-            Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-            Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-            String email = orgUserDto.getEmail();
-            String displayName = orgUserDto.getDisplayName();
-            String firstName = orgUserDto.getFirstName();
-            String lastName = orgUserDto.getLastName();
-            String salutation = orgUserDto.getSalutation();
-            String mobileNo = orgUserDto.getMobileNo();
-
-            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            clientUser.setId(userId);
-            clientUser.setDisplayName(displayName);
-            clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-            clientUser.setPasswordChallengeQuestion("A");
-            clientUser.setPasswordChallengeAnswer("A");
-            clientUser.setAccountActivateDatetime(accountActivateDatetime);
-            clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
-            clientUser.setFirstName(firstName);
-            clientUser.setLastName(lastName);
-            clientUser.setEmail(email);
-            clientUser.setMobileNo(mobileNo);
-            clientUser.setSalutation(salutation);
-            intranetUserService.updateEgpUser(clientUser);
+            intranetUserService.updateEgpUser(transferEntityDto(clientUser, orgUserDto));
         } else {
             log.debug(StringUtil.changeForLog("===========egpUser can not found============"));
         }
+    }
+
+    private ClientUser transferEntityDto(OrgUserDto orgUserDto) {
+        return transferEntityDto(null, orgUserDto);
+    }
+
+    private ClientUser transferEntityDto(ClientUser clientUser, OrgUserDto orgUserDto) {
+        if (Objects.isNull(clientUser)) {
+            clientUser = new ClientUser();
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+            clientUser.setPassword(pwd);
+        }
+        clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class, null, clientUser);
+        clientUser.setId(orgUserDto.getUserId());
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        clientUser.setPasswordChallengeQuestion("A");
+        clientUser.setPasswordChallengeAnswer("A");
+        return clientUser;
     }
 }
