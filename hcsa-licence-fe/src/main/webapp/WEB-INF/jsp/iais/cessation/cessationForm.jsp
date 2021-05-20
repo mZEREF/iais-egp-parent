@@ -463,7 +463,6 @@
 </div>
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <style>
     #effectiveDate {
         margin-bottom: 0px;
