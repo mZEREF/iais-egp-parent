@@ -128,7 +128,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
         request.getSession().removeAttribute("DraftNumber");
-        request.getSession().removeAttribute("renew");
+        request.getSession().removeAttribute("renewDto");
     }
     /**
      *
