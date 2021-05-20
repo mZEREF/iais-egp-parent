@@ -357,3 +357,43 @@ function fileChanged(event) {
     }
     //What ever else you want to do when File Chooser Changed
 }
+
+function toggleOnSelect(sel, val, elem) {
+    if (isEmpty(sel)) {
+        return;
+    }
+    if ($('#' + sel).val() == val) {
+        $('#' + elem).show();
+    } else {
+        $('#' + elem).hide();
+        $('#' + elem).clearFields();
+    }
+}
+
+function isEmpty(str) {
+    return typeof str === 'undefined' || str == null || str == '' || str == 'undefined';
+}
+
+$.fn.clearFields = function() {
+    return this.each(function() {
+        var type = this.type, tag = this.tagName.toLowerCase();
+        if (tag == 'form' || tag == 'div' || tag == 'span' || tag == 'ul' || tag == 'table' || tag == 'tr' || tag == 'td') {
+            return $(':input[class!="not-clear"]', this).clearFields();
+        }
+
+        if (!$(this).hasClass('not-clear')) {
+            if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
+                this.value = '';
+                if (tag == 'textarea' && $(this).hasClass('riched')) {
+                    $('#' + $(this).attr('id') + 'Rich').html('');
+                }
+            } else if (type == 'checkbox') {
+                this.checked = false;
+            } else if (type == 'radio') {
+                this.checked = false;
+            } else if (tag == 'select') {
+                this.selectedIndex = 0;
+            }
+        }
+    });
+};
