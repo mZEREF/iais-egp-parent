@@ -3,12 +3,10 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,22 +14,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.LaboratoryDevelopTestService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Delegator("submissionDataDelegator")
 @Slf4j
@@ -42,9 +36,9 @@ public class IaisSubmissionDataDelegator {
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
-
     @Autowired
-    private LaboratoryDevelopTestService laboratoryDevelopTestService;
+    private SystemAdminMainFeClient systemAdminMainFeClient;
+
 
     private final String LABORATORY_DEVELOP_TEST_DTO = "laboratoryDevelopTestDto";
 
@@ -81,11 +75,13 @@ public class IaisSubmissionDataDelegator {
     }
 
     public void confirmStep(BaseProcessClass bpc){
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO);
-        String licenseeId = interInboxUserDto.getLicenseeId();
-        String orgId = interInboxUserDto.getOrgId();
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = (LaboratoryDevelopTestDto)ParamUtil.getSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO);
         if (laboratoryDevelopTestDto != null) {
+            String ldtNo = systemAdminMainFeClient.ldTNumber().getEntity();
+            if (StringUtil.isEmpty(ldtNo)){
+                ldtNo = "LDT0000000000001";
+            }
+            laboratoryDevelopTestDto.setLdtNo(ldtNo);
             LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
             try {
                 eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);

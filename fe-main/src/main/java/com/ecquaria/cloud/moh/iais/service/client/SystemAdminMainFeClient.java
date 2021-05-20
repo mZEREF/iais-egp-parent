@@ -50,7 +50,8 @@ public interface SystemAdminMainFeClient {
 
     @PutMapping(value = "/iais-mastercode/master-code/active-master-code",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> activeMasterCode(@RequestBody AuditTrailDto auditTrailDto);
-
+    @GetMapping(value = "/LDT-number")
+    FeignResponseEntity<String> ldTNumber();
     @GetMapping(value = "/iais-jobmsg-track/job-rem-msg-tra/{refNo}/{msgKey}")
     FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDto(@PathVariable(name = "refNo") String refNo, @PathVariable(name = "msgKey") String msgKey);
 }
