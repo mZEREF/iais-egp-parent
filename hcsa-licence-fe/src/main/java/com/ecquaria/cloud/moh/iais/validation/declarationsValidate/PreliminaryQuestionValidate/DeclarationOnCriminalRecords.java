@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
 
 
@@ -57,6 +58,9 @@ public class DeclarationOnCriminalRecords implements Declarations {
         String criminalRecordsRemark = appDeclarationMessageDto.getCriminalRecordsRemark();
         if(StringUtil.isEmpty(criminalRecordsRemark)&&flag){
             map.put("criminalRecordsRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>=1000){
+            String general_err0041= NewApplicationHelper.repLength("this","1000");
+            map.put("criminalRecordsRemark",general_err0041);
         }
     }
 }

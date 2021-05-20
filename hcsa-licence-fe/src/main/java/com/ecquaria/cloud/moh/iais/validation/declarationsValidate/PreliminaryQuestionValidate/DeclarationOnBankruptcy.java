@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
 
 
@@ -54,6 +55,9 @@ public class DeclarationOnBankruptcy implements Declarations {
         String bankruptcyRemark = appDeclarationMessageDto.getBankruptcyRemark();
         if(StringUtil.isEmpty(bankruptcyRemark)&&flag){
             map.put("bankruptcyRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+        }else if(!StringUtil.isEmpty(bankruptcyRemark)&&bankruptcyRemark.length()>=1000){
+            String general_err0041= NewApplicationHelper.repLength("this","1000");
+            map.put("bankruptcyRemark",general_err0041);
         }
     }
 }
