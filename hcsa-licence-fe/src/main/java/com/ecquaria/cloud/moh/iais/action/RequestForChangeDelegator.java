@@ -127,6 +127,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("selectedRFCFileDocShowPageDto");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
+        request.getSession().removeAttribute("DraftNumber");
     }
     /**
      *
