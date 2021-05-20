@@ -1287,7 +1287,11 @@ public class WithOutRenewalDelegator {
             return;
 
         }
-
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(allErrMap));
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+            return;
+        }
         log.info("-------------------");
         if (renewDto != null) {
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
