@@ -22,10 +22,12 @@ import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeMainEmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
@@ -53,7 +55,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private FeAdminClient feAdminClient;
-
 
     @Autowired
     private FeUserClient feUserClient;
@@ -557,4 +558,35 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
         }
     }
+
+    @Override
+    public FeUserDto syncFeUserFromBe(FeUserDto feUserDto) {
+        log.info("Synchronize FE user from BE");
+        if (!isValid(feUserDto)) {
+            return feUserDto;
+        }
+        log.info(StringUtil.changeForLog("User Id: " + feUserDto.getUserId()));
+        // syncronize halp user
+        log.info("Synchronize iais user");
+        FeUserDto feUserDtoRes = editUserAccount(feUserDto);
+        // syncronize egp user
+        log.info("Synchronize egp user");
+        updateEgpUser(feUserDto);
+        log.info("Synchronize FE user from BE end.");
+        return feUserDtoRes;
+    }
+
+    private boolean isValid(FeUserDto feUserDto) {
+        if (Objects.isNull(feUserDto) || StringUtil.isEmpty(feUserDto.getUserId())) {
+            log.warn(StringUtil.changeForLog("The user Id is null!"));
+            return false;
+        }
+        ValidationResult result = WebValidationHelper.validatePropertyWithoutCustom(feUserDto, "edit");
+        if (result.isHasErrors()) {
+            log.warn(StringUtil.changeForLog("" + WebValidationHelper.generateJsonStr(result.retrieveAll())));
+            return false;
+        }
+        return true;
+    }
+
 }
