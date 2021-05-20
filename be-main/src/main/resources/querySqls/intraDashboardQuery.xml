@@ -400,6 +400,7 @@
              WHERE 1 = 1
              <#if workGroup_list??> and ${workGroup_list} </#if>
              <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+             <#if dashUserId??> and T4.ID = :dashUserId </#if>
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
@@ -454,7 +455,7 @@
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 <#if dashCommonPoolStatus??> and T7.USER_ID is NULL</#if>
-                <#if dashUserId??> and T7.user_id = :dashUserId </#if>
+                <#if dashUserId??> and T4.ID = :dashUserId </#if>
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
             WHERE 1 = 1
