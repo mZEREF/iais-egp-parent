@@ -1544,7 +1544,7 @@ public class ClinicalLaboratoryDelegator {
 
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
-
+        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel end ...."));
     }
 
