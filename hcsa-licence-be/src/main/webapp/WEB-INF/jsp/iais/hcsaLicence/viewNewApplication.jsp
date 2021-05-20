@@ -689,14 +689,63 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                   </td>
                   <td>
-                    <div class="col-xs-12">
-                      <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/></span>
+                    <div class="col-xs-12 img-show">
+                      <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/>
+                        <c:if test="${not empty proHashMap[cgo.profRegNo]}">
+                          <c:if test="${proHashMap[cgo.profRegNo].name==cgo.name}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                          <c:if test="${proHashMap[cgo.profRegNo].name!=cgo.name}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                          </c:if>
+                        </c:if>
+
+                      </span>
                       <br>
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"
-                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}</span>
-                    </div>
+                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}
+                        <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
+                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}">
+                             <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
+                                  width="25" height="25" alt="NETS">
+                          </c:if>
+                        </c:if>
 
+                      </span>
+                    </div>
+                    <c:if test="${not empty proHashMap[cgo.profRegNo]}">
+                      <div class="row new-img-show" style="display: none">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                          <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                          </label><span style="position: absolute;right: 0px;color: black"
+                                        onclick="closeThis(this)">X</span>
+                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                            <tr>
+                              <td>${proHashMap[cgo.profRegNo].name}</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </c:if>
+                    <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
+                      <div class="row old-img-show" style="display: none">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                          <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                          </label><span style="position: absolute;right: 0px;color: black"
+                                        onclick="closeThis(this)">X</span>
+                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                            <tr>
+                              <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name}</td>
+                            </tr>
+
+                          </table>
+                        </div>
+                      </div>
+                    </c:if>
 
                   </td>
                 </tr>
@@ -1251,16 +1300,60 @@
                         </td>
                         <td>
 
-                          <div class="col-xs-12">
+                          <div class="col-xs-12 img-show">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
-                                    value="${appSvcPersonnelDtoList.name}"/></span>
+                                    value="${appSvcPersonnelDtoList.name}"/>
+                              <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
+                                  <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name==appSvcPersonnelDtoList.name}">
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                                  </c:if>
+                                  <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name!=appSvcPersonnelDtoList.name}">
+                                    <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                                  </c:if>
+                              </c:if>
                             <br>
                             <span class="oldVal "
                                   attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</span>
+                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}
+                                  <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                                    <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}">
+                                       <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                                    </c:if>
+                                    <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}">
+                                      <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                                    </c:if>
+                                  </c:if>
+                            </span>
                           </div>
+                          <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
+                            <div class="row new-img-show" style="display: none">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                                <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                                </label><span style="position: absolute;right: 0px;color: black"
+                                                   onclick="closeThis(this)">X</span>
+                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                  <tr>
+                                    <td>${proHashMap[appSvcPersonnelDtoList.profRegNo].name}</td>
+                                  </tr>
+                                </table>
+                              </div>
+                            </div>
+                          </c:if>
+                          <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                            <div class="row old-img-show" style="display: none">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                                <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                                  </label><span style="position: absolute;right: 0px;color: black"
+                                                   onclick="closeThis(this)">X</span>
+                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                  <tr>
+                                    <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name}</td>
+                                  </tr>
 
-
+                                </table>
+                              </div>
+                            </div>
+                          </c:if>
                         </td>
                       </tr>
                       <tr>

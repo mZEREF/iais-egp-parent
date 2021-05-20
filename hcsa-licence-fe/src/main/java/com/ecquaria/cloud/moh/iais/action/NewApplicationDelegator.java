@@ -1458,6 +1458,7 @@ public class NewApplicationDelegator {
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        bpc.request.getSession().removeAttribute("renewDto");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();

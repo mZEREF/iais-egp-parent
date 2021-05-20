@@ -1,7 +1,7 @@
 <div class="panel-body">
     <div class="row">
-        <P>If you have selected that 'I am duly authorised by the Applicant to make this application on its behalf and
-            the Applicant will be the licensee if the application is granted', please attach proof of your authorisation
+        <P>If you have selected that <span style="font-style: italic">'I am duly authorised by the Applicant to make this application on its behalf and
+          the Applicant will be the licensee if the application is granted'</span>, please attach proof of your authorisation
             below:</P>
         <br>
         <div class="document-upload-gp">
