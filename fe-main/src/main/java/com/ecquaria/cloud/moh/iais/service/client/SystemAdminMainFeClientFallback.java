@@ -88,6 +88,14 @@ public class SystemAdminMainFeClientFallback implements SystemAdminMainFeClient{
     }
 
     @Override
+    public FeignResponseEntity<String> ldTNumber() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDto(String refNo, String msgKey) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
