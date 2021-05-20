@@ -244,6 +244,8 @@ public class NewApplicationDelegator {
         String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
         bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        ParamUtil.setSessionAttr(bpc.request, "declaration_page_is",null);
+        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
