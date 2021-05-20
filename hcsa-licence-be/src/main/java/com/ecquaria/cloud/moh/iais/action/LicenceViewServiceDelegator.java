@@ -133,7 +133,6 @@ public class LicenceViewServiceDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-    @Value("${moh.halp.prs.enable}")
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     /**
