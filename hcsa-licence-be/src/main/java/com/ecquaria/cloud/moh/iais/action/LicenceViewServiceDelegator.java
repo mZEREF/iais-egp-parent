@@ -41,6 +41,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ComplaintDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -54,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -122,6 +125,17 @@ public class LicenceViewServiceDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+    @Value("${moh.halp.prs.enable}")
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
     /**
      * StartStep: doStart
      *
@@ -568,9 +582,23 @@ public class LicenceViewServiceDelegator {
             log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","PRS mock server down !");
         }
-
-      /*  List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();*/
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<ProfessionalResponseDto> professionalResponseDtos = null;
+        Map<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
+        try {
+            professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Throwable e){
+            log.error(e.getMessage(),e);
+            request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+            log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+        }
+        if(professionalResponseDtos!=null){
+            for (ProfessionalResponseDto v : professionalResponseDtos) {
+                proHashMap.put(v.getRegno(),v);
+            }
+        }
         List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
         try {
             hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
@@ -611,7 +639,7 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
+        request.getSession().setAttribute("proHashMap",proHashMap);
         request.getSession().setAttribute("listHashMap",(Serializable)listHashMap);
         request.getSession().setAttribute("hashMap",(Serializable)hashMap);
 
