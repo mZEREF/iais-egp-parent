@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel-body" >
     <div class="row">
       <p>Please indicate 'Yes' or 'No' to the following statements:</p>
