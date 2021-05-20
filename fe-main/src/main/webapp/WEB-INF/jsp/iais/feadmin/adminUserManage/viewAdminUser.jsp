@@ -88,12 +88,7 @@
                                                     <p><c:out value="${item.name}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p>
-                                                        <iais:code code="${item.designation}"/>
-                                                        <c:if test="${item.designation == 'DES999'}">
-                                                            <br/><c:out value="${item.designationOther}"/>
-                                                        </c:if>
-                                                    </p>
+                                                    <p><iais:code code="${item.designation}"/></p>
                                                 </td>
                                                 <td>
                                                     <c:choose>
