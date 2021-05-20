@@ -603,7 +603,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String competenciesRemark = request.getParameter("competenciesRemark");
             appDeclarationMessageDto.setCompetenciesRemark(competenciesRemark);
             String criminalRecordsItem1 = request.getParameter("criminalRecordsItem1");
-            appDeclarationMessageDto.setCompetenciesRemark(criminalRecordsItem1);
+            appDeclarationMessageDto.setCriminalRecordsItem1(criminalRecordsItem1);
             String criminalRecordsItem2 = request.getParameter("criminalRecordsItem2");
             appDeclarationMessageDto.setCriminalRecordsItem2(criminalRecordsItem2);
             String criminalRecordsItem3 = request.getParameter("criminalRecordsItem3");
