@@ -1615,13 +1615,14 @@ public class NewApplicationDelegator {
                             requestForChangeService.svcDocToPresmise(appSubmissionDto);
                         }
                     }
-                }
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto)){
-                    AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                    if(appDeclarationMessageDto!=null){
-                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                        if(appDeclarationMessageDto!=null){
+                            bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        }
                     }
                 }
+
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Information");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
