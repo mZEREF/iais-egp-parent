@@ -127,9 +127,13 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
-                                                <div class="panel-group"  role="tablist" aria-multiselectable="true">
-                                                    <%@include file="../common/declarations.jsp"%>
-                                                </div>
+                                                <c:choose>
+                                                    <c:when test="${isSingle == 'Y'}">
+                                                        <div class="panel-group"  role="tablist" aria-multiselectable="true">
+                                                            <%@include file="../common/declarations.jsp"%>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
 
                                         </div>
                                         </div>

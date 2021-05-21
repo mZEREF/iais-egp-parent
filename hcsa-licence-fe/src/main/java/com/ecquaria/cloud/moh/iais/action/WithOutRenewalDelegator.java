@@ -1257,14 +1257,16 @@ public class WithOutRenewalDelegator {
                     errMap.put(appSubmissionDto.getServiceName()+count,previewAndSubmitMap);
                     count++;
                 }
-                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                DeclarationsUtil.declarationsValidate(allErrMap,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
-                appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
-                appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
-                String preQuesKindly =  appSubmissionDtos.get(0).getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
-                appSubmissionService.validateDeclarationDoc(allErrMap,appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL),
-                        preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
+                if(appSubmissionDtos.size()==1){
+                    AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                    DeclarationsUtil.declarationsValidate(allErrMap,appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                    appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
+                    appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
+                    appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+                    String preQuesKindly =  appSubmissionDtos.get(0).getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+                    appSubmissionService.validateDeclarationDoc(allErrMap,appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL),
+                            preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
+                }
             }
         }
         boolean passValidate = true;
@@ -1290,7 +1292,7 @@ public class WithOutRenewalDelegator {
             return;
 
         }
-        if(!errMap.isEmpty()){
+        if(!allErrMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(allErrMap));
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
             return;
