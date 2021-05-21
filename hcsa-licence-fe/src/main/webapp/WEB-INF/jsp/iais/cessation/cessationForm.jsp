@@ -68,7 +68,7 @@
                                                     <div class="col-xs-8 col-sm-2 col-md-2">
                                                         <a class="btn-tooltip styleguide-tooltip"
                                                            data-toggle="tooltip" data-html="true"
-                                                           title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale, disposal of his service, or surrender of his licence.&lt;/p&gt;">i</a>
+                                                           title="${cess_ack002}">i</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -335,53 +335,6 @@
                                         </c:if>
                                     </c:forEach>
                                 </div>
-                                    <div class="table-responsive">
-                                        <c:forEach items="${specLicInfo}" var="map">
-                                            <c:set var="licNo" value="${map.key}"></c:set>
-                                            <c:if test="${appCess.licenceNo==licNo}">
-                                                <div><h4>The following specified healthcare services will also be ceased as
-                                                    their
-                                                    underlying <iais:code code="CDN001"/>(s) is/are listed above.</h4>
-                                                </div>
-                                                <table class="table-gp tablebox">
-                                                    <tr style="text-align:center">
-                                                        <th style="text-align:center;width: 0%">S/N</th>
-                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
-                                                            Licence No.
-                                                        </th>
-                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
-                                                            Name
-                                                        </th>
-                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN001"/>
-                                                            Licence No.
-                                                        </th>
-                                                        <th style="text-align:center;width: 25%"><iais:code code="CDN001"/>
-                                                            Name
-                                                        </th>
-                                                    </tr>
-                                                    <c:forEach items="${map.value}" var="spec" varStatus="index">
-                                                        <tr style="text-align:center">
-                                                            <td>
-                                                                <p><c:out value="${index.count}"/></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out value="${spec.specLicNo}"/></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out value="${spec.specSvcName}"/></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out value="${spec.baseLicNo}"/></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out value="${spec.baseSvcName}"/></p>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                </table>
-                                            </c:if>
-                                        </c:forEach>
-                                    </div>
                                 </c:if>
                             </div>
                             </c:forEach>

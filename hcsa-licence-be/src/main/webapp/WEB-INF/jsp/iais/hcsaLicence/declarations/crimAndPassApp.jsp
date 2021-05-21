@@ -16,7 +16,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem1=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem1" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <br>
     <p>The Applicant, PO, CGO(s), and KAHs have not been convicted or found guilty by a disciplinary tribunal of a professional body or its equivalent in Singapore or elsewhere.</p>
@@ -27,7 +27,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem2=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem2" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <br>
     <p>The Applicant, PO, CGO(s), and KAHs are not awaiting the commencement of disciplinary proceedings before a disciplinary tribunal of a professional body or its equivalent, or the conclusion of such disciplinary proceedings, in Singapore or elsewhere.</p>
@@ -38,7 +38,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem3=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem3" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <br>
     <p>The Applicant, PO, CGO(s), and KAHs are not awaiting the commencement of disciplinary proceedings before a disciplinary tribunal of a professional body or its equivalent, or the conclusion of such disciplinary proceedings, in Singapore or elsewhere.</p>
@@ -49,7 +49,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem4=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem4" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <br>
     <div class="col-xs-12 txt-area-normal">

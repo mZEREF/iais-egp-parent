@@ -108,7 +108,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
@@ -126,7 +126,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+    public Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashKpiPoolAjaxQuery.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -148,7 +148,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -166,7 +166,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo) {
+    public Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo, String dashAppStatus) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashAssignMeAjaxQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -200,7 +200,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 }
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMeAjax", searchParam);
             SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = getAssignMeAjaxResultByParam(searchParam);
@@ -216,7 +216,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Override
     public Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction,
-                                                         String dashFilterAppNo, String dashCommonPoolStatus) {
+                                                         String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashWorkTeamAjaxQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -242,7 +242,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashCommonPoolStatus", dashCommonPoolStatus,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -260,7 +260,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+    public Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                      String switchAction, String dashFilterAppNo, String dashAppStatus) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashRenewAjaxQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -286,7 +287,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -326,7 +327,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -344,7 +345,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+    public Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                        String switchAction, String dashFilterAppNo, String dashAppStatus) {
         if(!StringUtil.isEmpty(groupNo)){
             SearchParam searchParam = new SearchParam(DashWaitApproveAjaxQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
@@ -366,7 +368,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T7.STATUS", dashAppStatus);
             //filter work groups
             List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
@@ -578,12 +580,11 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashAssignMeAjaxQueryDtos;
     }
 
-    private SearchParam filterPageConditions(SearchParam searchParam, SearchParam searchParamGroup) {
+    private SearchParam filterPageConditions(SearchParam searchParam, SearchParam searchParamGroup, String appStatusKey, String application_status) {
         if(searchParamGroup != null) {
             Map<String, Object> filters = searchParamGroup.getFilters();
             if(filters != null) {
                 String application_type = (String)filters.get("application_type");
-                String application_status = (String)filters.get("application_status");
                 String hci_code = (String)filters.get("hci_code");
                 String hci_name = (String)filters.get("hci_name");
                 String hci_address = (String)filters.get("hci_address");
@@ -591,7 +592,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                     searchParam.addFilter("application_type", application_type, true);
                 }
                 if(!StringUtil.isEmpty(application_status)) {
-                    searchParam.addFilter("application_status", application_status, true);
+                    List<String> appStatus = mohHcsaBeDashboardService.getSearchAppStatus(application_status);
+                    String appStatusStr = SqlHelper.constructInCondition(appStatusKey, appStatus.size());
+                    searchParam.addParam("application_status", appStatusStr);
+                    for(int i = 0; i < appStatus.size(); i++) {
+                        searchParam.addFilter(appStatusKey + i, appStatus.get(i));
+                    }
                 }
                 if(!StringUtil.isEmpty(hci_code)) {
                     searchParam.addFilter("hci_code", hci_code, true);

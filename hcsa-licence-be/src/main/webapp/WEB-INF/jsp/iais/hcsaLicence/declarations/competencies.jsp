@@ -52,13 +52,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem3" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem3" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem3" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem3" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem3=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
         </div>

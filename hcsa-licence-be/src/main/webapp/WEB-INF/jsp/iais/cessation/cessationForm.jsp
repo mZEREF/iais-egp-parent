@@ -67,7 +67,7 @@
                                                     <iais:value>
                                                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                            data-html="true"
-                                                           data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale, disposal of his service, or surrender of his licence.</p>">i</a>
+                                                           data-original-title="${cess_ack002}">i</a>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>

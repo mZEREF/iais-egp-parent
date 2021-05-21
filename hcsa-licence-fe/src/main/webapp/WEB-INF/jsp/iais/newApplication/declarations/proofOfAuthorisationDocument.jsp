@@ -1,7 +1,7 @@
 <div class="panel-body">
     <div class="row">
-        <P>If you have selected that 'I am duly authorised by the Applicant to make this application on its behalf and
-            the Applicant will be the licensee if the application is granted', please attach proof of your authorisation
+        <P>If you have selected that <span style="font-style: italic">'I am duly authorised by the Applicant to make this application on its behalf and
+          the Applicant will be the licensee if the application is granted'</span>, please attach proof of your authorisation
             below:</P>
         <br>
         <div class="document-upload-gp">
@@ -32,7 +32,7 @@
                     <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
                 </div>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show" style="color: #D22727; font-size: 1.6rem"></span>
-                <span id="error_selected${sec}FileError" name="iaisErrorMsg" class="error-msg"></span>
+                <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
             </div>
         </div>
     </div>

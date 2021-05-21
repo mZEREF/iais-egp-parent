@@ -79,16 +79,22 @@
                                                     <p><c:out value="${item.idNo}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.idType}"/></p>
+                                                    <p><iais:code code="${item.idType}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.salutation}"/></p>
+                                                    <p><iais:code code="${item.salutation}"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.name}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><iais:code code="${item.designation}"/></p>
+                                                    <c:if test="${item.designation != 'DES999'}">
+                                                        <p><iais:code code="${item.designation}"/></p>
+                                                    </c:if>
+                                                    <c:if test="${item.designation == 'DES999'}">
+                                                        <iais:code code="${item.designation}"/>
+                                                        <br/><c:out value="${item.designationOther}"/>
+                                                    </c:if>
                                                 </td>
                                                 <td>
                                                     <c:choose>

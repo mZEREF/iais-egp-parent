@@ -60,6 +60,7 @@
                                                         <%@include file="inboxView/inboxPremise.jsp" %>
                                                         <%@include file="inboxView/inboxPrimary.jsp" %>
                                                         <%@include file="inboxView/viewForm.jsp" %>
+                                                        <%@include file="../common/declarations.jsp"%>
                                                     </c:if>
                                                 </div>
                                             </div>

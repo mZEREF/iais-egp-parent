@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -761,11 +762,24 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         return false;
     }
 
+    @Override
+    public List<String> getSearchAppStatus(String application_status) {
+        List<String> appStatus = IaisCommonUtils.genNewArrayList();
+        List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_APP_STATUS);
+        String codeValue = MasterCodeUtil.getCodeDesc(application_status);
+        for (MasterCodeView masterCodeView : masterCodeViews) {
+            if(masterCodeView != null && codeValue.equals(masterCodeView.getCodeValue())){
+                appStatus.add(masterCodeView.getCode());
+            }
+        }
+        return appStatus;
+    }
+
     private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
             if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
                     curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
-                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+                    curRoleId.equals(RoleConsts.USER_ROLE_INSPECTIOR)
             ) {
                 appStatusOption = inspectionService.getAppStatusOption(curRoleId);
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
@@ -789,6 +803,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO3));
+            } else if (curRoleId.equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
+                appStatusOption.addAll(inspectionService.getAppStatusOption(curRoleId));
             }
         }
         return appStatusOption;
@@ -826,7 +843,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         if(!StringUtil.isEmpty(curRoleId)) {
             if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
                     curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
-                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+                    curRoleId.equals(RoleConsts.USER_ROLE_INSPECTIOR)
             ) {
                 appStatusOption = inspectionService.getAppStatusOption(curRoleId);
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
@@ -847,6 +864,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTION_LEAD));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO1));
                 appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_AO2));
+            } else if (curRoleId.equals(RoleConsts.USER_ROLE_INSPECTION_LEAD)) {
+                appStatusOption.addAll(inspectionService.getAppStatusOption(RoleConsts.USER_ROLE_INSPECTIOR));
             }
         }
         return appStatusOption;

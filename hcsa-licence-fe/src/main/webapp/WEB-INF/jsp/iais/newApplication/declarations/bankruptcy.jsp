@@ -2,7 +2,7 @@
 
 <div class="panel-body">
     <div class="row">
-        <h2>Declaration on bankruptcy</h2>
+        <h2>Declaration on Bankruptcy</h2>
     </div>
     <br>
     <div class="row">
@@ -16,13 +16,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem1" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem1=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="bankruptcyItem1" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem1=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem1" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem1=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="bankruptcyItem1" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem1=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem1"></span>
@@ -35,13 +35,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem2" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem2=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="bankruptcyItem2" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem2=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem2" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem2=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="bankruptcyItem2" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem2=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem2"></span>
@@ -54,13 +54,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem3" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem3=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" type="radio" name="bankruptcyItem3" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem3=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem3" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem3=='1'}">checked="checked"</c:if>>
+                <input class="form-check-input" type="radio" name="bankruptcyItem3" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem3=='0'}">checked="checked"</c:if>>
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem3"></span>
@@ -73,20 +73,20 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem4" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem4=='0'}">checked="checked"</c:if>>
+                <input class="form-check-input" type="radio" name="bankruptcyItem4" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem4=='1'}">checked="checked"</c:if>>
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" type="radio" name="bankruptcyItem4" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.bankruptcyItem4=='1'}">checked="checked"</c:if>>
+                <input class="form-check-input" type="radio" name="bankruptcyItem4" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.bankruptcyItem4=='0'}">checked="checked"</c:if>>
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem4"></span>
         </div>
         <div class="col-xs-12 txt-area-normal">
             <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
-            <textarea id="bankruptcyRemark" class="form-control" name="bankruptcyRemark"><c:out value="${appDeclarationMessageDto.bankruptcyRemark}" /></textarea>
+            <textarea id="bankruptcyRemark" class="form-control" name="bankruptcyRemark" maxlength="1000"><c:out value="${appDeclarationMessageDto.bankruptcyRemark}" /></textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyRemark"></span>
         </div>
     </div>

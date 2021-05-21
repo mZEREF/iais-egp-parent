@@ -66,7 +66,7 @@
                           <div class="col-xs-8 col-sm-2 col-md-2">
                             <a class="btn-tooltip styleguide-tooltip"
                                data-toggle="tooltip" data-html="true" style="position: absolute;z-index: 1000"
-                               title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale, disposal of his service, or surrender of his licence.&lt;/p&gt;">i</a>
+                               title="${cess_ack002}">i</a>
                           </div>
                         </div>
                         <div class="form-group">
