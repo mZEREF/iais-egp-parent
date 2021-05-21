@@ -31,7 +31,7 @@
             <div class="col-xs-12 form-group">
                 <span>2.</span>
                 <span>
-                    The individual who is the principal officer for the Applicant and is to be the principal officer for the licensee (if the application is granted) (“PO”) is not an undischarged bankrupt.
+                    The individual who is the principal officer for the Applicant and is to be the principal officer for the licensee (if the application is granted) ("PO") is not an undischarged bankrupt.
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -50,7 +50,7 @@
             <div class="col-xs-12 form-group">
                 <span>3.</span>
                 <span>
-                    The individual or individuals who is or are the Clinical Governance Officer or Clinical Governance Officers for the Applicant and is or are to be the Clinical Governance Officer or Clinical Governance Officers for the licensee (if the application is granted) (“CGO(s)”) is not an or are not undischarged  bankruptcy(s).
+                    The individual or individuals who is or are the Clinical Governance Officer or Clinical Governance Officers for the Applicant and is or are to be the Clinical Governance Officer or Clinical Governance Officers for the licensee (if the application is granted) ("CGO(s)") is not an or are not undischarged  bankruptcy(s).
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -69,7 +69,7 @@
             <div class="col-xs-12 form-group">
                 <span>4.</span>
                 <span>
-                    The Applicant’s key appointment holders ("<b>KAHs</b>") are not undischarged bankrupt(s).
+                    The Applicant's key appointment holders ("<b>KAHs</b>") are not undischarged bankrupt(s).
                 </span>
             </div>
             <div class="form-check col-xs-3">

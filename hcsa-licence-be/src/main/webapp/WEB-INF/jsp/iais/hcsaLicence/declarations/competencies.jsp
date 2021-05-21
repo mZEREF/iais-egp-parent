@@ -12,7 +12,7 @@
             <div class="col-xs-12 form-group">
                 <span>1.</span>
                 <span>
-                    The PO possesses the skills and competencies that are prescribed for the performance of the functions and duties as the licensee’s PO (if the application is granted)
+                    The PO possesses the skills and competencies that are prescribed for the performance of the functions and duties as the licensee's PO (if the application is granted)
                 </span>
             </div>
             <div class="form-check col-xs-3">
@@ -30,7 +30,7 @@
             <div class="col-xs-12 form-group">
                 <span>2.</span>
                 <span>
-                    The CGO(s) possesses or possess the skills and competencies that are prescribed for the performance of the functions and duties as the licensee’s CGO(s) (if the application is granted).
+                    The CGO(s) possesses or possess the skills and competencies that are prescribed for the performance of the functions and duties as the licensee's CGO(s) (if the application is granted).
                 </span>
             </div>
             <div class="form-check col-xs-3">
