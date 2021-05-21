@@ -63,7 +63,7 @@
                             <td>
                                 <p class="visible-xs visible-sm table-row-title">HCI Name</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
-                                    <c:out value="On-site"/>
+                                    <c:out value="Premises"/>
                                 </c:if>
                                 <c:if test="${'CONVEYANCE'==pool.premisesType}">
                                     <c:out value="Conveyance"/>
