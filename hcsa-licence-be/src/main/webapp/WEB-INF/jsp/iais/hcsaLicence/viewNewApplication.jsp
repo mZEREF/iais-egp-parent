@@ -50,25 +50,24 @@
                            varStatus="statuss">
                   <div class="form-check ">
                     <p class="form-check-label " aria-label="premise-1-cytology">
-                    <div class="col-xs-6 col-md-6">
-                           <span class="newVal " style="margin-left: 3%" attr="${checkList.chkName}${checkList.check}">
+                    <div class="col-xs-12 col-md-12">
+                        <span class="newVal " style="margin-left: 3%" attr="${checkList.chkName}${checkList.check}">
                              <input style="cursor: default" class="form-check-input"
                                     <c:if test="${checkList.check}">checked</c:if> type="checkbox" disabled>
                               <label class="form-check-label"><span
                                       class="check-square"></span>${checkList.chkName}</label>
                            </span>
-                    </div>
-                    <div class="col-xs-6 col-md-6">
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}"
-                                  style="display: none">
+                        <span class="oldVal "
+                          attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}"
+                          style="display: none">
                               <input style="cursor: default" class="form-check-input"
                                      <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}">checked</c:if>
                                      type="checkbox" disabled>
                               <label class="form-check-label"><span
                                       class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}</label>
-                            </span>
+                        </span>
                     </div>
+
                     </p>
                   </div>
                 </c:forEach>
