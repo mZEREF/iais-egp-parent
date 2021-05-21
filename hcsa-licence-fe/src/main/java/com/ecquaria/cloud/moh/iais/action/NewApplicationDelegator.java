@@ -1417,6 +1417,7 @@ public class NewApplicationDelegator {
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        bpc.request.getSession().removeAttribute("renewDto");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(applicationDto != null) {
@@ -1581,8 +1582,13 @@ public class NewApplicationDelegator {
                             requestForChangeService.svcDocToPresmise(appSubmissionDto);
                         }
                     }
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                        if(appDeclarationMessageDto!=null){
+                            bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        }
+                    }
                 }
-
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
