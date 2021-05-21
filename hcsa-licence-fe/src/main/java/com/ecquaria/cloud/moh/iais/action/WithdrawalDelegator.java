@@ -316,6 +316,7 @@ public class WithdrawalDelegator {
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveWithdrawn(withdrawnDtoList,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request,"withdrawnDtoListAck",withdrawnDtoList);
         }
     }
 

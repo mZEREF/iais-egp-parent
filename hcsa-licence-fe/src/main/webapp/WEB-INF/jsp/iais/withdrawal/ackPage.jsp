@@ -48,7 +48,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${addWithdrawnDtoList}" var="confirm" varStatus="num">
+                        <c:forEach items="${withdrawnDtoListAck}" var="confirm" varStatus="num">
                             <tr style="text-align: center">
                                 <td>
                                     <p><c:out value="${confirm.applicationNo}"></c:out></p>
