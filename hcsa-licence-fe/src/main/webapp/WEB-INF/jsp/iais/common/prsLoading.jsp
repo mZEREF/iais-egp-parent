@@ -16,12 +16,23 @@
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
-    var prdLoading = function ($loadingContent,prgNo) {
+    var prdLoading = function ($loadingContent, prgNo, action) {
         console.log('loading prs info ...');
+        var assignSelectVal = $loadingContent.find('select[name="assignSelect"]').val();
+        var appType = $('input[name="applicationType"]').val();
+        var licPerson = $loadingContent.find('input[name="licPerson"]').val();
         if(prgNo == "" || prgNo == null || prgNo == undefined){
-            clearPrsInfo($loadingContent);
+            clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
+                inputCancelReadonly($loadingContent.find('input[name="name"]'));
+            }
             return;
         }
+        //prn not empty
+        if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
+            inputReadonly($loadingContent.find('input[name="name"]'));
+        }
+
         var jsonData = {
             'prgNo': prgNo
         };
@@ -33,28 +44,38 @@
             'success': function (data) {
                 if(data.regno == null){
                     $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent);
+                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
                     return;
                 }
                 if(data.name == null){
                     //prgNo is incorrect
-                    clearPrsInfo($loadingContent);
+                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
                     return;
                 }
                 loadingData(data,$loadingContent);
+                if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+                    $loadingContent.find('input[name="name"]').val(data.name);
+                }/*else{
+                    inputCancelReadonly($loadingContent.find('input[name="name"]'));
+                }*/
             },
             'error': function () {
                 //
-                clearPrsInfo($loadingContent);
+                clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
             }
         });
     };
 
-    var clearPrsInfo = function ($loadingContent) {
+    var clearPrsInfo = function ($loadingContent, assignSelectVal, appType, licPerson, action) {
         $loadingContent.find('.specialty-label').html('');
         $loadingContent.find('.sub-specialty-label').html('');
         $loadingContent.find('.qualification-label').html('');
         $loadingContent.find('span.otherQualificationSpan').html('*');
+        if('psnSelect' != action){
+            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
+                $loadingContent.find('input[name="name"]').val('');
+            }
+        }
     };
 
     var loadingData = function (data,$loadingContent) {
@@ -85,5 +106,14 @@
         $loadingContent.find('.'+labelClass).html(displayVal);
     }
 
-
+    function inputReadonly($content){
+        $content.prop('readonly', true);
+        $content.css('border-color', '#ededed');
+        $content.css('color', '#999');
+    }
+    function inputCancelReadonly($content){
+        $content.prop('readonly', false);
+        $content.css('border-color', '');
+        $content.css('color', '');
+    }
 </script>

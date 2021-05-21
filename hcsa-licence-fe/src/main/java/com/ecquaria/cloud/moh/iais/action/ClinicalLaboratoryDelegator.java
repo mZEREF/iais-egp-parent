@@ -317,6 +317,7 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcCgoDtoList);
         }
+        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -898,13 +899,18 @@ public class ClinicalLaboratoryDelegator {
                             appSvcCgoDto.setQualification(qualificationStr);
                             continue;
                         }
-                        if(StringUtil.isEmpty(professionalResponseDto.getName())){
+                        String name = professionalResponseDto.getName();
+                        if(StringUtil.isEmpty(name)){
                             log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
                             errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
                             appSvcCgoDto.setSpeciality(specialtyStr);
                             appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
                             appSvcCgoDto.setQualification(qualificationStr);
                             continue;
+                        }
+                        boolean isLicPsn = appSvcCgoDto.isLicPerson();
+                        if((!isLicPsn && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))){
+                            appSvcCgoDto.setName(name);
                         }
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
