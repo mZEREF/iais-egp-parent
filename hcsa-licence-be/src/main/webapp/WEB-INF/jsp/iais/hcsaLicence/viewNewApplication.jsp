@@ -117,7 +117,7 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                   </td>
                   <td>
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 img-show">
                       <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/>
                         <c:if test="${not empty proHashMap[cgo.profRegNo]}">
                           <c:if test="${proHashMap[cgo.profRegNo].name==cgo.name}">
