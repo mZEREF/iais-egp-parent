@@ -58,7 +58,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         String criminalRecordsRemark = appDeclarationMessageDto.getCriminalRecordsRemark();
         if(StringUtil.isEmpty(criminalRecordsRemark)&&flag){
             map.put("criminalRecordsRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
-        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>=1000){
+        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("criminalRecordsRemark",general_err0041);
         }

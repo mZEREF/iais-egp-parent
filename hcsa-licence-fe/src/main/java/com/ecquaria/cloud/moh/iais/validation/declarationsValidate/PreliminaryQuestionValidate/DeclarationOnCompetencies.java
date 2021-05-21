@@ -47,7 +47,7 @@ public class DeclarationOnCompetencies implements Declarations {
         String competenciesRemark = appDeclarationMessageDto.getCompetenciesRemark();
         if(StringUtil.isEmpty(competenciesRemark)&&flag){
             map.put("competenciesRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
-        }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>=1000){
+        }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("competenciesRemark",general_err0041);
         }

@@ -55,7 +55,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         String bankruptcyRemark = appDeclarationMessageDto.getBankruptcyRemark();
         if(StringUtil.isEmpty(bankruptcyRemark)&&flag){
             map.put("bankruptcyRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
-        }else if(!StringUtil.isEmpty(bankruptcyRemark)&&bankruptcyRemark.length()>=1000){
+        }else if(!StringUtil.isEmpty(bankruptcyRemark)&&bankruptcyRemark.length()>1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("bankruptcyRemark",general_err0041);
         }

@@ -2,7 +2,7 @@
 
 <div class="panel-body">
     <div class="row">
-        <h2>Declaration on bankruptcy</h2>
+        <h2>Declaration on Bankruptcy</h2>
     </div>
     <br>
     <div class="row">
