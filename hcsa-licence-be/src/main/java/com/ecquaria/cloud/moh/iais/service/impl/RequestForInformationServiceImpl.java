@@ -154,7 +154,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_APPEAL,
             ApplicationConsts.APPLICATION_TYPE_CESSATION,
             ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
-            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK
+            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+            ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
     };
     private final String[] appStatus=new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
