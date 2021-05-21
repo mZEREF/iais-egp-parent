@@ -79,29 +79,6 @@
                                                 </div>
                                                 <br/>
                                             </c:if>
-                                            <%--<c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002' && !AppSubmissionDto.onlySpecifiedSvc && requestInformationConfig == null}">--%>
-                                            <c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null}">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" id="groupLicence" type="checkbox" <c:if test="${AppSubmissionDto.groupLic}">checked="checked"</c:if> name="isGroupLic" aria-invalid="false" value="1">
-                                                    <label class="form-check-label" for="groupLicence"><span class="check-square"></span><iais:message key="ACK_DEC003"></iais:message></label>
-                                                </div>
-                                            </c:if>
-                                            <div class="form-check">
-                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
-                                                <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
-                                            </div>
-                                            <div>
-                                                <span id="error_fieldMandatory"  class="error-msg"></span>
-                                            </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null && isCharity}">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" id="charityHci" type="checkbox" name="charityHci" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.charityHci}">checked="checked"</c:if> >
-                                                    <label class="form-check-label" for="charityHci"><span class="check-square"></span><iais:message key="ACK_DEC002"></iais:message></label>
-                                                </div>
-                                            </c:if>
-                                            <div>
-                                                <span id="error_charityHci"  class="error-msg"></span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -213,29 +190,8 @@
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
-            var canSubmit = true;
-            let jQuery = $('#verifyInfoCheckbox').prop("checked");
-            var charityHci  = $('#charityHci').prop('checked');
-            if(!jQuery){
-                $('#error_fieldMandatory').html($('#RFC_ERR004').val());
-                canSubmit = false;
-            }else{
-                $('#error_fieldMandatory').html("");
-            }
-            <c:if test="${requestInformationConfig == null && 'APTY002' ==AppSubmissionDto.appType && isCharity}">
-                if(!charityHci){
-                    $('#error_charityHci').html("The field is mandatory");
-                    canSubmit = false;
-                }else{
-                    $('#error_charityHci').html("");
-                }
-            </c:if>
-            if(canSubmit) {
-                showWaiting();
-                submit('payment','doSubmit',null);
-            }else{
-                dismissWaiting();
-            }
+            showWaiting();
+            submit('payment','doSubmit',null);
         });
 
         $('.doSvcEdit').click(function () {
