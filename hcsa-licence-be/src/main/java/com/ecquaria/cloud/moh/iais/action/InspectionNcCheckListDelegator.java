@@ -207,9 +207,10 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 }
             }
         }
-/*        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+
+  /*      ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
-        for(int i= 0;i<3;i++){
+        for(int i= 0;i<1;i++){
             InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
             inspectionSpecServiceDto.setIdentify("88888888"+i);
             List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
@@ -224,11 +225,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
 
             }
             inspectionSpecServiceDto.setFdtoList(fdtoList);
-            try{
-                inspectionSpecServiceDto.setAdchklDto((AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adchklDto));
-            }catch (Exception e){
-                log.error(e.getMessage());
-            }
+            inspectionSpecServiceDto.setAdchklDto(fillupChklistService.getSpecAhocData(adchklDto,inspectionSpecServiceDto.getIdentify(),beforeFinishList,orgUserDtoUsers));
             fDtosDtos.add(inspectionSpecServiceDto);
         }
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);*/
@@ -664,6 +661,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
             List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
             insepctionNcCheckListService.saveDraftSpecChecklist(commonDto,taskDto.getRefNo(),fDtosDtos);
+            setRate(request);
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
         }else {
             insepctionNcCheckListService.saveDraftChecklist(commonDto,adchklDto,serListDto,taskDto.getRefNo());

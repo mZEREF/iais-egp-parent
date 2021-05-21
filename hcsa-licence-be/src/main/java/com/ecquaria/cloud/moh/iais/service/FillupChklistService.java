@@ -95,4 +95,6 @@ public interface FillupChklistService {
     boolean isBeforeFinishCheckList(String refNo);
 
     void getRateOfSpecCheckList( List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto);
+
+    AdCheckListShowDto getSpecAhocData(AdCheckListShowDto adCheckListShowDto,String identify,boolean beforeFinishList,List<OrgUserDto>  orgUserDtos);
 }

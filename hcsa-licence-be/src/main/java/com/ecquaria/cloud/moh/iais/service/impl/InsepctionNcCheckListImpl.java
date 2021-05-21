@@ -1029,6 +1029,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                             temp.setAdAnswer(answerDto.getAnswer());
                             temp.setRemark(answerDto.getRemark());
                             temp.setNcs(answerDto.getNcs());
+                            temp.setIdentify(answerDto.getIdentify());
                         }
                     }
 

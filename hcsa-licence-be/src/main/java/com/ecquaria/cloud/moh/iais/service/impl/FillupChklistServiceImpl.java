@@ -1594,11 +1594,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
 
         List<String> itemList = new ArrayList<>(adItemList.size());
+        String identify = null;
         for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList){
+            if(StringUtil.isEmpty(identify)){
+                identify = adhocNcCheckItemDto.getIdentify();
+            }
             itemList.add(adhocNcCheckItemDto.getId());
         }
-        List<AdhocDraftDto>  adhocDraftDtos = fillUpCheckListGetAppClient.getAdhocChecklistDraftsByAdhocItemIdIn(itemList).getEntity();
-
+        List<AdhocDraftDto>  adhocDraftDtos  = getAdhocDraftDtosByIdentify(identify,itemList);
         if(IaisCommonUtils.isEmpty(adhocDraftDtos)){
             return  adCheckListShowDto;
         }else {
@@ -1631,6 +1634,23 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
         return adCheckListShowDto;
+    }
+
+    private  List<AdhocDraftDto> getAdhocDraftDtosByIdentify(String identify, List<String> itemList){
+        List<AdhocDraftDto>  adhocDraftDtos = fillUpCheckListGetAppClient.getAdhocChecklistDraftsByAdhocItemIdIn(itemList).getEntity();
+        if(StringUtil.isEmpty(identify) || IaisCommonUtils.isEmpty(adhocDraftDtos)){
+            return adhocDraftDtos;
+        }
+        List<AdhocDraftDto> identifyAdhocDraftDtos = IaisCommonUtils.genNewArrayList();
+        for(AdhocDraftDto adhocDraftDto : adhocDraftDtos){
+            if(!StringUtil.isEmpty(adhocDraftDto.getAnswer())){
+                AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
+                if(identify.equalsIgnoreCase(adhocAnswerDto.getIdentify())){
+                    identifyAdhocDraftDtos.add(adhocDraftDto);
+                }
+            }
+        }
+        return identifyAdhocDraftDtos;
     }
 
     private  void setAnswerForDifDtoMapsByAdhocDraftDtosOne(List<AdhocDraftDto> adhocDraftDtosOne,  Map<String, AnswerForDifDto> answerForDifDtoMaps ){
@@ -2101,5 +2121,29 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public AdCheckListShowDto getSpecAhocData(AdCheckListShowDto adCheckListShowDto, String identify, boolean beforeFinishList,List<OrgUserDto>  orgUserDtos) {
+        if(adCheckListShowDto == null || IaisCommonUtils.isEmpty(adCheckListShowDto.getAdItemList())){
+            return null;
+        }
+        AdCheckListShowDto adCheckListShowDtoCopy = (AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adCheckListShowDto);
+        if(beforeFinishList){
+            List<AdhocNcCheckItemDto> adItemList = IaisCommonUtils.genNewArrayList();
+           for(AdhocNcCheckItemDto adhocNcCheckItemDto :adCheckListShowDto.getAdItemList()){
+               if(identify.equalsIgnoreCase(adhocNcCheckItemDto.getIdentify())){
+                   adItemList.add(adhocNcCheckItemDto);
+               }
+           }
+            adCheckListShowDtoCopy.setAdItemList(adItemList);
+        }else {
+            for(AdhocNcCheckItemDto adhocNcCheckItemDto : adCheckListShowDto.getAdItemList()){
+                adhocNcCheckItemDto.setIdentify(identify);
+            }
+            //get draft ahoc
+            adCheckListShowDtoCopy = getAdCheckListShowDtoByAdCheckListShowDto(adCheckListShowDtoCopy,orgUserDtos);
+        }
+        return adCheckListShowDtoCopy;
     }
 }
