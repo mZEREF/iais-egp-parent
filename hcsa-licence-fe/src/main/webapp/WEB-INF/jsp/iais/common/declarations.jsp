@@ -9,7 +9,12 @@
         <c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="New" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        <c:if test="${empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        </c:if>
+        <c:if test="${!empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+        </c:if>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
         <%@include file="../newApplication/declarations/competencies.jsp"%>
         <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
@@ -19,7 +24,12 @@
         <c:set var="pageShowFileDtos" value="${selectedRFCFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="RFC" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        <c:if test="${empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        </c:if>
+        <c:if test="${!empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+        </c:if>
         <%@include file="../newApplication/declarations/statements.jsp"%>
       </c:if>
       <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
@@ -27,7 +37,12 @@
         <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="RENEW" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        <c:if test="${empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        </c:if>
+        <c:if test="${!empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+        </c:if>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
         <%@include file="../newApplication/declarations/competencies.jsp"%>
         <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
@@ -39,7 +54,12 @@
         <%--<c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>--%>
         <c:set var="sec" value="Cess" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        <c:if test="${empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+        </c:if>
+        <c:if test="${!empty printFlag}">
+          <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+        </c:if>
         <%@include file="../newApplication/declarations/cessationQuestion.jsp"%>
       </c:if>
     </div>

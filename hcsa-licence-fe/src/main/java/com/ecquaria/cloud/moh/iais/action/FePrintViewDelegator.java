@@ -71,7 +71,7 @@ public class FePrintViewDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
-
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }
 
