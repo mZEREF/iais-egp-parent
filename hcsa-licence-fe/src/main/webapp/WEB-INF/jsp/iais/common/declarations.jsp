@@ -9,10 +9,10 @@
         <c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="New" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <c:if test="${empty printFlag}">
+        <c:if test="${viewPrint != 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         </c:if>
-        <c:if test="${!empty printFlag}">
+        <c:if test="${viewPrint == 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
         </c:if>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
@@ -24,10 +24,10 @@
         <c:set var="pageShowFileDtos" value="${selectedRFCFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="RFC" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <c:if test="${empty printFlag}">
+        <c:if test="${viewPrint != 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         </c:if>
-        <c:if test="${!empty printFlag}">
+        <c:if test="${viewPrint == 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
         </c:if>
         <%@include file="../newApplication/declarations/statements.jsp"%>
@@ -37,10 +37,10 @@
         <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
         <c:set var="sec" value="RENEW" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <c:if test="${empty printFlag}">
+        <c:if test="${viewPrint != 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         </c:if>
-        <c:if test="${!empty printFlag}">
+        <c:if test="${viewPrint == 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
         </c:if>
         <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
@@ -54,10 +54,10 @@
         <%--<c:set var="pageShowFileDtos" value="${selectedNewFileDocShowPageDto.pageShowFileDtos}" scope="request"/>--%>
         <c:set var="sec" value="Cess" scope="request"/>
         <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
-        <c:if test="${empty printFlag}">
+        <c:if test="${viewPrint != 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
         </c:if>
-        <c:if test="${!empty printFlag}">
+        <c:if test="${viewPrint == 'Y'}">
           <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
         </c:if>
         <%@include file="../newApplication/declarations/cessationQuestion.jsp"%>
@@ -69,7 +69,7 @@
   $(document).ready(function(){
     $('#declarations').find('.error-msg').on('DOMNodeInserted', function(){
       if ($(this).not(':empty')) {
-        $('#declarations').collapse('show');
+         $('#declarations').collapse('show');
       }
     });
   });
