@@ -410,13 +410,7 @@
     }
 
     function submitSure(action) {
-        if ($('#confirmInfo').is(':checked')) {
-            uploadFileValidate();
-            submit(action);
-            $("#readInfo").hide();
-        } else {
-            $("#readInfo").show();
-        }
+        submit(action);
     }
 
     function back(action) {
