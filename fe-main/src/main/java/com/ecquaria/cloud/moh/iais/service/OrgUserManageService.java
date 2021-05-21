@@ -68,4 +68,7 @@ public interface OrgUserManageService {
     void receiveEntityFormEDH(FeUserDto user);
 
     void sendReminderForExpiredSingPass();
+
+    FeUserDto syncFeUserFromBe(FeUserDto feUserDto);
+
 }
