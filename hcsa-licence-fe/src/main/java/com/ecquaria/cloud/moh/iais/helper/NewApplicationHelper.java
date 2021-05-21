@@ -1493,6 +1493,7 @@ public class NewApplicationHelper {
                 appSvcPersonDto.setIdType(idType);
                 appSvcPersonDto.setIdNo(idNo);
                 appSvcPersonDto.setDesignation(feUserDto.getDesignation());
+                appSvcPersonDto.setOtherDesignation(feUserDto.getDesignationOther());
                 appSvcPersonDto.setMobileNo(feUserDto.getMobileNo());
                 appSvcPersonDto.setEmailAddr(feUserDto.getEmail());
                 appSvcPersonDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
