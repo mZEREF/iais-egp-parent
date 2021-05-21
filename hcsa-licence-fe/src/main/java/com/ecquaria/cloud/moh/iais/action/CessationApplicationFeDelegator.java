@@ -251,6 +251,7 @@ public class CessationApplicationFeDelegator {
                 }
             }
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
@@ -259,6 +260,7 @@ public class CessationApplicationFeDelegator {
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+        ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);
     }
 
