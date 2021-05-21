@@ -1244,6 +1244,9 @@
                         <c:when test="${appSubmissionDto.appType == 'APTY005'&&RFC_HCAI_NAME_CHNAGE!='false'}">
 
                         </c:when>
+                        <c:when test="${isSingle=='N'}">
+
+                        </c:when>
                         <c:otherwise>
                           <div class="panel panel-default svc-content">
 

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -2300,8 +2301,12 @@ public class LicenceViewServiceDelegator {
                      equals = oldHciName.equals(hciName);
                     request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
                 }
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto==null){
+                    request.setAttribute("isSingle","N");
+                }
             }
-
         }
     }
 
