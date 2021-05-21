@@ -13,7 +13,7 @@
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table class="control-grid columns1 " style="width: 100%;">
+      <table class="control-grid columns1 table.assignContent" style="width: 100%;">
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">
@@ -168,6 +168,21 @@
                                   </div>
                                 </div>
                               </td>
+                            </tr>
+                            <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="control-label formtext col-sm-5">
+                                  </div>
+                                  <div class="col-md-7 col-xs-5 col-sm-3">
+                                    <div class="">
+                                      <input type="text" name="otherDesignation" class="otherDesignation" maxlength="100" autocomplete="off">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
@@ -330,6 +345,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -344,6 +360,7 @@
     </div>
   </div>
 </div>
+<%@include file="../common/prsLoading.jsp"%>
 <script>
     $(document).ready(function () {
         $('.hideen-div').addClass('hidden');
@@ -438,6 +455,8 @@
                 });
                 <!--change psn item -->
                 changePsnItem();
+                designationChange();
+                profRegNoBlur();
             },
             'error':function (data) {
                 console.log("err");
@@ -470,12 +489,12 @@
             if(data.regno==null){
                 $('#PRS_SERVICE_DOWN').modal('show');
             }else {
-                loading(data,obj);
+                loadings(data,obj);
             }
 
         });
     };
-    const loading = function (data,obj) {
+    const loadings = function (data,obj) {
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
         const $CurrentPsnEle = $(obj).closest('table.assignContent');
@@ -511,4 +530,108 @@
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+    var designationChange = function () {
+        $('.designationSel').change(function () {
+            var thisVal = $(this).val();
+            if("DES999" == thisVal){
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
+    $('.designationSel').change(function () {
+        var thisVal = $(this).val();
+        if("DES999" == thisVal){
+            $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else{
+            $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
+    });
+    var profRegNoBlur = function () {
+        $('input[name="professionRegoNo"]').unbind('blur');
+        $('input[name="professionRegoNo"]').blur(function(){
+            var prgNo = $(this).val();
+            var $currContent = $(this).closest('.new-officer-form');
+            var $prsLoadingContent = $(this).closest('table.assignContent');
+            var specialty = $prsLoadingContent.find('label.specialty-label').html();
+            //prs loading
+            if(init == 1){
+                prdLoading($prsLoadingContent,prgNo);
+            }
+            //add Remark For Subspecialty
+            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                $currContent.find('span.otherQualificationSpan').html('*');
+            }
+        });
+    };
+    var prdLoading = function ($loadingContent,prgNo) {
+        console.log('loading prs info ...');
+        if(prgNo == "" || prgNo == null || prgNo == undefined){
+            clearPrsInfo($loadingContent);
+            return;
+        }
+        var jsonData = {
+            'prgNo': prgNo
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if(data.regno == null){
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo($loadingContent);
+                    return;
+                }
+                if(data.name == null){
+                    //prgNo is incorrect
+                    clearPrsInfo($loadingContent);
+                    return;
+                }
+                loadingData(data,$loadingContent);
+            },
+            'error': function () {
+                //
+                clearPrsInfo($loadingContent);
+            }
+        });
+    };
+
+    var clearPrsInfo = function ($loadingContent) {
+        $loadingContent.find('.specialty-label').html('');
+        $loadingContent.find('.sub-specialty-label').html('');
+        $loadingContent.find('.qualification-label').html('');
+        $loadingContent.find('span.otherQualificationSpan').html('*');
+    };
+
+    var loadingData = function (data,$loadingContent) {
+        loading(data.specialty,$loadingContent,'specialty-label');
+        loading(data.subspecialty,$loadingContent,'sub-specialty-label');
+        loading(data.qualification,$loadingContent,'qualification-label');
+
+        addMandatoryForOtherQua(data.specialty,$loadingContent);
+    };
+
+    var addMandatoryForOtherQua = function (data,$loadingContent) {
+        if(data == null || data == undefined || data == ''){
+            $loadingContent.find('span.otherQualificationSpan').html('*');
+        }else{
+            $loadingContent.find('span.otherQualificationSpan').html('');
+        }
+    }
+
+    var loading = function (dataArr,$loadingContent,labelClass) {
+        var displayVal = "";
+        if(dataArr != null && dataArr != undefined && dataArr != ''){
+            $.each(dataArr,function (k,v) {
+                displayVal = displayVal + v + ',';
+            });
+            var endLength = displayVal.length-1;
+            displayVal = displayVal.substring(0,endLength);
+        }
+        $loadingContent.find('.'+labelClass).html(displayVal);
+    }
+
 </script>

@@ -896,9 +896,10 @@ public class AppealServiceImpl implements AppealService {
         String[] designation = ParamUtil.getStrings(request, "designation");
         String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
-        String[] specialty = ParamUtil.getStrings(request, "specialty");
+        String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
+ /*       String[] specialty = ParamUtil.getStrings(request, "specialty");
         String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
-        String[] qualification = ParamUtil.getStrings(request, "qualification");
+        String[] qualification = ParamUtil.getStrings(request, "qualification");*/
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
 
@@ -914,13 +915,14 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setDesignation(designation[i]);
             appSvcCgoDto.setProfessionType(professionType[i]);
             appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
-            String specialtyStr = specialty[i];
+            appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
+  /*          String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
             if ("other".equals(specialtyStr)) {
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
-            }
+            }*/
             //qualification
-            appSvcCgoDto.setSubSpeciality(qualification[i]);
+        /*    appSvcCgoDto.setSubSpeciality(qualification[i]);*/
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
@@ -1074,7 +1076,7 @@ public class AppealServiceImpl implements AppealService {
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
 */
                         }else {
-                            if("Y".equals(prsFlag)){
+                            if("N".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
                                 List<String> prgNos = IaisCommonUtils.genNewArrayList();
                                 prgNos.add(professionRegoNo);

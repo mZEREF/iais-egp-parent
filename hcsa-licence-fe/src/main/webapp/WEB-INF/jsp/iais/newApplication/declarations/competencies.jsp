@@ -67,7 +67,7 @@
         </div>
         <div class="col-xs-12 form-group txt-area-normal">
             <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
-            <textarea id="competencyRemarks" class="form-control" name="competenciesRemark"><c:out value="${appDeclarationMessageDto.competenciesRemark}" /></textarea>
+            <textarea id="competencyRemarks" maxlength="1000" class="form-control" name="competenciesRemark"><c:out value="${appDeclarationMessageDto.competenciesRemark}" /></textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_competenciesRemark"></span>
         </div>
     </div>

@@ -59,7 +59,15 @@
                                                         </div>
                                                     </div>
                                                 </c:forEach>
-                                                <%@include file="../common/declarations.jsp"%>
+                                                <c:choose>
+                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <%@include file="../common/declarations.jsp"%>
+                                                    </c:otherwise>
+                                                </c:choose>
+
                                             </div>
                                             <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
                                                 <div class="row">
@@ -78,6 +86,19 @@
                                                     </div>
                                                 </div>
                                                 <br/>
+                                            </c:if>
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
+                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
+                                                </div>
+                                                <div>
+                                                    <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                </div>
+
+                                                <div>
+                                                    <span id="error_charityHci"  class="error-msg"></span>
+                                                </div>
                                             </c:if>
                                         </div>
                                     </div>
@@ -190,10 +211,19 @@
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
+            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+            var canSubmit = true;
+            let jQuery = $('#verifyInfoCheckbox').prop("checked");
+            if(!jQuery){
+                $('#error_fieldMandatory').html($('#RFC_ERR004').val());
+                return;
+            }else{
+                $('#error_fieldMandatory').html("");
+            }
+            </c:if>
             showWaiting();
             submit('payment','doSubmit',null);
         });
-
         $('.doSvcEdit').click(function () {
             showWaiting();
             var svcCode = $(this).next().val();

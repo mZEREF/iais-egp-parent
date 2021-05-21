@@ -72,5 +72,19 @@
          $('#declarations').collapse('show');
       }
     });
+    /*  var val = $('input:radio[name="preliminaryQuestionKindly"]:checked').val();
+      if('0'==val){
+          $('#Proof_of_Authorisation').append("<span style='color: #ff0000'>*</span>");
+      }else if("1"==val){
+          $('#Proof_of_Authorisation').children("span").remove();
+      }*/
   });
+/*  $("input[name='preliminaryQuestionKindly']").change(function (){
+      var val = $('input:radio[name="preliminaryQuestionKindly"]:checked').val();
+      if('0'==val){
+        $('#Proof_of_Authorisation').append("<span style='color: #ff0000'>*</span>");
+      }else if("1"==val){
+          $('#Proof_of_Authorisation').children("span").remove();
+      }
+  });*/
 </script>
