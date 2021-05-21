@@ -84,7 +84,8 @@ public class InspectionServiceImpl implements InspectionService {
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                 ApplicationConsts.APPLICATION_TYPE_RENEWAL,
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
+                ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
         });
         return appTypeOption;
     }
