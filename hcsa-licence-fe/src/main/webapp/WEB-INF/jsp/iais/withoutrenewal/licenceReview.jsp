@@ -17,7 +17,7 @@
         font-size: 16px;
     }
 </style>
-<form class="table-responsive" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
+<form class="table-responsive" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
@@ -105,6 +105,9 @@
                                                                         </div>
                                                                     </div>
                                                                     <c:if test="${changeRenew eq 'Y'}">
+                                                                        <div class="panel-group"  role="tablist" aria-multiselectable="true">
+                                                                            <%@include file="../common/declarations.jsp"%>
+                                                                        </div>
                                                                     <div class="row">
                                                                         <div class="col-md-7"  style="text-align: justify;width: 70%" >
                                                                             Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -127,13 +130,6 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
-                                                <c:choose>
-                                                    <c:when test="${isSingle == 'Y'}">
-                                                        <div class="panel-group"  role="tablist" aria-multiselectable="true">
-                                                            <%@include file="../common/declarations.jsp"%>
-                                                        </div>
-                                                    </c:when>
-                                                </c:choose>
 
                                         </div>
                                         </div>
@@ -248,32 +244,32 @@
     $('#BACK').click(function () {
         showWaiting();
         $('[name="switch_value"]').val('instructions');
-        $('#LicenceReviewForm').submit();
+        $('#mainForm').submit();
     });
     $('#SUBMIT').click(function () {
         $('#error_fieldMandatory').html("");
         $('[name="switch_value"]').val('doLicenceReview');
         showWaiting();
-        $('#LicenceReviewForm').submit();
+        $('#mainForm').submit();
     });
 
     $('#premisesEdit').click(function () {
         showWaiting();
         $('#EditValue').val('premises');
         $('[name="switch_value"]').val('doEdit');
-        $('#LicenceReviewForm').submit();
+        $('#mainForm').submit();
     });
     $('#docEdit').click(function () {
         showWaiting();
         $('#EditValue').val('doc');
         $('[name="switch_value"]').val('doEdit');
-        $('#LicenceReviewForm').submit();
+        $('#mainForm').submit();
     });
     $('#doSvcEdit').click(function () {
         showWaiting();
         $('#EditValue').val('service');
         $('[name="switch_value"]').val('doEdit');
-        $('#LicenceReviewForm').submit();
+        $('#mainForm').submit();
     });
 
     $("#print-review").click(function () {
