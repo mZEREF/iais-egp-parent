@@ -1457,8 +1457,9 @@ public class NewApplicationDelegator {
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        // View and Print
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         bpc.request.getSession().removeAttribute("renewDto");
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
@@ -1598,6 +1599,7 @@ public class NewApplicationDelegator {
                     List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
                     appCessLicDtos.add(appCessLicDto);
                     ParamUtil.setRequestAttr(bpc.request, "confirmDtos", appCessLicDtos);
+                    ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
 
                     ParamUtil.setSessionAttr(bpc.request, "appCessationDtos", (Serializable)appCessLicDtos);
                     ParamUtil.setSessionAttr(bpc.request, "reasonOptionPrint", (Serializable) reasonOption);

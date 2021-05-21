@@ -41,6 +41,8 @@ public class FePrintViewDelegator {
         log.debug(StringUtil.changeForLog("print view doStart start ..."));
         //remove session
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, null);
+        // View and Print
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
 
         String appType = ParamUtil.getString(bpc.request,"appType");
         log.debug("print view appType is {}",appType);
@@ -65,7 +67,6 @@ public class FePrintViewDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }
 
