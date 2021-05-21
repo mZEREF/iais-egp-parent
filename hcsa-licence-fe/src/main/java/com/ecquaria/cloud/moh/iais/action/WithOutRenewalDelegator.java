@@ -185,6 +185,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         ParamUtil.setSessionAttr(bpc.request, "selectedRENEWFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedRFCFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedNewFileDocShowPageDto", null);
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         HashMap<String, String> coMap = new HashMap<>(4);
@@ -654,6 +656,9 @@ public class WithOutRenewalDelegator {
                     }
                 }
 
+            }
+            if(newAppSubmissionDtos.size()==1){
+                appSubmissionService.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
             }
         }
         if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
