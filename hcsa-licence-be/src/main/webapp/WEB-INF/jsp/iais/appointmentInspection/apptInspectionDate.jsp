@@ -245,7 +245,6 @@
     }
 
     function apptInspectionDateGetDate() {
-        alert("back");
         showWaiting();
         var sysInspDateFlag = $("#sysInspDateFlag").val();
         if('true' == sysInspDateFlag){
