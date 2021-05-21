@@ -190,6 +190,15 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
         HcsaServiceCacheHelper.flushServiceMapping();
+        // New Application - Declaration - clear uploaded dto
+        String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        bpc.request.getSession().setAttribute("declaration_page_is",null);
+        bpc.request.getSession().setAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,null);
+        fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
         //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
@@ -241,12 +250,6 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
         /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
-        // New Application - Declaration - clear uploaded dto
-        String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
-        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
-        ParamUtil.setSessionAttr(bpc.request, "declaration_page_is",null);
-        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,null);
     }
 
     private void removeSession(BaseProcessClass bpc) {
@@ -1122,23 +1125,7 @@ public class NewApplicationDelegator {
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
-        if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
-            appSubmissionDto.setUserAgreement(true);
-        } else {
-            appSubmissionDto.setUserAgreement(false);
-            errorMap.put("fieldMandatory", (String) ParamUtil.getSessionAttr(bpc.request,"RFC_ERR004"));
-        }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
-        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
-        if(isCharity && requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-            String charityHci = ParamUtil.getString(bpc.request,"charityHci");
-            if(!StringUtil.isEmpty(charityHci)){
-                appSubmissionDto.setCharityHci(true);
-            }else{
-                appSubmissionDto.setCharityHci(false);
-                errorMap.put("charityHci","GENERAL_ERR0006");
-            }
-        }
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             String effectiveDateStr = ParamUtil.getString(bpc.request, "rfcEffectiveDate");
             if (!StringUtil.isEmpty(effectiveDateStr)) {
@@ -1587,6 +1574,11 @@ public class NewApplicationDelegator {
                         if(appDeclarationMessageDto!=null){
                             bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                         }
+                    }
+                    if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                            || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+                                appSubmissionDto.getAppType(), bpc.request);
                     }
                 }
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
