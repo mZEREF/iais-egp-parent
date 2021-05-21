@@ -9,8 +9,8 @@
     }
 </style>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj"
-       value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="prsFlag" value="${prsFlag}"/>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
     <h4>
         A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and
@@ -663,7 +663,6 @@
             <c:set var="psnLength" value="0"/>
             </c:otherwise>
             </c:choose>
-            console.log('psnLength:' +${psnLength});
             <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
             var $currentPsn = $('.assignContent').eq(${stat.index+1}).find('.new-officer-form');
             //remove dis style
@@ -676,6 +675,15 @@
             </c:if>
             setPsnDisabled($currentPsn,psnDto);
             </c:forEach>
+            var prsFlag = $('input[name="prsFlag"]').val();
+            if('Y' == prsFlag){
+                $('div.cgo-content').each(function () {
+                    var prgNo = $(this).find('input[name="professionRegoNo"]').val();
+                    if(prgNo != null && prgNo != '' && prgNo != undefined){
+                        inputReadonly($(this).find('input[name="name"]'));
+                    }
+                });
+            }
         } else if (('APTY005' == appType || 'APTY004' == appType) && '0' == rfiObj) {
             disabledPage();
         } else {
@@ -695,21 +703,21 @@
 
     var profRegNoBlur = function () {
         $('input[name="professionRegoNo"]').unbind('blur');
-        $('input[name="professionRegoNo"]').blur(function(){
+        $('input[name="professionRegoNo"]').blur(function(event, action){
             var prgNo = $(this).val();
             var $currContent = $(this).closest('.new-officer-form');
             var $prsLoadingContent = $(this).closest('table.assignContent');
             var specialty = $prsLoadingContent.find('label.specialty-label').html();
             //prs loading
             if(init == 1){
-                prdLoading($prsLoadingContent,prgNo);
+                prdLoading($prsLoadingContent, prgNo, action);
             }
             //add Remark For Subspecialty
             if(prgNo.trim().length == 0 || specialty.trim().length == 0){
                 $currContent.find('span.otherQualificationSpan').html('*');
             }
         });
-    }
+    };
 
     var psnSelect = function () {
         $('select.assignSel').change(function () {
@@ -844,6 +852,16 @@
                 $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             }
             $('#isEditHiddenVal').val('1');
+
+            var appType = $('input[name="applicationType"]').val();
+            var assignSelectVal = $contentEle.find('select[name="assignSelect"]').val();
+            var licPerson = $contentEle.find('input[name="licPerson"]').val();
+            if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+                var prgNo = $contentEle.find('input[name="professionRegoNo"]').val();
+                if(prgNo != null && prgNo != '' && prgNo != undefined){
+                    inputReadonly($contentEle.find('input[name="name"]'));
+                }
+            }
         });
     };
 

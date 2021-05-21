@@ -172,7 +172,7 @@
     }
 
     <!--cgo,medAlert -->
-    var fillPsnForm = function ($CurrentPsnEle,data,psnTYpe) {
+    var fillPsnForm = function ($CurrentPsnEle,data,psnType) {
         <!--salutation-->
         var salutation  = data.salutation;
         if( salutation == null || salutation =='undefined' || salutation == ''){
@@ -268,7 +268,7 @@
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
-            if('CGO' == psnTYpe){
+            if('CGO' == psnType){
                 var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
                 //add disabled not add input disabled style
                 personDisable($cgoPsnEle,'','Y');
@@ -284,7 +284,7 @@
             $CurrentPsnEle.find('input[name="licPerson"]').val('1');
             $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
         }else{
-            if('CGO' == psnTYpe){
+            if('CGO' == psnType){
                 unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
             }else{
                 unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
@@ -294,8 +294,8 @@
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         }
         //reload data by prs again
-        if('CGO' == psnTYpe){
-            $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur');
+        if('CGO' == psnType){
+            $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur','psnSelect');
         }
     };
     <!--cgo,medAlert -->
