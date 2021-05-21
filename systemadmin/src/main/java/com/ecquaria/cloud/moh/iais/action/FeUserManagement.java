@@ -291,7 +291,8 @@ public class FeUserManagement {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"createErr");
                 }
             }else{
-                if (intranetUserService.canUpdateAccount(userAttr, prevIdNumber)){
+                if (intranetUserService.canUpdateAccount(userAttr, prevIdNumber)) {
+                    log.info(StringUtil.changeForLog("Licensee User Management - " + title + " : " + userAttr.getUserId()));
                     AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                     att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                     AuditTrailHelper.callSaveAuditTrail(att);
@@ -306,14 +307,12 @@ public class FeUserManagement {
                         orgUserRoleDtoUser.setUserAccId(userAttr.getId());
                         intranetUserService.removeRoleByAccount(userAttr.getId());
                         intranetUserService.assignRole(orgUserRoleDtoList);
-                        editEgpUser(userDto);
                     }else{
                         OrgUserDto orgUserDto = intranetUserService.createIntrenetUser(userDto);
                         orgUserRoleDtoAdmin.setUserAccId(orgUserDto.getId());
                         orgUserRoleDtoUser.setUserAccId(orgUserDto.getId());
                         userAttr.setId(orgUserDto.getId());
                         intranetUserService.assignRole(orgUserRoleDtoList);
-                        saveEgpUser(userDto);
                     }
                     //sync fe db
                     try {
@@ -346,36 +345,4 @@ public class FeUserManagement {
         return searchParam;
     }
 
-    private void saveEgpUser(OrgUserDto orgUserDto) {
-        intranetUserService.saveEgpUser(transferEntityDto(orgUserDto));
-    }
-
-    private void editEgpUser(OrgUserDto orgUserDto) {
-        String userId = orgUserDto.getUserId();
-        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
-        if (clientUser != null) {
-            intranetUserService.updateEgpUser(transferEntityDto(clientUser, orgUserDto));
-        } else {
-            log.debug(StringUtil.changeForLog("===========egpUser can not found============"));
-        }
-    }
-
-    private ClientUser transferEntityDto(OrgUserDto orgUserDto) {
-        return transferEntityDto(null, orgUserDto);
-    }
-
-    private ClientUser transferEntityDto(ClientUser clientUser, OrgUserDto orgUserDto) {
-        if (Objects.isNull(clientUser)) {
-            clientUser = new ClientUser();
-            String randomStr = IaisEGPHelper.generateRandomString(6);
-            String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
-            clientUser.setPassword(pwd);
-        }
-        clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class, null, clientUser);
-        clientUser.setId(orgUserDto.getUserId());
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
-        return clientUser;
-    }
 }
