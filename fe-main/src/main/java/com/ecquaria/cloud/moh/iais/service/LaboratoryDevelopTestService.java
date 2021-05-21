@@ -6,5 +6,5 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 
 public interface LaboratoryDevelopTestService {
-    void sendLDTTestEmailAndSMS(String orgId,String licenseeId) throws IOException, TemplateException;
+    void sendLDTTestEmailAndSMS(LaboratoryDevelopTestDto laboratoryDevelopTestDto,String orgId,String licenseeId) throws IOException, TemplateException;
 }

@@ -4,12 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.LaboratoryDevelopTestService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -38,13 +36,12 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
     private NotificationHelper notificationHelper;
 
     @Override
-    public void sendLDTTestEmailAndSMS(String orgId,String licenseeId) throws IOException, TemplateException {
+    public void sendLDTTestEmailAndSMS(LaboratoryDevelopTestDto laboratoryDevelopTestDto,String orgId,String licenseeId) throws IOException, TemplateException {
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(orgId);
         String applicantName = feUserDtos.get(0).getDisplayName();
-        String LDTId = "LDT2012012015525620A";
+        String LDTId = laboratoryDevelopTestDto.getLdtNo();
         sendNotification(applicantName,LDTId,licenseeId);
         sendSMS(applicantName,LDTId,licenseeId);
-
     }
   
 
