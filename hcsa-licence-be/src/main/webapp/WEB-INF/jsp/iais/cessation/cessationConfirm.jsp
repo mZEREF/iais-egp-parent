@@ -314,42 +314,17 @@
                     </c:forEach>
                 </div>
                 <br/>
-                <div class="form-check">
-                    <ul>
-                        <li>
-                            <p> The ASO must notify the Director of Medical Services in writing at least 30 days
-                                before
-                                the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                clinic or clinical laboratory.</p>
-                        </li>
-                        <li>
-                            <p> Any ASO of a licensed healthcare institution (For e.g a medical clinic) who
-                                intends to
-                                cease operating the medical clinic shall take all measures as are reasonable and
-                                necessary
-                                to ensure that the medical records of every patient are properly transferred to the
-                                medical
-                                clinic or other healthcare institution to which such patient is to be transferred.</p>
-                        </li>
-                    </ul>
-                    <div class="form-check disabled">
-                    <input class="form-check-input" id="confirmInfo" disabled type="radio"
-                           name="${num.count}whichTodo${uid.count}" checked aria-invalid="false">
-                    <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
-                        agreed with the above information</label>
-                    </div>
-                </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
-                                </div>
+                <div class="application-tab-footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>

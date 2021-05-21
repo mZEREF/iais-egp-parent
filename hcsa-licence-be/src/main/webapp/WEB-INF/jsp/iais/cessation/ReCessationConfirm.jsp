@@ -63,7 +63,7 @@
                                                     <span style="font-size: 16px;float:right"><a
                                                             class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                             data-html="true"
-                                                            data-original-title="<p>The ASO must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
+                                                            data-original-title="${cess_ack002}">
                                                                 i</a></span>
                                                 </div>
                                             </div>
@@ -329,32 +329,6 @@
                     </div>
                 </div>
                 <br/>
-                <div class="form-check">
-                    <ul>
-                        <li>
-                            <p> The ASO must notify the Director of Medical Services in writing at least 30 days
-                                before
-                                the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                clinic or clinical laboratory.</p>
-                        </li>
-                        <li>
-                            <p> Any ASO of a licensed healthcare institution (For e.g a medical clinic) who
-                                intends to
-                                cease operating the medical clinic shall take all measures as are reasonable and
-                                necessary
-                                to ensure that the medical records of every patient are properly transferred to the
-                                medical
-                                clinic or other healthcare institution to which such patient is to be transferred.</p>
-                        </li>
-                    </ul>
-                    <div class="form-check disabled">
-                        <input class="form-check-input" id="confirmInfo" disabled type="radio"
-                               name="whichTodo" checked aria-invalid="false">
-                        <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-                            and
-                            agreed with the above information</label>
-                    </div>
-                </div>
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
