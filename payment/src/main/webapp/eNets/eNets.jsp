@@ -20,7 +20,7 @@
 <input type="hidden" id="failUrl" name="failUrl" value='${failUrl}'>
 <input type="hidden" id="timeoutNets" value="${timeout}"/>
 <form id="eNETSRedirectForm"
-      name="eNETSRedirectForm" action='https://uat2.enets.sg/GW2/TxnReqListenerToHost' method='POST'>
+      name="eNETSRedirectForm" action='${listenerUrl}' method='POST'>
     <input type="hidden" id="payload" name="payload" value='${txnReq}'>
     <input type="hidden" id="apiKey" name="apiKey" value='${API_KEY}'>
     <input type="hidden" id="hmac" name="hmac" value='${newHMAC}'>
@@ -43,6 +43,7 @@
     // }
     window.onload = function () {
         $('#eNETSRedirectForm').submit();
+        window.setTimeout(goPyBack, timeout);
     };
 </script>
 </body>

@@ -40,6 +40,9 @@ public class GatewayConfig {
 
 	public static final String eNetsEnvUrl = ConfigHelper.getString("eNets.env.jsp.url");
 
+	public static final String eNetsTxnReqListenerUrl = ConfigHelper.getString("eNets.Txn.Req.Listener.url");
+
+
 	public static final String eNetsKeyId = ConfigHelper.getString("eNets.key.id");
 
 	public static final String eNetsSecretKey = ConfigHelper.getString("eNets.secret.key");
