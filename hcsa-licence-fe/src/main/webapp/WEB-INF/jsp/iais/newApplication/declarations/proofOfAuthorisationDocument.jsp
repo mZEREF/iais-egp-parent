@@ -5,8 +5,8 @@
             below:</P>
         <br>
         <div class="document-upload-gp">
-            <div class="document-upload-list">
-                <h3>Proof of Authorisation </h3>
+            <div class="document-upload-list Proof-Authorisation">
+                <h3>Proof of Authorisation <c:if test="${AppSubmissionDto.appDeclarationMessageDto.preliminaryQuestionKindly=='0'}"><strong style=color:#ff0000;>*</strong></c:if></h3>
                 <div class="file-upload-gp">
                     <span name="selected${sec}FileShowId" id="selected${sec}FileShowId">
                     <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto" varStatus="ind">
