@@ -128,7 +128,6 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
-        ParamUtil.setSessionAttr(bpc.request, "renewDto", null);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile", null);
@@ -252,6 +251,7 @@ public class CessationApplicationFeDelegator {
                 }
             }
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
@@ -260,6 +260,7 @@ public class CessationApplicationFeDelegator {
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+        ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);
     }
 
@@ -337,11 +338,45 @@ public class CessationApplicationFeDelegator {
                 } else if ("no".equals(patRadio)) {
                     patNeedTrans = Boolean.FALSE;
                 }
+                String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
+                String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
+                String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + PATNOCONFIRM + j);
+                String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
+                String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
+                String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
+                String patMobile = ParamUtil.getRequestString(bpc.request, i + PATOTHERSMOBILENO + j);
+                String patEmailAddress = ParamUtil.getRequestString(bpc.request, i + PATOTHERSEMAILADDRESS + j);
+                String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
+                String hciName = appCessHciDto.getHciName();
+                String hciAddress = appCessHciDto.getHciAddress();
+
+                appCessHciDto.setHciAddress(hciAddress);
+                if (!StringUtil.isEmpty(patHciName)) {
+                    PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patHciName);
+                    if (premisesDto != null) {
+                        String hciAddressPat = premisesDto.getHciAddress();
+                        String hciNamePat = premisesDto.getHciName();
+                        String hciCodePat = premisesDto.getHciCode();
+                        appCessHciDto.setHciNamePat(hciNamePat);
+                        appCessHciDto.setHciCodePat(hciCodePat);
+                        appCessHciDto.setHciAddressPat(hciAddressPat);
+                    }
+                }
+                appCessHciDto.setHciName(hciName);
                 appCessHciDto.setEffectiveDate(effectiveDate);
                 appCessHciDto.setReason(reason);
                 appCessHciDto.setOtherReason(otherReason);
                 appCessHciDto.setPatNeedTrans(patNeedTrans);
+                appCessHciDto.setPatientSelect(patientSelect);
+                appCessHciDto.setPatNoRemarks(patNoRemarks);
+                appCessHciDto.setPatNoConfirm(patNoConfirm);
+                appCessHciDto.setPatHciName(patHciName);
+                appCessHciDto.setPatRegNo(patRegNo);
+                appCessHciDto.setPatOthers(patOthers);
+                appCessHciDto.setMobileNo(patMobile);
+                appCessHciDto.setEmailAddress(patEmailAddress);
                 appCessHciDto.setPremiseIdChecked(whichTodo);
+                appCessHciDto.setReadInfo(readInfo);
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
