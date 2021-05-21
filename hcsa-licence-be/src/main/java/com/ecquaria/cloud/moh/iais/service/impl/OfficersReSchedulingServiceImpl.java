@@ -785,14 +785,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
             String newDateStartStr = Formatter.formatDateTime(appInfoShowDto.getInspDate(), "dd/MM/yyyy");
             String newDateStartTime = Formatter.formatDateTime(appInfoShowDto.getInspDate(), "HH:mm:ss");
-            String newDateEndStr = Formatter.formatDateTime(appInfoShowDto.getInspEndDate(), "dd/MM/yyyy");
-            String newDateEndTime = Formatter.formatDateTime(appInfoShowDto.getInspEndDate(), "HH:mm:ss");
-            String newDateTime="";
-            if(newDateStartStr.equals(newDateEndStr)){
-                newDateTime=newDateStartTime+" - "+newDateEndTime;
-            }else {
-                newDateTime=newDateStartTime+" - "+newDateEndStr+" at "+newDateEndTime;
-            }
+//            String newDateEndStr = Formatter.formatDateTime(appInfoShowDto.getInspEndDate(), "dd/MM/yyyy");
+//            String newDateEndTime = Formatter.formatDateTime(appInfoShowDto.getInspEndDate(), "HH:mm:ss");
+//            String newDateTime="";
+//            if(newDateStartStr.equals(newDateEndStr)){
+//                newDateTime=newDateStartTime+" - "+newDateEndTime;
+//            }else {
+//                newDateTime=newDateStartTime+" - "+newDateEndStr+" at "+newDateEndTime;
+//            }
 
             //url
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
@@ -812,7 +812,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 map.put("dateTime", dateTime);
                 map.put("hasNewDate", "true");
                 map.put("newDate", newDateStartStr);
-                map.put("newDateTime", newDateTime);
+                map.put("newDateTime", newDateStartTime);
                 map.put("systemLink", loginUrl);
                 map.put("address", address1);
                 //msg service code
