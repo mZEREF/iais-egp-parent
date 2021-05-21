@@ -84,6 +84,10 @@
     </form>
 </c:if>
 <script>
+    $(document).ready(function(){
+        $(':input', '#declarations').prop('disabled', true);
+    });
+
     function printRLPDF(){
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         window.open(url,'_blank');

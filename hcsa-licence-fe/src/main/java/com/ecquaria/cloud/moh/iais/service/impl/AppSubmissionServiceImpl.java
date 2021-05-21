@@ -718,8 +718,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         dto.setPageShowFileHashMap(pageShowFileHashMap);
         request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
         request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, map);
-        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX  + fileAppendId
-                + HcsaFileAjaxController.SEESION_FILES_MAP_AJAX_MAX_INDEX, appDeclarationDocDtos.size());
     }
 
     @Override
