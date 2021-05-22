@@ -400,7 +400,14 @@ public class WithdrawalDelegator {
                 withdrawnDto.setSvcName(hcsaServiceDto.getSvcName());
                 List<AppGrpPremisesDto> appGrpPremisesDtos=applicationFeClient.getAppGrpPremisesDtoByAppGroId(appId).getEntity();
                 if(appGrpPremisesDtos!=null&&appGrpPremisesDtos.size()!=0){
-                    withdrawnDto.setHciName(appGrpPremisesDtos.get(0).getHciName());
+                    AppGrpPremisesDto agp = appGrpPremisesDtos.get(0);
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(agp.getPremisesType())) {
+                        withdrawnDto.setHciName(agp.getHciName());
+                    } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(agp.getPremisesType())) {
+                        withdrawnDto.setHciName(agp.getOffSiteHciName());
+                    } else {
+                        withdrawnDto.setHciName(agp.getConveyanceHciName());
+                    }
                 }else {
                     withdrawnDto.setHciName("");
                 }
