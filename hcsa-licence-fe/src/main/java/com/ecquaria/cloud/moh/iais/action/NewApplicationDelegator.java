@@ -332,6 +332,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("serviceConfig");
         bpc.request.getSession().removeAttribute("app-rfc-tranfer");
         bpc.request.getSession().removeAttribute("rfc_eqHciCode");
+        bpc.request.getSession().removeAttribute("declaration_page_is");
     }
 
     /**
