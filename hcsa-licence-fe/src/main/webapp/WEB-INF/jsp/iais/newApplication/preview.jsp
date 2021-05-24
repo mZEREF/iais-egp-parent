@@ -63,9 +63,9 @@
                                                     <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
 
                                                     </c:when>
-                                                    <c:otherwise>
+                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
                                                         <%@include file="../common/declarations.jsp"%>
-                                                    </c:otherwise>
+                                                    </c:when>
                                                 </c:choose>
 
                                             </div>
