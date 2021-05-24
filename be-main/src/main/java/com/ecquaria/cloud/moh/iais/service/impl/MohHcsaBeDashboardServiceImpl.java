@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import com.ecquaria.cloud.moh.iais.service.RoleService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
@@ -83,6 +85,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Autowired
     private ApplicationMainClient applicationMainClient;
+
+    @Autowired
+    private HcsaConfigMainClient hcsaConfigMainClient;
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
@@ -773,6 +778,31 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return appStatus;
+    }
+
+    @Override
+    public List<SelectOption> getHashServiceOption() {
+        List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigMainClient.getActiveServices().getEntity();
+        List<SelectOption> serviceOptions = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+            List<String> svcCodes = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
+                if(hcsaServiceDto != null) {
+                    String svcCode = hcsaServiceDto.getSvcCode();
+                    String svcName = hcsaServiceDto.getSvcName();
+                    if(IaisCommonUtils.isEmpty(svcCodes)) {
+                        SelectOption selectOption = new SelectOption(svcCode, svcName);
+                        svcCodes.add(svcCode);
+                        serviceOptions.add(selectOption);
+                    } else if(!svcCodes.contains(svcCode)) {
+                        SelectOption selectOption = new SelectOption(svcCode, svcName);
+                        svcCodes.add(svcCode);
+                        serviceOptions.add(selectOption);
+                    }
+                }
+            }
+        }
+        return serviceOptions;
     }
 
     private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
