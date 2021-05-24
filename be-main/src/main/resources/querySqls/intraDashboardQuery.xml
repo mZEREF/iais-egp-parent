@@ -468,4 +468,22 @@
             GROUP BY T5.ID
         ]]>
     </sql>
+
+    <sql key = "dashSystemOverAll"  remarks = "System admin dashboard Over all Search">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashSystemDetail"  remarks = "System admin dashboard Detail Search">
+        <![CDATA[
+
+        ]]>
+    </sql>
+
+    <sql key = "dashSystemDetailAjax"  remarks = "System admin dashboard Detail Drop Search">
+        <![CDATA[
+
+        ]]>
+    </sql>
 </sqls>
