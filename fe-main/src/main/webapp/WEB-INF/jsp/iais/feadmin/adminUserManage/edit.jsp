@@ -72,7 +72,7 @@
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
                                                 <c:if test="${iais_Login_User_Info_Attr.nricNum == inter_user_attr.idNumber}">
-                                                <button class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</button>
+                                                <a class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</a>
                                                 </c:if>
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
@@ -104,8 +104,14 @@
     }
 
     function reLoadMyInfoTodo() {
+        if(verifyTaken()){
         $("#action").val("getMyInfo");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
+        }else {
+            // To obtain authorization
+            showWaiting();
+            callAuthoriseApi();
+        }
     }
 </script>

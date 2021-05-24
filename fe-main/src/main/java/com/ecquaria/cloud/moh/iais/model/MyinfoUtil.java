@@ -17,6 +17,12 @@ package com.ecquaria.cloud.moh.iais.model;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.AccessTokenDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.GetTokenDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
+import com.ecquaria.cloud.moh.iais.common.jwt.SignatureUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
@@ -24,13 +30,14 @@ import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 /**
@@ -39,8 +46,12 @@ import java.util.List;
 @Slf4j
 public class MyinfoUtil {
 
-
-    /**
+	public static final String KEY_MYINFO_TAKEN_START_TIME = "keyStartTime_";
+	public static  final String KEY_MYINFO_TAKEN = "myinfo_token_";
+	public static  final String KEY_TAKEN_TYPE ="token_type";
+	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
+	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
+	/**
      * Retrieves Person data from MyInfo
      *
      * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
@@ -161,4 +172,134 @@ public class MyinfoUtil {
 		return sb.toString();
 	}
 
+	public static String  getAuthorization(String method, String clientId,List<String> attrs, String privateKeyPEM,String appId,String requestUrl) throws NoSuchAlgorithmException {
+		String attribute = getAttrsStringByListAttrs(attrs);
+		String timestamp = String.valueOf(new Date().getTime());
+		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		String nonceValue = timestamp +	(secureRandom.nextInt(9000) + 1000);
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
+		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","SHA256withRSA");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", appId);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "SHA256withRSA");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
+	}
+
+
+	public static  Map<String,String> getSessionForMyInfoTaken(String nirc, String taken,String takenType){
+		Map<String,String> map = new HashMap<>(3);
+		map.put(KEY_MYINFO_TAKEN+nirc,taken);
+		map.put(KEY_MYINFO_TAKEN+nirc+KEY_TAKEN_TYPE,taken);
+		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,String.valueOf(new Date().getTime()));
+		return  map;
+	}
+
+
+	public static  Map<String,String> clearSessionForMyInfoTaken(String nirc){
+		Map<String,String> map = new HashMap<>(3);
+		map.put(KEY_MYINFO_TAKEN+nirc,null);
+		map.put(KEY_MYINFO_TAKEN+nirc+KEY_TAKEN_TYPE,null);
+		map.put(KEY_MYINFO_TAKEN_START_TIME+nirc,null);
+		return  map;
+	}
+
+	public static String getAuthoriseApiUrl(String authApiUrl,String clientId,String attributes,String purpose,String state,String redirectUrl){
+		String authoriseUrl = authApiUrl + "?client_id=" + clientId +
+				"&attributes=" + attributes +
+				"&purpose=" + purpose +
+				"&state=" + state +
+				"&redirect_uri=" + redirectUrl;
+		return authoriseUrl;
+	}
+
+
+	public static String getAttrsStringByListAttrs( List<String> attrs){
+		StringBuilder sb = new StringBuilder();
+		if( !IaisCommonUtils.isEmpty(attrs)){
+			for (int i = 0; i < attrs.size(); i++) {
+				if (i == (attrs.size() - 1)) {
+					sb.append(attrs.get(i));
+				} else {
+					sb.append(attrs.get(i)).append(',');
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+
+	public static  String generateAuthorizationHeaderForMyInfo(String method, String clientId, String attribute, String privateKeyPEM,String appId,String requestUrl,String takenType,String validToken){
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String nonceValue;
+		try{
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			nonceValue = timestamp + (secureRandom.nextInt(9000) + 1000);
+		}catch (Exception e){
+			log.error(e.getMessage(),e);
+			nonceValue = timestamp;
+		}
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
+		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
+		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", appId);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
+	}
+
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
+		TreeMap<String, String> baseParams = new TreeMap<>();
+		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
+		baseParams.put(AcraConsts.CODE + "=", code);
+		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
+		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
+		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		TreeMap<String, String> authHeaderParams = new TreeMap<>();
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
+	}
+
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
+		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
+		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
+		ResponseEntity<MyInfoTakenDto> resEntity;
+		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
+		HttpStatus httpStatus;
+		try {
+			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,getTokenDto,null, header,MyInfoTakenDto.class,null);
+			httpStatus = resEntity.getStatusCode();
+			if( httpStatus == HttpStatus.OK){
+				return resEntity.getBody();
+			}else {
+				return null;
+			}
+		}catch (HttpClientErrorException e){
+			log.error(e.getMessage(), e);
+			return null;
+		}
+
+	}
 }
