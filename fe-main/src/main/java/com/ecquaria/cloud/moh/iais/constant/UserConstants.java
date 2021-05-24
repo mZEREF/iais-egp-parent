@@ -15,6 +15,7 @@ public class UserConstants {
     public static final String ID_TYPE   = "idType";
     public static final String ID_NUMBER   = "idNo";
     public static final String DESIGNATION   = "designation";
+    public static final String DESIGNATION_OTHER   = "designationOther";
     public static final String MOBILE_NO   = "mobileNo";
     public static final String OFFICE_NO   = "officeNo";
     public static final String EMAIL   = "email";
