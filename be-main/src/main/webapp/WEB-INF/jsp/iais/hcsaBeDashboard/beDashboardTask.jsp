@@ -89,7 +89,7 @@
                 </div>
               </div>
               <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
-              <c:if test="${'SYSTEM_USER_ADMIN' eq iais_Login_User_Info_Attr.curRoleId}">
+              <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
                 <div class="row">
                   <div class="col-xs-10 col-md-12">
                     <div class="components">
@@ -157,7 +157,7 @@
                 </div>
               </c:if>
             </iais:section>
-            <c:if test="${'SYSTEM_USER_ADMIN' eq iais_Login_User_Info_Attr.curRoleId}">
+            <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
               <h3>
                 <span>Search Results</span>
               </h3>
