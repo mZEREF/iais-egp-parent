@@ -205,44 +205,93 @@ public class MohHcsaBeDashboardDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String backFlag = (String)ParamUtil.getRequestAttr(bpc.request, "dashProcessBackFlag");
         if(loginContext != null && !AppConsts.YES.equals(backFlag)) {
-            SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
             //get appType option
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-            //get app status option
-            List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
-            //set app status and search filter
-            if (RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3_LEAD.equals(loginContext.getCurRoleId())) {
-                String application_status = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
-                List<String> appStatusList = IaisCommonUtils.genNewArrayList();
-                appStatusList.add(application_status);
-                String appStatusStr = SqlHelper.constructInCondition("T5.STATUS", appStatusList.size());
-                searchParam.addParam("application_status", appStatusStr);
-                for(int i = 0; i < appStatusList.size(); i++) {
-                    searchParam.addFilter("T5.STATUS" + i, appStatusList.get(i));
+            if (!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(loginContext.getCurRoleId())) {
+                SearchParam searchParam = getSearchParam(bpc, true, DashAssignMeQueryDto.class.getName());
+                //get app status option
+                List<SelectOption> appStatusOption = mohHcsaBeDashboardService.getAppStatusOptionByRoleAndSwitch(loginContext.getCurRoleId(), BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
+                //set app status and search filter
+                if (RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3_LEAD.equals(loginContext.getCurRoleId())) {
+                    String application_status = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    List<String> appStatusList = IaisCommonUtils.genNewArrayList();
+                    appStatusList.add(application_status);
+                    String appStatusStr = SqlHelper.constructInCondition("T5.STATUS", appStatusList.size());
+                    searchParam.addParam("application_status", appStatusStr);
+                    for (int i = 0; i < appStatusList.size(); i++) {
+                        searchParam.addFilter("T5.STATUS" + i, appStatusList.get(i));
+                    }
+                    ParamUtil.setSessionAttr(bpc.request, "dashAppStatus", application_status);
                 }
-                ParamUtil.setSessionAttr(bpc.request, "dashAppStatus", application_status);
+                //set filter by login info
+                //role
+                String curRoleId = loginContext.getCurRoleId();
+                if (!StringUtil.isEmpty(curRoleId)) {
+                    searchParam.addFilter("dashRoleId", curRoleId, true);
+                }
+                //user uuid
+                String userId = loginContext.getUserId();
+                if (!StringUtil.isEmpty(userId)) {
+                    searchParam.addFilter("dashUserId", userId, true);
+                }
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+                SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
+                //set session
+                ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+            } else {
+                //get service option
+                List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
+                //set session
+                ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
             }
-            //set filter by login info
-            //role
-            String curRoleId = loginContext.getCurRoleId();
-            if(!StringUtil.isEmpty(curRoleId)) {
-                searchParam.addFilter("dashRoleId", curRoleId, true);
-            }
-            //user uuid
-            String userId = loginContext.getUserId();
-            if(!StringUtil.isEmpty(userId)) {
-                searchParam.addFilter("dashUserId", userId, true);
-            }
-            QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
-            SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
-            searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-            ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
-            ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
             ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
         }
+    }
+
+    /**
+     * StartStep: hcsaDashSysAll
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaDashSysAll(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaDashSysAll start ...."));
+    }
+
+    /**
+     * StartStep: hcsaDashSysAllStep
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaDashSysAllStep(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaDashSysAllStep start ...."));
+
+    }
+
+    /**
+     * StartStep: hcsaDashSysDetail
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaDashSysDetail(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaDashSysDetail start ...."));
+    }
+
+    /**
+     * StartStep: hcsaDashSysDetailStep
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaDashSysDetailStep(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaDashSysDetailStep start ...."));
     }
 
     /**

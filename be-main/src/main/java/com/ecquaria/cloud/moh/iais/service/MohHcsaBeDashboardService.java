@@ -106,4 +106,13 @@ public interface MohHcsaBeDashboardService {
       * @Descripation: getSearchAppStatus
       */
     List<String> getSearchAppStatus(String application_status);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/5/24
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: getHashServiceOption
+      */
+    List<SelectOption> getHashServiceOption();
 }
