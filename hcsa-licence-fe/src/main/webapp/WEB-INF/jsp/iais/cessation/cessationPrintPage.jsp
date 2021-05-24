@@ -6,6 +6,19 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-blank"/>
+<style>
+    .form-check input.form-check-input:checked + .form-check-label span.check-circle:before,
+    .form-check input.form-check-input:active + .form-check-label span.check-circle:before {
+        color: #147aab !important;
+        background-color: #FFF;
+        content: "\f111";
+        font-family: fontawesome;
+        position: absolute;
+        font-size: 12px;
+        top: 38%;
+        left: 48%;
+    }
+</style>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -416,6 +429,15 @@
     }
 
     $(document).ready(function () {
+        $(':input', '#declarations').prop('disabled', true);
+
+        var btn = $('.file-upload-gp a', '#declarations');
+        if (btn.length > 0) {
+            btn.each(function(index, ele) {
+                $(ele).parent().html($(ele).text());
+            });
+        }
+
         changeReasonCessFe();
         changePatientCessFe();
         changePatSelectCessFe();
