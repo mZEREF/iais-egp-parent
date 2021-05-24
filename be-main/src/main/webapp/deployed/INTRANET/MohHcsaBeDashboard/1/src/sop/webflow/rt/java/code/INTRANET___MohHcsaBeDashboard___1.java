@@ -115,4 +115,24 @@ public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComDo", this); 
 	}
 
+	public void hcsaDashSysAll_OnStepProcess_0() throws Exception {
+	// 		hcsaDashSysAll->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaDashSysAll", this); 
+	}
+
+	public void hcsaDashSysAllStep_OnStepProcess_0() throws Exception {
+	// 		hcsaDashSysAllStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaDashSysAllStep", this); 
+	}
+
+	public void hcsaDashSysDetail_OnStepProcess_0() throws Exception {
+	// 		hcsaDashSysDetail->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetail", this); 
+	}
+
+	public void hcsaDashSysDetailStep_OnStepProcess_0() throws Exception {
+	// 		hcsaDashSysDetailStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetailStep", this); 
+	}
+
 }
