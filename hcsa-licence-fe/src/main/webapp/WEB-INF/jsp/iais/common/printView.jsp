@@ -24,6 +24,7 @@
 <br/>
 <%--<%@include file="../common/dashboard.jsp" %>--%>
 <form method="post" class="table-responsive" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <iais:input type="hidden" name="viewPrint" value="${viewPrint}" />
     <div class="main-content">
         <div class="container">
             <div class="row">

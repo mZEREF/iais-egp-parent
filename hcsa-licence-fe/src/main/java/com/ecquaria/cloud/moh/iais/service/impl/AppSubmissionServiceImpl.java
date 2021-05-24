@@ -734,6 +734,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
+        return getDeclarationFiles(appType, request, false);
+    }
+
+    @Override
+    public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request, boolean forPrint) {
         String fileAppendId = getFileAppendId(appType);
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
@@ -798,20 +803,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         });
-        dto.setPageShowFileDtos(pageDtos);
-        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
-        // dto.setFileMaxIndex(pageDtos.size());
-        List<String> list = comFileRepoClient.saveFileRepo(files);
-        if (list != null) {
-            ListIterator<String> iterator = list.listIterator();
-            for (int j = 0; j < docDtos.size(); j++) {
-                String fileRepoId = docDtos.get(j).getFileRepoId();
-                if (fileRepoId == null) {
-                    if (iterator.hasNext()) {
-                        String next = iterator.next();
-                        pageDtos.get(j).setFileUploadUrl(next);
-                        docDtos.get(j).setFileRepoId(next);
-                        iterator.remove();
+        if (!forPrint) {
+            dto.setPageShowFileDtos(pageDtos);
+            request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
+            // dto.setFileMaxIndex(pageDtos.size());
+            List<String> list = comFileRepoClient.saveFileRepo(files);
+            if (list != null) {
+                ListIterator<String> iterator = list.listIterator();
+                for (int j = 0; j < docDtos.size(); j++) {
+                    String fileRepoId = docDtos.get(j).getFileRepoId();
+                    if (fileRepoId == null) {
+                        if (iterator.hasNext()) {
+                            String next = iterator.next();
+                            pageDtos.get(j).setFileUploadUrl(next);
+                            docDtos.get(j).setFileRepoId(next);
+                            iterator.remove();
+                        }
                     }
                 }
             }

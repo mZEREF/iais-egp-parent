@@ -259,7 +259,17 @@
     function preview(){
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
-        window.open(url,'_blank');
+        var txt = '';
+        $(':checked, textarea','#declarations').each(function(){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
+        if (url.indexOf('?') < 0) {
+            url += '?';
+            if (txt != '') {
+                txt = txt.substring()
+            }
+        }
+        window.open(url + txt,'_blank');
     };
 
     function saveDraft() {
