@@ -193,8 +193,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                 }
             }
         }
-        //set num
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
@@ -203,6 +202,8 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
+        //set num
+        setRate(request);
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
         ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));

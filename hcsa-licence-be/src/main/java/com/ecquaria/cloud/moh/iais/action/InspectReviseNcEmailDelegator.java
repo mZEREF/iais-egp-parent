@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -30,15 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -47,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
@@ -199,11 +191,10 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 }
             }
         }
-        //set num
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         //
         //comparative data for sef and check list nc.
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
@@ -212,6 +203,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
+        //set num
+        setRate(request);
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
         ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
@@ -374,9 +367,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASK_DTO);
             InspectionFillCheckListDto commonDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
             AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
-            ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-            ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-            ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
             InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
             Map<String, String> errMap = inspectionCheckListValidation.validate(request);
@@ -386,9 +376,10 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }else{
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+                saveCheckList(request,commonDto,adchklDto,serListDto,taskDto.getRefNo());
                 ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
                 insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
+                ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             }
         }
 
@@ -499,27 +490,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         HttpServletRequest request = bpc.request;
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
-
-    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
-        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()) {
-            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-            for (InspectionCheckQuestionDto temp : checkListDtoList) {
-                String answer = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrad");
-                temp.setChkanswer(answer);
-                String remark = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comremark");
-                String rectified = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrec");
-                String ncs  = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comFindNcs");
-                temp.setNcs(ncs);
-                temp.setRectified(!StringUtil.isEmpty(rectified) && "No".equals(answer));
-                temp.setRemark(remark);
-            }
-            fillupChklistService.fillInspectionFillCheckListDto(cDto);
-        }
-        return cDto;
-    }
-
-
 
 
     @GetMapping(value = "/reload-rev-email")
@@ -778,35 +748,24 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     public void doCheckList(BaseProcessClass bpc){
         log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
-        InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
-        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
-        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+        setCheckListData(request);
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         String doSubmitAction = ParamUtil.getString(request,"doSubmitAction");
         if(InspectionCheckListItemValidate.NEXT_ACTION.equalsIgnoreCase(doSubmitAction)) {
             InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
             Map errMap = inspectionCheckListItemValidate.validate(request);
             if (!errMap.isEmpty()) {
-                fillupChklistService.getRateOfCheckList(serListDto, adchklDto, commonDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 serListDto.setCheckListTab("chkList");
+                ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
                 serListDto.setCheckListTab("chkList");
-                fillupChklistService.getRateOfCheckList(serListDto, adchklDto, commonDto);
-                ParamUtil.setSessionAttr(request, ADCHK_DTO, adchklDto);
-                ParamUtil.setSessionAttr(request, COM_DTO, commonDto);
                 ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
-
-            String errTab = (String) ParamUtil.getSessionAttr(request, "errorTab");
-            if (!StringUtil.isEmpty(errTab)) {
-                ParamUtil.setSessionAttr(request, "errorTab", null);
-                ParamUtil.setRequestAttr(request, "nowComTabIn", errTab);
-            }
+            setRate(request);
+            setChangeTabForChecklist(request);
         }else {
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
