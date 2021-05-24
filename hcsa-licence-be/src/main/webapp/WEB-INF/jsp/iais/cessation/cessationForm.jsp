@@ -414,9 +414,7 @@
     }
 
     function submitSure(action) {
-        if($("#transformNoID").css("display")=="block") {
-            submit(action);
-        }
+        submit(action);
     }
 
     function back(action) {
