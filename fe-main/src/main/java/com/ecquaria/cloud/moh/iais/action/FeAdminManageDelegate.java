@@ -71,7 +71,8 @@ public class FeAdminManageDelegate {
     public void preparePage(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+        ParamUtil.setSessionAttr(bpc.request, MyinfoUtil.MYINFODTO_REFRESH + loginContext.getNricNum(), null);
+        if (loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
             String organizationId = loginContext.getOrgId();
             SearchParam searchParam = new SearchParam(FeUserQueryDto.class.getName());
             searchParam.setSort("ID", SearchParam.ASCENDING);
