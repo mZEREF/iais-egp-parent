@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -109,10 +110,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.PreliminaryQuestion;
-import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.Statements;
+import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -1638,6 +1636,13 @@ public class NewApplicationDelegator {
                         if(appDeclarationMessageDto!=null){
                             bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                         }
+                    }
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                        RenewDto renewDto=new RenewDto();
+                        renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                        bpc.request.setAttribute("renewDto",renewDto);
+                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+                                appSubmissionDto.getAppType(), bpc.request);
                     }
                     if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                             || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
