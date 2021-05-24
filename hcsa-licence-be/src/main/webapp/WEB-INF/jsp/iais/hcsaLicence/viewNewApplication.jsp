@@ -367,7 +367,7 @@
                   <td>
                     <div class="col-xs-6 img-show">
                       <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/>
-                        <c:if test="${empty listHashMap[cgo.profRegNo]}">
+                        <c:if test="${empty listHashMap[cgo.profRegNo] && cgo.profRegNo!=''}">
                           <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                         </c:if>
                         <c:if test="${not empty listHashMap[cgo.profRegNo]}">
