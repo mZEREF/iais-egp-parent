@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQuery
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -244,12 +245,45 @@ public class MohHcsaBeDashboardDelegator {
             } else {
                 //get service option
                 List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
+                //get Dashboard Circle Kpi Show Dto
+                List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow();
+                //set Dashboard Circle Kpi Show Session
+                setDashCircleKpiShowSession(bpc.request, dashStageCircleKpiDtos);
                 //set session
                 ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
             }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
+        }
+    }
+
+    private void setDashCircleKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos) {
+        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                if(dashStageCircleKpiDto != null) {
+                    String stageId = dashStageCircleKpiDto.getStageId();
+                    if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_PRE.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashInspCircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_POT.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", dashStageCircleKpiDto);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", dashStageCircleKpiDto);
+                    } else {
+                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", dashStageCircleKpiDto);
+                    }
+                }
+            }
         }
     }
 

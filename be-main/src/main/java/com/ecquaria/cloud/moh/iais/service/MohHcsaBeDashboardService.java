@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQuery
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -115,4 +116,13 @@ public interface MohHcsaBeDashboardService {
       * @Descripation: getHashServiceOption
       */
     List<SelectOption> getHashServiceOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2021/5/24
+      * @Param: 
+      * @return: List<DashStageCircleKpiDto>
+      * @Descripation: getDashStageCircleKpiShow
+      */
+    List<DashStageCircleKpiDto> getDashStageCircleKpiShow();
 }
