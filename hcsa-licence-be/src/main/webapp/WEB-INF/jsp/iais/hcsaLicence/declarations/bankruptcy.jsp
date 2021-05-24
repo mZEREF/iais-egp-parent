@@ -86,7 +86,7 @@
         </div>
         <div class="col-xs-12 txt-area-normal">
             <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
-            <textarea disabled id="bankruptcyRemark" cols="85" rows="5" name="bankruptcyRemark">${appDeclarationMessageDto.bankruptcyRemark}</textarea>
+            <textarea disabled id="bankruptcyRemark" maxlength="1000" class="form-control" name="bankruptcyRemark">${appDeclarationMessageDto.bankruptcyRemark}</textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyRemark"></span>
         </div>
     </div>
