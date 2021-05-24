@@ -55,7 +55,15 @@ public class FePrintViewDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-            if(appSubmissionDto != null){
+            if (appSubmissionDto != null) {
+                // View and Print
+                String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
+                if (StringUtil.isEmpty(viewPrint)) {
+                    appSubmissionDto.setAppDeclarationMessageDto(
+                            appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                    appSubmissionDto.setAppDeclarationDocDtos(
+                            appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                }
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
