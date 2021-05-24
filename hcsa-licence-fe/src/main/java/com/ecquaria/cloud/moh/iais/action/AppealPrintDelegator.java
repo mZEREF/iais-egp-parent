@@ -1,18 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.netflix.discovery.converters.Auto;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -20,7 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,11 +120,13 @@ public class AppealPrintDelegator {
 
 
     private void printCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessPrint");
     }
 
     private void printViewCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessViewPage");
     }
