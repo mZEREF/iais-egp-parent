@@ -35,17 +35,18 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
     @Autowired
     private NotificationHelper notificationHelper;
 
+
     @Override
-    public void sendLDTTestEmailAndSMS(LaboratoryDevelopTestDto laboratoryDevelopTestDto,String orgId,String licenseeId) throws IOException, TemplateException {
+    public void sendLDTTestEmailAndSMS(LaboratoryDevelopTestDto laboratoryDevelopTestDto,String orgId,String licenceId) throws IOException, TemplateException {
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(orgId);
         String applicantName = feUserDtos.get(0).getDisplayName();
         String LDTId = laboratoryDevelopTestDto.getLdtNo();
-        sendNotification(applicantName,LDTId,licenseeId);
-        sendSMS(applicantName,LDTId,licenseeId);
+        sendNotification(applicantName,LDTId,licenceId);
+        sendEmail(applicantName,LDTId,licenceId);
     }
   
 
-    private void sendNotification(String applicantName,String LDTId,String licenseeId) throws IOException, TemplateException {
+    private void sendNotification(String applicantName,String LDTId,String licenceId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("ApplicantName", applicantName);
@@ -59,14 +60,14 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
         emailParam.setTemplateContent(msgContentMap);
         emailParam.setQueryCode(LDTId);
         emailParam.setReqRefNum(LDTId);
-        emailParam.setRefId(licenseeId);
+        emailParam.setRefId(licenceId);
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         emailParam.setSubject(subject);
         notificationHelper.sendNotification(emailParam);
         log.info(StringUtil.changeForLog("***************** send LDT Notification  end *****************"));
     }
 
-    private void sendSMS(String applicantName,String LDTId,String licenseeId) throws IOException, TemplateException {
+    private void sendEmail(String applicantName,String LDTId,String licenceId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_EMAIL).getEntity();
         Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
         msgContentMap.put("ApplicantName", applicantName);
@@ -80,8 +81,8 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
         emailParamSms.setTemplateContent(msgContentMap);
         emailParamSms.setQueryCode(LDTId);
         emailParamSms.setReqRefNum(LDTId);
-        emailParamSms.setRefId(licenseeId);
-        emailParamSms.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        emailParamSms.setRefId(licenceId);
+        emailParamSms.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
         emailParamSms.setSubject(subject);
         notificationHelper.sendNotification(emailParamSms);
     }

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -48,6 +49,8 @@ public class IaisSubmissionDataDelegator {
 
     private final String LABORATORY_DEVELOP_TEST_DTO = "laboratoryDevelopTestDto";
 
+    private static String applicationNo;
+
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if (loginContext != null){
@@ -81,10 +84,18 @@ public class IaisSubmissionDataDelegator {
     }
 
     public void confirmStep(BaseProcessClass bpc){
+        String licenceId = "";
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO);
         String licenseeId = interInboxUserDto.getLicenseeId();
         String orgId = interInboxUserDto.getOrgId();
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = (LaboratoryDevelopTestDto)ParamUtil.getSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO);
+        String hciCode = laboratoryDevelopTestDto.getHciCode();
+        List<LicenceDto> licenceDtoList = inboxClient.getLicenceDtoByHciCode(hciCode, licenseeId).getEntity();
+
+        if (!IaisCommonUtils.isEmpty(licenceDtoList)){
+            LicenceDto licenceDto = licenceDtoList.get(0);
+            licenceId = licenceDto.getId();
+        }
         if (laboratoryDevelopTestDto != null) {
             String ldtNo = systemAdminMainFeClient.ldTNumber().getEntity();
             if (StringUtil.isEmpty(ldtNo)){
@@ -94,7 +105,7 @@ public class IaisSubmissionDataDelegator {
             LaboratoryDevelopTestDto entity = inboxClient.saveLaboratoryDevelopTest(laboratoryDevelopTestDto).getEntity();
             try {
                 eicGatewayFeMainClient.syncLaboratoryDevelopTestFormFe(entity);
-                laboratoryDevelopTestService.sendLDTTestEmailAndSMS(entity,orgId,licenseeId);
+                laboratoryDevelopTestService.sendLDTTestEmailAndSMS(entity,orgId,licenceId);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
