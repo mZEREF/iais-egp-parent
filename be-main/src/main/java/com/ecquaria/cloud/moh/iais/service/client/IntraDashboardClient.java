@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQueryDto;
@@ -47,4 +48,7 @@ public interface IntraDashboardClient {
 
     @PostMapping(value = "/halp-intra-dash/dash-renew-pool/drop")
     FeignResponseEntity<SearchResult<DashRenewAjaxQueryDto>> searchDashRenewDropResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/halp-intra-dash/dash-all-action-app")
+    FeignResponseEntity<SearchResult<DashAllActionAppQueryDto>> searchDashAllActionAppResult(@RequestBody SearchParam searchParam);
 }
