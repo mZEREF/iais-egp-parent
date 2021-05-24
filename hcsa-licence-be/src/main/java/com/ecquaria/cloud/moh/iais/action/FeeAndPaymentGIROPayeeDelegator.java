@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -26,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -34,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -57,7 +56,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * FeeAndPaymentGIROPayeeDelegator
@@ -87,14 +85,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     @Autowired
     private SystemParamConfig systemParamConfig;
-    private static final Set<String> bankNames = ImmutableSet.of(
-            "The Hongkong & Shanghai Banking Corporation Ltd (HSBC)",
-            "United Overseas Bank Ltd (UOB)",
-            "DBS Bank Ltd (DBS)",
-            "POSB",
-            "Oversea-Chinese Banking Corporation Ltd (OCBC)",
-            "Standard Chartered Bank (SCB)", "Citibank NA"
-    );
+
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
@@ -274,15 +265,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
-        List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
+        List<SelectOption> selectOptions= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BANK_NAME);
 
-        for (String bankName:bankNames
-        ) {
-            SelectOption selectOption=new SelectOption();
-            selectOption.setText(bankName);
-            selectOption.setValue(bankName);
-            selectOptions.add(selectOption);
-        }
         ParamUtil.setRequestAttr(request,"bankNameSelectOptions", selectOptions);
 
 
@@ -490,7 +474,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setBranchCode(branchCode);
             giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
-            giroAccountInfoDto.setBankName(bankName);
+            giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
             giroAccountInfoDto.setHciName(opv.getHciName());
             giroAccountInfoDto.setHciCode(opv.getHciCode());
