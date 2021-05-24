@@ -280,7 +280,7 @@ public class MohHcsaBeDashboardDelegator {
                     } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
                         ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", dashStageCircleKpiDto);
                     } else {
-                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", dashStageCircleKpiDto);
                     }
                 }
             }
