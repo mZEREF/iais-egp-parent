@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,14 +67,22 @@ public class FePrintViewDelegator {
                         appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
                         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
                     }
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
+                    RenewDto renewDto=new RenewDto();
+                    renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                    bpc.request.setAttribute("renewDto",renewDto);
                 }
-                // View and Print
-                String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
-                if (StringUtil.isEmpty(viewPrint)) {
-                    appSubmissionDto.setAppDeclarationMessageDto(
-                            appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-                    appSubmissionDto.setAppDeclarationDocDtos(
-                            appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+
+                }else {
+                    // View and Print
+                    String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
+                    if (StringUtil.isEmpty(viewPrint)) {
+                        appSubmissionDto.setAppDeclarationMessageDto(
+                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                        appSubmissionDto.setAppDeclarationDocDtos(
+                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                    }
                 }
                 appSubmissionDtoList.add(appSubmissionDto);
             }
