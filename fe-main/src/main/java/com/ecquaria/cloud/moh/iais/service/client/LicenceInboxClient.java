@@ -108,4 +108,7 @@ public interface LicenceInboxClient {
 
     @PostMapping(value = "/lic-common/laboratory-develop-test",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LaboratoryDevelopTestDto> saveLaboratoryDevelopTest(@RequestBody LaboratoryDevelopTestDto laboratoryDevelopTestDto);
+
+    @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
 }
