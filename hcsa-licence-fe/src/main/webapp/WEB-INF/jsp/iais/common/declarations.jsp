@@ -72,5 +72,8 @@
          $('#declarations').collapse('show');
       }
     });
+    <c:if test="${viewPrint == 'Y'}">
+    $(':input', '#declarations').prop('disabled', true);
+    </c:if>
   });
 </script>

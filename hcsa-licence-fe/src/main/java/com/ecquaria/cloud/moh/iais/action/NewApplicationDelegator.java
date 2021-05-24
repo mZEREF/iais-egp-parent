@@ -757,7 +757,9 @@ public class NewApplicationDelegator {
         }
         // init uploaded File
         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
-
+        if (NewApplicationHelper.checkIsRfi(bpc.request)) {
+            ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
+        }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request,"isCharity",NewApplicationHelper.isCharity(bpc.request));
@@ -1186,15 +1188,17 @@ public class NewApplicationDelegator {
             } else {
                 appSubmissionDto.setGroupLic(false);
             }
-            // declaration
-            appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-            DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
-                    appSubmissionDto.getAppType());
-            // uploaded files
-            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-            String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
-            appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
-                    preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
+            if (!NewApplicationHelper.checkIsRfi(bpc.request)) {
+                // declaration
+                appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
+                        appSubmissionDto.getAppType());
+                // uploaded files
+                appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+                appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                        preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
+            }
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
