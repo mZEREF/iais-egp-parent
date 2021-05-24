@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -50,13 +51,31 @@ public class FePrintViewDelegator {
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
-                // View and Print
-                String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
-                if (StringUtil.isEmpty(viewPrint)) {
-                    appSubmissionDto.setAppDeclarationMessageDto(
-                            appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-                    appSubmissionDto.setAppDeclarationDocDtos(
-                            appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                    AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                    if(appDeclarationMessageDto!=null){
+                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                        appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                        appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                    }
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
+                    RenewDto renewDto=new RenewDto();
+                    renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                    bpc.request.setAttribute("renewDto",renewDto);
+                }
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+
+                }else {
+                    // View and Print
+                    String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
+                    if (StringUtil.isEmpty(viewPrint)) {
+                        appSubmissionDto.setAppDeclarationMessageDto(
+                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                        appSubmissionDto.setAppDeclarationDocDtos(
+                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                    }
                 }
                 appSubmissionDtoList.add(appSubmissionDto);
             }
@@ -65,6 +84,15 @@ public class FePrintViewDelegator {
             if(renewDto != null){
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+                    if(appSubmissionDtos.size()==1){
+                        String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
+                        if (StringUtil.isEmpty(viewPrint)) {
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                            appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
+                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
+                            appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+                        }
+                    }
                     appSubmissionDtoList.addAll(appSubmissionDtos);
                 }
             }

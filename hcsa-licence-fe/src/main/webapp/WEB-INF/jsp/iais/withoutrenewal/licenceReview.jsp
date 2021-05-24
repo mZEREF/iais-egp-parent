@@ -22,6 +22,7 @@
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
     <input type="hidden" name="crud_action_additional" value="" id="crud_action_additional">
+    <iais:input type="hidden" name="viewPrint" value="${viewPrint}" />
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -104,10 +105,14 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <c:choose>
+                                                                        <c:when test="${isSingle == 'Y'}">
+                                                                            <div class="panel-group"  role="tablist" aria-multiselectable="true">
+                                                                                <%@include file="../common/declarations.jsp"%>
+                                                                            </div>
+                                                                        </c:when>
+                                                                    </c:choose>
                                                                     <c:if test="${changeRenew eq 'Y'}">
-                                                                        <div class="panel-group"  role="tablist" aria-multiselectable="true">
-                                                                            <%@include file="../common/declarations.jsp"%>
-                                                                        </div>
                                                                     <div class="row">
                                                                         <div class="col-md-7"  style="text-align: justify;width: 70%" >
                                                                             Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -274,7 +279,17 @@
     $("#print-review").click(function () {
        // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY004",request)%>';
-        window.open(url,'_blank');
+        var txt = '';
+        $(':checked, textarea','#declarations').each(function(){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
+        if (url.indexOf('?') < 0) {
+            url += '?';
+            if (txt != '') {
+                txt = txt.substring()
+            }
+        }
+        window.open(url+ txt,'_blank');
     })
 
 

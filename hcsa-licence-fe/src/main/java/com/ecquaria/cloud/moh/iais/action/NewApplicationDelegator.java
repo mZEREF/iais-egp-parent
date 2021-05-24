@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -133,6 +135,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -333,6 +336,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("serviceConfig");
         bpc.request.getSession().removeAttribute("app-rfc-tranfer");
         bpc.request.getSession().removeAttribute("rfc_eqHciCode");
+        bpc.request.getSession().removeAttribute("declaration_page_is");
     }
 
     /**
@@ -741,6 +745,8 @@ public class NewApplicationDelegator {
                     boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
                     if(eqHciNameChange){
                         bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                        appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                     }
                 }
             }
@@ -1634,6 +1640,13 @@ public class NewApplicationDelegator {
                             bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                         }
                     }
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                        RenewDto renewDto=new RenewDto();
+                        renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                        bpc.request.setAttribute("renewDto",renewDto);
+                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+                                appSubmissionDto.getAppType(), bpc.request);
+                    }
                     if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                             || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
@@ -1860,6 +1873,8 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            appSubmissionDto.setAppDeclarationDocDtos(oldAppSubmissionDto.getAppDeclarationDocDtos());
+            appSubmissionDto.setAppDeclarationMessageDto(oldAppSubmissionDto.getAppDeclarationMessageDto());
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         //handler primary doc
@@ -2045,6 +2060,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        boolean oneOfHciName=false;
         if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
             for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                 boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
@@ -2057,8 +2073,13 @@ public class NewApplicationDelegator {
                     appSubmissionService.validateDeclarationDoc(map, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
                             preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
                     appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                    oneOfHciName=true;
                 }
             }
+        }
+        if(!oneOfHciName){
+            appSubmissionDto.setAppDeclarationMessageDto(null);
+            appSubmissionDto.setAppDeclarationDocDtos(null);
         }
         if (!map.isEmpty()) {
             //set audit
@@ -2477,11 +2498,21 @@ public class NewApplicationDelegator {
             for (AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
+                    appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
+                }
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
+                    appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
+                }
             }
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto, notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,

@@ -32,3 +32,8 @@
     });
   });
 </script>
+<style>
+  span ,p {
+      font-size: 16px;
+  }
+</style>

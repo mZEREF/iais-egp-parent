@@ -69,7 +69,7 @@
                                                 </c:choose>
 
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
                                                 <div class="row">
                                                     <div class="col-md-7"  style="text-align: justify;width: 70%">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -260,7 +260,7 @@
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
-        $(':checked, textarea','#declarations').each(function(){
+        $(':checked, textarea,text','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
         if (url.indexOf('?') < 0) {
