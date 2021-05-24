@@ -17,19 +17,19 @@
                           </span>
                           <span class="error-msg" name="iaisErrorMsg" id="file${ind.index}"></span>
                           <span class="error-msg" name="iaisErrorMsg" id="error_${configIndex}error"></span>
-                          <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
-                          <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selected${sec}File',${pageShowFileDto.index},'mainForm');">ReUpload</button>
+                          <button type="button"<c:if test="${!empty declaration_page_confirm}">disabled</c:if>  class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
+                          <button type="button" <c:if test="${!empty declaration_page_confirm}">disabled</c:if> class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selected${sec}File',${pageShowFileDto.index},'mainForm');">ReUpload</button>
                       </div>
                     </c:forEach>
                     </span>
                     <br/>
                     <input id="selectedFile" name="selectedFile"
                        class="selectedFile commDoc"
-                       type="file" style="display: none;"
+                       type="file" <c:if test="${!empty declaration_page_confirm}">disabled</c:if> style="display: none;"
                        aria-label="selectedFile1"
                        onclick="fileClicked(event)"
                        onchange="ajaxCallUploadForMax('mainForm','selected${sec}File', true);"/>
-                    <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
+                    <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()" <c:if test="${!empty declaration_page_confirm}">disabled</c:if>>Upload</a>
                 </div>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show" style="color: #D22727; font-size: 1.6rem"></span>
                 <span id="error_selected${sec}FileError" name="iaisErrorMsg" class="error-msg"></span>
