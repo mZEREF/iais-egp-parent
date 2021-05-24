@@ -389,10 +389,6 @@ public class CessationApplicationBeDelegator {
         if (StringUtil.isEmpty(patRadio)) {
             errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
         }
-        String readInfo = ParamUtil.getRequestString(httpServletRequest, READINFO);
-        if (StringUtil.isEmpty(readInfo)) {
-            errorMap.put(i + READINFO + j, ERROR);
-        }
         String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
         String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + PATIENTSELECT + j);
