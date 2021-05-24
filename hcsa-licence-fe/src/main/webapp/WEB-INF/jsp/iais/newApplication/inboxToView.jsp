@@ -62,9 +62,9 @@
                                                         <%@include file="inboxView/viewForm.jsp" %>
                                                         <c:choose>
                                                             <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}"></c:when>
-                                                            <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
+                                                            <c:otherwise>
                                                                 <%@include file="../common/declarations.jsp"%>
-                                                            </c:when>
+                                                            </c:otherwise>
                                                         </c:choose>
                                                     </c:if>
                                                 </div>
