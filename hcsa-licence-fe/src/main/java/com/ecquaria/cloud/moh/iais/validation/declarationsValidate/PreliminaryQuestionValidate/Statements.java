@@ -19,8 +19,8 @@ import java.util.Map;
  * @date 2021/5/15 13:52
  */
 public class Statements implements Declarations {
-    @Autowired
-    private SystemParamConfig systemParamConfig;
+
+    private SystemParamConfig systemParamConfig=new SystemParamConfig();
     @Override
     public void validateDeclarations(Map<String, String> map, AppDeclarationMessageDto appDeclarationMessageDto) {
         if(appDeclarationMessageDto==null){
