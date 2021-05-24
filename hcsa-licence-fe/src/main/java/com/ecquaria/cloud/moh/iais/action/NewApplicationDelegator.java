@@ -131,6 +131,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -2054,6 +2055,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        boolean oneOfHciName=false;
         if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
             for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                 boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
@@ -2066,8 +2068,13 @@ public class NewApplicationDelegator {
                     appSubmissionService.validateDeclarationDoc(map, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
                             preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
                     appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                    oneOfHciName=true;
                 }
             }
+        }
+        if(!oneOfHciName){
+            appSubmissionDto.setAppDeclarationMessageDto(null);
+            appSubmissionDto.setAppDeclarationDocDtos(null);
         }
         if (!map.isEmpty()) {
             //set audit
@@ -2484,11 +2491,21 @@ public class NewApplicationDelegator {
             for (AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
+                    appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
+                }
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
+                    appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
+                }
             }
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto, notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
