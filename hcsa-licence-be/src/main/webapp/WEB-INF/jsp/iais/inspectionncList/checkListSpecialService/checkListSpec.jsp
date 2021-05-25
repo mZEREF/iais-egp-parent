@@ -109,7 +109,7 @@
             </c:forEach>
         </div>
     </c:forEach>
-    <c:if test="${service.adchklDto.adItemList != null}">
+    <c:if test="${not empty service.adchklDto.adItemList}">
 
         <span><strong>do/total:</strong></span>&nbsp;<c:out value="${service.adhocDo}"/>/<c:out value="${service.adhocTotal}"/><br>
         <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${service.adhocNc}"/>

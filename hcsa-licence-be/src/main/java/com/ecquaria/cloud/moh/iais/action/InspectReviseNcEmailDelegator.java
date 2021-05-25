@@ -146,6 +146,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        clearSessionForStartCheckList(request);
         String taskId = "";
         try{
             taskId = ParamUtil.getMaskedString(request,"taskId");

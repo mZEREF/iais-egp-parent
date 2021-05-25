@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Delegator(value = "insReportAo")
 @Slf4j
-public class InsReportAoDelegator {
+public class InsReportAoDelegator  {
 
     @Autowired
     private InsRepService insRepService;
@@ -225,38 +225,19 @@ public class InsReportAoDelegator {
         return riskLevelResult;
     }
     private String getRecommendationOnlyShowStr (Integer recomInNumber){
-        String recommendationOnlyShow = "-";
         if(recomInNumber >= 12){
             if( recomInNumber % 12 == 0){
-                if(recomInNumber / 12 == 1){
-                    recommendationOnlyShow = "1 Year";
-                }else {
-                    recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
-                }
+                return  recomInNumber / 12 == 1 ? "1 Year":  (recomInNumber / 12 + " Year(s)");
             }else {
                 if(recomInNumber / 12 == 1) {
-                    if(recomInNumber % 12 == 1){
-                        recommendationOnlyShow = 1 + " Year " + 1 + " Month";
-                    }else {
-                        recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
-                    }
-
+                    return  recomInNumber % 12 == 1 ? (1 + " Year " + 1 + " Month"):  (1 + " Year " + recomInNumber % 12 + " Month(s)");
                 }else {
-                    if(recomInNumber % 12 == 1){
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
-                    }else {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
-                    }
+                    return  recomInNumber % 12 == 1 ? (recomInNumber / 12 + " Year(s) " + 1 + " Month"):  (recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)");
                 }
             }
         }else {
-            if( recomInNumber == 1){
-                recommendationOnlyShow = recomInNumber + " Month";
-            }else {
-                recommendationOnlyShow = recomInNumber + " Month(s)";
-            }
+            return  recomInNumber == 1 ? (recomInNumber + " Month") : (recomInNumber + " Month(s)");
         }
-        return recommendationOnlyShow;
     }
 
 }

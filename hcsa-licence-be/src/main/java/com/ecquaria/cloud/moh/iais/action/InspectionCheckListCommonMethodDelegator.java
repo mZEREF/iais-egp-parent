@@ -450,12 +450,15 @@ public class InspectionCheckListCommonMethodDelegator {
 
 
     public void setSpecServiceCheckListData(HttpServletRequest request,InspectionFDtosDto serListDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers){
-       /* ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+    /* ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
-        for(int i= 0;i<1;i++){
+        for(int i= 0;i<3;i++){
             InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
             inspectionSpecServiceDto.setIdentify("88888888"+i);
             List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
+            if(serListDto.getFdtoList() == null){
+                serListDto.setFdtoList(IaisCommonUtils.genNewArrayList());
+            }
             for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
                 try{
                     InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);

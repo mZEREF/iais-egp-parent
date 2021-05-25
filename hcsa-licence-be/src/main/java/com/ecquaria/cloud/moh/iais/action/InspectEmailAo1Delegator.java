@@ -147,11 +147,12 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
     private static final String DRA_EMA_ID="draftEmailId";
 
     public void start(BaseProcessClass bpc){
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request=bpc.request;
+        clearSessionForStartCheckList(request);
         String taskId = "";
         try{
             taskId = ParamUtil.getMaskedString(request,"taskId");
