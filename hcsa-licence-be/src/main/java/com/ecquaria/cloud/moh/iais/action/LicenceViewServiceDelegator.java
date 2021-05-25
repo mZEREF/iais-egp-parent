@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -160,6 +161,8 @@ public class LicenceViewServiceDelegator {
     public void PrepareViewData(BaseProcessClass bpc) throws Exception {
         // licence AppSubmissionDto doucument add md5
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
+        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
         ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",null);
         String rfi = bpc.request.getParameter("rfi");
         String requestRfi = (String)bpc.request.getAttribute("rfi");
