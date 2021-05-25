@@ -478,13 +478,24 @@
             WHERE 1 = 1
             <#if application_types??> and ${application_types}</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
-
+            <#if user_id??> and view.ACTION_BY= :user_id</#if>
+            <#if stage_id??> and (view.STAGE_ID = :stage_id or view.SUB_STAGE = :stage_id)</#if>
 
         ]]>
     </sql>
 
     <sql key = "dashSystemDetail"  remarks = "System admin dashboard Detail Search">
         <![CDATA[
+             SELECT view.ID, view.wrk_grp_id, view.SVC_CODE ,view.STATUS ,view.SERVICE_ID ,view.APP_TYPE ,
+            view.APPLICATION_ID ,view.APPLICATION_NO ,view.KPI ,view.RMD_THRESHOLD ,view.ROLE_ID ,
+            view.SLA_DAYS ,view.STAGE_ID ,view.SUB_STAGE ,view.ACTION_BY ,view.act_time
+            FROM DASHBOARD_ALL_GRP_APPLICATIONS_VIEW view
+            WHERE 1 = 1
+            <#if application_types??> and ${application_types}</#if>
+            <#if svc_codes??> and  ${svc_codes}</#if>
+            <#if role_id??> and view.ROLE_ID= :role_id</#if>
+            <#if user_id??> and view.ACTION_BY= :user_id</#if>
+            <#if stage_id??> and (view.STAGE_ID = :stage_id or view.SUB_STAGE = :stage_id)</#if>
 
         ]]>
     </sql>
