@@ -94,7 +94,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="radioYes"><span
-                                            class="check-circle"></span>Yes</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==true}">radio-disabled</c:if>"></span>Yes</label>
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
@@ -109,7 +109,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="radioNo"><span
-                                            class="check-circle"></span>No</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==false}">radio-disabled</c:if>"></span>No</label>
                                   </div>
                                 </div>
                               </div>
@@ -336,6 +336,13 @@
 
   input[type='text'] {
     margin-bottom: 0px;
+  }
+  .radio-disabled::before{
+    background-color: #999999 !important;
+
+  }
+  .radio-disabled{
+    border-color: #999999 !important;
   }
 </style>
 <script type="text/javascript">
