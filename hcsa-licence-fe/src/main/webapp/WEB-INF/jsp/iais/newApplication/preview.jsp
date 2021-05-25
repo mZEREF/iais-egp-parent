@@ -260,6 +260,7 @@
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
+        <c:if test="${empty requestInformationConfig}">
         $(':checked, textarea,text','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
@@ -269,6 +270,7 @@
                 txt = txt.substring()
             }
         }
+        </c:if>
         window.open(url + txt,'_blank');
     };
 

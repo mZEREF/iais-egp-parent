@@ -726,7 +726,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
         if (isMandatory && (fileMap == null || fileMap.isEmpty())) {
-            errorMap.put("selectedFileError", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            errorMap.put(fileAppendId + "Error", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
             isValid = false;
         }
         return isValid;
@@ -743,6 +743,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
         if (IaisCommonUtils.isEmpty(fileMap)) {
+            request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
             return null;
         }
         AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(

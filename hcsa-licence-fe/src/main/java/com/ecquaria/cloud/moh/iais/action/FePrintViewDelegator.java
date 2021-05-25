@@ -69,12 +69,14 @@ public class FePrintViewDelegator {
 
                 }else {
                     // View and Print
-                    String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
-                    if (StringUtil.isEmpty(viewPrint)) {
-                        appSubmissionDto.setAppDeclarationMessageDto(
-                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-                        appSubmissionDto.setAppDeclarationDocDtos(
-                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                    if (!NewApplicationHelper.checkIsRfi(bpc.request)) {
+                        String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
+                        if (StringUtil.isEmpty(viewPrint)) {
+                            appSubmissionDto.setAppDeclarationMessageDto(
+                                    appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                            appSubmissionDto.setAppDeclarationDocDtos(
+                                    appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                        }
                     }
                 }
                 appSubmissionDtoList.add(appSubmissionDto);

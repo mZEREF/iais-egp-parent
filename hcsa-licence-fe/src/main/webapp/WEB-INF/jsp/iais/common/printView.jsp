@@ -101,6 +101,12 @@
                 $(ele).parent().html($(ele).text());
             });
         }
+        // textarea
+        $('textarea', '#declarations').each(function(index, ele){
+            $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
+                + $(ele).val() + '</div>');
+            $(ele).remove();
+        });
 
         var userAgent = navigator.userAgent;
         var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
