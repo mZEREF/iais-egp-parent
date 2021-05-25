@@ -178,6 +178,7 @@
 <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 <input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
+<input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -261,7 +262,10 @@
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
         <c:if test="${empty requestInformationConfig}">
-        $(':checked, textarea,text','#declarations').each(function(){
+        $(':checked, textarea','#declarations').each(function(){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
+        $("input[name='effectiveDt']").each(function (){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
         if (url.indexOf('?') < 0) {
@@ -271,7 +275,8 @@
             }
         }
         </c:if>
-        window.open(url + txt,'_blank');
+        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        window.open(url +rfc+ txt,'_blank');
     };
 
     function saveDraft() {

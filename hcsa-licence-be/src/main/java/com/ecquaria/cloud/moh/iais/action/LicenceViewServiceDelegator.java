@@ -55,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -163,6 +164,8 @@ public class LicenceViewServiceDelegator {
     public void PrepareViewData(BaseProcessClass bpc) throws Exception {
         // licence AppSubmissionDto doucument add md5
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
+        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
         ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",null);
         String rfi = bpc.request.getParameter("rfi");
         String requestRfi = (String)bpc.request.getAttribute("rfi");
@@ -473,7 +476,7 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-        if("N".equals(prsFlag)){
+        if("Y".equals(prsFlag)){
             disciplinaryRecord(appSubmissionDto,bpc.request);
         }
     }
@@ -2323,14 +2326,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                String hciName = appGrpPremisesDtoList.get(i).getHciName();
-                String oldHciName = oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciName();
-                if(hciName!=null){
-                    boolean equals = hciName.equals(oldHciName);
-                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
-                }else if(oldHciName!=null){
-                    boolean equals = oldHciName.equals(hciName);
-                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(false));
                 }
             }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();

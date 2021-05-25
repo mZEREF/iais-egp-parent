@@ -52,10 +52,10 @@ public class FePrintViewDelegator {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-                    AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                    if(appDeclarationMessageDto!=null){
+                    String rfc_eqHciNameChange = bpc.request.getParameter("RFC_eqHciNameChange");
+                    if("RFC_eqHciNameChange".equals(rfc_eqHciNameChange)){
                         bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
-                        appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                         appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                         appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
                         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
