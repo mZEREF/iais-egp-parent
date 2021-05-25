@@ -225,7 +225,6 @@
             showWaiting();
             submit('payment','doSubmit',null);
         });
-
         $('.doSvcEdit').click(function () {
             showWaiting();
             var svcCode = $(this).next().val();
@@ -255,14 +254,13 @@
         </c:if>
         </c:if>
 
-
     });
 
     function preview(){
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
-        <c:if test="${empty requestInformationConfig}">
+        <c:if test="${empty viewPrint}">
         $(':checked, textarea','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
@@ -277,7 +275,7 @@
         }
         </c:if>
         var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
-        window.open(url  +rfc+ txt,'_blank');
+        window.open(url +rfc+ txt,'_blank');
     };
 
     function saveDraft() {
