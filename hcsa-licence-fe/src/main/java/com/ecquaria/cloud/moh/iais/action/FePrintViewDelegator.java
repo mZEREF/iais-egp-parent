@@ -43,8 +43,7 @@ public class FePrintViewDelegator {
         //remove session
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, null);
         // View and Print
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
-
+        String viewPrint = (String) ParamUtil.getSessionAttr(bpc.request,"viewPrint");
         String appType = ParamUtil.getString(bpc.request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
@@ -69,14 +68,11 @@ public class FePrintViewDelegator {
 
                 }else {
                     // View and Print
-                    if (!NewApplicationHelper.checkIsRfi(bpc.request)) {
-                        String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
-                        if (StringUtil.isEmpty(viewPrint)) {
-                            appSubmissionDto.setAppDeclarationMessageDto(
-                                    appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-                            appSubmissionDto.setAppDeclarationDocDtos(
-                                    appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
-                        }
+                    if (StringUtil.isEmpty(viewPrint)) {
+                        appSubmissionDto.setAppDeclarationMessageDto(
+                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                        appSubmissionDto.setAppDeclarationDocDtos(
+                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
                     }
                 }
                 appSubmissionDtoList.add(appSubmissionDto);
@@ -87,7 +83,6 @@ public class FePrintViewDelegator {
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
                     if(appSubmissionDtos.size()==1){
-                        String viewPrint = ParamUtil.getString(bpc.request, "viewPrint");
                         if (StringUtil.isEmpty(viewPrint)) {
                             AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                             appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);

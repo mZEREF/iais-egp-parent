@@ -274,6 +274,8 @@ public class NewApplicationDelegator {
         fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
         bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        // View and Print
+        ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
         //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
@@ -753,7 +755,9 @@ public class NewApplicationDelegator {
         // init uploaded File
         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (NewApplicationHelper.checkIsRfi(bpc.request)) {
-            ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
+            ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "viewPrint", null);
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
@@ -1528,7 +1532,7 @@ public class NewApplicationDelegator {
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         // View and Print
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
+        ParamUtil.setSessionAttr(bpc.request, "viewPrint","Y");
         bpc.request.getSession().removeAttribute("renewDto");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
