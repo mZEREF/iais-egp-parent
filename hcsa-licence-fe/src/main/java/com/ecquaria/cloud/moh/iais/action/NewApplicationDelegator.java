@@ -742,19 +742,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
-                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                    boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
-                    if(eqHciNameChange){
-                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
-                    }
-                }
-            }
-        }
         // init uploaded File
         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (NewApplicationHelper.checkIsRfi(bpc.request)) {
@@ -1442,6 +1429,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
         setPsnDroTo(appSubmissionDto, bpc);
+        preDataDeclaration(bpc.request,appSubmissionDto);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         if("exitSaveDraft".equals(crud_action_additional)){
             jumpYeMian(bpc.request, bpc.response);
@@ -1451,7 +1439,50 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("saveDraftSuccess", "success");
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
+    private void preDataDeclaration(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto==null){
+            return;
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, request);
+            if((declarationFiles==null || declarationFiles .isEmpty()) && isEmptyData(appDeclarationMessageDto,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
 
+            }else {
+                appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request);
+            appSubmissionService.getAppDeclarationMessageDto(request,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+            appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, request);
+            appSubmissionService.getAppDeclarationMessageDto(request,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+            appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+        }
+    }
+    /*NewApplicationDelegator
+     * */
+    private boolean isEmptyData( AppDeclarationMessageDto appDeclarationMessageDto ,String apptye){
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(apptye)){
+            String preliminaryQuestionKindly = appDeclarationMessageDto.getPreliminaryQuestionKindly();
+            String preliminaryQuestionItem1 = appDeclarationMessageDto.getPreliminaryQuestionItem1();
+            String preliminaryQuestiontem2 = appDeclarationMessageDto.getPreliminaryQuestiontem2();
+            Date effectiveDt = appDeclarationMessageDto.getEffectiveDt();
+            if(preliminaryQuestionKindly==null&&preliminaryQuestionItem1==null&&preliminaryQuestiontem2==null&&effectiveDt==null){
+                return true;
+            }else {
+                return false;
+            }
+        }
+
+        return true;
+    }
     public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");

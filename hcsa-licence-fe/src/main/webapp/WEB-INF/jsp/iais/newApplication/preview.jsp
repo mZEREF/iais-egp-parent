@@ -178,6 +178,7 @@
 <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 <input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
+<input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -270,7 +271,8 @@
                 txt = txt.substring()
             }
         }
-        window.open(url + txt,'_blank');
+        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        window.open(url  +rfc+ txt,'_blank');
     };
 
     function saveDraft() {
