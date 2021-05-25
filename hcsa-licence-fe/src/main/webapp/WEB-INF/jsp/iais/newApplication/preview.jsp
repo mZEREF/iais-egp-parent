@@ -262,6 +262,7 @@
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
+        <c:if test="${empty requestInformationConfig}">
         $(':checked, textarea','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
@@ -274,6 +275,7 @@
                 txt = txt.substring()
             }
         }
+        </c:if>
         var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
         window.open(url  +rfc+ txt,'_blank');
     };
