@@ -17,10 +17,10 @@
                 <div class="instruction-content center-content">
                     <h2>Please key in cessation information</h2>
                     <br/>
+                    <form  method="post" id="mainForm" class="form-horizontal"
+                           enctype="multipart/form-data"
+                           action=<%=process.runtime.continueURL()%>>
                     <div class="row">
-                        <form  method="post" id="mainForm" class="form-horizontal"
-                              enctype="multipart/form-data"
-                              action=<%=process.runtime.continueURL()%>>
                             <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
                             <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
                             <div class="col-lg-12 col-xs-12 cesform-box">

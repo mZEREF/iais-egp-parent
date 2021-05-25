@@ -66,7 +66,6 @@
             success: function (data) {
                 if(data != null && data.description != null){
                     if( data.msgType == "Y"){
-                        console.log("-----")
                         if(reloadIndex != -1){
                             $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
                             deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
@@ -77,9 +76,7 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
-                        <c:if test="${empty declaration_page_request}">
                             cloneUploadFile();
-                        </c:if>
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
