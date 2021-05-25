@@ -20,6 +20,7 @@
         $("#"+id).remove();
     }
     function callAjaxDeleteFile(repoId,fileIndex){
+        showWaiting();
         var data = {"fileAppendId":repoId,"fileIndex":fileIndex};
         $.post(
             "${pageContext.request.contextPath}/deleteFeCallFile",
@@ -28,6 +29,7 @@
                 if(data != null && data == 1){
                     deleteFileFeDiv(repoId+"Div"+fileIndex);
                 }
+                dismissWaiting();
             }
         )
     }
