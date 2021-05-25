@@ -2292,14 +2292,9 @@ public class LicenceViewServiceDelegator {
                 }
             }
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                String hciName = appGrpPremisesDtoList.get(i).getHciName();
-                String oldHciName = oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciName();
-                if(hciName!=null){
-                     equals = hciName.equals(oldHciName);
-                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
-                }else if(oldHciName!=null){
-                     equals = oldHciName.equals(hciName);
-                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(false));
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
