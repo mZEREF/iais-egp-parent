@@ -17,10 +17,10 @@
                 <div class="instruction-content center-content">
                     <h2>Please key in cessation information</h2>
                     <br/>
+                    <form  method="post" id="mainForm" class="form-horizontal"
+                           enctype="multipart/form-data"
+                           action=<%=process.runtime.continueURL()%>>
                     <div class="row">
-                        <form  method="post" id="mainForm" class="form-horizontal"
-                              enctype="multipart/form-data"
-                              action=<%=process.runtime.continueURL()%>>
                             <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
                             <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
                             <div class="col-lg-12 col-xs-12 cesform-box">
@@ -346,23 +346,23 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <br/>
-                <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-                </form>
-                <div class="application-tab-footer">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6">
-                                <span style="padding-right: 10%" class="components">
-                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic"><em
-                                class="fa fa-angle-left"></em> Back</a>
-                    </span>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                                <span style="padding-left: 73%" class="components">
-                       <a class="btn btn-primary next" href="javascript:void(0);"
-                          onclick="submitSure('submit')">Next</a>
-                    </span>
+                    <br/>
+                    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+                    </form>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                    <span style="padding-right: 10%" class="components">
+                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic"><em
+                                    class="fa fa-angle-left"></em> Back</a>
+                        </span>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                    <span style="padding-left: 73%" class="components">
+                           <a class="btn btn-primary next" href="javascript:void(0);"
+                              onclick="submitSure('submit')">Next</a>
+                        </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -561,6 +561,8 @@
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+
+        alert("error" + error)
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");

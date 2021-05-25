@@ -76,9 +76,7 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
-                        <c:if test="${empty declaration_page_request}">
                             cloneUploadFile();
-                        </c:if>
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
@@ -121,6 +119,7 @@
         return "Y";
     }
     function cloneUploadFile() {
+        alert("Err")
         var fileId= '#selectedFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
