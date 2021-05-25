@@ -254,14 +254,13 @@
         </c:if>
         </c:if>
 
-
     });
 
     function preview(){
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
-        <c:if test="${empty requestInformationConfig}">
+        <c:if test="${empty viewPrint}">
         $(':checked, textarea','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
