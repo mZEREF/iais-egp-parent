@@ -744,6 +744,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
+
         // init uploaded File
         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (NewApplicationHelper.checkIsRfi(bpc.request)) {
