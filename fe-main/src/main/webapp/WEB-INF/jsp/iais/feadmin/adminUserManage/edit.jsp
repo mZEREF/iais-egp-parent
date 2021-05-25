@@ -92,6 +92,14 @@
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
+    $(document).ready(function() {
+        <c:if test="${fromMyinfo == 'Y'}" >
+            $('#name').prop('readonly', true);
+            $('#mobileNo').prop('readonly', true);
+            $('#email').prop('readonly', true);
+        </c:if>
+    });
+
     function save() {
         $("#action").val("save");
         var mainPoolForm = document.getElementById('mainForm');
