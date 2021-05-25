@@ -9,6 +9,34 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
+<style>
+    .document-upload-gp .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .application-tab-footer {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 1px solid #BABABA;
+        margin-left: -90px;
+        margin-right: -90px;
+    }
+    .withdraw-content-box {
+        background-color: #fafafa;
+        border-radius: 14px;
+        padding: 20px;
+        border:1px solid #d1d1d1;
+        margin-bottom: 0;
+    }
+</style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
@@ -207,36 +235,38 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <c:if test="${isDoView == 'Y'}">
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                        <div class="center-content">
+                            <c:if test="${isDoView == 'Y'}">
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
                                 <span style="padding-right: 10%" class="components">
                                     <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
                                             class="fa fa-angle-left"></em> Back</a>
                                 </span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </c:if>
-                    <c:if test="${isDoView != 'Y'}">
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                            </c:if>
+                            <c:if test="${isDoView != 'Y'}">
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
                                     <span style="padding-right: 10%" class="components">
                                         <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
                                                 class="fa fa-angle-left"></em> Back</a>
                                     </span>
+                                        </div>
+                                        <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
+                                           href="javascript:void(0);">Submit</a>
+                                        <span style="float:right">&nbsp;</span>
+                                        <a class="btn btn-secondary" style="float:right"
+                                           href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
+                                    </div>
                                 </div>
-                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
-                                   href="javascript:void(0);">Submit</a>
-                                <span style="float:right">&nbsp;</span>
-                                <a class="btn btn-secondary" style="float:right"
-                                   href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
-                            </div>
+                            </c:if>
                         </div>
-                    </c:if>
+                    </div>
                 </div>
             </div>
         </div>
