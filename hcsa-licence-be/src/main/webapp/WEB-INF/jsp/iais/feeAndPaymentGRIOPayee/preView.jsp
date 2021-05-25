@@ -79,7 +79,7 @@
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Bank Name :<span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
-                                            <c:out value="${bankName}"/>
+                                            <iais:code code="bankName"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
