@@ -509,8 +509,26 @@
 
     function chooseCurRole() {
         showWaiting();
-        let dashSwitchActionValue = $('#switchAction').val();
-        intraDashboardSubmit(dashSwitchActionValue);
+        let roleSelect = document.getElementById("beDashRoleId");
+        let index = roleSelect.selectedIndex ;
+        let roleSelectVal = roleSelect.options[index].value;
+        $.post(
+            '/main-web/hcsa/intranet/dashboard/dashRole.switch',
+            {roleSelectVal: roleSelectVal},
+            function (data) {
+                let dashRoleSwitchFlag = data.dashRoleSwitchFlag;
+                if ('SUCCESS' == dashRoleSwitchFlag) {
+                    intraDashboardSubmit("system");
+                } else if ('FAIL' == dashRoleSwitchFlag) {
+                    url = "${pageContext.request.contextPath}/eservice/INTRANET/MohHcsaBeDashboard";
+
+                }else {
+                    let dashSwitchActionValue = $('#switchAction').val();
+                    intraDashboardSubmit(dashSwitchActionValue);
+                }
+            }
+        )
+        dismissWaiting();
     }
 
     function isInArray(arr,value){

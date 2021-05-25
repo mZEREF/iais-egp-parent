@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
@@ -168,6 +169,15 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setRequestAttr(bpc.request, "dashProcessBackFlag", backFlag);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashAsoCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashPsoCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashPreInspCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashInspCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashPostInspCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashAo1CircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashAo2CircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashAo3CircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashOverAllCircleKpi", null);
     }
 
     /**
@@ -242,19 +252,26 @@ public class MohHcsaBeDashboardDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
                 ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
                 ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+                ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
             } else {
                 //get service option
                 List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
+                //search system dashboard stage show
+                SearchParam searchParam = getSearchParam(bpc, true, DashAllActionAppQueryDto.class.getName());
+                QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
+                SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
                 //get Dashboard Circle Kpi Show Dto
-                List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow();
+                List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
                 //set Dashboard Circle Kpi Show Session
                 setDashCircleKpiShowSession(bpc.request, dashStageCircleKpiDtos);
                 //set session
                 ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
+                ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_SYSTEM_ALL);
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
             }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
-            ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME);
         }
     }
 
@@ -296,6 +313,26 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaDashSysAll(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaDashSysAll start ...."));
+        String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
+        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
+        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        //search system dashboard stage show
+        SearchParam searchParam = getSearchParam(bpc, true, DashAllActionAppQueryDto.class.getName());
+        //set filter
+        searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
+        SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
+        //get Dashboard Circle Kpi Show Dto
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
+        //set Dashboard Circle Kpi Show Session
+        setDashCircleKpiShowSession(bpc.request, dashStageCircleKpiDtos);
+        //get service option
+        List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
+        //set session
+        ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
+        ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
     }
 
     /**
