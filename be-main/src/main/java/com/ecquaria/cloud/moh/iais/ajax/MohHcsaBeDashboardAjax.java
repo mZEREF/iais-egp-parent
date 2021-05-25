@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
@@ -397,6 +398,52 @@ public class MohHcsaBeDashboardAjax {
         String res = inspectionAssignTaskService.taskRead(taskId);
         map.put("res",res);
         return map;
+    }
+
+    @RequestMapping(value = "dashRole.switch", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> dashChangeRoleSwitch(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>(1);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(request, "dashRoleCheckDto");
+        String roleSelectVal = request.getParameter("roleSelectVal");
+        map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+        if(loginContext != null && poolRoleCheckDto != null) {
+            String curRoleId = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(roleSelectVal)) {
+                Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
+                String roleId = getCheckRoleIdByMap(roleSelectVal, roleMap);
+                if(!StringUtil.isEmpty(curRoleId)) {
+                    if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                        if (curRoleId.equals(roleId)) {
+                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                        } else {
+                            map.put("dashRoleSwitchFlag", AppConsts.FAIL);
+                        }
+                    } else if(!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                        if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                            map.put("dashRoleSwitchFlag", AppConsts.SUCCESS);
+                        } else {
+                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {
+        String roleId = "";
+        if(roleMap != null && !StringUtil.isEmpty(roleIdCheck)){
+            roleId = roleMap.get(roleIdCheck);
+            if(!StringUtil.isEmpty(roleId)){
+                return roleId;
+            } else {
+                return "";
+            }
+        }
+        return roleId;
     }
 
     @RequestMapping(value = "applicationView.show", method = RequestMethod.POST)
