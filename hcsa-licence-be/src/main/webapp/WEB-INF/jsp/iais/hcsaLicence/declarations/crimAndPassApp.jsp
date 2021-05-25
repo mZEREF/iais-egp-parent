@@ -6,62 +6,72 @@
   </div>
   <br>
   <div class="row">
-    <p class="col-xs-12">Please indicate 'Yes' or 'No' to the following statements:</p>
+    <div class="col-xs-12 form-group">
+      <p >Please indicate 'Yes' or 'No' to the following statements:</p>
+    </div>
+
     <br>
-    <p class="col-xs-12">
-      <span>1.</span>
-      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_1" escape="false"/></span>
-    </p>
+    <div class="col-xs-12 form-group">
+      <p >
+        <span>1.</span>
+        <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_1" escape="false"/></span>
+      </p>
+    </div>
     <br>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem1=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem1" value = "1" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
     </div>
-    <div class="form-check col-xs-3">
+    <div class="form-check col-xs-9">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem1=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem1" value = "0" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <br>
-    <p class="col-xs-12">
-      <span>2.</span>
-      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_2" escape="false"/></span>
-    </p>
+    <div class="col-xs-12 form-group">
+      <p>
+        <span>2.</span>
+        <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_2" escape="false"/></span>
+      </p>
+    </div>
     <br>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem2=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem2" value = "1" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
     </div>
-    <div class="form-check col-xs-3">
+    <div class="form-check col-xs-9">
       <input disabled  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem2=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem2" value = "0" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem2"></span>
     <br>
-    <p class="col-xs-12">
-      <span>3.</span>
-      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_3" escape="false"/></span>
-    </p>
+    <div class="col-xs-12 form-group">
+      <p >
+        <span>3.</span>
+        <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_3" escape="false"/></span>
+      </p>
+    </div>
     <br>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem3=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem3" value = "1" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
     </div>
-    <div class="form-check col-xs-3">
+    <div class="form-check col-xs-9">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem3=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem3" value = "0" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
-    <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem3"></span>
     <br>
-    <p class="col-xs-12">
-      <span>4.</span>
-      <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_4" escape="false"/></span>
-    </p>
+    <div class="col-xs-12 form-group">
+      <p >
+        <span>4.</span>
+        <span><iais:message key="DECLARATION_CRIM_AND_PASS_APP_ITME_4" escape="false"/></span>
+      </p>
+    </div>
     <br>
     <div class="form-check col-xs-3">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem4=='1'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem4" value = "1" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
     </div>
-    <div class="form-check col-xs-3">
+    <div class="form-check col-xs-9">
       <input disabled class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem4=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem4" value = "0" aria-invalid="false">
       <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
