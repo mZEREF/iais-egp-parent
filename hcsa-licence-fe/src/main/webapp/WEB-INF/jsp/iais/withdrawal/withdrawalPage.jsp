@@ -9,6 +9,34 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
+<style>
+    .document-upload-gp .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .application-tab-footer {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 1px solid #BABABA;
+        margin-left: -90px;
+        margin-right: -90px;
+    }
+    .withdraw-content-box {
+        background-color: #fafafa;
+        border-radius: 14px;
+        padding: 20px;
+        border:1px solid #d1d1d1;
+        margin-bottom: 0;
+    }
+</style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
@@ -141,20 +169,6 @@
                                 </div>
                             </div>
                         </div>
-                        <style>
-                            .document-upload-list {
-                                background-color: #F8F8F8;
-                                border-radius: 14px;
-                                padding: 30px;
-                            }
-                            .application-tab-footer {
-                                /*margin-top: 15px;*/
-                                padding-top: 30px;
-                                border-top: 1px solid #BABABA;
-                                margin-left: -90px;
-                                margin-right: -90px;
-                            }
-                        </style>
                         <div class="center-content">
                             <div class="">
                                 <div class="document-upload-gp">
