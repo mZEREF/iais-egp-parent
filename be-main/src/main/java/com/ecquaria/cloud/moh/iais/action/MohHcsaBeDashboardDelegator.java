@@ -262,25 +262,26 @@ public class MohHcsaBeDashboardDelegator {
         if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
             for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
                 if(dashStageCircleKpiDto != null) {
+                    String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDtos);
                     String stageId = dashStageCircleKpiDto.getStageId();
                     if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_PRE.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashInspCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashInspCircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_POT.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", jsonData);
                     } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
-                        ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", jsonData);
                     } else {
-                        ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", dashStageCircleKpiDto);
+                        ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", jsonData);
                     }
                 }
             }
