@@ -1186,6 +1186,23 @@ public class NewApplicationDelegator {
                 appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
                         preQuesKindly ==null ? false : "0".equals(preQuesKindly), bpc.request);
             }
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            if(!NewApplicationHelper.checkIsRfi(bpc.request)){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
+                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
+                        if(eqHciNameChange){
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                            appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                        }
+                    }
+                }
+            }
         }
 
         String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
