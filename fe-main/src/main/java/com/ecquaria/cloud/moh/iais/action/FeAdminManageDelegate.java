@@ -269,6 +269,9 @@ public class FeAdminManageDelegate {
                     ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
                 }
             }
+            if (myInfoDto != null && !myInfoDto.isServiceDown()) {
+                ParamUtil.setRequestAttr(request,"fromMyinfo", "Y");
+            }
         }else {
             log.info("------- Illegal operation get Myinfo ---------");
         }
