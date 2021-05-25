@@ -2499,7 +2499,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
-                if(appDeclarationMessageDto!=null){
+                if(appDeclarationMessageDto!=null&&appDeclarationMessageDto.getEffectiveDt()!=null){
                     appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
                     appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
                 }
@@ -2509,7 +2509,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto1.getAppDeclarationMessageDto();
-                if(appDeclarationMessageDto!=null){
+                if(appDeclarationMessageDto!=null&&appDeclarationMessageDto.getEffectiveDt()!=null){
                     appSubmissionDto1.setEffectiveDate(appDeclarationMessageDto.getEffectiveDt());
                     appSubmissionDto1.setEffectiveDateStr(new SimpleDateFormat("dd/MM/yyyy").format(appDeclarationMessageDto.getEffectiveDt()));
                 }
