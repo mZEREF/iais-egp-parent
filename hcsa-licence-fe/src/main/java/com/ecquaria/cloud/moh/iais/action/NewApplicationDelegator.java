@@ -1675,11 +1675,17 @@ public class NewApplicationDelegator {
                         }
                     }
                     if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                        RenewDto renewDto=new RenewDto();
-                        renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
-                        bpc.request.setAttribute("renewDto",renewDto);
-                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
-                                appSubmissionDto.getAppType(), bpc.request);
+                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                        if(appDeclarationMessageDto!=null){
+                            RenewDto renewDto=new RenewDto();
+                            renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                            bpc.request.setAttribute("renewDto",renewDto);
+                            appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+                                    appSubmissionDto.getAppType(), bpc.request);
+                            bpc.request.getSession().setAttribute("isSingle","Y");
+                        }else {
+                            bpc.request.getSession().setAttribute("isSingle","N");
+                        }
                     }
                     if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                             || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {

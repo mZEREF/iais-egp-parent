@@ -1,5 +1,6 @@
 <c:choose>
   <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}"></c:when>
+  <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}"></c:when>
   <c:otherwise>
     <div class="panel panel-default">
       <div class="panel-heading" id="headingOne" role="tab">
