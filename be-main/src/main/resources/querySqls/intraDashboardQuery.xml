@@ -494,7 +494,7 @@
             <#if application_types??> and ${application_types}</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and view.ROLE_ID= :role_id</#if>
-            <#if user_id??> and view.ACTION_BY= :user_id</#if>
+            <#if action_by??> and view.ACTION_BY= :action_by</#if>
             <#if stage_id??> and (view.STAGE_ID = :stage_id or view.SUB_STAGE = :stage_id)</#if>
 
         ]]>
@@ -502,7 +502,18 @@
 
     <sql key = "dashSystemDetailAjax"  remarks = "System admin dashboard Detail Drop Search">
         <![CDATA[
-
+            SELECT view.ID, view.wrk_grp_id, view.SVC_CODE ,view.STATUS ,view.SERVICE_ID ,view.APP_TYPE ,
+            view.APPLICATION_ID ,view.APPLICATION_NO ,view.KPI ,view.RMD_THRESHOLD ,view.ROLE_ID ,
+            view.SLA_DAYS ,view.STAGE_ID ,view.SUB_STAGE ,view.ACTION_BY ,view.act_time,view.user_id,view.total_sla_days,view.APP_GRP_ID
+            FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW view
+            WHERE 1 = 1
+            <#if application_types??> and ${application_types}</#if>
+            <#if svc_codes??> and  ${svc_codes}</#if>
+            <#if role_id??> and view.ROLE_ID= :role_id</#if>
+            <#if action_by??> and view.ACTION_BY= :action_by</#if>
+            <#if user_id??> and view.user_id= :user_id</#if>
+            <#if app_grp_id??> and view.APP_GRP_ID= :app_grp_id</#if>
+            <#if stage_id??> and (view.STAGE_ID = :stage_id or view.SUB_STAGE = :stage_id)</#if>
         ]]>
     </sql>
 </sqls>
