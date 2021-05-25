@@ -265,6 +265,9 @@
         $(':checked, textarea','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
+        $("input[name='effectiveDt']").each(function (){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
         if (url.indexOf('?') < 0) {
             url += '?';
             if (txt != '') {
