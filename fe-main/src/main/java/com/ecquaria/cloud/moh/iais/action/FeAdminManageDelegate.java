@@ -166,9 +166,7 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
-        }
-        else if("save".equalsIgnoreCase(action)){
-
+        } else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
@@ -232,9 +230,10 @@ public class FeAdminManageDelegate {
                 MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
                 boolean amendLicensee = (needRefersh && licenseeDto!=null);
-                if( !needRefersh){
+                if (!needRefersh) {
                     myInfoDto = null;
                 }
+                log.info(StringUtil.changeForLog("AmendLicensee : " + amendLicensee + " - NeedRefersh : " + needRefersh));
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
