@@ -43,6 +43,7 @@
 <script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/jquery.multi-select.min.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/Chart.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
