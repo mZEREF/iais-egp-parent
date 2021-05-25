@@ -731,8 +731,6 @@
                           <div class="col-xs-12 img-show">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
                                     value="${appSvcPersonnelDtoList.name}"/>
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
-                                    value="${appSvcPersonnelDtoList.name}"/>
                               <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
                                   <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name==appSvcPersonnelDtoList.name}">
                                     <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
