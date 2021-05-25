@@ -66,10 +66,11 @@ public final class FeLoginHelper {
         return openTestMode;
     }
 
-    public static void writeUserField(HttpServletRequest request, FeUserDto userSession){
+    public static void writeUserField(HttpServletRequest request, FeUserDto userSession) {
         String name = ParamUtil.getString(request, UserConstants.NAME);
         String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
         String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
+        String designationOther = ParamUtil.getString(request, UserConstants.DESIGNATION_OTHER);
         String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
         String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
         String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
@@ -77,6 +78,7 @@ public final class FeLoginHelper {
 
         userSession.setDisplayName(name);
         userSession.setDesignation(designation);
+        userSession.setDesignationOther(designationOther);
         userSession.setSalutation(salutation);
         userSession.setIdentityNo(idNo);
         userSession.setMobileNo(mobileNo);
