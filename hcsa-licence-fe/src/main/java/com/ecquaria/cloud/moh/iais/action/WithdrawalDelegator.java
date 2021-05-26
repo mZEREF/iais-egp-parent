@@ -336,6 +336,7 @@ public class WithdrawalDelegator {
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request,"withdrawnDtoListAck",withdrawnDtoList);
             if (!StringUtil.isEmpty(messageId)){
                 licFeInboxClient.updateMsgStatusTo(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
             }
