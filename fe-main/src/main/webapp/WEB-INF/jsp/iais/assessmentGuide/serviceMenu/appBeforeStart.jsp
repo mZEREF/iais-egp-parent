@@ -63,7 +63,7 @@
           </div>
         </div>
         <h3>Before You Begin</h3>
-        <ul class="short-content">
+        <ul class="">
           <li>
             <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents needed during the licence application.</p>
           </li>
