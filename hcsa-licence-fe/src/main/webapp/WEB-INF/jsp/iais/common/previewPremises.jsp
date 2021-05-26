@@ -153,8 +153,10 @@
                                             <c:when test="${appGrpPremDto.locateWithOthers == '1'}">
                                                 Yes
                                             </c:when>
-                                            <c:otherwise>
+                                            <c:when test="${appGrpPremDto.locateWithOthers == '0'}">
                                                 No
+                                            </c:when>
+                                            <c:otherwise>
                                             </c:otherwise>
                                         </c:choose>
                                     </span></p>
