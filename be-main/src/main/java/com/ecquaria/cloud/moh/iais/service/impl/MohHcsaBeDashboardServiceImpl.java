@@ -813,21 +813,21 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         //Initialize the stage dto
         DashStageCircleKpiDto dashAllCircleKpiDto = new DashStageCircleKpiDto();
         DashStageCircleKpiDto dashAsoCircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
+        dashAsoCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
         DashStageCircleKpiDto dashPsoCircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_PSO);
+        dashPsoCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_PSO);
         DashStageCircleKpiDto dashPreInspCircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_PRE);
+        dashPreInspCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_PRE);
         DashStageCircleKpiDto dashInspCircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_INP);
+        dashInspCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_INP);
         DashStageCircleKpiDto dashPostInspCircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_POT);
+        dashPostInspCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_POT);
         DashStageCircleKpiDto dashAo1CircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
+        dashAo1CircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
         DashStageCircleKpiDto dashAo2CircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
+        dashAo2CircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO2);
         DashStageCircleKpiDto dashAo3CircleKpiDto = new DashStageCircleKpiDto();
-        dashAllCircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO3);
+        dashAo3CircleKpiDto.setStageId(HcsaConsts.ROUTING_STAGE_AO3);
         //count
         if(searchResult != null) {
             List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchResult.getRows();
@@ -850,19 +850,19 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
                         }
                     } else if (!StringUtil.isEmpty(stageId)) {
-                        if(HcsaConsts.ROUTING_STAGE_ASO.equals(subStage)) {
+                        if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
                             dashAsoCircleKpiDto = setKpiCountShowDataByAllActionApp(dashAsoCircleKpiDto, dashAllActionAppQueryDto);
 
-                        } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(subStage)) {
+                        } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                             dashPsoCircleKpiDto = setKpiCountShowDataByAllActionApp(dashPsoCircleKpiDto, dashAllActionAppQueryDto);
 
-                        } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(subStage)) {
+                        } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
                             dashAo1CircleKpiDto = setKpiCountShowDataByAllActionApp(dashAo1CircleKpiDto, dashAllActionAppQueryDto);
 
-                        } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(subStage)) {
+                        } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
                             dashAo2CircleKpiDto = setKpiCountShowDataByAllActionApp(dashAo2CircleKpiDto, dashAllActionAppQueryDto);
 
-                        } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(subStage)) {
+                        } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
                             dashAo3CircleKpiDto = setKpiCountShowDataByAllActionApp(dashAo3CircleKpiDto, dashAllActionAppQueryDto);
 
                         }
