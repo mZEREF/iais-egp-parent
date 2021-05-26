@@ -33,6 +33,8 @@ import java.util.Map;
 public class FePrintViewDelegator {
     private final static String SESSION_VIEW_SUBMISSONS = "viewSubmissons";
     private final static  String ATTR_PRINT_VIEW = "printView";
+    private final static String LICENCE_VIEW="licenceView";
+    private final static String RFC_EQHCINAMECHANGE ="RFC_eqHciNameChange";
     @Autowired
     AppSubmissionService appSubmissionService;
     @Autowired
@@ -47,17 +49,22 @@ public class FePrintViewDelegator {
         String appType = ParamUtil.getString(bpc.request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        String licenceView = bpc.request.getParameter(LICENCE_VIEW);
+        if(LICENCE_VIEW.equals(licenceView)){
+            bpc.request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
+        }
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-                    String rfc_eqHciNameChange = bpc.request.getParameter("RFC_eqHciNameChange");
-                    if("RFC_eqHciNameChange".equals(rfc_eqHciNameChange)){
-                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
-                        AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                        appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                        appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-                        appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                    String rfc_eqHciNameChange = bpc.request.getParameter(RFC_EQHCINAMECHANGE);
+                    if(RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)){
+                        bpc.request.setAttribute(RFC_EQHCINAMECHANGE,RFC_EQHCINAMECHANGE);
+                        if(StringUtil.isEmpty(viewPrint)){
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                        }
                     }
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
                     RenewDto renewDto=new RenewDto();

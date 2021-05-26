@@ -372,6 +372,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        Object renewDto = bpc.request.getSession().getAttribute("renewDto");
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -1210,7 +1211,6 @@ public class NewApplicationDelegator {
                             AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                             appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                             appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-                            appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
                         }
                     }
                 }

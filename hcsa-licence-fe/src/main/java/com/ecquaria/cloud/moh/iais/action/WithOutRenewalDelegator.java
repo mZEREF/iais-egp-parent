@@ -388,6 +388,7 @@ public class WithOutRenewalDelegator {
                     appEditSelectDto.setDocEdit(true);
                     appEditSelectDto.setServiceEdit(true);
                     ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
+                    ParamUtil.setSessionAttr(bpc.request,"renew_licence_no",appSubmissionDto.getLicenceNo());
                 } else {
                     ParamUtil.setSessionAttr(bpc.request, "isSingle", "N");
                 }
