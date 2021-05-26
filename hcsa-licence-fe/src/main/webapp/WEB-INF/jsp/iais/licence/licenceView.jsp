@@ -93,7 +93,8 @@
 <script>
     function printRLPDF(){
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
-        window.open(url,'_blank');
+        var txt='&licenceView=licenceView';
+        window.open(url+txt,'_blank');
         // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
     }
 </script>

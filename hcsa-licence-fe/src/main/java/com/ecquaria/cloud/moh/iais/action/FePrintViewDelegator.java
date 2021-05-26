@@ -39,6 +39,7 @@ import java.util.Map;
 public class FePrintViewDelegator {
     private final static String SESSION_VIEW_SUBMISSONS = "viewSubmissons";
     private final static  String ATTR_PRINT_VIEW = "printView";
+    private final static String LICENCE_VIEW="licenceView";
 
     @Autowired
     AppSubmissionService appSubmissionService;
@@ -54,6 +55,10 @@ public class FePrintViewDelegator {
         String appType = ParamUtil.getString(bpc.request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        String licenceView = bpc.request.getParameter(LICENCE_VIEW);
+        if(LICENCE_VIEW.equals(licenceView)){
+            bpc.request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
+        }
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
