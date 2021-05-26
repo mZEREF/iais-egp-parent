@@ -921,15 +921,17 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             if(dashAllActionAppQueryDto.getKpi() != null) {
                 kpi = dashAllActionAppQueryDto.getKpi();
             }
-            if (slaDays < rmdThreshold) {
-                dashStageCircleKpiDto.setDashBlueCount(dashStageCircleKpiDto.getDashBlueCount() + 1);
-            }
-            if (kpi != 0) {
+            if(rmdThreshold != 0 && kpi != 0) {
+                if (slaDays < rmdThreshold) {
+                    dashStageCircleKpiDto.setDashBlueCount(dashStageCircleKpiDto.getDashBlueCount() + 1);
+                }
                 if (rmdThreshold <= slaDays && slaDays <= kpi) {
                     dashStageCircleKpiDto.setDashAmberCount(dashStageCircleKpiDto.getDashAmberCount() + 1);
                 } else if (slaDays > kpi) {
                     dashStageCircleKpiDto.setDashRedCount(dashStageCircleKpiDto.getDashRedCount() + 1);
                 }
+            } else {
+                dashStageCircleKpiDto.setDashBlueCount(dashStageCircleKpiDto.getDashBlueCount() + 1);
             }
         }
         return dashStageCircleKpiDto;
