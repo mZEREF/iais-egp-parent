@@ -26,9 +26,6 @@
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
-                    <div class="bg-title">
-                        <h2>Dashboard</h2>
-                    </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-12">
                             <a data-tab="#" href="javascript:;">
