@@ -59,6 +59,7 @@
                                                         <%@include file="../newApplication/inboxView/inboxPremise.jsp" %>
                                                         <%@include file="../newApplication/inboxView/inboxPrimary.jsp" %>
                                                         <%@include file="../newApplication/inboxView/viewForm.jsp" %>
+                                                        <%@include file="../common/declarations.jsp"%>
                                                     </c:if>
                                                 </div>
                                             </div>
