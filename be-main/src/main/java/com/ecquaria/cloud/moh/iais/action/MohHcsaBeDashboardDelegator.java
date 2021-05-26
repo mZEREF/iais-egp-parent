@@ -257,7 +257,8 @@ public class MohHcsaBeDashboardDelegator {
                 //get service option
                 List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
                 //search system dashboard stage show
-                SearchParam searchParam = getSearchParam(bpc, true, DashAllActionAppQueryDto.class.getName());
+                SearchParam searchParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+                searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
                 QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
                 SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
                 //get Dashboard Circle Kpi Show Dto
@@ -313,13 +314,27 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaDashSysAll(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaDashSysAll start ...."));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(bpc.request, "dashRoleCheckDto");
         String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
         String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
         String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
         //search system dashboard stage show
-        SearchParam searchParam = getSearchParam(bpc, true, DashAllActionAppQueryDto.class.getName());
+        SearchParam searchParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+        searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
         //set filter
         searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        String curRoleKey = ParamUtil.getRequestString(bpc.request, "beDashRoleId");
+        if(!StringUtil.isEmpty(curRoleKey)) {
+            Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
+            String roleId = getCheckRoleIdByMap(curRoleKey, roleMap);
+            if(loginContext != null) {
+                loginContext.setCurRoleId(roleId);
+            }
+            if(!StringUtil.isEmpty(roleId)) {
+                poolRoleCheckDto.setCheckCurRole(curRoleKey);
+            }
+        }
         QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
         SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
         //get Dashboard Circle Kpi Show Dto
