@@ -805,7 +805,7 @@
 
                     <c:if test="${not empty hashMap[cgo.idNo]}">
                       <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
@@ -847,7 +847,7 @@
                     </c:if>
                     <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
                       <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
@@ -965,7 +965,7 @@
                     </div>
                     <c:if test="${not empty listHashMap[cgo.profRegNo]}">
                       <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
@@ -1007,7 +1007,7 @@
                     </c:if>
                     <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
                       <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
@@ -1387,7 +1387,7 @@
                           </div>
                           <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
                             <div class="row new-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
@@ -1429,7 +1429,7 @@
                           </c:if>
                           <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
                             <div class="row old-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
@@ -1805,7 +1805,7 @@
                           </div>
                           <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
                             <div class="row new-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
@@ -1847,7 +1847,7 @@
                           </c:if>
                           <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
                             <div class="row old-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
@@ -2067,7 +2067,7 @@
                       </div>
                       <c:if test="${not empty hashMap[po.idNo]}">
                         <div class="row new-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
@@ -2111,7 +2111,7 @@
 
                       <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
                         <div class="row old-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
@@ -2335,7 +2335,7 @@
                     </div>
                     <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
                       <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
@@ -2377,7 +2377,7 @@
                     </c:if>
                     <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
                       <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 140%;margin-top: 5%">
+                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>

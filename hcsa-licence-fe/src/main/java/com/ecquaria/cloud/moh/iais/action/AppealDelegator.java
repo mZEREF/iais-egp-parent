@@ -81,17 +81,17 @@ public class AppealDelegator {
         }
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if(appNo!=null){
-            ApplicationDto entity = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
-            if(entity!=null){
-                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(entity.getStatus())){
+            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            if(applicationDto!=null){
+                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())){
                     bpc.request.setAttribute("appealRfi",ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-                    AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(entity.getApplicationNo()).getEntity();
+                    AppPremisesCorrelationDto entity1 = applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
                     AppPremiseMiscDto entity2 = applicationFeClient.getAppPremisesMisc(entity1.getId()).getEntity();
                     bpc.request.setAttribute("applicationId",entity2.getRelateRecId());
                     appealService.getMessage(bpc.request);
                     bpc. request.setAttribute("crud_action_type","appeal");
                     Map<String,Object> subjectMap = IaisCommonUtils.genNewHashMap();
-                    subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(entity.getApplicationType()));
+                    subjectMap.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
                     subjectMap.put("ApplicationNumber",StringUtil.viewHtml(appNo));
                     MsgTemplateDto autoEntity = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
                     String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(),subjectMap);
