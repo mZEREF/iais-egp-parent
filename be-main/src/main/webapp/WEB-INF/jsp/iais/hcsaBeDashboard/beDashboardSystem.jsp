@@ -51,6 +51,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-xs-12">
+                            <div style="text-align:right;">
+                                <button class="btn btn-secondary" type="button" id="sysClearBtn" name="clearBtn">Clear</button>
+                                <button class="btn btn-primary" type="button" id="sysSearchBtn" name="searchBtn">Search</button>
+                            </div>
+                        </div>
                         <hr>
                         <div class="col-xs-12">
                             <h3>
@@ -176,6 +182,23 @@
             var mainPoolForm = document.getElementById('beDashboardForm');
             mainPoolForm.submit();
         });
+
+        $('#sysClearBtn').click(function () {
+            showWaiting();
+            $('#appType').val('');
+            $('#appType').next().find('span:eq(0)').html('-- Select --');
+            $('#appType').next().find('input[type="checkbox"]').prop('checked',false);
+
+            $('#svcLic').val('');
+            $('#svcLic').next().find('span:eq(0)').html('-- Select --');
+            $('#svcLic').next().find('input[type="checkbox"]').prop('checked',false);
+            dismissWaiting();
+        });
+
+        $('#sysSearchBtn').click(function () {
+
+        });
+
     });
 
 
