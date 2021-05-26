@@ -88,6 +88,7 @@
         </div>
     </form>
 </c:if>
+<input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <script>
     $(document).ready(function(){
         $(':input', '#declarations').prop('disabled', true);
@@ -95,7 +96,8 @@
 
     function printRLPDF(){
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
-        window.open(url,'_blank');
+        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        window.open(url+rfc,'_blank');
        // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
     }
 </script>
