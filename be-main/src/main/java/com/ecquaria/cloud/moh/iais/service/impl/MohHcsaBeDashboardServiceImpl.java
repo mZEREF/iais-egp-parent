@@ -944,17 +944,17 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Override
     public SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes) {
         if(services != null && services.length > 0) {
-            String serviceStr = SqlHelper.constructInCondition("view.SVC_CODE", services.length);
+            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
             searchParam.addParam("svc_codes", serviceStr);
             for(int i = 0; i < services.length; i++){
-                searchParam.addFilter("view.SVC_CODE" + i, services[i]);
+                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
             }
         }
         if(appTypes != null && appTypes.length > 0) {
-            String appTypeStr = SqlHelper.constructInCondition("view.APP_TYPE", appTypes.length);
+            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < services.length; i++){
-                searchParam.addFilter("view.APP_TYPE" + i, services[i]);
+                searchParam.addFilter("viewApp.APP_TYPE" + i, services[i]);
             }
         }
         return searchParam;
