@@ -280,7 +280,7 @@ public class MohHcsaBeDashboardDelegator {
         if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
             for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
                 if(dashStageCircleKpiDto != null) {
-                    String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDtos);
+                    String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
                     String stageId = dashStageCircleKpiDto.getStageId();
                     if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
                         ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", jsonData);

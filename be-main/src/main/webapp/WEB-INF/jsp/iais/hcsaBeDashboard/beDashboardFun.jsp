@@ -34,7 +34,7 @@
         var yellowSize = 0;
         var redCount = '-';
         if(jsonStr != null && jsonStr != '' && jsonStr != undefined){
-            var canvasJsonObj = eval(JSON.parse(jsonStr))[0];
+            var canvasJsonObj = eval(JSON.parse(jsonStr));
             redSize = canvasJsonObj.dashRedCount;
             blueSize = canvasJsonObj.dashBlueCount;
             yellowSize = canvasJsonObj.dashAmberCount;
