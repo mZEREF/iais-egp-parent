@@ -8,7 +8,7 @@
                        varStatus="status">
                 <div class="panel-main-content amend-preview-info">
                     <div class="row">
-                        <p><strong>Mode of Service Delivery</strong></p>
+                        <p><strong>Mode of Service Delivery ${status.index+1}</strong></p>
                     </div>
                     <div class="preview-info">
                         <div class="row">
