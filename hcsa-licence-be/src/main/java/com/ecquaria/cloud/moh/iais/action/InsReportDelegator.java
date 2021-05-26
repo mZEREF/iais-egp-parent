@@ -97,7 +97,7 @@ public class InsReportDelegator {
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus)) {
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)) {
             appPremisesRecommendationDto = initRecommendation(correlationId, applicationViewDto, bpc);
         }
         String recommendation = appPremisesRecommendationDto.getRecommendation();
@@ -283,6 +283,8 @@ public class InsReportDelegator {
                     if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
                         chrono = AppointmentConstants.RECURRENCE_MONTH ;
                         num = Integer.valueOf(Integer.parseInt(number) * 12);
+                        //BestPractice = RECURRENCE_YEAR, Determine that user Other has selected the year
+                        appPremisesRecommendationDto.setBestPractice(AppointmentConstants.RECURRENCE_YEAR);
                     }
                     appPremisesRecommendationDto.setChronoUnit(chrono);
                     appPremisesRecommendationDto.setRecomInNumber(num);
@@ -349,6 +351,10 @@ public class InsReportDelegator {
                     initRecommendationDto.setPeriod("Others");
                     initRecommendationDto.setRecomInNumber(recomInNumber);
                     initRecommendationDto.setChronoUnit(chronoUnit);
+                    if(AppointmentConstants.RECURRENCE_YEAR.equalsIgnoreCase(appPremisesRecommendationDto.getBestPractice())){
+                        initRecommendationDto.setRecomInNumber(recomInNumber/12);
+                        initRecommendationDto.setChronoUnit(AppointmentConstants.RECURRENCE_YEAR);
+                    }
                 }
             }
             if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
