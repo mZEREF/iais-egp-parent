@@ -81,7 +81,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -1626,6 +1625,121 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            List<AppGrpPrimaryDocDto> newPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcDocDto> appSvcDocDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcDocDto> deleteSvcDoc=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPrimaryDocDto> deletePrimary=IaisCommonUtils.genNewArrayList();
+                if (appSvcDocDtoLit != null) {
+                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+                        String svcDocId = appSvcDocDto.getSvcDocId();
+                        String fileRepoId = appSvcDocDto.getFileRepoId();
+                        if (StringUtil.isEmpty(svcDocId)) {
+                            deleteSvcDoc.add(appSvcDocDto);
+                            continue;
+                        }
+                        if(StringUtil.isEmpty(fileRepoId)){
+                            deleteSvcDoc.add(appSvcDocDto);
+                            continue;
+                        }
+                        HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                        if (entity != null) {
+                            String serviceId = entity.getServiceId();
+                            if (StringUtil.isEmpty(serviceId)) {
+                                AppGrpPrimaryDocDto appGrpPrimaryDocDto = svcTransferPrimaryDoc(appSvcDocDto);
+                                appGrpPrimaryDocDto.setSvcDocId(svcDocId);
+                                appGrpPrimaryDocDto.setSvcComDocId(svcDocId);
+                                appGrpPrimaryDocDto.setSvcComDocName(entity.getDocTitle());
+                                appGrpPrimaryDocDto.setAppGrpId(appSubmissionDto.getAppGrpId());
+                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                                appSvcDocDtos.add(appSvcDocDto);
+                            }else {
+                                appSvcDocDto.setUpFileName(entity.getDocTitle());
+                            }
+                        }
+                    }
+                    appSvcDocDtoLit.removeAll(deleteSvcDoc);
+                    appSvcDocDtoLit.removeAll(appSvcDocDtos);
+                    for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
+                        for (int j = 0; j < appSvcDocDtoLit.size() && j != i; j++) {
+                            if (appSvcDocDtoLit.get(i).getFileRepoId().equals(appSvcDocDtoLit.get(j).getFileRepoId())) {
+                                appSvcDocDtoLit.remove(appSvcDocDtoLit.get(i));
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (dtoAppGrpPrimaryDocDtos != null) {
+                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
+                        String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                        if(StringUtil.isEmpty(fileRepoId)){
+                            deletePrimary.add(appGrpPrimaryDocDto);
+                            continue;
+                        }
+                        if(StringUtil.isEmpty(appGrpPrimaryDocDto.getSvcComDocName())){
+                            String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                            if(svcDocId!=null){
+                                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                                if (hcsaSvcDocConfigDto != null) {
+                                    appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
+                                }
+                            }
+                        }
+                    }
+                    dtoAppGrpPrimaryDocDtos.removeAll(deletePrimary);
+                    if (appGrpPrimaryDocDtos.isEmpty()) {
+                        appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
+                    } else {
+                        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
+                        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : dtoAppGrpPrimaryDocDtos) {
+                            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
+                                String svcComDocName = appGrpPrimaryDocDto.getSvcComDocName();
+                                String svcComDocName1 = appGrpPrimaryDocDto1.getSvcComDocName();
+                                if (svcComDocName1 != null) {
+                                    if (svcComDocName1.equals(svcComDocName)) {
+                                        continue;
+                                    } else {
+                                        appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
+                                    }
+                                } else if (svcComDocName != null) {
+                                    if (svcComDocName.equals(svcComDocName1)) {
+                                        continue;
+                                    } else {
+                                        appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
+                                    }
+                                }
+                            }
+                        }
+                        appGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtoList);
+                    }
+                }
+                for (int i = 0; i < appGrpPrimaryDocDtos.size(); i++) {
+                    for (int j = 0; j < appGrpPrimaryDocDtos.size() && j != i; j++) {
+                        if (appGrpPrimaryDocDtos.get(i).getFileRepoId().equals(appGrpPrimaryDocDtos.get(j).getFileRepoId())) {
+                            appGrpPrimaryDocDtos.remove(appGrpPrimaryDocDtos.get(i));
+                            i--;
+                            break;
+                        }
+                    }
+                }
+                newPrimaryDocDtoList.addAll(appGrpPrimaryDocDtos);
+            }
+            appSubmissionDto.setAppGrpPrimaryDocDtos(newPrimaryDocDtoList);
+        }
+
+    }
+
+    @Override
     public boolean serviceConfigIsChange(List<String> serviceId, String presmiseType) {
         if(serviceId!=null && !serviceId.isEmpty() && presmiseType!=null){
             Set<String> appGrpPremisesTypeBySvcId = serviceConfigService.getAppGrpPremisesTypeBySvcId(serviceId);
@@ -1904,7 +2018,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public  List<AppSvcDocDto> updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos) throws Exception {
-
+        //todo: old psn doc use psn type 1 config change to psn type 2, doc will be missing
         List<AppSvcDocDto> newAppSvcDocDtoList =  IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(oldSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(svcDocConfigDtos)){
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtos){
@@ -1917,6 +2031,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     if(titleName.equals(svcDocConfigDto.getDocTitle())){
                                         AppSvcDocDto newAppSvcDocDto = (AppSvcDocDto) CopyUtil.copyMutableObject(appSvcDocDto);
                                         newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
+                                        newAppSvcDocDto.setDupForPerson(svcDocConfigDto.getDupForPerson());
                                         newAppSvcDocDtoList.add(newAppSvcDocDto);
                                         break;
                                     }
