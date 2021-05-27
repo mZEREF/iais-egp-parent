@@ -130,6 +130,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("DraftNumber");
         request.getSession().removeAttribute("renewDto");
         request.getSession().removeAttribute("declaration_page_is");
+        ParamUtil.setSessionAttr(request, "viewPrint",null);
     }
     /**
      *
