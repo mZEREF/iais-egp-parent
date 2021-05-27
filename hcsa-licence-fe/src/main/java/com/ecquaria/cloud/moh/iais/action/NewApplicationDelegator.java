@@ -1601,6 +1601,8 @@ public class NewApplicationDelegator {
                     appCessHciDto.setReason(reason);
                     appCessHciDto.setOtherReason(otherReason);
                     appCessHciDto.setEffectiveDate(effectiveDate);
+                    appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
+                    appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
                     if(patNeedTrans){
                         if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatHciName(patTransTo);
