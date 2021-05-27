@@ -5,14 +5,10 @@
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
-    String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
+//    String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
     String currentApp = ConfigHelper.getString("spring.application.name", "Y");
-    if ("Yes".equals(googleSearch)) {
 %>
-<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>
-<%
-    }
-%>
+<%--<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>--%>
 <section class="logo">
     <div class="container" style="width: 100% !important; max-width: 100% !important; padding-left: 30px;">
         <div class="row">
