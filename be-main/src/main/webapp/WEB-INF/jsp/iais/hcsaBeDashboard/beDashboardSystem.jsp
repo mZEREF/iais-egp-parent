@@ -5,11 +5,6 @@
   Time: 9:48
   To change this template use File | Settings | File Templates.
 --%>
-<style>
-    .font-color-black{
-        color: #333333;
-    }
-</style>
 
 <input type="hidden" name="overAllVal" value='${dashOverAllCircleKpi}'/>
 <input type="hidden" name="asoVal" value='${dashAsoCircleKpi}'/>
@@ -30,10 +25,10 @@
                     <div class="row">
                         <div class="col-md-4 col-xs-12">
                             <a data-tab="#" href="javascript:;">
-                                <div id="canvas-holder">
+                                <div class="cursor-default" id="canvas-holder">
                                     <canvas id="overAllCanvas"></canvas>
                                 </div>
-                                <p class="dashboard-txt main-chart-text"> Overall</p>
+                                <p class="dashboard-txt main-chart-text cursor-default font-color-black"> Overall</p>
                             </a>
                         </div>
                         <div class="col-md-8 col-xs-12">
@@ -70,7 +65,7 @@
                                             <div>
                                                 <canvas id="asoCanvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> Admin Screening</p>
+                                            <p align="center" > Admin Screening</p>
                                         </a>
                                     </div>
                                 </div>
@@ -80,7 +75,7 @@
                                             <div>
                                                 <canvas id="psoCanvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> Professional Screening</p>
+                                            <p align="center" > Professional Screening</p>
                                         </a>
                                     </div>
                                 </div>
@@ -90,7 +85,7 @@
                                             <div>
                                                 <canvas id="preInspCanvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black" > Pre-Inspection</p>
+                                            <p align="center" > Pre-Inspection</p>
                                         </a>
                                     </div>
                                 </div>
@@ -100,7 +95,7 @@
                                             <div>
                                                 <canvas id="inspCanvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> Inspection</p>
+                                            <p align="center" > Inspection</p>
                                         </a>
                                     </div>
                                 </div>
@@ -111,7 +106,7 @@
                                             <div>
                                                 <canvas id="postInspCanvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> Post Inspection</p>
+                                            <p align="center" > Post Inspection</p>
                                         </a>
                                     </div>
                                 </div>
@@ -121,7 +116,7 @@
                                             <div>
                                                 <canvas id="ao1Canvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> AO1</p>
+                                            <p align="center" > AO1</p>
                                         </a>
                                     </div>
                                 </div>
@@ -131,7 +126,7 @@
                                             <div>
                                                 <canvas id="ao2Canvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> AO2</p>
+                                            <p align="center" > AO2</p>
                                         </a>
                                     </div>
                                 </div>
@@ -141,7 +136,7 @@
                                             <div>
                                                 <canvas id="ao3Canvas"></canvas>
                                             </div>
-                                            <p align="center" class="font-color-black"> AO3</p>
+                                            <p align="center" > AO3</p>
                                         </a>
                                     </div>
                                 </div>
@@ -184,15 +179,7 @@
         });
 
         $('#sysClearBtn').click(function () {
-            showWaiting();
-            $('#appType').val('');
-            $('#appType').next().find('span:eq(0)').html('-- Select --');
-            $('#appType').next().find('input[type="checkbox"]').prop('checked',false);
-
-            $('#svcLic').val('');
-            $('#svcLic').next().find('span:eq(0)').html('-- Select --');
-            $('#svcLic').next().find('input[type="checkbox"]').prop('checked',false);
-            dismissWaiting();
+            doClear();
         });
 
         $('#sysSearchBtn').click(function () {

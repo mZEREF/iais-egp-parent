@@ -5,6 +5,14 @@
   Time: 10:50
   To change this template use File | Settings | File Templates.
 --%>
+<style>
+    .font-color-black{
+        color: #333333;
+    }
+    .cursor-default{
+        cursor: default;
+    }
+</style>
 <script>
 
     var chartRegister  = function () {
@@ -73,4 +81,17 @@
         chart1Title.css('width',$('#'+canvasId).width() * 1.2);
         chart1Title.css('height',$('#'+canvasId).height() * 1.4);
     };
+
+    var doClear = function () {
+        showWaiting();
+        $('#appType').val('');
+        $('#appType').next().find('span:eq(0)').html('-- Select --');
+        $('#appType').next().find('input[type="checkbox"]').prop('checked',false);
+
+        $('#svcLic').val('');
+        $('#svcLic').next().find('span:eq(0)').html('-- Select --');
+        $('#svcLic').next().find('input[type="checkbox"]').prop('checked',false);
+        dismissWaiting();
+    }
+
 </script>
