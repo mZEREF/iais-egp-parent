@@ -9,11 +9,11 @@
                 <h3>Proof of Authorisation</h3>
                 <div class="file-upload-gp">
                     <span name="selected${sec}FileShowId" id="selected${sec}FileShowId">
-                    <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto" varStatus="ind">
-                        <div id="${pageShowFileDto.fileMapId}">
+                    <c:forEach items="${AppSubmissionDto.appDeclarationDocDtos}" var="pageShowFileDto" varStatus="ind">
+                        <div >
                           <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
-                             title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
+                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileRepoId}"/>&fileRepoName=${pageShowFileDto.docName}"
+                             title="Download" class="downloadFile">${pageShowFileDto.docName}</a>
                           </span>
                         </div>
                     </c:forEach>

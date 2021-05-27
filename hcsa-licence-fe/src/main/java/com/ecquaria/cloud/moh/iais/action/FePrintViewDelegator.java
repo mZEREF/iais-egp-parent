@@ -70,10 +70,7 @@ public class FePrintViewDelegator {
                     RenewDto renewDto=new RenewDto();
                     renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                     bpc.request.setAttribute("renewDto",renewDto);
-                }
-                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-
-                }else {
+                } else {
                     // View and Print
                     if (StringUtil.isEmpty(viewPrint)) {
                         appSubmissionDto.setAppDeclarationMessageDto(
@@ -106,6 +103,7 @@ public class FePrintViewDelegator {
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint", "Y");
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }
