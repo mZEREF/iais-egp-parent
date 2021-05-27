@@ -29,10 +29,10 @@
                     <a href="<%=internetInbox%>"><p class="logo-img"><img src="<%=webrooth%>img/HALP-log.png" alt="HALP" width="235" height="64"></p></a></div>
             </div>
             <div class="col-xs-2 col-lg-6">
-                <ul class="list-inline hidden-xs hidden-sm">
-                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>
-                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>
-                </ul>
+<%--                <ul class="list-inline hidden-xs hidden-sm">--%>
+<%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>--%>
+<%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>--%>
+<%--                </ul>--%>
                 <div class="gcse-search" style="width:50%;float:right;"></div>
                 <%
                     if ("main-web".equals(currentApp)) {
