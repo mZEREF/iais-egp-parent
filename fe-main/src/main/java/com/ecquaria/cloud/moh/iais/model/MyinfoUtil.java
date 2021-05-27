@@ -162,7 +162,7 @@ public class MyinfoUtil {
 
 	public static String getAuthorization(String realm, String signature, String appId, long nonce, long timestamp) {
 		StringBuilder sb = new StringBuilder();
-			sb.append("Apex_l2_Eg realm=\"http://").append(realm );
+			sb.append("Apex_l2_Eg realm=\"").append(realm );
 			sb.append("\",apex_l2_eg_app_id=\"").append(appId);
 			sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
 			sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
