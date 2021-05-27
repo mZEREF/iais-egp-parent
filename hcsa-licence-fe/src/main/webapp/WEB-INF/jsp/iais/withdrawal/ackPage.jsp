@@ -51,7 +51,7 @@
                         <c:forEach items="${withdrawnDtoListAck}" var="confirm" varStatus="num">
                             <tr style="text-align: center">
                                 <td>
-                                    <p><c:out value="${confirm.applicationNo}"></c:out></p>
+                                    <p><c:out value="${confirm.newApplicationNo}"></c:out></p>
                                 </td>
                                 <td>
                                     <p><c:out value="${confirm.svcName}"></c:out></p>

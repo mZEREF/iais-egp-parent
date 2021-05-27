@@ -128,7 +128,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private String systemAddressOne;
 
     @Override
-    public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
+    public List<WithdrawnDto> saveWithdrawn(List<WithdrawnDto> withdrawnDtoList, HttpServletRequest httpServletRequest) {
         boolean charity = NewApplicationHelper.isCharity(httpServletRequest);
         List<WithdrawnDto> autoApproveApplicationDtoList = IaisCommonUtils.genNewArrayList();
         int maxSeqNum = 0;
@@ -160,6 +160,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             applicationFeClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
+            h.setNewApplicationNo(applicationDtoList.get(0).getApplicationNo());
             applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
             /**
              *
@@ -227,6 +228,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 sendNMS(h,isRfc,charity);
             });
         }
+        return withdrawnDtoList;
     }
 
     private void sendNMS(WithdrawnDto withdrawnDto,boolean isRfc,boolean charity){
@@ -283,7 +285,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public void saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
+    public List<WithdrawnDto>  saveRfiWithdrawn(List<WithdrawnDto> withdrawnDtoList,HttpServletRequest httpRequest) {
         int maxSeqNum = (int) ParamUtil.getSessionAttr(httpRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         withdrawnDtoList.forEach(h -> {
             h.setMaxFileIndex(maxSeqNum);
@@ -299,12 +301,14 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 if (applicationDtos != null && applicationDtos.size() > 0){
                     ApplicationDto applicationDto1 = applicationDtos.get(0);
                     h.setNewApplicationId(applicationDto1.getId());
+                    h.setNewApplicationNo(applicationDto1.getApplicationNo());
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
+        return withdrawnDtoList;
     }
 
     private AppSubmissionDto transformRfi(AppSubmissionDto appSubmissionDto, String licenseeId, ApplicationDto applicationDto) throws Exception {
@@ -363,7 +367,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS,String licenseeId) {
         List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationFeClient.getApplicationByAppTypesAndStatus(appTandS,licenseeId).getEntity();
         for (WithdrawApplicationDto withdrawApplicationDto:withdrawApplicationDtoList
-                ) {
+        ) {
             String appNoMaskId = MaskUtil.maskValue("appNo", withdrawApplicationDto.getApplicationNo());
             withdrawApplicationDto.setMaskId(appNoMaskId);
         }
