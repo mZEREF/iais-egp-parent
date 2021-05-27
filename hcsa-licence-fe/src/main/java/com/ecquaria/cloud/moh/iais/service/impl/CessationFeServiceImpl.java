@@ -873,6 +873,8 @@ public class CessationFeServiceImpl implements CessationFeService {
             appCessMiscDto.setPatTransType(patientSelect);
             appCessMiscDto.setAppId(appId);
             appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
+            appCessMiscDto.setTransferDetail(appCessationDto.getTransferDetail());
+            appCessMiscDto.setTransferredWhere(appCessationDto.getTransferredWhere());
             //reason
             if(ApplicationConsts.CESSATION_REASON_OTHER.equals(reason)){
                 appCessMiscDto.setOtherReason(otherReason);
