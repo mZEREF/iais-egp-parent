@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -33,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -41,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -54,15 +58,16 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -144,11 +149,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    @Autowired
-    private ApplicationGroupService applicationGroupService;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private EmailSmsClient emailSmsClient;
+    @Autowired
+    private EmailHistoryCommonClient emailHistoryCommonClient;
+    @Autowired
+    private CessationClient cessationClient;
 
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
@@ -933,7 +942,24 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         });
         updateTaskList.removeAll(requestForInforList);
     }
-
+    private String getEmailContent(String templateId, Map<String, Object> subMap){
+        String mesContext = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    }
+                    //replace num
+                    mesContext = MessageTemplateUtil.replaceNum(mesContext);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return mesContext;
+    }
     private void update( List<ApplicationDto> cessionOrwith,List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
 
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
@@ -994,12 +1020,24 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     try {
                         ApplicationGroupDto applicationGroupDto = k;
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+                        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(application.getId()).getEntity();
+                        ApplicationDto oldAppDto=applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
+                        List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
+                        String asoId="";
+                        for (TaskDto task:oldTaskDtos
+                             ) {
+                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                asoId=task.getUserId();
+                            }
+                        }
+                        OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
+
                         if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
                             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                            emailMap.put("officer_name", "");
-                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
-                            emailMap.put("ApplicationNumber", application.getApplicationNo());
-                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(application.getApplicationNo()).getEntity();
+                            emailMap.put("officer_name", orgUserDto.getDisplayName());
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            emailMap.put("ApplicationNumber", oldAppDto.getApplicationNo());
+                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(oldAppDto.getApplicationNo()).getEntity();
                             emailMap.put("hci_name", premisesDto.getHciName());
                             emailMap.put("submission_date", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
                             emailMap.put("licensee_name", licenseeDto.getName());
@@ -1014,23 +1052,28 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             }
 
                             emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                            EmailParam emailParam = new EmailParam();
-                            emailParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL);
-                            emailParam.setQueryCode(application.getApplicationNo());
-                            emailParam.setReqRefNum(application.getApplicationNo());
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                            emailParam.setRefId(application.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
                             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL).getEntity();
                             Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
-                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
-                            map1.put("ApplicationNumber", application.getApplicationNo());
+                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            map1.put("ApplicationNumber", oldAppDto.getApplicationNo());
                             String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
-                            emailParam.setSubject(subject);
                             log.info("start send email start");
-                            notificationHelper.sendNotification(emailParam);
+                            EmailDto emailDto = new EmailDto();
+                            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                            receiptEmail.add(orgUserDto.getEmail());
+                            List<String> mobile = IaisCommonUtils.genNewArrayList();
+                            mobile.add(orgUserDto.getMobileNo());
+                            emailDto.setReceipts(receiptEmail);
+                            String emailContent = getEmailContent(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL,emailMap);
+                            emailDto.setContent(emailContent);
+                            emailDto.setSubject(subject);
+                            emailDto.setSender(this.mailSender);
+                            emailDto.setClientQueryCode(oldAppDto.getApplicationNo());
+                            emailDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getEmail()!=null){
+                                emailSmsClient.sendEmail(emailDto, null);
+                            }
                             log.info("start send email end");
-                            //emailClient.sendNotification(emailDto).getEntity();
 
                             //sms
                             msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS).getEntity();
@@ -1040,19 +1083,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             } catch (IOException |TemplateException e) {
                                 log.info(e.getMessage(),e);
                             }
-                            EmailParam smsParam = new EmailParam();
-                            smsParam.setQueryCode(application.getApplicationNo());
-                            smsParam.setReqRefNum(application.getApplicationNo());
-                            smsParam.setRefId(application.getApplicationNo());
-                            smsParam.setTemplateContent(emailMap);
-                            smsParam.setSubject(subject);
-                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
-                            emailMap.put("ApplicationNumber", application.getApplicationNo());
-                            smsParam.setTemplateContent(emailMap);
-                            smsParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS);
-                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+
+
                             log.info("start send sms start");
-                            notificationHelper.sendNotification(smsParam);
+                            SmsDto smsDto = new SmsDto();
+                            smsDto.setSender(mailSender);
+                            smsDto.setContent(subject);
+                            smsDto.setOnlyOfficeHour(false);
+                            smsDto.setReceipts(mobile);
+                            smsDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getMobileNo()!=null){
+                                emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
+                            }
                             log.info("start send sms end");
                         }
 
