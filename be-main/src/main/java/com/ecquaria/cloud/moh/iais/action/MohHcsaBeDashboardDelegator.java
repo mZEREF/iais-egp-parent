@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
@@ -83,6 +84,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -268,8 +270,6 @@ public class MohHcsaBeDashboardDelegator {
                 //set session
                 ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
                 ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", BeDashboardConstant.SWITCH_ACTION_SYSTEM_ALL);
-                ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-                ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
             }
             //set session
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
@@ -344,10 +344,20 @@ public class MohHcsaBeDashboardDelegator {
         //get service option
         List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
         //set session
+        setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
         ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
         ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+    }
+
+    private void setSessionBySvcAppTypeFilter(HttpServletRequest request, String[] services, String[] appTypes) {
+        if(services != null && services.length > 0) {
+            List<String> serviceList = Arrays.asList(services);
+            ParamUtil.setSessionAttr(request, "dashSvcCheckList", (Serializable) serviceList);
+        }
+        if(appTypes != null && appTypes.length > 0) {
+            List<String> appTypeList = Arrays.asList(appTypes);
+            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", (Serializable) appTypeList);
+        }
     }
 
     /**
@@ -369,6 +379,58 @@ public class MohHcsaBeDashboardDelegator {
      */
     public void hcsaDashSysDetail(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaDashSysDetail start ...."));
+        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "dashServiceOption");
+        String dashSysStageVal = ParamUtil.getRequestString(bpc.request, "dashSysStageVal");
+        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
+        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        //create count's searchParam
+        SearchParam searchCountParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+        searchCountParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        //create detail's SearchParam
+        SearchParam searchParam = getSearchParam(bpc, true, DashAllGrpAppQueryDto.class.getName());
+        //set stageId Filter
+        String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
+        if(StringUtil.isEmpty(stageId)) {
+            searchCountParam.addFilter("stage_id", stageId, true);
+            searchParam.addFilter("stage_id", stageId, true);
+        }
+        //set filter
+        searchCountParam = mohHcsaBeDashboardService.setSysDashFilter(searchCountParam, services, appTypes);
+        searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        //get result
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
+        SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchCountParam);
+        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchCountParam);
+        searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
+        //get Dashboard Circle Kpi Show Dto
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageSvcKpiShow(searchCountResult, serviceOption);
+        //set Dashboard Circle Kpi Show Session
+        setDashStageKpiShowSession(bpc.request, dashStageCircleKpiDtos, serviceOption);
+        //set session
+        setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+    }
+
+    private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
+        if(!IaisCommonUtils.isEmpty(serviceOption) && !IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            for(SelectOption selectOption : serviceOption) {
+                if(selectOption != null) {
+                    String svcCodeOpVal = selectOption.getValue();
+                    for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                        String svcCode = dashStageCircleKpiDto.getSvcCode();
+                        if(!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
+                            String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
+                            StringBuilder stringBuilder = new StringBuilder("dash");
+                            stringBuilder.append(svcCode);
+                            stringBuilder.append("CircleKpi");
+                            ParamUtil.setSessionAttr(request, stringBuilder.toString(), jsonData);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

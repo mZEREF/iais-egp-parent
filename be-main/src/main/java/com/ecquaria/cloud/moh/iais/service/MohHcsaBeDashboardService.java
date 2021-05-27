@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
@@ -144,4 +145,40 @@ public interface MohHcsaBeDashboardService {
      * @Descripation: setSysDashFilter
      */
     SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: dashSysStageVal
+     * @return: String
+     * @Descripation: getStageIdByJspClickVal
+     */
+    String getStageIdByJspClickVal(String dashSysStageVal);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountParam
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailQueryResult
+     */
+    SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailQueryResult(SearchParam searchCountParam);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchResult
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailOtherData
+     */
+    SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailOtherData(SearchResult<DashAllGrpAppQueryDto> searchResult);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountResult, serviceOption
+     * @return: List<DashStageCircleKpiDto>
+     * @Descripation: getDashStageSvcKpiShow
+     */
+    List<DashStageCircleKpiDto> getDashStageSvcKpiShow(SearchResult<DashAllActionAppQueryDto> searchCountResult, List<SelectOption> serviceOption);
 }
