@@ -22,26 +22,28 @@
     </div>
 </section>
 <header>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-10 col-lg-6">
-                <div class="logo-img"><a href="<%=internetWebSite%>"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64"></a>
-                    <a href="<%=internetInbox%>"><p class="logo-img"><img src="<%=webrooth%>img/HALP-log.png" alt="HALP" width="235" height="64"></p></a></div>
-            </div>
-<%--            <div class="col-xs-2 col-lg-6">--%>
-<%--                <ul class="list-inline hidden-xs hidden-sm">--%>
-<%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>--%>
-<%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>--%>
-<%--                </ul>--%>
-<%--            </div>--%>
-                <%
-                    if ("main-web".equals(currentApp)) {
-                %>
-                <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
-                <%}%>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6">
+        <div class="logo-img"><a href="<%=internetWebSite%>"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64"></a>
+          <a href="<%=internetInbox%>"><p class="logo-img"><img src="<%=webrooth%>img/HALP-log.png" alt="HALP" width="235" height="64"></p></a></div>
+      </div>
+      <%--            <div class="col-xs-2 col-lg-6">--%>
+      <%--                <ul class="list-inline hidden-xs hidden-sm">--%>
+      <%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomin();">A-</a></li>--%>
+      <%--                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer" onclick="zoomout();">A+</a></li>--%>
+      <%--                </ul>--%>
+      <%--            </div>--%>
+      <div class="col-xs-12 col-lg-6 text-right">
+        <div class="gcse-search" style="width:50%;float:right;"></div>
+        <%
+          if ("main-web".equals(currentApp)) {
+        %>
+        <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
+        <%}%>
+      </div>
     </div>
+  </div>
 </header>
 <script type="text/javascript">
 
