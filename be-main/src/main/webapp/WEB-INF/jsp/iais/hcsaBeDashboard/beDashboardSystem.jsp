@@ -20,6 +20,7 @@
 <input type="hidden" name="ao1Val" value='${dashAo1CircleKpi}'/>
 <input type="hidden" name="ao2Val" value='${dashAo2CircleKpi}'/>
 <input type="hidden" name="ao3Val" value='${dashAo3CircleKpi}'/>
+<input type="hidden" name="dashSysStageVal" value=''/>
 
 <div class="main-content">
     <div class="row">
@@ -53,8 +54,8 @@
                         </div>
                         <div class="col-md-12 col-xs-12">
                             <div style="text-align:right;">
-                                <button class="btn btn-secondary" type="button" id="sysClearBtn" name="clearBtn">Clear</button>
-                                <button class="btn btn-primary" type="button" id="sysSearchBtn" name="searchBtn">Search</button>
+                                <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
+                                <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
                             </div>
                         </div>
                         <hr>
@@ -178,9 +179,8 @@
 
         $('#sysAsoCanvas').click(function () {
             showWaiting();
-            $("input[name='hcsaBeDashboardSwitchType']").val('sysdet');
-            var mainPoolForm = document.getElementById('beDashboardForm');
-            mainPoolForm.submit();
+            $('#switchAction').val('ASO');
+            intraDashboardSubmit('sysdet');
         });
 
         $('#sysClearBtn').click(function () {
@@ -196,9 +196,10 @@
         });
 
         $('#sysSearchBtn').click(function () {
-
+            showWaiting();
+            let dashSwitchActionValue = $('#switchAction').val();
+            intraDashboardSubmit(dashSwitchActionValue);
         });
-
     });
 
 
