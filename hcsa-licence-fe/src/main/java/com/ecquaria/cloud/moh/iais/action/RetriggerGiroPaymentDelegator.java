@@ -125,10 +125,10 @@ public class RetriggerGiroPaymentDelegator {
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
         }
-        if(!StringUtil.isEmpty(appType)){
-            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                requestForChangeService.svcDocToPresmise(appSubmissionDto);
-            }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            requestForChangeService.svcDocToPresmise(appSubmissionDto);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            requestForChangeService.svcDocToPrimaryForGiroDeduction(appSubmissionDto);
         }
         //set doc name
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
