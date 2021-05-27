@@ -554,6 +554,8 @@ public class CessationBeServiceImpl implements CessationBeService {
             appCessMiscDto.setReason(reason);
             appCessMiscDto.setPatNeedTrans(patNeedTrans);
             appCessMiscDto.setPatTransType(patientSelect);
+            appCessMiscDto.setTransferDetail(appCessationDto.getTransferDetail());
+            appCessMiscDto.setTransferredWhere(appCessationDto.getTransferredWhere());
             appCessMiscDto.setAppId(appId);
             appCessMiscDto.setAuditTrailDto(currentAuditTrailDto);
             //reason

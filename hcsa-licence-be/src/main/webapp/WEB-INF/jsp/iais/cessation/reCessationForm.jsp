@@ -134,7 +134,7 @@
                                                     </div>
                                                 </iais:value>
                                             </iais:row>
-                                            <div id="patYes" hidden>
+                                            <%--<div id="patYes" hidden>
                                                 <iais:row>
                                                     <iais:field width="7"
                                                                 value="Who will take over your patients' case records?" mandatory="true"/>
@@ -250,6 +250,18 @@
                                                                 class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
                                                     </div>
                                                     <span id="error_patNoConfirm" name="iaisErrorMsg" class="error-msg"></span>
+                                                </div>
+                                            </div>--%>
+                                            <div class="form-group" id="transferDetail" hidden>
+                                                <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
+                                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                                    <textarea name="transferDetail"  cols="30" rows="2" maxLength="1000" >${appCessHci.transferDetail}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="transferredWhere" hidden>
+                                                <label class="col-xs-12 col-md-4">Please state where the patient’s records will be transferred to and where the licensee will store the patients’ health records after cessation. </label>
+                                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                                    <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" >${appCessHci.transferredWhere}</textarea>
                                                 </div>
                                             </div>
                                         </iais:section>
@@ -390,7 +402,7 @@
         }
     }
 
-    function changePatient() {
+   /* function changePatient() {
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthersTakeOver").show();
             $("#patHciName").hide();
@@ -420,7 +432,7 @@
             $("#hciCodePat").hide();
             $("#hciAddressPat").hide();
         }
-    }
+    }*/
 
     function getHci(obj) {
         var value = $(obj).val();
@@ -470,25 +482,16 @@
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
-            $("#patNoConfirmID").hide();
+            $("#transferDetail").hide();
+            $("#transferredWhere").show();
         } else if ($('#radioNo').is(':checked')) {
-            $("#patNo").show();
-            $("#patYes").hide();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthersTakeOver").hide();
-            $("#patRegNo").hide();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
-            $("#hciNamePat").hide();
-            $("#hciCodePat").hide();
-            $("#hciAddressPat").hide();
-            $("#patNoConfirmID").show();
+            $("#transferDetail").show();
+            $("#transferredWhere").hide();
         }
     }
 
     $(document).ready(function () {
-        changePatient();
+        //changePatient();
         changeReason();
         changePatSelect();
     });

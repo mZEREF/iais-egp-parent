@@ -590,6 +590,8 @@ public class MohHcsaBeDashboardAjax {
                 appCessHciDto.setReason(reason);
                 appCessHciDto.setOtherReason(otherReason);
                 appCessHciDto.setEffectiveDate(effectiveDate);
+                appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
+                appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
                 Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
                 MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
                 Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
