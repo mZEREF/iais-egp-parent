@@ -9,63 +9,13 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.service.client.MsgTemplateMainClient" %>
-<%@ page import="java.util.List" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<%
-    String webroot = IaisEGPConstant.BE_CSS_ROOT;
-
-    String alertFlag = (String) ParamUtil.getSessionAttr(request, "AlERt__Msg_FLAg_attr");
-    if (alertFlag == null) {
-        MsgTemplateMainClient emc = SpringContextHelper.getContext().getBean(MsgTemplateMainClient.class);
-        List<MsgTemplateDto> msgTemplateDtoList = emc.getAlertMsgTemplate(AppConsts.DOMAIN_INTRANET).getEntity();
-        if (IaisCommonUtils.isEmpty(msgTemplateDtoList)) {
-            ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "noneed");
-        } else {
-            for (MsgTemplateDto mt : msgTemplateDtoList) {
-                String msgContent = mt.getMessageContent().replaceAll("\r", "");
-                msgContent = msgContent.replaceAll("\n", "");
-                msgContent = msgContent.replaceAll("'", "&apos;");
-                if (MsgTemplateConstants.MSG_TEMPLATE_BANNER_ALERT_BE.equals(mt.getId())) {
-                    ParamUtil.setSessionAttr(request, "bAnner_AlERt_Msg__atTR", msgContent);
-                } else if (MsgTemplateConstants.MSG_TEMPLATE_SCHEDULE_MAINTENANCE_BE.equals(mt.getId())) {
-                    ParamUtil.setSessionAttr(request, "schEdule_AlERt_Msg__atTR", msgContent);
-                }
-            }
-            ParamUtil.setSessionAttr(request, "AlERt__Msg_FLAg_attr", "fetched");
-        }
-    }
-%>
 <div class="main-content" style="min-height: 73vh;">
-    <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-    <div class="col-md-12">
-        <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-            <div class="dashalert alert-info dash-announce alertMaintainace">
-                <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-                <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-                <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-        </c:if>
-        <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-            <div class="dashalert alert-info dash-announce alertBanner">
-                <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-                <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-                <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
-            </div>
-        </c:if>
-    </div>
-    </c:if>
 
     <input type="hidden" name="overAllVal" value='${dashOverAllCircleKpi}'/>
     <input type="hidden" name="BLBVal" value='${dashOverAllCircleKpi}'/>
@@ -87,10 +37,10 @@
                         <div class="row">
                             <div class="col-md-4 col-xs-12">
                                 <a data-tab="#" href="javascript:;">
-                                    <div id="canvas-holder">
+                                    <div id="canvas-holder" class="cursor-default">
                                         <canvas id="overAllCanvas"></canvas>
                                     </div>
-                                    <p class="dashboard-txt main-chart-text"> Overall</p>
+                                    <p class="dashboard-txt main-chart-text cursor-default font-color-black"> Overall</p>
                                 </a>
                             </div>
                             <div class="col-md-8 col-xs-12">
@@ -109,6 +59,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12 col-xs-12">
+                                <div style="text-align:right;">
+                                    <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
+                                    <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
+                                </div>
+                            </div>
+                            <br/>
                             <hr>
                             <div class="col-xs-12">
                                 <div class="dashboard-chart">
@@ -116,10 +73,10 @@
                                         <div class="dashboard-tile-item">
                                             <div class="dashboard-tile">
                                                 <a data-tab="#" href="javascript:;">
-                                                    <div>
+                                                    <div class="cursor-default">
                                                         <canvas id="${svcOp.value}Canvas"></canvas>
                                                     </div>
-                                                    <p align="center" class="font-color-black">${svcOp.text}</p>
+                                                    <p align="center" class="font-color-black cursor-default">${svcOp.text}</p>
                                                 </a>
                                             </div>
                                         </div>
@@ -239,6 +196,14 @@
         <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
             initChart('${svcOp.value}');
         </c:forEach>
+
+        $('#sysClearBtn').click(function () {
+            doClear();
+        });
+
+        $('#sysSearchBtn').click(function () {
+
+        });
     });
 
     var displayAppDetail = function(obj){
