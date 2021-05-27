@@ -523,14 +523,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
                 String applicationNo = applicationDto.getApplicationNo();
-                if(appFeeDetails!=null){
-                    for(AppFeeDetailsDto appFeeDetailsDto : appFeeDetails){
-                        if(applicationNo.equals(appFeeDetailsDto.getApplicationNo())){
-                            appFeeDetailsDtos.add(appFeeDetailsDto);
+                if(groupId.equals(appGrpId)){
+                    if(appFeeDetails!=null){
+                        for(AppFeeDetailsDto appFeeDetailsDto : appFeeDetails){
+                            if(applicationNo.equals(appFeeDetailsDto.getApplicationNo())){
+                                appFeeDetailsDtos.add(appFeeDetailsDto);
+                            }
                         }
                     }
-                }
-                if(groupId.equals(appGrpId)){
                     applicationDtos.add(applicationDto);
                     for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
                         String applicationId = appPremisesCorrelationDto.getApplicationId();
