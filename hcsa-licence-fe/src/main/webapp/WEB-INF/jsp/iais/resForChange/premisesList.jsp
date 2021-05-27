@@ -23,7 +23,7 @@
     <input type="hidden" name="crud_action_type" id="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
 
-  <div class="tab-search col-xs-11" style="margin-left: 10%;margin-top:1%">
+  <div class="container" style="margin-top:1%">
     <div class="form-group">
       <label class="control-label" for="premType">Type</label>
       <div class="col-xs-12 col-md-8 col-lg-9" id="premTypeDiv">
@@ -39,7 +39,7 @@
 
   </div>
 
-  <div class="row col-xs-11 " style="margin-left: 10%">
+  <div class="container" >
     <div class="col-xs-12">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
         <div class="table-responsive">
