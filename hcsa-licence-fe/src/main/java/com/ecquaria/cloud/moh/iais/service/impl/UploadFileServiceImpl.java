@@ -445,16 +445,23 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
 
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
+            Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=IaisCommonUtils.genNewHashSet();
 
             List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
 
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
             List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
+            Set<AppPremEventPeriodDto> appPremEventPeriodDtoSet=IaisCommonUtils.genNewHashSet();
+
             List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
+            Set<AppPremOpenPeriodDto> appPremOpenPeriodDtoSet=IaisCommonUtils.genNewHashSet();
+
             List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
             List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
             List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=IaisCommonUtils.genNewArrayList();
+            Set<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoSet=IaisCommonUtils.genNewHashSet();
+
             List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
             List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
             groupDtos.add(every);
@@ -484,20 +491,20 @@ public class UploadFileServiceImpl implements UploadFileService {
                     for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                         String premId = appPremPhOpenPeriodDto.getPremId();
                         if(appliGrpPremisesDtoId.equals(premId)){
-                            appPremPhOpenPeriodDtoList.add(appPremPhOpenPeriodDto);
+                            appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
                         }
                     }
                     for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
                         String premisesId = appPremisesOperationalUnitDto.getPremisesId();
                         if(appliGrpPremisesDtoId.equals(premisesId)){
-                            appPremisesOperationalUnitDtoList.add(appPremisesOperationalUnitDto);
+                            appPremisesOperationalUnitDtoSet.add(appPremisesOperationalUnitDto);
                         }
                     }
                     if(appPremEventPeriods!=null){
                         for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
                             String appGrpPremId = appPremEventPeriodDto.getAppGrpPremId();
                             if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                                appPremEventPeriodDtoList.add(appPremEventPeriodDto);
+                                appPremEventPeriodDtoSet.add(appPremEventPeriodDto);
                             }
                         }
                     }
@@ -505,7 +512,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                       for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
                           String appGrpPremId = appPremOpenPeriodDto.getAppGrpPremId();
                           if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                              appPremOpenPeriodDtoList.add(appPremOpenPeriodDto);
+                              appPremOpenPeriodDtoSet.add(appPremOpenPeriodDto);
                           }
                       }
                   }
@@ -645,6 +652,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                 }
             }
+
+            appPremEventPeriodDtoList.addAll(appPremEventPeriodDtoSet);
+            appPremisesOperationalUnitDtoList.addAll(appPremisesOperationalUnitDtoSet);
+            appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
+            appPremOpenPeriodDtoList.addAll(appPremOpenPeriodDtoSet);
 
             applicationListFileDto.setApplicationGroup(groupDtos);
             applicationListFileDto.setApplication( applicationDtos);
