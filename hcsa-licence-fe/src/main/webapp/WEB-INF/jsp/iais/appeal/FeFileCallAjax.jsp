@@ -121,7 +121,6 @@
         return "Y";
     }
     function cloneUploadFile() {
-        alert("Err")
         var fileId= '#selectedFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
