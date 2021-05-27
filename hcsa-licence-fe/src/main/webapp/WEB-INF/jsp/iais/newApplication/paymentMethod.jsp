@@ -2,37 +2,26 @@
 <h2>Payment Method</h2>
 <input type="hidden" name="reloadPayMethod" value="${reloadPaymentMethod}"/>
 <div class="col-xs-12">
-    <div class="col-xs-3">
+    <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
         <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE002">
         <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE002"/></label>
-    </div>
-    <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
-        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
-    </div>
-    <c:if test="${empty RetriggerGiro && IsGiroAcc}">
-        <div class="col-xs-3">
-            <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
-            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
-        </div>
-    </c:if>
-
-
-</div>
-<div class="col-xs-12">
-    <div class="col-xs-3">
-        <%--<img src="/hcsa-licence-web/img/Mastercard.svg" width="66" height="25" alt="GIRO">--%>
+        <br>
         <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="CARD">
         &nbsp;
         <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
         <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="CARD">
     </div>
-    <div class="col-xs-2">
+    <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
+        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
+        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
+        <br>
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-xs-3">
-                <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
+            <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
+            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
+            <br>
             <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO">
         </div>
     </c:if>
