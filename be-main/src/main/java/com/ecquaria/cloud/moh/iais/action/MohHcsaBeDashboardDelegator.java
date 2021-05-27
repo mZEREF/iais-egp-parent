@@ -420,12 +420,15 @@ public class MohHcsaBeDashboardDelegator {
                     String svcCodeOpVal = selectOption.getValue();
                     for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
                         String svcCode = dashStageCircleKpiDto.getSvcCode();
+                        String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
                         if(!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
-                            String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
                             StringBuilder stringBuilder = new StringBuilder("dash");
                             stringBuilder.append(svcCode);
                             stringBuilder.append("CircleKpi");
                             ParamUtil.setSessionAttr(request, stringBuilder.toString(), jsonData);
+                        }
+                        if(StringUtil.isEmpty(svcCode)) {
+                            ParamUtil.setSessionAttr(request, "dashAllSvcCircleKpi", jsonData);
                         }
                     }
                 }
