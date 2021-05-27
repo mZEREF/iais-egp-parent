@@ -1005,7 +1005,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("licensee_name", licenseeDto.getName());
                             String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                             emailMap.put("address", address);
-                            if(!autoRfc){
+                            if(!autoRfc||application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)||application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
                                 emailMap.put("already", "already");
                                 String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                                 emailMap.put("systemLink", loginUrl);
