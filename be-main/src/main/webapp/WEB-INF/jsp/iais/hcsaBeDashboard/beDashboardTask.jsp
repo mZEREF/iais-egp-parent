@@ -110,7 +110,7 @@
                     <iais:field value="Application Type"/>
                     <iais:value width="18">
                       <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
-                                   firstOption="Please Select"
+                                   firstOption="Please Select" needSort="true"
                                    value="${dashSearchParam.filters['application_type']}"></iais:select>
                     </iais:value>
                   </iais:row>

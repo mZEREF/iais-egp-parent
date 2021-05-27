@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
@@ -832,8 +833,6 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         if(searchResult != null) {
             List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchResult.getRows();
             if(!IaisCommonUtils.isEmpty(dashAllActionAppQueryDtos)) {
-                //set all size
-                dashAllCircleKpiDto.setDashStageCount(dashAllActionAppQueryDtos.size());
                 //set color count by stage and kpi
                 for(DashAllActionAppQueryDto dashAllActionAppQueryDto : dashAllActionAppQueryDtos) {
                     String stageId = dashAllActionAppQueryDto.getStageId();
@@ -900,6 +899,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                         dashAllCircleKpiDto.setDashRedCount(allRedCount);
                     }
                 }
+                int allStageCount = allBlueCount + allAmberCount + allRedCount;
+                dashAllCircleKpiDto.setDashStageCount(allStageCount);
                 dashStageCircleKpiDtos.add(dashAllCircleKpiDto);
             }
         }
@@ -944,6 +945,105 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashSystemDetail")
+    public SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailQueryResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashAllGrpAppResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailOtherData(SearchResult<DashAllGrpAppQueryDto> searchResult) {
+        //Sets the description of appGroup's quantity
+        for (DashAllGrpAppQueryDto dashAllGrpAppQueryDto : searchResult.getRows()) {
+            if (1 == dashAllGrpAppQueryDto.getAppCount()) {
+                dashAllGrpAppQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
+            } else if (1 < dashAllGrpAppQueryDto.getAppCount()) {
+                dashAllGrpAppQueryDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
+            } else {
+                dashAllGrpAppQueryDto.setSubmissionType("-");
+            }
+            //set max update
+            Date maxUpdateDate = getMaxUpdateByAppGroup(dashAllGrpAppQueryDto.getId());
+            dashAllGrpAppQueryDto.setGroupUpDt(maxUpdateDate);
+        }
+        return searchResult;
+    }
+
+    @Override
+    public List<DashStageCircleKpiDto> getDashStageSvcKpiShow(SearchResult<DashAllActionAppQueryDto> searchCountResult, List<SelectOption> serviceOption) {
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = IaisCommonUtils.genNewArrayList();
+        //init dashStageCircleKpiDtos
+        dashStageCircleKpiDtos = initDashStageSvcKpiShow(dashStageCircleKpiDtos, serviceOption);
+        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos) && searchCountResult != null) {
+            List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchCountResult.getRows();
+            if(!IaisCommonUtils.isEmpty(dashAllActionAppQueryDtos)) {
+                //create return val
+                List<DashStageCircleKpiDto> dashStageCircleKpiDtoList = IaisCommonUtils.genNewArrayList();
+                //set data
+                for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                    for(DashAllActionAppQueryDto dashAllActionAppQueryDto : dashAllActionAppQueryDtos) {
+                        dashStageCircleKpiDto = setDashStageSvcKpiData(dashStageCircleKpiDto, dashAllActionAppQueryDto);
+                    }
+                    dashStageCircleKpiDtoList.add(dashStageCircleKpiDto);
+                }
+                dashStageCircleKpiDtoList = addSaveAllCountCircleKpiDto(dashStageCircleKpiDtoList);
+                return dashStageCircleKpiDtoList;
+            }
+        }
+
+        return dashStageCircleKpiDtos;
+    }
+
+    private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {
+        DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
+        int allBlueCount = dashStageCircleKpiAllDto.getDashBlueCount();
+        int allAmberCount = dashStageCircleKpiAllDto.getDashAmberCount();
+        int allRedCount = dashStageCircleKpiAllDto.getDashRedCount();
+        for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtoList) {
+            if(dashStageCircleKpiDto != null) {
+                allBlueCount = allBlueCount + dashStageCircleKpiDto.getDashBlueCount();
+                allAmberCount = allAmberCount + dashStageCircleKpiDto.getDashAmberCount();
+                allRedCount = allRedCount + dashStageCircleKpiDto.getDashRedCount();
+                dashStageCircleKpiAllDto.setDashBlueCount(allBlueCount);
+                dashStageCircleKpiAllDto.setDashAmberCount(allAmberCount);
+                dashStageCircleKpiAllDto.setDashRedCount(allRedCount);
+            }
+        }
+        int allStageCount = allBlueCount + allAmberCount + allRedCount;
+        dashStageCircleKpiAllDto.setDashStageCount(allStageCount);
+        dashStageCircleKpiDtoList.add(dashStageCircleKpiAllDto);
+        return dashStageCircleKpiDtoList;
+    }
+
+    private DashStageCircleKpiDto setDashStageSvcKpiData(DashStageCircleKpiDto dashStageCircleKpiDto, DashAllActionAppQueryDto dashAllActionAppQueryDto) {
+        if(dashAllActionAppQueryDto != null && dashStageCircleKpiDto != null) {
+            String svcCodeOpVal = dashStageCircleKpiDto.getSvcCode();
+            String svcCode = dashAllActionAppQueryDto.getSvcCode();
+            //check svc code
+            if(!StringUtil.isEmpty(svcCodeOpVal)) {
+                if(svcCodeOpVal.equals(svcCode)) {
+                    dashStageCircleKpiDto = setKpiCountShowDataByAllActionApp(dashStageCircleKpiDto, dashAllActionAppQueryDto);
+                }
+            }
+        }
+        return dashStageCircleKpiDto;
+    }
+
+    private List<DashStageCircleKpiDto> initDashStageSvcKpiShow(List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
+        if(!IaisCommonUtils.isEmpty(serviceOption)) {
+            for(SelectOption selectOption : serviceOption) {
+                if(selectOption != null) {
+                    String svcCode = selectOption.getValue();
+                    DashStageCircleKpiDto dashStageCircleKpiDto = new DashStageCircleKpiDto();
+                    dashStageCircleKpiDto.setSvcCode(svcCode);
+                    dashStageCircleKpiDtos.add(dashStageCircleKpiDto);
+                }
+            }
+        }
+
+        return dashStageCircleKpiDtos;
+    }
+
+    @Override
     public SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes) {
         if(services != null && services.length > 0) {
             String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
@@ -960,6 +1060,29 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return searchParam;
+    }
+
+    @Override
+    public String getStageIdByJspClickVal(String dashSysStageVal) {
+        String stageId = "";
+        if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_ASO.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_ASO;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_PSO.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_PSO;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_PRE.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_PRE;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_INS.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_INP;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_POT.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_POT;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_AO1.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_AO1;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_AO2.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_AO2;
+        } else if(BeDashboardConstant.BE_DASH_SYSTEM_SWITCH_AO3.equals(dashSysStageVal)) {
+            stageId = HcsaConsts.ROUTING_STAGE_AO3;
+        }
+        return stageId;
     }
 
     private List<SelectOption> getRenewAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {

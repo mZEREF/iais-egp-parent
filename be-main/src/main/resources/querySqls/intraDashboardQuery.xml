@@ -486,7 +486,7 @@
 
     <sql key = "dashSystemDetail"  remarks = "System admin dashboard Detail Search">
         <![CDATA[
-             SELECT viewApp.APP_GRP_ID, viewApp.wrk_grp_id, viewApp.GROUP_NO ,viewApp.PMT_STATUS ,viewApp.cou ,viewApp.APP_TYPE ,
+             SELECT viewApp.APP_GRP_ID as ID, viewApp.wrk_grp_id, viewApp.GROUP_NO ,viewApp.PMT_STATUS ,viewApp.cou ,viewApp.APP_TYPE ,
             viewApp.ROLE_ID ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.UPDATED_DT ,viewApp.SUBMIT_DT ,
             viewApp.ACTION_BY
             FROM DASHBOARD_ALL_GRP_APPLICATIONS_VIEW viewApp
@@ -502,9 +502,10 @@
 
     <sql key = "dashSystemDetailAjax"  remarks = "System admin dashboard Detail Drop Search">
         <![CDATA[
-            SELECT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE ,viewApp.STATUS ,viewApp.SERVICE_ID ,viewApp.APP_TYPE ,
-            viewApp.APPLICATION_ID ,viewApp.APPLICATION_NO ,viewApp.KPI ,viewApp.RMD_THRESHOLD ,viewApp.ROLE_ID ,
-            viewApp.SLA_DAYS ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.ACTION_BY ,viewApp.act_time,viewApp.user_id,viewApp.total_sla_days,viewApp.APP_GRP_ID
+            SELECT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE, viewApp.STATUS, viewApp.SERVICE_ID, viewApp.APP_TYPE,
+            viewApp.APPLICATION_ID, viewApp.APPLICATION_NO, isnull (viewApp.KPI,0) as KPI, isnull (viewApp.RMD_THRESHOLD,0) as RMD_THRESHOLD,
+            viewApp.ROLE_ID, isnull (viewApp.SLA_DAYS,0) as SLA_DAYS, viewApp.STAGE_ID, viewApp.SUB_STAGE, viewApp.ACTION_BY, viewApp.act_time,
+            viewApp.user_id, isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
             FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW viewApp
             WHERE 1 = 1
             <#if application_types??> and ${application_types}</#if>
