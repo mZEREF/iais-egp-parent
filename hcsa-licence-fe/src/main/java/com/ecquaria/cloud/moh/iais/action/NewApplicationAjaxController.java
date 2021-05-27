@@ -151,15 +151,15 @@ public class NewApplicationAjaxController {
             String width = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 className = "onSite";
-                width = "width: 20%;";
+                width = "col-md-3";
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
-                width = "width: 25%;";
+                width = "col-md-4";
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
                 className = "offSite";
-                width = "width: 20%;";
+                width = "col-md-3";
             }
-            premTypeBuffer.append("<div class=\"col-xs-12 \" style=\"").append(width).append("\">");
+            premTypeBuffer.append("<div class=\"col-xs-12 ").append(width).append("\">");
             String premTypeTooltip = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK019");

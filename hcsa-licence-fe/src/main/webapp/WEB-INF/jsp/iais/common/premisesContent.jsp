@@ -114,7 +114,7 @@
 
             <div class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-xs-4">
+                    <div class="col-xs-12">
                         <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-6 text-right">
@@ -190,11 +190,11 @@
                                 <c:set var="className" value="easMts" />
                             </c:when>
                         </c:choose>
-                        <div class="col-xs-12"
-                             <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
-                             <c:if test="${'conveyance'==className}">style="width: 25%;"</c:if>
-                             <c:if test="${'offSite'==className}">style="width: 20%;"</c:if>
-                             <c:if test="${'easMts'==className}">style="width: 25%;"</c:if> >
+                        <div class="col-xs-12
+                             <c:if test="${'onSite'==className}">col-md-3"</c:if>
+                             <c:if test="${'conveyance'==className}">col-md-4"</c:if>
+                             <c:if test="${'offSite'==className}">col-md-3"</c:if>
+                             <c:if test="${'easMts'==className}">col-md-4"</c:if> >
                             <c:choose>
                                 <c:when test="${premType == onSite}">
                                     <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
