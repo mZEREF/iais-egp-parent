@@ -190,6 +190,7 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
         bpc.request.getSession().removeAttribute("declaration_page_is");
+        ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
