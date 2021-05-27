@@ -133,7 +133,8 @@
     }
     function deleteAmendDraft() {
         $('#isNeedDelete').val('delete');
-        doLicAmend();
+        guideSubmit("amend1_1","main");
+        // doLicAmend();
     }
 
     function guideSubmit(guideAction,toWhere){
@@ -194,10 +195,22 @@
         guideSubmit("amend4_1","main");
     });
 
+    $("#submitDataMoh").click(function(){
+        guideSubmit("subDate","main");
+    });
+
     $("#amendLicence4_2").click(function(){
         guideSubmit("amend4_2","main");
     });
     $("#updateAdminPersonnel").click(function(){
         guideSubmit("upAdmin","main");
     });
+
+    function submitDataMoh(){
+        if ($('#submitDateMohLab').is(':checked')){
+            guideSubmit("submieDateMoh","second");
+        }else{
+            console.log("checkbox is not check")
+        }
+    }
 </script>

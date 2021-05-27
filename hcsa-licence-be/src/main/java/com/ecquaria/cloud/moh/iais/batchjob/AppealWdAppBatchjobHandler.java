@@ -136,8 +136,11 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                     fee = applicationDtoList2.get(0).getReturnFee();
                                 }
                                 try {
-                                    AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
-                                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                                    boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                    if (withdrawReturnFee){
+                                        AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                                        applicationService.saveAppReturnFee(appReturnFeeDto);
+                                    }
                                 }catch (Exception e){
                                     log.error("Withdraw application return is failed");
                                     log.error(e.getMessage(), e);
@@ -232,7 +235,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
 
     private void createTaskAndHistory( List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null);
         if(taskHistoryDto != null){
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();

@@ -21,6 +21,12 @@
     .radio-disabled{
         border-color: #999999 !important;
     }
+    input.allDay {
+        -ms-transform: scale(2,2); /* IE */
+        -moz-transform: scale(2,2); /* FireFox */
+        -webkit-transform: scale(2,2); /* Safari and Chrome */
+        -o-transform: scale(2,2); /* Opera */
+    }
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -46,6 +52,7 @@
             </c:otherwise>
         </c:choose>
         <c:set var="premValue" value="${status.index}"/>
+        <input hidden class="premiseIndex" value="${premValue}">
         <c:choose>
             <c:when test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size() > 0}">
                 <input class="opLength" type="hidden" name="opLength" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()}"/>
@@ -107,7 +114,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-4">
-                        <strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
+                        <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-6 text-right">
                         <c:choose>
@@ -131,38 +138,37 @@
                 </div>
             </div>
             <c:if test="${requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType}">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-xs-12">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-xs-12">
                         <span class="premise-type ack-font-16">
                             <strong>
                               <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="On-site: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                               <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Conveyance: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                               <c:if test="${'OFFSITE' == appGrpPremisesDto.premisesType}">
-                                  <c:out value="Off-site: "/>
+                                  <c:out value="Address: "/>
                               </c:if>
                             </strong>
                         </span>
                             <span class="premise-address ack-font-16">
                             <c:out value="${appGrpPremisesDto.address}"/>
                         </span>
-                    </div>
-                    <div class="col-xs-12 ack-font-16">
-                        <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
-                            <strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span>
-                        </c:if>
+                        </div>
+                        <div class="col-xs-12 ack-font-16">
+                            <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
+                                <strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span>
+                            </c:if>
+                        </div>
                     </div>
                 </div>
-            </div>
             </c:if>
             <div class="form-horizontal">
-                <%--<div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if> >--%>
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType }">hidden</c:if> >
-                    <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
+                    <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your mode of service delivery ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
                     <c:forEach var="premisesType" items="${premisesType}">
@@ -177,10 +183,22 @@
                                 <c:set var="className" value="offSite" />
                             </c:when>
                         </c:choose>
-                        <div class="col-xs-5"
-                             <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
-                             <c:if test="${'conveyance'==className}">style="width: 27%;"</c:if>
-                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if> >
+                        <div class="col-xs-12
+                             <c:if test="${'onSite'==className}">col-md-3"</c:if>
+                             <c:if test="${'conveyance'==className}">col-md-4"</c:if>
+                             <c:if test="${'offSite'==className}">col-md-3"</c:if>
+                             <c:if test="${'easMts'==className}">col-md-4"</c:if> >
+                            <c:choose>
+                                <c:when test="${premisesType == 'ONSITE'}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premisesType == 'CONVEYANCE'}">
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                                <c:when test="${premisesType == 'OFFSITE'}">
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK020"></iais:message>&lt;/p&gt;">i</a>
+                                </c:when>
+                            </c:choose>
                             <div class="form-check">
                                 <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
@@ -190,16 +208,19 @@
                                 </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premisesType == onSite}">
-                                        <c:out value="On-site" /><br/>
-                                        <span>(at a fixed address)</span>
+                                        <c:out value="Premises" />
+                                        <br/>
+                                        <span>(at fixed address)</span>
                                     </c:if>
                                     <c:if test="${premisesType == conv}">
-                                        <c:out value="Conveyance" /><br/>
-                                        <span>(in a mobile clinic / ambulance)</span>
+                                        <c:out value="Conveyance" />
+                                        <br/>
+                                        <span>(registered vehicle, aircraft, vessel or train)</span>
                                     </c:if>
                                     <c:if test="${premisesType == offSite}">
-                                        <c:out value="Off-site" /><br/>
-                                        <span>(as tele-medicine)</span>
+                                        <c:out value="Off-site" />
+                                        <br/>
+                                        <span>(remotely/non-fixed location)</span>
                                     </c:if>
                                 </label>
                             </div>
@@ -213,7 +234,7 @@
                     </div>
                 </div>
                 <iais:row cssClass="onSiteSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == onSite}">
@@ -226,7 +247,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="conveyanceSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == conv}">
@@ -239,7 +260,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="offSiteSelect hidden">
-                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
                     <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == offSite}">
@@ -421,7 +442,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
                     <c:set var="weeklyList" value="${appGrpPremisesDto.weeklyDtoList}"/>
@@ -449,7 +470,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -522,7 +543,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -574,7 +595,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -605,7 +626,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -678,7 +699,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -724,7 +745,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -819,7 +840,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -887,42 +908,42 @@
                         </iais:value>
                     </iais:row>
                     <div class="operationDivGroup">
-                    <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
-                        <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
-                            <div class="operationDiv">
-                                <iais:row>
-                                    <iais:field value="" width="12"/>
-                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <div class="row">
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_opConvFloorNo${premValue}${opStat.index}"></span>
-                                            </iais:value>
-                                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${premValue}${opStat.index}"></span>
-                                            </iais:value>
+                        <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                            <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                                <div class="operationDiv">
+                                    <iais:row>
+                                        <iais:field value="" width="12"/>
+                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                            <div class="row">
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}conveyanceFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opConvFloorNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}conveyanceUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opConvUnitNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                            </div>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${premValue}${opStat.index}"></span>
+                                        </iais:value>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                         </div>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${premValue}${opStat.index}"></span>
-                                    </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                    </div>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
-                                    </div>
-                                </iais:row>
-                            </div>
-                        </c:forEach>
-                    </c:if>
-                    <!--prem operational -->
-                    <iais:row cssClass="addOpDiv">
-                        <iais:field value="" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
-                        </iais:value>
-                    </iais:row>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                            <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                        </div>
+                                    </iais:row>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <!--prem operational -->
+                        <iais:row cssClass="addOpDiv">
+                            <iais:field value="" width="12"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            </iais:value>
+                        </iais:row>
                     </div>
                     <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
@@ -953,7 +974,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
 
@@ -982,7 +1003,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1055,7 +1076,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1107,7 +1128,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1138,7 +1159,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1211,7 +1232,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1257,7 +1278,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1352,7 +1373,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1414,42 +1435,42 @@
                         </iais:value>
                     </iais:row>
                     <div class="operationDivGroup">
-                    <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
-                        <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
-                            <div class="operationDiv">
-                                <iais:row>
-                                    <iais:field value="" width="12"/>
-                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <div class="row">
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
-                                            </iais:value>
-                                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
-                                            </iais:value>
+                        <c:if test="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}">
+                            <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                                <div class="operationDiv">
+                                    <iais:row>
+                                        <iais:field value="" width="12"/>
+                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                            <div class="row">
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}offSiteFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                                <iais:value cssClass="col-xs-12 col-md-5 ">
+                                                    <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}offSiteUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
+                                                    <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                                </iais:value>
+                                            </div>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                        </iais:value>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                         </div>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
-                                    </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
-                                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                    </div>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
-                                    </div>
-                                </iais:row>
-                            </div>
-                        </c:forEach>
-                    </c:if>
-                    <!--prem operational -->
-                    <iais:row cssClass="addOpDiv">
-                        <iais:field value="" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
-                        </iais:value>
-                    </iais:row>
+                                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                            <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                        </div>
+                                    </iais:row>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <!--prem operational -->
+                        <iais:row cssClass="addOpDiv">
+                            <iais:field value="" width="12"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            </iais:value>
+                        </iais:row>
                     </div>
                     <iais:row>
                         <iais:field value="Street Name " mandatory="true" width="10"/>
@@ -1480,7 +1501,7 @@
                             <label class="control-label">End</label>
                         </div>
                         <div class="col-md-2 col-xs-2">
-                            <label class="control-label">All day</label>
+                            <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
 
@@ -1509,7 +1530,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1582,7 +1603,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1634,7 +1655,7 @@
 
                         <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= weeklyCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addWeekly" style="text-decoration:none;">+ Add Weekly</a>
+                                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1665,7 +1686,7 @@
                                             </div>
                                             <div class="col-md-3 col-xs-3">
                                                 <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
                                                     <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1738,7 +1759,7 @@
                                         </div>
                                         <div class="col-md-3 col-xs-3">
                                             <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
                                                 <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
@@ -1784,7 +1805,7 @@
 
                         <div class="form-group addPhDiv <c:if test="${phList.size() >= phCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addPubHolDay" style="text-decoration:none;">+ Add PH</a>
+                                <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1879,7 +1900,7 @@
 
                         <div class="form-group addEventDiv <c:if test="${eventList.size() >= eventCount}">hidden</c:if>">
                             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                                <a class="addEvent" style="text-decoration:none;">+ Add</a>
                             </iais:value>
                             <iais:value cssClass="col-xs-8 col-sm-4 col-md-8">
 
@@ -1939,7 +1960,7 @@
         });
     }
 
-  var preperChange =  function(){
+    var preperChange =  function(){
         if($("select[name='onSiteAddressType']").val()=='ADDTY001'){
             if($(this).parent().parent().next().children("label").children().length<1){
                 $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");

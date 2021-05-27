@@ -9,8 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
-                            by Licence No. or Part of:</label>
+                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by Licence No.</label>
                         <div class="col-xs-9 col-md-9">
                             <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
                                    value="${param.licNoPath}">
@@ -118,7 +117,7 @@
                                              value="Licence No." style="width:15%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type" style="width:12%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="LIC_STATUS_DESC" value="Status" style="width:10%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="address" value="Premises" style="width:22%;" isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="address" value="Mode of Service Delivery" style="width:22%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
                                              value="Start Date" style="width:13%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
@@ -151,17 +150,9 @@
                                         <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${licenceQuery.status == 'LICEST001' || licenceQuery.status == 'LICEST007'}">
-                                                <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
-                                                <input type="hidden" name="licenId${status.index}"
-                                                       value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <p href="#">${licenceQuery.licenceNo}</p>
-                                                <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                        <input type="hidden" name="licenId${status.index}"
+                                               value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -172,7 +163,7 @@
                                         <p style="margin-right: 26px;"><iais:code code="${licenceQuery.status}"/></p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                        <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                                         <c:choose>
                                             <c:when test="${licenceQuery.premisesDtoList.size() == 1}">
                                                 <P>${licenceQuery.premisesDtoList[0]}</P>

@@ -235,7 +235,7 @@
                                                         <table class="table">
                                                             <thead >
                                                             <tr >
-                                                                <th  style="text-align: center">Premises</th>
+                                                                <th  style="text-align: center">Mode of Service Delivery</th>
                                                                 <th  style="text-align: center">Service / Granular Service</th>
                                                                 <th  style="text-align: center">Clinical Governance Officers</th>
                                                             </tr>

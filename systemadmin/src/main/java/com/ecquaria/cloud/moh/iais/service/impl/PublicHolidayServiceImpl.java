@@ -100,7 +100,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
         } else {
             List<PublicHolidayDto> newPubHolidays = IaisCommonUtils.genNewArrayList();
             for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
-                PublicHolidayDto phDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);//NOSONAR
+                PublicHolidayDto phDto = repeatPubHoliday(allActivePubHolDays, publicHolidayDto);
                 if(phDto != null){
                     newPubHolidays.add(phDto);
                 } else if (phDto == null && publicHolidayDto != null) {
@@ -114,7 +114,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     @Override
     public List<String> getDuplicateDateStr(List<PublicHolidayDto> duplicateDates) {
         List<String> duplicateDateStrList = IaisCommonUtils.genNewArrayList();
-        for(int i = duplicateDates.size() - 1; i >= 0; i--){//NOSONAR
+        for(int i = duplicateDates.size() - 1; i >= 0; i--){
             PublicHolidayDto publicHolidayDto = duplicateDates.get(i);
             if(publicHolidayDto != null){
                 Date date = publicHolidayDto.getFromDate();
@@ -136,7 +136,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
             } else {
                 return null;
             }
-            for(PublicHolidayDto pubHolDto : allActivePubHolDays){//NOSONAR
+            for(PublicHolidayDto pubHolDto : allActivePubHolDays){
                 Date fromDate = pubHolDto.getFromDate();
                 String fromDateStr = "";
                 if(fromDate != null){

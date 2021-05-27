@@ -1,6 +1,6 @@
 <div class="form-check-gp">
     <p class="form-check-title">Please select the personnel to amend his/her contact information</p>
-    <div class="form-check-label" style="padding-bottom:67px;width: 500px;">
+    <div class="form-check-label" style="padding-bottom:67px;width: 50%;">
         <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}" firstOption="Please Select"/>
     </div>
     <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
@@ -26,9 +26,14 @@
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
                             <tr>
-                                <td>${pool.svcName}</td>
-                                <td>${pool.licenceNo}</td>
                                 <td>
+                                    <p class="visible-xs visible-sm table-row-title">Type</p>
+                                        ${pool.svcName}</td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                        ${pool.licenceNo}</td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Role</p>
                                     <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
                                         <c:choose>
                                             <c:when test="${pool.roles.size() == 1}">

@@ -70,7 +70,7 @@
                               <table class="table discipline-table">
                                 <thead>
                                 <tr>
-                                  <th>Premises</th>
+                                  <th>Mode of Service Delivery</th>
                                   <th>${svcScopePageName}</th>
                                   <th>Clinical Governance Officers</th>
                                 </tr>
@@ -84,7 +84,7 @@
                                     <tr>
                                       <c:if test="${status.first}">
                                         <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%" class="premAddress">
-                                          <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                          <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                                           <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>
                                         </td>

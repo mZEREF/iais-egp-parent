@@ -42,7 +42,7 @@
                       <div class="panel panel-default">
                         <div class="panel-heading" id="headingPremise" role="tab">
                           <h4 class="panel-title"><a  class="collapsed" role="button" data-toggle="collapse" href="#collapsePremise"
-                                                      aria-expanded="true" aria-controls="collapsePremise">Premises</a>
+                                                      aria-expanded="true" aria-controls="collapsePremise">Mode of Service Delivery</a>
                           </h4>
                         </div>
                         <div class="panel-collapse collapse" id="collapsePremise" role="tabpanel"
@@ -62,22 +62,22 @@
                                 <div class="preview-info">
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <label>Premises ${status.index+1} </label>
+                                      <label>Mode of Service Delivery ${status.index+1} </label>
                                     </div>
                                   </div>
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      Premises Type
+                                      Mode of Service Delivery
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
                                           <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
-                                            Off-site
+                                          Off-site
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
-                                            On-site
+                                            Premises
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
                                             Conveyance
@@ -89,7 +89,7 @@
                                              Off-site
                                            </c:if>
                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">
-                                           On-site
+                                           Premises
                                          </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">
                                             Conveyance
@@ -105,14 +105,14 @@
                                         Fire Safety & Shelter Bureau Ref. No.
                                       </div>
                                       <div class="col-md-6">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                           <span class="newVal " attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
-                                        </div>
-                                        <div class="col-md-6">
+                                          <br>
                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}" style="display: none">
                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"/>
                                           </span>
                                         </div>
+
                                       </div>
                                     </div>
                                     <div class="row">
@@ -161,14 +161,13 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                      <div class="col-md-6">
+                                      <div class="col-md-12">
                                         <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
+                                        <br>
+                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
+                                              style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></span>
                                       </div>
-                                      <div class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
-                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></span>
 
-                                      </div>
                                     </div>
                                   </div>
                                   <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
@@ -193,7 +192,7 @@
                                       <a class="btn-tooltip styleguide-tooltip" id="addressClick" <c:if test="${empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
                                       <div  class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
-                                          <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
+                                          <p>The address of the mode of service delivery keyed in by applicant is currently used by another licensee</p>
                                           <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
@@ -334,15 +333,10 @@
                                       Street Name
                                     </div>
                                     <div class="col-md-6">
-                                      <div class="col-md-6">
-                                             <span class="newVal "
-                                                   attr="${appGrpPremDto.streetName}"><c:out
-                                                     value="${appGrpPremDto.streetName}"/></span>
-
-                                      </div>
-                                      <div class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"
-                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"/></span>
+                                      <div class="col-md-12">
+                                         <span class="newVal " attr="${appGrpPremDto.streetName}">${appGrpPremDto.streetName}</span>
+                                         <br>
+                                         <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}</span>
                                       </div>
                                     </div>
 
@@ -352,12 +346,13 @@
                                       Building Name
                                     </div>
                                     <div class="col-md-6">
-                                      <div class="col-md-6">
-                                            <span class="newVal " attr="${appGrpPremDto.buildingName}"><c:out value="${appGrpPremDto.buildingName}"/></span>
+                                      <div class="col-md-12">
+                                        <span class="newVal " attr="${appGrpPremDto.buildingName}">${appGrpPremDto.buildingName}</span>
+                                        <br>
+                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName }</span>
                                       </div>
                                       <div class="col-md-6">
-                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"
-                                                     style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName }"/></span>
+
                                       </div>
                                     </div>
                                   </div>
@@ -423,20 +418,19 @@
                                     <div class="col-md-6">
                                         <div class="col-md-4"><span>Start</span></div>
                                         <div class="col-md-4"><span>End</span></div>
-                                        <div class="col-md-4"><span>All day</span></div>
+                                        <div class="col-md-4"><span>24 Hours</span></div>
                                     </div>
                                   </div>
                                   <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <div class="col-md-6" style="padding: 0px">
+                                        <div class="col-md-12" style="padding: 0px">
                                           <span class="newVal" attr="${weeklyDto.selectValList}">
                                              <c:forEach items="${weeklyDto.selectValList}" var="selectVal" varStatus="in">
                                                <iais:code code="${selectVal}"/><c:if test="${!in.last}">,</c:if>
                                              </c:forEach>
                                           </span>
-                                        </div>
-                                        <div class="col-md-6" style="padding: 0px">
+                                          <br>
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
                                             <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList" varStatus="in">
                                               <iais:code code="${oldSelectValList}"/><c:if test="${!in.last}">,</c:if>
@@ -447,30 +441,23 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${weeklyDto.startFrom}">
                                               <c:if test="${weeklyDto.selectAllDay}">
-
                                               </c:if>
                                               <c:if test="${!weeklyDto.selectAllDay}">
                                                 <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
-
                                               </c:if>
                                               <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-
                                         </div>
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
+
                                             <span class="newVal" attr="${weeklyDto.endTo}">
                                               <c:if test="${weeklyDto.selectAllDay}">
 
@@ -479,8 +466,6 @@
                                                 <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}">
                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
 
@@ -489,7 +474,7 @@
                                                  <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}" pattern="HH : mm"/>
                                                </c:if>
                                             </span>
-                                          </div>
+
                                         </div>
                                         <div class="col-md-4" style="padding-right: 0px">
                                           <div class="col-md-6" style="padding: 0px">
@@ -525,48 +510,41 @@
                                   <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <div class="col-md-6" style="padding: 0px">
+                                        <div class="col-md-12" style="padding: 0px">
                                           <span class="newVal" attr="${op.selectValList}">
                                                <c:forEach items="${op.selectValList}" var="phDto" varStatus="in">
                                                  <iais:code code="${phDto}"></iais:code><c:if test="${!in.last}">,</c:if>
                                                </c:forEach>
                                           </span>
-                                        </div>
-                                        <div class="col-md-6" style="padding: 0px">
+                                          <br>
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
                                               <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList" varStatus="in">
                                                 <iais:code code="${oldPhDtoList}"/><c:if test="${!in.last}">,</c:if>
                                               </c:forEach>
                                           </span>
                                         </div>
+
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${op.startFrom}">
                                               <c:if test="${op.selectAllDay}">
-
                                               </c:if>
                                               <c:if test="${!op.selectAllDay}">
                                                 <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
-
                                               </c:if>
                                               <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
 
                                         </div>
 
                                         <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${op.endTo}">
                                               <c:if test="${op.selectAllDay}">
 
@@ -576,8 +554,6 @@
                                                </c:if>
 
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
 
@@ -586,7 +562,7 @@
                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                          </div>
+
                                         </div>
 
                                         <div class="col-md-4" style="padding-right: 0px">
@@ -624,14 +600,14 @@
                                   <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <div class="col-md-6" style="padding: 0px">
+                                        <div class="col-md-12" style="padding: 0px">
                                           <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
-                                        </div>
-                                        <div class="col-md-6" style="padding: 0px">
+                                          <br>
                                           <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                            ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                              ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
                                           </span>
                                         </div>
+
 
                                       </div>
                                       <div class="col-md-6">
@@ -640,8 +616,6 @@
                                             <span class="newVal" attr="${eventDto.startDate}">
                                               <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}" pattern="dd/MM/yyyy"/>
                                             </span>
@@ -653,8 +627,6 @@
                                             <span class="newVal" attr="${eventDto.endDate}">
                                                 <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}" pattern="dd/MM/yyyy"/>
                                             </span>
@@ -741,9 +713,8 @@
                                           <div class="col-xs-6 col-md-6 ">
                                             <c:if test="${sinage.docSize!=null}">
                                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
-                                              <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
-                                                     value="${sinage.fileRepoId}"/>&fileRepoName=${sinage.docName}" title="Download" class="downloadFile"><span id="${sinage.fileRepoId}Down">trueDown</span></a>
-                                                <a onclick="doVerifyFileGo('${sinage.fileRepoId}')">${sinage.docName}</a><c:out value="(${sinage.docSize} KB)"/>
+                                                <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${sinage.fileRepoId}" docName="${sinage.docName}"/>
+                                                <c:out value="(${sinage.docSize} KB)"/>
                                             </span>
                                             </c:if>
                                             <c:if test="${sinage.docSize==null}">
@@ -753,8 +724,8 @@
                                           <div class="col-xs-6 col-md-6">
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize!=null}">
                                                  <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
-                                                   <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${inx.index}&fileRo${inx.index}=<iais:mask name="fileRo${inx.index}"
-                                                       value="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}"/>&fileRepoName=${oldAppGrpPrimaryDocDto[inx.index].docName}" title="Download" class="downloadFile">${oldAppGrpPrimaryDocDto[inx.index].docName}</a><c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
+                                                   <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}" docName="${oldAppGrpPrimaryDocDto[inx.index].docName}"/>
+                                                   <c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
                                                  </span>
                                             </c:if>
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize==null}">
@@ -1269,6 +1240,33 @@
                           </div>
                         </div>
                       </div>
+                      <c:choose>
+                        <c:when test="${appSubmissionDto.appType == 'APTY005'&&RFC_HCAI_NAME_CHNAGE!='false'}">
+
+                        </c:when>
+                        <c:when test="${isSingle=='N'}">
+
+                        </c:when>
+                        <c:otherwise>
+                          <div class="panel panel-default svc-content">
+
+                            <div class="panel-heading" id="declarations" role="tab">
+                              <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
+                                                         href="#collapseDeclarations" aria-expanded="true"
+                                                         aria-controls="declarations">Declarations
+                              </a></h4>
+                            </div>
+                            <div class=" panel-collapse collapse" id="collapseDeclarations" role="tabpanel"
+                                 aria-labelledby="headingServiceInfo0">
+                              <div class="panel-body">
+                                <%@include file="declarations.jsp"%>
+                              </div>
+                            </div>
+
+                          </div>
+                        </c:otherwise>
+                      </c:choose>
+
                     </div>
                   </div>
                 </div>

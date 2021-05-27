@@ -31,7 +31,7 @@
                                 <c:if test="${isSingle == 'N'}">
                                     <p>Your licences to renew are listed below:</p>
                                 </c:if>
-                                <div class="table-gp">
+                                <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -40,7 +40,7 @@
                                             <c:if test="${isSingle == 'Y'}">
                                                 <th>Licensee</th>
                                             </c:if>
-                                            <th class="premises-info">Premises</th>
+                                            <th class="premises-info">Mode of Service Delivery</th>
                                             <th>Start Date</th>
                                             <th style="white-space: nowrap;">Expires On</th>
                                         </tr>
@@ -64,10 +64,10 @@
                                 </div>
                             </div>
                             <c:if test="${isSingle == 'Y'}">
-                                <p>Click proceed to view your licence details and if necessary make amendment, before renewal.</p>
+                                <p>Click proceed to view your licence information and if necessary make amendment, before renewal.</p>
                             </c:if>
                             <c:if test="${isSingle == 'N'}">
-                                <p>Please submit renewal application for each individual licence if you wish to amend the details.</p>
+                                <p>Please submit renewal application for each individual licence if you wish to amend the information.</p>
                             </c:if>
                             <div class="application-tab-footer">
                                 <div class="row">

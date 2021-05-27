@@ -29,7 +29,7 @@ public class PaginationTag extends DivTagSupport {
     
     public PaginationTag() {
         super();
-        init();//NOSONAR
+        init();
     }
 
     // resets local state
@@ -130,8 +130,7 @@ public class PaginationTag extends DivTagSupport {
             sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append(ENDTAG);
             sb.append(pageNo-1);
             sb.append("</a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:");
-            sb.append(jsFunc).append("('").append(pageNo).append(ENDTAG);
+            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:void(0);\">");
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo + 1 <= pageCount){

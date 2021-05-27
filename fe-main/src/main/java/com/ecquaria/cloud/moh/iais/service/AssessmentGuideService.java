@@ -10,13 +10,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public interface AssessmentGuideService {
 
     List<HcsaServiceDto> getServicesInActive();
     List<HcsaServiceCorrelationDto> getCorrelation();
-    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId, List<String> svcNames);
+    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId, List<String> svcNames,List<String> premTypeList);
     List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids);
     String selectDarft(Map<String, Object> map);
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
@@ -27,4 +28,5 @@ public interface AssessmentGuideService {
     List<HcsaServiceCorrelationDto> getActiveSvcCorrelation();
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId, String appType);
+    Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds);
 }

@@ -25,15 +25,15 @@
     }else{
         %>
 <ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
+    <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a></li>
     <li id = "documentsli"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a></li>
     <li id = "serviceFormsli"  role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a></li>
     <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
     <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
 </ul>
-<div class="tab-nav-mobile visible-xs visible-sm">
+<div class="tab-nav-mobile visible-xs visible-sm" style="overflow:hidden">
     <div class="swiper-wrapper" role="tablist">
-        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Premises</a></div>
+        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
         <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
         <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
         <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
@@ -126,6 +126,7 @@
         <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
         $('#preview').unbind();
         $('#previewli').unbind();
+        $('#preview').removeAttr("data-toggle");
         </c:if>
         <c:choose>
         <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
@@ -135,6 +136,9 @@
         $('#serviceFormsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#documents').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
         $('#premises').unbind();
@@ -143,6 +147,9 @@
         $('#serviceFormsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#premises').unbind();
@@ -151,6 +158,9 @@
         $('#documentsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#documents').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:otherwise>
         $('#premises').unbind();
@@ -163,6 +173,11 @@
         $('#previewli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
+        $('#premises').removeAttr("data-toggle");
+        $('#documents').removeAttr("data-toggle");
+        $('#serviceForms').removeAttr("data-toggle");
+        $('#preview').removeAttr("data-toggle");
+        $('#payment').removeAttr("data-toggle");
         </c:otherwise>
         </c:choose>
 

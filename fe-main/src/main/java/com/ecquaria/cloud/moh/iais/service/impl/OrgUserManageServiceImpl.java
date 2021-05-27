@@ -22,9 +22,12 @@ import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.FeMainEmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
@@ -44,10 +47,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -55,6 +55,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private FeAdminClient feAdminClient;
+
 
     @Autowired
     private FeUserClient feUserClient;
@@ -76,6 +77,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Value("${iais.current.domain}")
     private String currentDomain;
+
+    @Autowired
+    private FeMainEmailHelper feMainEmailHelper;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -412,13 +416,15 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeDto.setEmilAddr(feUserDto.getEmail());
             licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
-            licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
-            licenseeIndividualDto.setIdType(feUserDto.getIdType());
-            licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
-            licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
-            licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+            if (Objects.nonNull(licenseeIndividualDto)) {
+                licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+                licenseeIndividualDto.setIdType(feUserDto.getIdType());
+                licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
+                licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
+                licenseeIndividualDto.setEmailAddr(feUserDto.getEmail());
+                licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
+            }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
-            licenseeDto.setLicenseeIndividualDto(licenseeIndividualDto);
             refreshLicensee(licenseeDto);
         }
         return licenseeDto;
@@ -435,15 +441,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         Claims claims = Jwts.claims();
         claims.put("uen", "201800001A");
         String jwtt = encoder.encode(claims, "");
-    }
-
-    @Override
-    public Boolean isKeyAppointment(String uen) {
-        JwtEncoder encoder = new JwtEncoder();
-        Claims claims = Jwts.claims();
-        claims.put("uen", uen);
-        //edhClient.receiveEDHEntity(jwtt, uen);
-        return Boolean.FALSE;
     }
 
     @Override
@@ -472,35 +469,125 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return feUserClient.validatePwd(feUserDto).getEntity();
     }
 
+
     @Override
-    public void setPermitLoginStatusInUenTrack(String uen, String nricNumber, boolean isPermit) {
-        feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, isPermit);
+    public void setSingPassAutoCeased(String uen, String nricNumber) {
+        boolean autoCeased = feUserClient.setPermitLoginStatusInUenTrack(uen, nricNumber, Boolean.FALSE).getEntity();
+        if (autoCeased) {
+            //send email
+            boolean hasBeenReminder = feMainEmailHelper.hasBeenReminder(uen + "_" + nricNumber,
+                    FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
+
+            if (!hasBeenReminder){
+                feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nricNumber);
+            }
+        }
     }
 
     @Override
     public void receiveEntityFormEDH(FeUserDto user) {
         log.info("receiveEntityFormEDH START");
         try {
-            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
+            String entityJson = licenseeClient.getEntityInfoByUEN("T18LP0001A").getEntity();
             if (StringUtil.isNotEmpty(entityJson)){
                 log.info("receiveEntityFormEDH entityJson {}", entityJson);
+                user.setAcraGetEntityJsonStr(entityJson);
                 JSONObject object = new JSONObject(entityJson);
-                JSONArray jsonArray = object.getJSONArray("licences");
-                if (Optional.ofNullable(jsonArray).isPresent()){
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        JSONObject acraLicensee = jsonObject.getJSONObject("licensee");
-                        String nric = acraLicensee.getJSONObject("id-no").getString("value");
-                        if (user.getIdentityNo().equals(nric)){
-                            log.info("writeInfoFromEDH START................. {}", nric);
-                            String licenseeName = acraLicensee.getJSONObject("name").getString("value");
-                            user.setDisplayName(licenseeName);
+                if (Optional.ofNullable(object).isPresent()){
+                    JSONArray licences = object.getJSONArray("licences");
+                    if (Optional.ofNullable(licences).isPresent()){
+                        for (int i = 0; i < licences.length(); i++) {
+                            JSONObject licence = licences.optJSONObject(i);
+                            if (Optional.ofNullable(licence).isPresent()){
+                                JSONObject acraLicensee = licence.optJSONObject("licensee");
+                                String nric = acraLicensee.optJSONObject("id-no").getString("value");
+                                if (user.getIdentityNo().equals(nric)){
+                                    log.info("writeInfoFromEDH START................. {}", nric);
+                                    String licenseeName = acraLicensee.optJSONObject("name").getString("value");
+                                    user.setDisplayName(licenseeName);
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+
+                    JSONArray appointments = object.getJSONArray("appointments");
+                    if (Optional.ofNullable(appointments).isPresent()){
+                        for (int i = 0; i < appointments.length(); i++) {
+                            JSONObject appointment = appointments.optJSONObject(i);
+                            if (Optional.ofNullable(appointment).isPresent()){
+                                JSONObject aptPerson = appointment.optJSONObject("appointed-person");
+                                if (Optional.ofNullable(aptPerson).isPresent()){
+                                    JSONObject idNo = aptPerson.optJSONObject("id-no");
+                                    if (Optional.ofNullable(idNo).isPresent()){
+                                        String ido = idNo.getString("value");
+                                        if (user.getIdentityNo().equals(ido)){
+                                            log.info("========>>>>>>>>> key appointment true");
+                                            user.setKeyAppointment(true);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
     }
+
+    @Override
+    public void sendReminderForExpiredSingPass() {
+        String objJson = feUserClient.getExpireSingPassList().getEntity();
+        JSONArray uenList = new JSONArray(objJson);
+        if (Optional.ofNullable(uenList).isPresent()){
+            for (int i = 0; i < uenList.length(); i++){
+                JSONObject object = uenList.getJSONObject(i);
+                if (Optional.ofNullable(object).isPresent()){
+                    String uen = object.optString("uen");
+                    String nric = object.optString("nricNumber");
+                    boolean hasBeenReminder = feMainEmailHelper.hasBeenReminder(uen + "_" + nric,
+                            FeMainEmailHelper.SINGPASS_EXPIRE_REMINDER_JOB);
+                    if (!hasBeenReminder){
+                        feMainEmailHelper.sendSingPassAutoCeasedMsg(uen, nric);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public FeUserDto syncFeUserFromBe(FeUserDto feUserDto) {
+        log.info("Synchronize FE user from BE");
+        if (!isValid(feUserDto)) {
+            return feUserDto;
+        }
+        log.info(StringUtil.changeForLog("User Id: " + feUserDto.getUserId()));
+        // syncronize halp user
+        log.info("Synchronize iais user");
+        FeUserDto feUserDtoRes = editUserAccount(feUserDto);
+        // syncronize egp user
+        log.info("Synchronize egp user");
+        updateEgpUser(feUserDto);
+        log.info("Synchronize FE user from BE end.");
+        return feUserDtoRes;
+    }
+
+    private boolean isValid(FeUserDto feUserDto) {
+        if (Objects.isNull(feUserDto) || StringUtil.isEmpty(feUserDto.getUserId())) {
+            log.warn(StringUtil.changeForLog("The user Id is null!"));
+            return false;
+        }
+        ValidationResult result = WebValidationHelper.validatePropertyWithoutCustom(feUserDto, "edit");
+        if (result.isHasErrors()) {
+            log.warn(StringUtil.changeForLog("" + WebValidationHelper.generateJsonStr(result.retrieveAll())));
+            return false;
+        }
+        return true;
+    }
+
 }

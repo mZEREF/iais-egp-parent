@@ -1,87 +1,83 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-
-import java.util.List;
 
 /**
  * @author Shicheng
  * @date 2019/11/22 10:19
  **/
 public interface InspectionMainAssignTaskService {
-    /**
-     * @author: shicheng
-     * @Date 2019/11/21
-     * @Param: loginContext
-     * @return: List<TaskDto>
-     * @Descripation: According to the group Id, get the work pool
-     */
-    List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/23
-      * @Param: applicationNo, commPools, loginContext
-      * @return: InspecTaskCreAndAssQueryDto
-      * @Descripation: Gets a single Common Pool of information for allocation
-      */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: searchParam
-      * @return: SearchResult
-      * @Descripation: Search results based on search criteria
-      */
-    SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam);
-
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/29
-      * @Param: commPools inspecTaskCreAndAssDto applicationViewDto internalRemarks taskDto
-      * @return: void
-      * @Descripation: update Common Pool and create Inspector Task
-      */
-    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/12/5
-      * @Param: applicationNo
-      * @return: ApplicationViewDto
-      * @Descripation: search ApplicationViewDto By Application No
-      */
-    ApplicationViewDto searchByAppNo(String applicationNo);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/12/10
-      * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId
-      * @return:
-      * @Descripation:
-      */
-    AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String status, String taskKey, String internalRemarks);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/12/10
-      * @Param: commPools, inspecTaskCreAndAssDto, internalRemarks
-      * @return: void
-      * @Descripation: routing Task By CommonPool
-      */
-    void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks);
 
     HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId);
 
     String taskRead(String taskId);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/04/19
+     * @Param: appGroupId
+     * @return: AppGrpPremisesDto
+     * @Descripation: get Application Group Premises By Application Id
+     */
+    AppGrpPremisesDto getAppGrpPremisesDtoByAppCorrId(String applicationId);
+
+    /**
+     * @author: shicheng
+     * @Date 2020/3/19
+     * @Param: appGrpPremisesDto
+     * @return: String
+     * @Descripation: getAddress
+     */
+    String getAddress(AppGrpPremisesDto appGrpPremisesDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/20
+     * @Param: inspecTaskCreAndAssDto, applicationDto
+     * @return: InspecTaskCreAndAssDto
+     * @Descripation: setFastTrackFlag
+     */
+    InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/20
+     * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto
+     * @return: InspecTaskCreAndAssDto
+     * @Descripation: getInspecTaskCreAndAssDto
+     */
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(ApplicationDto applicationDto, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/20
+     * @Param: inspecTaskCreAndAssDto, applicationDto
+     * @return: InspecTaskCreAndAssDto
+     * @Descripation: setEditHoursFlagByAppAndUser
+     */
+    InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/4/21
+     * @Param: inspecTaskCreAndAssDto, internalRemarks, loginContext
+     * @return: save flag
+     * @Descripation: routingTaskByCommonPool
+     */
+    String routingTaskByCommonPool(ApplicationViewDto applicationViewDto, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
+
+    /**
+     * @author: shicheng
+     * @Date 2020/3/20
+     * @Param: loginContext
+     * @return: GroupRoleFieldDto
+     * @Descripation: get Group Role Field
+     */
+    GroupRoleFieldDto getGroupRoleField(LoginContext loginContext);
 }

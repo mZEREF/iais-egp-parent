@@ -588,6 +588,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -681,6 +686,12 @@
       <name>endDate</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>boolean</type>
     </attribute>
     <attribute>
       <name>needErrorSpan</name>
@@ -1033,6 +1044,12 @@
     </attribute>
     <attribute>
       <name>viewEmptyStr</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
+    <attribute>
+      <name>needLowerCase</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <type>boolean</type>

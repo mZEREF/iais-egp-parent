@@ -95,6 +95,8 @@ public class AppealServiceImpl implements AppealService {
                                    LicenceDto licenceDto = getLicenceDto(licenceDtos,licenceId);
                                    if(licenceDto!=null) {
                                        appealApproveDto.setLicenceDto(licenceDto);
+                                       List<LicenceDto> entity = hcsaLicenceClient.getBaseOrSpecLicence(licenceDto.getId()).getEntity();
+                                       appealApproveDto.setOtherLicenceDto(entity);
                                    }
                                }
                            }

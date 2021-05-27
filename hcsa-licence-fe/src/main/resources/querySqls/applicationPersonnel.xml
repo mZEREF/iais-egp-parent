@@ -8,7 +8,7 @@
             join licence T3 on t2.LICENCE_ID = t3.ID
 			AND t3.STATUS = 'LICEST001'
 			<#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
-			<#if personName??> AND T1.NAME LIKE :personName</#if>
+			<#if personName??> AND charindex(:personName, T1.NAME)>0  </#if>
         ]]>
     </sql>
     <sql remarks="Query" key="queryPremises">

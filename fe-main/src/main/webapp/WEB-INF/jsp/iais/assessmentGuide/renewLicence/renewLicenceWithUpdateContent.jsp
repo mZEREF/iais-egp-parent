@@ -9,7 +9,7 @@
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" style="width:15%" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" style="width:30%" isFE="true"/>
             </tr>
             </thead>
@@ -35,12 +35,22 @@
                                     <input type="hidden" name="renew2LicenId${status.index}" value="<iais:mask name= "renew2LicenId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
-                            <td>${pool.svcId}</td>
-                            <td>${pool.licenceNo}</td>
                             <td>
+                                    <p class="visible-xs visible-sm table-row-title">HCI Name</p>
+                                    ${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if>
+                            </td>
+                            <td>
+                                    <p class="visible-xs visible-sm table-row-title">Type</p>
+                                    ${pool.svcId}
+                            </td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                    ${pool.licenceNo}
+                            </td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
-                                    <c:out value="On-site"/>
+                                    <c:out value="Premises"/>
                                 </c:if>
                                 <c:if test="${'CONVEYANCE'==pool.premisesType}">
                                     <c:out value="Conveyance"/>
@@ -50,6 +60,7 @@
                                 </c:if>
                             </td>
                             <td>
+                                <p class="visible-xs visible-sm table-row-title">Address</p>
                                 <c:choose>
                                     <c:when test="${pool.premisesDtoList.size() == 1}">
                                         <P>${pool.premisesDtoList[0]}</P>

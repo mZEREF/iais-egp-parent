@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -40,12 +41,9 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -72,6 +70,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -101,8 +100,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Autowired
     ApplicationClient applicationClient;
     @Autowired
-    AppPremisesCorrClient appPremisesCorrClient;
-    @Autowired
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     FileRepoClient fileRepoClient;
@@ -116,10 +113,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private LicEicClient licEicClient;
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    LicInspNcEmailService licInspNcEmailService;
-    @Autowired
-    EmailClient emailClient;
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -152,8 +145,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private     String sharedPath;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private SystemBeLicClient systemClient;
 
 
     private final String[] appType=new String[]{
@@ -163,7 +154,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_APPEAL,
             ApplicationConsts.APPLICATION_TYPE_CESSATION,
             ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
-            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK
+            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+            ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
     };
     private final String[] appStatus=new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
@@ -195,7 +187,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS
+            //ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
+            ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
@@ -328,7 +322,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     map.put("fileName",name);
                     map.put("filePath",relPath);
 
-                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                    ProcessFileTrackDto processFileTrackDto = systemBeLicClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
                         try (InputStream is= Files.newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
@@ -496,7 +490,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
-        systemClient.updateProcessFileTrack(processFileTrackDto);
+        systemBeLicClient.updateProcessFileTrack(processFileTrackDto);
 
     }
 
@@ -576,8 +570,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     case 2:reminderMaxDay=reminderMax3Day;break;
                     default:reminderMaxDay="0";
                 }
-                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
-                if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
+                String parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal1.getTime());
+                String newDt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                if(parse1.compareTo(newDt)<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                     try {
                         reminder(rfi);
                     }catch (Exception e){
@@ -592,6 +588,45 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             log.error(e.getMessage(),e);
         }
     }
+
+    @Override
+    public StringBuilder setEmailAppend(LicPremisesReqForInfoDto licPremisesReqForInfoDto,boolean reqTypeInfo) {
+        StringBuilder stringBuilder=new StringBuilder();
+        if(reqTypeInfo){
+            for (int i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            }
+        }
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+
+            int seqNum=1;
+            for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                if(doc.getSeqNum()==null){
+                    doc.setSeqNum(seqNum);
+                }
+                seqNum++;
+            }
+            Map<Integer,List<LicPremisesReqForInfoDocDto>> licPremisesReqForInfoMultiFileDto=IaisCommonUtils.genNewHashMap();
+            for (int i=1;i<seqNum;i++){
+                List<LicPremisesReqForInfoDocDto> docs=IaisCommonUtils.genNewArrayList();
+                for (LicPremisesReqForInfoDocDto docDto:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
+                ) {
+                    if(docDto.getSeqNum().equals(i)){
+                        docs.add(docDto);
+                    }
+                }
+                if(!docs.isEmpty()){
+                    licPremisesReqForInfoMultiFileDto.put(i,docs);
+                }
+            }
+            for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> multiFileDto:licPremisesReqForInfoMultiFileDto.entrySet()
+            ) {
+                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(multiFileDto.getValue().get(0).getTitle()).append("</p>");
+            }
+        }
+        return stringBuilder;
+    }
+
     private void sendEmail(ApplicationDto applicationDto, String time) throws Exception{
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
@@ -603,6 +638,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationGroupDto.getLicenseeId());
         String applicantName=licenseeDto.getName();
+        List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(licenseeDto.getOrganizationId()).getEntity();
+        if(orgUserDtoList!=null&&orgUserDtoList.get(0)!=null){
+            applicantName=orgUserDtoList.get(0).getDisplayName();
+        }
         map.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber", applicationDto.getApplicationNo());
         String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
@@ -672,18 +711,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             applicantName=orgUserDtoList.get(0).getDisplayName();
         }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder=new StringBuilder();
-        int i=0;
-        if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
-            for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(' ').append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
-            }
-        }
-        if(licPremisesReqForInfoDto.isNeedDocument()){
-            for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
-            }
-        }
+        StringBuilder stringBuilder=setEmailAppend(licPremisesReqForInfoDto,!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licPremisesReqForInfoDto.getLicenseeId();
@@ -744,7 +772,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             emailMap.put("systemLink", url);
             msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
             msgParam.setTemplateContent(emailMap);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             msgParam.setMaskParams(mapPrem);
             msgParam.setSvcCodeList(svcCode);
             msgParam.setRefId(licenceViewDto.getLicenceDto().getId());

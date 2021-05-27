@@ -52,7 +52,7 @@ public class PaymentRedisHelper {
                     } catch (JsonProcessingException e) {
                         log.debug(e.getMessage(),e);
                     }
-                    session.setAttribute(sessionKey, ent.getValue());//NOSONAR
+                    session.setAttribute(sessionKey, ent.getValue());
                 }
             }
             session.setAttribute("sop6.session.id", session.getId());

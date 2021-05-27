@@ -64,12 +64,12 @@
                 </h3>
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
                 <br><br>
-                <div >
+                <div class="table-gp">
                     <table class="table">
                         <thead>
                         <tr>
                             <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>
-                            <iais:sortableHeader style="width:5%; padding-bottom:10px" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader style="width:5%" needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader style="width:10%" needSort="true"   field="module" value="Module"></iais:sortableHeader>
                             <iais:sortableHeader style="width:15%" needSort="true"   field="description" value="Description"></iais:sortableHeader>

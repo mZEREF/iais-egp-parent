@@ -1,7 +1,7 @@
 
 
 
-
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <style>
   table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
     margin-bottom: 15px;margin-top: 25px;
@@ -333,12 +333,9 @@
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-<%--      <div class="modal-header">--%>
-<%--        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--      </div>--%>
-      <div class="modal-body" style="text-align: center;">
+      <div class="modal-body" >
         <div class="row">
-          <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+          <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
         </div>
       </div>
       <div class="row " style="margin-top: 5%;margin-bottom: 5%">

@@ -3,10 +3,11 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * ConfirmDialogTag
@@ -96,15 +97,6 @@ public class ConfirmDialogTag extends TagSupport {
         }
         html.append("</span></div></div></div>");
         html.append("<div class=\"modal-footer\">");
-        html.append("<button type=\"button\" class=\"");
-        if (StringUtil.isEmpty(yesBtnCls)) {
-            setYesBtnCls("btn btn-primary");
-        }
-        html.append(yesBtnCls).append("\" onclick=\"javascript:");
-        if (StringUtil.isEmpty(yesBtnDesc)) {
-            setYesBtnDesc("OK");
-        }
-        html.append("tagConfirmCallback").append(popupOrder).append("();\">").append(yesBtnDesc).append("</button>");
         if (needCancel) {
             if (StringUtil.isEmpty(cancelBtnDesc)) {
                 setCancelBtnDesc("Cancel");
@@ -119,6 +111,16 @@ public class ConfirmDialogTag extends TagSupport {
             }
             html.append('>').append(cancelBtnDesc).append("</button>");
         }
+        html.append("<button type=\"button\" class=\"");
+        if (StringUtil.isEmpty(yesBtnCls)) {
+            setYesBtnCls("btn btn-primary");
+        }
+        html.append(yesBtnCls).append("\" onclick=\"javascript:");
+        if (StringUtil.isEmpty(yesBtnDesc)) {
+            setYesBtnDesc("OK");
+        }
+        html.append("tagConfirmCallback").append(popupOrder).append("();\">").append(yesBtnDesc).append("</button>");
+
         html.append("</div></div></div></div>");
         //javascript
         html.append("<script type=\"text/javascript\">");

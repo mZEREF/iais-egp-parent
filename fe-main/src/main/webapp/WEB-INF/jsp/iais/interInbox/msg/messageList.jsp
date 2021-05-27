@@ -23,16 +23,20 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="search-wrap" style="width: 100%">
-                    <iais:value>
-                        <div class="input-group">
-                            <input class="form-control" id="inboxAdvancedSearch" type="text"
-                                   placeholder="Search Your Keywords" name="inboxAdvancedSearch"
-                                   aria-label="inboxAdvancedSearch" maxlength="50" value="${param.inboxAdvancedSearch}"><span class="input-group-btn">
-                                <button class="btn btn-default buttonsearch" title="Search by keywords"
-                                        onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
-                        </div>
-                    </iais:value>
+                <div class="col-xs-12 visible-xs visible-sm" style="height: 20px;">
+                </div>
+                <div class="col-xs-12">
+                    <div class="search-wrap" style="width: 100%">
+                        <iais:value>
+                            <div class="input-group">
+                                <input class="form-control" id="inboxAdvancedSearch" type="text"
+                                       placeholder="Search" name="inboxAdvancedSearch"
+                                       aria-label="inboxAdvancedSearch" maxlength="50" value="${param.inboxAdvancedSearch}"><span class="input-group-btn">
+                                    <button class="btn btn-default buttonsearch" title="Search by keywords"
+                                            onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
+                            </div>
+                        </iais:value>
+                    </div>
                 </div>
             </div>
         </div>

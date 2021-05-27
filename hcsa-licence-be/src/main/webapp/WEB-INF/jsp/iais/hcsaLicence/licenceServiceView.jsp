@@ -2,12 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-blank"/>
+<webui:setLayout name="iais-intranet-view"/>
 <style>
   *{
     font-size: 16px;
@@ -31,6 +32,20 @@
       <%@include file="viewPremises.jsp"%>
     </c:otherwise>
   </c:choose>
+  <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body" >
+          <div class="row">
+            <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
+          </div>
+        </div>
+        <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
 <style>
 
@@ -113,16 +128,31 @@
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().find('.' + newValClass);
+            var newEle='';
+            if($(this).parent().children('.'+newValClass).length>0){
+                 newEle = $(this).parent().children('.'+newValClass);
+            }else {
+                newEle = $(this).parent().prev().find('.' + newValClass);
+            }
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if($('#oldAppSubmissionDto').val()=='false'){
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();
-                        var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                        var newHtml ;
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            newHtml= $(this).parent().children('.' + newValClass).html();
+                        }else {
+                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
+                        }
                         var oldHtml=$(this).html();
                         $(this).html(newHtml);
-                        $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        if($(this).parent().children('.'+newValClass).length>0){
+                            $(this).parent().children('.' + newValClass).html(oldHtml);
+                        }else {
+                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        }
+
                         $(this).attr("class","newVal compareTdStyle");
                     } else if(oldVal.length > 0 && newVal.length <= 0){
                         $(this).hide();

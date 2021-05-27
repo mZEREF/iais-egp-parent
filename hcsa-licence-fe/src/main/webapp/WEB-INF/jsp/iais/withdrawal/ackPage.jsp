@@ -15,7 +15,7 @@
 <webui:setLayout name="iais-internet"/>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
-        <div class="center-content">
+        <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
             </div>
@@ -33,13 +33,36 @@
     </div>
 </div>
 <div class="main-content">
-    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+    <div class="container">
+        <br/>
         <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <h2>Acknowledgement</h2>
-                    <br>
-                    <span style="font-size:2rem;">${WITHDRAW_ACKMSG}</span>
+            <div class="col-lg-12 col-xs-12 cesform-box">
+                <p><span style="font-size:2rem;">${WITHDRAW_ACKMSG}</span></p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="text-align:center">Application No.</th>
+                            <th style="text-align:center">Service Name</th>
+                            <th style="text-align:center">HCI Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${withdrawnDtoListAck}" var="confirm" varStatus="num">
+                            <tr style="text-align: center">
+                                <td>
+                                    <p><c:out value="${confirm.applicationNo}"></c:out></p>
+                                </td>
+                                <td>
+                                    <p><c:out value="${confirm.svcName}"></c:out></p>
+                                </td>
+                                <td>
+                                    <p><c:out value="${(confirm.hciName == null || confirm.hciName == '') ? 'N/A' : confirm.hciName}"></c:out></p>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="col-lg-12 col-xs-12">
@@ -49,8 +72,10 @@
                 </div>
             </div>
         </div>
-    </form>
+        <br/>
+    </div>
 </div>
+
 
 
 

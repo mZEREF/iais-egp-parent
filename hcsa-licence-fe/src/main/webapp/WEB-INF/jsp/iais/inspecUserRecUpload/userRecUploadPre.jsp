@@ -40,14 +40,15 @@
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
                     <span class="error-msg" name="iaisErrorMsg" id="error_subFlag"></span>
-                    <div class="table-gp">
+                    <div class="table-responsive">
                       <table class="table">
                         <thead>
                         <tr align="center">
                           <th>No</th>
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
-                          <th>Remarks</th>
+                          <th>Findings/Non-Compliances</th>
+                          <th>Action Required</th>
                           <th>Actions</th>
                           <th>Rectification Uploaded?</th>
                         </tr>
@@ -67,13 +68,18 @@
                                 <td><c:out value="${recNo.count}"/></td>
                                 <td><c:out value="${feRecNc.checkClause}"/></td>
                                 <td><iais:code code="${feRecNc.checkQuestion}"/></td>
+                                <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.ncs}">
+                                  <td><c:out value="N/A"/></td>
+                                </c:if>
+                                <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.ncs}">
+                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.ncs}"/></td>
+                                </c:if>
                                 <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
-                                <td><c:out value="N/A"/>
+                                  <td><c:out value="N/A"/></td>
                                 </c:if>
                                 <c:if test="${not empty feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}">
-                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/>
+                                  <td><c:out value="${feRecNc.appPremisesPreInspectionNcItemDto.beRemarks}"/></td>
                                 </c:if>
-                                </td>
                                 <c:if test="${'SUCCESS' eq feRecNc.buttonFlag}">
                                   <td>
                                     <button class="btn btn-secondary btn-md disabled" type="button" disabled>Rectify</button>

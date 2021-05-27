@@ -81,7 +81,7 @@
         </div>
 
         <div class="col-xs-12 col-md-10">
-          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
         </div>
 
         <div class="form-check-gp">
@@ -90,13 +90,13 @@
               <div class="form-check " style="left: 10%">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span> Premises</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span> Off-site</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
@@ -111,7 +111,7 @@
 
       <div class="form-group" style="display: none" id="Subsumption">
         <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" >Base Service Subsumed Under&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" ><iais:code code="CDN001"/> Subsumed Under&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
@@ -120,7 +120,7 @@
 
       <div class="form-group" style="display: none" id="Pre-requisite">
         <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite Base Service&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite <iais:code code="CDN001"/>&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto" disabled="true"></iais:multipleSelect>
           </div>
@@ -224,7 +224,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
               <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                 <select  disabled>
@@ -268,7 +268,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
                 <input style="white-space: nowrap" class="form-check-input" disabled <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
             </div>
           </div>

@@ -401,5 +401,21 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
             }
         }
     }
+
+    @Override
+    public boolean versionSameForRisk(String version,String dbVersion) {
+        if((version == null && dbVersion != null) ||(version != null && !version.equals(dbVersion))){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean versionSameForRisk(Integer version, Integer dbVersion) {
+         if((version ==null && dbVersion != null) || !versionSameForRisk(String.valueOf(version),String.valueOf(dbVersion))){
+             return false;
+         }
+         return true;
+    }
 }
 

@@ -1,7 +1,7 @@
 <div class="form-check-gp">
     <p class="form-check-title">Please select an option:</p>
 
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence3_1"
                type="radio" name="amendLicenceType3"
                aria-invalid="false">
@@ -10,7 +10,7 @@
             <span class="left-content">Change of Licensee</span>
         </label>
     </div>
-    <div class="form-check progress-step-check" style="width: 900px">
+    <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence3_2"
                type="radio" name="amendLicenceType3"
                >

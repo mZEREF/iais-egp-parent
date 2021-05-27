@@ -742,16 +742,20 @@ text-decoration-color: white !important;
 /* Compared Style
 -------------------------------------------------*/
 .compareTdStyle {
-  display: inline;
+  display: inline-block;
   padding: 5px 18px 5px 43px;
-  line-height: 1;
+  line-height: 1.5em;
   color: #53ab27;
   text-align: left;
   vertical-align: middle;
   border-radius: 50px;
-  font-size: 100%;
+  font-size: 90%;
   background-image: url("../img/signs.png");
   background-repeat: no-repeat;
   background-position: 15px 50%;
   background-color: #e4fbdb;
+  /*white-space: nowrap;*/
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /* max-width: 350px;*/
 }

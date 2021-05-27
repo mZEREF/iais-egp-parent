@@ -255,7 +255,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+        processFileTrackDto.setProcessType(ApplicationConsts.AUDIT_TYPE_ROUTINE);
         AuditTrailDto batchJobDto = AuditTrailHelper.getCurrentAuditTrailDto();
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);

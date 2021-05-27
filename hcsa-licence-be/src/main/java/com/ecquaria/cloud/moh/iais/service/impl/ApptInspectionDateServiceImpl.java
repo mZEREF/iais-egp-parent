@@ -651,7 +651,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //cancel draft
-        inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
+        if(!IaisCommonUtils.isEmpty(cancelRefNo)) {
+            inspectionTaskClient.deleteInspDateDraftByApptRefNo(cancelRefNo);
+        }
         //url
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
@@ -1047,7 +1049,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             applicationDtos.add(applicationDto);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspectionAssignTaskService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-            appPremScoreMap.put(appPremCorrId, hcsaSvcStageWorkingGroupDtos.get(0).getCount());//NOSONAR
+            appPremScoreMap.put(appPremCorrId, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
 
         return appPremScoreMap;

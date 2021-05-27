@@ -194,7 +194,7 @@ public class MassEmailDelegator {
         }
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
         if(!StringUtil.isEmpty(distributionName)){
-            searchParam.addFilter("description", "%" + distributionName + "%",true);
+            searchParam.addFilter("description",  distributionName ,true);
         }else{
             searchParam.removeFilter("description");
             distributionName = null;

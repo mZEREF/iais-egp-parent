@@ -303,12 +303,12 @@ public class InterInboxDelegator {
             inboxMsgParam.removeFilter("messageType");
         }
         if(inboxService != null){
-            inboxMsgParam.addFilter("interService","%" + inboxService + "%",true);
+            inboxMsgParam.addFilter("interService", inboxService ,true);
         }else{
             inboxMsgParam.removeFilter("interService");
         }
         if(msgSubject != null){
-            inboxMsgParam.addFilter("msgSubject",'%'+msgSubject+'%',true);
+            inboxMsgParam.addFilter("msgSubject",msgSubject,true);
         }else{
             inboxMsgParam.removeFilter("msgSubject");
         }
@@ -420,7 +420,7 @@ public class InterInboxDelegator {
         String eExpiryDate = Formatter.formatDateTime(liceExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
         SearchParam inboxLicParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic",true);
         if(licenceNo != null){
-            inboxLicParam.addFilter("licNo",'%'+licenceNo+'%',true);
+            inboxLicParam.addFilter("licNo",licenceNo,true);
         }else{
             inboxLicParam.removeFilter("licNo");
         }
@@ -972,9 +972,9 @@ public class InterInboxDelegator {
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
-                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
+                inboxParam.addFilter("appNo", applicationNo,true);
             }else{
-                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
+                inboxParam.addFilter("appNo", applicationNo,true);
             }
         }else{
             inboxParam.removeFilter("appNo");
@@ -985,7 +985,7 @@ public class InterInboxDelegator {
             if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceType);
                 if (hcsaServiceDto != null && !StringUtil.isEmpty(hcsaServiceDto.getSvcCode())){
-                    inboxParam.addFilter("serviceCode", "%" + hcsaServiceDto.getSvcCode() + "%",true);
+                    inboxParam.addFilter("serviceCode",  hcsaServiceDto.getSvcCode() ,true);
                 }
             }else{
 //                String moduleStr = SqlHelper.constructInCondition("svc.module", mcb.length);
@@ -1388,6 +1388,8 @@ public class InterInboxDelegator {
 //        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST, "Pending Internal Clarification"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION)));

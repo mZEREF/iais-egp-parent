@@ -176,6 +176,8 @@ public final class MasterCodeUtil {
         return codeKey;
     }
 
+    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
+
 
     /**
      * @description: The method to get master code value by code

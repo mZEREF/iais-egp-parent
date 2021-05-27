@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -30,20 +31,23 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -72,6 +76,8 @@ public class WithdrawalDelegator {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
 
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigFeClient;
     private LoginContext loginContext = null;
 
     private String wdIsValid = IaisEGPConstant.YES;
@@ -86,12 +92,13 @@ public class WithdrawalDelegator {
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         ParamUtil.setSessionAttr(bpc.request, "isDoView", isDoView);
         int configFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList",null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFiles", null);
         ParamUtil.setSessionAttr(bpc.request, "withdrawPageShowFileHashMap", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile", null);
-        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedFile_MaxIndex", null);
-        ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile", null);
+        ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile_MaxIndex", null);
+        ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
             isDoView = "N";
@@ -166,8 +173,8 @@ public class WithdrawalDelegator {
                     }
                 }
                 request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile", map);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex", viewDoc.size());
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile", map);
+                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile_MaxIndex", viewDoc.size());
                 request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
             }
     }
@@ -309,6 +316,7 @@ public class WithdrawalDelegator {
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveWithdrawn(withdrawnDtoList,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request,"withdrawnDtoListAck",withdrawnDtoList);
         }
     }
 
@@ -328,6 +336,7 @@ public class WithdrawalDelegator {
             String ackMsg = MessageUtil.replaceMessage("WDL_ACK001",replaceStr,"Application No");
             ParamUtil.setRequestAttr(bpc.request,"WITHDRAW_ACKMSG",ackMsg);
             withdrawalService.saveRfiWithdrawn(withdrawnDtoList,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request,"withdrawnDtoListAck",withdrawnDtoList);
             if (!StringUtil.isEmpty(messageId)){
                 licFeInboxClient.updateMsgStatusTo(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
             }
@@ -361,6 +370,7 @@ public class WithdrawalDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
+        String printActionType = ParamUtil.getString(bpc.request, "print_action_type");
         String isDoView = ParamUtil.getString(bpc.request, "isDoView");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(paramAppNos)){
@@ -368,7 +378,9 @@ public class WithdrawalDelegator {
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
                 if (withdrawnDto == null){
-                    withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                    if (!"applyPagePrint".equals(printActionType)) {
+                        withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+                    }
                     if (withdrawnDto == null){
                         withdrawnDto = new WithdrawnDto();
                     }
@@ -376,7 +388,7 @@ public class WithdrawalDelegator {
                 String appNo = withdrawAppNos[i];
                 ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
                 String appId = applicationDto.getId();
-                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedFile");
+                Map<String, File> map = (Map<String, File>)bpc.request.getSession().getAttribute("seesion_files_map_ajax_feselectedWdFile");
                 Map<String, PageShowFileDto> pageShowFileHashMap = (Map<String, PageShowFileDto>)mulReq.getSession().getAttribute("withdrawPageShowFileHashMap");
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
                 List<PageShowFileDto> pageShowFileDtos =IaisCommonUtils.genNewArrayList();
@@ -385,6 +397,21 @@ public class WithdrawalDelegator {
                     withdrawnDto.setApplicationId(appId);
                 }
                 withdrawnDto.setApplicationNo(appNo);
+                HcsaServiceDto hcsaServiceDto= hcsaConfigFeClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                withdrawnDto.setSvcName(hcsaServiceDto.getSvcName());
+                List<AppGrpPremisesDto> appGrpPremisesDtos=applicationFeClient.getAppGrpPremisesDtoByAppGroId(applicationDto.getApplicationNo()).getEntity();
+                if(appGrpPremisesDtos!=null&&appGrpPremisesDtos.size()!=0){
+                    AppGrpPremisesDto agp = appGrpPremisesDtos.get(0);
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(agp.getPremisesType())) {
+                        withdrawnDto.setHciName(agp.getHciName());
+                    } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(agp.getPremisesType())) {
+                        withdrawnDto.setHciName(agp.getOffSiteHciName());
+                    } else {
+                        withdrawnDto.setHciName(agp.getConveyanceHciName());
+                    }
+                }else {
+                    withdrawnDto.setHciName("");
+                }
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
 
@@ -459,44 +486,50 @@ public class WithdrawalDelegator {
                 withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDtoList);
                 mulReq.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
 
-                if(validationResult != null && validationResult.isHasErrors()){
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    //isValid = IaisEGPConstant.NO;\
-                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
-                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                    }
+                if ("applyPagePrint".equals(printActionType)){
                     wdIsValid = IaisEGPConstant.NO;
-                }{
-                    if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
-                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                    }
-                    withdrawnDtoList.add(withdrawnDto);
+                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                    ParamUtil.setRequestAttr(bpc.request,"apply_page_print","Y");
                 }
+                if(validationResult != null && validationResult.isHasErrors()){
+                    if (!"applyPagePrint".equals(printActionType)){
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        //isValid = IaisEGPConstant.NO;\
+                        if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                            ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                        }
+                        wdIsValid = IaisEGPConstant.NO;
+                    }
+                }
+                if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
+                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                }
+                withdrawnDtoList.add(withdrawnDto);
             }
         }
         String applicationNo =  (String)ParamUtil.getSessionAttr(bpc.request, "withdrawAppNo");
         String rfiApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawAppNo");
         List<WithdrawnDto> addWithdrawnDtoList = IaisCommonUtils.genNewArrayList();
         addWithdrawnDtoList.addAll(withdrawnDtoList);
-        if (StringUtil.isEmpty(applicationNo)){
+        if (StringUtil.isEmpty(applicationNo)) {
             addWithdrawnDtoList.removeIf(h -> rfiApplicationNo.equals(h.getApplicationNo()));
-        }else{
+        } else {
             addWithdrawnDtoList.removeIf(h -> applicationNo.equals(h.getApplicationNo()));
-            for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
-                if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
-                    String withdrawalError = MessageUtil.replaceMessage("WDL_EER002","appNo",withdrawnDto.getApplicationNo());
-                    ParamUtil.setRequestAttr(bpc.request,"appIsWithdrawal",Boolean.TRUE);
-                    bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT,withdrawalError);
-                    wdIsValid = IaisEGPConstant.NO;
-                    break;
+            if (!"applyPagePrint".equals(printActionType)) {
+                for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
+                    if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
+                        String withdrawalError = MessageUtil.replaceMessage("WDL_EER002", "appNo", withdrawnDto.getApplicationNo());
+                        ParamUtil.setRequestAttr(bpc.request, "appIsWithdrawal", Boolean.TRUE);
+                        bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT, withdrawalError);
+                        wdIsValid = IaisEGPConstant.NO;
+                        break;
+                    }
                 }
             }
         }
-
-
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,wdIsValid);
-        ParamUtil.setRequestAttr(bpc.request, "addWithdrawnDtoList",addWithdrawnDtoList);
+        ParamUtil.setSessionAttr(bpc.request, "addWithdrawnDtoList",(Serializable) addWithdrawnDtoList);
         return withdrawnDtoList;
     }
 }

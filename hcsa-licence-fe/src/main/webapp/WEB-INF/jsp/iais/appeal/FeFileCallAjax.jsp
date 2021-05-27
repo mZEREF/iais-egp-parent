@@ -76,24 +76,30 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
+                        <c:if test="${empty declaration_page_request}">
+                            cloneUploadFile();
+                        </c:if>
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }
                 }
+                dismissWaiting();
             },
             error: function (msg) {
                 //alert("error");
+                dismissWaiting();
             }
           });
         }
 
-        dismissWaiting();
+
     }
     
     function clearFlagValueFEFile() {
         $("#reloadIndex").val(-1);
         $("#fileAppendId").val("");
         $("#uploadFormId").val("");
+        dismissWaiting();
     }
 
     function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
@@ -113,5 +119,10 @@
             return "N";
         }
         return "Y";
+    }
+    function cloneUploadFile() {
+        var fileId= '#selectedFile';
+        $(fileId).after( $( fileId).clone().val(""));
+        $(fileId).remove();
     }
 </script>

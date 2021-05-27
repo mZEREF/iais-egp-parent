@@ -54,8 +54,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -137,11 +139,16 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public String getWrkGrpName(String id) {
+        String result = null;
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
-        if(workingGroupDto == null){
-           return null;
+        if(workingGroupDto != null){
+        if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
+            result = AppConsts.WORK_GROUP_BROADCAST;
+        }else{
+            result = workingGroupDto.getGroupName();
         }
-        return workingGroupDto.getGroupName();
+        }
+        return result;
     }
 
     @Override
@@ -176,25 +183,34 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        Map<String,Integer> map=new HashMap<>();
         Map<String,Integer> map1=new HashMap<>();
         if(applicationDto!=null){
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            AtomicInteger i=new AtomicInteger(1);
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
-                    String appGrpPersonId = v.getAppGrpPersonId();
-                    if(appGrpPersonId!=null){
-                        Integer integer = map.get(appGrpPersonId);
-                        if(integer==null){
-                            map.put(appGrpPersonId,i.get());
-                            i.getAndIncrement();
+                    Integer seqNum = v.getPersonTypeNum();
+                    String personType = v.getPersonType();
+                    String svcDocId = v.getSvcDocId();
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                    Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
+                    if(integer==null){
+                        Set<String> strings = map1.keySet();
+                        if(strings==null||strings.isEmpty()){
+                            map1.put(entity.getDocTitle() + personType + seqNum,1);
                         }else {
-                            map.put(appGrpPersonId,1);
+                            Integer max=1;
+                            for(String var :strings){
+                                if(var.contains(entity.getDocTitle() + personType)){
+                                    Integer integer1 = map1.get(var);
+                                    if(integer1>=max){
+                                        max=integer1+1;
+                                    }
+                                }
+                            }
+                            map1.put(entity.getDocTitle() + personType + seqNum,max);
                         }
-                        map1.put(v.getSvcDocId(),map.get(appGrpPersonId));
                     }
                 });
             }
@@ -204,7 +220,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFile()));
+                    String configDocId = appSupDocDtos.get(i).getConfigDocId();
+                    HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(configDocId).getEntity();
+                    Integer personTypeNum = appSupDocDtos.get(i).getPersonTypeNum();
+                    String personType = appSupDocDtos.get(i).getPersonType();
+                    map1.get(entity.getDocTitle() + personType + personTypeNum);
+                    Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
+                    String  psnIndex = StringUtil.nullToEmpty(integer);
                     if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
                         switch (docTitleList.get(j).getDupForPerson()){
                             case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;

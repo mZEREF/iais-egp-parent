@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/dostart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRetriggerGiroPayment" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/dostart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRetriggerGiroPayment" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="dostart" x="40" y="100">
@@ -91,17 +91,11 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPayment" style="rectanular">
    <position>{(930,460)(1060,460)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/paymentPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(1060,460)(640,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAck" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(1060,460)(1070,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preAck" style="rectanular">
    <position>{(1070,570)(1070,670)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/paymentPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(670,360)(593,361)(640,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(670,360)(671,423)(790,460)}</position>
@@ -118,18 +112,27 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAck" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(310,120)(1070,570)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prePayment" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(860,70)(540,60)(520,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(670,360)(860,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1060,460)(860,70)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch1" x="1040" y="440">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/paymentPage" value="&quot;prepayment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAck" value="&quot;preack&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;prepayment&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="isValid" name="Switch2" x="650" y="340">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/paymentPage" value="&quot;topayment&quot;"/>
    <SwitchCase component="/Pages/WebPage/bank" value="&quot;tobank&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;prepayment&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch3" x="290" y="100">
    <Description/>
@@ -138,7 +141,11 @@
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="840" y="50">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>

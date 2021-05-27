@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
@@ -75,8 +76,7 @@ public class FeAdminManageDelegate {
             QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
             SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
             Map<String, FeUserQueryDto> feMap = IaisCommonUtils.genNewHashMap();
-            for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
-            ) {
+            for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()) {
                 if(feMap.get(item.getId()) != null){
                     if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(feMap.get(item.getId()).getRole()) && RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRole())){
                         feMap.get(item.getId()).setRole(RoleConsts.USER_ROLE_ORG_ADMIN);
@@ -86,21 +86,16 @@ public class FeAdminManageDelegate {
                 }
             }
             List<FeUserQueryDto> feUserQueryDtoList = IaisCommonUtils.genNewArrayList();
-            for (Map.Entry<String,FeUserQueryDto> entry:feMap.entrySet()
-                 ) {
+            for (Map.Entry<String,FeUserQueryDto> entry:feMap.entrySet()) {
                 feUserQueryDtoList.add(entry.getValue());
             }
-            for (FeUserQueryDto item:feUserQueryDtoList
-            ) {
-                item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
-                item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
-                item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
-                if(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive())){
+            feUserQueryDtoList.forEach(item -> {
+                if (AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive())) {
                     item.setIsActive("1");
-                }else{
+                } else {
                     item.setIsActive("0");
                 }
-            }
+            });
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
@@ -176,6 +171,7 @@ public class FeAdminManageDelegate {
             String idType = ParamUtil.getString(bpc.request,"idType");
             String idNo = StringUtil.toUpperCase(ParamUtil.getString(bpc.request,"idNo"));
             String designation = ParamUtil.getString(bpc.request,"designation");
+            String designationOther = ParamUtil.getString(bpc.request,"designationOther");
             String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             String email = ParamUtil.getString(bpc.request,"email");
@@ -194,6 +190,7 @@ public class FeAdminManageDelegate {
             feUserDto.setDisplayName(name);
             feUserDto.setSalutation(salutation);
             feUserDto.setDesignation(designation);
+            feUserDto.setDesignationOther(designationOther);
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
             feUserDto.setEmail(email);
@@ -227,13 +224,20 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
+                LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
+                boolean amendLicensee = (needRefersh && licenseeDto!=null);
+                if( !needRefersh){
+                    myInfoDto = null;
+                }
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
 
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(null,feUserDto,null,false);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,amendLicensee);
                 if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
                 }else{

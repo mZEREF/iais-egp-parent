@@ -75,6 +75,9 @@ public class BackendInboxDelegator {
     InspectionMainService inspectionService;
 
     @Autowired
+    private MohHcsaBeDashboardService mohHcsaBeDashboardService;
+
+    @Autowired
     TaskService taskService;
 
     @Autowired
@@ -114,7 +117,8 @@ public class BackendInboxDelegator {
 
     @Autowired
     ApplicationMainClient applicationMainClient;
-
+    @Autowired
+    private BeDashboardSupportService beDashboardSupportService;
     @Value("${iais.email.sender}")
     private String mailSender;
 
@@ -196,18 +200,6 @@ public class BackendInboxDelegator {
 
         String application_no = (String) searchParamGroup.getFilters().get("application_no");
 
-        if(!StringUtil.isEmpty(hci_name)){
-            hci_name = hci_name.substring(1,hci_name.length()-1);
-            hci_name = hci_name.replace("%","");
-        }
-        if(!StringUtil.isEmpty(address)){
-            address = address.substring(1,address.length()-1);
-            address = address.replace("%","");
-        }
-        if(!StringUtil.isEmpty(application_no)){
-            application_no = application_no.substring(1,application_no.length()-1);
-            application_no = application_no.replace("%","");
-        }
         ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
         ParamUtil.setRequestAttr(bpc.request, "hci_address", address);
         ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
@@ -230,7 +222,7 @@ public class BackendInboxDelegator {
                 Map<String, Object> fileters = searchParamGroupFromHsca.getFilters();
                 if(fileters != null){
                     for (Map.Entry<String, Object> entry:fileters.entrySet()
-                         ) {
+                    ) {
                         if(entry.getKey().indexOf("item") <= 0){
                             ParamUtil.setSessionAttr(request,entry.getKey(),entry.getValue().toString());
                         }
@@ -524,11 +516,11 @@ public class BackendInboxDelegator {
             svcCodeList.add(svcDto.getSvcCode());
         }
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
+            beDashboardSupportService.rfcSendRejectNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             log.info("ao1 or ao2 send application reject email");
             try {
@@ -540,238 +532,8 @@ public class BackendInboxDelegator {
         }
     }
 
-    private void rfcSendRejectNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        String applicantName = "";
-        OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-        if(orgUserDto != null){
-            applicantName = orgUserDto.getDisplayName();
-        }
-        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        emailMap.put("ApplicantName", applicantName);
-        emailMap.put("ApplicationType", applicationTypeShow);
-        emailMap.put("ApplicationNumber", applicationNo);
-        emailMap.put("ApplicationDate", appDate);
-        emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
-        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-        EmailParam emailParam = new EmailParam();
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
-        emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(applicationNo);
-        emailParam.setReqRefNum(applicationNo);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-        emailParam.setRefId(applicationNo);
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        MsgTemplateDto rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
-        map.put("ApplicationType", applicationTypeShow);
-        map.put("ApplicationNumber", applicationNo);
-        String subject= null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
-        } catch (IOException | TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setSubject(subject);
-        //email
-        log.info(StringUtil.changeForLog("send RFC Reject email send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject email end"));
-        //msg
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG).getEntity();
-        subject = null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        } catch (IOException |TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setSubject(subject);
-        emailParam.setSvcCodeList(svcCodeList);
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(applicationNo);
-        log.info(StringUtil.changeForLog("send RFC Reject msg send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject msg end"));
-        //sms
-        rfiEmailTemplateDto = generateIdClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS).getEntity();
-        subject = null;
-        try {
-            subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
-        } catch (IOException |TemplateException e) {
-            log.info(e.getMessage(),e);
-        }
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
-        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-        log.info(StringUtil.changeForLog("send RFC Reject sms send"));
-        notificationHelper.sendNotification(emailParam);
-        log.info(StringUtil.changeForLog("send RFC Reject sms end"));
-    }
 
-    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        log.info(StringUtil.changeForLog("send new application notification start"));
-        //send email
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        if(applicationGroupDto != null) {
-            String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            String aubmitBy = applicationGroupDto.getSubmitBy();
-            log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
 
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-
-            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(aubmitBy).getEntity();
-            if (orgUserDto != null){
-                map.put("ApplicantName", orgUserDto.getDisplayName());
-            }
-
-            map.put("applicationType", applicationTypeShow);
-            map.put("applicationNumber", applicationNo);
-            map.put("applicationDate", appDate);
-            map.put("emailAddress", systemAddressOne);
-            map.put("MOH_AGENCY_NAME", MohName);
-            try {
-//                String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
-                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                subMap.put("ApplicationType", applicationTypeShow);
-                subMap.put("ApplicationNumber", applicationNo);
-                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID,subMap);
-                String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID,subMap);
-                String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID,subMap);
-                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                EmailParam emailParam = new EmailParam();
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
-                emailParam.setTemplateContent(map);
-                emailParam.setQueryCode(applicationNo);
-                emailParam.setReqRefNum(applicationNo);
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                emailParam.setRefId(applicationNo);
-                emailParam.setSubject(emailSubject);
-                //send email
-                log.info(StringUtil.changeForLog("send new application email"));
-                notificationHelper.sendNotification(emailParam);
-                //send sms
-                EmailParam smsParam = new EmailParam();
-                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
-                smsParam.setSubject(smsSubject);
-                smsParam.setQueryCode(applicationNo);
-                smsParam.setReqRefNum(applicationNo);
-                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                smsParam.setRefId(applicationNo);
-                log.info(StringUtil.changeForLog("send new application sms"));
-                notificationHelper.sendNotification(smsParam);
-                //send message
-                EmailParam messageParam = new EmailParam();
-                messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
-                messageParam.setTemplateContent(map);
-                messageParam.setQueryCode(applicationNo);
-                messageParam.setReqRefNum(applicationNo);
-                messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                messageParam.setRefId(applicationNo);
-                messageParam.setSubject(messageSubject);
-                messageParam.setSvcCodeList(svcCodeList);
-                log.info(StringUtil.changeForLog("send new application message"));
-                notificationHelper.sendNotification(messageParam);
-                log.info(StringUtil.changeForLog("send new application notification end"));
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-            }
-
-        }
-    }
-
-    private String getEmailSubject(String templateId,Map<String, Object> subMap){
-        String subject = "-";
-        if(!StringUtil.isEmpty(templateId)){
-            MsgTemplateDto emailTemplateDto = msgTemplateMainClient.getMsgTemplate(templateId).getEntity();
-            if(emailTemplateDto != null){
-                try {
-                    if(!IaisCommonUtils.isEmpty(subMap)){
-                        subject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(),subMap);
-                    }else{
-                        subject = emailTemplateDto.getTemplateName();
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }
-        return subject;
-    }
-
-    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
-        log.info(StringUtil.changeForLog("send renewal application notification start"));
-        //send email
-        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        if(applicationGroupDto != null){
-            String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
-            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
-            if(licenseeDto != null){
-                String applicantName = "";
-                OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                if(orgUserDto != null){
-                    applicantName = orgUserDto.getDisplayName();
-                }
-                log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", applicationNo);
-                map.put("ApplicationDate", appDate);
-                map.put("emailAddress", systemAddressOne);
-                map.put("MOH_AGENCY_NAME", MohName);
-                try {
-                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                    subMap.put("ApplicationType", applicationTypeShow);
-                    subMap.put("ApplicationNumber", applicationNo);
-                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subMap);
-                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS,subMap);
-                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE,subMap);
-                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(emailSubject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send renewal application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
-                    smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(applicationNo);
-                    smsParam.setReqRefNum(applicationNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send renewal application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(applicationNo);
-                    messageParam.setReqRefNum(applicationNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(messageSubject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send renewal application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send renewal application notification end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
-    }
 
 
     private void inspectorAo1(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,TaskDto taskDto){
@@ -1016,7 +778,7 @@ public class BackendInboxDelegator {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
-                
+
                 if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
                     updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
                 }
@@ -1051,7 +813,7 @@ public class BackendInboxDelegator {
 
                     // send the task to Ao3 or ao2
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
@@ -1127,7 +889,7 @@ public class BackendInboxDelegator {
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
 
                     for (ApplicationDto viewitem:saveApplicationDtoList
-                         ) {
+                    ) {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
                     if(needUpdateGroup){
@@ -1166,6 +928,22 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         log.info(StringUtil.changeForLog(submissionId));
+        //if Giro payment fail
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+        ) {
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(applicationGroupDto.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(applicationGroupDto.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(applicationGroupDto.getPmtStatus())) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
+                } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(applicationGroupDto.getPmtStatus())) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
+                }
+            }
+        }
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
@@ -1219,7 +997,7 @@ public class BackendInboxDelegator {
         for(ApplicationDto applicationDto : applicationDtoList){
             int needChange = 1;
             for (String item:applist
-                 ) {
+            ) {
                 if(item.equals(applicationDto.getApplicationNo())){
                     needChange = 0;
                     break;
@@ -1242,7 +1020,7 @@ public class BackendInboxDelegator {
             ) {
                 ApplicationDto applicationDto=applicationMainClient.getAppByNo(appreturn.getApplicationNo()).getEntity();
                 ApplicationGroupDto applicationGroupDto=applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                if(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
+                if(applicationGroupDto.getPayMethod()!=null&&applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT)){
                     saveReturnFeeDtosStripe.add(appreturn);
                 }
             }
@@ -1271,25 +1049,25 @@ public class BackendInboxDelegator {
         } else {
             boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList,newCorrelationId);
             if(flag) {
-                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
-                    String roleId = RoleConsts.USER_ROLE_AO3;
-                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
-                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
-                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
-                        creatTaskApplicationList = ao3AppList;
-                    } else {
-                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
-                        roleId = RoleConsts.USER_ROLE_AO2;
-                    }
-                    // send the task to Ao2  or Ao3
-                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId());
-                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
-                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                String roleId = RoleConsts.USER_ROLE_AO3;
+                updateCurrentApplicationStatus(applicationDtoList, appId, status);
+                List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
+                    creatTaskApplicationList = ao3AppList;
+                } else {
+                    stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                    roleId = RoleConsts.USER_ROLE_AO2;
+                }
+                // send the task to Ao2  or Ao3
+                TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                        stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
+                List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             }
         }
     }
@@ -1514,8 +1292,8 @@ public class BackendInboxDelegator {
             searchParamGroup.addFilter("roleId",loginContext.getCurRoleId(),true);
             searchParamAjax.addFilter("roleId",loginContext.getCurRoleId(),true);
             if(!StringUtil.isEmpty(application_no)){
-                searchParamGroup.addFilter("application_no","%" +application_no +"%" ,true);
-                searchParamAjax.addFilter("application_no", "%" +application_no +"%",true);
+                searchParamGroup.addFilter("application_no",application_no  ,true);
+                searchParamAjax.addFilter("application_no", application_no ,true);
                 ParamUtil.setSessionAttr(bpc.request,"application_no",null);
             }else{
                 searchParamGroup.removeFilter("application_no");
@@ -1578,8 +1356,8 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             if(!StringUtil.isEmpty(hci_address)){
                 ParamUtil.setSessionAttr(bpc.request,"hci_address",null);
-                searchParamGroup.addFilter("hci_address", "%" +hci_address +"%",true);
-                searchParamAjax.addFilter("hci_address", "%" +hci_address +"%",true);
+                searchParamGroup.addFilter("hci_address", hci_address ,true);
+                searchParamAjax.addFilter("hci_address", hci_address ,true);
             }else{
                 searchParamGroup.removeFilter("hci_address");
                 searchParamAjax.removeFilter("hci_address");
@@ -1587,8 +1365,8 @@ public class BackendInboxDelegator {
 
             if(!StringUtil.isEmpty(hci_name)){
                 ParamUtil.setSessionAttr(bpc.request,"hci_name",null);
-                searchParamGroup.addFilter("hci_name", "%" +hci_name +"%",true);
-                searchParamAjax.addFilter("hci_name", "%" +hci_name +"%",true);
+                searchParamGroup.addFilter("hci_name", hci_name ,true);
+                searchParamAjax.addFilter("hci_name", hci_name ,true);
             }else{
                 searchParamGroup.removeFilter("hci_name");
                 searchParamAjax.removeFilter("hci_name");
@@ -1617,6 +1395,9 @@ public class BackendInboxDelegator {
                 }
                 item.setApplicationTypeCode(String.copyValueOf(item.getApplicationType().toCharArray()));
                 item.setApplicationType(MasterCodeUtil.getCodeDesc(item.getApplicationType()));
+                //set max update
+                Date maxUpdateDate = mohHcsaBeDashboardService.getMaxUpdateByAppGroup(item.getId());
+                item.setGroupUpDt(maxUpdateDate);
             }
 
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult3);
@@ -1858,7 +1639,7 @@ public class BackendInboxDelegator {
                 }
                 String appealType = premiseMiscDto.getAppealType();
                 if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
-                    LicenceDto licenceDto = licenceClient.getLicBylicId(premiseMiscDto.getRelateRecId()).getEntity();
+                    LicenceDto licenceDto = licenceClient.getLicDtoById(premiseMiscDto.getRelateRecId()).getEntity();
                     if(licenceDto != null){
                         appealNo = licenceDto.getLicenceNo();
                         appType = "Licence";

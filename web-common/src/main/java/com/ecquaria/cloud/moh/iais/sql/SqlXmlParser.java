@@ -42,9 +42,11 @@ public class SqlXmlParser extends DefaultHandler {
     private StringBuilder sqlStat; // accumulator
 
     public List<Sql> parseSqlXml(String xmlFileName) throws SAXException, ParserConfigurationException, IOException {
-        SAXParserFactory spf = SAXParserFactory.newInstance();//NOSONAR
+        SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser sp = spf.newSAXParser();
+//        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         sp.parse(xmlFileName, this);
 
         return sqls;

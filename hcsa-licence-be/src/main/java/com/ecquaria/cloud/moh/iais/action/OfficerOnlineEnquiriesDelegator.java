@@ -106,7 +106,7 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(ApplicationLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("application_no").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("start_date").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     FilterParameter licenseeParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryDto.class)
@@ -122,7 +122,10 @@ public class OfficerOnlineEnquiriesDelegator {
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
+            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
+    );
 
 
     public void start(BaseProcessClass bpc) {
@@ -265,7 +268,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                                addressList1.add(licAddress);  //NOSONAR
+                                addressList1.add(licAddress);
                                 if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
@@ -424,9 +427,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", status);
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
@@ -581,9 +581,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", status);
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", status);
                     }
@@ -723,33 +720,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 appParam.setPageNo(1);
             }
             if(status!=null){
-                switch (status){
-                    case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                        break;
-                    case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                        appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                        break;
-                    default:
-                }
+                setSearchParamAppStatus(status,appParam);
             }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -823,7 +794,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                                addressList1.add(licAddress);  //NOSONAR
+                                addressList1.add(licAddress);
                                 if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
@@ -846,6 +817,42 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
         // 		doSearchLicence->OnStepProcess
+    }
+
+    private void setSearchParamAppStatus(String status,SearchParam appParam ){
+        switch (status){
+            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
+                break;
+            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
+                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
+                break;
+            case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
+                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
+                break;
+            case ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO:
+                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT03' )");
+                break;
+            default:
+        }
     }
 
     private void setSearchParamDate(HttpServletRequest request, String uenNo, String appSubDate, String appSubToDate, String licStaDate, String licStaToDate, String licExpDate, String licExpToDate,String svcSubType, SearchParam licParam) throws ParseException {
@@ -883,8 +890,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus)
-                &&(appStatuses.contains(appStatus)||appStatus.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS))
+        if(!StringUtil.isEmpty(appStatus) &&(appStatuses.contains(appStatus))
         )
         {
             licParam.getFilters().put("appStatus",appStatus);
@@ -976,16 +982,18 @@ public class OfficerOnlineEnquiriesDelegator {
         Set<String> licIdsSet=IaisCommonUtils.genNewHashSet();
         Set<String> licRfiIdsSet=IaisCommonUtils.genNewHashSet();
         try{
-            for (String appId : appIds) {
-                String[] appIdSplit=appId.split("\\|");
-                String is = appIdSplit[1];
-                if(appIdSplit.length>2){
-                    String isActive = appIdSplit[3];
-                    if ("1".equals(is)&&"Active".equals(isActive)) {
-                        licIdsSet.add(appIdSplit[2]);
-                    }
-                    if ("Active".equals(isActive)) {
-                        licRfiIdsSet.add(appIdSplit[2]);
+            if(appIds.length!=0){
+                for (String appId : appIds) {
+                    String[] appIdSplit=appId.split("\\|");
+                    String is = appIdSplit[1];
+                    if(appIdSplit.length>2){
+                        String isActive = appIdSplit[3];
+                        if ("1".equals(is)&&"Active".equals(isActive)) {
+                            licIdsSet.add(appIdSplit[2]);
+                        }
+                        if ("Active".equals(isActive)) {
+                            licRfiIdsSet.add(appIdSplit[2]);
+                        }
                     }
                 }
             }
@@ -1076,9 +1084,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1215,33 +1220,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters()!=null){
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
-                            switch (status){
-                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                    break;
-                                default:
-                            }
+                            setSearchParamAppStatus(status,appParam);
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1318,7 +1297,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                                addressList1.add(licAddress);  //NOSONAR
+                                addressList1.add(licAddress);
                                 if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
@@ -1361,9 +1340,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1500,33 +1476,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(parm.getFilters()!=null){
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
-                            switch (status){
-                                case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                    break;
-                                case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                    appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                    break;
-                                default:
-                            }
+                            setSearchParamAppStatus(status,appParam);
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1603,7 +1553,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
                                 String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                                addressList1.add(licAddress);  //NOSONAR
+                                addressList1.add(licAddress);
                                 if(rfiApplicationQueryDto.getApplicationNo()!=null&&appAddress.equals(licAddress)){
                                     reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
                                     reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
@@ -1686,9 +1636,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
-                        filters.put("appGrpPmtStatus", parm.getFilters().get("appStatus"));
-                    }else
                     if(!appStatuses.contains(status)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
@@ -1823,33 +1770,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(parm!=null&&parm.getFilters()!=null){
                     String status= (String) parm.getFilters().get("appStatus");
                     if(status!=null){
-                        switch (status){
-                            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                                break;
-                            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                                break;
-                            default:
-                        }
+                        setSearchParamAppStatus(status,appParam);
                     }
                     if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                         List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();

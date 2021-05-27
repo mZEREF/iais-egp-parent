@@ -74,4 +74,8 @@
         $("[name='guide_action_type']").val("updateLicsSort");
         $("#mainForm").submit();
     }
+
+    function popUpLink(url){
+        showPopupWindow(url);
+    }
 </script>

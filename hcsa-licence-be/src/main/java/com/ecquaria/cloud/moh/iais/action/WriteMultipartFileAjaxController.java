@@ -84,7 +84,7 @@ public class WriteMultipartFileAjaxController {
                     //type
                     if(!map.get("fileType")){
                         doc.setPassDocValidate(false);
-                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC,DOCX,PDF,JPG,PNG,GIF,TIFF","fileType");
+                        errUploadFile=MessageUtil.replaceMessage("GENERAL_ERR0018", "DOC, DOCX, PDF, JPG, PNG, GIF, TIFF","fileType");
                     }
                     if(filename.length()>100){
                         doc.setPassDocValidate(false);
@@ -196,7 +196,7 @@ public class WriteMultipartFileAjaxController {
                     byte[] fileData =att.getData();
                     if(fileData != null){
                         try {
-                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  URLEncoder.encode(fileRepoName, StandardCharsets.UTF_8.toString())+"\"");
+                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  fileRepoName+"\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){

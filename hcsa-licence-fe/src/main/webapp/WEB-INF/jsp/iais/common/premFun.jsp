@@ -149,6 +149,10 @@
                     var $eventHtml = $premContent.find('.'+premDivName).find('div.eventContent');
                     genEventHtml($premContent,$eventHtml);
                 }
+                //if Moving to new address need value from page 68859
+                $("input[name='isPartEdit']").val('1');
+                $("input[name='isEdit']").val('1');
+                $("input[name='chooseExistData']").val('0');
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -162,18 +166,22 @@
             }else{
                 <!--choose already exist premises -->
                 var premisesType = '';
+                var premiseIndex='0';
                 if("onSiteSel" == thisId){
                     premisesType = 'onSite';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 }else if ("conveyanceSel" == thisId) {
                     premisesType = 'conveyance';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 }else if ("offSiteSel" == thisId){
                     premisesType = 'offSite';
+                    premiseIndex= $premContent.find('.premiseIndex').val();
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').removeClass('hidden');
@@ -183,7 +191,8 @@
                 }
                 var jsonData = {
                     'premIndexNo':premSelectVal,
-                    'premisesType':premisesType
+                    'premisesType':premisesType,
+                    'premiseIndex':premiseIndex
                 };
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/lic-premises',
@@ -195,8 +204,12 @@
                             return;
                         }
                         if(premisesType != ''){
+
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
+                            var eqHciCode= data.eqHciCode;
+                            $("input[name='isEdit']").val('1');
+
                             //copy ph form
                             //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
@@ -276,19 +289,19 @@
 
                             //ph
                             var $phCountent = $currForm.find('div.pubHolDayContent');
+                            //remove ph div
+                            $phCountent.find('div.pubHolidayDiv').remove();
+                            //add html
+                            $phCountent.find('div.addPhDiv').before(data.phHtml);
+                            //remove first field
+                            //$phCountent.find('div.form-group:eq(0)').remove();
+                            //remove first del btn
+                            $phCountent.find('.pubHolidayDel').remove();
+                            //gen multi dropdown
+                            $phCountent.find('select.PubHoliday').each(function () {
+                                $(this).multiSelect();
+                            });
                             if(data.phDtoList != null && data.phDtoList != '' && data.phDtoList != undefined){
-                                //remove ph div
-                                $phCountent.find('div.pubHolidayDiv').remove();
-                                //add html
-                                $phCountent.find('div.addPhDiv').before(data.phHtml);
-                                //remove first field
-                                $phCountent.find('div.form-group:eq(0)').remove();
-                                //remove first del btn
-                                $phCountent.find('.pubHolidayDel').remove();
-                                //gen multi dropdown
-                                $phCountent.find('select.PubHoliday').each(function () {
-                                    $(this).multiSelect();
-                                });
                                 //fill data
                                 $phCountent.find('div.pubHolidayDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -377,6 +390,15 @@
                             $premContent.find('span.multi-select-button').css('border-color','#ededed');
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+                            if(eqHciCode=='true'){
+                                $('.premisesEdit').trigger('click');
+                                $("input[name='isPartEdit']").val('1');
+                                $("input[name='chooseExistData']").val('0');
+                                return;
+                            }else {
+                                $("input[name='chooseExistData']").val('1');
+                                return;
+                            }
                         }
                     },
                     'error':function () {
@@ -1620,24 +1642,24 @@
     }
 
     var fillWeekly = function($thisDiv,premisesType,prefix,startHHVal,startMMVal,endHHVal,endMMVal,isAllDay) {
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').val(startHHVal);
+        $thisDiv.find('select.'+prefix+'StartHH').val(startHHVal);
         var startHH =$thisDiv.find('.'+prefix+'StartHH option[value="' + startHHVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartHH"]').next().find('.current').html(startHH);
+        $thisDiv.find('select.'+prefix+'StartHH').next().find('.current').html(startHH);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').val(startMMVal);
+        $thisDiv.find('select.'+prefix+'StartMM').val(startMMVal);
         var startMM =$thisDiv.find('.'+prefix+'StartMM option[value="' + startMMVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'StartMM"]').next().find('.current').html(startMM);
+        $thisDiv.find('select.'+prefix+'StartMM').next().find('.current').html(startMM);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').val(endHHVal);
+        $thisDiv.find('select.'+prefix+'EndHH').val(endHHVal);
         var endHH =$thisDiv.find('.'+prefix+'EndHH option[value="' + endHHVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndHH"]').next().find('.current').html(endHH);
+        $thisDiv.find('select.'+prefix+'EndHH').next().find('.current').html(endHH);
         //
 
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').val(endMMVal);
+        $thisDiv.find('select.'+prefix+'EndMM').val(endMMVal);
         var endMM =$thisDiv.find('.'+prefix+'EndMM option[value="' + endMMVal + '"]').html();
-        $thisDiv.find('select[name="'+premisesType+prefix+'EndMM"]').next().find('.current').html(endMM);
+        $thisDiv.find('select.'+prefix+'EndMM').next().find('.current').html(endMM);
 
         $thisDiv.find('.allDay').attr('checked',isAllDay);
     }
@@ -1651,6 +1673,8 @@
             }else{
                 unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'))
                 unreadonlyPartPage($allDayDiv.prev().find('div.col-md-5'))
+                unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'))
+                unreadonlyPartPage($allDayDiv.prev().find('div.col-md-4'))
             }
 
 
@@ -1669,8 +1693,20 @@
             var defaultVal =$(this).find('select option[value=""]').html();
             $(this).find('select').next().children('.current').html(defaultVal);
         });
+        $allDayDiv.prev().prev().find('div.col-md-4').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
+        $allDayDiv.prev().find('div.col-md-4').each(function () {
+            $(this).find('select').val('');
+            var defaultVal =$(this).find('select option[value=""]').html();
+            $(this).find('select').next().children('.current').html(defaultVal);
+        });
         readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'));
         readonlyPartPage($allDayDiv.prev().find('div.col-md-5'));
+        readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'));
+        readonlyPartPage($allDayDiv.prev().find('div.col-md-4'));
     }
 
     var genMulti = function(){

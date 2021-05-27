@@ -388,7 +388,7 @@ public class PublicHolidayDelegate {
                 ParamUtil.setSessionAttr(bpc.request,"phCode",null);
             }
             if(!StringUtil.isEmpty(year)){
-                holidaySearchParam.addFilter("year", "%" + year + "%",true);
+                holidaySearchParam.addFilter("year",  year ,true);
                 ParamUtil.setSessionAttr(bpc.request,"year",year);
             }else{
                 holidaySearchParam.removeFilter("year");

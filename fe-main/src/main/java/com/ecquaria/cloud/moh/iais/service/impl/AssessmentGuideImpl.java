@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class AssessmentGuideImpl implements AssessmentGuideService {
@@ -54,11 +55,12 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     }
 
     @Override
-    public List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId, List<String> svcNameList) {
+    public List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId, List<String> svcNameList,List<String> premTypeList) {
         List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(svcNameList)) {
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(svcNameList) && !IaisCommonUtils.isEmpty(premTypeList)) {
             String svcNames = JsonUtil.parseToJson(svcNameList);
-            appAlignLicQueryDtos = licenceClient.getAppAlignLicQueryDto(licenseeId,svcNames).getEntity();
+            String premTypeStr = JsonUtil.parseToJson(premTypeList);
+            appAlignLicQueryDtos = licenceClient.getAppAlignLicQueryDto(licenseeId,svcNames,premTypeStr).getEntity();
         }
         return appAlignLicQueryDtos;
     }
@@ -154,6 +156,11 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     @Override
     public List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList, String status, String licenseeId, String appType) {
         return appInboxClient.getDraftListBySvcCodeAndStatus(svcCodeList,licenseeId,status,appType).getEntity();
+    }
+
+    @Override
+    public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
+        return configInboxClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
     }
 
     private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){

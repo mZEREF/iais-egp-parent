@@ -172,7 +172,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     private List<ApplicationDto> getApplicationBySamePremCorrId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, ProcessReSchedulingDto processReSchedulingDto, String appStatus) {
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<String> taskRefNo = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){//NOSONAR
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                 if(appPremisesCorrelationDto != null && !StringUtil.isEmpty(appPremisesCorrelationDto.getId())){
                     ApplicationDto applicationDto = applicationFeClient.getApplicationByCorreId(appPremisesCorrelationDto.getId()).getEntity();
@@ -507,7 +507,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ProcessReSchedulingDto processReSchedulingDto;
             Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
             for (ApptViewDto appt:apptViewDtos
-                 ) {
+            ) {
                 if(appt.getAppCorrId().equals(appPremisesCorrelationDto.getId())){
                     map.put(applicationDto.getApplicationNo(),appt.getUserIds());
                 }
@@ -515,17 +515,28 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
             processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId,applicationDto);
             processReSchedulingDto.setAppNoUserIds(map);
-
+            //Exclude a selected date
+            List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+            for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
+                cancelRefNo.add(apptDto.getApptRefNo());
+            }
+            Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+            cancelRefNo = new ArrayList<>(cancelRefNoSet);
+            ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+            apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+            ccCalendarStatusEic(apptCalendarStatusDto);
             for (ApptViewDto appt:apptViewDtos
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                         ) {
+                    ) {
                         insAppt.setReason(appt.getReason());
                         insAppt.setEndDate(appt.getSpecificEndDate());
                         insAppt.setStartDate(appt.getSpecificStartDate());
                         insAppt.setSpecificInspDate(appt.getInspNewDate());
                         insAppt.setReschedulingCount(insAppt.getReschedulingCount()+1);
+                        insAppt.setApptRefNo(appt.getApptRefNo());
                         processReSchedulingDto.setSaveDate(appt.getInspNewDate());
 
                     }
@@ -633,14 +644,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             }
             processReSchedulingDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
         }
-        //Exclude a selected date
-        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
-        for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
-            cancelRefNo.add(apptDto.getApptRefNo());
-        }
-        //filter
-        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
-        cancelRefNo = new ArrayList<>(cancelRefNoSet);
+
         //update application
         //setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
@@ -665,10 +669,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
-        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
-        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
-        ccCalendarStatusEic(apptCalendarStatusDto);
         return processReSchedulingDto1;
     }
 
@@ -703,9 +703,11 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         String gatewayUrl = env.getProperty("iais.inter.gateway.url");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), String.class);
+        if(receiptEmail.size()!=0){
+            IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization(), String.class);
+        }
 
         SmsDto smsDto = new SmsDto();
         smsDto.setSender(mailSender);
@@ -713,10 +715,11 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         smsDto.setOnlyOfficeHour(false);
         smsDto.setReceipts(mobile);
         smsDto.setReqRefNum(apptViewDto.getAppId());
-
-        IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), InterMessageDto.class);
+        if(mobile.size()!=0){
+            IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
+                    MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization(), InterMessageDto.class);
+        }
     }
 
 

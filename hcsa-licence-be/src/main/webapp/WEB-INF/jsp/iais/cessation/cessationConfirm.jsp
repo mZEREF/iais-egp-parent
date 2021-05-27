@@ -61,7 +61,7 @@
                                                         <span style="font-size: 16px"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></span>
                                                         <span style="font-size: 16px;float:right"><a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                                                          data-html="true"
-                                                                                         data-original-title="<p>The ASO must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">
+                                                                                         data-original-title="${cess_ack002}">
                                                                 i</a></span>
                                                     </div>
                                                 </div>
@@ -276,16 +276,16 @@
                                     <c:set var="licNo" value="${map.key}"></c:set>
                                     <c:if test="${appCess.licenceNo==licNo}">
                                         <div><h4>The following specified healthcare services will also be ceased as
-                                            their underlying licensable healthcare service(s) is/are listed above.</h4>
+                                            their underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                         </div>
                                         <table class="table-gp tablebox">
                                             <tr style="text-align:center">
                                                 <th style="text-align:center;width: 0%">S/N</th>
-                                                <th style="text-align:center;width: 25%">Special Licensable Service Licence No.
+                                                <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
                                                 </th>
-                                                <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
-                                                <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                                <th style="text-align:center;width: 25%">Base Service Name</th>
+                                                <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                                <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                                <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                             </tr>
                                             <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                 <tr style="text-align:center">
@@ -314,42 +314,17 @@
                     </c:forEach>
                 </div>
                 <br/>
-                <div class="form-check">
-                    <ul>
-                        <li>
-                            <p> The ASO must notify the Director of Medical Services in writing at least 30 days
-                                before
-                                the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                clinic or clinical laboratory.</p>
-                        </li>
-                        <li>
-                            <p> Any ASO of a licensed healthcare institution (For e.g a medical clinic) who
-                                intends to
-                                cease operating the medical clinic shall take all measures as are reasonable and
-                                necessary
-                                to ensure that the medical records of every patient are properly transferred to the
-                                medical
-                                clinic or other healthcare institution to which such patient is to be transferred.</p>
-                        </li>
-                    </ul>
-                    <div class="form-check disabled">
-                    <input class="form-check-input" id="confirmInfo" disabled type="radio"
-                           name="${num.count}whichTodo${uid.count}" checked aria-invalid="false">
-                    <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
-                        agreed with the above information</label>
-                    </div>
-                </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
-                                </div>
+                <div class="application-tab-footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>

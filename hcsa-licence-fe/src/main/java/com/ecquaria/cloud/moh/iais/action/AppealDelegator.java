@@ -150,6 +150,9 @@ public class AppealDelegator {
               log.error(e.getMessage(),e);
             }
             return;
+        }else if("print".equals(crud_action_value)){
+            bpc. request.setAttribute("crud_action_type","print");
+            return;
         }
         Map<String, String> validate = appealService.validate(bpc.request);
         if(!validate.isEmpty()){
@@ -226,6 +229,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile");
         bpc.getSession().removeAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex");
         bpc.getSession().removeAttribute("pageShowFiles");
+        bpc.getSession().removeAttribute("appPremiseMiscDto");
         bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, null);
         //set upload file config
@@ -241,7 +245,11 @@ public class AppealDelegator {
 
         log.info("end**************save************");
     }
-
+    public void print(BaseProcessClass bpc) throws IOException {
+        log.info("=====start====print");
+        appealService.print(bpc.request);
+        bpc.request.setAttribute("need_print","need_print");
+    }
     @RequestMapping(value = "/regNo-prs",method = RequestMethod.GET)
     @ResponseBody
     public ProfessionalResponseDto prsFlag(@RequestParam("regNo") String regNo){

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-internet"/>
 
@@ -23,7 +24,9 @@
     <div class="col-xs-12 col-md-10" style="margin-left: 2%">
       <label style="font-size: 25px">You are appealing for:</label>
     </div>
-
+    <div class="col-xs-12 col-sm-1">
+      <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+    </div>
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6" style="margin-left: 1%">
         <a type="text" name="appealingFor" id="appealingFor"  value="${appealNo}" onclick="link()" >${appealNo}</a>
@@ -156,11 +159,12 @@
       </div>
     </div>
     <input type="hidden"  id="saveDraftSuccess" name="saveDraftSuccess" value="${saveDraftSuccess}">
-    <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
-    </c:if>
+
+    <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <%@ include file="./FeFileCallAjax.jsp" %>
+    <input type="hidden" value="${need_print}" id="need_print" />
   </form>
 </div>
 <style>
@@ -206,7 +210,10 @@
           $('#delete').attr("style","display: inline-block;margin-left: 20px");
           $('#isDelete').val('Y');
       }
-
+      if($('#need_print').val()=='need_print'){
+          var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohAppealPrint/1/",request)%>';
+          window.open(url,'_blank');
+      }
   });
 $('#submit').click(function () {
     if("N" == $('#isDelete').val()){
@@ -218,6 +225,9 @@ $('#submit').click(function () {
    /* SOP.Crud.cfxSubmit("mainForm", "submit","submit","");*/
   }
 });
+  $("#print-review").click(function () {
+      Utils.submit('mainForm','print','print','','');
+  });
 
   var debug = true;//true: add debug logs when cloning
   var evenMoreListeners = true;//demonstrat re-attaching javascript Event Listeners (Inline Event Listeners don't need to be re-attached)

@@ -83,8 +83,11 @@ public class HcsaRiskLegislativeConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
-        hcsaRiskLegislativeService.saveDto(legislativeShowDto);
-
+        if(hcsaRiskLegislativeService.compareVersionsForRiskLegislative(legislativeShowDto,hcsaRiskLegislativeService.getLegShowDto())){
+            hcsaRiskLegislativeService.saveDto(legislativeShowDto);
+        } else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
 
     }
 

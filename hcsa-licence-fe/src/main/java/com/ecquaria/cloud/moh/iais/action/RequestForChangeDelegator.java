@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -122,6 +123,12 @@ public class RequestForChangeDelegator {
 
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute("rfc_eqHciCode");
+        request.getSession().removeAttribute("selectedRFCFileDocShowPageDto");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
+        request.getSession().removeAttribute("DraftNumber");
+        request.getSession().removeAttribute("renewDto");
     }
     /**
      *
@@ -148,6 +155,7 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDraft start ...."));
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        removeSession(bpc.request);
         loadingDraft(bpc,draftNo);
 
         log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
@@ -291,7 +299,8 @@ public class RequestForChangeDelegator {
                 //set svc doc title
                 Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
                 appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-
+                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                bpc.request.getSession().setAttribute("reloadDisciplineAllocationMap",reloadDisciplineAllocationMap);
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             }
         }
@@ -685,6 +694,7 @@ public class RequestForChangeDelegator {
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
@@ -699,6 +709,8 @@ public class RequestForChangeDelegator {
             }else{
                 maxFileIndex ++;
             }
+            String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+            ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
             ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
         }else{
             action = "error";

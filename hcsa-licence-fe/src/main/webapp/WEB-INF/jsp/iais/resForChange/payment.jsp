@@ -17,6 +17,7 @@
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_additional" value=""/>
     <input type="hidden" name="psnSwitch" value="">
+    <input type="hidden" name="eqHciCode" value="${eqHciCode}">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
     <div class="container">
         <div class="navigation-gp">
@@ -54,17 +55,18 @@
                                 <%--<p >--%>
                                     <%--Total amount due: ${dAmount}--%>
                                 <%--</p>--%>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Service</th>
-                                        <th>Application Type</th>
-                                        <th>Application No.</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Application Type</th>
+                                            <th>Application No.</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
                                             <tr>
                                                 <td>
                                                     <p><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>
@@ -79,15 +81,17 @@
                                                     <p><c:out value="${appSubmissionDto.amountStr}"></c:out></p>
                                                 </td>
                                             </tr>
-                                    </c:forEach>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td><p>Total amount due:</p></td>
-                                        <td><p><strong> <c:out value="${dAmount}"></c:out></strong></p></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                        </c:forEach>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td><p>Total amount due:</p></td>
+                                            <td><p><strong> <c:out value="${dAmount}"></c:out></strong></p></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                                 <c:choose>
                                     <c:when test="${dAmount=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">

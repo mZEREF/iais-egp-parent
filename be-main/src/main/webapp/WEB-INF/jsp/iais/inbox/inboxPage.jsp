@@ -150,13 +150,14 @@
                                     <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Last Modified Date"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
                                 </tr>
                                 </thead>
                                 <c:choose>
                                     <c:when test="${empty supTaskSearchResult.rows}">
                                         <tr>
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                             </td>
                                         </tr>
@@ -173,6 +174,7 @@
                                                 <td><c:out value="${pool.applicationType}"/></td>
                                                 <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
                                                 <td><c:out value="${pool.submitDate}"/></td>
+                                                <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
                                                 <td><c:out value="${pool.paymentstatus}"/></td>
                                             </tr>
                                         </c:forEach>
@@ -301,25 +303,25 @@
         console.log("groupajax")
         dividajaxlist.push(divid);
         $.post(
-            '/main-web/backend/appGroup.do',
-            {groupno: applicationGroupNo},
-            function (data, status) {
-                console.log("ajax start")
-                var serviceName = data.serviceName;
-                var res = data.ajaxResult;
-                var url = data.appNoUrl;
-                var taskList = data.taskList;
-                var hastaskList = data.hastaskList;
-                var html = '';
-                html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                    '<td colspan="6" style="padding: 0px 8px !important;">' +
-                    '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                    '<thead>' +
-                    '<tr>';
-                if (hastaskList == "true") {
-                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                }
+                '/main-web/backend/appGroup.do',
+                {groupno: applicationGroupNo},
+                function (data, status) {
+                    console.log("ajax start")
+                    var serviceName = data.serviceName;
+                    var res = data.ajaxResult;
+                    var url = data.appNoUrl;
+                    var taskList = data.taskList;
+                    var hastaskList = data.hastaskList;
+                    var html = '';
+                    html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                            '<td colspan="7" style="padding: 0px 8px !important;">' +
+                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<thead>' +
+                            '<tr>';
+                    if (hastaskList == "true") {
+                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }
 
                 html += '<th width="15%">Application No.</th>' +
                     '<th width="15%">Service</th>' +

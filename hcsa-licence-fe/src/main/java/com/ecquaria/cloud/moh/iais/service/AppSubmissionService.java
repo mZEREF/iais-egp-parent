@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -27,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
@@ -86,7 +89,7 @@ public interface AppSubmissionService {
     InterMessageDto getInterMessageById(String msgId);
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
     List<AppGrpPremisesEntityDto> getPendAppPremises(String licenseeId,List<HcsaServiceDto> hcsaServiceDtos);
-    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames);
+    List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames,List<String> premTypeList);
     List<AppGrpPremisesDto> getLicPremisesInfo(String id);
     Boolean isNewLicensee(String licenseeId);
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
@@ -109,7 +112,7 @@ public interface AppSubmissionService {
     void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException;
     Map<String,List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto,String svcId) throws CloneNotSupportedException;
     void setPreviewDta(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) throws CloneNotSupportedException;
-     void sendEmailForGiroAccountAndSMSAndMessage(AppSubmissionDto appSubmissionDto,String applicantName);
+     void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
     List<LicAppCorrelationDto> getLicDtoByLicId(String licId);
     ApplicationDto getAppById(String appId);
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
@@ -119,5 +122,15 @@ public interface AppSubmissionService {
     List<AppGrpPrimaryDocDto> getMaxSeqNumPrimaryDocList(String appGrpId);
     List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId);
     void updateDraftStatus(String draftNo,String status);
+    ProfessionalResponseDto retrievePrsInfo(String profRegNo);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
+
+    void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
+
+    String getFileAppendId(String appType);
+
+    List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request);
+
+    AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String applicationTypeRequestForChange);
+    boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request);
 }

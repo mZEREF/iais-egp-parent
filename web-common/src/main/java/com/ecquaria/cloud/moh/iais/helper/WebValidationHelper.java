@@ -14,12 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.annotation.AuditAppNoFetch;
-import com.ecquaria.cloud.moh.iais.common.annotation.AuditAppNoField;
-import com.ecquaria.cloud.moh.iais.common.annotation.AuditLicNoFetch;
-import com.ecquaria.cloud.moh.iais.common.annotation.AuditLicNoField;
-import com.ecquaria.cloud.moh.iais.common.annotation.CustomMsg;
-import com.ecquaria.cloud.moh.iais.common.annotation.CustomValidate;
+import com.ecquaria.cloud.moh.iais.common.annotation.*;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -40,11 +35,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * WebValidationHelper
@@ -117,6 +108,34 @@ public class WebValidationHelper {
         if (obj == null) {
             return null;
         }
+        ValidationResult result = null;
+        try {
+            result = validatePropertyWithoutCustom(obj, propertyName);
+            if (result != null) {
+                result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
+            }
+
+            saveAuditTrail(obj, result);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+
+        return result;
+    }
+
+    /**
+     * only validate the entity with oval
+     *
+     * @param obj
+     * @param propertyName
+     * @param <T>
+     * @return
+     */
+    public static <T> ValidationResult validatePropertyWithoutCustom(T obj, String propertyName) {
+        if (obj == null) {
+            return null;
+        }
         ValidationResult result = new ValidationResult();
         try {
             Validator validator = new Validator();
@@ -138,14 +157,14 @@ public class WebValidationHelper {
                     Collection<? extends Serializable> values = constraintViolation.getMessageVariables() == null ? null
                             : constraintViolation.getMessageVariables().values();
                     String msg = "";
-                    if (!Objects.isNull(values) && !values.isEmpty()){
+                    if (!Objects.isNull(values) && !values.isEmpty()) {
                         String[] val = values.toArray(new String[1]);
-                        if (val.length > 0){
+                        if (val.length > 0) {
                             String i = val[0];
                             //example: "Key/Number"
                             msg = formatValuesMessage(constraintViolation.getMessage(), i);
                         }
-                    }else {
+                    } else {
                         msg = constraintViolation.getMessage();
                     }
                     if (!StringUtil.isEmpty(msg)) {
@@ -157,8 +176,8 @@ public class WebValidationHelper {
                                 for (int i = 0; i < cMsg.placeHolders().length; i++) {
                                     repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
                                 }
-                                if(msg.contains("/")){
-                                    msg=msg.substring(0, msg.indexOf('/'));
+                                if (msg.contains("/")) {
+                                    msg = msg.substring(0, msg.indexOf('/'));
                                 }
                                 msg = MessageUtil.getMessageDesc(msg, repMap);
                             }
@@ -167,10 +186,6 @@ public class WebValidationHelper {
                     }
                 }
             }
-
-            result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
-
-            saveAuditTrail(obj, result);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);

@@ -4,8 +4,8 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-internet"/>
-
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -13,6 +13,7 @@
 <%@include file="../cessation/head.jsp" %>
 <div class="main-content">
   <div class="container">
+    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
@@ -64,8 +65,8 @@
                           </div>
                           <div class="col-xs-8 col-sm-2 col-md-2">
                             <a class="btn-tooltip styleguide-tooltip"
-                               data-toggle="tooltip" data-html="true"
-                               title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.&lt;/p&gt;">i</a>
+                               data-toggle="tooltip" data-html="true" style="position: absolute;z-index: 1000"
+                               title="${cess_ack002}">i</a>
                           </div>
                         </div>
                         <div class="form-group">
@@ -107,7 +108,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for=${num.count}radioYes${uid.count}"><span
-                                            class="check-circle"></span>Yes</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==true}">radio-disabled</c:if>"></span>Yes</label>
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
@@ -122,7 +123,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="${num.count}radioNo${uid.count}"><span
-                                            class="check-circle"></span>No</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==false}">radio-disabled</c:if>"></span>No</label>
                                   </div>
                                 </div>
                               </div>
@@ -288,20 +289,20 @@
                     <c:if test="${appCess.licenceNo==licNo}">
                       <div><h4>The following specified healthcare services will also be ceased as
                         their
-                        underlying licensable healthcare service(s) is/are listed above.</h4>
+                        underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                       </div>
                       <table class="table-gp tablebox">
                         <tr style="text-align:center">
                           <th style="text-align:center;width: 0%">S/N</th>
-                          <th style="text-align:center;width: 25%">Special Licensable Service
+                          <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
                             Licence No.
                           </th>
-                          <th style="text-align:center;width: 25%">Special Licensable Service
+                          <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
                             Name
                           </th>
-                          <th style="text-align:center;width: 25%">Base Service Licence No.
+                          <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.
                           </th>
-                          <th style="text-align:center;width: 25%">Base Service Name</th>
+                          <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                         </tr>
                         <c:forEach items="${map.value}" var="spec" varStatus="index">
                           <tr style="text-align:center">
@@ -330,37 +331,16 @@
                   </div>
                   </c:forEach>
                 </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                      <%@include file="../common/declarations.jsp"%>
+                    </div>
+                  </div>
+                </div>
                 <br/>
               </div>
-              <div class="row">
-                <ul>
-                  <li>
-                    <p> The Applicant must notify the Director of Medical Services in writing at least 30 days
-                      before
-                      the cessation of operation, letting, sale or disposal of his private hospital, medical
-                      clinic or clinical laboratory.</p>
-                  </li>
-                  <li>
-                    <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who
-                      intends to
-                      cease operating the medical clinic shall take all measures as are reasonable and
-                      necessary
-                      to ensure that the medical records of every patient are properly transferred to the
-                      medical
-                      clinic or other healthcare institution to which such patient is to be transferred.</p>
-                  </li>
-                </ul>
-              </div>
           </div>
-          <div class="form-check disabled">
-            <input disabled checked class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                   aria-invalid="false">
-            <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read
-              and
-              agreed with the above information</label>
-          </div>
-          <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-          <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
           <div class="application-tab-footer">
             <div class="row">
               <div class="col-xs-12 col-sm-6">
@@ -375,29 +355,22 @@
               </div>
             </div>
           </div>
-
           </form>
         </div>
       </div>
-      <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"
-           style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <%--                <div class="modal-header">--%>
-            <%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
-            <%--                            aria-hidden="true">&times;</span></button>--%>
-            <%--                </div>--%>
-            <div class="modal-body" style="text-align: center;">
-              <div class="row">
-                <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
-              </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-              <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                      data-dismiss="modal" onclick="cancel()">OK
-              </button>
-            </div>
+      <br/>
+    </div>
+  </div>
+  <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body" >
+          <div class="row">
+            <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
           </div>
+        </div>
+        <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
         </div>
       </div>
     </div>
@@ -410,6 +383,14 @@
 
   input[type='text'] {
     margin-bottom: 0px;
+  }
+
+  .radio-disabled::before{
+    background-color: #999999 !important;
+
+  }
+  .radio-disabled{
+    border-color: #999999 !important;
   }
 </style>
 <script type="text/javascript">
@@ -512,6 +493,10 @@
             }
         }
     });
+
+    function printWDPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessPage",'_blank');
+    }
 
     $(document).ready(function () {
         $('input[type="text"]').css('border-color', '#ededed');

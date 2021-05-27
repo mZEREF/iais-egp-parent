@@ -68,6 +68,8 @@ public interface ApplicationService {
     List<ApplicationDto> getApplicationDtosByApplicationNo(String applicationNo);
     List<AppEditSelectDto>  getAppEditSelectDtosByAppIds( List<String> applicationIds);
 
+    boolean isWithdrawReturnFee(String appNo);
+
     boolean closeTaskWhenWhAppApprove(String appId);
 
     EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);

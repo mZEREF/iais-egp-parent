@@ -81,9 +81,11 @@ public class HcsaRiskWeightageConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO);
-        hcsaRiskWeightageService.saveDto(wightageDto);
-
-
+        if(hcsaRiskWeightageService.compareVersionsForRiskWeightage(wightageDto,hcsaRiskWeightageService.getWeightage())){
+            hcsaRiskWeightageService.saveDto(wightageDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

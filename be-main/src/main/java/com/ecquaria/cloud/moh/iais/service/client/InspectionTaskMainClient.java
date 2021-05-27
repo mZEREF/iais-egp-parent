@@ -2,12 +2,29 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -53,7 +71,7 @@ public interface InspectionTaskMainClient {
     FeignResponseEntity<SearchResult<InspectionAppGroupQueryDto>> searchInspectionBeAppGroup(SearchParam searchParam);
 
     @RequestMapping(path = "/iais-inspection/inspection-be-appGroup-ajax",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
-        consumes = {MediaType.APPLICATION_JSON_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionAppInGroupQueryDto>> searchInspectionBeAppGroupAjax(SearchParam searchParam);
 
     @PostMapping(value = "/iais-application-history/historys-kpi",consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -72,4 +90,44 @@ public interface InspectionTaskMainClient {
     @GetMapping(path = "/application-be/RescomDto/{appPremId}/{recomType}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(@PathVariable(value ="appPremId" ) String appPremId, @PathVariable(value ="recomType" ) String recomType);
+
+    @PostMapping(value = "/iais-inspection/dash-common-pool")
+    FeignResponseEntity<SearchResult<DashComPoolQueryDto>> searchDashComPoolResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-common-pool/drop")
+    FeignResponseEntity<SearchResult<DashComPoolAjaxQueryDto>> searchDashComPoolDropResult(@RequestBody SearchParam searchParam);
+
+    @GetMapping(value = "/iais-appintranetdoc/get-appintranetdocList-by-premid-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppIntranetDocDto>> getAppIntranetDocListByPremIdAndStatus(@RequestParam(name = "premId") String premId, @RequestParam(name = "docStatus") String status );
+
+    @GetMapping(value = "/iais-cessation/appId-misc-list-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(@RequestParam("appId") String appId);
+
+    @GetMapping(value = "/iais-application-be/application-cgo-by-application-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId, @RequestParam("psnType") String psnType);
+
+    @GetMapping(value = "/iais-appPremisesdoc/get-appPremisesSpecialDoc-by-premid", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesSpecialDocDto>> getAppPremisesSpecialDocByPremId(@RequestParam(name = "premId") String premId);
+
+    @GetMapping(value = "/iais-apppremisescorrelation-be/app-premises-correlations/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(@PathVariable("appId") String appId);
+
+    @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
+
+    @PostMapping(path = "/application-be/RescomDtoStorage",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremisesRecommendationDto> saveAppRecom(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
+
+    @PostMapping(value = "/iais-inspection/dash-task-me")
+    FeignResponseEntity<SearchResult<DashAssignMeQueryDto>> searchDashAssignMeResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-task-me/drop")
+    FeignResponseEntity<SearchResult<DashAssignMeAjaxQueryDto>> searchDashAssignMeAjaxResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-work-team")
+    FeignResponseEntity<SearchResult<DashWorkTeamQueryDto>> searchDashWorkTeamResult(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-inspection/dash-work-team/drop")
+    FeignResponseEntity<SearchResult<DashWorkTeamAjaxQueryDto>> searchDashWorkTeamDropResult(@RequestBody SearchParam searchParam);
 }

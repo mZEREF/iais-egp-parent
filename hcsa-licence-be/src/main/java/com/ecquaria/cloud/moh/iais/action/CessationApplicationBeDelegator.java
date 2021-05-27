@@ -86,6 +86,9 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
+        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -434,8 +437,8 @@ public class CessationApplicationBeDelegator {
                     try {
                         List<ProfessionalResponseDto> professionalResponseDtos = applicationClient.getProfessionalDetail(professionalParameterDto).getEntity();
                         if (!IaisCommonUtils.isEmpty(professionalResponseDtos)) {
-                            List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                            if (IaisCommonUtils.isEmpty(specialty)) {
+                            String name = professionalResponseDtos.get(0).getName();
+                            if (StringUtil.isEmpty(name)) {
                                 errorMap.put(i + PATREGNO + j, "GENERAL_ERR0042");
                             }
                         }

@@ -51,7 +51,7 @@
                                                 <iais:value>
                                                     <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                        data-html="true"
-                                                       data-original-title="<p>The ASO must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
+                                                       data-original-title="${cess_ack002}">i</a>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -244,14 +244,14 @@
                         </div>
                         <c:if test="${specLicInfo !=null}">
                             <div><h4>The following specified healthcare services will also be ceased as their
-                                underlying licensable healthcare service(s) is/are listed above.</h4></div>
+                                underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4></div>
                             <table class="table-gp tablebox">
                                 <tr style="text-align:center">
                                     <th style="text-align:center;width: 0%">S/N</th>
-                                    <th style="text-align:center;width: 25%">Special Licensable Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
-                                    <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                    <th style="text-align:center;width: 25%">Base Service Name</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                 </tr>
                                 <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
                                     <tr style="text-align:center">

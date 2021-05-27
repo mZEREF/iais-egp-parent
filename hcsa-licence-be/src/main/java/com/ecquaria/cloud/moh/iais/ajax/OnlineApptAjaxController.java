@@ -284,6 +284,7 @@ public class OnlineApptAjaxController {
                     map.put("buttonFlag", AppConsts.FALSE);
                     map.put("specButtonFlag", AppConsts.TRUE);
                     map.put("inspDateList", null);
+                    apptInspectionDateDto.setSysSpecDateFlag(AppConsts.TRUE);
                 }
             } else {
                 map.put("buttonFlag", AppConsts.FALSE);
@@ -299,6 +300,7 @@ public class OnlineApptAjaxController {
     private List<AppPremInspApptDraftDto> saveInspectionDateDraft(List<ApptRequestDto> apptRequestDtos, List<TaskDto> taskDtoList) {
         List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(taskDtoList) && !IaisCommonUtils.isEmpty(apptRequestDtos)) {
+            List<String> appNoList = IaisCommonUtils.genNewArrayList();
             for(TaskDto taskDto : taskDtoList) {
                 for(ApptRequestDto apptRequestDto : apptRequestDtos) {
                     if(taskDto != null && apptRequestDto != null) {
@@ -307,13 +309,16 @@ public class OnlineApptAjaxController {
                         Date inspStartDate = apptRequestDto.getUserClandars().get(0).getStartSlot().get(0);
                         Date inspEndDate = apptRequestDto.getUserClandars().get(0).getEndSlot().get(endTimeSize - 1);
                         //set data
-                        AppPremInspApptDraftDto appPremInspApptDraftDto = new AppPremInspApptDraftDto();
-                        appPremInspApptDraftDto.setApplicationNo(taskDto.getApplicationNo());
-                        appPremInspApptDraftDto.setApptRefNo(apptRequestDto.getApptRefNo());
-                        appPremInspApptDraftDto.setStartDate(inspStartDate);
-                        appPremInspApptDraftDto.setEndDate(inspEndDate);
-                        appPremInspApptDraftDto.setUserId(taskDto.getUserId());
-                        appPremInspApptDraftDtos.add(appPremInspApptDraftDto);
+                        if(!appNoList.contains(taskDto.getApplicationNo())) {
+                            appNoList.add(taskDto.getApplicationNo());
+                            AppPremInspApptDraftDto appPremInspApptDraftDto = new AppPremInspApptDraftDto();
+                            appPremInspApptDraftDto.setApplicationNo(taskDto.getApplicationNo());
+                            appPremInspApptDraftDto.setApptRefNo(apptRequestDto.getApptRefNo());
+                            appPremInspApptDraftDto.setStartDate(inspStartDate);
+                            appPremInspApptDraftDto.setEndDate(inspEndDate);
+                            appPremInspApptDraftDto.setUserId(taskDto.getUserId());
+                            appPremInspApptDraftDtos.add(appPremInspApptDraftDto);
+                        }
                     }
                 }
             }
@@ -443,7 +448,7 @@ public class OnlineApptAjaxController {
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }

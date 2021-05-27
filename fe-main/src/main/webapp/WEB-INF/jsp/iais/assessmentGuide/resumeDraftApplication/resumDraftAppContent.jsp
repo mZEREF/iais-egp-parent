@@ -1,3 +1,4 @@
+<div class="form-check-gp">
 <p class="form-check-title">Please select a draft application to resume</p>
 <iais:pagination param="draftAppSearchParam" result="draftAppSearchResult"/>
 <div class="table-gp">
@@ -33,10 +34,22 @@
                             <input type="hidden" name="draftApp${status.index}No" value="${pool.applicationNo}"/>
                             <input type="hidden" name="draftApp${status.index}Type" value="${pool.applicationType}"/>
                         </td>
-                        <td>${pool.applicationNo}</td>
-                        <td><iais:code code="${pool.applicationType}"/></td>
-                        <td>${pool.serviceId}</td>
-                        <td><iais:code code="${pool.status}"/></td>
+                        <td>
+                                <p class="visible-xs visible-sm table-row-title">Application Number</p>
+                                ${pool.applicationNo}
+                        </td>
+                        <td>
+                                <p class="visible-xs visible-sm table-row-title">Type</p>
+                                <iais:code code="${pool.applicationType}"/>
+                        </td>
+                        <td>
+                                <p class="visible-xs visible-sm table-row-title">Service</p>
+                                ${pool.serviceId}
+                        </td>
+                        <td>
+                                <p class="visible-xs visible-sm table-row-title">Status</p>
+                                <iais:code code="${pool.status}"/>
+                        </td>
                     </tr>
                 </c:forEach>
             </c:otherwise>
@@ -49,4 +62,5 @@
         <a class="btn btn-primary " onclick="guideSubmit('resumDraft','second')" href="javascript:void(0);">NEXT</a>
     </c:when>
 </c:choose>
+</div>
 

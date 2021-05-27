@@ -74,7 +74,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);
-			fields.put("vpc_ReturnURL",AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
+			fields.put("vpc_ReturnURL",fields.get("vpc_ReturnURL"));
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
@@ -98,7 +98,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			String appGrgNo=reqNo.substring(0,reqNo.indexOf('_'));
 			List<PaymentRequestDto> paymentRequestDto1s = PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNoLike(appGrgNo).getEntity();
 			for(PaymentRequestDto paymentRequestDto1:paymentRequestDto1s){
-				if("stripe".equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null&&!paymentRequestDto1.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
+				if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentRequestDto1.getPayMethod())&&paymentRequestDto1.getQueryCode()!=null&&!paymentRequestDto1.getStatus().equals(PaymentTransactionEntity.TRANS_STATUS_FAILED)){
 					Session session=PaymentBaiduriProxyUtil.getStripeService().retrieveEicSession(paymentRequestDto.getQueryCode());
 					PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrieveEicPaymentIntent(session.getPaymentIntent());
 					if("succeeded".equals(paymentIntent.getStatus())){
@@ -222,8 +222,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 			}
 		}
 
-		String response = "payment success";
-		setPaymentResponse(response);
+
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";
 		if(paymentIntent!=null){
@@ -234,6 +233,8 @@ public class PaymentStripeProxy extends PaymentProxy {
 				default:status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 			}
 		}
+		String response = "payment "+status;
+		setPaymentResponse(response);
 		setPaymentTransStatus(status);
 
 		PaymentDto paymentDto = new PaymentDto();

@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -54,6 +57,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * FeeAndPaymentGIROPayeeDelegator
@@ -83,7 +87,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    private static final Set<String> bankNames = ImmutableSet.of(
+            "The Hongkong & Shanghai Banking Corporation Ltd (HSBC)",
+            "United Overseas Bank Ltd (UOB)",
+            "DBS Bank Ltd (DBS)",
+            "POSB",
+            "Oversea-Chinese Banking Corporation Ltd (OCBC)",
+            "Standard Chartered Bank (SCB)", "Citibank NA"
+    );
 
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT,  AuditTrailConsts.MODULE_GIRO_ACCOUNT_MANAGEMENT);
@@ -140,7 +151,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             searchGiroDtoResult.setRowCount(giroAccountResult.getRowCount());
             List<GiroAccountInfoViewDto> giroAccountInfoViewDtos=IaisCommonUtils.genNewArrayList();
             for (GiroAccountInfoQueryDto gai:
-            giroAccountResult.getRows()) {
+                    giroAccountResult.getRows()) {
                 GiroAccountInfoViewDto giroAccountInfoViewDto=new GiroAccountInfoViewDto();
                 List<GiroAccountFormDocDto> giroAccountFormDocDtoList=giroAccountService.findGiroAccountFormDocDtoListByAcctId(gai.getId());
                 giroAccountInfoViewDto.setAcctName(gai.getAcctName());
@@ -167,7 +178,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList=IaisCommonUtils.genNewArrayList();
         String refNo=System.currentTimeMillis()+"";
         for (String acctId:acctIds
-             ) {
+        ) {
             GiroAccountInfoDto giroAccountInfoDto=giroAccountService.findGiroAccountInfoDtoByAcctId(acctId);
             giroAccountInfoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             giroAccountInfoDto.setEventRefNo(refNo);
@@ -259,10 +270,21 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
-             orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+            orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
             ParamUtil.setSessionAttr(request,"hciSession",orgPremResult);
 
         }
+        List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
+
+        for (String bankName:bankNames
+        ) {
+            SelectOption selectOption=new SelectOption();
+            selectOption.setText(bankName);
+            selectOption.setValue(bankName);
+            selectOptions.add(selectOption);
+        }
+        ParamUtil.setRequestAttr(request,"bankNameSelectOptions", selectOptions);
+
 
     }
     public void doBack(BaseProcessClass bpc) {
@@ -300,23 +322,79 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
         ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(StringUtil.isEmpty(acctName)){
+        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+        if(StringUtil.isEmpty(acctName)){//60
             errorMap.put("acctName", MessageUtil.replaceMessage("GENERAL_ERR0006","acctName","field"));
+        }else {
+            if(acctName.length()>60){
+                repMap.put("number","60");
+                repMap.put("fieldNo","Account Name");
+                errorMap.put("acctName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(acctName)){
+                errorMap.put("acctName", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
-        if(StringUtil.isEmpty(bankCode)){
+        if(StringUtil.isEmpty(bankCode)){//4
             errorMap.put("bankCode", MessageUtil.replaceMessage("GENERAL_ERR0006","bankCode","field"));
+        }else {
+            if(bankCode.length()>4){
+                repMap.put("number","4");
+                repMap.put("fieldNo","Bank Code");
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isNumeric(bankCode)){
+                errorMap.put("bankCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            }
         }
-        if(StringUtil.isEmpty(branchCode)){
+        if(StringUtil.isEmpty(branchCode)){//3
             errorMap.put("branchCode", MessageUtil.replaceMessage("GENERAL_ERR0006","branchCode","field"));
+        }else {
+            if(branchCode.length()>3){
+                repMap.put("number","3");
+                repMap.put("fieldNo","Branch Code");
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isNumeric(branchCode)){
+                errorMap.put("branchCode", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            }
         }
-        if(StringUtil.isEmpty(bankName)){
+        if(StringUtil.isEmpty(bankAccountNo)){//10
+            errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
+        }else {
+            if(bankAccountNo.length()>10){
+                repMap.put("number","10");
+                repMap.put("fieldNo","Bank Account No");
+                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(bankAccountNo)){
+                errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
+        }
+        if(StringUtil.isEmpty(bankName)){//60
             errorMap.put("bankName", MessageUtil.replaceMessage("GENERAL_ERR0006","bankName","field"));
         }
-        if(StringUtil.isEmpty(bankAccountNo)){
-            errorMap.put("bankAccountNo", MessageUtil.replaceMessage("GENERAL_ERR0006","bankAccountNo","field"));
-        }
-        if(StringUtil.isEmpty(cusRefNo)){
+//        else {
+//            if(bankName.length()>60){
+//                repMap.put("number","60");
+//                repMap.put("fieldNo","Bank Name");
+//                errorMap.put("bankName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+//            }
+//            if(!isAlphanumeric(bankName)){
+//                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
+//            }
+//        }
+        if(StringUtil.isEmpty(cusRefNo)){//35
             errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
+        }else {
+            if(cusRefNo.length()>35){
+                repMap.put("number","35");
+                repMap.put("fieldNo","Customer Reference No");
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            }
+            if(!isAlphanumeric(cusRefNo)){
+                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+            }
         }
 
         //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -424,18 +502,41 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     }
 
+    public static boolean isAlphanumeric(CharSequence cs)
+    {
+        int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetterOrDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNumeric(CharSequence cs)
+    {
+        int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public static MultipartFile toMultipartFile(String fieldName, String fileName, byte[] fileByteArray) throws Exception {
-         DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-         String contentType = new MimetypesFileTypeMap().getContentType(fileName);
-         FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
-         try (
-         InputStream inputStream = new ByteArrayInputStream(fileByteArray);
-         OutputStream outputStream = fileItem.getOutputStream()
-         ) {
-             FileCopyUtils.copy(inputStream, outputStream);
-         } catch (Exception e) {
-             throw e;
-         }
+        DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+        String contentType = new MimetypesFileTypeMap().getContentType(fileName);
+        FileItem fileItem = diskFileItemFactory.createItem(fieldName, contentType, false, fileName);
+        try (
+                InputStream inputStream = new ByteArrayInputStream(fileByteArray);
+                OutputStream outputStream = fileItem.getOutputStream()
+        ) {
+            FileCopyUtils.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            throw e;
+        }
         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
         return multipartFile;
     }
@@ -448,7 +549,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String refNo=System.currentTimeMillis()+"";
         List<GiroAccountInfoDto> giroAccountInfoDtoList= (List<GiroAccountInfoDto>) ParamUtil.getSessionAttr(request,"giroAccountInfoDtoList");
         for (GiroAccountInfoDto giro:giroAccountInfoDtoList
-             ) {
+        ) {
             giro.setEventRefNo(refNo);
             giro.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }

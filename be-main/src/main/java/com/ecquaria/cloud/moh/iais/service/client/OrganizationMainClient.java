@@ -11,16 +11,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author Wenkang
@@ -108,4 +110,23 @@ public interface OrganizationMainClient {
 
     @PostMapping(value = "/iais-workgroup/patch-user-group", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> patchWorkingGrpForRoles(@RequestBody String body);
+
+    @GetMapping(value = "/iais-workgroup/group-lead/{workGroupId}")
+    FeignResponseEntity<List<String>> getInspectionLead(@PathVariable(name = "workGroupId") String workGroupId);
+
+    @PostMapping(path = "/iais-task/assign", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InspecTaskCreAndAssDto> assignCommonPool(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    @PutMapping(value = "/iais-task/u-a-task", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<TaskDto> updateTaskForAssign(@RequestBody TaskDto taskDto);
+
+    @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
+    FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
+                                                                        @PathVariable(name = "roleId") String roleId);
+
+    @GetMapping(value = "/iais-workgroup/work-group-by-group-domain", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(@RequestParam("uerDomain") String uerDomain);
+
+    @GetMapping(value = "/iais-workgroup/work-group/name-hcsa",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(@RequestParam("workGroupName") String workGroupName);
 }

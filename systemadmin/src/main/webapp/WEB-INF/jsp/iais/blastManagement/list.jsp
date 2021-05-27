@@ -88,14 +88,15 @@
                             <thead>
                             <tr align="center">
                                 <th></th>
-                                <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:10%"/>
-                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:15%"/>
+                                <iais:sortableHeader needSort="false" field="" value="S/N" style="width:1%"/>
+                                <iais:sortableHeader needSort="true" field="SUBJECT" value="Email Subject" style="width:14%"/>
+                                <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:14%"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name" style="width:15%"/>
                                 <iais:sortableHeader needSort="true" field="DELIVERY_MODE" value="Mode of Delivery" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="SCHEDULE_SEND_DATE" value="Scheduled Send Date" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="ACTUAL_SEND_DATE" value="Actual Send Date" style="width:10%"/>
-                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:12%"/>
-                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="DOC_NAME" value="Attachment" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:8%"/>
                                 <iais:sortableHeader needSort="false" field="subject" value="Action" style="width:8%"/>
                             </tr>
                             </thead>
@@ -116,18 +117,22 @@
                                         <tr style="display: table-row;">
                                             <td>
                                                 <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name='editBlast' value='${item.id}'/>"
-                                                    <c:choose>
-                                                    <c:when test="${!empty item.actual}">
-                                                        data-edit = "0"
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        data-edit = "1"
-                                                    </c:otherwise>
-                                                    </c:choose>
+                                                <c:choose>
+                                                <c:when test="${!empty item.actual}">
+                                                          data-edit = "0"
+                                                </c:when>
+                                                <c:otherwise>
+                                                          data-edit = "1"
+                                                </c:otherwise>
+                                                </c:choose>
                                                 ></p>
                                             </td>
                                             <td>
                                                 <p><c:out  value="${massIndex}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.subject}"/>
+                                                </p>
                                             </td>
                                             <td>
                                                 <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
@@ -161,7 +166,7 @@
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}')">Audit</a>
+                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}','${item.modifiedBy}','${item.modifiedDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -192,6 +197,8 @@
         <input hidden id="msgId" name="msgId" value="">
         <input hidden id="createby" name="createby" value="">
         <input hidden id="createDt" name="createDt" value="">
+        <input hidden id="modifiedBy" name="modifiedBy" value="">
+        <input hidden id="modifiedDt" name="modifiedDt" value="">
         <input hidden id="mode" name="mode" value="">
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
@@ -222,10 +229,10 @@
         if ($("input:checkbox:checked").length > 0) {
             var canedit = 1;
             $("input:checkbox:checked").each(function(i){
-               var edit = $(this).data("edit");
-               if(edit == 0){
-                   canedit = 0;
-               }
+                var edit = $(this).data("edit");
+                if(edit == 0){
+                    canedit = 0;
+                }
             })
 
             if(canedit == 1 ){
@@ -256,11 +263,13 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id,mode,createby,createDt) {
+    function audit(id,mode,createby,createDt,modifiedBy,modifiedDt) {
         $("#msgId").val(id);
         $("#mode").val(mode);
         $("#createby").val(createby);
         $("#createDt").val(createDt);
+        $("#modifiedBy").val(modifiedBy);
+        $("#modifiedDt").val(modifiedDt);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 

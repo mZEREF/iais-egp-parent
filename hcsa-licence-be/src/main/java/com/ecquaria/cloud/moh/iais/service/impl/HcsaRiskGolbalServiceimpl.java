@@ -150,6 +150,29 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         }
     }
 
+    @Override
+    public boolean compareVersionsForGolbalRisk(GolbalRiskShowDto needSaveDto, GolbalRiskShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getGoalbalTotalList())){
+            return false;
+        }else {
+            if( dbSearchDto == null ||  IaisCommonUtils.isEmpty(dbSearchDto.getGoalbalTotalList())){
+                return true;
+            }
+            List<GobalRiskTotalDto> goalbalTotalList = needSaveDto.getGoalbalTotalList();
+            List<GobalRiskTotalDto> goalbalTotalListDb = dbSearchDto.getGoalbalTotalList();
+            for(GobalRiskTotalDto gobalRiskTotalDto : goalbalTotalList){
+                for(GobalRiskTotalDto gobalRiskTotalDtoDb :goalbalTotalListDb){
+                    if( gobalRiskTotalDto.getServiceCode().equalsIgnoreCase(gobalRiskTotalDtoDb.getServiceCode())){
+                        if( !hcsaRiskSupportBeService.versionSameForRisk(gobalRiskTotalDto.getVersion(), gobalRiskTotalDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     private FeignResponseEntity<List<HcsaRiskGolbalExtDto>> dosave(GobalRiskTotalDto temp) {
         HcsaRiskGlobalDto golDto;
         List<HcsaRiskGolbalExtDto> extDtoList;

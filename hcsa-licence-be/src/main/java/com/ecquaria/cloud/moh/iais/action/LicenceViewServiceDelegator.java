@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -41,6 +43,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ComplaintDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -54,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -70,10 +75,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -120,6 +127,16 @@ public class LicenceViewServiceDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
     /**
      * StartStep: doStart
      *
@@ -441,11 +458,15 @@ public class LicenceViewServiceDelegator {
             if(publicHolidayDtos!=null){
                 formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
             }
-            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto(),bpc.request);
         }
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if(groupDto!=null){
             authorisedPerson(groupDto.getLicenseeId(),appSubmissionDto);
+        }
+        List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
+        if(appDeclarationDocDtos!=null){
+            Collections.sort(appDeclarationDocDtos,(s1,s2)->(s1.getSeqNum()-s2.getSeqNum()));
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
@@ -566,15 +587,30 @@ public class LicenceViewServiceDelegator {
             log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","PRS mock server down !");
         }
-
-      /*  List<ProfessionalResponseDto> professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();*/
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<ProfessionalResponseDto> professionalResponseDtos = null;
+        Map<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
+        try {
+            professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Throwable e){
+            log.error(e.getMessage(),e);
+            request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+            log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+        }
+        if(professionalResponseDtos!=null){
+            for (ProfessionalResponseDto v : professionalResponseDtos) {
+                proHashMap.put(v.getRegno(),v);
+            }
+        }
         List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
         try {
             hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
         }catch (Throwable e){
             log.error(e.getMessage(),e);
             request.setAttribute("beEicGatewayClient","Not able to connect to HERIMS at this moment!");
+            log.error("------>this have error<----- Not able to connect to HERIMS at this moment!");
         }
         HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(hfsmsDtos)) {
@@ -608,14 +644,14 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
+        request.getSession().setAttribute("proHashMap",proHashMap);
         request.getSession().setAttribute("listHashMap",(Serializable)listHashMap);
         request.getSession().setAttribute("hashMap",(Serializable)hashMap);
 
     }
 
     private List<ComplaintDto> addMoneySymbol(List<ComplaintDto> complaints) {
-        if(!IaisCommonUtils.isEmpty(complaints)){//NOSONAR
+        if(!IaisCommonUtils.isEmpty(complaints)){
             for(ComplaintDto complaintDto : complaints){
                 if(complaintDto != null && !StringUtil.isEmpty(complaintDto.getFineamount())) {
                     String money = "$" + complaintDto.getFineamount();
@@ -1204,7 +1240,7 @@ public class LicenceViewServiceDelegator {
         List<String> rfiUpWindowsCheck = IaisCommonUtils.genNewArrayList();
         if (selectsList.contains("premises")) {
             appEditSelectDto.setPremisesEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Premises</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Mode of Service Delivery</li>";
             rfiUpWindowsCheck.add("Premises");
         }
         if (selectsList.contains("primary")) {
@@ -1315,7 +1351,6 @@ public class LicenceViewServiceDelegator {
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v,grpPrimaryDocDtos);
         });
-
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -1483,7 +1518,7 @@ public class LicenceViewServiceDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         if(multipleGrpPrimaryDoc==null){
-            multipleGrpPrimaryDoc=new HashMap<>();
+            multipleGrpPrimaryDoc=new LinkedHashMap<>();
         }
         dealWithGrpPrimaryDoc(appGrpPrimaryDocDtos,multipleGrpPrimaryDoc);
         appSubmissionDto.setMultipleGrpPrimaryDoc(multipleGrpPrimaryDoc);
@@ -1491,7 +1526,7 @@ public class LicenceViewServiceDelegator {
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
         if(multipleSvcDoc==null){
-            multipleSvcDoc=new HashMap<>();
+            multipleSvcDoc=new LinkedHashMap<>();
         }
         groupWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
@@ -1534,6 +1569,25 @@ public class LicenceViewServiceDelegator {
     private void groupWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
         if(appSvcDocDtoLit==null){
             return;
+        }
+        ListIterator<AppSvcDocDto> iterator = appSvcDocDtoLit.listIterator();
+        while (iterator.hasNext()){
+            AppSvcDocDto next = iterator.next();
+            String personType = next.getPersonType();
+            int i = checkPersonType(personType);
+            if(1==i){
+                String appGrpPersonId = next.getAppGrpPersonId();
+                if(appGrpPersonId==null){
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
+                    iterator.remove();
+                }
+            }else if(2==i){
+                String appSvcPersonId = next.getAppSvcPersonId();
+                if(appSvcPersonId==null){
+                    log.error(StringUtil.changeForLog("this have error file ,need to remove----> "+next));
+                    iterator.remove();
+                }
+            }
         }
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
             String personType = appSvcDocDto.getPersonType();
@@ -1819,8 +1873,8 @@ public class LicenceViewServiceDelegator {
                 copyOldAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto1);
             }
         }
-        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);//NOSONAR
-        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);//NOSONAR
+        appSvcDisciplineAllocationDtoList.removeAll(copyAppSvcDisciplineAllocationDtoList);
+        oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);
 
     }
     private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList , List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList,Map<String,String> map) throws Exception{
@@ -1975,7 +2029,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private static void primaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos){
-        Set<Integer> set=new HashSet<>();
+        Set<Integer> set=new TreeSet<>();
         appGrpPrimaryDocDtos.forEach((v)->{
             set.add(v.getSeqNum());
         });
@@ -2051,7 +2105,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private void serviceDoc(List<AppSvcDocDto> appSvcDocDtos,  List<AppSvcDocDto> oldAppSvcDocDtos){
-        Set<Integer> set=new HashSet<>();
+        Set<Integer> set=new TreeSet<>();
         appSvcDocDtos.forEach((v)->{
             set.add(v.getSeqNum());
             String upFileName = v.getUpFileName();
@@ -2141,7 +2195,7 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request){
         if(appSubmissionDto==null||oldAppSubmissionDto==null){
             return;
         }
@@ -2153,6 +2207,8 @@ public class LicenceViewServiceDelegator {
         if(oldAppSubmissionDtoAppGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList.isEmpty()){
             return;
         }
+        String appType = appSubmissionDto.getAppType();
+        boolean equals=true;
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getStreetName())&&StringUtil.isEmpty(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getStreetName())){
 
@@ -2233,6 +2289,22 @@ public class LicenceViewServiceDelegator {
                 }
                 if(StringUtil.isEmpty(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getScdfRefNo())){
                     oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).setScdfRefNo("");
+                }
+            }
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                String oldHciName = oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getHciName();
+                if(hciName!=null){
+                     equals = hciName.equals(oldHciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }else if(oldHciName!=null){
+                     equals = oldHciName.equals(hciName);
+                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(equals));
+                }
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto==null){
+                    request.setAttribute("isSingle","N");
                 }
             }
         }
@@ -2494,6 +2566,18 @@ public class LicenceViewServiceDelegator {
             multipleSvcDoc.forEach((k,v)->{
                 Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
             });
+        }
+    }
+    private int checkPersonType(String type){
+        switch (type){
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                return 1;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
+                return 2;
+            default:return -1;
         }
     }
 }

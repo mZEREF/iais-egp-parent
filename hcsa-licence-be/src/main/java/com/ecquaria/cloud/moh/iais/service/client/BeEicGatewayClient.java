@@ -29,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -58,11 +60,11 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, EventBusLicenceGroupDtos.class);
     }
 
-//    public FeignResponseEntity<List> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto,
-//                                                           String date, String authorization, String dateSec, String authorizationSec) {
-//        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
-//                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProfessionalResponseDto.class);
-//    }
+    public FeignResponseEntity<List> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto,
+                                                           String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/prs-api/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProfessionalResponseDto.class);
+    }
 //
 //    public FeignResponseEntity<List> getDisciplinaryRecord(ProfessionalParameterDto professionalParameterDto,
 //                                                           String date, String authorization, String dateSec, String authorizationSec) {

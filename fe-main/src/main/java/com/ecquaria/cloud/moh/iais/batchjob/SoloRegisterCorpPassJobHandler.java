@@ -55,13 +55,14 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
             log.info("<====== solo register corPass start======>");
             //get licensee
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<LicenseeDto> licenseeDtos = orgUserManageService.getLicenseeNoUen();
+            orgUserManageService.sendReminderForExpiredSingPass();
+            /*List<LicenseeDto> licenseeDtos = orgUserManageService.getLicenseeNoUen();
             for (LicenseeDto item: licenseeDtos
                  ) {
                 uenSendNotification(item,SOLO_REGISTER_EMAIL1,SOLO_REGISTER_MSG1,SOLO_REGISTER_SMS1);
                 uenSendNotification(item,SOLO_REGISTER_EMAIL2,SOLO_REGISTER_MSG2,SOLO_REGISTER_SMS2);
                 uenSendNotification(item,SOLO_REGISTER_EMAIL3,SOLO_REGISTER_MSG3,SOLO_REGISTER_SMS3);
-            }
+            }*/
         }catch (Exception e){
             log.error(e.getMessage(), e);
             return ReturnT.FAIL;

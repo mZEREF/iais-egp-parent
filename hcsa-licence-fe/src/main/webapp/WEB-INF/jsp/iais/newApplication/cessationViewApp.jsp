@@ -1,5 +1,6 @@
 <div class="main-content">
   <div class="container">
+    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printCSPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
@@ -52,7 +53,7 @@
                           <div class="col-xs-8 col-sm-2 col-md-2">
                             <a class="btn-tooltip styleguide-tooltip"
                                data-toggle="tooltip" data-html="true"
-                               title="&lt;p&gt;The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.&lt;/p&gt;">i</a>
+                               title="${cess_ack002}">i</a>
                           </div>
                         </div>
                         <div class="form-group">
@@ -93,7 +94,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="radioYes"><span
-                                            class="check-circle"></span>Yes</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==true}">radio-disabled</c:if>"></span>Yes</label>
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
@@ -108,7 +109,7 @@
                                            aria-invalid="false" disabled>
                                     <label class="form-check-label"
                                            for="radioNo"><span
-                                            class="check-circle"></span>No</label>
+                                            class="check-circle <c:if test="${appCessHci.patNeedTrans ==false}">radio-disabled</c:if>"></span>No</label>
                                   </div>
                                 </div>
                               </div>
@@ -266,20 +267,20 @@
                 <div class="table-responsive">
                   <div><h4>The following specified healthcare services will also be ceased as
                     their
-                    underlying licensable healthcare service(s) is/are listed above.</h4>
+                    underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                   </div>
                   <table class="table-gp tablebox">
                     <tr style="text-align:center">
                       <th style="text-align:center;width: 0%">S/N</th>
-                      <th style="text-align:center;width: 25%">Special Licensable Service
+                      <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
                         Licence No.
                       </th>
-                      <th style="text-align:center;width: 25%">Special Licensable Service
+                      <th style="text-align:center;width: 25%"><iais:code code="CDN003"/>
                         Name
                       </th>
-                      <th style="text-align:center;width: 25%">Base Service Licence No.
+                      <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.
                       </th>
-                      <th style="text-align:center;width: 25%">Base Service Name</th>
+                      <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                     </tr>
                     <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
                       <tr style="text-align:center">
@@ -306,6 +307,13 @@
               </div>
               </c:forEach>
           </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <%@include file="../common/declarations.jsp"%>
+              </div>
+            </div>
+          </div>
           </form>
           <br/>
           <span style="padding-right: 10%" class="components">
@@ -328,6 +336,13 @@
 
   input[type='text'] {
     margin-bottom: 0px;
+  }
+  .radio-disabled::before{
+    background-color: #999999 !important;
+
+  }
+  .radio-disabled{
+    border-color: #999999 !important;
   }
 </style>
 <script type="text/javascript">
@@ -379,6 +394,10 @@
             $("#patOthersEmailAddress").hide();
 
         }
+    }
+
+    function printCSPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessViewPage",'_blank');
     }
 
     function changePatSelectCessFe() {

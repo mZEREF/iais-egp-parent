@@ -42,7 +42,7 @@
                     <c:if test="${empty AckMessage}">
                         <c:choose>
                             <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY002' ==AppSubmissionDto.appType}">
-                                <p class="print"><a href="${pageContext.request.contextPath}/new-app-ack-print" > <em class="fa fa-print"></em>Print</a></p>
+                                <p class="print"><a href="${pageContext.request.contextPath}/new-app-ack-print?action=noHeader" > <em class="fa fa-print"></em>Print</a></p>
                             </c:when>
                             <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
                                 <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
@@ -52,7 +52,7 @@
                 </div>
                 <c:if test="${empty AckMessage}">
                     <div class="col-xs-11 col-md-11">
-                        <a class="btn btn-primary  col-md-2 pull-right" id="toDashBoard" href="javascript:void(0);">Go to <br>Dashboard</a>
+                        <a class="btn btn-primary  col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to <br>Dashboard</a>
                     </div>
                 </c:if>
             </div>

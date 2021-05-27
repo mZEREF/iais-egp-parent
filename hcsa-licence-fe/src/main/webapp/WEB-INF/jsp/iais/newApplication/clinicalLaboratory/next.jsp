@@ -17,10 +17,10 @@
           <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
             <c:choose>
               <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Preview</a>
               </c:when>
               <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Save and Preview</a>
+                <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Preview</a>
               </c:when>
             </c:choose>
           </c:when>
@@ -42,7 +42,7 @@
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Preview & Submit</a>
+              <a class="btn btn-primary" id="Next" href="javascript:void(0);">Preview</a>
             </c:when>
             <c:when test="${serviceStepDto.isStepEnd() && !serviceStepDto.isServiceEnd()}">
               <a class="btn btn-primary" id="Next" href="javascript:void(0);">Proceed to Next Service</a>
@@ -172,7 +172,7 @@
     }
 
     <!--cgo,medAlert -->
-    var fillPsnForm = function ($CurrentPsnEle,data,psnTYpe) {
+    var fillPsnForm = function ($CurrentPsnEle,data,psnType) {
         <!--salutation-->
         var salutation  = data.salutation;
         if( salutation == null || salutation =='undefined' || salutation == ''){
@@ -219,6 +219,12 @@
         var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
         $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
 
+        if('DES999' == designation){
+            $CurrentPsnEle.find('div.otherDesignationDiv').removeClass('hidden');
+            $CurrentPsnEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
+        }else{
+            $CurrentPsnEle.find('div.otherDesignationDiv').addClass('hidden');
+        }
 
         <!-- professionType-->
         var professionType = data.professionType;
@@ -235,41 +241,23 @@
         }else{
             $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
         }
-        <!-- speciality-->
+        /*<!-- speciality-->
         var speciality = data.speciality;
-        if('CGO' == psnTYpe){
-            $CurrentPsnEle.find('div.specialtyDiv').html(data.specialityHtml);
-            showSpecialty();
+        console.log('speciality'+speciality);
+        $CurrentPsnEle.find('.specialty-label').html(speciality);
+        <!--Subspeciality -->
+        var subSpeciality = data.subSpeciality;
+        $CurrentPsnEle.find('.sub-specialty-label').html(subSpeciality);
+        <!--qualification -->
+        var qualification = data.qualification;
+        $CurrentPsnEle.find('.qualification-label').html(qualification);*/
+        var otherQualification = data.otherQualification;
+        if(otherQualification != null && otherQualification !='undefined' && otherQualification != ''){
+            $CurrentPsnEle.find('input[name="otherQualification"]').val(otherQualification);
         }else{
-            if(speciality == null || speciality =='undefined' || speciality == ''){
-                speciality = '-1';
-            }
-            var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-            if(specialityVal =='undefined'){
-                speciality = '';
-                specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-            }
-            $CurrentPsnEle.find('select[name="specialty"]').val(speciality);
-            $CurrentPsnEle.find('select[name="specialty"]').next().find('.current').html(specialityVal);
+            $CurrentPsnEle.find('input[name="otherQualification"]').val('');
         }
-        if('other' == speciality){
-            $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            var specialityOther = data.specialityOther;
-            if(specialityOther != null && specialityOther != ''){
-                $CurrentPsnEle.find('input[name="specialtyOther"]').val(specialityOther);
-            }else{
-                $CurrentPsnEle.find('input[name="specialtyOther"]').val('');
-            }
-        }else{
-            $CurrentPsnEle.find('input[name="specialtyOther"]').addClass('hidden');
-        }
-        <!--Subspeciality or relevant qualification -->
-        var qualification = data.subSpeciality;
-        if(qualification != null && qualification != ''){
-            $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
-        }else{
-            $CurrentPsnEle.find('input[name="qualification"]').val('');
-        }
+
         <!--preferredMode -->
         var description = data.description;
         if(description != null && description !='undefined' && description != ''){
@@ -280,7 +268,7 @@
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
-            if('CGO' == psnTYpe){
+            if('CGO' == psnType){
                 var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
                 //add disabled not add input disabled style
                 personDisable($cgoPsnEle,'','Y');
@@ -296,7 +284,7 @@
             $CurrentPsnEle.find('input[name="licPerson"]').val('1');
             $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
         }else{
-            if('CGO' == psnTYpe){
+            if('CGO' == psnType){
                 unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
             }else{
                 unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
@@ -305,9 +293,11 @@
             $CurrentPsnEle.find('input[name="licPerson"]').val('0');
             $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
         }
-
-        $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur');
-    }
+        //reload data by prs again
+        if('CGO' == psnType){
+            $CurrentPsnEle.find('input[name="professionRegoNo"]').trigger('blur','psnSelect');
+        }
+    };
     <!--cgo,medAlert -->
     var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
         var spcEle = $CurrentPsnEle.find('.specialty');
@@ -330,7 +320,7 @@
             'error':function () {
             }
         });
-    }
+    };
 
     var setPsnDisabled = function ($cgoPsnEle,psnEditDto) {
         console.log("setPsnDisabled start...");
@@ -376,6 +366,12 @@
         }
         if(psnEditDto.emailAddr){
             $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
+        }
+        if(psnEditDto.otherQualification){
+            $cgoPsnEle.find('input[name="otherQualification"]').prop('disabled',false);
+        }
+        if(psnEditDto.otherDesignation){
+            $cgoPsnEle.find('input[name="otherDesignation"]').prop('disabled',false);
         }
         //map->mode
         if(psnEditDto.description){

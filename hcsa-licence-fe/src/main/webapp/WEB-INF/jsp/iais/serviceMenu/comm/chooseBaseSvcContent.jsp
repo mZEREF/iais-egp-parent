@@ -32,7 +32,7 @@
                     <c:set var="newLic" value="true"/>
                 </c:if>
                 <div class="speSvcContent remark-point">
-                    <p class="assessment-title">Base Services for ${specSvc.svcName}</p>
+                    <p class="assessment-title"><iais:code code="CDN002"/> for ${specSvc.svcName}</p>
                     <c:if test="${noExistBaseLic}">
                         <div class="row">
                             <div class="col-xs-12 col-md-12">
@@ -106,7 +106,7 @@
                                                     <%--<input type="hidden" name="baseCode${indexNo}" value="<iais:mask name="baseCode${indexNo}" value="${specSvc.svcCode}"/>" />--%>
                                                 <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}"/>
                                                 <input class="form-check-input firstStep diff-base" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                                <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different premises</label>
+                                                <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different mode of service delivery</label>
                                             </div>
                                         </div>
                                     </div>
@@ -118,7 +118,10 @@
             </c:forEach>
             <div class="row">
                 <div class="col-xs-12 col-md-12">
-                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a target="_blank" href="<iais:code code="URL001"/>">Learn more</a>
+                    <iais:message key="NEW_ACK008"></iais:message>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <a target="_blank" href="<iais:code code="URL001"/>">Learn More</a>: <iais:message key="NEW_ACK009"></iais:message>
                 </div>
             </div>
         </div>

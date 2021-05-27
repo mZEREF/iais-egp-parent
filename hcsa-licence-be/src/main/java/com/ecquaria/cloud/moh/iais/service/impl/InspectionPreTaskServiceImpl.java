@@ -565,7 +565,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), compTask.getTaskKey(), null,
                 null, roleId, taskDto.getWkGrpId(), null);
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();//NOSONAR
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
         try {
             applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, inspectionPreTaskDto.getReMarks(), emailStage, checkUserId);
@@ -814,7 +814,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
                     }
                     Collections.sort(leadNameList);
-                    for(String strLeadName : leadNameList){//NOSONAR
+                    for(String strLeadName : leadNameList){
                         if(StringUtil.isEmpty(leadStrBu.toString())) {
                             leadStrBu.append(strLeadName);
                         } else {

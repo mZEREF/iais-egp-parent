@@ -434,6 +434,7 @@ public class AppealApproveBatchjob {
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
+        List<AppGrpPremisesEntityDto> otherAppGrpPremises = appealApproveDto.getOtherAppGrpPremises();
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
             String hciName = appealDto.getNewHciName();
@@ -443,6 +444,13 @@ public class AppealApproveBatchjob {
                 appGrpPremisesDto1.setHciName(hciName);
                 appGrpPremisesDto1.setAuditTrailDto(intranet);
                 appealAppGrpPremisesDto.add(appGrpPremisesDto1);
+                if(!otherAppGrpPremises.isEmpty()){
+                    otherAppGrpPremises.stream().forEach((v)->{
+                        v.setHciName(hciName);
+                        v.setAuditTrailDto(intranet);
+                        appealAppGrpPremisesDto.add(v);
+                    });
+                }
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                 //save eic record
@@ -491,7 +499,14 @@ public class AppealApproveBatchjob {
             if(appPremisesCorrelationDto!=null){
                 AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getAppGrpPremise(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
                 appGrpPremisesEntityDto.setHciName(appealDto.getNewHciName());
+            }
+            for(ApplicationDto v : applicationDtos){
+                AppPremisesCorrelationDto premisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(v.getId()).getEntity();
+                if(premisesCorrelationDto!=null){
+                    AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getAppGrpPremise(premisesCorrelationDto.getAppGrpPremId()).getEntity();
+                    appGrpPremisesEntityDto.setHciName(appealDto.getNewHciName());
 
+                }
             }*/
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));

@@ -93,7 +93,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Premises Type"/>
+                <iais:field value="Mode of Service Delivery"/>
                 <iais:value width="8">
                     <iais:select name="premType" options="premTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
                     <span id="error_premType" name="iaisErrorMsg" class="error-msg"></span>

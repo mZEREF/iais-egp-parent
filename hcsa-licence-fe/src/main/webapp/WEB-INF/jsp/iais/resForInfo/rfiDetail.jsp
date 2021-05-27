@@ -10,12 +10,18 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<%@include file="../common/dashboard.jsp"%>
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
+    <input type="hidden" name="uploadKey" value="1"/>
+
+    <div id="selectFileDiv">
+        <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
+    </div>
     <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
     <div class="main-content">
         <br><br><br>
@@ -88,55 +94,41 @@
                                             </iais:row>
                                         </c:forEach>
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}"
-                                                       var="rfiDoc" varStatus="docStatus">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoMultiFileDto}"
+                                                       var="rfiMultiFile">
+                                                <c:set var="fileList" value="${rfiMultiFile.value}"/>
+                                                <c:set var="configIndex" value="${rfiMultiFile.key}"/>
                                                 <iais:row>
                                                     <div class="col-sm-7 col-md-11 col-xs-10">
-                                                        <strong>${rfiDoc.title}</strong>
+                                                        <strong>${fileList.get(0).title}</strong>
                                                     </div>
                                                 </iais:row>
                                                 <iais:row>
-                                                    <iais:value width="18">
+                                                    <div class="col-sm-7 col-md-12 col-xs-10">
                                                         <div class="document-upload-gp ">
                                                             <div class="document-upload-list">
                                                                 <div class="file-upload-gp">
-                                                                    <input class="hidden validFlag" type="hidden" name="commValidFlag${rfiDoc.id}" <c:if test="${rfiDoc.passDocValidate}">value="Y"</c:if> <c:if test="${!rfiDoc.passDocValidate}">value="N"</c:if>/>
-                                                                    <input class="hidden delFlag" type="hidden" name="commDelFlag${rfiDoc.id}" value="Y"/>
-                                                                    <span>
-                                                                        <c:choose>
-                                                                            <c:when test="${rfiDoc.passDocValidate}">
-                                                                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a>
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                ${rfiDoc.docName}
-                                                                            </c:otherwise>
-                                                                        </c:choose>
-                                                                    </span>
-                                                                    <c:choose>
-                                                                        <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
-                                                                            <span class="existFile delBtn "></span>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
-                                                                            <span class="existFile delBtn ">
-                                                                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
-                                                                            </span>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
+                                                                    <input type="hidden" name="configIndex" value="${configIndex}"/>
+                                                                    <div id="uploadFileBox${configIndex}" >
+                                                                        <c:forEach var="file" items="${fileList}" varStatus="fileStat">
+                                                                            <c:if test="${not empty file.docName }">
+                                                                                <p class="fileList">
+                                                                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}">${file.docName}</a>
+                                                                                    &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button><input hidden name='fileSize' value='${file.docSize}'/></p>
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                    </div>
+                                                                    <ul class="upload-enclosure-ul">
+                                                                    </ul>
                                                                     <br/>
-                                                                    <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
-                                                                           name="UploadFile${rfiDoc.id}" type="file"
-                                                                           style="display: none;" onclick="fileClicked(event)" onchange="fileChanged(event)"
-                                                                           aria-label="selectedFile">
-                                                                    <br>
-                                                                    <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);">Attachment</a><br>
-                                                                    <span name="iaisErrorMsg" class="error-msg"
-                                                                          id="error_UploadFile${rfiDoc.id}"></span>
+                                                                    <a class="btn file-upload btn-secondary"  href="javascript:void(0);">Attachment</a>
+                                                                    <br/>
                                                                 </div>
                                                             </div>
+                                                            <span name="iaisErrorMsg" class="error-msg" id="error_UploadFile${configIndex}"></span>
                                                         </div>
                                                         <br/>
-                                                    </iais:value>
+                                                    </div>
                                                 </iais:row>
                                             </c:forEach>
 
@@ -156,6 +148,7 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+
 <script type="text/javascript">
     function doBack() {
         showWaiting();
@@ -170,56 +163,108 @@
         $("#mainForm").submit();
         dismissWaiting();
     }
+    $(document).ready(function () {
 
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
+        $('.file-upload').click(function () {
+            var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
+            $('input[name="uploadKey"]').val(index);
+            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('input[type="file"]').click();
+        });
+    });
+
+    function fileChangedLocal(obj, event) {
+        var maxFileSize = $('#sysFileSize').val();
+        var configIndex =$('input[name="uploadKey"]').val();
+        var fileErrorId= '#error_UploadFile'+configIndex;
+        console.log('maxFileSize : '+maxFileSize);
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        console.log(error)
+        if (error == "N"){
+            $(fileErrorId).html($("#fileMaxMBMessage").val());
+            $("#selectedFile").val('');
+            callAjaxShowFile(configIndex);
+        }else if(error == "Y"){
+            callAjaxUploadFile();
+            $(fileErrorId).html('');
+        }
     }
 
-    $('.selectedFile').change(function () {
-        var file = $(this).val();
-        $(this).parent().children('span:eq(0)').html(getFileName(file));
-        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
-        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-        $(this).parent().children('input.validFlag').val('N');
-    });
 
-    $('.delBtn').click(function () {
-        $(this).parent().children('span:eq(0)').html('');
-        $(this).parent().children('span:eq(0)').next().html();
-        $(this).parent().children('span:eq(0)').next().addClass("hidden");
-        $(this).parent().children('input.selectedFile').val('');
-        $(this).parent().children('input.validFlag').val('N');
-        $(this).parent().children('input.delFlag').val('N');
+    function writeMessageDeleteFile(deleteWriteMessageFileId,configIndex){
+        showWaiting();
+        console.log('deleteWriteMessageFileId : ' + deleteWriteMessageFileId);
+        console.log('configIndex : ' + configIndex);
+        var fileId= '#uploadFileBox'+configIndex;
+        var fileErrorId= '#error_UploadFile'+configIndex;
 
-    });
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/deleteGiroFromFile",
+            data: {deleteWriteMessageFileId:deleteWriteMessageFileId,
+                configIndex:configIndex
+            },
+            dataType: "text",
+            success: function (data) {
+                $(fileId).html(data);
+                $(fileErrorId).html('');
+                dismissWaiting();
+            },
+            error: function (msg) {
+                $("#selectedFile").val('');
+                $(fileErrorId).html('');
+                dismissWaiting();
+            }
+        });
+    }
 
-    $('.commDoc').change(function () {
-        var maxFileSize = $('#sysFileSize').val();
-        var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
-        if (error == "N"){
-            $(this).closest('.file-upload-gp').find('.error-msg').html($("#fileMaxMBMessage").val());
-            $(this).closest('.file-upload-gp').find('span.delBtn').trigger('click');
-            dismissWaiting();
-        }else{
-            $(this).closest('.file-upload-gp').find('.error-msg').html('');
-            dismissWaiting();
-        }
+    function callAjaxUploadFile(){
+        var formData = new FormData($("#mainForm")[0]);
 
-    });
 
-    function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
-        var fileV = $fileEle.val();
-        var file = $fileEle.get(0).files[0];
-        if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= maxSize){
-            return "N";
-        }
-        return "Y";
+        var configIndex =$('input[name="uploadKey"]').val();
+        var fileId= '#uploadFileBox'+configIndex;
+        var fileErrorId= '#error_UploadFile'+configIndex;
+        console.log('uploadFileBox : ' + fileId);
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/uploadRfiFromFile",
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            dataType: "text",
+            success: function (data) {
+                $(fileId).html(data);
+                $(fileErrorId).html('');
+            },
+            error: function (msg) {
+                $("#selectedFile").val('');
+                $(fileErrorId).html('');
+                dismissWaiting();
+            }
+        });
+    }
+
+    function callAjaxShowFile(configIndex){
+
+        var fileId= '#uploadFileBox'+configIndex;
+        console.log('uploadFileBox : ' + fileId);
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/showRfiFromFile",
+            data: {
+                showIndex:configIndex
+            },
+            dataType: "text",
+            success: function (data) {
+                $(fileId).html(data);
+            },
+            error: function (msg) {
+                $("#selectedFile").val('');
+                dismissWaiting();
+            }
+        });
     }
 
 </script>

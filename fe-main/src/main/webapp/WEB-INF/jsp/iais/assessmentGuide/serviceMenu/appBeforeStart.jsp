@@ -27,10 +27,10 @@
         <h2>SERVICES SELECTED</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
+            <li><span><iais:service value="${baseItem}"></iais:service></span> (<iais:code code="CDN002"/>)</li>
           </c:forEach>
           <c:forEach var="specifiedItem" items="${speSvcIdList}" varStatus="status">
-            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Service)</li>
+            <li><span><iais:service value="${specifiedItem}"></iais:service></span> (<iais:code code="CDN004"/>)</li>
           </c:forEach>
         </ul>
         <div class="gray-content-box">
@@ -51,7 +51,7 @@
               <c:forEach var="item" items="${feUserDtos}" varStatus="status">
                 <div class="license-info-row">
                   <div class="licnese-info">
-                    <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
+                    <p>Authorised Person ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
                   </div>
                   <div class="license-edit">
                     <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}','<iais:mask name="authorisedId${status.index}" value="${item.id}"/>','authorisedId${status.index}')">View</a></p>
@@ -64,6 +64,9 @@
         </div>
         <h3>Before You Begin</h3>
         <ul class="short-content">
+          <li>
+            <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents needed during the licence application.</p>
+          </li>
           <li>
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
           </li>
@@ -78,7 +81,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
-              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Start Application</a></div>
+              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">Proceed</a></div>
             </div>
           </div>
         </div>

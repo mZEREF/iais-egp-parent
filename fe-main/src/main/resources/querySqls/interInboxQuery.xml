@@ -16,11 +16,11 @@
             FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
-            <#if msgSubject??> AND inbox.subject like :msgSubject</#if>
+            <#if msgSubject??> AND CHARINDEX(:msgSubject, inbox.subject) >0 </#if>
             <#if userId??> AND inbox.user_id = :userId</#if>
             <#if msgStatus??> AND inbox.status in :msgStatus</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
-            <#if interService??> AND inbox.service_codes LIKE :interService</#if>
+            <#if interService??> AND CHARINDEX(:interService, inbox.service_codes) >0 </#if>
         ]]>
     </sql>
 
@@ -30,6 +30,7 @@
                 id,
                 application_no,
                 app_grp_id,
+                '' as pmtStatus,
                 (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
                 has_submit_pref_date,
                 app_type,
@@ -92,11 +93,11 @@
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
-            <#if appNo??> AND B.application_no like :appNo</#if>
+            <#if appNo??> AND CHARINDEX(:appNo, B.application_no) >0 </#if>
             <#if appStatus??> AND ${appStatus}</#if>
             <#if service_id??> AND ${service_id}</#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
-            <#if serviceCode??> AND B.code like :serviceCode</#if>
+            <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
         ]]>
     </sql>
@@ -153,28 +154,28 @@
             <#if eStartDate??> AND lic.start_date <= :eStartDate</#if>
             <#if fExpiryDate??> AND lic.expiry_date >= :fExpiryDate</#if>
             <#if eExpiryDate??> AND lic.expiry_date <= :eExpiryDate</#if>
-            <#if licNo??> AND lic.licence_no like :licNo</#if>
+            <#if licNo??> AND CHARINDEX(:licNo, lic.licence_no) >0 </#if>
         ]]>
     </sql>
 
     <sql  key = "feUserList" remarks = "Query user admin ">
         <![CDATA[
             SELECT DISTINCT
-                acc.ID,
-                acc.DISPLAY_NAME,
+               acc.ID,
+               acc.DISPLAY_NAME,
                acc.SALUTATION,
                acc.ID_TYPE,
                acc.ID_NO,
                acc.DESIGNATION,
+               acc.OTHER_DESIGNATION,
                acc.STATUS,
                role.ROLE_ID
-               FROM user_account acc
-               JOIN organization org ON acc.ORGANIZATION_ID = org.ID
-               JOIN user_role role ON acc.ID = role.USER_ACCT_ID
-                where role.STATUS = 'CMSTAT001' and acc.STATUS != 'CMSTAT002'
-                <#if orgid??>AND org.ID = :orgid</#if>
-                <#if roleid??>AND role.ROLE_ID = :roleid</#if>
-
+           FROM user_account acc
+           JOIN organization org ON acc.ORGANIZATION_ID = org.ID
+           JOIN user_role role ON acc.ID = role.USER_ACCT_ID
+           where role.STATUS = 'CMSTAT001' and acc.STATUS != 'CMSTAT002'
+           <#if orgid??>AND org.ID = :orgid</#if>
+           <#if roleid??>AND role.ROLE_ID = :roleid</#if>
         ]]>
     </sql>
     <sql remarks="Query" key="queryPremises">
@@ -263,6 +264,7 @@
           where T1.status in ('LICEST001')
           <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
           <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+          <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
         ]]>
     </sql>
 </sqls>

@@ -65,6 +65,10 @@
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dbs.sgqr.generator</groupId>
+            <artifactId>SGQRGenerator</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>egov</finalName>

@@ -90,8 +90,11 @@ public class HcsaRiskFinancialConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         RiskFinancialShowDto financialShowDto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
-        hcsaRiskService.saveDto(financialShowDto);
-
+        if(hcsaRiskService.compareVersionsForRiskFinancial(financialShowDto,hcsaRiskService.getfinancialShowDto())){
+            hcsaRiskService.saveDto(financialShowDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

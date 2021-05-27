@@ -43,58 +43,21 @@ public class LicencePrint {
             int fileNum = 1;
             for (String licId:ids) {
                 LicenceViewDto licenceViewDto = inboxService.getLicenceViewDtoByLicenceId(licId);
-                StringBuilder sb = new StringBuilder();
-                sb.append("<div class=\"container\">\n" +
-                        "    <div class=\"row\">\n" +
-                        "      <div class=\"col-xs-12\">\n" +
-                        "        <div class=\"instruction-content center-content\">\n" +
-                        "          <h3>Licence detail</h3>\n" +
-                        "          <!--startpoint-->\n" +
-                        "          <div id = \"printDev\">\n" +
-                        "            <p>This is a dummy licence with Licence Number ")
-                        .append(licenceViewDto.getLicenceDto().getLicenceNo())
-                        .append("</p>\n" +
-                                "            <ul class=\"info-content\">\n" +
-                                "              <li>\n" +
-                                "                <p>Name of Licensee:")
-                        .append(licenceViewDto.getLicenceDto().getLicenceNo() )
-                        .append(licenceViewDto.getLicenseeDto().getName())
-                        .append("</p>\n" +
-                                "              </li>\n" +
-                                "              <li>\n" +
-                                "                <p>Service Licence: ")
-                        .append(licenceViewDto.getLicenceDto().getLicenceNo() )
-                        .append(licenceViewDto.getLicenseeDto().getName())
-                        .append(licenceViewDto.getLicenceDto().getSvcName())
-                        .append("</p>\n" +
-                                "              </li>\n" +
-                                "              <li>\n" +
-                                "              <p>Licence Start and End Date:")
-                        .append(licenceViewDto.getStartDate())
-                        .append(" to ")
-                        .append(licenceViewDto.getEndDate())
-                        .append("</p>\n" +
-                                "              </li>\n" +
-                                "              <li>\n" +
-                                "                <p>Licensed Premises:")
-                        .append(licenceViewDto.getHciName())
-                        .append("</p>\n" +
-                                "              </li>\n" +
-                                "            </ul>\n" +
-                                "            <p>Premises Address:")
-                        .append(licenceViewDto.getAddress())
-                        .append("</p>\n" +
-                                "          </div>\n" +
-                                "        </div>\n" +
-                                "      </div>\n" +
-                                "    </div>\n" +
-                                "  </div>");
                 File templateDir = ResourceUtils.getFile("classpath:pdfTemplate");
+                log.info("=======templateDir.getPath()-->:"+templateDir.getPath());
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 String fileName = "LICENCE" + fileNum ;
                 File pdfFile = new File(fileName+".pdf");
                 Map<String, String> map = IaisCommonUtils.genNewHashMap();
-                map.put("licence",sb.toString());
+                map.put("licenceNo",licenceViewDto.getLicenceNo());
+                map.put("licenseeName",licenceViewDto.getLicenseeName());
+                map.put("serviceName",licenceViewDto.getServiceName());
+                map.put("hivTesting",licenceViewDto.getHivTesting());
+                map.put("hciName",licenceViewDto.getHciName());
+                map.put("address",licenceViewDto.getAddress());
+                map.put("vehicleNo",licenceViewDto.getVehicleNo());
+                map.put("startDate",licenceViewDto.getStartDate());
+                map.put("endDate",licenceViewDto.getEndDate());
                 OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
                 try {
                     pdfGenerator.generate(outputStream, "licence.ftl", map);

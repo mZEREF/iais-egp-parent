@@ -139,6 +139,7 @@ public class MohIntranetUserDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
+        ParamUtil.setRequestAttr(bpc.request,"PERSONAL_PROFILE", Boolean.TRUE);
         List<SelectOption> statusOptions = getStatusOption();
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
     }
@@ -459,10 +460,10 @@ public class MohIntranetUserDelegator {
         }
 
         for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
-        ) {
+             ) {
             assignRoleOptionFull.remove(e.getKey());
         }
-        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByKey(assignRoleOptionFull));//Professional Screening  - Nursing Home
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByValue(assignRoleOptionFull));//Professional Screening  - Nursing Home
         ParamUtil.setRequestAttr(bpc.request, "roleNameAndIdMap", sortByKey(roleNameAndIdMap));
         ParamUtil.setSessionAttr(bpc.request, "psoGroupOptions", (Serializable) psoGroupOptions);
         ParamUtil.setSessionAttr(bpc.request, "ao1GroupOptions", (Serializable) ao1GroupOptions);
@@ -489,6 +490,13 @@ public class MohIntranetUserDelegator {
         Map<String, String> result = new LinkedHashMap<>(map.size());
         map.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+    private Map<String, String> sortByValue(Map<String, String> map) {
+        Map<String, String> result = new LinkedHashMap<>(map.size());
+        map.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
                 .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
@@ -681,7 +689,7 @@ public class MohIntranetUserDelegator {
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
             for (OrgUserRoleDto role:orgUserRoleDtoList
-            ) {
+                 ) {
                 switch (role.getRoleName()){
                     case RoleConsts.USER_ROLE_AO1:
                         groupAo1Ids.forEach((groupId, isLeader) -> {
@@ -852,16 +860,16 @@ public class MohIntranetUserDelegator {
                     if (roleName.contains("LEAD")) {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);//NOSONAR
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                         }
                     } else {
                         List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 0);
                         if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp)) {
-                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp); //NOSONAR
+                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp);
                         }
 //                        List<UserGroupCorrelationDto> userGroupCorrelationDtosTemp1 = intranetUserService.getUserGroupCorrelationDtos(userAccId, list, 1);
 //                        if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtosTemp1)) {
-//                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);//NOSONAR
+//                            userGroupCorrelationDtos.addAll(userGroupCorrelationDtosTemp1);
 //                        }
                     }
                 }
@@ -1472,7 +1480,8 @@ public class MohIntranetUserDelegator {
         List list = null;
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         try {
-            SAXReader saxReader = new SAXReader();//NOSONAR
+            SAXReader saxReader = new SAXReader();
+            saxReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             Document document = saxReader.read(file);
             //root
             Element root = document.getRootElement();
@@ -1500,8 +1509,8 @@ public class MohIntranetUserDelegator {
                     String endDateStr = element.element("accountActivationEnd").getText();
                     Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
                     String salutation = element.element("salutation").getText();
-                    String firstName = element.element("firstName").getText();
-                    String lastName = element.element("lastName").getText();
+                    String firstName = element.element("name").getText();
+                    String lastName = element.element("name").getText();
                     String organization = element.element("organization").getText();
                     String division = element.element("division").getText();
                     String branchUnit = element.element("branchUnit").getText();

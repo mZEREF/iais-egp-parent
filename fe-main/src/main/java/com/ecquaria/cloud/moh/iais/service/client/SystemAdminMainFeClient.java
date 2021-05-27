@@ -3,11 +3,10 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
@@ -48,4 +50,8 @@ public interface SystemAdminMainFeClient {
 
     @PutMapping(value = "/iais-mastercode/master-code/active-master-code",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> activeMasterCode(@RequestBody AuditTrailDto auditTrailDto);
+    @GetMapping(value = "/LDT-number")
+    FeignResponseEntity<String> ldTNumber();
+    @GetMapping(value = "/iais-jobmsg-track/job-rem-msg-tra/{refNo}/{msgKey}")
+    FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDto(@PathVariable(name = "refNo") String refNo, @PathVariable(name = "msgKey") String msgKey);
 }

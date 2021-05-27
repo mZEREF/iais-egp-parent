@@ -37,14 +37,14 @@
     <JavaCode defClass="" executor="" methodName="hcsaBeDashboardPage_OnStepProcess_0" name="hcsaBeDashboardPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardSwitchSort" x="1160" y="0">
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardSwitchSort" x="1150" y="-40">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="hcsaBeDashboardSwitchSort_OnStepProcess_0" name="hcsaBeDashboardSwitchSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardApprove" x="470" y="-30">
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardApprove" x="520" y="-40">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -107,6 +107,34 @@
     <JavaCode defClass="" executor="" methodName="hcsaBeDashboardQuery_OnStepProcess_0" name="hcsaBeDashboardQuery_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardComAssign" x="950" y="-30">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="hcsaBeDashboardComAssign_OnStepProcess_0" name="hcsaBeDashboardComAssign_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardComVali" x="1340" y="-180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="hcsaBeDashboardComVali_OnStepProcess_0" name="hcsaBeDashboardComVali_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardComConfirm" x="600" y="-180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="hcsaBeDashboardComConfirm_OnStepProcess_0" name="hcsaBeDashboardComConfirm_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaBeDashboardComDo" x="830" y="-180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="hcsaBeDashboardComDo_OnStepProcess_0" name="hcsaBeDashboardComDo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardSearchPage" stageIndicator="" x="460" y="100">
@@ -115,7 +143,25 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardSuccessPage" stageIndicator="" x="290" y="0">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardSuccessPage" stageIndicator="" x="290" y="-40">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardComPage" stageIndicator="" x="1160" y="-180">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardComConfirmPage" stageIndicator="" x="590" y="-330">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardComSuccessPage" stageIndicator="" x="800" y="-330">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -140,16 +186,13 @@
    <position>{(670,120)(810,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardSwitchSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
-   <position>{(810,120)(1180,20)}</position>
+   <position>{(810,120)(1170,-20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="rectanular">
    <position>{(810,120)(1020,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardApprove" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
-   <position>{(810,120)(490,-10)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardInitPre" linkstyle="Direct" name="" sourceName="/Pages/WebPage/hcsaBeDashboardSuccessPage" style="oblique">
-   <position>{(310,20)(330,120)}</position>
+   <position>{(810,120)(540,-20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardAssignToMe" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
    <position>{(810,120)(30,250)}</position>
@@ -179,7 +222,7 @@
    <position>{(1020,120)(1359,119)(1359,399)(810,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardSwitchSort" style="oblique">
-   <position>{(1180,20)(1395,20)(1395,462)(860,462)(810,400)}</position>
+   <position>{(1170,-20)(1395,-21)(1395,462)(860,462)(810,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardCommonPool" style="oblique">
    <position>{(620,250)(810,400)}</position>
@@ -194,13 +237,13 @@
    <position>{(30,250)(810,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardSuccessPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(380,-70)(310,20)}</position>
+   <position>{(380,-160)(310,-20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardSearchPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(380,-70)(480,120)}</position>
+   <position>{(380,-160)(480,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardApprove" style="oblique">
-   <position>{(490,-10)(380,-70)}</position>
+   <position>{(540,-20)(380,-160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardApplicantReply" style="oblique">
    <position>{(970,250)(810,400)}</position>
@@ -211,9 +254,45 @@
   <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardSearchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardQuery" style="oblique">
    <position>{(810,400)(-122,274)(480,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardComAssign" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(810,120)(970,-10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardComPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardComAssign" style="oblique">
+   <position>{(970,-10)(1180,-160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardComVali" style="oblique">
+   <position>{(1360,-160)(1240,-310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardComPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1240,-310)(1180,-160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardComVali" linkstyle="Direct" name="" sourceName="/Pages/WebPage/hcsaBeDashboardComPage" style="oblique">
+   <position>{(1180,-160)(1360,-160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/hcsaBeDashboardComConfirmPage" style="oblique">
+   <position>{(610,-310)(546,-145)(670,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardComSuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardComDo" style="rectanular">
+   <position>{(850,-160)(820,-310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/hcsaBeDashboardComConfirmPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/hcsaBeDashboardComConfirm" style="rectanular">
+   <position>{(620,-160)(610,-310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardStep" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1240,-310)(670,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardComConfirm" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(810,120)(620,-160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaBeDashboardComDo" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(810,120)(850,-160)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="" componentIfTrue="" defClass="" executor="" icon="" leftOperand="" name="Cond1" operator="=" rightOperand="" x="360" y="-90">
+  <Condition componentIfFalse="/Pages/WebPage/hcsaBeDashboardSearchPage" componentIfTrue="/Pages/WebPage/hcsaBeDashboardSuccessPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="360" y="-180">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/hcsaBeDashboardComPage" componentIfTrue="/Steps/AutomaticStep/hcsaBeDashboardStep" defClass="" executor="" icon="" leftOperand="flag" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="1220" y="-330">
    <Description/>
   </Condition>
  </Conditions>
@@ -230,6 +309,9 @@
    <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardKpi" value="&quot;kpi&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardApplicantReply" value="&quot;reply&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardInGroup" value="&quot;group&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardComAssign" value="&quot;comassign&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardComConfirm" value="&quot;comcon&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardComDo" value="&quot;comsuc&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

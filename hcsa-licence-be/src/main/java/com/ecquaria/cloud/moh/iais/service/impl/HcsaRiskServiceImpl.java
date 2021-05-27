@@ -45,6 +45,30 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         }
         return showDto;
     }
+
+    @Override
+    public boolean compareVersionsForRiskFinancial(RiskFinancialShowDto needSaveDto, RiskFinancialShowDto dbSearchDto) {
+        if(needSaveDto == null || IaisCommonUtils.isEmpty(needSaveDto.getFinanceList())){
+            return false;
+        }else {
+            if( dbSearchDto == null ||  IaisCommonUtils.isEmpty(dbSearchDto.getFinanceList())){
+                return true;
+            }
+            List<HcsaRiskFinanceMatrixDto> financeList =  needSaveDto.getFinanceList();
+            List<HcsaRiskFinanceMatrixDto> financeListDb =  dbSearchDto.getFinanceList();
+            for(HcsaRiskFinanceMatrixDto hcsaRiskFinanceMatrixDto : financeList){
+                for(HcsaRiskFinanceMatrixDto financeMatrixDtoDb : financeListDb){
+                    if(hcsaRiskFinanceMatrixDto.getServiceCode().equalsIgnoreCase(financeMatrixDtoDb.getServiceCode())){
+                        if(!hcsaRiskSupportBeService.versionSameForRisk(hcsaRiskFinanceMatrixDto.getVersion() ,financeMatrixDtoDb.getVersion())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void saveDto(RiskFinancialShowDto dto) {
         List<HcsaRiskFinanceMatrixDto> dtoList = dto.getFinanceList();

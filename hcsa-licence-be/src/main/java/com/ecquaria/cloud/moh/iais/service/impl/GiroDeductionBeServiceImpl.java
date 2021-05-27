@@ -86,6 +86,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
         } else {
             log.info("Giro Deduction appGroupList is null");
         }
+        applicationClient.updateApplications(applicationGroupDtos);
         return applicationGroupDtos;
     }
 

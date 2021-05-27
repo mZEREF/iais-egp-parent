@@ -20,4 +20,6 @@ public interface HcsaRiskLicenceTenureSerice {
     boolean doIsEditLogic(HcsaRiskLicenceTenureDto temp);
 
     void saveDto(LicenceTenShowDto showDto);
+
+    boolean  compareVersionsForRiskLicenceTenure(LicenceTenShowDto needSaveDto,LicenceTenShowDto dbSearchDto);
 }

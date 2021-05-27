@@ -43,6 +43,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
+                        <div style="font-size: 16px;margin-left: 89%;padding-bottom: 1%">
+                            <p class="print">
+                                <a onclick="printRLPDF()"><em class="fa fa-print"></em>Print</a>
+                            </p>
+                        </div>
                         <div class="tab-gp steps-tab">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="previewTab" role="tabpanel">
@@ -55,6 +60,12 @@
                                                         <%@include file="inboxView/inboxPremise.jsp" %>
                                                         <%@include file="inboxView/inboxPrimary.jsp" %>
                                                         <%@include file="inboxView/viewForm.jsp" %>
+                                                        <c:choose>
+                                                            <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}"></c:when>
+                                                            <c:otherwise>
+                                                                <%@include file="../common/declarations.jsp"%>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -77,4 +88,11 @@
         </div>
     </form>
 </c:if>
+<script>
+    function printRLPDF(){
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        window.open(url,'_blank');
+       // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
+    }
+</script>
 

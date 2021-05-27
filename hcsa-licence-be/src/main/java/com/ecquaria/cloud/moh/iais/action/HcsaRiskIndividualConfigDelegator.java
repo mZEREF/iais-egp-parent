@@ -80,7 +80,11 @@ public class HcsaRiskIndividualConfigDelegator {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
-        hcsaRiskInspectionService.saveDto(showDto);
+        if(hcsaRiskInspectionService.compareVersionsForRiskInspection(showDto,hcsaRiskInspectionService.getInspectionShowDto())){
+            hcsaRiskInspectionService.saveDto(showDto);
+        }else {
+            ParamUtil.setRequestAttr(request, HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE,HcsaLicenceBeConstant.REQUEST_FOR_ACK_CODE);
+        }
     }
 
     public void backToMenu(BaseProcessClass bpc) {

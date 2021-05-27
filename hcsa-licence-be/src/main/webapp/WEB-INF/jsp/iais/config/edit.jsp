@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -125,7 +126,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12">
-          <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
           <span class="error-msg" style="margin-left: 1%" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
 
@@ -139,19 +140,19 @@
               <div class="form-check " style="left: 10%;">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input"  name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
-                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
-                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
               </div>
             </div>
           </div>
@@ -162,7 +163,7 @@
 
       <div class="form-group" style="display: none" id="Subsumption">
         <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" >Base Service Subsumed Under&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" ><iais:code code="CDN001"/> Subsumed Under&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
             <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
@@ -174,7 +175,7 @@
 
       <div class="form-group" style="display: none" id="Pre-requisite">
         <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite Base Service&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite <iais:code code="CDN001"/>&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
             <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
@@ -297,7 +298,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="serviceDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}">value="1"</c:when><c:otherwise>value="0"</c:otherwise></c:choose>>
                 <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
               <div class="col-xs-12 col-md-3 form-check" style="margin-top: 1%">
                 <select name="selectDocPerson">
@@ -346,7 +347,7 @@
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocPremises" <c:choose><c:when test="${doc.dupForPrem=='1'}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose> >
                 <input style="white-space: nowrap" class="form-check-input" <c:if test="${doc.dupForPrem=='1'}">checked</c:if>   type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocPremises">
-                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual premises ?</label>
+                <label style="white-space: nowrap" class="form-check-label" ><span class="check-square"></span>To duplicate for individual mode of service delivery ?</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-5" style="margin-right: 2%">
@@ -417,17 +418,17 @@
       </div>--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-left: 10%">
-          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}">Please check New Application routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY002']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR014")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}">Please check Renew routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY004']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR015")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}">Please check Appeal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY001']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR016")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}">Please check Request For Change routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY005']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR017")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}">Please check Cessation routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY008']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR018")%></c:if></span>
           <br>
-          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}">Please check Withdrawal routing stage</c:if></span>
+          <span class="error-msg"><c:if test="${errorMap['APTY006']!=null}"><%=MessageUtil.getMessageDesc("SC_ERR019")%></c:if></span>
         </div>
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
@@ -805,7 +806,7 @@
         }else if("SVTP003"==val){
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:style")
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service');
         }else {
@@ -847,7 +848,7 @@
             $('#Pre-requisite').attr("style","display:block");
             $('#Subsumption').attr("style","display:none");
             $('#selectCategoryId').attr("style","display:block");
-          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Services');
+          $("select[name='selectCategoryId']").next().find('.current').html('Special Licensable Healthcare Services');
           $("select[name='selectCategoryId']").next().attr('class','nice-select disabled');
           $("select[name='selectCategoryId']").val('Special Licensable Service')
         }else {
@@ -1040,7 +1041,7 @@
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"commDocPremises\" value=\"0\">\n" +
                     "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocPremises\">\n" +
-                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
                     "              </div>\n" +
                     "            </div>\n" +
                     "          </div>");
@@ -1078,7 +1079,7 @@
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
                     "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
-                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual premises ?</label>\n" +
+                    "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
                     "                <select name=\"selectDocPerson\" style=\"display: none;\">\n" +

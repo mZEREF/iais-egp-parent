@@ -1636,11 +1636,11 @@ input[type=number] {
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
   background: #efefef;
   /* Old browsers */
-  background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+  background: -moz-linear-gradient(left, #efefef 0%, white 100%) !important;
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+  background: -webkit-linear-gradient(left, #efefef 0%, white 100%) !important;
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, #efefef 0%, white 100%);
+  background: linear-gradient(to right, #efefef 0%, white 100%) !important;
   font-size: 1.6rem;
   line-height: 22px;
   padding: 13px 15px;
@@ -2361,8 +2361,8 @@ span.error-msg {
   -moz-transform: none;
   -ms-transform: none;
   -o-transform: none;
-  transform: none; 
-  overflow-y: auto; 
+  transform: none;
+  overflow-y: auto;
 }
 .nice-select.open:after {
   -webkit-transform: none;
@@ -3271,6 +3271,7 @@ span.error-msg {
   .table-gp table.table > tbody > tr > td p.table-row-title {
     font-weight: 600;
     margin-bottom: 3px;
+    line-height: 9px;
   }
   .table-gp table.table > tbody > tr:not(:last-child) {
     margin-bottom: 20px;
@@ -5620,9 +5621,52 @@ section.logo img {
   table.control-grid.columns1 > tbody > tr > td > .section.control {
     min-height: auto;
   }
-
+  .navigation {
+    position: fixed;
+    top: 93px;
+    left: 0;
+    width: 100vw;
+    z-index: 99;
+    background: #025B87;
+    height: calc(100vh - 62px);
+    padding-bottom: 85px;
+    padding-top: 15px;
+    -webkit-transform: translateX(100vw);
+    -moz-transform: translateX(100vw);
+    -ms-transform: translateX(100vw);
+    -o-transform: translateX(100vw);
+    transform: translateX(100vw);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+  }
+  .table-gp table.table > tbody > tr > td p {
+    margin-bottom: 0;
+    line-height: 25px;
+  }
 }
+
+
 @media only screen and (min-width : 768px) and (max-width : 992px) {
+  header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background: #fff;
+  }
+  .navigation.open {
+    -webkit-transform: translateX(0vw);
+    -moz-transform: translateX(0vw);
+    -ms-transform: translateX(0vw);
+    -o-transform: translateX(0vw);
+    transform: translateX(0vw);
+  }
+  .navigation {
+    width: 100vw;
+    top: 110px;
+    height: calc(100vh - 65px);
+  }
   footer.footerlogin {
     position: absolute;
     top: auto;

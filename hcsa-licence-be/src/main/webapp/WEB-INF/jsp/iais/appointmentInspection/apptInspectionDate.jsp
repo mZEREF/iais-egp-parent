@@ -49,7 +49,7 @@
                         <li id="apptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                                                               aria-controls="tabDocuments" role="tab"
                                                                                               data-toggle="tab">Documents</a></li>
-                        <li id="apptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
+                        <li id="apptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing" id = "apptInspectionDateProcess"
                                                                                                  aria-controls="tabProcessing" role="tab"
                                                                                                  data-toggle="tab" onclick="javascript:apptInspectionDateGetDate()">Processing</a></li>
                       </ul>
@@ -226,7 +226,8 @@
         $("#apptInspTabInfo").removeClass('active');
         $("#apptInspTabDocuments").removeClass('active');
         $("#apptInspTabProcessing").removeClass('active');
-        $("#apptInspectionDate").click();
+        $('#apptInspectionDate').trigger("click");
+        $("#apptInspectionDateProcess").click();
         $("#apptInspTabProcessing").addClass('active');
     }
 

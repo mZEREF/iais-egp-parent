@@ -18,9 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -33,6 +31,8 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
+import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -72,6 +72,8 @@ public class NewApplicationAjaxController {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -146,22 +148,33 @@ public class NewApplicationAjaxController {
             String width = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 className = "onSite";
-                width = "width: 20%;";
+                width = "col-md-3";
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
-                width = "width: 27%;";
+                width = "col-md-4";
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
                 className = "offSite";
-                width = "width: 19%;";
+                width = "col-md-3";
             }
-            premTypeBuffer.append("<div class=\"col-xs-5 \" style=\"").append(width).append("\">")
+            premTypeBuffer.append("<div class=\"col-xs-12 ").append(width).append("\">");
+            String premTypeTooltip = "";
+            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK019");
+            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK021");
+            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
+                premTypeTooltip = MessageUtil.getMessageDesc("NEW_ACK020");
+            }
+            premTypeBuffer.append("<a class=\"btn-tooltip styleguide-tooltip\" style=\"z-index: 999;position: absolute; right: 30px; top: 12px;\" href=\"javascript:void(0);\" data-placement=\"top\"  data-toggle=\"tooltip\" data-html=\"true\" title=\"&lt;p&gt;")
+                    .append(premTypeTooltip)
+                    .append("&lt;/p&gt;\">i</a>")
                     .append("<div class=\"form-check\">").append("<input class=\"form-check-input premTypeRadio ").append(className).append("\"  type=\"radio\" name=\"premType").append(currentLength).append("\" value = ").append(type).append(" aria-invalid=\"false\">");
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Premises<br/><span>(at fixed address)</span></label>");
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(registered vehicle, aircraft, vessel or train)</span></label>");
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
-                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Off-site<br/><span>(as tele-medicine)</span></label>");
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Off-site<br/><span>(remotely/non-fixed location)</span></label>");
             }
             premTypeBuffer.append("</div>")
                     .append("</div>");
@@ -366,7 +379,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "designationSel");
             designationAttr.put("name", "designation");
@@ -534,7 +547,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "designation");
             designationAttr.put("name", "designation");
@@ -600,7 +613,7 @@ public class NewApplicationAjaxController {
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Designation
-            List<SelectOption> designationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+            List<SelectOption> designationList = NewApplicationHelper.genDesignationOpList(true);
             Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("class", "deputyDesignation");
             designationAttr.put("name", "deputyDesignation");
@@ -628,7 +641,8 @@ public class NewApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo start ...."));
         String premIndexNo = ParamUtil.getString(request, "premIndexNo");
         String premisesType = ParamUtil.getString(request,"premisesType");
-        if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType)) {
+        String premiseIndex = request.getParameter("premiseIndex");
+        if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
             return null;
         }
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
@@ -659,12 +673,12 @@ public class NewApplicationAjaxController {
             if(!IaisCommonUtils.isEmpty(weeklyDtoList)){
                 StringBuilder weeklyHtml = new StringBuilder();
                 for(int i =0;i<weeklyDtoList.size();i++){
-                    String sql = genWeeklyCountHtml(premisesType,"","");
+                    String sql = genWeeklyCountHtml(premisesType,premiseIndex,String.valueOf(i));
                     String weeklyName =  "Weekly";
                     Map<String, String> weeklyAttr = IaisCommonUtils.genNewHashMap();
                     weeklyAttr.put("class", weeklyName);
                     weeklyAttr.put("id", weeklyName);
-                    weeklyAttr.put("name", premisesType+premPrefixName + weeklyName + i);
+                    weeklyAttr.put("name", premiseIndex+premPrefixName + weeklyName + i);
                     weeklyAttr.put("style", "display: none;");
                     List<SelectOption> weeklyOpList =  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
                     String weeklyDropHtml = NewApplicationHelper.genMutilSelectOpHtml(weeklyAttr,weeklyOpList,null,weeklyDtoList.get(i).getSelectValList());
@@ -675,23 +689,35 @@ public class NewApplicationAjaxController {
             }
             //ph
             List<OperationHoursReloadDto> phDtoList = appGrpPremisesDto.getPhDtoList();
+            StringBuilder phHtml = new StringBuilder();
             if(!IaisCommonUtils.isEmpty(phDtoList)){
-                StringBuilder phHtml = new StringBuilder();
                 for(int i =0;i<phDtoList.size();i++){
-                    String sql = genPhCountHtml(premisesType,"","");
+                    String sql = genPhCountHtml(premisesType,premiseIndex,String.valueOf(i));
                     String pubHolidayName ="PubHoliday";
                     Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
                     pubHolidayAttr.put("class", pubHolidayName);
                     pubHolidayAttr.put("id", pubHolidayName);
-                    pubHolidayAttr.put("name", premisesType +premPrefixName+ pubHolidayName + i);
+                    pubHolidayAttr.put("name", premiseIndex +premPrefixName+ pubHolidayName + i);
                     pubHolidayAttr.put("style", "display: none;");
                     List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
                     String pubHolidayHtml = NewApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,phDtoList.get(i).getSelectValList());
                     sql = sql.replace("${multipleDropDown}", pubHolidayHtml);
                     phHtml.append(sql);
                 }
-                appGrpPremisesDto.setPhHtml(phHtml.toString());
+            }else{
+                String sql = genPhCountHtml(premisesType,"0","0");
+                String pubHolidayName ="PubHoliday";
+                Map<String, String> pubHolidayAttr = IaisCommonUtils.genNewHashMap();
+                pubHolidayAttr.put("class", pubHolidayName);
+                pubHolidayAttr.put("id", pubHolidayName);
+                pubHolidayAttr.put("name", premiseIndex +premPrefixName+ pubHolidayName + 0);
+                pubHolidayAttr.put("style", "display: none;");
+                List<SelectOption> phOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PUBLIC_HOLIDAY);
+                String pubHolidayHtml = NewApplicationHelper.genMutilSelectOpHtml(pubHolidayAttr,phOpList,null,null);
+                sql = sql.replace("${multipleDropDown}", pubHolidayHtml);
+                phHtml.append(sql);
             }
+            appGrpPremisesDto.setPhHtml(phHtml.toString());
             //event
             List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDto.getEventDtoList();
             if(!IaisCommonUtils.isEmpty(eventDtoList)){
@@ -711,6 +737,16 @@ public class NewApplicationAjaxController {
         licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
+        //for rfc new  renew choose other address ,if no this cannot choose other address from page
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+        if(oldAppSubmissionDto!=null){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, appGrpPremisesDtoList.get(0));
+                appGrpPremisesDto.setEqHciCode(String.valueOf(eqHciCode));
+            }
+        }
+
         return appGrpPremisesDto;
     }
 
@@ -766,60 +802,17 @@ public class NewApplicationAjaxController {
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
+        ProfessionalResponseDto professionalResponseDto = null;
         if (StringUtil.isEmpty(professionRegoNo)) {
             log.debug(StringUtil.changeForLog("the prgNo is null ...."));
-            return null;
+            return professionalResponseDto;
         }
-//        String specialtyJsp = ParamUtil.getString(request, "specialty");
-//        String qualificationJsp = ParamUtil.getString(request, "qualification");
-        ProfessionalResponseDto professionalResponseDto=new ProfessionalResponseDto();
-            if("Y".equals(prsFlag)){
-                List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                prgNos.add(professionRegoNo);
-                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                professionalParameterDto.setRegNo(prgNos);
-                professionalParameterDto.setClientId("22222");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String format = simpleDateFormat.format(new Date());
-                professionalParameterDto.setTimestamp(format);
-                professionalParameterDto.setSignature("2222");
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
-                    StringBuilder sb = new StringBuilder();
-                    professionalResponseDto = professionalResponseDtos.get(0);
-                    List<String> specialty = professionalResponseDto.getSpecialty();
-                    List<String> qualification = professionalResponseDto.getQualification();
-                    List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                    if(IaisCommonUtils.isEmpty(specialty)){
-                        return professionalResponseDto;
-                    }
-                    if (!IaisCommonUtils.isEmpty(qualification)) {
-                        String s = qualification.get(0);
-                        if(!StringUtil.isEmpty(s)){
-                            sb.append(s);
-                        }
-                    }
-                    if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                        String s = subspecialty.get(0);
-                        if(!StringUtil.isEmpty(s)){
-                            sb.append(s);
-                        }
-                    }
-                    String s = sb.toString();
-                    qualification.clear();
-                    qualification.add(s);
-                    log.debug(StringUtil.changeForLog("the prgNo end ...."));
-                    return professionalResponseDto;
-                }catch (Throwable e){
-                    log.error(e.getMessage(), e);
-                    return professionalResponseDto;
-                }
-
-            }
-            return null;
+        log.debug("prs server flag {}",prsFlag);
+        if("Y".equals(prsFlag)){
+            professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
+        }
+        log.debug(StringUtil.changeForLog("the prgNo end ...."));
+        return professionalResponseDto;
     }
 
 
@@ -1109,11 +1102,12 @@ public class NewApplicationAjaxController {
 
     @GetMapping(value = "/new-app-ack-print")
     public @ResponseBody void generateAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String action = ParamUtil.getString(request,"action");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO);
         String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt);
+        byte[] bytes = doPrint(appSubmissionDto,isRfi,txnRefNo,txndt,action);
         if(bytes != null){
             String fileName = "newAppAck.pdf";
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -1137,7 +1131,7 @@ public class NewApplicationAjaxController {
         appSubmissionDtos.get(0).setPaymentMethod(payMethod);
         String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-        byte[] bytes = doPrint(appSubmissionDtos.get(0),isRfi,txnRefNo,new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        byte[] bytes = doPrint(appSubmissionDtos.get(0),isRfi,txnRefNo,new SimpleDateFormat("dd/MM/yyyy").format(new Date()),"");
         if(bytes != null){
             response.setContentType("application/OCTET-STREAM");
             response.addHeader("Content-Disposition", "attachment;filename=rfcAppAck.pdf");
@@ -1180,7 +1174,7 @@ public class NewApplicationAjaxController {
         return person;
     }
 
-    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi,String txnRefNo,String txnDt) throws Exception {
+    private static byte[] doPrint(AppSubmissionDto appSubmissionDto,boolean isRfi, String txnRefNo, String txnDt, String action) throws Exception {
         byte[] bytes = null;
         if(appSubmissionDto != null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1219,9 +1213,11 @@ public class NewApplicationAjaxController {
                             .append(appSubmissionDto.getLicenceNo())
                             .append("</strong>)</p>");
                 }
-                paramMap.put("title",title);
-                paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
-                paramMap.put("newExtraTitle",newExtraTitle.toString());
+                if(StringUtil.isEmpty(action) || !"noHeader".equals(action)){
+                    paramMap.put("title",title);
+                    paramMap.put("rfcExtraTitle",rfcExtraTitle.toString());
+                    paramMap.put("newExtraTitle",newExtraTitle.toString());
+                }
                 paramMap.put("serviceName",serviceName.toString());
                 paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
                 paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));

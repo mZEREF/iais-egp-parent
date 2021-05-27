@@ -62,43 +62,85 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             log.info("<======== Start EIC Self Recover Job =========>");
             JobLogger.log("<======== Start EIC Self Recover Job =========>");
             String moduleName = currentApp + "-" + currentDomain;
-            List<EicRequestTrackingDto> atList = atEicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> licList = licEicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
-            List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
-            AuditTrailHelper.setupBatchJobAuditTrail(this);
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-            AuditTrailDto.setThreadDto(auditTrailDto);
-            if (!IaisCommonUtils.isEmpty(atList)) {
-                atList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                atEicClient.updateStatus(atList);
-            }
+            boolean keepOn = true;
+            int i = 0;
+            boolean atCon = true;
+            boolean appCon = true;
+            boolean licCon = true;
+            boolean licmCon = true;
+            boolean orgCon = true;
+            boolean sysCon = true;
+            while (keepOn && i < 200) {
+                keepOn = atCon || appCon || licCon || licmCon || orgCon || sysCon;
+                List<EicRequestTrackingDto> atList = null;
+                if (atCon) {
+                    atList = atEicClient.getPendingRecords(moduleName).getEntity();
+                    atCon = !IaisCommonUtils.isEmpty(atList);
+                }
+                List<EicRequestTrackingDto> appList = null;
+                if (appCon) {
+                    appList = appEicClient.getPendingRecords(moduleName).getEntity();
+                    appCon = !IaisCommonUtils.isEmpty(appList);
+                }
+                List<EicRequestTrackingDto> licList = null;
+                if (licCon) {
+                    licList = licEicClient.getPendingRecords(moduleName).getEntity();
+                    licCon = !IaisCommonUtils.isEmpty(licList);
+                }
+                List<EicRequestTrackingDto> licmList = null;
+                if (licmCon) {
+                    licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
+                    licmCon = !IaisCommonUtils.isEmpty(licmList);
+                }
+                List<EicRequestTrackingDto> orgList = null;
+                if (orgCon) {
+                    orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
+                    orgCon = !IaisCommonUtils.isEmpty(orgList);
+                }
+                List<EicRequestTrackingDto> sysList = null;
+                if (sysCon) {
+                    sysList = eicClient.getPendingRecords(moduleName).getEntity();
+                    sysCon = !IaisCommonUtils.isEmpty(sysList);
+                }
+                AuditTrailHelper.setupBatchJobAuditTrail(this);
+                AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+                AuditTrailDto.setThreadDto(auditTrailDto);
+                if (!IaisCommonUtils.isEmpty(atList)) {
+                    keepOn = true;
+                    atList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    atEicClient.updateStatus(atList);
+                }
 
-            if (!IaisCommonUtils.isEmpty(appList)) {
-                appList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                appEicClient.updateStatus(appList);
-            }
+                if (!IaisCommonUtils.isEmpty(appList)) {
+                    keepOn = true;
+                    appList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    appEicClient.updateStatus(appList);
+                }
 
-            if (!IaisCommonUtils.isEmpty(licList)) {
-                licList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                licEicClient.updateStatus(licList);
-            }
+                if (!IaisCommonUtils.isEmpty(licList)) {
+                    keepOn = true;
+                    licList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    licEicClient.updateStatus(licList);
+                }
 
-            if (!IaisCommonUtils.isEmpty(licmList)) {
-                licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                licmEicClient.updateStatus(licmList);
-            }
+                if (!IaisCommonUtils.isEmpty(licmList)) {
+                    keepOn = true;
+                    licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    licmEicClient.updateStatus(licmList);
+                }
 
-            if (!IaisCommonUtils.isEmpty(orgList)) {
-                orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                orgEicClient.updateStatus(orgList);
-            }
+                if (!IaisCommonUtils.isEmpty(orgList)) {
+                    keepOn = true;
+                    orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    orgEicClient.updateStatus(orgList);
+                }
 
-            if (!IaisCommonUtils.isEmpty(sysList)) {
-                sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
-                eicClient.updateStatus(sysList);
+                if (!IaisCommonUtils.isEmpty(sysList)) {
+                    keepOn = true;
+                    sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
+                    eicClient.updateStatus(sysList);
+                }
+                i++;
             }
             log.info("<======== End EIC Self Recover Job =========>");
             JobLogger.log("<======== End EIC Self Recover Job =========>");

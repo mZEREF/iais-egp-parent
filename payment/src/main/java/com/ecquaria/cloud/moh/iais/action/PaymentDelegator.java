@@ -14,6 +14,7 @@ import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.config.ConfigUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class PaymentDelegator {
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-        String url= AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+"/egov/process/EGPCLOUD/PaymentCallBack";
+        String url= ConfigUtil.getString( "rvl.baiduri.return.url");
         StringBuilder bud = new StringBuilder();
         String header =  ParamUtil.getRequestString(request,"hmac");
         System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
@@ -87,30 +88,7 @@ public class PaymentDelegator {
 
     public void savePayment(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
-//        HttpServletRequest request = bpc.request;
-//        PaymentDto paymentDto = new PaymentDto();
-//        String result = (String)ParamUtil.getSessionAttr(bpc.request, "result");
-//        Double amount = (Double)ParamUtil.getSessionAttr(bpc.request, "amount");
-//        ParamUtil.getSessionAttr(bpc.request, "amount");
-//        String reqRefNo = (String)ParamUtil.getSessionAttr(bpc.request, "reqRefNo");
-//        String invoiceNo = (String)ParamUtil.getSessionAttr(bpc.request, "invoiceNo");
-//        String backUrl = (String) ParamUtil.getSessionAttr(bpc.request,"backUrl");
-//        paymentDto.setAmount(amount);
-//        paymentDto.setReqRefNo(reqRefNo);
-//        paymentDto.setInvoiceNo(invoiceNo);
-//        paymentDto.setPmtStatus(result);
-//        PaymentDto paymentDtoSave = paymentService.savePayment(paymentDto);
-//        Date txnDtD = paymentDtoSave.getTxnDt();
-//        String txnDt = Formatter.formatDateTime(txnDtD, "dd/MM/yyyy HH:mm:ss");
-//        String txnRefNo = paymentDtoSave.getTxnRefNo();
-//        String showUrl = "https://" + request.getServerName();
-//        String results="?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqRefNo)+"&txnDt="+MaskUtil.maskValue("txnDt",txnDt)+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",txnRefNo);
-//        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
-//        if(!StringUtil.isEmpty(backUrl)){
-//             s = showUrl +"/" +backUrl+results;
-//        }
-//        String url = RedirectUtil.appendCsrfGuardToken(s, request);
-//        bpc.response.sendRedirect(url);
+
 
     }
 }

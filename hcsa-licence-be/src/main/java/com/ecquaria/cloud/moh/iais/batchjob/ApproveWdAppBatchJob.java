@@ -136,8 +136,11 @@ public class ApproveWdAppBatchJob {
                         }
                         try {
                             if (!StringUtil.isEmpty(fee)){
-                                AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
-                                applicationService.saveAppReturnFee(appReturnFeeDto);
+                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                if (withdrawReturnFee){
+                                    AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                                }
                             }
                         }catch (Exception e){
                             log.error("Withdraw application return is failed");
@@ -196,7 +199,6 @@ public class ApproveWdAppBatchJob {
     }
 
     private AppReturnFeeDto assembleReturn(ApplicationDto applicationDto, Double returnFee){
-        JobLogger.log(StringUtil.changeForLog("The withdraw Application Return fee function "));
         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
         appReturnFeeDto.setStatus("paying");
         appReturnFeeDto.setTriggerCount(0);
@@ -242,7 +244,7 @@ public class ApproveWdAppBatchJob {
 
     private void createTaskAndHistory(List<ApplicationDto> creatTaskApplicationList, String stageId, String roleId, List<String> oldAppGroupExcuted, String oldAppGrpId) throws FeignException {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN);
+                stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null);
         if (taskHistoryDto != null) {
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();

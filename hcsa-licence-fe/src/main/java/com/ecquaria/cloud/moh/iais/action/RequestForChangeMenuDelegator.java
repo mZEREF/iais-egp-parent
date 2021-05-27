@@ -97,7 +97,7 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
  *   @date 1/4/2020
  *   @author zixian
  */
-@Slf4j //NOSONAR
+@Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
     private FilterParameter filterParameter = new FilterParameter.Builder()
@@ -268,7 +268,7 @@ public class RequestForChangeMenuDelegator {
 
     private void setSelectOption(List<SelectOption> list) {
         SelectOption onsite = new SelectOption();
-        onsite.setText("On-site");
+        onsite.setText("Premises");
         onsite.setValue("ONSITE");
         SelectOption conveyance = new SelectOption();
         conveyance.setText("Conveyance");
@@ -402,6 +402,27 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        if(isRfi&&appSubmissionDto!= null&&appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            for(AppGrpPremisesDto v : appGrpPremisesDtoList){
+                String hciCode = v.getHciCode();
+                String oldHciCode = v.getOldHciCode();
+                if(hciCode!=null&&oldHciCode!=null){
+                    boolean equals = hciCode.equals(oldHciCode);
+                    v.setExistingData(AppConsts.YES);
+                    bpc.request.getSession().setAttribute("eqHciCode",String.valueOf(equals));
+                }else if(hciCode==null){
+                    v.setExistingData(AppConsts.NO);
+                    bpc.request.getSession().setAttribute("eqHciCode","true");
+                }
+            }
+
+        }else {
+            boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
+            bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
+        }
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
@@ -501,6 +522,10 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = NewApplicationDelegator.genAppGrpPremisesDtoList(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
+        List<LicenceDto> licenceDtoList = (List<LicenceDto>)bpc.getSession().getAttribute("licenceDtoList");
+        if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+            appGrpPremisesDtoList.get(0).setLicenceDtos(licenceDtoList);
+        }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -510,6 +535,27 @@ public class RequestForChangeMenuDelegator {
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
 
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        if(isRfi){
+           for(AppGrpPremisesDto v : appGrpPremisesDtoList) {
+               String hciCode = v.getHciCode();
+               String oldHciCode = v.getOldHciCode();
+               if(hciCode!=null&&oldHciCode!=null){
+                   boolean equals = hciCode.equals(oldHciCode);
+
+                   v.setExistingData(AppConsts.YES);
+
+                   bpc.request.getSession().setAttribute("eqHciCode",String.valueOf(equals));
+               }else if(hciCode==null){
+                   v.setExistingData(AppConsts.NO);
+                   bpc.request.getSession().setAttribute("eqHciCode","true");
+               }
+           }
+        }else {
+            boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
+            bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
+        }
+
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
@@ -582,7 +628,7 @@ public class RequestForChangeMenuDelegator {
         searchParam.setPageNo(0);
         String personName = ParamUtil.getRequestString(bpc.request, "perName");
         if (!StringUtil.isEmpty(personName)) {
-            searchParam.addFilter("personName", "%" + personName + "%", true);
+            searchParam.addFilter("personName",  personName , true);
         }
         searchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
@@ -755,7 +801,7 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
                 appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -800,7 +846,7 @@ public class RequestForChangeMenuDelegator {
                 updateGroupStatus(appSubmissionDtos);
             }
             try {
-                if (appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                if (appSubmissionDtos!=null&&appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                     requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
                 }
             } catch (Exception e) {
@@ -1173,7 +1219,7 @@ public class RequestForChangeMenuDelegator {
         String psnType = ParamUtil.getString(bpc.request, "psnTypes");
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
         if (!StringUtil.isEmpty(personName)) {
-            searchParam.addFilter("personName", "%" + personName + "%", true);
+            searchParam.addFilter("personName",  personName , true);
             QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "personName", personName);
             ParamUtil.setRequestAttr(bpc.request, "perName", personName);
@@ -1326,9 +1372,12 @@ public class RequestForChangeMenuDelegator {
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
         }
-        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
-        ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
+        AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        if(mainSubmisDto != null){
+            boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
+            ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
+        }
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
@@ -1347,74 +1396,83 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appSubmissionDto.setPaymentMethod(payMethod);
-        }
-        bpc.request.getSession().setAttribute("payMethod", payMethod);
-        if (0.0 == appSubmissionDtos.get(0).getAmount()) {
-            StringBuilder url = new StringBuilder();
-            url.append("https://")
-                    .append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-            return;
-        }
-        double a = 0.0;
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            a = a + appSubmissionDto.getAmount();
-        }
-        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
-        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            Map<String, String> fieldMap = new HashMap<String, String>();
-            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
-            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
-            try {
-                String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
-                String html = "";
-                switch (payMethod) {
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                        html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                        html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
-                    default:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                        break;
+        if(appSubmissionDtos!=null){
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                appSubmissionDto.setPaymentMethod(payMethod);
+            }
+            bpc.request.getSession().setAttribute("payMethod", payMethod);
+            if (0.0 == appSubmissionDtos.get(0).getAmount()) {
+                StringBuilder url = new StringBuilder();
+                url.append("https://")
+                        .append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+                return;
+            }
+            double a = 0.0;
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                a = a + appSubmissionDto.getAmount();
+            }
+            bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+                Map<String, String> fieldMap = new HashMap<String, String>();
+                fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
+                fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+                fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
+                try {
+                    String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
+                    String html = "";
+                    switch (payMethod) {
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                            html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                            html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                        default:
+                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                            break;
+                    }
+                    bpc.response.sendRedirect(html);
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
                 }
-                bpc.response.sendRedirect(html);
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
+                return;
+            } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+                if(appSubmissionDtos.size() > 1){
+                    appSubmissionDtos.get(0).setTotalAmountGroup(a);
+                }
+                try {
+                    if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
+                }
+                String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
+                String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
+                appGrp.setPmtRefNo(giroTranNo);
+                appGrp.setPayMethod(payMethod);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
+                //todo change
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
             }
-            return;
-        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-            if(appSubmissionDtos.size() > 1){
-                appSubmissionDtos.get(0).setTotalAmountGroup(a);
-            }
-            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
-            String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
-            appGrp.setPmtRefNo(giroTranNo);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
-            //todo change
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
         }
 
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
@@ -1526,6 +1584,8 @@ public class RequestForChangeMenuDelegator {
         for(AppGrpPremisesDto v : appGrpPremisesDtoList1){
             v.setLicenceDtos(selectLicence);
         }
+        boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
         List<AppGrpPremisesDto> oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList();
         if (selectLicence != null) {
             for (LicenceDto string : selectLicence) {
@@ -1592,9 +1652,6 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
-        boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDtoappSubmissionDto.getAppGrpPremisesDtoList().get(0));
-
-        bpc.request.setAttribute("eqHciCode",eqHciCode);
 
         if (!isSame || !b || eqAddFloorNo) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
@@ -1840,7 +1897,9 @@ public class RequestForChangeMenuDelegator {
     public void doPayValidate(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("do doPayValidate start ..."));
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        appSubmissionDto.setPaymentMethod(payMethod);
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:" + payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:" + noNeedPayment));
@@ -1853,16 +1912,31 @@ public class RequestForChangeMenuDelegator {
                 NewApplicationHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
                 return;
             }
+            if(!StringUtil.isEmpty(noNeedPayment)){
+                ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
+                try{
+                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
         } else {
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+                appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
+            }
+            String eqHciCode = bpc.request.getParameter("eqHciCode");
+            bpc.request.setAttribute("eqHciCode",eqHciCode);
         }
-
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));
     }
 

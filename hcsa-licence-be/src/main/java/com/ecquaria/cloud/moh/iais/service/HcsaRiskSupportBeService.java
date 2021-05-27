@@ -15,4 +15,6 @@ public interface HcsaRiskSupportBeService{
     List<AutoRenewDto> isAutoRenew(List<String> licNo,boolean isRenew);
     void feCreateRiskData( HcsaRiskFeSupportDto supportDto);
     void sysnRiskSaveEic(int httpStatus,HcsaRiskFeSupportDto supportDto);
+    boolean versionSameForRisk(String version,String dbVersion);
+    boolean versionSameForRisk(Integer version,Integer dbVersion);
 }

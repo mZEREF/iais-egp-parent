@@ -8,7 +8,7 @@
             <thead>
             <tr >
                 <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery"/>
                 <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>
                 <iais:sortableHeader needSort="true"  field="HCI_CONTACT_NO" value="Contact"/>
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Active Licence"/>
@@ -33,7 +33,7 @@
                             </td>
                             <td>
                                 <c:if test="${'ONSITE'==pool.premisesType}">
-                                    <c:out value="On-site"/>
+                                    <c:out value="Premises"/>
                                 </c:if>
                                 <c:if test="${'CONVEYANCE'==pool.premisesType}">
                                     <c:out value="Conveyance"/>

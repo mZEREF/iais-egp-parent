@@ -16,7 +16,7 @@
     <div class="col-xs-12 col-md-7">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
             <div class="form-check-gp" style="width: 50%;float: right">
-                <p class="assessment-title">Special Licensable Services</p>
+                <p class="assessment-title"><iais:code code="CDN004"/></p>
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">
                         <input class="form-check-input"
@@ -33,7 +33,7 @@
                 </c:forEach>
             </div>
             <div class="form-check-gp" style="width: 50%;">
-            <p class="assessment-title">Base Services</p>
+            <p class="assessment-title"><iais:code code="CDN002"/></p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
                         <input class="form-check-input"

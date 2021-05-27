@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -359,8 +360,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private void sendChecklistReminder(String queryCode, String emailId, String noticeId, String smsId, List<SelfAssMtEmailDto> allAssLt){
-        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (SelfAssMtEmailDto i : allAssLt) {
+            Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             String reqRefNum;
             String refType;
             String msgReqRefNum;
@@ -473,6 +474,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
             templateContent.put("tatTime", inspDate);
+            templateContent.put("inspDate", inspDate);
             templateContent.put("reminderDate", today);
             templateContent.put("systemLink", loginUrl);
             templateContent.put("officer_name", "officer_name");
@@ -507,58 +509,59 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setSvcCodeList(svcCodeList);
 
             //send to inspector
-            if (HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB.equals(queryCode)){
+            if (HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB.equals(queryCode)) {
                 emailParam.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
                 JobRemindMsgTrackingDto firReminderRecord = msgTemplateClient.getJobRemindMsgTrackingDto(msgReqRefNum, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
-                JobRemindMsgTrackingDto secReminderRecord = msgTemplateClient.getJobRemindMsgTrackingDto(msgReqRefNum, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();if (Optional.ofNullable(firReminderRecord).isPresent() && Optional.ofNullable(secReminderRecord).isPresent()){
-                    if (Optional.ofNullable(firReminderRecord).isPresent() && Optional.ofNullable(secReminderRecord).isPresent()){
-                        templateContent.put("inspReminderStartDate", Formatter.formatDate(firReminderRecord.getCreateTime()));
-                        templateContent.put("inspReminderEndDate", Formatter.formatDate(secReminderRecord.getCreateTime()));
-                    }else {
-                        log.info("break send reminder email to inspector , because the applicant has not been reminded");
-                        continue;
-                    }
+                JobRemindMsgTrackingDto secReminderRecord = msgTemplateClient.getJobRemindMsgTrackingDto(msgReqRefNum, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
+                if (Optional.ofNullable(firReminderRecord).isPresent() && Optional.ofNullable(secReminderRecord).isPresent()) {
+                    templateContent.put("inspReminderStartDate", Formatter.formatDate(firReminderRecord.getCreateTime()));
+                    templateContent.put("inspReminderEndDate", Formatter.formatDate(secReminderRecord.getCreateTime()));
+                } else {
+                    log.info("break send reminder email to inspector , because the applicant has not been reminded");
+                    continue;
                 }
             }
-
             emailParam.setTemplateContent(templateContent);
             notificationHelper.sendNotification(emailParam);
 
             //send notification and SMS
-            if (IaisCommonUtils.isNotEmpty(appList)){
+            if (IaisCommonUtils.isNotEmpty(appList)) {
                 ApplicationDto applicationDto = appList.get(0);
-                if (StringUtil.isNotEmpty(noticeId)){
-                    emailParam.setTemplateId(noticeId);
-                    emailParam.setRefId(applicationDto.getApplicationNo());
-                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    notificationHelper.sendNotification(emailParam);
+                if (StringUtil.isNotEmpty(noticeId)) {
+                    EmailParam msgParam = MiscUtil.transferEntityDto(emailParam, EmailParam.class);
+                    msgParam.setTemplateId(noticeId);
+                    msgParam.setRefId(applicationDto.getApplicationNo());
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(msgParam);
                 }
 
-                if (StringUtil.isNotEmpty(smsId)){
-                    emailParam.setTemplateId(smsId);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    notificationHelper.sendNotification(emailParam);
+                if (StringUtil.isNotEmpty(smsId)) {
+                    EmailParam smsParam = MiscUtil.transferEntityDto(emailParam, EmailParam.class);
+                    smsParam.setTemplateId(smsId);
+                    smsParam.setRefId(applicationDto.getApplicationNo());
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(smsParam);
                 }
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
-        }
+       }
     }
 
     @Override
     public void alertSelfDeclNotification() {
         //These emails will only be reminded three times at different times, see database table -> smemail.notification
-        List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
-        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
+       List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
+       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
 
-        List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
-        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
+       List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
+       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
 
-        List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
-        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
+       List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
+       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
 
-        List<SelfAssMtEmailDto> email_to_inspecotr_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
-         sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_008);
+       List<SelfAssMtEmailDto> email_to_inspecotr_004 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
+       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_004);
     }
 
     @Override
@@ -662,7 +665,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //0065135
         if(appEditSelectDto != null){
             if(appEditSelectDto.isPremisesEdit()){
-                editSelect = editSelect + "Premises";
+                editSelect = editSelect + "Mode of Service Delivery";
             }
             if(appEditSelectDto.isDocEdit()){
                 editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
@@ -843,6 +846,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     public List<AppEditSelectDto> getAppEditSelectDtosByAppIds(List<String> applicationIds) {
         List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtosByAppIds(applicationIds).getEntity();
         return entity;
+    }
+
+    @Override
+    public boolean isWithdrawReturnFee(String appNo) {
+        boolean result = false;
+        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo,ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
+        if (appReturnFeeDto == null){
+            result = true;
+        }
+        return result;
     }
 
     @Override

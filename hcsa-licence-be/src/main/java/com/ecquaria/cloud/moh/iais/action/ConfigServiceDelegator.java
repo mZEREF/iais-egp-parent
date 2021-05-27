@@ -490,7 +490,7 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setDocDesc(descriptionServiceDocs[i]);
                 hcsaSvcDocConfigDto.setDocTitle(descriptionServiceDocs[i]);
                 hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                hcsaSvcDocConfigDto.setDispOrder(0);
+                hcsaSvcDocConfigDto.setDispOrder(i);
                 hcsaSvcDocConfigDto.setServiceId("");
                 hcsaSvcDocConfigDto.setDupForPrem("0");
                 if("0".equals(serviceDocMandatories[i])){
@@ -529,7 +529,7 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setDocTitle(descriptionCommDocs[i]);
                 hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
                 hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                hcsaSvcDocConfigDto.setDispOrder(0);
+                hcsaSvcDocConfigDto.setDispOrder(i);
                 if("0".equals(commDocMandatory[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                 }else if("1".equals(commDocMandatory[i])){
@@ -675,7 +675,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     hcsaSvcSpecificStageWorkloadDto.setAppType(every);
                     hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    hcsaSvcSpecificStageWorkloadDto.setIsMandatory("true");
+                    hcsaSvcSpecificStageWorkloadDto.setIsMandatory(String.valueOf(true).intern());
                     workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
                     hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
@@ -684,8 +684,8 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpeRoutingSchemeDto1.setStageId(id);
                         hcsaSvcSpeRoutingSchemeDto1.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         hcsaSvcSpeRoutingSchemeDto1.setAppType(every);
-                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory("true");
-                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("true");
+                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory(String.valueOf(true));
+                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory(String.valueOf(true));
                         hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
                         if(flag){
                             hcsaSvcSpeRoutingSchemeDto1.setSchemeType(routingScheme);
@@ -717,7 +717,7 @@ public class ConfigServiceDelegator {
                         svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
                         hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(svcSpeRoutingSchemeDtoList);
                     }
-                    hcsaConfigPageDto.setIsMandatory("true");
+                    hcsaConfigPageDto.setIsMandatory(String.valueOf(true));
                 }else if("".equals(isMandatory)) {
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);

@@ -246,7 +246,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!StringUtil.isEmpty(workGroupId)) {
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             String workGroupName = workingGroupDto.getGroupName();
-            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
+            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection") && !workGroupName.contains("Approval")) {
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
                 if (appPremisesRecommendationDto == null) {
                     List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();
@@ -345,7 +345,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     roleOptions.add(so);
                     roleMap.put(index + "", role);
                     //set current role check key
-                    if (role.equals(curRole)) {//NOSONAR
+                    if (role.equals(curRole)) {
                         curCheckRole = String.valueOf(index);
                     }
                     index++;
@@ -372,7 +372,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 roleOptions.add(so);
                 roleMap.put(index + "", role);
                 //set current role check key
-                if (role.equals(curRole)) {//NOSONAR
+                if (role.equals(curRole)) {
                     poolRoleCheckDto.setCheckCurRole(index + "");
                 }
                 index++;
@@ -474,14 +474,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                 ApplicationConsts.APPLICATION_TYPE_RENEWAL,
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
+                ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
         });
         return appTypeOption;
     }
 
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
-                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+                                          String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -576,7 +577,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                       ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
+                                         ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
@@ -1017,14 +1018,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
 
-        List<AppointmentUserDto> appointmentUserDtoList = null;//NOSONAR
+        List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
                 if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
@@ -1048,7 +1049,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-                    appointmentUserDtoList.add(auDto);//NOSONAR
+                    appointmentUserDtoList.add(auDto);
                 }
             }
         }

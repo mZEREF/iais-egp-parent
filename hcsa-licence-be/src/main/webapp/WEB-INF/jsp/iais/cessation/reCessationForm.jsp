@@ -4,6 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -65,7 +66,7 @@
                                                 <iais:value>
                                                     <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip"
                                                        data-html="true"
-                                                       data-original-title="<p>The ASO must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
+                                                       data-original-title="${cess_ack002}">i</a>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>
@@ -261,16 +262,16 @@
                                 <c:set var="licNo" value="${map.key}"></c:set>
                                 <c:if test="${appCess.licenceNo==licNo}">
                                     <div><h4>The following specified healthcare services will also be ceased as
-                                        their underlying licensable healthcare service(s) is/are listed above.</h4>
+                                        their underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                     </div>
                                     <table class="table-gp tablebox">
                                         <tr style="text-align:center">
                                             <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%">Special Licensable Service Licence No.
+                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%">Special Licensable Service Name</th>
-                                            <th style="text-align:center;width: 25%">Base Service Licence No.</th>
-                                            <th style="text-align:center;width: 25%">Base Service Name</th>
+                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                         </tr>
                                         <c:forEach items="${map.value}" var="spec" varStatus="index">
                                             <tr style="text-align:center">
@@ -298,29 +299,6 @@
                     </div>
                 </div>
                 <br/>
-                <div class="form-check">
-                    <ul>
-                        <li>
-                            <p> The ASO must notify the Director of Medical Services in writing at least 30 days before
-                                the cessation of operation, letting, sale or disposal of his private hospital, medical
-                                clinic or clinical laboratory.</p>
-                        </li>
-                        <li>
-                            <p> Any ASO of a licensed healthcare institution (For e.g a medical clinic) who intends to
-                                cease operating the medical clinic shall take all measures as are reasonable and
-                                necessary
-                                to ensure that the medical records of every patient are properly transferred to the
-                                medical
-                                clinic or other healthcare institution to which such patient is to be transferred.</p>
-                        </li>
-                    </ul>
-                    <input class="form-check-input" id="confirmInfo" type="checkbox" name="readInfo"
-                           <c:if test="${readInfo != null}">checked</c:if> aria-invalid="false">
-                    <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
-                        agreed with the above information</label>
-                </div>
-                <div id="readInfo" hidden><span class="error-msg"><iais:message key="CESS_ERR001"/></span></div>
-                <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12">
@@ -335,9 +313,9 @@
              style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-body" style="text-align: center;">
+                    <div class="modal-body" >
                         <div class="row">
-                            <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
+                            <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
                         </div>
                     </div>
                     <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -397,11 +375,7 @@
     }
 
     function submitSure(action) {
-        if ($('#confirmInfo').is(':checked')) {
-            submit(action);
-        } else {
-            $('#readInfo').show();
-        }
+        submit(action);
     }
 
     function back(action) {

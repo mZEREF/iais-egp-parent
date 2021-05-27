@@ -88,7 +88,8 @@ public interface HcsaLicenceClient {
     @RequestMapping(value = "/hcsa-licence/licences",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE
             ,method = RequestMethod.POST)
     FeignResponseEntity<List<LicenceDto>> retrieveLicenceDtos(@RequestBody List<String> licenceIds);
-
+    @GetMapping(value = "/hcsa-licence/base-spec-licence",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getBaseOrSpecLicence(@RequestParam("licenceId") String licenceId);
     @GetMapping(value = "/hcsa-licence/licence-id-premises-dto",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId);
 

@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * TaskOrganizationClient
  *
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = LicenseeClientFallback.class)
 public interface LicenseeClient {
-    @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
+    @GetMapping(value = "/iais-licensee/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
     @GetMapping(value = "/iais-licensee/user-email-addrs/{licenseeId}")

@@ -84,7 +84,8 @@ public class InspectionServiceImpl implements InspectionService {
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                 ApplicationConsts.APPLICATION_TYPE_RENEWAL,
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,
+                ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
         });
         return appTypeOption;
     }
@@ -167,7 +168,7 @@ public class InspectionServiceImpl implements InspectionService {
                     if (AppConsts.COMMON_STATUS_ACTIVE.equals(ugcDto.getStatus())) {
                         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
                         String groupName = workingGroupDto.getGroupName();
-                        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) && (groupName.contains("Inspection"))) {
+                        if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(roleId) && (groupName.contains("Inspection") && !groupName.contains("Approval"))) {
                             workGroupIdList.add(ugcDto.getGroupId());
                             continue;
                         }
@@ -423,7 +424,7 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getUserIdByWorkGrpId(String workGrpId) {
         List<String> userIds = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGrpId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        if(!IaisCommonUtils.isEmpty(orgUserDtos)) {//NOSONAR
+        if(!IaisCommonUtils.isEmpty(orgUserDtos)) {
             for (OrgUserDto orgUserDto : orgUserDtos) {
                 if(orgUserDto != null){
                     if(!StringUtil.isEmpty(orgUserDto.getId())){
@@ -443,7 +444,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(ugcDto.getGroupId()).getEntity();
             String groupName = workingGroupDto.getGroupName();
-            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection"))){
+            if((roleIds.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)||roleIds.contains(RoleConsts.USER_ROLE_INSPECTIOR))&&(groupName.contains("Inspection") && !groupName.contains("Approval"))){
                 workGroupIdList.add(ugcDto.getGroupId());
                 continue;
             }
@@ -481,7 +482,7 @@ public class InspectionServiceImpl implements InspectionService {
             return superPool;
         } else {
             List<TaskDto> commonPool = IaisCommonUtils.genNewArrayList();
-            for(TaskDto taskDto : superPool){//NOSONAR
+            for(TaskDto taskDto : superPool){
                 if(taskDto != null){
                     if(StringUtil.isEmpty(taskDto.getUserId())){
                         commonPool.add(taskDto);
@@ -569,7 +570,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks,
-                                        ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
+                                          ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<SelectOption> inspectorCheckList = inspectionTaskPoolListDto.getInspectorCheck();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
@@ -604,15 +605,13 @@ public class InspectionServiceImpl implements InspectionService {
                             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
                             createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks, InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                             if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
-                                for (int i = 0; i < inspectorCheckList.size(); i++) {
-                                    if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
-                                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
-                                        applicationService.updateFEApplicaiton(applicationDto1);
-                                        inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
-                                        createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
-                                    } else {
-                                        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
-                                    }
+                                if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
+                                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                    applicationService.updateFEApplicaiton(applicationDto1);
+                                    inspectionTaskPoolListDto.setApplicationStatus(applicationDto1.getStatus());
+                                    createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), null, td.getWkGrpId());
+                                } else {
+                                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                                 }
                             }
                         }
@@ -630,9 +629,7 @@ public class InspectionServiceImpl implements InspectionService {
                         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
                         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks, InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                         if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
-                            for (int i = 0; i < inspectorCheckList.size(); i++) {
-                                createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
-                            }
+                            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
                         }
                     }
                 }

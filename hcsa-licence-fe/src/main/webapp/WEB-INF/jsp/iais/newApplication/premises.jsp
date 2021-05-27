@@ -40,7 +40,7 @@
                   <div class="row ">
                     <div class="col-xs-12">
                       <div class="premises-txt">
-                        <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>, or provided from a remote location <strong> - &#34;off-site&#34;</strong>.</p>
+                        <p><iais:message escape="false" key="NEW_ACK018"/></p>
                       </div>
                     </div>
                   </div>
@@ -48,7 +48,7 @@
                     <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                       <div class="form-check col-sm-12">
                         <ul>
-                          <li>Changes made will be applied to other licences associated with this premises:</li>
+                          <li>Changes made will be applied to other licences associated with this mode of service delivery:</li>
                         </ul>
                       </div>
                     </c:if>
@@ -66,7 +66,7 @@
                   <div class="col-xs-12" id="addPremBody" hidden>
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
                     <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly}">
-                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
+                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                     </c:if>
                   </div>
                 </div>
@@ -122,7 +122,7 @@
   </c:if>
 
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
-  <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
+  <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
   <%--<div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
     <div class="modal-dialog" role="document">
@@ -147,6 +147,7 @@
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+  <input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">
 </form>
 <script type="text/javascript">
     var init;
@@ -232,11 +233,7 @@
         });
         </c:if>
 
-        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-          if($("#errorMapIs").val()=='error'){
-              $('.premisesEdit').trigger('click');
-          }
-        </c:if>
+
 
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
@@ -246,6 +243,22 @@
         });
 
         init = 1;
+        //68859
+        if($('#rfc_eqHciNameChange').val()=='false'){
+            $("input[name='isPartEdit']").val('1');
+            $("input[name='chooseExistData']").val('1');
+            $('.premSelect').removeClass('disabled');
+            $('.premisesEdit').addClass('hidden');
+        }else if($('#rfc_eqHciNameChange').val()=='true'){
+            $("input[name='isPartEdit']").val('0');
+            $("input[name='chooseExistData']").val('0');
+            $('.premisesEdit').removeClass('hidden');
+        }
+        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
+        if($("#errorMapIs").val()=='error'){
+            $('.premisesEdit').trigger('click');
+        }
+        </c:if>
     });
 
 

@@ -5,6 +5,7 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");

@@ -10,8 +10,8 @@
                     <ul class="list-inline">
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS019"/>')">HALP</a></li>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS008"/>')">Who we are</a></li>
-                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
-                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>--%>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS012"/>')">Sitemap</a></li>--%>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS013"/>')">Share your views @ Reach</a></li>
@@ -23,10 +23,22 @@
             </div>
             <div class="col-xs-12 col-md-5">
                 <div class="copyright">
-                    <p class="text-right">	&copy; <span class="year">2020</span>  Government Of Singapore. Last Updated 20 Feb 2020.</p>
+                    <p class="text-right">	&copy; <span class="year">2020</span>  Government Of Singapore. Last Updated 01 Jul 2021.</p>
                 </div>
             </div>
         </div>
     </div>
 </footer>
+
+<script type="text/javascript">
+    function openWins(section){
+        var url ='${pageContext.request.contextPath}/eservice/INTERNET/'+section;
+        window.open(url,'_blank');
+    }
+
+    function linkWins(section) {
+        var url ='${pageContext.request.contextPath}/eservice/INTERNET/'+section;
+        window.location.href= url;
+    }
+</script>
 

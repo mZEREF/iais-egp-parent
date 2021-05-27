@@ -27,7 +27,7 @@
         <div class="self-assessment-checkbox-gp gradient-light-grey">
 
             <div class="form-check-gp " >
-                <p class="assessment-title">Base Services</p>
+                <p class="assessment-title"><iais:code code="CDN002"/></p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
                         <input class="form-check-input assessment-service"
@@ -45,7 +45,9 @@
                 </c:forEach>
             </div>
             <div class="form-check-gp " >
-                <p class="assessment-title">Special Licensable Services</p>
+                <p class="assessment-title"><iais:code code="CDN004"/>
+                    <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK007"></iais:message>&lt;/p&gt;">i</a>
+                </p>
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">
                         <input class="form-check-input assessment-service"

@@ -41,7 +41,7 @@ public class SyncFeServiceByEndJobHandler extends IJobHandler {
             logAbout("SyncServiceByEndJobHandler");
             //get expire Service By End Date
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigFeClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
                     if(hcsaServiceDto != null){
@@ -65,7 +65,7 @@ public class SyncFeServiceByEndJobHandler extends IJobHandler {
             }
             //get active Service By End Date
             List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigFeClient.getNeedActiveServices(AppConsts.COMMON_STATUS_IACTIVE).getEntity();
-            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){//NOSONAR
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
                 List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
                 for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList){
                     if(hcsaServiceDto != null){

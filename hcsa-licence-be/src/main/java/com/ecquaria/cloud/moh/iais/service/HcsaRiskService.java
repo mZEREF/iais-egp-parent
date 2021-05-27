@@ -16,4 +16,5 @@ public interface HcsaRiskService {
                       String prleftmod, String prlefthigh, String prrightlow, String prrightmod,
                       String insource, String inthershold, String inleftmod, String inlefthigh, String inrightlow, String inrightmod,
                       String inStartDate, String inEndDate, String prStartDate, String prEndDate);
+    boolean compareVersionsForRiskFinancial(RiskFinancialShowDto needSaveDto,RiskFinancialShowDto dbSearchDto);
 }

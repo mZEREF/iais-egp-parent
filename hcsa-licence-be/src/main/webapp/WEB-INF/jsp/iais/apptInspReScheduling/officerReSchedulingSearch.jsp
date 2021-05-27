@@ -44,6 +44,11 @@
         <div class="col-lg-12 col-xs-12">
           <div class="center-content">
             <div class="intranet-content">
+              <div class="bg-title">
+                <h2>
+                  <span>Scheduled Appointments</span>
+                </h2>
+              </div>
               <iais:body>
                 <iais:section title="" id = "demoList">
                   <iais:row>

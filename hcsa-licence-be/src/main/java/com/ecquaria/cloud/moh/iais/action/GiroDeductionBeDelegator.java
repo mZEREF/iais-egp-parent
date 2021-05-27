@@ -27,27 +27,11 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GiroDeductionClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -61,6 +45,25 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -81,7 +84,7 @@ public class GiroDeductionBeDelegator {
     @Autowired
     private GiroDeductionClient giroDeductionClient;
     private final static String CSV="csv";
-
+    //PMT12 PMT13 PMT11
     private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
@@ -105,7 +108,8 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
-
+    @Autowired
+    private ApplicationClient applicationClient;
     private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
@@ -145,10 +149,35 @@ public class GiroDeductionBeDelegator {
     public void beGiroDeductionPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beGiroDeductionPre start ...."));
         //init loading request ==null
-        String param = (String)bpc.request.getAttribute("param");
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);;
-        if("Y".equals(param)){
-            searchParam=(SearchParam)bpc.request.getAttribute("searchParam");
+        HttpServletRequest request = determineType(bpc.request);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+        String transactionId = request.getParameter("txnRefNo");
+        String bankAccountNo = request.getParameter("bankAccountNo");
+        String group_no = request.getParameter("applicationNo");
+        String paymentRefNo = request.getParameter("paymentRefNo");
+        String paymentAmount = request.getParameter("paymentAmount");
+        String paymentDescription = request.getParameter("paymentDescription");
+        String hci_name = request.getParameter("hci_name");
+        if(!StringUtil.isEmpty(group_no)){
+            searchParam.addFilter("groupNo",group_no,true);
+        }
+        if(!StringUtil.isEmpty(paymentDescription)){
+            searchParam.addFilter("desc",paymentDescription,true);
+        }
+        if(!StringUtil.isEmpty(paymentAmount)){
+            searchParam.addFilter("amount",paymentAmount,true);
+        }
+        if(!StringUtil.isEmpty(bankAccountNo)){
+            searchParam.addFilter("acctNo",bankAccountNo,true);
+        }
+        if(!StringUtil.isEmpty(hci_name)){
+            searchParam.addFilter("hciName",hci_name,true);
+        }
+        if(!StringUtil.isEmpty(paymentRefNo)){
+            searchParam.addFilter("refNo",paymentRefNo,true);
+        }
+        if(!StringUtil.isEmpty(transactionId)){
+            searchParam.addFilter("txnRefNo",transactionId,true);
         }
         QueryHelp.setMainSql("giroPayee", "searchGiroDeduction", searchParam);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -164,6 +193,13 @@ public class GiroDeductionBeDelegator {
         }
     }
 
+    private HttpServletRequest determineType(HttpServletRequest request){
+        HttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        if(multipartHttpServletRequest!=null){
+            return multipartHttpServletRequest;
+        }
+        return request;
+    }
     /**
      * StartStep: beGiroDeductionStep
      *
@@ -175,30 +211,6 @@ public class GiroDeductionBeDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String beGiroDeductionType =request.getParameter("beGiroDeductionType");
         bpc.request.setAttribute("beGiroDeductionType",beGiroDeductionType);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
-        String txnRefNo = request.getParameter("txnRefNo");
-        String bankAccountNo = request.getParameter("bankAccountNo");
-        String group_no = request.getParameter("applicationNo");
-        String paymentAmount = request.getParameter("paymentAmount");
-        String hci_name = request.getParameter("hci_name");
-        if(!StringUtil.isEmpty(group_no)){
-            searchParam.addFilter("groupNo",group_no.trim(),true);
-        }
-
-        if(!StringUtil.isEmpty(paymentAmount)){
-            searchParam.addFilter("amount",paymentAmount.trim(),true);
-        }
-        if(!StringUtil.isEmpty(bankAccountNo)){
-            searchParam.addFilter("acctNo",bankAccountNo.trim(),true);
-        }
-        if(!StringUtil.isEmpty(hci_name)){
-            searchParam.addFilter("hciName",hci_name.trim(),true);
-        }
-        if(!StringUtil.isEmpty(txnRefNo)){
-            searchParam.addFilter("txnRefNo",txnRefNo.trim(),true);
-        }
-        bpc.request.setAttribute("searchParam",searchParam);
-        bpc.request.setAttribute("param","Y");
     }
 
     /**
@@ -286,31 +298,68 @@ public class GiroDeductionBeDelegator {
         Reader reader=new FileReader(FileUtils.multipartFileToFile(file));
         Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
+        List<String> list=new ArrayList<>(HEADERS.length);
+        String errMsg=MessageUtil.getMessageDesc("GENERAL_ACK020");
         try {
             for(CSVRecord record:parse){
+                for(String v : HEADERS){
+                    String s = record.get(v);
+                    if(Arrays.asList(HEADERS).contains(s)){
+                        list.add(s);
+                    }
+                }
                 String s = record.get("Application No.");
-                if("Application No.".equals(s)){
+                if(Arrays.asList(HEADERS).contains(s)){
                     continue;
                 }
-                String payment_status = record.get("Payment Status");
+                String status=record.get("Payment Status");
+                String payment_status = encryptionPayment(status);
+                if(payment_status.equals(status)){
+                    bpc.request.setAttribute("message",errMsg);
+                    return;
+                }
                 map.put(s,payment_status);
             }
         }catch (Exception e){
-            bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK020"));
+            bpc.request.setAttribute("message",errMsg);
+        }
+
+        if(!list.equals(Arrays.asList(HEADERS))){
+            bpc.request.setAttribute("message",errMsg);
+            return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
+        List<ApplicationGroupDto> applicationGroupDtos=new ArrayList<>(map.size());
         map.forEach((k,v)->{
             GiroDeductionDto giroDeductionDto=new GiroDeductionDto();
+            ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
             giroDeductionDto.setAppGroupNo(k);
+            applicationGroupDto.setGroupNo(k);
             giroDeductionDto.setPmtStatus(v);
+            applicationGroupDto.setPmtStatus(v);
             giroDeductionDtoList.add(giroDeductionDto);
+            applicationGroupDtos.add(applicationGroupDto);
         });
         if (!giroDeductionDtoList.isEmpty()){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-            bpc.request.setAttribute("message", MessageUtil.getMessageDesc("GENERAL_ACK021"));
+            List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+            applicationClient.updateBeGroupStatus(applicationGroupDtos);
+            String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
+            if(entity!=null&&entity.isEmpty()){
+                general_ack021=general_ack021.replace("{num}","0");
+                general_ack021=general_ack021.replace("were","was");
+                general_ack021=general_ack021.replace("records","record");
+            }else if(entity!=null&&entity.size()==1){
+                general_ack021=general_ack021.replace("{num}","1");
+                general_ack021=general_ack021.replace("records","record");
+                general_ack021=general_ack021.replace("were","was");
+            }else if(entity!=null&&entity.size()>1){
+                general_ack021=general_ack021.replace("{num}",String.valueOf(entity.size()));
+
+            }
+            bpc.request.setAttribute("message", general_ack021);
         }else{
             bpc.request.setAttribute("message", "The file is empty");
         }
@@ -337,7 +386,7 @@ public class GiroDeductionBeDelegator {
         List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(appGroupList);*/
+       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
         beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
@@ -360,7 +409,7 @@ public class GiroDeductionBeDelegator {
             rows.forEach(v->{
                 try {
                     printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
-                    ,v.getAcctNo(),v.getPmtStatus(),"$" + v.getAmount());
+                    ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
                     integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -371,7 +420,7 @@ public class GiroDeductionBeDelegator {
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
         try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              InputStream in = new FileInputStream(file.getPath())){//NOSONAR
+              InputStream in = new FileInputStream(file.getPath())){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){
@@ -385,6 +434,22 @@ public class GiroDeductionBeDelegator {
 
     }
 
+    private String decryptPayment(String payment){
+        switch (payment){
+            case "PMT09": return "Failed";
+            case "PMT01":return "Successful";
+            case "PMT03":return "Pending";
+            default:return payment;
+        }
+    }
+    private String encryptionPayment(String payment){
+        switch (payment){
+            case "Failed": return "PMT09";
+            case "Successful":return "PMT01";
+            case "Pending":return "PMT03";
+            default:return payment;
+        }
+    }
     private void updateDeductionDtoSearchResultUseGroups(List<GiroDeductionDto> giroDeductionDtoList){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

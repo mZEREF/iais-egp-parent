@@ -33,7 +33,7 @@ public class ProcessUrlTag extends TagSupport {
 
     // resets local state
     private void init() {
-        value = "";//NOSONAR
+        value = "";
         setProject("");
         setProcessName("");
         setPathParams("");

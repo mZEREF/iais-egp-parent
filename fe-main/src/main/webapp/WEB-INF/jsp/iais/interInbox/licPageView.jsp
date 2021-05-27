@@ -103,18 +103,22 @@
     }
 
     function licToMsgPage(){
+        showWaiting();
         submit("licToMsg");
     }
 
     function licToAppPage(){
+        showWaiting();
         submit("licToApp");
     }
 
     function doSearchLic(){
+        showWaiting();
         submit("licSearch");
     }
 
     function jumpToPagechangePage() {
+        showWaiting();
         submit('licPage');
     }
 

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -90,6 +91,13 @@
                                                                                     <c:set var="ReloadPrincipalOfficers" value="${ReloadPrincipalOfficersList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}"></c:set>
+                                                                                    <c:if test="${AppSubmissionDto.appType=='APTY004'}">
+                                                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcDocDtoLit}"></c:set>
+                                                                                        <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}"></c:set>
+                                                                                        <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}"></c:set>
+                                                                                        <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.poList}"></c:set>
+                                                                                        <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.dpoList}"></c:set>
+                                                                                    </c:if>
                                                                                     <c:set var="svcDocConfig" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0).svcDocConfig}"/>
                                                                                     <%@include file="../common/previewSvcInfo.jsp"%>
                                                                                 </div>
@@ -99,7 +107,7 @@
                                                                     <c:if test="${changeRenew eq 'Y'}">
                                                                     <div class="row">
                                                                         <div class="col-md-7"  style="text-align: justify;width: 70%" >
-                                                                            Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
+                                                                            Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
                                                                         </div>
                                                                         <div  class="col-md-5" style="width: 30%">
                                                                             <iais:datePicker cssClass="renewEffectiveDate" name="renewEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
@@ -119,15 +127,14 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
-                                            <c:if test="${isSingle == 'Y'}">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${userAgreement}">checked="checked"</c:if> >
-                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
-                                                </div>
-                                                <div>
-                                                    <span id="error_fieldMandatory" class="error-msg"></span>
-                                                </div>
-                                            </c:if>
+                                                <c:choose>
+                                                    <c:when test="${isSingle == 'Y'}">
+                                                        <div class="panel-group"  role="tablist" aria-multiselectable="true">
+                                                            <%@include file="../common/declarations.jsp"%>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
+
                                         </div>
                                         </div>
                                         <%--main content--%>
@@ -141,13 +148,11 @@
                                 <div class="col-xs-12 col-sm-8">
                                     <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <c:if test="${isSingle == 'Y'}">
-                                    <div class="col-xs-12 col-sm-1">
-                                        <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
-                                    </div>
-                                </c:if>
+                                <div class="col-xs-12 col-sm-1">
+                                    <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+                                </div>
                                 <div class="col-xs-12 col-sm-3">
-                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Make Payment</a></div>
+                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Submit</a></div>
                                     <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>
@@ -246,17 +251,10 @@
         $('#LicenceReviewForm').submit();
     });
     $('#SUBMIT').click(function () {
-        let jQuery = $('#verifyInfoCheckbox').prop("checked");
-        let isSingle = $('#checkSingle').val();
-        if(!jQuery && (isSingle == 'Y')){
-            $('#error_fieldMandatory').html("The field is mandatory");
-            return;
-        }else if(jQuery || (isSingle == 'N')) {
-            $('#error_fieldMandatory').html("");
-            $('[name="switch_value"]').val('doLicenceReview');
-            showWaiting();
-            $('#LicenceReviewForm').submit();
-        }
+        $('#error_fieldMandatory').html("");
+        $('[name="switch_value"]').val('doLicenceReview');
+        showWaiting();
+        $('#LicenceReviewForm').submit();
     });
 
     $('#premisesEdit').click(function () {
@@ -279,7 +277,9 @@
     });
 
     $("#print-review").click(function () {
-        window.print();
+       // window.print();
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY004",request)%>';
+        window.open(url,'_blank');
     })
 
 

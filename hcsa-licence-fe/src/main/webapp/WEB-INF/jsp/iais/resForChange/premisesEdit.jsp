@@ -32,13 +32,13 @@
                 <div class="row premContent">
                   <div class="col-xs-12" style="margin-top:3%;">
                     <div>
-                      <h2>${PremisesListQueryDto.premisesType}:&nbsp;${PremisesListQueryDto.address}</h2>
+                      <h2>Address:&nbsp;${PremisesListQueryDto.address}</h2>
                     </div>
                   </div>
                 </div>
                 <div class="form-check col-sm-12">
                   <ul>
-                    <li>Changes made will be applied to other licences associated with this premises:</li>
+                    <li>Changes made will be applied to other licences associated with this mode of service delivery:</li>
                   </ul>
                 </div>
                 <!--todo:slect prem issue -->
@@ -57,7 +57,7 @@
                       </div>
                       <div class="col-xs-12 col-sm-6">
                         <div class="button-group">
-                          <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview and Submit</a>
+                          <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview</a>
                         </div>
                       </div>
                     </div>
@@ -135,7 +135,7 @@
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-  <input type="hidden" id="eqHciNameChange" value="${eqHciCode}">
+  <input type="hidden" id="eqHciNameChange" name="eqHciNameChange" value="${eqHciCode}">
 </form>
 
 
@@ -194,10 +194,19 @@
             disabeleForAllDay($allDayDiv);
         });
         init = 1;
+        if($('#eqHciNameChange').val()=='false'){
+            $("input[name='isPartEdit']").val('1');
+            $("input[name='chooseExistData']").val('1');
+            $('.premSelect').removeClass('disabled');
+            $('.premisesEdit').addClass('hidden');
+        }else  if($('#eqHciNameChange').val()=='true'){
+            $('.premisesEdit').removeClass('hidden');
+            $("input[name='isPartEdit']").val('0');
+            $("input[name='chooseExistData']").val('0');
+        }
         if($("#errorMapIs").val()=='error' ){
             $('.premisesEdit').trigger('click');
         }
-
     });
 
     function cancel(){

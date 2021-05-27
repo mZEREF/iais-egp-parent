@@ -9,10 +9,13 @@
     }
 </style>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj"
-       value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="prsFlag" value="${prsFlag}"/>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
-    <h4>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</h4>
+    <h4>
+        A Clinical Governance Officer (CGO) is a suitably qualified person appointed by the licensee and
+        who is responsible for the oversight of clinical and technical matters related to the <iais:code code="CDN001"/> provided.
+    </h4>
     <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
         <div id="control--runtime--0" class="page control control-area  container-p-1">
             <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
@@ -78,6 +81,11 @@
                                 </tbody>
                             </table>
                         </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span>
                     </td>
                 </tr>
                 <tr height="1">
@@ -234,8 +242,9 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
+                                                                            <div class="col-sm-5 col-md-3 col-xs-12"
                                                                                  id="salutation${suffix}">
+                                                                                <div>
                                                                                 <iais:select cssClass="salutationSel"
                                                                                              name="salutation"
                                                                                              codeCategory="CATE_ID_SALUTATION"
@@ -244,8 +253,9 @@
                                                                                 <span class="error-msg"
                                                                                       name="iaisErrorMsg"
                                                                                       id="error_salutation${status.index}"></span>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="col-sm-3 col-md-4 col-xs-4"
+                                                                            <div class="col-sm-3 col-md-4 col-xs-12"
                                                                                  id="name${suffix}">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="66"
@@ -273,7 +283,8 @@
                                                                                 <span class="mandatory">*</span>
                                                                                 <span class="upload_controls"></span>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-3 col-xs-3"
+                                                                            <div></div>
+                                                                            <div class="col-sm-5 col-md-3 col-xs-12"
                                                                                  id="idType${suffix}">
                                                                                 <div class="">
                                                                                     <iais:select cssClass="idTypeSel"
@@ -287,7 +298,7 @@
                                                                                           id="error_idTyp${status.index}"></span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-4 col-xs-4">
+                                                                            <div class="col-sm-5 col-md-4 col-xs-12">
                                                                                 <div class="">
                                                                                     <iais:input maxLength="9"
                                                                                                 type="text" name="idNo"
@@ -334,12 +345,32 @@
                                                                                     <iais:select
                                                                                             cssClass="designationSel"
                                                                                             name="designation"
-                                                                                            codeCategory="CATE_ID_DESIGNATION"
+                                                                                            options="designationOpList"
                                                                                             value="${currentCgo.designation}"
                                                                                             firstOption="Please Select"></iais:select>
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_designation${status.index}"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr height="1">
+                                                                <td class="first last" style="width: 100%;">
+                                                                    <div class="control control-caption-horizontal otherDesignationDiv
+                                                                        <c:if test="${currentCgo.designation != 'DES999' }">
+                                                                            hidden
+                                                                        </c:if>
+                                                                    ">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7" >
+                                                                                <div class="">
+                                                                                    <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${currentCgo.otherDesignation}"/>
+                                                                                    <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -391,7 +422,7 @@
                                                                                     <input maxLength="20"
                                                                                            type="text"
                                                                                            name="professionRegoNo" autocomplete="off"
-                                                                                           value="${currentCgo.profRegNo}" onblur="aaa(this)">
+                                                                                           value="${currentCgo.profRegNo}">
                                                                                     <span class="error-msg"
                                                                                           name="iaisErrorMsg"
                                                                                           id="error_professionRegoNo${status.index}"></span>
@@ -407,57 +438,29 @@
                                                                          class="control control-caption-horizontal">
                                                                         <div class="form-group form-horizontal formgap">
                                                                             <div class="col-sm-4 control-label formtext">
-                                                                                <label id="control--runtime--29--label"
-                                                                                       class="control-label control-set-font control-font-label">Specialty</label>
-                                                                                <span class="mandatory">*</span>
+                                                                                <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
                                                                             </div>
-                                                                            <div class="col-sm-5 col-md-7"
-                                                                                 id="specialty${suffix}">
-                                                                                <div class="specialtyContent">
-                                                                                    <div class="specialtyDiv">
-                                                                                        <c:choose>
-                                                                                            <c:when test="${currentCgo.needSpcOptList}">
-                                                                                                ${currentCgo.specialityHtml}
-                                                                                                <span class="error-msg"
-                                                                                                      name="iaisErrorMsg"
-                                                                                                      id="error_speciality${status.index}"></span>
-                                                                                            </c:when>
-                                                                                            <c:otherwise>
-                                                                                                <iais:select
-                                                                                                        cssClass="specialty"
-                                                                                                        name="specialty"
-                                                                                                        options="SpecialtySelectList"
-                                                                                                        needSort="false"
-                                                                                                        value="${currentCgo.speciality}"></iais:select>
-                                                                                                <span class="error-msg"
-                                                                                                      name="iaisErrorMsg"
-                                                                                                      id="error_speciality${status.index}"></span>
-                                                                                            </c:otherwise>
-                                                                                        </c:choose>
-                                                                                    </div>
-                                                                                    <div class="specialtyOtherDiv">
-                                                                                        <c:choose>
-                                                                                            <c:when test="${currentCgo.speciality eq 'other'}">
-                                                                                                <input id="specialtyOtherId"
-                                                                                                       name="specialtyOther"
-                                                                                                       type="text"
-                                                                                                       class="form-control control-input control-set-font control-font-normal"
-                                                                                                       value="${currentCgo.specialityOther}"
-                                                                                                       maxlength="100" autocomplete="off" >
-                                                                                                <span name="iaisErrorMsg"
-                                                                                                      class="error-msg"
-                                                                                                      id="error_other${status.index}"></span>
-                                                                                            </c:when>
-                                                                                            <c:otherwise>
-                                                                                                <input name="specialtyOther"
-                                                                                                       type="text"
-                                                                                                       class="form-control control-input control-set-font control-font-normal hidden"
-                                                                                                       value=""
-                                                                                                       maxlength="100">
-                                                                                            </c:otherwise>
-                                                                                        </c:choose>
-                                                                                    </div>
-                                                                                </div>
+                                                                            <div class="col-sm-5 col-md-7">
+                                                                                <label class="control-label control-set-font control-font-label specialty-label">
+                                                                                    ${currentCgo.speciality}
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr height="1">
+                                                                <td class="first last" style="width: 100%;">
+                                                                    <div class="control control-caption-horizontal">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                                <label class="control-label control-set-font control-font-label">Sub-specialty</label>
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7">
+                                                                                <label class="control-label control-set-font control-font-label sub-specialty-label">
+                                                                                    ${currentCgo.subSpeciality}
+                                                                                </label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -465,33 +468,39 @@
                                                             </tr>
                                                             <tr height="1">
                                                                 <td class="first last" style="width: 100%;">
-                                                                    <div id="control--runtime--32"
-                                                                         class="control control-caption-horizontal">
-                                                                        <div class=" form-group form-horizontal formgap">
-                                                                            <div class="col-sm-4 control-label formtext ">
-                                                                                <label id="control--runtime--32--label"
-                                                                                       class="control-label control-set-font control-font-label">
-                                                                                    Sub-specialty or relevant
-                                                                                    qualification
+                                                                    <div class="control control-caption-horizontal">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                                <label class="control-label control-set-font control-font-label">Qualification</label>
+                                                                            </div>
+                                                                            <div class="col-sm-5 col-md-7">
+                                                                                <label class="control-label control-set-font control-font-label qualification-label">
+                                                                                    ${currentCgo.qualification}
                                                                                 </label>
-                                                                                <span class="mandatory subSpecialtySpan">*</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr height="1">
+                                                                <td class="first last" style="width: 100%;">
+                                                                    <div class="control control-caption-horizontal">
+                                                                        <div class="form-group form-horizontal formgap">
+                                                                            <div class="col-sm-4 control-label formtext">
+                                                                                <label class="control-label control-set-font control-font-label">Other Qualification</label>
+                                                                                <span class="mandatory otherQualificationSpan"></span>
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <div class="">
-                                                                                    <iais:input maxLength="100"
-                                                                                                type="text"
-                                                                                                name="qualification"
-                                                                                                value="${currentCgo.subSpeciality}"></iais:input>
-                                                                                    <span class="error-msg"
-                                                                                          name="iaisErrorMsg"
-                                                                                          id="error_qualification${status.index}"><c:out
-                                                                                            value="${errorMap.qualification}"></c:out></span>
+                                                                                    <iais:input maxLength="100" type="text" cssClass="otherQualification" name="otherQualification" value="${currentCgo.otherQualification}"></iais:input>
+                                                                                    <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                             </tr>
+
                                                             <tr height="1">
                                                                 <td class="first last" style="width: 100%;">
                                                                     <div class="control control-caption-horizontal">
@@ -600,25 +609,10 @@
         </div>
     </div>
 </div>
-<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-<%--            <div class="modal-header">--%>
-<%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--            </div>--%>
-            <div class="modal-body" style="text-align: center;">
-                <div class="row">
-                    <div class="col-md-12"><span style="font-size: 2rem;">PRS  mock server down</span></div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="cancel()">OK</button>
-            </div>
-        </div>
-    </div>
+<%@include file="../../common/prsLoading.jsp"%>
+<div style="display: none;">
+    <select id="nice_select_effect"></select>
 </div>
-<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
     var init;
     $(document).ready(function () {
@@ -641,7 +635,9 @@
 
         removeCgo();
 
-        addRemarkForSubspecialty();
+        profRegNoBlur();
+
+        designationChange();
 
         $('input[name="licPerson"]').each(function (k, v) {
             if ('1' == $(this).val()) {
@@ -667,7 +663,6 @@
             <c:set var="psnLength" value="0"/>
             </c:otherwise>
             </c:choose>
-            console.log('psnLength:' +${psnLength});
             <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
             var $currentPsn = $('.assignContent').eq(${stat.index+1}).find('.new-officer-form');
             //remove dis style
@@ -680,6 +675,15 @@
             </c:if>
             setPsnDisabled($currentPsn,psnDto);
             </c:forEach>
+            var prsFlag = $('input[name="prsFlag"]').val();
+            if('Y' == prsFlag){
+                $('div.cgo-content').each(function () {
+                    var prgNo = $(this).find('input[name="professionRegoNo"]').val();
+                    if(prgNo != null && prgNo != '' && prgNo != undefined){
+                        inputReadonly($(this).find('input[name="name"]'));
+                    }
+                });
+            }
         } else if (('APTY005' == appType || 'APTY004' == appType) && '0' == rfiObj) {
             disabledPage();
         } else {
@@ -697,23 +701,31 @@
         init = 1;
     });
 
-    var addRemarkForSubspecialty = function () {
+    var profRegNoBlur = function () {
         $('input[name="professionRegoNo"]').unbind('blur');
-        $('input[name="professionRegoNo"]').blur(function(){
-            var professionRegoNoVal = $(this).val().trim();
+        $('input[name="professionRegoNo"]').blur(function(event, action){
+            var prgNo = $(this).val();
             var $currContent = $(this).closest('.new-officer-form');
-            if(professionRegoNoVal.length == 0){
-                $currContent.find('span.subSpecialtySpan').html('*');
-            }else if(professionRegoNoVal.length > 0){
-                $currContent.find('span.subSpecialtySpan').html('');
+            var $prsLoadingContent = $(this).closest('table.assignContent');
+            var specialty = $prsLoadingContent.find('label.specialty-label').html();
+            //prs loading
+            if(init == 1){
+                prdLoading($prsLoadingContent, prgNo, action);
+            }
+            //add Remark For Subspecialty
+            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                $currContent.find('span.otherQualificationSpan').html('*');
             }
         });
-    }
+    };
 
     var psnSelect = function () {
         $('select.assignSel').change(function () {
             var $parentEle = $(this).closest('td.first');
             var $CurrentPsnEle = $(this).closest('table.assignContent');
+            if(init == 1){
+                clearPrsInfo($CurrentPsnEle);
+            }
             if ('newOfficer' == $(this).val()) {
                 $parentEle.find('> .new-officer-form').removeClass('hidden');
                 $parentEle.find('> .profile-info-gp').addClass('hidden');
@@ -791,7 +803,9 @@
                     <!--change psn item -->
                     changePsnItem();
 
-                    addRemarkForSubspecialty();
+                    profRegNoBlur();
+
+                    designationChange();
                     <!--set Scrollbar -->
                     /*$("div.assignSel->ul").mCustomScrollbar({
                             advanced: {
@@ -820,67 +834,8 @@
     });
 
 
-    function aaa(obj){
-        var no = $(obj).val();
-        var jsonData = {
-            'prgNo': no
-        };
-        $.ajax({
-            'url': '${pageContext.request.contextPath}/prg-input-info',
-            'dataType': 'json',
-            'data': jsonData,
-            'type': 'GET',
-            'success': function (data) {
-                if(data.regno==null){
-                    $('#PRS_SERVICE_DOWN').modal('show');
-                    return;
-                }
-                if (data.name == null) {
-                    return;
-                }
-                loading(data,obj);
-            },
-            'error': function () {
-            }
-        });
-    }
 
 
-    const loading = function (data,obj) {
-        var specialtyHtml = $("select[name='specialty']").val();
-        var qualificationHtml =$("input[name='qualification']").val();
-        const qualification = data.qualification[0];
-        const specialty = data.specialty[0];
-        const $CurrentPsnEle = $(obj).closest('table.assignContent');
-        if (specialty == 'Pathology') {
-            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
-            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
-        } else if (specialty == 'Haematology') {
-            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
-            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
-        }else if (specialty == 'Diagnostic Radiology') {
-            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
-            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
-        }else if (specialty == 'Nuclear Medicine') {
-            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
-            $CurrentPsnEle.find("select[name='specialty']").val(specialty);
-            $CurrentPsnEle.find(".specialtyDiv .current").text(specialty);
-            $CurrentPsnEle.find("input[name='specialtyOther']").addClass('hidden');
-        } else {
-            $CurrentPsnEle.find("input[name='specialty'] option[text =specialty]").val("selected", "selected");
-            $CurrentPsnEle.find("select[name='specialty']").val('other');
-            $CurrentPsnEle.find(".specialtyDiv .current").text("Others");
-            $CurrentPsnEle.find("input[name='specialtyOther']").removeClass('hidden');
-            $CurrentPsnEle.find("input[name='specialtyOther']").val(specialty);
-        }
-        $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
-    };
 
     var doEdit = function () {
         $('.edit').click(function () {
@@ -897,6 +852,16 @@
                 $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected', true);
             }
             $('#isEditHiddenVal').val('1');
+
+            var appType = $('input[name="applicationType"]').val();
+            var assignSelectVal = $contentEle.find('select[name="assignSelect"]').val();
+            var licPerson = $contentEle.find('input[name="licPerson"]').val();
+            if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+                var prgNo = $contentEle.find('input[name="professionRegoNo"]').val();
+                if(prgNo != null && prgNo != '' && prgNo != undefined){
+                    inputReadonly($contentEle.find('input[name="name"]'));
+                }
+            }
         });
     };
 
@@ -927,9 +892,21 @@
             if(psnLength <= 1){
                 $('.assign-psn-item:eq(0)').html('');
             }
+            $('#isEditHiddenVal').val('1');
         });
 
-    }
+    };
+    var designationChange = function () {
+        $('.designationSel').unbind('change');
+        $('.designationSel').change(function () {
+            var thisVal = $(this).val();
+            if("DES999" == thisVal){
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
