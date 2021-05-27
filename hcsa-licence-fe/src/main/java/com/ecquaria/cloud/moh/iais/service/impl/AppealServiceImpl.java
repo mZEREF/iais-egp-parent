@@ -883,7 +883,7 @@ public class AppealServiceImpl implements AppealService {
     private List<AppSvcCgoDto> reAppSvcCgo(HttpServletRequest req) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
-        AppSvcCgoDto appSvcCgoDto = null;
+        AppSvcCgoDto appSvcCgoDto ;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
         int size = 0;
         if (assignSelect != null && assignSelect.length > 0) {
@@ -897,12 +897,9 @@ public class AppealServiceImpl implements AppealService {
         String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
         String[] otherDesignations = ParamUtil.getStrings(request, "otherDesignation");
- /*       String[] specialty = ParamUtil.getStrings(request, "specialty");
-        String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
-        String[] qualification = ParamUtil.getStrings(request, "qualification");*/
+        String[] otherQualifications = ParamUtil.getStrings(request, "otherQualification");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-
         for (int i = 0; i < size; i++) {
             appSvcCgoDto = new AppSvcCgoDto();
             //cgoIndexNo
@@ -916,16 +913,26 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setProfessionType(professionType[i]);
             appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
             appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
-  /*          String specialtyStr = specialty[i];
-            appSvcCgoDto.setSpeciality(specialtyStr);
-            if ("other".equals(specialtyStr)) {
-                appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
-            }*/
-            //qualification
-        /*    appSvcCgoDto.setSubSpeciality(qualification[i]);*/
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
+            appSvcCgoDto.setOtherQualification(otherQualifications[i]);
+            if("Y".equals(prsFlag)){
+                ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo[i]);
+                List<String> qualification = professionalResponseDto.getQualification();
+                if(qualification!=null&&!qualification.isEmpty()){
+                    appSvcCgoDto.setQualification(qualification.get(0));
+                }
+                List<String> specialty = professionalResponseDto.getSpecialty();
+                if(specialty!=null&&!specialty.isEmpty()){
+                  appSvcCgoDto.setSpeciality(specialty.get(0));
+                }
+                List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                if(subspecialty!=null&&!subspecialty.isEmpty()){
+                    appSvcCgoDto.setSubSpeciality(subspecialty.get(0));
+                }
+
+            }
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
         return appSvcCgoDtoList;
@@ -1069,14 +1076,23 @@ public class AppealServiceImpl implements AppealService {
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
                             map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                        }else if("DES999".equals(designation)){
+                            String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
+                            if(StringUtil.isEmpty(otherDesignation)){
+                                map.put("otherDesignation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                            }
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
+                        String otherQualification = appSvcCgoList.get(i).getOtherQualification();
+                        if(StringUtil.isEmpty(otherQualification)){
+                            map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                        }
                         if (StringUtil.isEmpty(professionRegoNo)) {
 /*
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
 */
                         }else {
-                            if("N".equals(prsFlag)){
+                            if("Y".equals(prsFlag)){
                                 ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
                                 List<String> prgNos = IaisCommonUtils.genNewArrayList();
                                 prgNos.add(professionRegoNo);

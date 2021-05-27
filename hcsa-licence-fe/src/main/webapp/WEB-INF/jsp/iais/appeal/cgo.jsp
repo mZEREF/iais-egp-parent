@@ -177,7 +177,8 @@
                                   </div>
                                   <div class="col-md-7 col-xs-5 col-sm-3">
                                     <div class="">
-                                      <input type="text" name="otherDesignation" class="otherDesignation" maxlength="100" autocomplete="off">
+                                      <input type="text" name="otherDesignation" value="${currentCgo.otherDesignation}" class="otherDesignation" maxlength="100" autocomplete="off">
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -232,7 +233,7 @@
                                       <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
                                     </div>
                                     <div class="col-xs-8 col-sm-4 col-md-7">
-                                      <label class="control-label control-set-font control-font-label specialty-label"></label>
+                                      <label class="control-label control-set-font control-font-label specialty-label">${currentCgo.speciality}</label>
                                     </div>
                                   </div>
                                 </div>
@@ -247,7 +248,7 @@
                                       <label class="control-label control-set-font control-font-label">Sub-specialty</label>
                                     </div>
                                     <div class="col-md-7 col-xs-8 col-sm-4">
-                                      <label class="control-label control-set-font control-font-label sub-specialty-label"></label>
+                                      <label class="control-label control-set-font control-font-label sub-specialty-label">${currentCgo.subSpeciality}</label>
                                     </div>
                                   </div>
                                 </div>
@@ -261,7 +262,7 @@
                                       <label class="control-label control-set-font control-font-label">Qualification</label>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
-                                      <label class="control-label control-set-font control-font-label qualification-label"></label>
+                                      <label class="control-label control-set-font control-font-label qualification-label">${currentCgo.qualification}</label>
                                     </div>
                                   </div>
                                 </div>
@@ -274,11 +275,12 @@
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Other Qualification</label>
-                                      <span class="mandatory otherQualificationSpan"></span>
+                                      <span class="mandatory otherQualificationSpan">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
-                                        <input type="text" name="otherQualification" class="otherQualification" maxlength="100" autocomplete="off">
+                                        <input type="text" name="otherQualification" value="${currentCgo.otherQualification}" class="otherQualification" maxlength="100" autocomplete="off">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
                                       </div>
                                     </div>
                                   </div>
