@@ -125,7 +125,7 @@
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>
-                                                <div id="${num.count}patYes${uid.count}" hidden>
+                                                <%--<div id="${num.count}patYes${uid.count}" hidden>
                                                     <iais:row>
                                                         <iais:field width="7"
                                                                     value="Who will take over your patients' case records?" mandatory="true"/>
@@ -237,6 +237,18 @@
                                                                     class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
                                                         </div>
                                                         <span id="error_${num.count}patNoConfirm${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
+                                                    </div>
+                                                </div>--%>
+                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
+                                                    <label class="col-xs-12 col-md-4">Please state where the patient’s records will be transferred to and where the licensee will store the patients’ health records after cessation. </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                     </div>
                                                 </div>
                                                 <c:if test="${isGrpLic}">
@@ -390,7 +402,7 @@
         }
     }
 
-    function changePatientCessBe() {
+    /*function changePatientCessBe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
@@ -420,18 +432,21 @@
                 }
             }
         }
-    }
+    }*/
 
     function changePatSelectCessBe() {
-        changePatientCessBe();
+       // changePatientCessBe();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).show();
                     $("#" + i + "patNo" + j).hide();
-                    $("#"+ i +"patNoConfirmID"+ j).hide();
+                    $("#" + i + "transferDetail" + j).hide();
+                    $("#" + i + "transferredWhere" + j).show();
                 } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patNo" + j).show();
+                    $("#" + i + "transferDetail" + j).show();
+                    $("#" + i + "transferredWhere" + j).hide();
+                   /* $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
@@ -439,13 +454,13 @@
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
-                    $("#"+ i +"patNoConfirmID"+ j).show();
+                    $("#"+ i +"patNoConfirmID"+ j).show();*/
                 }
             }
         }
     }
     $(document).ready(function () {
-        changePatientCessBe();
+        //changePatientCessBe();
         changeReasonCessBe();
         changePatSelectCessBe();
 

@@ -3354,6 +3354,8 @@ public class HcsaApplicationDelegator {
                 appCessHciDto.setReason(reason);
                 appCessHciDto.setOtherReason(otherReason);
                 appCessHciDto.setEffectiveDate(effectiveDate);
+                appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
+                appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
                 Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
                 MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
                 Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
