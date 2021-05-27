@@ -431,7 +431,7 @@
         changePatSelectCessFe();
     });
 
-    $(document).ready(function () {
+  /*  $(document).ready(function () {
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
@@ -440,19 +440,19 @@
             $("#patRegNo").hide();
             $("#div").hide();
         }
-    });
+    });*/
 
     $(document).ready(function () {
         $('input[type="text"]').css('border-color', '#ededed');
         $('input[type="text"]').css('color', '#999');
-        if ($('#radioNo').is(':checked')) {
+        /*if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#div").hide();
-        }
+        }*/
     });
 
 </script>
