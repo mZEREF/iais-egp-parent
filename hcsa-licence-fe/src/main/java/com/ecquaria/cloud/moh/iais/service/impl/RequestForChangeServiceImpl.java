@@ -81,6 +81,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -2235,4 +2236,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     }
 
+    private static AppGrpPrimaryDocDto svcTransferPrimaryDoc(AppSvcDocDto appSvcDocDto){
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
+        appGrpPrimaryDocDto.setDocName(appSvcDocDto.getDocName());
+        appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
+        appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+        appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
+        appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
+        appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
+        appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
+        return appGrpPrimaryDocDto;
+    }
 }
