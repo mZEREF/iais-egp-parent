@@ -1475,11 +1475,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-            List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request);
-            appSubmissionService.getAppDeclarationMessageDto(request,ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-            appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, request);
