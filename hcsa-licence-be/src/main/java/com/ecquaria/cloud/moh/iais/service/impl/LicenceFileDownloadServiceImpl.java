@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -989,8 +991,77 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(cession==i){
                         cessionOrwith.addAll(applicationDtoList);
                     }
+                    try {
+                        ApplicationGroupDto applicationGroupDto = k;
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                            emailMap.put("officer_name", "");
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+                            emailMap.put("ApplicationNumber", application.getApplicationNo());
+                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(application.getApplicationNo()).getEntity();
+                            emailMap.put("hci_name", premisesDto.getHciName());
+                            emailMap.put("submission_date", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+                            emailMap.put("licensee_name", licenseeDto.getName());
+                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                            emailMap.put("address", address);
+                            if(!autoRfc){
+                                emailMap.put("already", "already");
+                                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                                emailMap.put("systemLink", loginUrl);
+                                emailMap.put("TAT_time", systemParamConfig.getWithdrewTatDate());
+
+                            }
+
+                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                            EmailParam emailParam = new EmailParam();
+                            emailParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL);
+                            emailParam.setQueryCode(application.getApplicationNo());
+                            emailParam.setReqRefNum(application.getApplicationNo());
+                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                            emailParam.setRefId(application.getApplicationNo());
+                            emailParam.setTemplateContent(emailMap);
+                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL).getEntity();
+                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
+                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+                            map1.put("ApplicationNumber", application.getApplicationNo());
+                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
+                            emailParam.setSubject(subject);
+                            log.info("start send email start");
+                            notificationHelper.sendNotification(emailParam);
+                            log.info("start send email end");
+                            //emailClient.sendNotification(emailDto).getEntity();
+
+                            //sms
+                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS).getEntity();
+                            subject = null;
+                            try {
+                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
+                            } catch (IOException |TemplateException e) {
+                                log.info(e.getMessage(),e);
+                            }
+                            EmailParam smsParam = new EmailParam();
+                            smsParam.setQueryCode(application.getApplicationNo());
+                            smsParam.setReqRefNum(application.getApplicationNo());
+                            smsParam.setRefId(application.getApplicationNo());
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setSubject(subject);
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+                            emailMap.put("ApplicationNumber", application.getApplicationNo());
+                            smsParam.setTemplateContent(emailMap);
+                            smsParam.setTemplateId(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS);
+                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                            log.info("start send sms start");
+                            notificationHelper.sendNotification(smsParam);
+                            log.info("start send sms end");
+                        }
+
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
                 }
-            } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            }
+            else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 log.info(StringUtil.changeForLog("=============="+k.getGroupNo()));
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
@@ -1098,7 +1169,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            }
+            else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                 }else {
@@ -1131,7 +1203,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
 
 
-            }else {
+            }
+            else {
                 List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     int i=v.size();
