@@ -42,31 +42,31 @@
                                 All Active
                                 <c:choose>
                                     <c:when test="${'ASO' == dashSysStageValReq}">
-                                        &nbsp;Admin Screening&nbsp;
+                                        Admin Screening
                                     </c:when>
                                     <c:when test="${'PSO' == dashSysStageValReq}">
-                                        &nbsp;Professional Screening&nbsp;
+                                        Professional Screening
                                     </c:when>
                                     <c:when test="${'PRE' == dashSysStageValReq}">
-                                        &nbsp;Pre-Inspection&nbsp;
+                                        Pre-Inspection
                                     </c:when>
                                     <c:when test="${'INS' == dashSysStageValReq}">
-                                        &nbsp;Inspection&nbsp;
+                                        Inspection
                                     </c:when>
                                     <c:when test="${'POT' == dashSysStageValReq}">
-                                        &nbsp;Post Inspection&nbsp;
+                                        Post Inspection
                                     </c:when>
                                     <c:when test="${'AO1' == dashSysStageValReq}">
-                                        &nbsp;Admin Officer 1&nbsp;
+                                        Admin Officer 1
                                     </c:when>
                                     <c:when test="${'AO2' == dashSysStageValReq}">
-                                        &nbsp;Admin Officer 2&nbsp;
+                                        Admin Officer 2
                                     </c:when>
                                     <c:when test="${'AO3' == dashSysStageValReq}">
-                                        &nbsp;Admin Officer 3&nbsp;
+                                        Admin Officer 3
                                     </c:when>
                                 </c:choose>
-                                Tasks
+                                 Tasks
                             </h2>
                         </div>
                         <div class="row">
