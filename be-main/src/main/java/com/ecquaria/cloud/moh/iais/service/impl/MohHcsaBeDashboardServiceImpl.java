@@ -1056,7 +1056,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
             searchParam.addParam("application_types", appTypeStr);
             for(int i = 0; i < services.length; i++){
-                searchParam.addFilter("viewApp.APP_TYPE" + i, services[i]);
+                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
             }
         }
         return searchParam;
