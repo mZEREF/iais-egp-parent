@@ -479,7 +479,7 @@
             <#if application_types??> and ${application_types}</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if user_id??> and viewApp.ACTION_BY= :user_id</#if>
-            <#if stage_id??> and (viewApp.STAGE_ID = :stage_id or viewApp.SUB_STAGE = :stage_id)</#if>
+            <#if stage_id??> and (CONVERT(NVARCHAR(36), viewApp.STAGE_ID) = :stage_id or CONVERT(NVARCHAR(36), viewApp.SUB_STAGE) = :stage_id)</#if>
 
         ]]>
     </sql>
@@ -495,7 +495,7 @@
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and viewApp.ROLE_ID= :role_id</#if>
             <#if action_by??> and viewApp.ACTION_BY= :action_by</#if>
-            <#if stage_id??> and (viewApp.STAGE_ID = :stage_id or viewApp.SUB_STAGE = :stage_id)</#if>
+            <#if stage_id??> and (CONVERT(NVARCHAR(36), viewApp.STAGE_ID) = :stage_id or CONVERT(NVARCHAR(36), viewApp.SUB_STAGE) = :stage_id)</#if>
 
         ]]>
     </sql>
@@ -514,7 +514,7 @@
             <#if action_by??> and viewApp.ACTION_BY= :action_by</#if>
             <#if user_id??> and viewApp.user_id= :user_id</#if>
             <#if app_grp_id??> and viewApp.APP_GRP_ID= :app_grp_id</#if>
-            <#if stage_id??> and (viewApp.STAGE_ID = :stage_id or viewApp.SUB_STAGE = :stage_id)</#if>
+            <#if stage_id??> and (CONVERT(NVARCHAR(36), viewApp.STAGE_ID) = :stage_id or CONVERT(NVARCHAR(36), viewApp.SUB_STAGE) = :stage_id)</#if>
         ]]>
     </sql>
 </sqls>
