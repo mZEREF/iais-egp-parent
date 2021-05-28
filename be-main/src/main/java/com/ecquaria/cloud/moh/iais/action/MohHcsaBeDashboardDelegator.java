@@ -180,6 +180,8 @@ public class MohHcsaBeDashboardDelegator {
         ParamUtil.setSessionAttr(bpc.request, "dashAo2CircleKpi", null);
         ParamUtil.setSessionAttr(bpc.request, "dashAo3CircleKpi", null);
         ParamUtil.setSessionAttr(bpc.request, "dashOverAllCircleKpi", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashSvcCheckList", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashAppTypeCheckList", null);
     }
 
     /**
@@ -357,10 +359,14 @@ public class MohHcsaBeDashboardDelegator {
         if(services != null && services.length > 0) {
             List<String> serviceList = Arrays.asList(services);
             ParamUtil.setSessionAttr(request, "dashSvcCheckList", (Serializable) serviceList);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashSvcCheckList", null);
         }
         if(appTypes != null && appTypes.length > 0) {
             List<String> appTypeList = Arrays.asList(appTypes);
             ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", (Serializable) appTypeList);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", null);
         }
     }
 
