@@ -36,13 +36,13 @@
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                     <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                        <iais:select cssClass="" name="appType" firstOption="" options="appTypeOption" multiValues="" multiSelect="true" />
+                                        <iais:select cssClass="" name="appType" firstOption="" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Service Licence</label>
                                     <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                        <iais:select cssClass="" name="svcLic" firstOption="" needSort="true" options="dashServiceOption" multiValues="" multiSelect="true" />
+                                        <iais:select cssClass="" name="svcLic" firstOption="" needSort="true" options="dashServiceOption" multiValues="${dashSvcCheckList}" multiSelect="true" />
                                     </div>
                                 </div>
                             </div>
