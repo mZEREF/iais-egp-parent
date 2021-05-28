@@ -521,6 +521,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
+        sendAsoWithdrow(applicationGroup,application);
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
@@ -587,6 +588,117 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         log.info("---- end ----start withdrowAppToBe-----");
         return false;
+    }
+
+    private void sendAsoWithdrow(List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> applicationList){
+        log.info("withdrow email function start");
+        Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
+        for (ApplicationGroupDto every : applicationGroup) {
+            List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
+            for (ApplicationDto application : applicationList) {
+                if (every.getId().equals(application.getAppGrpId())) {
+                    applicationslist.add(application);
+                }
+            }
+            map.put(every,applicationslist);
+        }
+
+        map.forEach((k,v)->{
+            for(ApplicationDto application :v){
+                if(k.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                    try {
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(k.getLicenseeId()).getEntity();
+                        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(application.getId()).getEntity();
+                        ApplicationDto oldAppDto=applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
+                        List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
+                        String asoId="";
+                        for (TaskDto task:oldTaskDtos
+                        ) {
+                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                asoId=task.getUserId();
+                            }
+                        }
+                        OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
+
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                            emailMap.put("officer_name", orgUserDto.getDisplayName());
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            emailMap.put("ApplicationNumber", oldAppDto.getApplicationNo());
+                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(oldAppDto.getApplicationNo()).getEntity();
+                            emailMap.put("hci_name", premisesDto.getHciName());
+                            emailMap.put("submission_date", Formatter.formatDate(k.getSubmitDt()));
+                            emailMap.put("licensee_name", licenseeDto.getName());
+                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                            emailMap.put("address", address);
+                            if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                                emailMap.put("already", "already");
+                                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                                emailMap.put("systemLink", loginUrl);
+                                Calendar calendar=Calendar.getInstance();
+                                calendar.add(Calendar.DATE, systemParamConfig.getWithdrewTatDate());
+                                String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
+                                emailMap.put("TAT_time", dueDay);
+
+                            }
+
+                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL).getEntity();
+                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
+                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            map1.put("ApplicationNumber", oldAppDto.getApplicationNo());
+                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
+                            log.info("start send email start");
+                            EmailDto emailDto = new EmailDto();
+                            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                            receiptEmail.add(orgUserDto.getEmail());
+                            List<String> mobile = IaisCommonUtils.genNewArrayList();
+                            mobile.add(orgUserDto.getMobileNo());
+                            emailDto.setReceipts(receiptEmail);
+                            String emailContent = getEmailContent(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL,emailMap);
+                            emailDto.setContent(emailContent);
+                            emailDto.setSubject(subject);
+                            emailDto.setSender(this.mailSender);
+                            emailDto.setClientQueryCode(oldAppDto.getApplicationNo());
+                            emailDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getEmail()!=null){
+                                emailSmsClient.sendEmail(emailDto, null);
+                            }
+                            log.info("start send email end");
+
+                            //sms
+                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS).getEntity();
+                            subject = null;
+                            try {
+                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
+                            } catch (IOException |TemplateException e) {
+                                log.info(e.getMessage(),e);
+                            }
+
+
+                            log.info("start send sms start");
+                            SmsDto smsDto = new SmsDto();
+                            smsDto.setSender(mailSender);
+                            smsDto.setContent(subject);
+                            smsDto.setOnlyOfficeHour(false);
+                            smsDto.setReceipts(mobile);
+                            smsDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getMobileNo()!=null){
+                                emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
+                            }
+                            log.info("start send sms end");
+                        }
+
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+
+            }
+
+        });
+        log.info("withdrow email function end");
+
     }
 
     private List<ApplicationDto> withdrow(List<ApplicationDto> applicationDtos){
@@ -1022,93 +1134,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(cession==i){
                         cessionOrwith.addAll(applicationDtoList);
                     }
-                    try {
-                        ApplicationGroupDto applicationGroupDto = k;
-                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-                        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(application.getId()).getEntity();
-                        ApplicationDto oldAppDto=applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
-                        List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
-                        String asoId="";
-                        for (TaskDto task:oldTaskDtos
-                        ) {
-                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
-                                asoId=task.getUserId();
-                            }
-                        }
-                        OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
 
-                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
-                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                            emailMap.put("officer_name", orgUserDto.getDisplayName());
-                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
-                            emailMap.put("ApplicationNumber", oldAppDto.getApplicationNo());
-                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(oldAppDto.getApplicationNo()).getEntity();
-                            emailMap.put("hci_name", premisesDto.getHciName());
-                            emailMap.put("submission_date", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-                            emailMap.put("licensee_name", licenseeDto.getName());
-                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
-                            emailMap.put("address", address);
-                            if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)&&!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
-                                emailMap.put("already", "already");
-                                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                                emailMap.put("systemLink", loginUrl);
-                                Calendar calendar=Calendar.getInstance();
-                                calendar.add(Calendar.DATE, systemParamConfig.getWithdrewTatDate());
-                                String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
-                                emailMap.put("TAT_time", dueDay);
-
-                            }
-
-                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL).getEntity();
-                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
-                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
-                            map1.put("ApplicationNumber", oldAppDto.getApplicationNo());
-                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
-                            log.info("start send email start");
-                            EmailDto emailDto = new EmailDto();
-                            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
-                            receiptEmail.add(orgUserDto.getEmail());
-                            List<String> mobile = IaisCommonUtils.genNewArrayList();
-                            mobile.add(orgUserDto.getMobileNo());
-                            emailDto.setReceipts(receiptEmail);
-                            String emailContent = getEmailContent(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL,emailMap);
-                            emailDto.setContent(emailContent);
-                            emailDto.setSubject(subject);
-                            emailDto.setSender(this.mailSender);
-                            emailDto.setClientQueryCode(oldAppDto.getApplicationNo());
-                            emailDto.setReqRefNum(oldAppDto.getApplicationNo());
-                            if(orgUserDto.getEmail()!=null){
-                                emailSmsClient.sendEmail(emailDto, null);
-                            }
-                            log.info("start send email end");
-
-                            //sms
-                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS).getEntity();
-                            subject = null;
-                            try {
-                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
-                            } catch (IOException |TemplateException e) {
-                                log.info(e.getMessage(),e);
-                            }
-
-
-                            log.info("start send sms start");
-                            SmsDto smsDto = new SmsDto();
-                            smsDto.setSender(mailSender);
-                            smsDto.setContent(subject);
-                            smsDto.setOnlyOfficeHour(false);
-                            smsDto.setReceipts(mobile);
-                            smsDto.setReqRefNum(oldAppDto.getApplicationNo());
-                            if(orgUserDto.getMobileNo()!=null){
-                                emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
-                            }
-                            log.info("start send sms end");
-                        }
-
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                    }
                 }
             }
             else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
