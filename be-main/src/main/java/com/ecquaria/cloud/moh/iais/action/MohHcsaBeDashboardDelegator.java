@@ -390,7 +390,7 @@ public class MohHcsaBeDashboardDelegator {
         SearchParam searchParam = getSearchParam(bpc, true, DashAllGrpAppQueryDto.class.getName());
         //set stageId Filter
         String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
-        if(StringUtil.isEmpty(stageId)) {
+        if(!StringUtil.isEmpty(stageId)) {
             searchCountParam.addFilter("stage_id", stageId, true);
             searchParam.addFilter("stage_id", stageId, true);
         }

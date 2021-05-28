@@ -218,7 +218,7 @@ public class MohHcsaBeDashboardAjax {
         Map<String, Object> filters = searchParamGroup.getFilters();
         if(filters != null) {
             String stage_id = (String) filters.get("stage_id");
-            if(StringUtil.isEmpty(stage_id)) {
+            if(!StringUtil.isEmpty(stage_id)) {
                 searchParam.addFilter("stage_id", stage_id, true);
             }
         }
