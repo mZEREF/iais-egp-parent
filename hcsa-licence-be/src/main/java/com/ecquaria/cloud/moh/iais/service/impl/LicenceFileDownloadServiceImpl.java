@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -630,6 +631,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         ) {
                             if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
                                 asoId=task.getUserId();
+                            }
+                            if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
+                                task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                taskService.updateTask(task);
                             }
                         }
                         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();

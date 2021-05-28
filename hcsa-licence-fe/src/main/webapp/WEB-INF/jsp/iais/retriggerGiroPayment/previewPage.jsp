@@ -34,14 +34,14 @@
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                 <%@include file="../common/previewPremises.jsp"%>
                                                 <%@include file="../common/previewPrimary.jsp"%>
-                                                <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
+                                                <c:forEach var="svcRelDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
                                                         <input type="hidden" name="iframeId" value="svcIframe${status.index}"/>
-                                                        <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>"/>
+                                                        <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${svcRelDto.serviceId}"/>"/>
                                                         <input type="hidden" name="maskName" value="svc${status.index}"/>
-
+                                                        <input type="hidden" name="appNo" value="${svcRelDto.appNo}"/>
                                                         <div class="panel-heading "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title svcTitle"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                            <h4 class="panel-title svcTitle"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${svcRelDto.serviceName}</a></h4>
                                                         </div>
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >
@@ -50,7 +50,7 @@
                                                                     <p class="mb-0">
                                                                     <div class="text-right app-font-size-16">
                                                                         <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                        <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
+                                                                        <input type="hidden" value="${svcRelDto.serviceCode}" name="svcCode" />
                                                                     </div>
                                                                     </p>
                                                                 </c:if>
@@ -100,8 +100,9 @@
         var maskName = $svcEle.find('input[name="maskName"]').val();
         var maskId = $svcEle.find('input[name="maskId"]').val();
         var iframeId = $svcEle.find('input[name="iframeId"]').val();
+        var appNo = $svcEle.find('input[name="appNo"]').val();
         $svcEle.find('input[name="svcCount"]').val(1);
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId;
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId+'&appNo='+appNo;
         var iframeHtml = "<iframe id=\""+ iframeId+ "\"  class=\"svc-iframe\" title=\"\" src=\""+ url +"\"  width=\"100%\" frameborder =\"0\" ></iframe>"
         $svcEle.find('input[name="svcCount"]').after(iframeHtml);
 
