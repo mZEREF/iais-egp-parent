@@ -97,7 +97,7 @@ public class CessationApplicationFeDelegator {
     private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String TRANSFERREDWHERE = "transferredWhere";
     private static final String TRANSFERDETAIL = "transferDetail";
-    private static final String APPSUBMISSIONDTO = "appSubmissionDto";
+    private static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     private static final String ERROR = "GENERAL_ERR0006";
     static String[] arrReason = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     static String[] arrPatients = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
@@ -130,6 +130,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", rfiPremiseId);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,"renewDto",null);
         ParamUtil.setSessionAttr(bpc.request, "selectedCessFileDocShowPageDto", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedCessFile_MaxIndex", null);
