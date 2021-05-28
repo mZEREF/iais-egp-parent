@@ -522,7 +522,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
-        sendAsoWithdrow(applicationGroup,application,appPremisesCorrelation, appPremiseMiscEntities);
+        try {
+            sendAsoWithdrow(applicationGroup,application,appPremisesCorrelation, appPremiseMiscEntities);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
@@ -609,9 +613,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             appIdAndAppCorrIds.put(appCorr.getApplicationId(),appCorr.getId());
         }
         Map<String,String> appPremiseMiscMap=IaisCommonUtils.genNewHashMap();
-        for (AppPremiseMiscDto miscDto:appPremiseMiscEntities
-             ) {
-            appPremiseMiscMap.put(miscDto.getAppPremCorreId(),miscDto.getRelateRecId());
+        if(appPremiseMiscEntities!=null){
+            for (AppPremiseMiscDto miscDto:appPremiseMiscEntities
+            ) {
+                appPremiseMiscMap.put(miscDto.getAppPremCorreId(),miscDto.getRelateRecId());
+            }
         }
         map.forEach((k,v)->{
             for(ApplicationDto application :v){
