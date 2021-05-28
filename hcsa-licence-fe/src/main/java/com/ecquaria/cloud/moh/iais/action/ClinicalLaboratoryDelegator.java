@@ -543,9 +543,15 @@ public class ClinicalLaboratoryDelegator {
         String iframeId = ParamUtil.getString(bpc.request, "iframeId");
         String maskName = ParamUtil.getString(bpc.request, "maskName");
         String svcId = ParamUtil.getMaskedString(bpc.request, maskName);
+        String appNo = ParamUtil.getString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(svcId)) {
             log.info(StringUtil.changeForLog("get current svc info...."));
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto;
+            if(!StringUtil.isEmpty(appNo)){
+                appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId, appNo);
+            }else{
+                appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
+            }
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
             //sort po,dpo
@@ -2932,6 +2938,24 @@ public class ClinicalLaboratoryDelegator {
             if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
                 for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     if (currentSvcId.equals(svcRelatedInfoDto.getServiceId())) {
+                        appSvcRelatedInfoDto = svcRelatedInfoDto;
+                        break;
+                    }
+                }
+            }
+        }
+        return appSvcRelatedInfoDto;
+    }
+
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId, String appNo) {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+        if (appSubmissionDto != null) {
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
+                for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    String currAppNo = StringUtil.nullToEmpty(svcRelatedInfoDto.getAppNo());
+                    if (currentSvcId.equals(svcRelatedInfoDto.getServiceId()) && appNo.equals(currAppNo)) {
                         appSvcRelatedInfoDto = svcRelatedInfoDto;
                         break;
                     }
