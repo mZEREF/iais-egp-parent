@@ -92,7 +92,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1043,11 +1045,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("licensee_name", licenseeDto.getName());
                             String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
                             emailMap.put("address", address);
-                            if(!autoRfc||application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)||application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                            if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)&&!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
                                 emailMap.put("already", "already");
                                 String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
                                 emailMap.put("systemLink", loginUrl);
-                                emailMap.put("TAT_time", systemParamConfig.getWithdrewTatDate());
+                                Calendar calendar=Calendar.getInstance();
+                                calendar.add(Calendar.DATE, systemParamConfig.getWithdrewTatDate());
+                                String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
+                                emailMap.put("TAT_time", dueDay);
 
                             }
 
