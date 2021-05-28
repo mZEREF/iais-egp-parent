@@ -174,15 +174,15 @@ public class MohHcsaBeDashboardAjax {
         List<String> serviceList = (List<String>)ParamUtil.getSessionAttr(request, "dashSvcCheckList");
         List<String> appTypeList = (List<String>)ParamUtil.getSessionAttr(request, "dashAppTypeCheckList");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
-        String groupNo = request.getParameter("groupNo");
+        String groupId = request.getParameter("groupId");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        if(!StringUtil.isEmpty(groupNo)){
+        if(!StringUtil.isEmpty(groupId)){
             SearchParam searchParam = new SearchParam(DashAppDetailsQueryDto.class.getName());
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
             //set filter
-            searchParam = dashSysDetailDropFilter(searchParam, groupNo, serviceList, appTypeList, searchParamGroup);
+            searchParam = dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetailAjax", searchParam);
             SearchResult<DashAppDetailsQueryDto> searchResult = beDashboardAjaxService.getDashAllActionResult(searchParam);
@@ -197,10 +197,10 @@ public class MohHcsaBeDashboardAjax {
         return map;
     }
 
-    private SearchParam dashSysDetailDropFilter(SearchParam searchParam, String groupNo, List<String> serviceList, List<String> appTypeList,
+    private SearchParam dashSysDetailDropFilter(SearchParam searchParam, String groupId, List<String> serviceList, List<String> appTypeList,
                                                 SearchParam searchParamGroup) {
         //filter appGroup NO.
-        searchParam.addFilter("groupNo", groupNo, true);
+        searchParam.addFilter("groupId", groupId, true);
         if(serviceList != null && serviceList.size() > 0) {
             String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", serviceList.size());
             searchParam.addParam("svc_codes", serviceStr);

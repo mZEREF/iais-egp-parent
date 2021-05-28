@@ -509,6 +509,7 @@
             FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW viewApp
             WHERE 1 = 1
             <#if application_types??> and ${application_types}</#if>
+            <#if groupId??> and viewApp.APP_GRP_ID = :groupId</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and viewApp.ROLE_ID= :role_id</#if>
             <#if action_by??> and viewApp.ACTION_BY= :action_by</#if>
