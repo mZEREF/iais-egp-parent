@@ -115,22 +115,17 @@ public class InspecTaskToLeaderBatchJob {
                     }
                     String status = appInspectionStatusDtos.get(i).getStatus();
                     String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
-                    //SKIP Inspection
+                    //SKIP Inspection or in ASO/PSO and fast tracking
                     if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)){
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
                                 InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
+                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status) ||
+                                ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
                             report = report + 1;
                         }
                         continue;
                         //in ASO/PSO
                     } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
-                        continue;
-                        //in ASO/PSO and fast tracking
-                    } else if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)) {
-                        if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
-                            report = report + 1;
-                        }
                         continue;
                     }
                     ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
