@@ -387,7 +387,7 @@ public class CessationApplicationFeDelegator {
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
-            appCessLicDto.setAppDeclarationDocDtoList(cessationDocData);
+            appCessLicDto.setAppDeclarationDocDtos(cessationDocData);
             appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
             appCessLicDtos.add(appCessLicDto);
         }
@@ -400,7 +400,7 @@ public class CessationApplicationFeDelegator {
             String licenceId = appCessLicDto.getLicenceId();
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             List<String> specialLicIds = appCessLicDto.getSpecialLicIds();
-            List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessLicDto.getAppDeclarationDocDtoList();
+            List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessLicDto.getAppDeclarationDocDtos();
             AppDeclarationMessageDto appDeclarationMessageDto = appCessLicDto.getAppDeclarationMessageDto();
             if (appCessHciDtos != null && !appCessHciDtos.isEmpty()) {
                 for (AppCessHciDto appCessHciDto : appCessHciDtos) {
