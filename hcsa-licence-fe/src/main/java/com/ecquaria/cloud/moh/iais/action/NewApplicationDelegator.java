@@ -1576,8 +1576,9 @@ public class NewApplicationDelegator {
                     List<AppDeclarationDocDto> appDeclarationDocDtoList = applicationFeClient.getAppDeclarationDocDto(appGrpPremisesEntityDto.getAppGrpId()).getEntity();
                     if (appDeclarationMessageDtoList != null && appDeclarationMessageDtoList.size() > 0){
                         appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDtoList.get(0));
+                        appCessLicDto.setAppDeclarationDocDtos(appDeclarationDocDtoList);
                     }
-                    appSubmissionService.initDeclarationFiles(appDeclarationDocDtoList,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+                    //appSubmissionService.initDeclarationFiles(appDeclarationDocDtoList,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
                     String blkNo = appGrpPremisesEntityDto.getBlkNo();
                     String premisesId = appGrpPremisesEntityDto.getId();
                     String streetName = appGrpPremisesEntityDto.getStreetName();
