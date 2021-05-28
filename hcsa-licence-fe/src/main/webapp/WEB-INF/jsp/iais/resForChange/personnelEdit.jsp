@@ -112,7 +112,7 @@
                                                <c:if test="${editSelectResult=='update'}">checked</c:if> type="radio"
                                                name="editSelect" value="update" aria-invalid="false">
                                         <label class="form-check-label" for="checkitem1"><span
-                                                class="check-circle"></span>Change the Details of this Personnel</label>
+                                                class="check-circle"></span>Change the Information of this Personnel</label>
                                     </div>
                                     <div class="form-check progress-step-check" style="width: 33%">
                                         <input class="form-check-input" id="checkitem2" type="radio"
@@ -162,6 +162,14 @@
                                                              codeCategory="CATE_ID_DESIGNATION"
                                                              value="${personnelEditDto.designation}"
                                                              firstOption="Please Select" disabled="true"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="" width="12" />
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                <iais:input cssClass="otherDesignationShow hidden" name="otherDesignationShow"
+                                                            maxLength="100" type="text"
+                                                            value="${personnelEditDto.otherDesignation}" needDisabled="true"></iais:input>
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
@@ -236,6 +244,14 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="" width="12" />
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                <iais:input cssClass="otherDesignation hidden" name="otherDesignation"
+                                                            maxLength="100" type="text"
+                                                            value="${personnelEditDto.otherDesignation}" ></iais:input>
+                                            </iais:value>
                                         </iais:row>
                                     </c:if>
                                     <iais:row>
@@ -312,6 +328,14 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                         </iais:row>
+                                        <iais:row>
+                                            <iais:field value="" width="12" />
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                <iais:input cssClass="otherDesignation1 hidden" name="otherDesignation1"
+                                                            maxLength="100" type="text"
+                                                            value="${newPerson.otherDesignation}" ></iais:input>
+                                            </iais:value>
+                                        </iais:row>
                                     </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
@@ -376,6 +400,14 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                         </iais:row>
+                                        <iais:row>
+                                            <iais:field value="" width="12" />
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                <iais:input cssClass="otherDesignation2 hidden" name="otherDesignation2"
+                                                            maxLength="100" type="text"
+                                                            value="${newPerson.otherDesignation}" ></iais:input>
+                                            </iais:value>
+                                        </iais:row>
                                     </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
@@ -436,7 +468,17 @@
         $('#ackMessageEdit').modal('hide');
     }
     $(document).ready(function () {
+        if( $('.designationSel').val()=='DES999'){
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
 
+        }else {
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+
+        }
         if($('#ackMessage').val()=='personnelAck'){
             $('#ackMessageConfim').modal('show');
         }
@@ -546,6 +588,17 @@
 
     });
 
+    $('.designationSel').change(function (){
+        if($(this).val()=='DES999'){
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+        }else {
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+        }
+    });
     function addNew() {
         const personSelect = $('#replaceOptionsId').val();
         if (personSelect == 'new') {
