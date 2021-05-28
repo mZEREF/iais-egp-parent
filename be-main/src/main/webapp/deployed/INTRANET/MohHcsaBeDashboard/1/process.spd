@@ -163,6 +163,13 @@
     <JavaCode defClass="" executor="" methodName="hcsaDashSysAllStep_OnStepProcess_0" name="hcsaDashSysAllStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="hcsaDashSysDetailStepPage" x="1020" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="hcsaDashSysDetailStepPage_OnStepProcess_0" name="hcsaDashSysDetailStepPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="hcsaBeDashboardSearchPage" stageIndicator="" x="460" y="100">
@@ -351,6 +358,12 @@
   <SynchronousLink destinationName="/Switches/Switch/hcsaBeDashboardSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaDashSysAllStep" style="oblique">
    <position>{(320,560)(810,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hcsaDashSysDetailStepPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/hcsaBeDashboardSwitch" style="oblique">
+   <position>{(810,120)(1040,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/hcsaDashSysDetailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hcsaDashSysDetailStepPage" style="oblique">
+   <position>{(1040,490)(1110,560)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/hcsaBeDashboardSearchPage" componentIfTrue="/Pages/WebPage/hcsaBeDashboardSuccessPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="360" y="-180">
@@ -378,6 +391,7 @@
    <SwitchCase component="/Steps/AutomaticStep/hcsaBeDashboardComDo" value="&quot;comsuc&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/hcsaDashSysAll" value="&quot;system&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/hcsaDashSysDetail" value="&quot;sysdet&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/hcsaDashSysDetailStepPage" value="&quot;syspage&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
