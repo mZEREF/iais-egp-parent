@@ -518,6 +518,7 @@
             function (data) {
                 let dashRoleSwitchFlag = data.dashRoleSwitchFlag;
                 if ('SUCCESS' == dashRoleSwitchFlag) {
+                    $('#switchAction').val('system');
                     intraDashboardSubmit("system");
                 } else if ('FAIL' == dashRoleSwitchFlag) {
                     url = "${pageContext.request.contextPath}/eservice/INTRANET/MohHcsaBeDashboard";
