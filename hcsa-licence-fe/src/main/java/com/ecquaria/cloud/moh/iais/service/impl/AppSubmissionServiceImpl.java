@@ -5,10 +5,12 @@ import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -66,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -107,6 +110,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -3050,6 +3054,63 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
 
+    }
+
+    @Override
+    public void clearSession(HttpServletRequest request) {
+        if (request == null) {
+            return;
+        }
+        // New Application - Declaration - clear uploaded dto
+        String fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        request.getSession().setAttribute("declaration_page_is", null);
+        request.getSession().setAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
+        fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
+        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        // View and Print
+        ParamUtil.setSessionAttr(request, "viewPrint", null);
+
+        //clear Session
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
+        //Primary Documents
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PREMHCSASVCDOCCONFIGDTO, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.RELOADAPPGRPPRIMARYDOCMAP, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.DRAFTCONFIG, null);
+        Map<String, AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) psnMap);
+        ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, null);
+
+        request.getSession().removeAttribute("oldSubmitAppSubmissionDto");
+        request.getSession().removeAttribute("submitAppSubmissionDto");
+        request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute("rfiHcsaService");
+        request.getSession().removeAttribute("ackPageAppSubmissionDto");
+        request.getSession().removeAttribute("serviceConfig");
+        request.getSession().removeAttribute("app-rfc-tranfer");
+        request.getSession().removeAttribute("rfc_eqHciCode");
+        request.getSession().removeAttribute("declaration_page_is");
+
+        ParamUtil.setSessionAttr(request, NewApplicationConstant.PREMISES_HCI_LIST, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP, null);
+        ParamUtil.setSessionAttr(request, HcsaLicenceFeConstant.DASHBOARDTITLE, null);
+        ParamUtil.setSessionAttr(request, "AssessMentConfig", null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.SVC_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(request, "app-rfc-tranfer", null);
+        HashMap<String, String> coMap = new HashMap<>(4);
+        coMap.put("premises", "");
+        coMap.put("document", "");
+        coMap.put("information", "");
+        coMap.put("previewli", "");
+        request.getSession().setAttribute("coMap", coMap);
+        //request For Information Loading
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
+        ParamUtil.setSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto", null);
     }
 
 }
