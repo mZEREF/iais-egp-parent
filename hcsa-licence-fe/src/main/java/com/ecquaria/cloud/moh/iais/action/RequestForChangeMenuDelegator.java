@@ -864,6 +864,7 @@ public class RequestForChangeMenuDelegator {
         String salutation = newDto.getSalutation();
         String psnName = newDto.getPsnName();
         String designation = newDto.getDesignation();
+        String otherDesignation = newDto.getOtherDesignation();
         String mobileNo = newDto.getMobileNo();
         String officeTelNo = newDto.getOfficeTelNo();
         String emailAddr = newDto.getEmailAddr();
@@ -873,6 +874,7 @@ public class RequestForChangeMenuDelegator {
             String salutation1 = newPersonDto.getSalutation();
             String psnName1 = newPersonDto.getPsnName();
             String designation1 = newPersonDto.getDesignation();
+            String otherDesignation1 = newPersonDto.getOtherDesignation();
             String mobileNo1 = newPersonDto.getMobileNo();
             String officeTelNo1 = newPersonDto.getOfficeTelNo();
             String emailAddr1 = newPersonDto.getEmailAddr();
@@ -880,6 +882,7 @@ public class RequestForChangeMenuDelegator {
             compareNewDto.setIdType(idType1);
             compareNewDto.setPsnName(psnName1);
             compareNewDto.setSalutation(salutation1);
+            compareNewDto.setOtherDesignation(otherDesignation1);
             compareNewDto.setDesignation(designation1);
             compareNewDto.setOfficeTelNo(officeTelNo1);
             compareNewDto.setMobileNo(mobileNo1);
@@ -890,6 +893,7 @@ public class RequestForChangeMenuDelegator {
             compareNewDto.setPsnName(psnName);
             compareNewDto.setSalutation(salutation);
             compareNewDto.setDesignation(designation);
+            compareNewDto.setOtherDesignation(otherDesignation);
             compareNewDto.setOfficeTelNo(officeTelNo);
             compareNewDto.setMobileNo(mobileNo);
             compareNewDto.setEmailAddr(emailAddr);
@@ -909,6 +913,7 @@ public class RequestForChangeMenuDelegator {
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
         String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
         String designation = ParamUtil.getString(bpc.request, "designation");
+        String otherDesignation = ParamUtil.getString(bpc.request, "otherDesignation");
         //new
         String salutation1 = ParamUtil.getString(bpc.request, "salutation1");
         String psnName1 = ParamUtil.getString(bpc.request, "psnName1");
@@ -917,6 +922,7 @@ public class RequestForChangeMenuDelegator {
         String email1 = ParamUtil.getString(bpc.request, "emailAddr1");
         String mobile1 = ParamUtil.getString(bpc.request, "mobileNo1");
         String designation1 = ParamUtil.getString(bpc.request, "designation1");
+        String otherDesignation1 = ParamUtil.getString(bpc.request, "otherDesignation1");
         String officeTelNo1 = ParamUtil.getString(bpc.request, "officeTelNo1");
         String replaceName = ParamUtil.getString(bpc.request, "replaceName");
         String editSelect = ParamUtil.getString(bpc.request, "editSelect");
@@ -932,9 +938,11 @@ public class RequestForChangeMenuDelegator {
         personnelEditDto.setPsnName(psnName);
         if (psnTypes.contains("CGO")) {
             personnelEditDto.setDesignation(designation);
+            personnelEditDto.setOtherDesignation(otherDesignation);
         }
         if (psnTypes.contains("PO") || psnTypes.contains("DPO")) {
             personnelEditDto.setDesignation(designation);
+            personnelEditDto.setOtherDesignation(otherDesignation);
             personnelEditDto.setOfficeTelNo(officeTelNo);
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -945,6 +953,7 @@ public class RequestForChangeMenuDelegator {
             newPerson.setPsnName(psnName1);
             newPerson.setSalutation(salutation1);
             newPerson.setDesignation(designation1);
+            newPerson.setOtherDesignation(otherDesignation1);
             newPerson.setEmailAddr(email1);
             newPerson.setMobileNo(mobile1);
             newPerson.setOfficeTelNo(officeTelNo1);
@@ -991,9 +1000,17 @@ public class RequestForChangeMenuDelegator {
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", generalSixDes);
+            }else if(psnTypes.contains("CGO") &&"DES999".equals(designation1)){
+                if(StringUtil.isEmpty(otherDesignation1)){
+                    errMap.put("otherDesignation1" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", generalSixDes);
+            }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation1)){
+                if(StringUtil.isEmpty(otherDesignation1)){
+                    errMap.put("otherDesignation1" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo1)) {
                 errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
@@ -1025,9 +1042,17 @@ public class RequestForChangeMenuDelegator {
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", generalSixDes);
+            }else if(psnTypes.contains("CGO")&&"DES999".equals(designation)){
+                if(StringUtil.isEmpty(otherDesignation)){
+                    errMap.put("otherDesignation" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", generalSixDes);
+            }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation)){
+                if(StringUtil.isEmpty(otherDesignation)){
+                    errMap.put("otherDesignation" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
@@ -1052,6 +1077,7 @@ public class RequestForChangeMenuDelegator {
                 newPerson.setPsnName(psn.getName());
                 newPerson.setSalutation(psn.getSalutation());
                 newPerson.setDesignation(psn.getDesignation());
+                newPerson.setOtherDesignation(psn.getOtherDesignation());
                 newPerson.setEmailAddr(psn.getEmailAddr());
                 newPerson.setMobileNo(psn.getMobileNo());
                 newPerson.setOfficeTelNo(psn.getOfficeTelNo());
@@ -1086,9 +1112,17 @@ public class RequestForChangeMenuDelegator {
                 }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", generalSixDes);
+                }else if(psnTypes.contains("CGO") &&  "DES999".equals(newPerson.getDesignation())){
+                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
+                        errMap.put("otherDesignation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                    }
                 }
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(newPerson.getDesignation())){
+                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
+                        errMap.put("otherDesignation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                    }
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
@@ -1124,6 +1158,7 @@ public class RequestForChangeMenuDelegator {
         String salutation = personnelListDto.getSalutation();
         String psnName = personnelListDto.getPsnName();
         String designation = personnelListDto.getDesignation();
+        String otherDesignation = personnelListDto.getOtherDesignation();
         String mobileNo = personnelListDto.getMobileNo();
         String officeTelNo = personnelListDto.getOfficeTelNo();
         String emailAddr = personnelListDto.getEmailAddr();
@@ -1135,6 +1170,7 @@ public class RequestForChangeMenuDelegator {
         oldDto.setOfficeTelNo(officeTelNo);
         oldDto.setMobileNo(mobileNo);
         oldDto.setEmailAddr(emailAddr);
+        oldDto.setOtherDesignation(otherDesignation);
         return oldDto;
     }
 
@@ -2082,6 +2118,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcCgoDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcCgoDto.setName(personnelListDto.getPsnName());
                         appSvcCgoDto.setSalutation(personnelListDto.getSalutation());
                     }
@@ -2097,6 +2134,7 @@ public class RequestForChangeMenuDelegator {
                             appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                             appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                             appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                            appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                             appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
                             appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                         }
