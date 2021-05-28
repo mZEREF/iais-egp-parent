@@ -400,8 +400,8 @@ public class MohHcsaBeDashboardDelegator {
         //get result
         QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
         SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
-        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchCountParam);
-        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchCountParam);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
         searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
         //get Dashboard Circle Kpi Show Dto
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageSvcKpiShow(searchCountResult, serviceOption);
