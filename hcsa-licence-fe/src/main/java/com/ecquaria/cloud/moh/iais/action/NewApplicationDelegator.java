@@ -260,51 +260,13 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
         HcsaServiceCacheHelper.flushServiceMapping();
-        // New Application - Declaration - clear uploaded dto
-        String fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
-        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
-        bpc.request.getSession().setAttribute("declaration_page_is",null);
-        bpc.request.getSession().setAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,null);
-        fileAppendId = appSubmissionService.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        bpc.request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
-        bpc.request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
-        // View and Print
-        ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
+        appSubmissionService.clearSession(bpc.request);
         //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
-        //clear Session
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
-        //Primary Documents
-        ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
-        ParamUtil.setSessionAttr(bpc.request, DRAFTCONFIG, null);
-        Map<String, AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
-        ParamUtil.setSessionAttr(bpc.request, PERSONSELECTMAP, (Serializable) psnMap);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-        removeSession(bpc);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST, null);
-        ParamUtil.setSessionAttr(bpc.request, LICPERSONSELECTMAP, null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request,CURR_ORG_USER_ACCOUNT,null);
-        ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request,SVC_DOC_CONFIG,null);
-        ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer",null);
-        HashMap<String, String> coMap = new HashMap<>(4);
-        coMap.put("premises", "");
-        coMap.put("document", "");
-        coMap.put("information", "");
-        coMap.put("previewli", "");
-        bpc.request.getSession().setAttribute("coMap", coMap);
-        //request For Information Loading
-        ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, null);
-        ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto",null);
-
+        // rfc or renew
         requestForChangeOrRenewLoading(bpc);
         //renewLicence(bpc);
         requestForInformationLoading(bpc, appNo);
@@ -322,18 +284,6 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
         /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
-    }
-
-    private void removeSession(BaseProcessClass bpc) {
-        bpc.request.getSession().removeAttribute("oldSubmitAppSubmissionDto");
-        bpc.request.getSession().removeAttribute("submitAppSubmissionDto");
-        bpc.request.getSession().removeAttribute("appSubmissionDtos");
-        bpc.request.getSession().removeAttribute("rfiHcsaService");
-        bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
-        bpc.request.getSession().removeAttribute("serviceConfig");
-        bpc.request.getSession().removeAttribute("app-rfc-tranfer");
-        bpc.request.getSession().removeAttribute("rfc_eqHciCode");
-        bpc.request.getSession().removeAttribute("declaration_page_is");
     }
 
     /**
