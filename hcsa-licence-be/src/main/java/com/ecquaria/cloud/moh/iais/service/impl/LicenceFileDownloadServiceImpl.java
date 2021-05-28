@@ -487,6 +487,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
 
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
+        List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
         List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         for(ApplicationDto applicationDto : application){
             String id = applicationDto.getId();
@@ -519,7 +520,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
-        sendAsoWithdrow(applicationGroup,application);
+        sendAsoWithdrow(applicationGroup,application,appPremisesCorrelation, appPremiseMiscEntities);
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
@@ -588,7 +589,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return false;
     }
 
-    private void sendAsoWithdrow(List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> applicationList){
+    private void sendAsoWithdrow(List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> applicationList,List<AppPremisesCorrelationDto> appPremisesCorrelation,List<AppPremiseMiscDto> appPremiseMiscEntities){
         log.info("withdrow email function start");
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
@@ -600,14 +601,23 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             map.put(every,applicationslist);
         }
-
+        Map<String,String> appIdAndAppCorrIds=IaisCommonUtils.genNewHashMap();
+        for (AppPremisesCorrelationDto appCorr:appPremisesCorrelation
+        ) {
+            appIdAndAppCorrIds.put(appCorr.getApplicationId(),appCorr.getId());
+        }
+        Map<String,String> appPremiseMiscMap=IaisCommonUtils.genNewHashMap();
+        for (AppPremiseMiscDto miscDto:appPremiseMiscEntities
+        ) {
+            appPremiseMiscMap.put(miscDto.getAppPremCorreId(),miscDto.getRelateRecId());
+        }
         map.forEach((k,v)->{
             for(ApplicationDto application :v){
                 if(k.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
                     try {
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(k.getLicenseeId()).getEntity();
-                        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(application.getId()).getEntity();
-                        ApplicationDto oldAppDto=applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
+                        String oldAppId=appPremiseMiscMap.get(appIdAndAppCorrIds.get(application.getId()));
+                        ApplicationDto oldAppDto=applicationClient.getApplicationById(oldAppId).getEntity();
                         List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
                         String asoId="";
                         for (TaskDto task:oldTaskDtos
