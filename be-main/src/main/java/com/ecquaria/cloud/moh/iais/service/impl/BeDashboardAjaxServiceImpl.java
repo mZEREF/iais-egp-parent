@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAppDetailsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +83,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Autowired
     private IntraDashboardClient intraDashboardClient;
+
+    @Autowired
+    private OrganizationMainClient organizationMainClient;
 
     @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
@@ -775,6 +780,31 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppReplyAjax")
     private SearchResult<DashReplyAjaxQueryDto> getReplyAjaxResultByParam(SearchParam searchParam) {
         return intraDashboardClient.searchDashReplyPoolDropResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashSystemDetailAjax")
+    public SearchResult<DashAppDetailsQueryDto> getDashAllActionResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashAppDetailsResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashAppDetailsQueryDto> setDashSysDetailsDropOtherData(SearchResult<DashAppDetailsQueryDto> searchResult) {
+        if(searchResult != null) {
+            List<DashAppDetailsQueryDto> dashAppDetailsQueryDtos = searchResult.getRows();
+            if(!IaisCommonUtils.isEmpty(dashAppDetailsQueryDtos)) {
+                for(DashAppDetailsQueryDto dashAppDetailsQueryDto : dashAppDetailsQueryDtos) {
+                    if(dashAppDetailsQueryDto != null) {
+                        //set kpi color
+                        TaskDto taskDto = organizationMainClient.getCurrTaskByRefNo(dashAppDetailsQueryDto.getId()).getEntity().get(0);
+                        String color = getKpiColorByTask(taskDto);
+                        dashAppDetailsQueryDto.setKpiColor(color);
+                    }
+                }
+            }
+        }
+
+        return searchResult;
     }
 
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashAssignMeAjax")
