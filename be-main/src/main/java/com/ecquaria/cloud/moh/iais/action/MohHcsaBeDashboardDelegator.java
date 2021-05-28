@@ -347,6 +347,8 @@ public class MohHcsaBeDashboardDelegator {
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
         ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
         ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "dashRoleCheckDto", poolRoleCheckDto);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
     }
