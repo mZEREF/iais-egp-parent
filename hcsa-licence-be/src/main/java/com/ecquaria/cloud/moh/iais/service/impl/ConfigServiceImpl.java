@@ -69,6 +69,9 @@ import java.util.*;
 @Slf4j
 public class ConfigServiceImpl implements ConfigService {
     private static final String DATE_FORMAT="yyyy-MM-dd";
+    private static final String VERSION="version";
+
+    private static final String DATE_PARSE="yyyy-MM-dd HH:mm:ss";
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -141,7 +144,7 @@ public class ConfigServiceImpl implements ConfigService {
     public void viewPageInfo(HttpServletRequest request) {
         String crud_action_value = request.getParameter("crud_action_value");
         String crud_action_type = request.getParameter("crud_action_type");
-        if("version".equals(crud_action_value)){
+        if(VERSION.equals(crud_action_value)){
             String crud_action_additional = ParamUtil.getMaskedString(request,"crud_action_additional");
             log.info(crud_action_additional);
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_additional).getEntity();
@@ -154,7 +157,7 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaServiceDto.setServiceIsUsed(false);
             }
             request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
-            request.setAttribute("version","version");
+            request.setAttribute(VERSION,VERSION);
             setAttribute(request,hcsaServiceDto);
         }else if(crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)){
             String crud_action_value1 = ParamUtil.getMaskedString(request, "crud_action_value");
@@ -242,7 +245,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void addNewService(HttpServletRequest request) {
 
-        Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
+        Map<String, List<HcsaConfigPageDto>> tables = this.getTables(request);
         request.setAttribute("routingStagess", tables);
         List<HcsaServiceDto> baseHcsaServiceDto = hcsaConfigClient.baseHcsaService().getEntity();
         List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDto.size());
@@ -330,12 +333,12 @@ public class ConfigServiceImpl implements ConfigService {
                  Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
                  if(hcsaServiceDto.isSelectAsNewVersion()){
                      String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
-                     Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+                     Date parse1 = new SimpleDateFormat(DATE_PARSE).parse(maxVersionEffectiveDate);
                      if(new Date().after(parse1)){
                          Calendar calendar =Calendar.getInstance();
                          calendar.setTime(new Date());
                          calendar.add(Calendar.SECOND,1);
-                         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+                         String format = new SimpleDateFormat(DATE_PARSE).format(calendar.getTime());
                          hcsaServiceDto.setEffectiveDate(format);
                          if(endDate!=null){
                              hcsaServiceDto.setEndDate(endDate);
@@ -344,11 +347,11 @@ public class ConfigServiceImpl implements ConfigService {
                          Calendar calendar=Calendar.getInstance();
                          calendar.setTime(parse);
                          calendar.add(Calendar.SECOND,1);
-                         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+                         String format = new SimpleDateFormat(DATE_PARSE).format(calendar.getTime());
                          hcsaServiceDto.setEffectiveDate(format);
                      }
                  }else {
-                     String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(parse);
+                     String format = new SimpleDateFormat(DATE_PARSE).format(parse);
                      hcsaServiceDto.setEffectiveDate(format);
                  }
                  hcsaServiceDto.setId(null);
@@ -532,7 +535,7 @@ public class ConfigServiceImpl implements ConfigService {
                  }
                }else {
                    if(maxVersionEffectiveDate!=null){
-                       Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
+                       Date parse1 = new SimpleDateFormat(DATE_PARSE).parse(maxVersionEffectiveDate);
                        if(parse.before(parse1) || parse.compareTo(parse1)==0){
                            errorMap.put("effectiveDate","SC_ERR010");
                        }
@@ -1047,6 +1050,9 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+        if(list!=null){
+            return list;
+        }
         synchronized (this){
             if(list==null){
                 //this config cannot change,so need init once
@@ -1305,8 +1311,8 @@ public class ConfigServiceImpl implements ConfigService {
         String maxVersionEffectiveDate = hcsaServiceDto.getMaxVersionEffectiveDate();
         if(serviceIsUsed){
             try {
-                Date parse1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(maxVersionEffectiveDate);
-                Date parse2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(effectiveDate);
+                Date parse1 = new SimpleDateFormat(DATE_PARSE).parse(maxVersionEffectiveDate);
+                Date parse2 = new SimpleDateFormat(DATE_PARSE).parse(effectiveDate);
                 if(parse1.compareTo(parse2)==0 ){
                     if(maxVersionEndDate==null){
                         hcsaServiceDto.setSelectAsNewVersion(true);
@@ -1380,7 +1386,7 @@ public class ConfigServiceImpl implements ConfigService {
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = IaisCommonUtils.genNewArrayList();
         ids.add(id);
-        Set<String> set = hcsaConfigClient.getAppGrpPremisesTypeBySvcId(ids).getEntity();
+        Set<String> premisesType = hcsaConfigClient.getAppGrpPremisesTypeBySvcId(ids).getEntity();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaConfigClient.getHcsaServiceStepSchemeDtoByServiceId(hcsaServiceDto.getId()).getEntity();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos) {
@@ -1390,7 +1396,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
             stringList.add(stepCode);
         }
-        request.setAttribute("PremisesType", set);
+        request.setAttribute("PremisesType", premisesType);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaConfigClient.getSvcPersonnelByServiceId(id).getEntity();
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
             String psnType = hcsaSvcPersonnelDto.getPsnType();

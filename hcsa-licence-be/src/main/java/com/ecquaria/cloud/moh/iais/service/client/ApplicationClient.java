@@ -226,6 +226,8 @@ public interface ApplicationClient {
     FeignResponseEntity<ProcessFileTrackDto> isFileExistence(@RequestBody Map<String,String> map);
     @PutMapping(value = "/uprocessfiletrack", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(@RequestBody ProcessFileTrackDto processFileTrackDto);
+    @GetMapping(value = "/all-need-process-file",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile();
 
     @PostMapping(value = "/iais-application-be/submision-post-inspection",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto );
