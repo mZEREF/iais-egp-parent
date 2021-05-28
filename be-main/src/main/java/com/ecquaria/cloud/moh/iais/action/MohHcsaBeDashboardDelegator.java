@@ -411,7 +411,7 @@ public class MohHcsaBeDashboardDelegator {
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
-        ParamUtil.setRequestAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
+        ParamUtil.setSessionAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
     }
 
     private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
