@@ -15,7 +15,7 @@
 <input type="hidden" name="ao1Val" value='${dashAo1CircleKpi}'/>
 <input type="hidden" name="ao2Val" value='${dashAo2CircleKpi}'/>
 <input type="hidden" name="ao3Val" value='${dashAo3CircleKpi}'/>
-<input type="hidden" name="dashSysStageVal" value=''/>
+<input type="hidden" id="dashSysStageVal" name="dashSysStageVal" value=''/>
 
 <div class="main-content">
     <div class="row">
@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysPsoCanvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="psoCanvas"></canvas>
                                             </div>
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysPreInspCanvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="preInspCanvas"></canvas>
                                             </div>
@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysInspCanvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="inspCanvas"></canvas>
                                             </div>
@@ -102,7 +102,7 @@
 
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysPostInspCanvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="postInspCanvas"></canvas>
                                             </div>
@@ -112,7 +112,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysAo1Canvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="ao1Canvas"></canvas>
                                             </div>
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysAo2Canvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="ao2Canvas"></canvas>
                                             </div>
@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
-                                        <a data-tab="#" href="javascript:;">
+                                        <a id="sysAo3Canvas" data-tab="#" href="javascript:;">
                                             <div>
                                                 <canvas id="ao3Canvas"></canvas>
                                             </div>
@@ -174,7 +174,42 @@
 
         $('#sysAsoCanvas').click(function () {
             showWaiting();
-            $('#switchAction').val('ASO');
+            $('#dashSysStageVal').val('ASO');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysPsoCanvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('PSO');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysPreInspCanvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('PRE');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysInspCanvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('INS');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysPostInspCanvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('POT');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysAo1Canvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('AO1');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysAo2Canvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('AO2');
+            intraDashboardSubmit('sysdet');
+        });
+        $('#sysAo3Canvas').click(function () {
+            showWaiting();
+            $('#dashSysStageVal').val('AO3');
             intraDashboardSubmit('sysdet');
         });
 

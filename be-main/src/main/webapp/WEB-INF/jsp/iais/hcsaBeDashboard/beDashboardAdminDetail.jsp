@@ -17,23 +17,58 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content" style="min-height: 73vh;">
 
-    <input type="hidden" name="overAllVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="BLBVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="CLBVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="EASVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="MTSVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="NMAVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="NMIVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="RDSVal" value='${dashOverAllCircleKpi}'/>
-    <input type="hidden" name="TSBVal" value='${dashOverAllCircleKpi}'/>
+    <input type="hidden" name="overAllVal" value='${dashAllSvcCircleKpi}'/>
+    <input type="hidden" name="BLBVal" value='${dashBLBCircleKpi}'/>
+    <input type="hidden" name="CLBVal" value='${dashCLBCircleKpi}'/>
+    <input type="hidden" name="EASVal" value='${dashEASCircleKpi}'/>
+    <input type="hidden" name="MTSVal" value='${dashMTSCircleKpi}'/>
+    <input type="hidden" name="NMAVal" value='${dashNMACircleKpi}'/>
+    <input type="hidden" name="NMIVal" value='${dashNMICircleKpi}'/>
+    <input type="hidden" name="RDSVal" value='${dashRDSCircleKpi}'/>
+    <input type="hidden" name="TSBVal" value='${dashTSBCircleKpi}'/>
+
 
     <form method="post" id="beDashboardForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
+        <input type="hidden" id="dashSysStageVal" name="dashSysStageVal" value=''/>
+        <input type="hidden" name="dashSysStageVal" value="${dashSysStageValReq}"/>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
+                        <div class="bg-title">
+                            <h2>
+                                All Active
+                                <c:choose>
+                                    <c:when test="${'ASO' == dashSysStageValReq}">
+                                        &nbsp;Admin Screening&nbsp;
+                                    </c:when>
+                                    <c:when test="${'PSO' == dashSysStageValReq}">
+                                        &nbsp;Professional Screening&nbsp;
+                                    </c:when>
+                                    <c:when test="${'PRE' == dashSysStageValReq}">
+                                        &nbsp;Pre-Inspection&nbsp;
+                                    </c:when>
+                                    <c:when test="${'INS' == dashSysStageValReq}">
+                                        &nbsp;Inspection&nbsp;
+                                    </c:when>
+                                    <c:when test="${'POT' == dashSysStageValReq}">
+                                        &nbsp;Post Inspection&nbsp;
+                                    </c:when>
+                                    <c:when test="${'AO1' == dashSysStageValReq}">
+                                        &nbsp;Admin Officer 1&nbsp;
+                                    </c:when>
+                                    <c:when test="${'AO2' == dashSysStageValReq}">
+                                        &nbsp;Admin Officer 2&nbsp;
+                                    </c:when>
+                                    <c:when test="${'AO3' == dashSysStageValReq}">
+                                        &nbsp;Admin Officer 3&nbsp;
+                                    </c:when>
+                                </c:choose>
+                                Tasks
+                            </h2>
+                        </div>
                         <div class="row">
                             <div class="col-md-4 col-xs-12">
                                 <a data-tab="#" href="javascript:;">
@@ -68,12 +103,12 @@
                             <br/>
                             <hr>
                             <div class="col-xs-12">
-                                <div class="dashboard-chart">
+                                <div class="dashboard-chart" style="cursor: default;">
                                     <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
                                         <div class="dashboard-tile-item">
                                             <div class="dashboard-tile">
-                                                <a data-tab="#" href="javascript:;">
-                                                    <div class="cursor-default">
+                                                <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                                    <div>
                                                         <canvas id="${svcOp.value}Canvas"></canvas>
                                                     </div>
                                                     <p align="center" class="font-color-black cursor-default">${svcOp.text}</p>
@@ -107,40 +142,6 @@
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                                                     </td>
                                                 </tr>
-
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>
-                                                        <input type="hidden" name="recordCount" value="1">
-                                                        <input type="hidden" name="appNo" value="AQ200731002759L" />
-                                                        <input type="hidden" name="loadFlag" value="0" />
-                                                        <p style="width: 165px;">AQ200731002759L
-                                                            <a class="app-group-div collapse in collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter1"></a>
-                                                        </p>
-                                                    </td>
-                                                    <td>Request For Change</td>
-                                                    <td>Multiple</td>
-                                                    <td>05/01/2021</td>
-                                                    <td>06/01/2021</td>
-                                                    <td>Payment Successful</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>
-                                                        <input type="hidden" name="recordCount" value="2">
-                                                        <input type="hidden" name="appNo" value="AN2101050083408" />
-                                                        <input type="hidden" name="loadFlag" value="0" />
-                                                        <p style="width: 165px;">AN2101050083408
-                                                            <a class="app-group-div  collapse in collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter2"></a>
-                                                        </p>
-                                                    </td>
-                                                    <td>New Licence Application</td>
-                                                    <td>Multiple</td>
-                                                    <td>05/01/2021</td>
-                                                    <td>06/01/2021</td>
-                                                    <td>N/A</td>
-                                                </tr>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="pool" items="${dashSearchResult.rows}"
@@ -148,16 +149,16 @@
                                                     <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                                                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                                                         <td>
-                                                            <p style="width: 165px;"><c:out value="${pool.appGroupNo}"/>
-                                                                <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
+                                                            <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
+                                                                <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
                                                                 </a>
                                                             </p>
                                                         </td>
-                                                        <td><iais:code code="${pool.applicationType}"/></td>
+                                                        <td><iais:code code="${pool.appType}"/></td>
                                                         <td><c:out value="${pool.submissionType}"/></td>
                                                         <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
                                                         <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
-                                                        <td><iais:code code="${pool.paymentStatus}"/></td>
+                                                        <td><iais:code code="${pool.pmtStatus}"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -179,11 +180,8 @@
 </div>
 <%@include file="beDashboardFun.jsp"%>
 <script>
+    var dividajaxlist = [];
     $(document).ready(function () {
-        $('.app-group-div').click(function () {
-            displayAppDetail($(this));
-        });
-
         $('#Back').click(function () {
             showWaiting();
             $('input[name="hcsaBeDashboardSwitchType"]').val('system');
@@ -202,78 +200,86 @@
         });
 
         $('#sysSearchBtn').click(function () {
-
+            showWaiting();
+            $('#dashSysStageVal').val('POT');
+            $("[name='hcsaBeDashboardSwitchType']").val('sysdet');
+            var mainPoolForm = document.getElementById('beDashboardForm');
+            mainPoolForm.submit();
         });
     });
 
-    var displayAppDetail = function(obj){
-        var display = obj.css('display');
-        var $currentTr = obj.closest('tr');
-        var appGrpNo = $currentTr.find('input[name="appNo"]').val();
-        var loadFlag = $currentTr.find('input[name="loadFlag"]').val();
-        var recordCount = $currentTr.find('input[name="recordCount"]').val();
-
-        if('0' != loadFlag){
+    var getAppByGroupId = function (applicationGroupId, divid) {
+        if (!isInArray(dividajaxlist,divid)) {
+            groupAjax(applicationGroupId, divid);
+        } else {
+            var display = $('#advfilterson' + divid).css('display');
             if (display == 'none') {
-                obj.collapse('hide');
+                $('#advfilterson' + divid).show();
             } else {
-                obj.collapse('show');
+                $('#advfilterson' + divid).hide();
             }
-            return;
         }
-        $.ajax({
-            'url':'',
-            'type':'',
-            'data':'',
-            'dataType':'',
-            'success':function (data) {
+    };
 
-            },
-            'error':function () {
+    var groupAjax = function (applicationGroupId, divid) {
+        dividajaxlist.push(divid);
+        $.post(
+            '/main-web/hcsa/intranet/dashboard/dashSysDetail.do',
+            {groupId: applicationGroupId},
+            function (data) {
+                let dashSupportFlag = data.dashSupportFlag;
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="7" style="padding: 0px 8px !important;">' +
+                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<thead>' +
+                        '<tr>';
+                    if ("true" == dashSupportFlag) {
+                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }
 
+                    html += '<th width="15%">Application No.</th>' +
+                        '<th width="15%">Application Type</th>' +
+                        '<th width="15%">Service Licence</th>' +
+                        '<th width="15%">Officer Assigned</th>' +
+                        '<th width="15%">Days at Current Stage</th>' +
+                        '<th width="10%">Target TAT at Current Stage</th>' +
+                        '<th width="10%">Total Days Taken for Application</th>' +
+                        '<th width="10%">Total TAT for Application</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.rowCount; i++) {
+                        var color = "black";
+                        if ("black" == res.rows[i].kpiColor) {
+                            color = "black";
+                        } else if ("red" == res.rows[i].kpiColor) {
+                            color = "red";
+                        } else if ("amber" == res.rows[i].kpiColor) {
+                            color = "#DD9C00";
+                        }
+                        html += '<tr style = "color : ' + color + ';">';
+                        if ("true" == dashSupportFlag) {
+                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                        }
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>' + res.rows[i].appOwner + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Days at Current Stage</p><p>' + res.rows[i].slaDays + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Target TAT at Current Stage</p><p>' + res.rows[i].kpi + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Total Days Taken for Application</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Total TAT for Application</p><p>' + res.rows[i].allStageSumKpi + '</p></td>' +
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
+                }
             }
-        });
-
-        var html = '<td colspan="7"><div id="advfilter' + recordCount +'" class="panel-collapse collapse">' +
-            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >\n' +
-            '            <thead>\n' +
-            '            <tr>\n' +
-            '                <th>Application No</th>\n' +
-            '                <th>Application Type</th>\n' +
-            '                <th>Service Licence</th>\n' +
-            '                <th>Officer Assigned</th>\n' +
-            '                <th>Target TAT at Current Stage</th>\n' +
-            '                <th>Total Days Taken for Application</th>\n' +
-            '                <th>Total TAT for Application</th>\n' +
-            '            </tr>\n' +
-            '            </thead>\n' +
-            '            <tbody>\n' +
-            '            <tr>\n' +
-            '                <td>AQ200731002759L-01</td>\n' +
-            '                <td>New</td>\n' +
-            '                <td>Clinical Laboratory</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '            </tr>\n' +
-            '            <tr>\n' +
-            '                <td>AQ200731002759L-02</td>\n' +
-            '                <td>New</td>\n' +
-            '                <td>Nuclear Medicine Assay</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '                <td>N/A</td>\n' +
-            '            </tr>\n' +
-            '            </tbody>\n' +
-            '        </table>\n' +
-            '    </div>\n' +
-            '</td>';
-        $currentTr.after(html);
-        obj.collapse('show');
-        $currentTr.find('input[name="loadFlag"]').val('1');
-
+        )
     };
 
     var concealAppDetail = function () {
@@ -283,5 +289,37 @@
         $currentTr.find('input[name="loadFlag"]').val('1');
     };
 
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
+    };
+    function dashboardAppViewShow(appPremCorrId) {
+        showWaiting();
+        $.post(
+            '/main-web/hcsa/intranet/dashboard/applicationView.show',
+            {appPremCorrId: appPremCorrId},
+            function (data) {
+                let dashAppShowFlag = data.dashAppShowFlag;
+                if ('SUCCESS' == dashAppShowFlag) {
+                    window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
+                    dismissWaiting();
+                } else {
+                    dismissWaiting();
+                }
+            }
+        );
+        dismissWaiting();
+    }
+
+    function jumpToPagechangePage() {
+        showWaiting();
+        $("[name='hcsaBeDashboardSwitchType']").val('syspage');
+        var mainPoolForm = document.getElementById('beDashboardForm');
+        mainPoolForm.submit();
+    }
 </script>
 

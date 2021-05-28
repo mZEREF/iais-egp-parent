@@ -10,7 +10,7 @@
         color: #333333;
     }
     .cursor-default{
-        cursor: default;
+        cursor: default;!important;
     }
 </style>
 <script>
