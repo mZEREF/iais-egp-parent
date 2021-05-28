@@ -345,7 +345,7 @@
                         if('1' == canDoTask) {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else if ('2' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="' + res.rows[i].dashTaskUrl + '">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
                         } else {
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         }
