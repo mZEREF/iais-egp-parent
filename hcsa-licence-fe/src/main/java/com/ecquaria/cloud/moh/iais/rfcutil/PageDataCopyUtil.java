@@ -168,6 +168,7 @@ public class PageDataCopyUtil {
             primaryDocDto.setMd5Code(appGrpPrimaryDocDto.getMd5Code());
             list.add(primaryDocDto);
         }
+        Collections.sort(list,(s1,s2)->(s1.getMd5Code().compareTo(s2.getMd5Code())));
         return list;
     }
     public static List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
@@ -182,7 +183,7 @@ public class PageDataCopyUtil {
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
         }
-        Collections.sort(appSvcDocDtos,(s1,s2)->(s1.getFileRepoId().compareTo(s2.getFileRepoId())));
+        Collections.sort(appSvcDocDtos,(s1,s2)->(s1.getMd5Code().compareTo(s2.getMd5Code())));
         return appSvcDocDtos;
     }
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
