@@ -210,6 +210,22 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                    </div>
+                                    <div class="col-md-7 col-xs-5 col-sm-3">
+                                      <div class="">
+                                        <input type="text" name="otherDesignation" value="${currentCgo.otherDesignation}" class="otherDesignation" maxlength="100" autocomplete="off">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
@@ -247,64 +263,71 @@
                                 </div>
                               </td>
                             </tr>
+
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--29" class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext">
+                                    <div class="control-label formtext col-sm-5">
                                       <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
-                                      <span class="mandatory">*</span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7" id="specialty${suffix}">
-                                      <div class="specialtyContent">
-                                        <div class="specialtyDiv">
-                                          <c:choose>
-                                            <c:when test="${currentCgo.needSpcOptList}">
-                                              ${currentCgo.specialityHtml}
-                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
-                                            </c:when>
-                                            <c:otherwise>
-                                              <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
-                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
-                                            </c:otherwise>
-                                          </c:choose>
-                                        </div>
-                                        <div class="specialtyOtherDiv">
-                                          <c:choose>
-                                            <c:when test="${currentCgo.speciality eq 'other'}">
-                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
-                                              <span name="iaisErrorMsg" class="error-msg" id="error_other${status.index}"></span>
-                                            </c:when>
-                                            <c:otherwise>
-                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">
-                                            </c:otherwise>
-                                          </c:choose>
-                                        </div>
-                                      </div>
+                                    <div class="col-xs-8 col-sm-4 col-md-7">
+                                      <label class="control-label control-set-font control-font-label specialty-label">${currentCgo.speciality}</label>
                                     </div>
                                   </div>
                                 </div>
                               </td>
                             </tr>
+
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--32" class="control control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                                        Sub-specialty or relevant qualification
-                                      </label>
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Sub-specialty</label>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-8 col-sm-4">
+                                      <label class="control-label control-set-font control-font-label sub-specialty-label">${currentCgo.subSpeciality}</label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Qualification</label>
+                                    </div>
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
+                                      <label class="control-label control-set-font control-font-label qualification-label">${currentCgo.qualification}</label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Other Qualification</label>
+                                      <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
-                                        <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
+                                        <input type="text" name="otherQualification" value="${currentCgo.otherQualification}" class="otherQualification" maxlength="100" autocomplete="off">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </td>
                             </tr>
+
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
@@ -409,6 +432,11 @@
         $('input[type="text"]').css('border-color','#ededed');
         $('input[type="text"]').css('color','#999');
         $(".assignContent div.nice-select").addClass('disabled');
+        if($('.designationSel').val()=='DES999'){
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else {
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
     });
 
     var disabledAll = function () {

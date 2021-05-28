@@ -402,6 +402,11 @@
         $('#control--runtime--0').children().remove("hr")
         $('.assignSel ').trigger('change');
         init = 1;
+        if($('.designationSel').val()=='DES999'){
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else {
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
     });
 
     var disabledAll = function () {
