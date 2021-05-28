@@ -137,4 +137,5 @@ public interface AppSubmissionService {
     String getFileAppendId(String appType);
     void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
     boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request);
+    void clearSession(HttpServletRequest request);
 }
