@@ -91,6 +91,8 @@ public class ReCessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtoSave", null);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
+        String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
+        ParamUtil.setSessionAttr(bpc.request,"cess_ack002",cess_ack002);
     }
 
     public void init(BaseProcessClass bpc) throws Exception {
