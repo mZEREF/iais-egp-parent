@@ -411,6 +411,7 @@ public class MohHcsaBeDashboardDelegator {
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        ParamUtil.setRequestAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
     }
 
     private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
@@ -632,6 +633,22 @@ public class MohHcsaBeDashboardDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam, bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+    }
+
+    /**
+     * StartStep: hcsaDashSysDetailStepPage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void hcsaDashSysDetailStepPage(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the hcsaDashSysDetailStepPage start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParam, bpc.request);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
     }
 
     /**

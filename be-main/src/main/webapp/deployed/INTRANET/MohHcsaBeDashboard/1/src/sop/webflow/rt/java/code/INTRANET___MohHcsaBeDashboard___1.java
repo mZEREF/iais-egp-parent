@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
@@ -132,6 +133,11 @@ public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
 	public void hcsaDashSysDetailStep_OnStepProcess_0() throws Exception {
 	// 		hcsaDashSysDetailStep->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetailStep", this); 
+	}
+
+	public void hcsaDashSysDetailStepPage_OnStepProcess_0() throws Exception {
+	// 		hcsaDashSysDetailStepPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetailStepPage", this); 
 	}
 
 }
