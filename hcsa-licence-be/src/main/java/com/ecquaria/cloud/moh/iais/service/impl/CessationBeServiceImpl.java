@@ -44,7 +44,7 @@ import java.util.*;
 @Slf4j
 public class CessationBeServiceImpl implements CessationBeService {
     private final static String workGroupId = "4C43D448-F90C-EA11-BE7D-000C29F371DC";
-
+    private final static String ASO_WORKGROUPID = "BF3B0634-F80C-EA11-BE7D-000C29F371DC";
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
@@ -449,13 +449,13 @@ public class CessationBeServiceImpl implements CessationBeService {
             appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
             appPremisesRoutingHistoryDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             appPremisesRoutingHistoryDto.setAuditTrailDto(AuditTrailDto.getThreadDto());
-            appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
+            appPremisesRoutingHistoryDto.setWrkGrpId(ASO_WORKGROUPID);
             List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
             asoHistory.add(appPremisesRoutingHistoryDto);
             if(IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
                 appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION);
             }else {
-                appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.APPLICATION_STATUS_CESSATION_BE_DECISION_BACK);
+                appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_REPLY);
             }
             taskService.createHistorys(asoHistory);
         }
