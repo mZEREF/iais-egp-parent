@@ -57,13 +57,13 @@
                                         Post Inspection
                                     </c:when>
                                     <c:when test="${'AO1' == dashSysStageValReq}">
-                                        Admin Officer 1
+                                        Approval Officer 1
                                     </c:when>
                                     <c:when test="${'AO2' == dashSysStageValReq}">
-                                        Admin Officer 2
+                                        Approval Officer 2
                                     </c:when>
                                     <c:when test="${'AO3' == dashSysStageValReq}">
-                                        Admin Officer 3
+                                        Approval Officer 3
                                     </c:when>
                                 </c:choose>
                                  Tasks
@@ -83,7 +83,7 @@
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                         <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                            <iais:select cssClass="" name="appType" firstOption="" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
+                                            <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
                                         </div>
                                     </div>
                                     <div class="form-group">
