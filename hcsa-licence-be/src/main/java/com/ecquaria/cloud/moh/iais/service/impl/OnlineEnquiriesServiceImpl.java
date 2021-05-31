@@ -169,6 +169,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
+        ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", null);
+        ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", null);
+        ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", null);
+
+        try {
+            AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(licenceId).getEntity();
+            ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcChargesPageDto());
+            ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList());
+            ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList());
+        }catch (Exception e){
+            log.error("not currentPreviewSvcInfo");
+        }
         if(organizationLicDto!=null){
             try {
                 if (StringUtil.isEmpty(organizationLicDto.getUenNo())) {

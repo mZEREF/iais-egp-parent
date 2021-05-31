@@ -2124,7 +2124,11 @@ public class HcsaApplicationDelegator {
                 List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
                 TaskDto oldTaskDto=taskDtos.get(0);
                 oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
-                taskService.updateTask(oldTaskDto);
+                oldTaskDto.setId(null);
+                taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                List<TaskDto> newTaskDto=IaisCommonUtils.genNewArrayList();
+                newTaskDto.add(oldTaskDto);
+                taskService.createTasks(newTaskDto);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
@@ -2230,7 +2234,9 @@ public class HcsaApplicationDelegator {
                                 stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                        broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        if (!applicationDto.isFastTracking()) {
+                            broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        }
                         broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                     }
                 }

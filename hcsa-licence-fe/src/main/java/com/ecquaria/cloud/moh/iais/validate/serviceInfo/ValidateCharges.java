@@ -135,8 +135,9 @@ public class ValidateCharges implements ValidateFlow {
     }
 
     private  boolean isMoney(String amount){
+        //Only integers are allowed (mingde say)
         try {
-            Double.parseDouble(amount);
+            Integer.parseInt(amount);
         }catch (NumberFormatException e) {
             return false;
         }
