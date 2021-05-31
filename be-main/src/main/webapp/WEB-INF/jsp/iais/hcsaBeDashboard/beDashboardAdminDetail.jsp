@@ -99,8 +99,8 @@
                                     <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
                                 </div>
+                                <br/>
                             </div>
-                            <br/>
                             <hr>
                             <div class="col-xs-12">
                                 <div class="dashboard-chart" style="cursor: default;">
