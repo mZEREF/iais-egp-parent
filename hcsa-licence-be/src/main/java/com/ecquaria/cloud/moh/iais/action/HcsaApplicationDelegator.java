@@ -2114,6 +2114,21 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //WITHDRAWAL To restore the old task
+        if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
+            AppPremiseMiscDto appPremiseMiscDto=cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+            ApplicationDto oldAppDto=applicationClient.getApplicationById(appPremiseMiscDto.getRelateRecId()).getEntity();
+            List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos=applicationClient.getAppPremisesCorrelationsByAppId(oldAppDto.getId()).getEntity();
+            try {
+                String corrId=oldAppPremisesCorrelationDtos.get(0).getId();
+                List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
+                TaskDto oldTaskDto=taskDtos.get(0);
+                oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
+                taskService.updateTask(oldTaskDto);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+        }
         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
