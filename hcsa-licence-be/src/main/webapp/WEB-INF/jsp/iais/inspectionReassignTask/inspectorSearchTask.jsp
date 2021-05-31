@@ -66,7 +66,7 @@
                     <iais:row>
                       <iais:field value="Application Type"/>
                       <iais:value width="18">
-                        <iais:select name="application_type" options="appTypeOption" firstOption="Please Select"
+                        <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" needSort="true"
                                      value="${supTaskSearchParam.filters['application_type']}"></iais:select>
                       </iais:value>
                     </iais:row>
