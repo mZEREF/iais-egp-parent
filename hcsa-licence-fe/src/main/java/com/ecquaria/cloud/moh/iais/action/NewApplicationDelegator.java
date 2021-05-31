@@ -155,7 +155,7 @@ import java.util.UUID;
 public class NewApplicationDelegator {
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String PREMISESTYPE = "premisesType";
-    private static final String HCSASERVICEDTO = "hcsaServiceDto";
+    public static final String HCSASERVICEDTO = "hcsaServiceDto";
     public static final String CURRENTSERVICEID = "currentServiceId";
     public static final String CURRENTSVCCODE = "currentSvcCode";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
@@ -1468,13 +1468,12 @@ public class NewApplicationDelegator {
     }
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        // clear session
+        appSubmissionService.clearSession(bpc.request);
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, "viewPrint","Y");
-        bpc.request.getSession().removeAttribute("renewDto");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
-            clearSessionForShowAppDetail(bpc.request);
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
@@ -1671,9 +1670,6 @@ public class NewApplicationDelegator {
         }
     }
 
-    private void clearSessionForShowAppDetail(HttpServletRequest request){
-        ParamUtil.setSessionAttr(request, HCSASERVICEDTO, null);
-    }
     private void premiseView(AppSubmissionDto appSubmissionDto,ApplicationDto applicationDto,HttpServletRequest request) throws CloneNotSupportedException {
         if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
