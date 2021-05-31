@@ -317,7 +317,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        Object renewDto = bpc.request.getSession().getAttribute("renewDto");
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -685,15 +684,22 @@ public class NewApplicationDelegator {
         }*/
         appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
-                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                    boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
-                    if(eqHciNameChange){
-                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+            if(!NewApplicationHelper.checkIsRfi(bpc.request)){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
+                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
+                        if(eqHciNameChange){
+                            bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        }
                     }
+                }
+            }else {
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                 }
             }
         }
@@ -3640,6 +3646,8 @@ public class NewApplicationDelegator {
             newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             hciName=appGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName=appGrpPremisesDto.getEasMtsHciName();
         }
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
             oldHciName = oldAppGrpPremisesDto.getHciName();
@@ -3648,13 +3656,14 @@ public class NewApplicationDelegator {
             oldVehicleNo=oldAppGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
             oldHciName = oldAppGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(oldAppGrpPremisesDto.getPremisesType())){
+            oldHciName=oldAppGrpPremisesDto.getEasMtsHciName();
         }
         if(!hciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)){
             return true;
         }
         return false;
     }
-
     private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());

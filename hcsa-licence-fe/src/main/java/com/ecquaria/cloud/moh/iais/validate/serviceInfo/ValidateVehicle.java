@@ -25,8 +25,6 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateVehicle implements ValidateFlow {
-    @Autowired
-    private HcsaLicenClient hcsaLicenClient;
     @Override
     public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos) {
         if(appSvcVehicleDtos==null){

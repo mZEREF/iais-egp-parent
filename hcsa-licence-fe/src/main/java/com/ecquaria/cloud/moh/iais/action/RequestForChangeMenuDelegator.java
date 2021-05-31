@@ -2068,6 +2068,8 @@ public class RequestForChangeMenuDelegator {
             oldVehicleNo=premisesListQueryDto.getVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
             oldHciName = premisesListQueryDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName=premisesListQueryDto.getHciName();
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
@@ -2076,6 +2078,8 @@ public class RequestForChangeMenuDelegator {
             newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
             newHciName=appGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getEasMtsHciName();
         }
         if (!newHciName.equals(oldHciName)||!newVehicleNo.equals(oldVehicleNo)) {
             return false;
@@ -2083,7 +2087,6 @@ public class RequestForChangeMenuDelegator {
 
         return true;
     }
-
     private AppSubmissionDto setPersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelListDto.getLicPsnTypeDtoMaps();

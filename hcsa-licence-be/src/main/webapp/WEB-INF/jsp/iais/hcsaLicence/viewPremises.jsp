@@ -659,7 +659,7 @@
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">
                                                   No
                                                 </c:if>
@@ -680,7 +680,7 @@
                                               <c:out value="${appGrpPremDto.easMtsPubEmail}"></c:out>
                                             </span>
                                             <br>
-                                            <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}">
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}">
                                                  <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}"></c:out>
                                             </span>
                                           </div>
@@ -697,7 +697,7 @@
                                           </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}">
+                                          <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}">
                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}"></c:out>
                                           </span>
                                         </div>
@@ -715,7 +715,7 @@
                                           </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
+                                          <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
                                             <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">No</c:if>
                                             <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">Yes</c:if>
                                           </span>
@@ -887,7 +887,7 @@
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal "  attr="${oldLicenceDto.uenNo}">
+                                            <span class="oldVal " style="display: none" attr="${oldLicenceDto.uenNo}">
                                               ${oldLicenceDto.uenNo}
                                                    <c:if test="${empty hashMap[oldLicenceDto.uenNo]}">
                                                      <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
