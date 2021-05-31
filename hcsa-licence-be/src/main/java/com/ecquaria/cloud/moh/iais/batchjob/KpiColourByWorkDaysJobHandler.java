@@ -4,7 +4,6 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -343,7 +342,10 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
         //get The scope of date
         Date endDate = sortLastEndDate(endDates);
         Date beginDate = sortFirstDate(beginDates);
-
+        log.info(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(beginDate, "dd/MM/yyyy")));
+        log.info(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(endDate, "dd/MM/yyyy")));
+        JobLogger.log(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(beginDate, "dd/MM/yyyy")));
+        JobLogger.log(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(endDate, "dd/MM/yyyy")));
         Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
         workAndNonWorkDays = new ArrayList<>(setDate);
         //count work days
