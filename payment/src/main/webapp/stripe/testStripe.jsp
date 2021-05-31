@@ -24,7 +24,8 @@
 <script >
     var stripe = Stripe("${GatewayConfig.stripePKey}");
     var cSessionId="${coutSessionId}";
-    var url="${failedUrl}";
+    var timeout = "${GatewayConfig.refreshTime}";
+
     stripe.redirectToCheckout({
         // Make the id field from the Checkout Session creation API response
         // available to this file, so you can provide it as argument here
@@ -32,12 +33,17 @@
         sessionId: cSessionId
     }).then(function (result) {
         console.error(result.error.message);
-        window.location.href=url;
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
         // using `result.error.message`.
     });
+    window.setTimeout(goPyBack, 60000);
 
 </script>
 
 </body></html>
+<script>
+    function goPyBack(){
+        location.href=$('#failedUrl').val();
+    }
+</script>
