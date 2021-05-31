@@ -2230,7 +2230,9 @@ public class HcsaApplicationDelegator {
                                 stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                        broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        if (!applicationDto.isFastTracking()) {
+                            broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        }
                         broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                     }
                 }
