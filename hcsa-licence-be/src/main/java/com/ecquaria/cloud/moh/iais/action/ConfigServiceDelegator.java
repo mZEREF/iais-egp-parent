@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -419,7 +420,7 @@ public class ConfigServiceDelegator {
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST001");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_LABORATORY_DISCIPLINES);//labory
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(pageName);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -429,7 +430,7 @@ public class ConfigServiceDelegator {
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST002");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);//cgo
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(CLINICAL_GOVERNANCE_OFFICER);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -438,7 +439,7 @@ public class ConfigServiceDelegator {
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()&&cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST003");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);//discip
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(pageName+" Allocation");
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -447,7 +448,7 @@ public class ConfigServiceDelegator {
         if(svcPersonnelDto.getMandatoryCount()>0&&svcPersonnelDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST006");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_SERVICE_PERSONNEL);
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(SERVICE_PERSONNEL);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -456,7 +457,7 @@ public class ConfigServiceDelegator {
         if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST004");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(PRINCIPAL_OFFICERS);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -468,7 +469,7 @@ public class ConfigServiceDelegator {
         if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST007");
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_MEDALERT_PERSON);
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName(MEDALERT_PERSON);
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
