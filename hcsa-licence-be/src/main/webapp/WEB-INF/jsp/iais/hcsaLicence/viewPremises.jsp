@@ -1241,6 +1241,9 @@
                         </div>
                       </div>
                       <c:choose>
+                        <c:when test="${appSubmissionDto.appType=='APTY009'|| appSubmissionDto.appType=='APTY007'}">
+
+                        </c:when>
                         <c:when test="${appSubmissionDto.appType == 'APTY005'&&RFC_HCAI_NAME_CHNAGE!='false'}">
 
                         </c:when>
