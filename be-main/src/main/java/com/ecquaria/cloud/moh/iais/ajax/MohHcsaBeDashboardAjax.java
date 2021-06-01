@@ -494,9 +494,13 @@ public class MohHcsaBeDashboardAjax {
                             map.put("dashRoleSwitchFlag", AppConsts.TRUE);
                         }
                     }
+                    loginContext.setCurRoleId(roleId);
+                    poolRoleCheckDto.setCheckCurRole(roleSelectVal);
                 }
             }
         }
+        ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        ParamUtil.setSessionAttr(request, "dashRoleCheckDto", poolRoleCheckDto);
         return map;
     }
 
