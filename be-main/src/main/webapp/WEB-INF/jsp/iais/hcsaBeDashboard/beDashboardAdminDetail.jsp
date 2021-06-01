@@ -27,12 +27,13 @@
     <input type="hidden" name="RDSVal" value='${dashRDSCircleKpi}'/>
     <input type="hidden" name="TSBVal" value='${dashTSBCircleKpi}'/>
 
-
     <form method="post" id="beDashboardForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
         <%--<input type="hidden" id="dashSysStageVal" name="dashSysStageVal" value=''/>--%>
         <input type="hidden" name="dashSysStageVal" value="${dashSysStageValReq}"/>
+        <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
+
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">

@@ -973,20 +973,30 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = IaisCommonUtils.genNewArrayList();
         //init dashStageCircleKpiDtos
         dashStageCircleKpiDtos = initDashStageSvcKpiShow(dashStageCircleKpiDtos, serviceOption);
-        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos) && searchCountResult != null) {
-            List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchCountResult.getRows();
-            if(!IaisCommonUtils.isEmpty(dashAllActionAppQueryDtos)) {
-                //create return val
-                List<DashStageCircleKpiDto> dashStageCircleKpiDtoList = IaisCommonUtils.genNewArrayList();
-                //set data
-                for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
-                    for(DashAllActionAppQueryDto dashAllActionAppQueryDto : dashAllActionAppQueryDtos) {
-                        dashStageCircleKpiDto = setDashStageSvcKpiData(dashStageCircleKpiDto, dashAllActionAppQueryDto);
+        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            if(searchCountResult != null) {
+                List<DashAllActionAppQueryDto> dashAllActionAppQueryDtos = searchCountResult.getRows();
+                if (!IaisCommonUtils.isEmpty(dashAllActionAppQueryDtos)) {
+                    //create return val
+                    List<DashStageCircleKpiDto> dashStageCircleKpiDtoList = IaisCommonUtils.genNewArrayList();
+                    //set data
+                    for (DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                        for (DashAllActionAppQueryDto dashAllActionAppQueryDto : dashAllActionAppQueryDtos) {
+                            dashStageCircleKpiDto = setDashStageSvcKpiData(dashStageCircleKpiDto, dashAllActionAppQueryDto);
+                        }
+                        dashStageCircleKpiDtoList.add(dashStageCircleKpiDto);
                     }
-                    dashStageCircleKpiDtoList.add(dashStageCircleKpiDto);
+                    dashStageCircleKpiDtoList = addSaveAllCountCircleKpiDto(dashStageCircleKpiDtoList);
+                    return dashStageCircleKpiDtoList;
+                } else {
+                    //set 'all Circle' for show
+                    DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
+                    dashStageCircleKpiDtos.add(dashStageCircleKpiAllDto);
                 }
-                dashStageCircleKpiDtoList = addSaveAllCountCircleKpiDto(dashStageCircleKpiDtoList);
-                return dashStageCircleKpiDtoList;
+            } else {
+                //set 'all Circle' for show
+                DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
+                dashStageCircleKpiDtos.add(dashStageCircleKpiAllDto);
             }
         }
 
