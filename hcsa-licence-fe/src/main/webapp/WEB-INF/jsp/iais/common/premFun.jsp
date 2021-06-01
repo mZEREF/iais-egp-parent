@@ -608,7 +608,8 @@
             //replaceFireIssueDateHtml(premContent,fireIssueDate);
             <!--remove ph hidden-->
             premContent.find('.addPubHolDay').removeClass('hidden');
-            premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
+            // premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
+            premContent.find('span.radio-disabled').removeClass('radio-disabled');
             <!--remove placeHolder disabled style -->
             premContent.find('.date_picker').removeClass('disabled-placeHolder');
 
