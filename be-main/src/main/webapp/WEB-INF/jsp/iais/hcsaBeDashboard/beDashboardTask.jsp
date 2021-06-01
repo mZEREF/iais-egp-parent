@@ -522,14 +522,13 @@
                     intraDashboardSubmit("system");
                 } else if ('FAIL' == dashRoleSwitchFlag) {
                     url = "${pageContext.request.contextPath}/eservice/INTRANET/MohHcsaBeDashboard";
-
+                    window.location.href = url;
                 }else {
                     let dashSwitchActionValue = $('#switchAction').val();
                     intraDashboardSubmit(dashSwitchActionValue);
                 }
             }
         )
-        dismissWaiting();
     }
 
     function isInArray(arr,value){
