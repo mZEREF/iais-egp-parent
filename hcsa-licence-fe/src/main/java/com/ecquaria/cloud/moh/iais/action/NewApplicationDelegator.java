@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -53,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -71,7 +69,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -1564,25 +1561,26 @@ public class NewApplicationDelegator {
                     appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
                     appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
                     if(patNeedTrans){
-                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatHciName(patTransTo);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
-                            String hciAddressPat = premisesDto.getHciAddress();
-                            String hciNamePat = premisesDto.getHciName();
-                            String hciCodePat= premisesDto.getHciCode();
-                            appCessHciDto.setHciNamePat(hciNamePat);
-                            appCessHciDto.setHciAddressPat(hciAddressPat);
-                            appCessHciDto.setHciCodePat(hciCodePat);
-                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatRegNo(patTransTo);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatOthers(patTransTo);
-                            appCessHciDto.setMobileNo(mobileNo);
-                            appCessHciDto.setEmailAddress(emailAddress);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                        }
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatHciName(patTransTo);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
+//                            String hciAddressPat = premisesDto.getHciAddress();
+//                            String hciNamePat = premisesDto.getHciName();
+//                            String hciCodePat= premisesDto.getHciCode();
+//                            appCessHciDto.setHciNamePat(hciNamePat);
+//                            appCessHciDto.setHciAddressPat(hciAddressPat);
+//                            appCessHciDto.setHciCodePat(hciCodePat);
+//                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatRegNo(patTransTo);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatOthers(patTransTo);
+//                            appCessHciDto.setMobileNo(mobileNo);
+//                            appCessHciDto.setEmailAddress(emailAddress);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        }
                     }else {
                         String remarks = appCessMiscDto.getPatNoReason();
                         appCessHciDto.setPatNoRemarks(remarks);
