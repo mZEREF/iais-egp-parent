@@ -327,10 +327,15 @@
                                                     <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
                                                     <%--</c:if>--%>
+                                                    <c:if test="${app.canInspection}">
+                                                        <option value="Assessment">Assessment</option>
+                                                        <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                    </c:if>
                                                     <c:if test="${app.pmtStatus == 'PMT06'}">
                                                         <option value="Make Payment">Make Payment</option>
                                                     </c:if>
                                                     <option value="Withdraw">Withdraw</option>
+
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST005'
