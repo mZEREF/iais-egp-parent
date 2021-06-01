@@ -72,11 +72,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-xs-12">
-                                <a data-tab="#" href="javascript:;">
-                                    <div id="canvas-holder" class="cursor-default">
+                                <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                    <div id="canvas-holder">
                                         <canvas id="overAllCanvas"></canvas>
                                     </div>
-                                    <p class="dashboard-txt main-chart-text cursor-default font-color-black"> Overall</p>
+                                    <p class="dashboard-txt main-chart-text font-color-black"> Overall</p>
                                 </a>
                             </div>
                             <div class="col-md-8 col-xs-12">
