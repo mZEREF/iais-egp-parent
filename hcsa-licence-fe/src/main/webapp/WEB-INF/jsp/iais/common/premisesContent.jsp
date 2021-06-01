@@ -114,7 +114,7 @@
 
             <div class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-xs-12">
+                    <div class="col-xs-12 col-md-4">
                         <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-6 text-right">
