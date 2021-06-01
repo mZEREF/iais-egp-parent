@@ -547,6 +547,20 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${appGrpPremDto.easMtsFloorNo}">-</c:out><c:out value="${appGrpPremDto.easMtsUnitNo}"></c:out></span></p>
                                 </div>
                             </div>
+                            <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology">
+                                            <span>
+                                                <c:out value="${appPremisesOperationalUnit.floorNo}"/>-<c:out value="${appPremisesOperationalUnit.unitNo}"/>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </c:forEach>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Street Name</span></p>

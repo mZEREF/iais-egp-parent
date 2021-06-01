@@ -2172,10 +2172,8 @@ public class NewApplicationDelegator {
         *
         * */
         grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
-        AppSubmissionDto n = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
-        AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
-        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = o.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         serviceIsChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         log.info(StringUtil.changeForLog("serviceIsChange"+serviceIsChange));
         appEditSelectDto.setServiceEdit(serviceIsChange);
