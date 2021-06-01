@@ -10,6 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -27,8 +30,10 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -37,9 +42,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +64,18 @@ public class ProfessionalInformationDelegator {
 	public static final String PROFESSIONAL_INFORMATION_SEARCH = "professionalInfoSearch";
 	public static final String PROFESSIONAL_INFORMATION_RESULT = "professionalInfoResult";
 	public static final String PROFESSIONAL_INFORMATION_DETAIL = "professionalInfo";
-
+	@Value("${iais.hmac.keyId}")
+	private String keyId;
+	@Value("${iais.hmac.second.keyId}")
+	private String secKeyId;
+	@Value("${iais.hmac.secretKey}")
+	private String secretKey;
+	@Value("${iais.hmac.second.secretKey}")
+	private String secSecretKey;
+	@Value("${moh.halp.prs.enable}")
+	private String prsFlag;
+	@Autowired
+	private BeEicGatewayClient beEicGatewayClient;
 	private OnlineEnquiriesService onlineEnquiriesService;
 
 	@Autowired
@@ -178,12 +199,46 @@ public class ProfessionalInformationDelegator {
 	 */
 	public void preLoadProfessionalDetails(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
-
-		//TODO wait interface call
 		ProfessionalDetailsDto detailsDto = new ProfessionalDetailsDto();
-		detailsDto.setDpRecords("-");
-		detailsDto.setRegDit("-");
-		detailsDto.setRegExpDate("-");
+
+		if("Y".equals(prsFlag)){
+			Set<String> redNo=new HashSet<>();
+			Set<String> idNoSet=new HashSet<>();
+			String id = ParamUtil.getMaskedString(request, "prRegNo");
+			String[] prsIdNoSplit=id.split("\\|");
+			redNo.add(prsIdNoSplit[1]);
+			idNoSet.add(prsIdNoSplit[0]);
+			ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+			List<String> list = new ArrayList<>(redNo);
+			professionalParameterDto.setRegNo(list);
+			professionalParameterDto.setClientId("22222");
+			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			String format = simpleDateFormat.format(new Date());
+			professionalParameterDto.setTimestamp(format);
+			professionalParameterDto.setSignature("2222");
+
+			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+			List<ProfessionalResponseDto> professionalResponseDtos = null;
+			try {
+				professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+						signature2.date(), signature2.authorization()).getEntity();
+			}catch (Throwable e){
+				log.error(e.getMessage(),e);
+				request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+				log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+			}
+			if(professionalResponseDtos!=null){
+				detailsDto.setDpRecords(professionalResponseDtos.get(0).getQualification().get(0));
+				detailsDto.setRegDit(professionalResponseDtos.get(0).getRegistration().get(0).getRegistrationType());
+				detailsDto.setRegExpDate(professionalResponseDtos.get(0).getRegistration().get(0).getPcEndDate());
+			}
+		}else {
+			detailsDto.setDpRecords("-");
+			detailsDto.setRegDit("-");
+			detailsDto.setRegExpDate("-");
+		}
+
 
 		ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_DETAIL, detailsDto);
 	}
