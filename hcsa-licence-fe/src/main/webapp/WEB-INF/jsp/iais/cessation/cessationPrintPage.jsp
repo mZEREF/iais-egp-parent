@@ -258,7 +258,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6">Please state where the patient’s records will be transferred to and where the licensee will store the patients’ health records after cessation. </label>
+                                                    <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                     </div>
