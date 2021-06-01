@@ -19,12 +19,10 @@
 <body class="3PP_body">
 
 <c:set var="coutSessionId" value="${CHECKOUT_SESSION_ID}"></c:set>
-<c:set var="failedUrl" value="${failUrl}"></c:set>
 
 <script >
     var stripe = Stripe("${GatewayConfig.stripePKey}");
     var cSessionId="${coutSessionId}";
-    var timeout = "${GatewayConfig.refreshTime}";
 
     stripe.redirectToCheckout({
         // Make the id field from the Checkout Session creation API response
@@ -37,13 +35,7 @@
         // error, display the localized error message to your customer
         // using `result.error.message`.
     });
-    window.setTimeout(goPyBack, 60000);
 
 </script>
 
 </body></html>
-<script>
-    function goPyBack(){
-        location.href=$('#failedUrl').val();
-    }
-</script>

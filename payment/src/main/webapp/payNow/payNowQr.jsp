@@ -13,6 +13,23 @@
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 </head>
 <body>
-<img alt="Scan me!" src="date:image/png;vase64,${imageStreamInBase64Format}" >
+<img id="payNowImg" alt="Scan me!" src="date:image/png;vase64,${imageStreamInBase64Format}" >
 </body>
 </html>
+<script>
+    function payNowImgStringRefresh(){
+        $.ajax({
+            type: "post",
+            url:  "${pageContext.request.contextPath}/payNowRefresh",
+            async:true,
+            processData: false,
+            contentType: false,
+            dataType: "text",
+            success: function (data) {
+                $('#payNowImg').src("date:image/png;vase64,"+data);
+            },
+            error: function (msg) {
+            }
+        });
+    }
+</script>
