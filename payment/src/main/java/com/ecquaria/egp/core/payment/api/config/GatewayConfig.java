@@ -56,7 +56,7 @@ public class GatewayConfig {
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = ConfigHelper.getString("payment.gateway.service.url");
 
-	public static final String refreshTime = ConfigHelper.getString("stripe.payment.refresh.ms");// refresh
+	public static final String refreshTime = ConfigHelper.getString("stripe.payment.refresh.second");// refresh
 
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = ConfigHelper.getString("payment.log.path");
