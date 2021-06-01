@@ -35,17 +35,17 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Nominee<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
-                        <table class="col-xs-8">
+                        <table class="col-xs-12">
                             <c:choose>
                                 <c:when test="${po.psnType=='PO'}">
 
                                     <tr>
-                                        <td  class="col-xs-8">
+                                        <td  class="col-xs-6">
                                             <p  class="form-check-label" aria-label="premise-1-cytology"></p>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation </p>
                                         </td>
                                         <td>
@@ -53,7 +53,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                                         </td>
                                         <td>
@@ -61,7 +61,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                         </td>
                                         <td>
@@ -69,7 +69,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                                         </td>
                                         <td>
@@ -77,7 +77,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                                         </td>
                                         <td>
@@ -86,7 +86,7 @@
                                     </tr>
                                     <c:if test="${'DES999' == po.designation}">
                                         <tr>
-                                            <td class="col-xs-8">
+                                            <td class="col-xs-6">
                                             </td>
                                             <td>
                                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.otherDesignation}"/> </p>
@@ -94,7 +94,7 @@
                                         </tr>
                                     </c:if>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.</p>
                                         </td>
                                         <td>
@@ -102,7 +102,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                                         </td>
                                         <td>
@@ -110,7 +110,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address </p>
                                         </td>
                                         <td>
@@ -121,7 +121,7 @@
                                 <c:when test="${po.psnType=='DPO'}">
 
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation </p>
                                         </td>
                                         <td>
@@ -129,7 +129,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                                         </td>
                                         <td>
@@ -137,7 +137,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                         </td>
                                         <td>
@@ -145,7 +145,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                                         </td>
                                         <td>
@@ -153,7 +153,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                                         </td>
                                         <td>
@@ -162,7 +162,7 @@
                                     </tr>
                                     <c:if test="${'DES999' == po.designation}">
                                         <tr>
-                                            <td class="col-xs-8">
+                                            <td class="col-xs-6">
                                             </td>
                                             <td>
                                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.otherDesignation}"/> </p>
@@ -170,7 +170,7 @@
                                         </tr>
                                     </c:if>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.</p>
                                         </td>
                                         <td>
@@ -178,7 +178,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                                         </td>
                                         <td>
@@ -186,7 +186,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-xs-8">
+                                        <td class="col-xs-6">
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address </p>
                                         </td>
                                         <td>

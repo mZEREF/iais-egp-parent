@@ -1686,12 +1686,12 @@ public class NewApplicationHelper {
             if(hasEasSvc && hasMtsSvc){
                 designationSelectList.add(sp1);
                 designationSelectList.add(sp2);
-                designationSelectList.add(sp3);
             }else if(hasEasSvc){
                 designationSelectList.add(sp1);
             }else if(hasMtsSvc){
                 designationSelectList.add(sp2);
             }
+            designationSelectList.add(sp3);
         }
         return designationSelectList;
     }

@@ -2,7 +2,9 @@
 <sqls catalog="charges">
     <sql key="generalChargesHtml" cached="no" remarks="">
         <![CDATA[
-            <div class="general-charges-content">
+            <div class="general-charges-content charges-content">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${suffix}" value="1"/>
+                <input type="hidden" name="chargesIndexNo${suffix}" value=""/>
                 <div class="col-md-12 col-xs-12 ">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -39,9 +41,11 @@
 
     <sql key="otherChargesHtml" cached="no" remarks="">
         <![CDATA[
-            <div class="other-charges-content">
+            <div class="other-charges-content charges-content">
                 <div class="col-md-12 col-xs-12 other-charges-div">
                     <input type="hidden" class="currChargesSuffix" name="currChargesSuffix" value="${suffix}">
+                    <input type="hidden" class="isPartEdit" name="otherChargesIsPartEdit${suffix}" value="1"/>
+                    <input type="hidden" name="otherChargesIndexNo${suffix}" value=""/>
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">

@@ -5,6 +5,32 @@
   Time: 16:02
   To change this template use File | Settings | File Templates.
 --%>
+
+<div class="row">
+    <div class="col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <%--<c:choose>
+                <c:when test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                </c:when>
+                <c:otherwise>
+                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                </c:otherwise>
+            </c:choose>--%>
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+        </c:if>
+    </div>
+</div>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading " id="generate-charges-heading"  role="tab">
@@ -48,7 +74,20 @@
                     <input type="hidden" class="generalChargeLength" name="generalChargeLength" value="${pageLength}" />
                     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="gcStat">
                         <c:set var="generalChargesDto" value="${generalChargesDtoList[gcStat.index]}"/>
-                        <div class="general-charges-content">
+                        <div class="general-charges-content charges-content">
+                            <input type="hidden" class ="isPartEdit" name="isPartEdit${gcStat.index}" value="0"/>
+                            <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${gcStat.index}" value="${generalChargesDto.chargesIndexNo}"/>
+                            <div class="col-md-12 col-xs-12">
+                                <div class="edit-content">
+                                    <c:if test="${'true' == canEdit}">
+                                        <p>
+                                        <div class="text-right app-font-size-16">
+                                            <a class="edit chargesEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                        </div>
+                                        </p>
+                                    </c:if>
+                                </div>
+                            </div>
                             <div class="col-md-12 col-xs-12 ">
                                 <div class="row control control-caption-horizontal">
                                     <div class=" form-group form-horizontal formgap">
@@ -172,7 +211,20 @@
                         <input type="hidden" class="otherChargeLength" name="otherChargeLength" value="${otherChargesLength}" />
                         <c:forEach begin="0" end="${otherChargesLength-1}" step="1" varStatus="ocStat">
                             <c:set var="otherChargesDto" value="${otherChargesDtoList[ocStat.index]}"/>
-                            <div class="other-charges-content">
+                            <div class="other-charges-content charges-content">
+                                <input type="hidden" class ="isPartEdit" name="otherChargesIsPartEdit${ocStat.index}" value="0"/>
+                                <input type="hidden" class="chargesIndexNo" name="otherChargesIndexNo${ocStat.index}" value="${otherChargesDto.chargesIndexNo}"/>
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="edit-content">
+                                        <c:if test="${'true' == canEdit}">
+                                            <p>
+                                            <div class="text-right app-font-size-16">
+                                                <a class="edit otherChargesEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                            </div>
+                                            </p>
+                                        </c:if>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 col-xs-12 other-charges-div">
                                     <input type="hidden" class="currChargesSuffix" name="currChargesSuffix" value="${ocStat.index}"/>
                                     <div class="row control control-caption-horizontal">
@@ -261,6 +313,16 @@
         removeOtherChargesHtml();
         addGeneralChargesHtml();
         addOtherChargesHtml();
+
+        doEdite();
+        doOhterChargesEdite();
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //rfc,renew,rfi
+        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
+            disabledPage();
+        }
+
     });
 
     var searchChargesTypeByCategory = function () {
@@ -291,7 +353,7 @@
             });
             dismissWaiting();
         });
-    }
+    };
 
     var addGeneralChargesHtml = function () {
         $('.addGeneralChargesBtn').click(function () {
@@ -316,7 +378,7 @@
                         if (generalChargeLength >= '${generalChargesConfig.maximumCount}') {
                             $('.addGeneralChargesDiv').addClass('hidden');
                         }
-
+                        $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
                 },
@@ -327,7 +389,7 @@
 
             });
         });
-    }
+    };
 
     var addOtherChargesHtml = function () {
         $('.addOtherChargesBtn').click(function () {
@@ -353,7 +415,7 @@
                         if (otherChargeLength >= '${generalChargesConfig.maximumCount}') {
                             $('.addOtherChargesDiv').addClass('hidden');
                         }
-
+                        $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
                 },
@@ -365,7 +427,7 @@
             });
         });
 
-    }
+    };
 
     var removeGeneralChargesHtml = function () {
         $('.removeBtn').unbind('click');
@@ -380,13 +442,16 @@
                 $(this).find('input.minAmount').prop('name','minAmount'+ k);
                 $(this).find('input.maxAmount').prop('name','maxAmount'+ k);
                 $(this).find('input.remarks').prop('name','remarks'+ k);
+                $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
+                $(this).find('.chargesIndexNo').prop('name','chargesIndexNo'+k);
             });
             //display add btn
             if (generalChargeLength < '${generalChargesConfig.maximumCount}') {
                 $('.addGeneralChargesDiv').removeClass('hidden');
             }
+            $('#isEditHiddenVal').val('1');
         });
-    }
+    };
 
 
     var removeOtherChargesHtml = function () {
@@ -403,13 +468,44 @@
                 $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
                 $(this).find('input.otherAmountMax').prop('name','otherAmountMax'+ k);
                 $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
+                $(this).find('.isPartEdit').prop('name','otherChargesIsPartEdit'+k);
+                $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
             });
             //display add btn
             if (otherChargeLength < '${otherChargesConfig.maximumCount}') {
                 $('.addOtherChargesDiv').removeClass('hidden');
             }
+            $('#isEditHiddenVal').val('1');
         });
-    }
+    };
+
+    var doEdite = function () {
+        $('a.chargesEdit').click(function () {
+            var $currContent = $(this).closest('div.general-charges-content');
+            $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('.edit-content').addClass('hidden');
+            $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('div.nice-select').removeClass('disabled');
+            $currContent.find('input[type="text"]').css('border-color', '');
+            $currContent.find('input[type="text"]').css('color', '');
+
+            $('#isEditHiddenVal').val('1');
+        });
+    };
+
+    var doOhterChargesEdite = function () {
+        $('a.otherChargesEdit').click(function () {
+            var $currContent = $(this).closest('div.other-charges-content');
+            $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('.edit-content').addClass('hidden');
+            $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('div.nice-select').removeClass('disabled');
+            $currContent.find('input[type="text"]').css('border-color', '');
+            $currContent.find('input[type="text"]').css('color', '');
+
+            $('#isEditHiddenVal').val('1');
+        });
+    };
 
 
 </script>

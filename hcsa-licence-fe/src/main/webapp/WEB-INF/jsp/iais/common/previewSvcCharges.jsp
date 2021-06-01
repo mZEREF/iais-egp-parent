@@ -22,7 +22,7 @@
                         </div>
                         <table class="col-xs-12">
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
                                 </td>
                                 <td>
@@ -30,7 +30,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount From</p>
                                 </td>
                                 <td>
@@ -38,7 +38,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount To</p>
                                 </td>
                                 <td>
@@ -46,7 +46,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remarks</p>
                                 </td>
                                 <td>
@@ -64,7 +64,7 @@
                         </div>
                         <table class="col-xs-12">
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
                                 </td>
                                 <td>
@@ -72,7 +72,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
                                 </td>
                                 <td>
@@ -80,7 +80,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount From</p>
                                 </td>
                                 <td>
@@ -88,7 +88,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount To</p>
                                 </td>
                                 <td>
@@ -96,7 +96,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remarks</p>
                                 </td>
                                 <td>

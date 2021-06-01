@@ -3,6 +3,8 @@
     <sql key="generateVehicleHtml" cached="no" remarks="generate Vehicle Html">
         <![CDATA[
             <div class="vehicleContent">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${vehicleSuffix}" value="1"/>
+                <input type="hidden" name="vehicleIndexNo${vehicleSuffix}" value=""/>
                 <div class="col-md-12 col-xs-12">
                     <p style="font-weight: 600;font-size: 2.2rem"></p>
                 </div>

@@ -1,10 +1,45 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ZiXian
-  Date: 2021/4/19
-  Time: 16:58
-  To change this template use File | Settings | File Templates.
---%>
+<style>
+    input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color:#999999 !important;
+    }
+    .disabled-placeHolder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color:#999999!important;
+    }
+    .disabled-placeHolder::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
+        color:#999999!important;
+    }
+    .radio-disabled::before{
+        background-color: #999999 !important;
+        /*border: 1px solid #999999 !important;*/
+    }
+    .radio-disabled{
+        border-color: #999999 !important;
+    }
+</style>
+<div class="row">
+    <div class="col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+        </c:if>
+    </div>
+</div>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+
+
 <c:set var="clinicalDirectorDtoList" value="${clinicalDirectorDtoList}"/>
 <div class="row cdForm">
     <div class="col-md-12 col-xs-12">
@@ -37,6 +72,20 @@
     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="cdStat">
         <c:set var="clinicalDirectorDto" value="${clinicalDirectorDtoList[cdStat.index]}"/>
         <div class="clinicalDirectorContent">
+            <input type="hidden" class="isPartEdit" name="isPartEdit${cdStat.index}" value="0"/>
+            <input type="hidden" class="cdIndexNo" name="cdIndexNo${cdStat.index}" value="${clinicalDirectorDto.cdIndexNo}"/>
+            <div class="col-md-12 col-xs-12">
+                <div class="edit-content">
+                    <c:if test="${'true' == canEdit}">
+                        <p>
+                        <div class="text-right app-font-size-16">
+                            <a class="edit cdEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                        </div>
+                        </p>
+                    </c:if>
+                </div>
+            </div>
+
             <div class="col-md-12 col-xs-12">
                 <div class="row control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
@@ -158,7 +207,7 @@
                             <span class="mandatory">*</span>
                         </div>
                         <div class="col-md-7 col-xs-12" id="designation">
-                            <iais:select cssClass="designation" name="designation${cdStat.index}" codeCategory="CATE_ID_DESIGNATION" value="${clinicalDirectorDto.designation}" firstOption="Please Select"></iais:select>
+                            <iais:select cssClass="designation" name="designation${cdStat.index}" codeCategory="" value="${clinicalDirectorDto.designation}" options="easMtsDesignationSelectList"></iais:select>
                         </div>
                     </div>
                 </div>
@@ -396,6 +445,18 @@
         showOtherSpecialty();
 
         $('select.specialty').trigger('change');
+
+        doEdite();
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //rfc,renew,rfi
+        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
+            disabledPage();
+            $('.date_picker').addClass('disabled-placeHolder');
+            $('input.holdCerByEMS:checked').each(function () {
+                $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
+            });
+        }
     });
 
     var holdCerByEMS = function() {
@@ -467,6 +528,7 @@
                             //remove del btn for mandatory count
 
                         }
+                        $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
                 },
@@ -508,6 +570,8 @@
                 $(this).find('input.noRegWithProfBoardVal').prop('name','noRegWithProfBoardVal'+k);
                 $(this).find('input.noRegWithProfBoard').prop('name','noRegWithProfBoard'+k);
                 $(this).find('input.transportYear').prop('name','transportYear'+k);
+                $(this).find('input.isPartEdit').prop('name','isPartEdit'+k);
+                $(this).find('input.cdIndexNo').prop('name','cdIndexNo'+k);
 
                 $(this).find('select.professionBoard').prop('name','professionBoard'+k);
                 $(this).find('select.salutation').prop('name','salutation'+k);
@@ -519,9 +583,27 @@
             if (cdLength < '${clinicalDirectorConfig.maximumCount}') {
                 $('.addClinicalDirectorDiv').removeClass('hidden');
             }
+            $('#isEditHiddenVal').val('1');
         });
+    }
 
-
+    var doEdite = function () {
+        $('a.cdEdit').click(function () {
+            var $currContent = $(this).closest('div.clinicalDirectorContent');
+            $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('.edit-content').addClass('hidden');
+            $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('div.nice-select').removeClass('disabled');
+            $currContent.find('input[type="text"]').css('border-color', '');
+            $currContent.find('input[type="text"]').css('color', '');
+            $currContent.find('.date_picker').removeClass('disabled-placeHolder');
+            $currContent.find('input.holdCerByEMS').each(function () {
+                $(this).closest('div').find('label span.check-circle').removeClass('radio-disabled');
+            });
+            $currContent.find('input[type="checkbox"]').prop('disabled',false);
+            $currContent.find('input[type="radio"]').prop('disabled',false);
+            $('#isEditHiddenVal').val('1');
+        });
     }
 
 </script>

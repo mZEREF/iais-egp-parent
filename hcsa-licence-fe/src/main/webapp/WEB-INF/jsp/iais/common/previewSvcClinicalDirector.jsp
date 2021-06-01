@@ -20,9 +20,9 @@
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Key Clinical Personnel<c:if test="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
                         </div>
-                        <table class="col-xs-8">
+                        <table class="col-xs-12">
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
                                 </td>
                                 <td>
@@ -30,39 +30,39 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn No.</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.profRegNo}"/></p>
                                 </td>
                             </tr>
+                            <c:if test="${'MTS' == currentPreviewSvcInfo.serviceCode}">
+                                <tr>
+                                    <td class="col-xs-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Not registered with a Professional Board</p>
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                            <c:choose>
+                                                <c:when test="${'1' == cdDto.noRegWithProfBoard}">
+                                                    Yes
+                                                </c:when>
+                                            </c:choose>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-xs-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Years of experience in patient transport</p>
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cdDto.transportYear}"/></p>
+                                    </td>
+                                </tr>
+                            </c:if>
                             <tr>
-                                <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Not registered with a Professional Board</p>
-                                </td>
-                                <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.noRegWithProfBoard}"/></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Years of experience in patient transport</p>
-                                </td>
-                                <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="cdDto.transportYear"/></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-xs-8">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Years of experience in patient transport</p>
-                                </td>
-                                <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cdDto.transportYear}"/></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                                 </td>
                                 <td>
@@ -70,7 +70,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
                                 </td>
                                 <td>
@@ -78,7 +78,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                 </td>
                                 <td>
@@ -86,7 +86,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                                 </td>
                                 <td>
@@ -94,55 +94,122 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.specialty}"/> </p>
                                 </td>
                             </tr>
+                            <c:if test="${'EAMS006' == cdDto.specialty}">
+                                <tr>
+                                    <td class="col-xs-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.otherSpecialty}"/> </p>
+                                    </td>
+                                </tr>
+                            </c:if>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when specialty was gotten </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.specialtyGetDateStr}"/> </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Current Registration </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.typeOfCurrRegi}"/> </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Current Registration Date </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.currRegiDateStr}"/> </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Practicing Certificate End Date </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.praCerEndDateStr}"/> </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Register </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value=""/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.typeOfRegister}"/> </p>
                                 </td>
                             </tr>
-
-
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant Experience </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.relevantExperience}"/> </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Clinical Director (CD) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                        <c:choose>
+                                            <c:when test="${'1' == cdDto.holdCerByEMS}">
+                                                Yes
+                                            </c:when>
+                                            <c:when test="${'0' == cdDto.holdCerByEMS}">
+                                                No
+                                            </c:when>
+                                        </c:choose>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ACLS Expiry Date </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.aclsExpiryDateStr}"/> </p>
+                                </td>
+                            </tr>
+                            <c:if test="${'MTS' == currentPreviewSvcInfo.serviceCode}">
+                                <tr>
+                                    <td class="col-xs-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>BCLS and AED Expiry Date </p>
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.bclsExpiryDateStr}"/> </p>
+                                    </td>
+                                </tr>
+                            </c:if>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.mobileNo}"/> </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.emailAddr}"/> </p>
+                                </td>
+                            </tr>
                         </table>
                     </c:forEach>
                 </div>

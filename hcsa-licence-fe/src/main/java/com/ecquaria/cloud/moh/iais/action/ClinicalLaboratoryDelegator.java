@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.Application;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -8,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -1874,18 +1876,28 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("doVehicles start ..."));
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
-        //retrieve date from page
-        List<AppSvcVehicleDto> appSvcVehicleDtos = genAppSvcVehicleDto(bpc.request);
-        currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
-        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
-        log.debug(StringUtil.changeForLog("doVehicles end ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if (requestInformationConfig != null) {
+            isRfi = true;
+        }
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            //get data from page
+            List<AppSvcVehicleDto> appSvcVehicleDtos = genAppSvcVehicleDto(bpc.request, appSubmissionDto.getAppType());
+            currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        }
+
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>();
         if("next".equals(crud_action_type)){
-            validateVehicle.doValidateVehicles(map,appSvcVehicleDtos);
+            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList());
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
         if (map.isEmpty() && allChecked.isEmpty()) {
             coMap.put("information", "information");
@@ -1897,7 +1909,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);
         }
-
+        log.debug(StringUtil.changeForLog("doVehicles end ..."));
     }
 
     /**
@@ -1941,23 +1953,34 @@ public class ClinicalLaboratoryDelegator {
 
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
-        //retrieve date from page
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = genAppSvcClinicalDirectorDto(bpc.request);
-        currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
 
-        log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if (requestInformationConfig != null) {
+            isRfi = true;
+        }
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            //get data from page
+            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = genAppSvcClinicalDirectorDto(bpc.request, appSubmissionDto.getAppType());
+            currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>(17);
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         if("next".equals(crud_action_type)){
-            validateClincalDirector.doValidateClincalDirector(map,appSvcClinicalDirectorDtos,currSvcCode);
+            validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
         }
 
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CLINICAL_DIRECTOR);
         }
+        log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
     }
 
     /**
@@ -2001,23 +2024,33 @@ public class ClinicalLaboratoryDelegator {
     public void doCharges(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doCharges start ..."));
 
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if (requestInformationConfig != null) {
+            isRfi = true;
+        }
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
-        //retrieve date from page
-        AppSvcChargesPageDto appSvcClinicalDirectorDto = genAppSvcChargesDto(bpc.request);
-        currSvcInfoDto.setAppSvcChargesPageDto(appSvcClinicalDirectorDto);
-        setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
-
-        log.debug(StringUtil.changeForLog("doCharges end ..."));
+        if (isGetDataFromPage) {
+            //get data from page
+            AppSvcChargesPageDto appSvcClinicalDirectorDto = genAppSvcChargesDto(bpc.request, appSubmissionDto.getAppType());
+            currSvcInfoDto.setAppSvcChargesPageDto(appSvcClinicalDirectorDto);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>(8);
         if("next".equals(crud_action_type)){
-            validateCharges.doValidateCharges(map,appSvcClinicalDirectorDto);
+            validateCharges.doValidateCharges(map,currSvcInfoDto.getAppSvcChargesPageDto());
         }
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CHARGES);
         }
+        log.debug(StringUtil.changeForLog("doCharges end ..."));
     }
     //=============================================================================
     //private method
@@ -2604,137 +2637,309 @@ public class ClinicalLaboratoryDelegator {
         return appSvcCgoDtoList;
     }
 
-    private List<AppSvcVehicleDto> genAppSvcVehicleDto(HttpServletRequest request){
+    private List<AppSvcVehicleDto> genAppSvcVehicleDto(HttpServletRequest request, String appType){
         List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         int vehicleLength = ParamUtil.getInt(request,"vehiclesLength");
         for(int i = 0; i < vehicleLength ; i++){
-            String vehicleName = ParamUtil.getString(request,"vehicleName"+i);
-            String chassisNum = ParamUtil.getString(request,"chassisNum"+i);
-            String engineNum = ParamUtil.getString(request,"engineNum"+i);
-            AppSvcVehicleDto appSvcVehicleDto = new AppSvcVehicleDto();
-            appSvcVehicleDto.setVehicleName(vehicleName);
-            appSvcVehicleDto.setChassisNum(chassisNum);
-            appSvcVehicleDto.setEngineNum(engineNum);
-            appSvcVehicleDtos.add(appSvcVehicleDto);
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request,"isPartEdit"+i);
+            String vehicleIndexNo = ParamUtil.getString(request,"vehicleIndexNo"+i);
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                getPageData = true;
+            }else if(AppConsts.YES.equals(isPartEdit)){
+                getPageData = true;
+            }else if(!StringUtil.isEmpty(vehicleIndexNo)){
+                getDataByIndexNo = true;
+            }
+            log.debug("get data by index no. is {}",getDataByIndexNo);
+            log.debug("get page data is {}",getPageData);
+            if(getDataByIndexNo){
+                AppSvcVehicleDto appSvcVehicleDto = getAppSvcVehicleDtoByIndexNo(appSvcRelatedInfoDto, vehicleIndexNo);
+                if(appSvcVehicleDto != null){
+                    appSvcVehicleDtos.add(appSvcVehicleDto);
+                }
+            }else if(getPageData){
+                String vehicleName = ParamUtil.getString(request,"vehicleName"+i);
+                String chassisNum = ParamUtil.getString(request,"chassisNum"+i);
+                String engineNum = ParamUtil.getString(request,"engineNum"+i);
+                AppSvcVehicleDto appSvcVehicleDto = new AppSvcVehicleDto();
+                appSvcVehicleDto.setVehicleName(vehicleName);
+                appSvcVehicleDto.setChassisNum(chassisNum);
+                appSvcVehicleDto.setEngineNum(engineNum);
+                if(StringUtil.isEmpty(vehicleIndexNo)){
+                    appSvcVehicleDto.setVehicleIndexNo(UUID.randomUUID().toString());
+                }else{
+                    appSvcVehicleDto.setVehicleIndexNo(vehicleIndexNo);
+                }
+                appSvcVehicleDtos.add(appSvcVehicleDto);
+            }
         }
         return appSvcVehicleDtos;
     }
 
-    private List<AppSvcClinicalDirectorDto> genAppSvcClinicalDirectorDto(HttpServletRequest request){
+    private AppSvcVehicleDto getAppSvcVehicleDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+        AppSvcVehicleDto result = null;
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)){
+                for(AppSvcVehicleDto appSvcVehicleDto:appSvcVehicleDtos){
+                    if(indexNo.equals(appSvcVehicleDto.getVehicleIndexNo())){
+                        result = appSvcVehicleDto;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private AppSvcClinicalDirectorDto getClinicalDirectorByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+        AppSvcClinicalDirectorDto result = null;
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)){
+                for(AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectorDtos){
+                    if(indexNo.equals(appSvcClinicalDirectorDto.getCdIndexNo())){
+                        result = appSvcClinicalDirectorDto;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private AppSvcChargesDto getChargesByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo, boolean isGeneral){
+        AppSvcChargesDto result = null;
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            AppSvcChargesPageDto appSvcChargesPageDto = appSvcRelatedInfoDto.getAppSvcChargesPageDto();
+            if(appSvcChargesPageDto != null){
+                if(isGeneral){
+                    List<AppSvcChargesDto> generalChargesDtos = appSvcChargesPageDto.getGeneralChargesDtos();
+                    result = getChargesByIndexNo(generalChargesDtos, indexNo);
+                }else {
+                    List<AppSvcChargesDto> otherChargesDtos = appSvcChargesPageDto.getOtherChargesDtos();
+                    result = getChargesByIndexNo(otherChargesDtos, indexNo);
+                }
+            }
+        }
+        return result;
+    }
+
+    private AppSvcChargesDto getChargesByIndexNo(List<AppSvcChargesDto> chargesDtos, String indexNo){
+        AppSvcChargesDto result = null;
+        if(!IaisCommonUtils.isEmpty(chargesDtos) && !StringUtil.isEmpty(indexNo)){
+            for(AppSvcChargesDto appSvcChargesDto:chargesDtos){
+                if(indexNo.equals(appSvcChargesDto.getChargesIndexNo())){
+                    result = appSvcChargesDto;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<AppSvcClinicalDirectorDto> genAppSvcClinicalDirectorDto(HttpServletRequest request, String appType){
+        log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
         String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
         int cdLength = ParamUtil.getInt(request,"cdLength");
         for(int i = 0; i < cdLength ; i++){
-            String professionBoard = ParamUtil.getString(request,"professionBoard"+i);
-            String profRegNo = ParamUtil.getString(request,"profRegNo"+i);
-            String name = ParamUtil.getString(request,"name"+i);
-            String salutation = ParamUtil.getString(request,"salutation"+i);
-            String idType = ParamUtil.getString(request,"idType"+i);
-            String idNo = ParamUtil.getString(request,"idNo"+i);
-            String designation = ParamUtil.getString(request,"designation"+i);
-            String specialty = ParamUtil.getString(request,"specialty"+i);
-            String otherSpecialty = ParamUtil.getString(request,"otherSpecialty"+i);
-            String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
-            String typeOfCurrRegi = ParamUtil.getString(request,"typeOfCurrRegi"+i);
-            String currRegiDateStr = ParamUtil.getString(request,"currRegiDate"+i);
-            String praCerEndDateStr = ParamUtil.getString(request,"praCerEndDate"+i);
-            String typeOfRegister = ParamUtil.getString(request,"typeOfRegister"+i);
-            String relevantExperience = ParamUtil.getString(request,"relevantExperience"+i);
-            String holdCerByEMS = ParamUtil.getString(request,"holdCerByEMS"+i);
-            String aclsExpiryDateStr = ParamUtil.getString(request,"aclsExpiryDate"+i);
-            String bclsExpiryDateStr = ParamUtil.getString(request,"bclsExpiryDate"+i);
-            String mobileNo = ParamUtil.getString(request,"mobileNo"+i);
-            String emailAddr = ParamUtil.getString(request,"emailAddr"+i);
-            String noRegWithProfBoard = ParamUtil.getString(request,"noRegWithProfBoardVal"+i);
-            String transportYear = ParamUtil.getString(request,"transportYear"+i);
-
-            AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = new AppSvcClinicalDirectorDto();
-            appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
-            appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
-            appSvcClinicalDirectorDto.setName(name);
-            appSvcClinicalDirectorDto.setSalutation(salutation);
-            appSvcClinicalDirectorDto.setIdType(idType);
-            appSvcClinicalDirectorDto.setIdNo(idNo);
-            appSvcClinicalDirectorDto.setDesignation(designation);
-            appSvcClinicalDirectorDto.setSpecialty(specialty);
-            if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
-                appSvcClinicalDirectorDto.setOtherSpecialty(otherSpecialty);
-            }else{
-                appSvcClinicalDirectorDto.setOtherSpecialty(null);
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request,"isPartEdit"+i);
+            String cdIndexNo = ParamUtil.getString(request,"cdIndexNo"+i);
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                getPageData = true;
+            }else if(AppConsts.YES.equals(isPartEdit)){
+                getPageData = true;
+            }else if(!StringUtil.isEmpty(cdIndexNo)){
+                getDataByIndexNo = true;
             }
-            appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
-            appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
-            appSvcClinicalDirectorDto.setMobileNo(mobileNo);
-            appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
-            appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
-            appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
-
-
-            //date pick
-            appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
-            appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
-            appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
-            appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
-            appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
-
-            Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
-            Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
-            Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
-            Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
-            Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
-            appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
-            appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
-            appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
-            appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
-            appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
-
-            if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
-                if(AppConsts.YES.equals(noRegWithProfBoard)){
-                    appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
-                }else{
-                    appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
+            log.debug("get data by index no. is {}",getDataByIndexNo);
+            log.debug("get page data is {}",getPageData);
+            if(getDataByIndexNo){
+                AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = getClinicalDirectorByIndexNo(appSvcRelatedInfoDto, cdIndexNo);
+                if(appSvcClinicalDirectorDto != null){
+                    appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
                 }
-                appSvcClinicalDirectorDto.setTransportYear(transportYear);
-            }
-            appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
-        }
+            }else if(getPageData){
+                String professionBoard = ParamUtil.getString(request,"professionBoard"+i);
+                String profRegNo = ParamUtil.getString(request,"profRegNo"+i);
+                String name = ParamUtil.getString(request,"name"+i);
+                String salutation = ParamUtil.getString(request,"salutation"+i);
+                String idType = ParamUtil.getString(request,"idType"+i);
+                String idNo = ParamUtil.getString(request,"idNo"+i);
+                String designation = ParamUtil.getString(request,"designation"+i);
+                String specialty = ParamUtil.getString(request,"specialty"+i);
+                String otherSpecialty = ParamUtil.getString(request,"otherSpecialty"+i);
+                String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
+                String typeOfCurrRegi = ParamUtil.getString(request,"typeOfCurrRegi"+i);
+                String currRegiDateStr = ParamUtil.getString(request,"currRegiDate"+i);
+                String praCerEndDateStr = ParamUtil.getString(request,"praCerEndDate"+i);
+                String typeOfRegister = ParamUtil.getString(request,"typeOfRegister"+i);
+                String relevantExperience = ParamUtil.getString(request,"relevantExperience"+i);
+                String holdCerByEMS = ParamUtil.getString(request,"holdCerByEMS"+i);
+                String aclsExpiryDateStr = ParamUtil.getString(request,"aclsExpiryDate"+i);
+                String bclsExpiryDateStr = ParamUtil.getString(request,"bclsExpiryDate"+i);
+                String mobileNo = ParamUtil.getString(request,"mobileNo"+i);
+                String emailAddr = ParamUtil.getString(request,"emailAddr"+i);
+                String noRegWithProfBoard = ParamUtil.getString(request,"noRegWithProfBoardVal"+i);
+                String transportYear = ParamUtil.getString(request,"transportYear"+i);
 
+                AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = new AppSvcClinicalDirectorDto();
+                appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
+                appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
+                appSvcClinicalDirectorDto.setName(name);
+                appSvcClinicalDirectorDto.setSalutation(salutation);
+                appSvcClinicalDirectorDto.setIdType(idType);
+                appSvcClinicalDirectorDto.setIdNo(idNo);
+                appSvcClinicalDirectorDto.setDesignation(designation);
+                appSvcClinicalDirectorDto.setSpecialty(specialty);
+                if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
+                    appSvcClinicalDirectorDto.setOtherSpecialty(otherSpecialty);
+                }else{
+                    appSvcClinicalDirectorDto.setOtherSpecialty(null);
+                }
+                appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
+                appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
+                appSvcClinicalDirectorDto.setMobileNo(mobileNo);
+                appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
+                appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
+                appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
+                if(StringUtil.isEmpty(isPartEdit)){
+                    appSvcClinicalDirectorDto.setCdIndexNo(UUID.randomUUID().toString());
+                }else{
+                    appSvcClinicalDirectorDto.setCdIndexNo(isPartEdit);
+                }
+
+
+                //date pick
+                appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
+                appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
+                appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
+                appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
+                appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
+
+                Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+                Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
+                Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
+                Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
+                Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
+                appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
+                appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
+                appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
+                appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
+                appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
+
+                if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
+                    if(AppConsts.YES.equals(noRegWithProfBoard)){
+                        appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
+                    }else{
+                        appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
+                    }
+                    appSvcClinicalDirectorDto.setTransportYear(transportYear);
+                }
+                appSvcClinicalDirectorDtos.add(appSvcClinicalDirectorDto);
+            }
+        }
+        log.debug(StringUtil.changeForLog("gen app svc clinical director dto end ..."));
         return appSvcClinicalDirectorDtos;
     }
 
-    private AppSvcChargesPageDto genAppSvcChargesDto(HttpServletRequest request){
+    private AppSvcChargesPageDto genAppSvcChargesDto(HttpServletRequest request, String appType){
         AppSvcChargesPageDto appSvcChargesPageDto = new AppSvcChargesPageDto();
         List<AppSvcChargesDto> generalChargesDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcChargesDto> otherChargesDtos = IaisCommonUtils.genNewArrayList();
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         int generalChargeLength = ParamUtil.getInt(request,"generalChargeLength");
         for(int i = 0; i < generalChargeLength ; i++){
-            String chargesType = ParamUtil.getString(request,"chargesType"+i);
-            String minAmount = ParamUtil.getString(request,"minAmount"+i);
-            String maxAmount = ParamUtil.getString(request,"maxAmount"+i);
-            String remarks = ParamUtil.getString(request,"remarks"+i);
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request,"isPartEdit"+i);
+            String chargesIndexNo = ParamUtil.getString(request,"chargesIndexNo"+i);
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                getPageData = true;
+            }else if(AppConsts.YES.equals(isPartEdit)){
+                getPageData = true;
+            }else if(!StringUtil.isEmpty(chargesIndexNo)){
+                getDataByIndexNo = true;
+            }
+            log.debug("get data by index no. is {}",getDataByIndexNo);
+            log.debug("get page data is {}",getPageData);
+            if(getDataByIndexNo){
+                AppSvcChargesDto appSvcChargesDto = getChargesByIndexNo(appSvcRelatedInfoDto, chargesIndexNo, true);
+                if(appSvcChargesDto != null){
+                    generalChargesDtos.add(appSvcChargesDto);
+                }
+            }else if(getPageData){
+                String chargesType = ParamUtil.getString(request,"chargesType"+i);
+                String minAmount = ParamUtil.getString(request,"minAmount"+i);
+                String maxAmount = ParamUtil.getString(request,"maxAmount"+i);
+                String remarks = ParamUtil.getString(request,"remarks"+i);
 
-            AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
-            appSvcChargesDto.setChargesType(chargesType);
-            appSvcChargesDto.setMinAmount(minAmount);
-            appSvcChargesDto.setMaxAmount(maxAmount);
-            appSvcChargesDto.setRemarks(remarks);
-            generalChargesDtos.add(appSvcChargesDto);
+                AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
+                appSvcChargesDto.setChargesType(chargesType);
+                appSvcChargesDto.setMinAmount(minAmount);
+                appSvcChargesDto.setMaxAmount(maxAmount);
+                appSvcChargesDto.setRemarks(remarks);
+                if(StringUtil.isEmpty(chargesIndexNo)){
+                    appSvcChargesDto.setChargesIndexNo(UUID.randomUUID().toString());
+                }else{
+                    appSvcChargesDto.setChargesIndexNo(chargesIndexNo);
+                }
+                generalChargesDtos.add(appSvcChargesDto);
+            }
+
+
+
         }
         int otherChargeLength = ParamUtil.getInt(request,"otherChargeLength");
         for(int i = 0; i < otherChargeLength ; i++){
-            String otherChargesCategory = ParamUtil.getString(request,"otherChargesCategory"+i);
-            String otherChargesType = ParamUtil.getString(request,"otherChargesType"+i);
-            String otherAmountMin = ParamUtil.getString(request,"otherAmountMin"+i);
-            String otherAmountMax = ParamUtil.getString(request,"otherAmountMax"+i);
-            String otherRemarks = ParamUtil.getString(request,"otherRemarks"+i);
-
-            AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
-            appSvcChargesDto.setChargesCategory(otherChargesCategory);
-            appSvcChargesDto.setChargesType(otherChargesType);
-            appSvcChargesDto.setMinAmount(otherAmountMin);
-            appSvcChargesDto.setMaxAmount(otherAmountMax);
-            appSvcChargesDto.setRemarks(otherRemarks);
-            otherChargesDtos.add(appSvcChargesDto);
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request,"otherChargesIsPartEdit"+i);
+            String chargesIndexNo = ParamUtil.getString(request,"otherChargesIndexNo"+i);
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                getPageData = true;
+            }else if(AppConsts.YES.equals(isPartEdit)){
+                getPageData = true;
+            }else if(!StringUtil.isEmpty(chargesIndexNo)){
+                getDataByIndexNo = true;
+            }
+            log.debug("other charges get data by index no. is {}",getDataByIndexNo);
+            log.debug("other charges get page data is {}",getPageData);
+            if(getDataByIndexNo){
+                AppSvcChargesDto appSvcChargesDto = getChargesByIndexNo(appSvcRelatedInfoDto, chargesIndexNo, false);
+                if(appSvcChargesDto != null){
+                    otherChargesDtos.add(appSvcChargesDto);
+                }
+            }else if(getPageData){
+                String otherChargesCategory = ParamUtil.getString(request,"otherChargesCategory"+i);
+                String otherChargesType = ParamUtil.getString(request,"otherChargesType"+i);
+                String otherAmountMin = ParamUtil.getString(request,"otherAmountMin"+i);
+                String otherAmountMax = ParamUtil.getString(request,"otherAmountMax"+i);
+                String otherRemarks = ParamUtil.getString(request,"otherRemarks"+i);
+                AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
+                appSvcChargesDto.setChargesCategory(otherChargesCategory);
+                appSvcChargesDto.setChargesType(otherChargesType);
+                appSvcChargesDto.setMinAmount(otherAmountMin);
+                appSvcChargesDto.setMaxAmount(otherAmountMax);
+                appSvcChargesDto.setRemarks(otherRemarks);
+                if(StringUtil.isEmpty(chargesIndexNo)){
+                    appSvcChargesDto.setChargesIndexNo(UUID.randomUUID().toString());
+                }else{
+                    appSvcChargesDto.setChargesIndexNo(chargesIndexNo);
+                }
+                otherChargesDtos.add(appSvcChargesDto);
+            }
         }
         appSvcChargesPageDto.setGeneralChargesDtos(generalChargesDtos);
         appSvcChargesPageDto.setOtherChargesDtos(otherChargesDtos);

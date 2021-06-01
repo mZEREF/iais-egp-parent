@@ -1205,7 +1205,7 @@ public class NewApplicationAjaxController {
         designationAttr.put("class", "designation");
         designationAttr.put("name", "designation"+cdLength);
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, null, null);
 
         String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
         //specialty

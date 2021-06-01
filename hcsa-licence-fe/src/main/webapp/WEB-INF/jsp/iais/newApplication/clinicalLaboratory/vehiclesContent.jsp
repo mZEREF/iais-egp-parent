@@ -1,3 +1,20 @@
+<div class="row">
+    <div class="col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+        </c:if>
+    </div>
+</div>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+
 <c:set var="vehicleDtoList" value="${vehicleDtoList}"/>
 <div class="row vehiclesForm">
     <c:choose>
@@ -15,6 +32,21 @@
     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="vehicleStat">
         <c:set var="vehicleDto" value="${vehicleDtoList[vehicleStat.index]}"/>
         <div class="vehicleContent">
+            <input type="hidden" class ="isPartEdit" name="isPartEdit${vehicleStat.index}" value="0"/>
+            <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
+            <div class="col-md-12 col-xs-12">
+                <div class="edit-content">
+                    <c:if test="${'true' == canEdit}">
+                        <p>
+                        <div class="text-right app-font-size-16">
+                            <a class="edit vehicleEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                        </div>
+                        </p>
+                    </c:if>
+                </div>
+            </div>
+
+
             <div class="col-md-12 col-xs-12">
                 <p style="font-weight: 600;font-size: 2.2rem"></p>
             </div>
@@ -129,6 +161,16 @@
     $(document).ready(function () {
         addVehicle();
         removeVehicle();
+        doEdite();
+
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //rfc,renew,rfi
+        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
+            disabledPage();
+        }
+
+
     });
 
     var addVehicle = function(){
@@ -159,6 +201,7 @@
                             //remove del btn for mandatory count
 
                         }
+                        $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
                 },
@@ -184,11 +227,28 @@
                 $(this).find('.vehicleName').prop('name','vehicleName'+k);
                 $(this).find('.chassisNum').prop('name','chassisNum'+k);
                 $(this).find('.engineNum').prop('name','engineNum'+k);
+                $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
+                $(this).find('.vehicleIndexNo').prop('name','vehicleIndexNo'+k);
             });
             //display add more
             if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
                 $('.addVehicleDiv').removeClass('hidden');
             }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+
+    var doEdite = function () {
+        $('a.vehicleEdit').click(function () {
+            var $currContent = $(this).closest('div.vehicleContent');
+            $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('.edit-content').addClass('hidden');
+            $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('div.nice-select').removeClass('disabled');
+            $currContent.find('input[type="text"]').css('border-color', '');
+            $currContent.find('input[type="text"]').css('color', '');
+
+            $('#isEditHiddenVal').val('1');
         });
     }
 
