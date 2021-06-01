@@ -46,7 +46,10 @@
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                             <c:choose>
                                                 <c:when test="${'1' == cdDto.noRegWithProfBoard}">
-                                                    Yes
+                                                <div class="form-check active">
+                                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                                    </p>
+                                                </div>
                                                 </c:when>
                                             </c:choose>
                                         </p>

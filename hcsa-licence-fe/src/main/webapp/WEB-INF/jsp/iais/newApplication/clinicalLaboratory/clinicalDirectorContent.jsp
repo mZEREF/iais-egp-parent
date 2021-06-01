@@ -145,7 +145,12 @@
                             <div class="control-label formtext col-md-7 col-xs-7 noRegWithProfBoardDiv">
                                 <label  class="control-label control-set-font control-font-label">
                                     <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${cdStat.index}" value="${clinicalDirectorDto.noRegWithProfBoard}"/>
-                                    <input type="checkbox" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked="checked"</c:if>  name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" >
+                                    <div class="control-item-container parent-form-check" >
+                                        <input type="checkbox" id="noRegWithProfBoard${cdStat.index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked="checked"</c:if> >
+                                        <label for="noRegWithProfBoard${cdStat.index}" class="noRegWithProfBoard control-label control-set-font control-font-normal">
+                                            <span class="check-square"></span>
+                                        </label>
+                                    </div>
                                 </label>
                             </div>
                         </div>
@@ -510,6 +515,7 @@
                         //
                         removeClinicalDirector();
                         showOtherSpecialty();
+                        noRegWithProfBoard();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
@@ -568,7 +574,8 @@
                 $(this).find('input.mobileNo').prop('name','mobileNo'+k);
                 $(this).find('input.emailAddr').prop('name','emailAddr'+k);
                 $(this).find('input.noRegWithProfBoardVal').prop('name','noRegWithProfBoardVal'+k);
-                $(this).find('input.noRegWithProfBoard').prop('name','noRegWithProfBoard'+k);
+                $(this).find('input.noRegWithProfBoard').prop('id','noRegWithProfBoard'+k);
+                $(this).find('label.noRegWithProfBoard').prop('for','noRegWithProfBoard'+k);
                 $(this).find('input.transportYear').prop('name','transportYear'+k);
                 $(this).find('input.isPartEdit').prop('name','isPartEdit'+k);
                 $(this).find('input.cdIndexNo').prop('name','cdIndexNo'+k);
