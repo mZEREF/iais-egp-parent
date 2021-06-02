@@ -198,9 +198,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             map1.put(entity.getDocTitle() + personType + seqNum,1);
                         }else {
                             Integer max=1;
-                            for(String var :strings){
-                                if(var.contains(entity.getDocTitle() + personType)){
-                                    Integer integer1 = map1.get(var);
+                            for (Map.Entry<String, Integer> ent : map1.entrySet()) {
+                                if(ent.getKey().contains(entity.getDocTitle() + personType)){
+                                    Integer integer1 = ent.getValue();
                                     if(integer1>=max){
                                         max=integer1+1;
                                     }
