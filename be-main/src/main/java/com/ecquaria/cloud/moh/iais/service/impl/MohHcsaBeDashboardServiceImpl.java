@@ -64,6 +64,17 @@ import java.util.Set;
 @Service
 @Slf4j
 public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService {
+    private static final String[] STATUS_STRS_INSPECTOR = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS};
+
+    private static final String[] STATUS_STRS_PSO = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03};
+
+    private static final String[] STATUS_STRS_ELSE = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03};
 
     @Autowired
     private AppPremisesRoutingHistoryMainService appPremisesRoutingHistoryService;
@@ -1133,28 +1144,13 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     private List<SelectOption> getWaitAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
-            String[] statusStrs;
             if(curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)) {
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
-                        ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS
-                };
+                appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(STATUS_STRS_INSPECTOR);
             } else if(curRoleId.contains(RoleConsts.USER_ROLE_PSO)) {
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
-                };
+                appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(STATUS_STRS_PSO);
             } else {
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
-                };
+                appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(STATUS_STRS_ELSE);
             }
-            appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
         }
         return appStatusOption;
     }
