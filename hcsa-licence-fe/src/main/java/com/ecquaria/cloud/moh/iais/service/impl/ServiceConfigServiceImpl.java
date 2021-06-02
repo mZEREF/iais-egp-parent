@@ -602,6 +602,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         String deliveryMode = ConfigHelper.getString("col.giro.dbs.data.delivery.mode","");
         String email1 =ConfigHelper.getString("col.giro.dbs.data.email1","xxx@ecquaria.com");
         String phone1 = ConfigHelper.getString("col.giro.dbs.data.phonename1","88888888");
+        InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
         for(GiroPaymentXmlDto giroPaymentXmlDto : giroPaymentXmlDtos){
             GiroGroupDataDto giroGroupDataDto = JsonUtil.parseToObject(giroPaymentXmlDto.getXmlData(),GiroGroupDataDto.class);
             String giroAccount = getGiroAccountByGroupNo(giroGroupDataDto.getAppGroupNo());
@@ -681,7 +682,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                 inputDetailDto.setPhoneNumber4("");
                 inputDetailDto.setPhoneNumber5("");
                 if("E".equalsIgnoreCase(inputDetailDto.getDeliveryMode())){
-                    InvoiceDetailsDto invoiceDetailsDto = new InvoiceDetailsDto();
                     //todo true data
                     String inNo = "1010039098";
                     invoiceDetailsDto.setSNo("001");
