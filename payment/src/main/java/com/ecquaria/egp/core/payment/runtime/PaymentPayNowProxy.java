@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -77,7 +78,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("payNow.url");
 		if (StringHelper.isEmpty(bigsURL)) {
-			throw new PaymentException("stripe.url is not set.");
+			throw new PaymentException("payNow.url is not set.");
 		}
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
 
@@ -200,12 +201,17 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 
 
-		String status = PaymentTransactionEntity.TRANS_STATUS_SUCCESS;//"Send";
+		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(refNo).getEntity();
+		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+			status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+			paymentRequestDto.setStatus(status);
+		}
 		String invoiceNo = "1234567";
 		String response = "payment "+status;
 		setPaymentResponse(response);
 		setPaymentTransStatus(status);
-
+		PaymentBaiduriProxyUtil.getPaymentClient().updatePaymentResquset(paymentRequestDto);
 
 		String appGrpNo=refNo;
 		try {
