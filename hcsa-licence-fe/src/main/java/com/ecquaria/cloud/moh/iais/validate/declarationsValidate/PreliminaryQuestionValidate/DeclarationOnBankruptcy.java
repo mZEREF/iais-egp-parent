@@ -20,8 +20,9 @@ public class DeclarationOnBankruptcy implements Declarations {
         }
         boolean flag=false;
         String bankruptcyItem1 = appDeclarationMessageDto.getBankruptcyItem1();
+        String err06 = MessageUtil.replaceMessage("GENERAL_ERR0006","this","field");
         if(StringUtil.isEmpty(bankruptcyItem1)){
-            map.put("bankruptcyItem1", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("bankruptcyItem1", err06);
         }else {
             if("1".equals(bankruptcyItem1)){
                 flag=true;
@@ -29,7 +30,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         }
         String bankruptcyItem2 = appDeclarationMessageDto.getBankruptcyItem2();
         if(StringUtil.isEmpty(bankruptcyItem2)){
-            map.put("bankruptcyItem2", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("bankruptcyItem2", err06);
         }else {
             if("1".equals(bankruptcyItem2)){
                 flag=true;
@@ -37,7 +38,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         }
         String bankruptcyItem3 = appDeclarationMessageDto.getBankruptcyItem3();
         if(StringUtil.isEmpty(bankruptcyItem3)){
-            map.put("bankruptcyItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("bankruptcyItem3", err06);
         }else {
             if("1".equals(bankruptcyItem3)){
                 flag=true;
@@ -45,7 +46,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         }
         String bankruptcyItem4 = appDeclarationMessageDto.getBankruptcyItem4();
         if (StringUtil.isEmpty(bankruptcyItem4)) {
-            map.put("bankruptcyItem4", MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
+            map.put("bankruptcyItem4", err06);
         } else {
             if ("1".equals(bankruptcyItem4)) {
                 flag = true;
@@ -53,7 +54,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         }
         String bankruptcyRemark = appDeclarationMessageDto.getBankruptcyRemark();
         if(StringUtil.isEmpty(bankruptcyRemark)&&flag){
-            map.put("bankruptcyRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("bankruptcyRemark", err06);
         }else if(!StringUtil.isEmpty(bankruptcyItem1)&&bankruptcyItem1.length()>=1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("bankruptcyRemark",general_err0041);

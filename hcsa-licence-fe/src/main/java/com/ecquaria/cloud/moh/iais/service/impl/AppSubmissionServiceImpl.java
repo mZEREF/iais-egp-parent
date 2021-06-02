@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -18,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
@@ -41,8 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -64,7 +62,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -116,16 +113,6 @@ import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-import sop.webflow.rt.api.Process;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -142,6 +129,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmisionServiceImpl
@@ -698,11 +694,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return;
         }
         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-        Map<String,File> map= IaisCommonUtils.genNewHashMap();
+        HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
         Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
         for (int i = 0, len = appDeclarationDocDtos.size(); i < len; i++) {
             AppDeclarationDocDto viewDoc = appDeclarationDocDtos.get(i);
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElseGet(() -> 0));
             PageShowFileDto pageShowFileDto = new PageShowFileDto();
             pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
             pageShowFileDto.setIndex(index);
@@ -710,7 +706,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(() -> 1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
@@ -775,7 +771,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setMd5Code(singeFileUtil.getFileMd5(file));
                     docDto.setDocSize(Integer.valueOf(size.toString()));
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    docDto.setSeqNum(Integer.parseInt(index));
+                    docDto.setSeqNum(Integer.valueOf(index));
                     Optional<Integer> versions = pageShowFileHashMap.entrySet()
                             .stream()
                             .filter(i -> s.equals(i.getKey()))
@@ -801,8 +797,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setDocSize(pageShowFileDto.getSize());
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    docDto.setSeqNum(Integer.parseInt(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDto.setSeqNum(Integer.valueOf(index));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(() -> 1));
                     docDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
