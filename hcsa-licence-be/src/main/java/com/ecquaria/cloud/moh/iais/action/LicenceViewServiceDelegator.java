@@ -596,7 +596,7 @@ public class LicenceViewServiceDelegator {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<ProfessionalResponseDto> professionalResponseDtos = null;
-        Map<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
+        HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
         try {
              professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
