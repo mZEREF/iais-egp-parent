@@ -47,18 +47,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -201,9 +198,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             map1.put(entity.getDocTitle() + personType + seqNum,1);
                         }else {
                             Integer max=1;
-                            for(String var :strings){
-                                if(var.contains(entity.getDocTitle() + personType)){
-                                    Integer integer1 = map1.get(var);
+                            for (Map.Entry<String, Integer> ent : map1.entrySet()) {
+                                if(ent.getKey().contains(entity.getDocTitle() + personType)){
+                                    Integer integer1 = ent.getValue();
                                     if(integer1>=max){
                                         max=integer1+1;
                                     }
