@@ -259,6 +259,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String emailGroupId_003 = null;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationFeClient.getApplicationByCorrId(s).getEntity();
             if (Optional.ofNullable(applicationDto).isPresent()){
@@ -329,7 +330,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         svcNameList.add(svcName);
                     });
 
-                    String randomStr = IaisEGPHelper.generateRandomString(26);
                     templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
                     templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
@@ -337,7 +337,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     email_004.setTemplateId(email_004_template);
                     email_004.setTemplateContent(templateContent);
                     email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
-                    email_004.setReqRefNum(randomStr);
+                    email_004.setReqRefNum(emailRandomStr_003);
                     email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     email_004.setRefId(appNo);
                     email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
@@ -346,8 +346,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
-
-        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
         emailContent_003.put("applicationNo", tlGroupNumber);
         emailContent_003.put("applicationType", tlAppType);
         emailContent_003.put("applicationDate", Formatter.formatDate(tlDate));
